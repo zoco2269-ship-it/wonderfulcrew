@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WonderfulCrew — AI 면접 시뮬레이션</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;
+  --cream:#FAF7F0;--cream-dark:#F0EAD8;
+  --navy:#1A2340;--navy-light:#2A3455;
+  --text-dark:#1A1A1A;--text-mid:#3A3430;--text-muted:#5A5048;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"Noto Sans KR",sans-serif;background:var(--navy);color:#fff;min-height:100vh;overflow-x:hidden;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes wave{0%,100%{transform:scaleY(0.4)}50%{transform:scaleY(1)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;height:64px;
+  background:rgba(26,35,64,0.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(201,168,76,0.15);
+}
+.nav-logo{font-family:"Cormorant Garamond",serif;font-size:1.4rem;font-weight:600;color:#fff;text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.82rem;color:rgba(255,255,255,0.55);text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--gold);}
+
+/* ── SCREENS ── */
+#app{padding-top:64px;}
+.screen{display:none;animation:fadeUp 0.4s ease;}
+.screen.active{display:block;}
+
+/* ── LANG SELECT ── */
+.lang-wrap{max-width:560px;margin:0 auto;padding:60px 24px;}
+.eyebrow{font-family:"Cormorant Garamond",serif;font-size:0.75rem;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;font-weight:600;}
+.big-title{font-family:"Noto Serif KR",serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:400;line-height:1.3;margin-bottom:12px;}
+.big-title em{font-style:normal;color:var(--gold-light);}
+.sub-txt{font-size:0.9rem;color:rgba(255,255,255,0.6);line-height:1.8;margin-bottom:36px;}
+.gold-bar{width:36px;height:2px;background:var(--gold);margin-bottom:36px;}
+.lang-cards{display:flex;flex-direction:column;gap:14px;}
+.lang-card{
+  display:flex;align-items:center;gap:20px;
+  padding:20px 22px;
+  background:rgba(255,255,255,0.05);
+  border:1.5px solid rgba(201,168,76,0.2);
+  cursor:pointer;transition:all 0.25s;font-family:inherit;color:#fff;text-align:left;
+}
+.lang-card:hover{border-color:var(--gold);background:rgba(201,168,76,0.07);transform:translateY(-2px);}
+.lang-card-flag{font-size:1.9rem;flex-shrink:0;}
+.lang-card-title{font-size:0.98rem;font-weight:700;display:block;margin-bottom:3px;}
+.lang-card-sub{font-size:0.77rem;color:rgba(255,255,255,0.5);line-height:1.55;}
+.lang-card-arrow{margin-left:auto;color:var(--gold);font-size:1.1rem;flex-shrink:0;}
+
+/* ── ROLEPLAY SCREEN ── */
+.rp-layout{
+  display:grid;grid-template-columns:1fr 380px;
+  height:calc(100vh - 64px);
+  gap:0;
+}
+
+/* 왼쪽: 카메라 */
+.rp-camera-col{
+  position:relative;background:#0a0f1e;
+  display:flex;flex-direction:column;
+}
+#user-video{
+  width:100%;height:100%;object-fit:cover;
+  display:block;filter:scaleX(-1);
+  transform:scaleX(-1);
+}
+.cam-placeholder{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  color:rgba(255,255,255,0.35);gap:14px;
+  font-size:0.9rem;
+}
+.cam-placeholder-icon{font-size:2.8rem;}
+
+/* 면접관 오버레이 (좌측 상단) */
+.interviewer-badge{
+  position:absolute;top:16px;left:16px;
+  display:flex;align-items:center;gap:10px;
+  background:rgba(26,35,64,0.88);
+  backdrop-filter:blur(8px);
+  padding:8px 14px;
+  border:1px solid rgba(201,168,76,0.25);
+}
+.interviewer-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),#A07830);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;
+}
+.interviewer-name{font-size:0.78rem;font-weight:700;color:#fff;display:block;}
+.interviewer-role{font-size:0.68rem;color:rgba(255,255,255,0.5);}
+
+/* REC 배지 */
+.rec-badge{
+  position:absolute;top:16px;right:16px;
+  background:rgba(239,68,68,0.9);
+  color:#fff;font-size:0.68rem;font-weight:700;
+  padding:4px 10px;letter-spacing:0.1em;
+  display:none;align-items:center;gap:5px;
+}
+.rec-dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse 1s infinite;}
+
+/* 현재 질문 오버레이 (하단) */
+.current-question{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,rgba(26,35,64,0.97) 60%,transparent);
+  padding:32px 24px 20px;
+}
+.cq-label{font-size:0.65rem;font-weight:800;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;}
+.cq-text{font-size:1rem;font-weight:600;line-height:1.5;color:#fff;}
+.cq-hint{font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:5px;}
+
+/* 오른쪽: AI 패널 */
+.rp-panel{
+  background:rgba(255,255,255,0.04);
+  border-left:1px solid rgba(201,168,76,0.12);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.panel-header{
+  padding:16px 20px;
+  border-bottom:1px solid rgba(201,168,76,0.1);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.panel-title{font-size:0.78rem;font-weight:700;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;}
+.panel-status{display:flex;align-items:center;gap:6px;font-size:0.72rem;color:rgba(255,255,255,0.45);}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;}
+
+/* 채팅 로그 */
+.chat-log{
+  flex:1;overflow-y:auto;
+  padding:16px 16px 8px;
+  display:flex;flex-direction:column;gap:12px;
+  scrollbar-width:thin;scrollbar-color:rgba(201,168,76,0.15) transparent;
+}
+.chat-log::-webkit-scrollbar{width:3px;}
+.chat-log::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.15);border-radius:3px;}
+
+.msg{display:flex;gap:8px;animation:slideIn 0.3s ease;}
+.msg.ai{flex-direction:row;}
+.msg.user{flex-direction:row-reverse;}
+.msg-av{
+  width:30px;height:30px;border-radius:8px;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.9rem;
+}
+.msg.ai .msg-av{background:linear-gradient(135deg,var(--gold),#A07830);}
+.msg.user .msg-av{background:rgba(255,255,255,0.1);}
+.msg-bubble{
+  max-width:80%;padding:10px 14px;
+  font-size:0.84rem;line-height:1.65;
+  border-radius:10px;
+}
+.msg.ai .msg-bubble{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(201,168,76,0.1);
+  color:rgba(255,255,255,0.88);
+  border-top-left-radius:3px;
+}
+.msg.user .msg-bubble{
+  background:rgba(201,168,76,0.12);
+  border:1px solid rgba(201,168,76,0.2);
+  color:rgba(255,255,255,0.8);
+  border-top-right-radius:3px;
+}
+
+/* 타이핑 인디케이터 */
+.typing-dots{display:flex;gap:4px;align-items:center;padding:4px 0;}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);opacity:0.4;}
+.typing-dot:nth-child(1){animation:wave 1s 0s infinite;}
+.typing-dot:nth-child(2){animation:wave 1s 0.15s infinite;}
+.typing-dot:nth-child(3){animation:wave 1s 0.3s infinite;}
+
+/* 컨트롤 영역 */
+.panel-controls{
+  padding:14px 16px;
+  border-top:1px solid rgba(201,168,76,0.1);
+  display:flex;flex-direction:column;gap:10px;
+  flex-shrink:0;
+}
+.mic-btn{
+  width:100%;padding:13px;
+  background:linear-gradient(135deg,var(--gold),#A07830);
+  border:none;color:#1A2340;font-size:0.88rem;font-weight:800;
+  cursor:pointer;font-family:inherit;letter-spacing:0.06em;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all 0.2s;
+}
+.mic-btn:hover{opacity:0.9;transform:translateY(-1px);}
+.mic-btn.recording{background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;}
+.mic-btn.recording:hover{opacity:0.9;}
+.btn-row{display:flex;gap:8px;}
+.btn-sm{
+  flex:1;padding:10px;font-size:0.79rem;font-weight:600;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(201,168,76,0.2);
+  color:rgba(255,255,255,0.7);cursor:pointer;
+  font-family:inherit;transition:all 0.2s;
+}
+.btn-sm:hover{border-color:var(--gold);color:var(--gold);}
+.btn-end{
+  width:100%;padding:11px;
+  background:transparent;
+  border:1px solid rgba(239,68,68,0.4);
+  color:rgba(239,68,68,0.75);font-size:0.8rem;font-weight:600;
+  cursor:pointer;font-family:inherit;transition:all 0.2s;
+}
+.btn-end:hover{border-color:#ef4444;color:#ef4444;background:rgba(239,68,68,0.05);}
+
+/* Q 진행 표시 */
+.q-progress{
+  padding:12px 16px 0;
+  display:flex;gap:4px;
+}
+.q-pip{flex:1;height:3px;background:rgba(255,255,255,0.1);transition:background 0.4s;}
+.q-pip.done{background:var(--gold);}
+.q-pip.active{background:rgba(201,168,76,0.5);}
+
+/* 로딩 */
+.spinner{width:36px;height:36px;border:3px solid rgba(201,168,76,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;}
+
+/* 결과 화면 */
+.result-wrap{max-width:620px;margin:0 auto;padding:60px 24px;}
+.result-score-big{font-family:"Cormorant Garamond",serif;font-size:5rem;font-weight:600;color:var(--gold);line-height:1;text-align:center;}
+.result-level-badge{display:inline-block;background:rgba(201,168,76,0.15);color:var(--gold);border:1px solid rgba(201,168,76,0.35);padding:6px 20px;font-size:0.78rem;font-weight:700;letter-spacing:0.15em;margin-top:10px;}
+.res-card{background:rgba(255,255,255,0.05);border:1px solid rgba(201,168,76,0.15);padding:20px;margin-bottom:12px;}
+.res-card-title{font-size:0.7rem;font-weight:700;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:12px;}
+.res-item{display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-bottom:1px solid rgba(201,168,76,0.08);}
+.res-item:last-child{border-bottom:none;}
+.res-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px;}
+.res-text{font-size:0.85rem;color:rgba(255,255,255,0.8);line-height:1.6;}
+.cta-row{display:flex;flex-direction:column;gap:12px;margin-top:32px;}
+.btn-gold-full{
+  padding:15px;background:linear-gradient(135deg,var(--gold-light),var(--gold));
+  color:#1A2340;font-size:0.9rem;font-weight:800;border:none;cursor:pointer;
+  font-family:inherit;letter-spacing:0.06em;text-decoration:none;
+  display:flex;align-items:center;justify-content:center;transition:all 0.2s;
+}
+.btn-gold-full:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-outline-light{
+  padding:13px;background:transparent;
+  border:1px solid rgba(201,168,76,0.35);color:rgba(255,255,255,0.7);
+  font-size:0.86rem;font-weight:600;cursor:pointer;font-family:inherit;
+  text-decoration:none;display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;
+}
+.btn-outline-light:hover{border-color:var(--gold);color:var(--gold);}
+.coach-banner{
+  background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);
+  padding:16px 20px;margin-bottom:20px;
+  display:flex;align-items:flex-start;gap:12px;
+}
+.coach-banner-ico{font-size:1.2rem;flex-shrink:0;margin-top:2px;}
+.coach-banner-title{font-size:0.85rem;font-weight:700;color:#fff;margin-bottom:4px;}
+.coach-banner-sub{font-size:0.78rem;color:rgba(255,255,255,0.55);line-height:1.6;}
+
+/* 점수 바 */
+.score-bar-row{margin-bottom:10px;}
+.score-bar-label{display:flex;justify-content:space-between;font-size:0.77rem;margin-bottom:5px;}
+.score-bar-label span:first-child{color:rgba(255,255,255,0.7);}
+.score-bar-label span:last-child{color:var(--gold);font-weight:700;}
+.score-bar-bg{height:5px;background:rgba(255,255,255,0.08);}
+.score-bar-fill{height:100%;background:linear-gradient(to right,var(--gold-light),var(--gold));transition:width 1s ease;}
+
+@media(max-width:768px){
+  .rp-layout{grid-template-columns:1fr;grid-template-rows:50vh 1fr;}
+  .rp-panel{border-left:none;border-top:1px solid rgba(201,168,76,0.12);}
+}
+
+/* ── 가입 화면 ── */
+.join-wrap{max-width:520px;margin:0 auto;padding:60px 24px;}
+.join-field{margin-bottom:16px;}
+.join-label{display:block;font-size:0.78rem;font-weight:700;color:rgba(255,255,255,0.6);margin-bottom:7px;letter-spacing:0.05em;}
+.join-label em{color:var(--gold);font-style:normal;}
+.join-input{
+  width:100%;background:rgba(255,255,255,0.07);
+  border:1.5px solid rgba(201,168,76,0.2);
+  padding:12px 15px;color:#fff;font-size:0.9rem;
+  font-family:inherit;outline:none;transition:border-color 0.2s;
+}
+.join-input:focus{border-color:var(--gold);}
+.join-input::placeholder{color:rgba(255,255,255,0.3);}
+.join-radio-group{display:flex;flex-direction:column;gap:8px;}
+.join-radio-opt{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 15px;
+  background:rgba(255,255,255,0.05);
+  border:1.5px solid rgba(201,168,76,0.15);
+  cursor:pointer;transition:all 0.2s;
+}
+.join-radio-opt:hover{border-color:rgba(201,168,76,0.4);}
+.join-radio-opt.sel{border-color:var(--gold);background:rgba(201,168,76,0.08);}
+.join-radio-opt input{accent-color:var(--gold);width:15px;height:15px;flex-shrink:0;}
+.join-radio-text{font-size:0.85rem;color:rgba(255,255,255,0.75);}
+.join-radio-opt.sel .join-radio-text{color:#fff;font-weight:600;}
+.btn-gold-join{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold));
+  color:#1A2340;font-size:0.92rem;font-weight:800;border:none;
+  cursor:pointer;font-family:inherit;letter-spacing:0.06em;
+  margin-top:6px;transition:all 0.2s;
+}
+.btn-gold-join:hover{opacity:0.9;transform:translateY(-1px);}
+.join-privacy{font-size:0.72rem;color:rgba(255,255,255,0.3);text-align:center;margin-top:12px;line-height:1.6;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="index.html" class="nav-back">← 홈으로</a>
+</nav>
+<div id="app">
+
+<!-- SCREEN 0: 언어 선택 -->
+<div id="screen-lang" class="screen active">
+  <div class="lang-wrap">
+    <div class="eyebrow">AI Interview Simulation</div>
+    <h1 class="big-title">실제 면접처럼<br><em>AI와 롤플레이</em></h1>
+    <div class="gold-bar"></div>
+    <p class="sub-txt">AI 면접관이 질문을 던집니다. 카메라 앞에서 직접 답하고, 즉각적인 피드백을 받으세요.</p>
+    <div class="lang-cards">
+      <button class="lang-card" onclick="startSession('ko')">
+        <span class="lang-card-flag">🇰🇷</span>
+        <span>
+          <span class="lang-card-title">한국어 면접 연습</span>
+          <span class="lang-card-sub">대한항공 · 아시아나 · 국내 LCC 지망생 추천<br>한국어 자기소개 + 면접 Q&A</span>
+        </span>
+        <span class="lang-card-arrow">→</span>
+      </button>
+      <button class="lang-card" onclick="startSession('en')">
+        <span class="lang-card-flag">🌎</span>
+        <span>
+          <span class="lang-card-title">English Interview Practice</span>
+          <span class="lang-card-sub">Emirates · Qatar · Singapore Airlines & Global Carriers<br>English Q&A + AI real-time feedback</span>
+        </span>
+        <span class="lang-card-arrow">→</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 1: 롤플레이 -->
+<div id="screen-roleplay" class="screen">
+  <div class="rp-layout">
+
+    <!-- 왼쪽: 카메라 -->
+    <div class="rp-camera-col">
+      <video id="user-video" autoplay muted playsinline></video>
+      <div class="cam-placeholder" id="cam-placeholder">
+        <div class="cam-placeholder-icon">📷</div>
+        <div>카메라를 시작하면<br>여기에 내 얼굴이 보여요</div>
+      </div>
+      <!-- 면접관 배지 -->
+      <div class="interviewer-badge">
+        <div class="interviewer-avatar">✈️</div>
+        <div>
+          <span class="interviewer-name" id="interviewer-name">WonderfulCrew AI</span>
+          <span class="interviewer-role" id="interviewer-role">면접관</span>
+        </div>
+      </div>
+      <!-- REC 배지 -->
+      <div class="rec-badge" id="rec-badge"><div class="rec-dot"></div>REC</div>
+      <!-- 현재 질문 -->
+      <div class="current-question" id="current-q-box">
+        <div class="cq-label" id="cq-label">현재 질문</div>
+        <div class="cq-text" id="cq-text">잠시 후 AI 면접관이 첫 질문을 드립니다...</div>
+        <div class="cq-hint" id="cq-hint">마이크 버튼을 눌러 답변을 시작하세요</div>
+      </div>
+    </div>
+
+    <!-- 오른쪽: AI 패널 -->
+    <div class="rp-panel">
+      <div class="panel-header">
+        <span class="panel-title" id="panel-title">AI 면접관</span>
+        <span class="panel-status"><div class="status-dot"></div>온라인</span>
+      </div>
+      <!-- Q 진행 바 -->
+      <div class="q-progress" id="q-progress"></div>
+      <!-- 채팅 로그 -->
+      <div class="chat-log" id="chat-log"></div>
+      <!-- 컨트롤 -->
+      <div class="panel-controls">
+        <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎤 답변 시작</button>
+        <div class="btn-row">
+          <button class="btn-sm" onclick="skipQuestion()">다음 질문 →</button>
+          <button class="btn-sm" onclick="replayQuestion()">🔄 다시 듣기</button>
+        </div>
+        <button class="btn-end" onclick="endSession()">면접 종료 · 결과 보기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 2: 로딩 -->
+<div id="screen-loading" class="screen">
+  <div style="text-align:center;padding:120px 24px;">
+    <div class="spinner"></div>
+    <div style="font-size:0.9rem;color:rgba(255,255,255,0.55);" id="loading-msg">결과를 분석 중이에요...</div>
+  </div>
+</div>
+
+<!-- SCREEN 3: 결과 -->
+<div id="screen-result" class="screen">
+  <div class="result-wrap">
+    <div style="text-align:center;margin-bottom:36px;">
+      <div class="eyebrow">Result</div>
+      <div class="result-score-big" id="r-score">78</div>
+      <div style="font-size:0.8rem;color:rgba(255,255,255,0.45);margin-top:4px;letter-spacing:0.1em;">종합 점수 / 100</div>
+      <div class="result-level-badge" id="r-level">중급 · Intermediate</div>
+    </div>
+
+    <div class="coach-banner" id="r-coach-msg"></div>
+
+    <!-- 세부 점수 -->
+    <div class="res-card" id="r-breakdown"></div>
+
+    <div class="res-card">
+      <div class="res-card-title">💪 강점</div>
+      <div id="r-strengths"></div>
+    </div>
+    <div class="res-card">
+      <div class="res-card-title">📈 개선 포인트</div>
+      <div id="r-improvements"></div>
+    </div>
+
+    <div class="cta-row">
+      <a href="curriculum.html" class="btn-gold-full">수준별 커리큘럼 보기 →</a>
+      
+      <button class="btn-outline-light" onclick="location.reload()">🔄 다시 연습하기</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// 레벨테스트 + 항공사 선택 가드 — 둘 다 없으면 leveltest로 리다이렉트
+(function(){
+  var hasLevel=false,hasAirline=false;
+  try{hasLevel=!!localStorage.getItem('wc_level_result');}catch(e){}
+  try{hasAirline=!!localStorage.getItem('wc_airline');}catch(e){}
+  if(!hasLevel&&!hasAirline){location.replace('leveltest.html');return;}
+})();
+var U_RP={};
+var LANG='ko';
+var SESSION={qIdx:0,answers:[],mediaStream:null,mediaRec:null,recChunks:[],isRecording:false,history:[]};
+
+// 레벨테스트 결과 불러오기
+var LEVEL_RESULT=null;
+try{var _lr=localStorage.getItem('wc_level_result');if(_lr)LEVEL_RESULT=JSON.parse(_lr);}catch(e){}
+
+function getLevelTier(){
+  if(!LEVEL_RESULT||!LEVEL_RESULT.level)return 'intermediate';
+  var lv=LEVEL_RESULT.level.toLowerCase();
+  if(lv.indexOf('beginner')>=0||lv.indexOf('elementary')>=0)return 'beginner';
+  if(lv.indexOf('upper')>=0||lv.indexOf('advanced')>=0)return 'advanced';
+  return 'intermediate';
+}
+function getLevelAdjustment(){
+  var tier=getLevelTier();
+  var name=(LEVEL_RESULT&&LEVEL_RESULT.name)?LEVEL_RESULT.name:'지원자';
+  if(tier==='beginner'){
+    return {
+      ko:`\n\n## 지원자 레벨 정보\n- 이름: ${name}\n- 레벨: ${LEVEL_RESULT.level_ko||'초급'} (${LEVEL_RESULT.level})\n- 종합점수: ${LEVEL_RESULT.score||'-'}/100\n- 난이도 조정: 한국어 위주로 진행하고, 쉽고 기본적인 질문부터 천천히. 따뜻하게 격려하며 기초부터 다지는 톤으로.`,
+      en:`\n\n## Applicant Level Info\n- Name: ${name}\n- Level: ${LEVEL_RESULT.level} (${LEVEL_RESULT.level_ko||''})\n- Score: ${LEVEL_RESULT.score||'-'}/100\n- Difficulty: Use very simple English. Speak slowly with basic vocabulary. Be highly encouraging. Prefer Korean follow-ups when needed.`
+    };
+  }
+  if(tier==='advanced'){
+    return {
+      ko:`\n\n## 지원자 레벨 정보\n- 이름: ${name}\n- 레벨: ${LEVEL_RESULT.level_ko||'고급'} (${LEVEL_RESULT.level})\n- 종합점수: ${LEVEL_RESULT.score||'-'}/100\n- 난이도 조정: 영어 위주로 진행하고, 심화 질문(상황 대처, 컴플레인 핸들링, 다문화 시나리오 등) 중심으로. 답변에 대한 비판적 피드백도 포함.`,
+      en:`\n\n## Applicant Level Info\n- Name: ${name}\n- Level: ${LEVEL_RESULT.level} (${LEVEL_RESULT.level_ko||''})\n- Score: ${LEVEL_RESULT.score||'-'}/100\n- Difficulty: Conduct entirely in advanced English. Ask challenging in-depth questions about service scenarios, complaint handling, multicultural situations. Provide critical, professional-level feedback.`
+    };
+  }
+  return {
+    ko:`\n\n## 지원자 레벨 정보\n- 이름: ${name}\n- 레벨: ${LEVEL_RESULT.level_ko||'중급'} (${LEVEL_RESULT.level})\n- 종합점수: ${LEVEL_RESULT.score||'-'}/100\n- 난이도 조정: 한국어와 영어를 적절히 섞어서 진행. 표준 난이도의 질문으로 균형있게.`,
+    en:`\n\n## Applicant Level Info\n- Name: ${name}\n- Level: ${LEVEL_RESULT.level} (${LEVEL_RESULT.level_ko||''})\n- Score: ${LEVEL_RESULT.score||'-'}/100\n- Difficulty: Use intermediate English. Mix in occasional Korean clarification when appropriate. Balanced standard interview questions.`
+  };
+}
+
+var CONFIGS={
+  ko:{
+    interviewerName:'원더풀크루 AI',
+    interviewerRole:'한국어 면접관',
+    panelTitle:'AI 면접관 · 한국어',
+    questions:[
+      {label:'자기소개','q':'안녕하세요! 먼저 간단한 자기소개를 부탁드립니다. 승무원이 되고 싶으신 이유도 함께 말씀해 주세요.','hint':'이름 → 지원 동기 → 나의 강점 (30~60초)'},
+      {label:'지원 동기','q':'우리 항공사에 지원하게 된 특별한 이유가 있나요?','hint':'항공사 특징 + 본인 가치관 연결 (30초)'},
+      {label:'강점','q':'본인의 가장 큰 강점 하나를 구체적인 경험과 함께 말씀해 주세요.','hint':'STAR 구조: 상황 → 행동 → 결과 (40초)'},
+    ],
+    sys:`당신은 WonderfulCrew 소속의 한국어 승무원 면접관입니다. 에미레이트 항공 출신 20년 경력 코치입니다.
+지원자의 답변을 듣고 다음을 수행하세요:
+1) 답변에 대해 간결하고 따뜻한 피드백 1~2문장
+2) 자연스럽게 다음 면접 질문으로 연결
+답변은 짧고 실용적으로, 선배가 후배를 코칭하는 톤으로.
+한국어로 답변하세요.`
+  },
+  en:{
+    interviewerName:'WonderfulCrew AI',
+    interviewerRole:'English Interviewer',
+    panelTitle:'AI Interviewer · English',
+    questions:[
+      {label:'Self Introduction','q':'Welcome! Please introduce yourself and tell me why you want to be a cabin crew member.','hint':'Name → Motivation → Your Strength (30–60 sec)'},
+      {label:'Motivation','q':'Why did you apply to our airline specifically? What do you know about us?','hint':'Research + Personal Value Match (30 sec)'},
+      {label:'Strength','q':'Tell me about one of your greatest strengths with a specific example.','hint':'STAR: Situation → Action → Result (40 sec)'},
+    ],
+    sys:`You are a professional cabin crew interviewer from WonderfulCrew, with 20 years of experience placing candidates at Emirates, Qatar, and other global airlines.
+When the applicant answers, you:
+1) Give brief, warm, constructive feedback (1-2 sentences)
+2) Naturally transition to the next interview question
+Keep responses concise and practical. Coaching tone — like a senior colleague.
+Respond in English.`
+  }
+};
+
+async function initCamera(){
+  var v=document.getElementById('user-video');
+  var placeholder=document.getElementById('cam-placeholder');
+  var recBadge=document.getElementById('rec-badge');
+
+  // HTTPS / localhost 아닌 환경에서는 카메라 API 자체가 없음
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    showCamFallback();
+    return;
+  }
+
+  // 순서대로 시도: 전면HD → 전면기본 → 후면포함 → 오디오만
+  var attempts=[
+    {video:{facingMode:{ideal:'user'},width:{ideal:1280},height:{ideal:720}},audio:true},
+    {video:{facingMode:'user'},audio:true},
+    {video:true,audio:true},
+    {video:false,audio:true}
+  ];
+
+  for(var i=0;i<attempts.length;i++){
+    try{
+      SESSION.mediaStream=await navigator.mediaDevices.getUserMedia(attempts[i]);
+      if(attempts[i].video!==false && SESSION.mediaStream.getVideoTracks().length>0){
+        v.srcObject=SESSION.mediaStream;
+        placeholder.style.display='none';
+        recBadge.style.display='flex';
+      } else {
+        // 오디오만 성공
+        showCamFallback();
+      }
+      return;
+    }catch(e){}
+  }
+  // 전부 실패
+  showCamFallback();
+}
+
+function showCamFallback(){
+  var placeholder=document.getElementById('cam-placeholder');
+  placeholder.style.display='flex';
+  placeholder.innerHTML='<div style="text-align:center;padding:20px;">'
+    +'<div style="font-size:2.2rem;margin-bottom:12px;">🎤</div>'
+    +'<div style="font-size:0.85rem;color:rgba(255,255,255,0.6);line-height:1.7;">'
+    +(LANG==='ko'
+      ?'카메라 없이도 연습할 수 있어요!<br>마이크 버튼을 눌러<br>음성으로 답변해주세요.'
+      :'You can still practice without a camera!<br>Press the mic button<br>to answer by voice.')
+    +'</div>'
+    +'<div style="margin-top:14px;font-size:0.75rem;color:rgba(255,255,255,0.3);">'
+    +(LANG==='ko'?'카메라는 HTTPS 환경에서 사용 가능해요':'Camera requires HTTPS (deploy to Netlify)')
+    +'</div></div>';
+}
+
+function showScreen(n){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('screen-'+n).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+async function startSession(lang){
+  LANG=lang;
+  var cfg=CONFIGS[lang];
+  // 면접관 정보 세팅
+  document.getElementById('interviewer-name').textContent=cfg.interviewerName;
+  if(U_RP.name){document.getElementById('cq-hint').textContent='안녕하세요, '+U_RP.name+'님! 마이크 버튼을 눌러 답변을 시작하세요';}
+  document.getElementById('interviewer-role').textContent=cfg.interviewerRole;
+  document.getElementById('panel-title').textContent=cfg.panelTitle;
+  // Q 진행 바
+  var pb=document.getElementById('q-progress');
+  pb.innerHTML=cfg.questions.map(function(_,i){return '<div class="q-pip" id="qpip-'+i+'"></div>';}).join('');
+  document.getElementById('qpip-0').classList.add('active');
+  showScreen('roleplay');
+  // 카메라 시작
+  try{
+
+    var v=document.getElementById('user-video');
+    v.srcObject=SESSION.mediaStream;
+    document.getElementById('cam-placeholder').style.display='none';
+    document.getElementById('rec-badge').style.display='flex';
+  }catch(e){
+    // 카메라 없이도 진행 가능
+  }
+  // 첫 질문 출력
+  setTimeout(function(){showQuestion(0);},800);
+}
+
+function showQuestion(idx){
+  var cfg=CONFIGS[LANG];
+  if(idx>=cfg.questions.length){endSession();return;}
+  SESSION.qIdx=idx;
+  var q=cfg.questions[idx];
+  // 진행 바 업데이트
+  cfg.questions.forEach(function(_,i){
+    var pip=document.getElementById('qpip-'+i);
+    if(!pip)return;
+    pip.className='q-pip';
+    if(i<idx)pip.classList.add('done');
+    if(i===idx)pip.classList.add('active');
+  });
+  // 카메라 오버레이 질문
+  document.getElementById('cq-label').textContent=LANG==='ko'?'현재 질문 '+( idx+1)+' / '+cfg.questions.length:'Question '+(idx+1)+' / '+cfg.questions.length;
+  document.getElementById('cq-text').textContent=q.q;
+  document.getElementById('cq-hint').textContent=q.hint;
+  // 채팅창에 AI 메시지
+  addMsg('ai',q.q);
+}
+
+function addMsg(role,text){
+  var log=document.getElementById('chat-log');
+  var d=document.createElement('div');
+  d.className='msg '+role;
+  var av=document.createElement('div');
+  av.className='msg-av';
+  av.textContent=role==='ai'?'✈️':'👤';
+  var bub=document.createElement('div');
+  bub.className='msg-bubble';
+  bub.innerHTML=text.replace(/\n/g,'<br>');
+  d.appendChild(av);d.appendChild(bub);
+  log.appendChild(d);
+  log.scrollTop=log.scrollHeight;
+}
+
+function showTyping(){
+  var log=document.getElementById('chat-log');
+  var d=document.createElement('div');
+  d.className='msg ai';d.id='typing-indicator';
+  d.innerHTML='<div class="msg-av">✈️</div><div class="msg-bubble"><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';
+  log.appendChild(d);log.scrollTop=log.scrollHeight;
+}
+
+// 마이크 토글 (음성→텍스트는 Web Speech API 사용)
+var recognition=null;
+function toggleMic(){
+  if(SESSION.isRecording){stopMic();}else{startMic();}
+}
+function startMic(){
+  SESSION.isRecording=true;
+  var btn=document.getElementById('mic-btn');
+  btn.className='mic-btn recording';
+  btn.textContent=LANG==='ko'?'⏹ 답변 중지':'⏹ Stop Recording';
+  // Web Speech API
+  if('webkitSpeechRecognition' in window||'SpeechRecognition' in window){
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    recognition=new SR();
+    recognition.lang=LANG==='en'?'en-US':'ko-KR';
+    recognition.continuous=true;recognition.interimResults=true;
+    var finalTranscript='';
+    recognition.onresult=function(e){
+      var interim='';
+      for(var i=e.resultIndex;i<e.results.length;i++){
+        if(e.results[i].isFinal)finalTranscript+=e.results[i][0].transcript;
+        else interim+=e.results[i][0].transcript;
+      }
+      document.getElementById('cq-hint').textContent=(finalTranscript||interim)||'듣고 있어요...';
+    };
+    recognition.onend=function(){
+      if(SESSION.isRecording){
+        SESSION.isRecording=false;
+        resetMicBtn();
+        if(finalTranscript.trim()){
+          submitAnswer(finalTranscript.trim());
+        }
+        finalTranscript='';
+      }
+    };
+    recognition.start();
+  } else {
+    // Web Speech API 미지원 → 텍스트 입력 팝업
+    stopMic();
+    var answer=prompt(LANG==='en'?'Type your answer here:':'답변을 입력해주세요:');
+    if(answer&&answer.trim())submitAnswer(answer.trim());
+  }
+}
+function stopMic(){
+  SESSION.isRecording=false;
+  if(recognition){try{recognition.stop();}catch(e){}}
+  resetMicBtn();
+}
+function resetMicBtn(){
+  var btn=document.getElementById('mic-btn');
+  btn.className='mic-btn';
+  btn.textContent=LANG==='ko'?'🎤 답변 시작':'🎤 Start Answer';
+}
+
+async function submitAnswer(text){
+  addMsg('user',text);
+  SESSION.answers.push({q:CONFIGS[LANG].questions[SESSION.qIdx].q,a:text});
+  SESSION.history.push({role:'user',content:text});
+  // AI 피드백
+  showTyping();
+  var isLast=SESSION.qIdx>=CONFIGS[LANG].questions.length-1;
+  try{
+    var nextQ=isLast?'':('\n\n다음 질문: '+CONFIGS[LANG].questions[SESSION.qIdx+1].q);
+    var sysPrompt=CONFIGS[LANG].sys;
+    if(LEVEL_RESULT){var _adj=getLevelAdjustment();sysPrompt+=(_adj[LANG]||_adj.ko);}
+    var msgs=SESSION.history.concat([]);
+    var res=await fetch('/api/ai',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:sysPrompt,messages:msgs})
+    });
+    var d=await res.json();
+    var reply=d.content?.[0]?.text||'감사합니다. 계속 진행하겠습니다.';
+    document.getElementById('typing-indicator')?.remove();
+    addMsg('ai',reply);
+    SESSION.history.push({role:'assistant',content:reply});
+  }catch(e){
+    document.getElementById('typing-indicator')?.remove();
+    addMsg('ai',LANG==='ko'?'잘 들었어요. 다음 질문으로 넘어갈게요.':'Thank you. Let\'s move to the next question.');
+  }
+  // 다음 질문
+  setTimeout(function(){
+    if(!isLast)showQuestion(SESSION.qIdx+1);
+  },1200);
+}
+
+function skipQuestion(){
+  var cfg=CONFIGS[LANG];
+  if(SESSION.qIdx<cfg.questions.length-1)showQuestion(SESSION.qIdx+1);
+  else endSession();
+}
+function replayQuestion(){
+  var q=CONFIGS[LANG].questions[SESSION.qIdx];
+  if(q)addMsg('ai',q.q);
+}
+
+async function endSession(){
+  if(SESSION.mediaStream)SESSION.mediaStream.getTracks().forEach(function(t){t.stop();});
+  showScreen('loading');
+  var msgs=['결과를 분석 중이에요...','답변 패턴을 파악하고 있어요...','피드백을 정리하고 있어요...'];
+  var mi=0;
+  var li=setInterval(function(){document.getElementById('loading-msg').textContent=msgs[mi++%msgs.length];},1400);
+  var answerSummary=SESSION.answers.map(function(a,i){return 'Q'+(i+1)+': '+a.q+'\nA: '+a.a;}).join('\n\n');
+  var prompt=LANG==='ko'
+    ?'승무원 지원자가 아래 면접 답변을 했습니다. 종합 평가를 JSON으로만 응답하세요(마크다운 없이).\n\n'+answerSummary+'\n\n{"score":숫자,"level":"Beginner/Elementary/Intermediate/Upper-Intermediate/Advanced","level_ko":"초급/초중급/중급/중상급/고급","score_breakdown":{"delivery":숫자,"content":숫자,"attitude":숫자,"language":숫자},"strengths":["강점1","강점2","강점3"],"improvements":["개선1","개선2","개선3"],"message":"따뜻한 응원 2문장"}'
+    :'A cabin crew candidate gave the following interview answers. Evaluate in JSON only (no markdown).\n\n'+answerSummary+'\n\n{"score":number,"level":"Beginner/Elementary/Intermediate/Upper-Intermediate/Advanced","level_ko":"Beginner/Elementary/Intermediate/Upper-Intermediate/Advanced","score_breakdown":{"delivery":number,"content":number,"attitude":number,"language":number},"strengths":["strength1","strength2","strength3"],"improvements":["improvement1","improvement2","improvement3"],"message":"Warm 2-sentence encouragement"}';
+  try{
+    var res=await fetch('/api/ai',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]})
+    });
+    var d=await res.json();
+    var txt=d.content?.[0]?.text||'';
+    var r=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    clearInterval(li);renderResult(r);
+  }catch(e){
+    clearInterval(li);
+    renderResult({score:70,level:'Intermediate',level_ko:'중급',score_breakdown:{delivery:17,content:18,attitude:19,language:16},strengths:LANG==='ko'?['자신감 있는 태도','명확한 지원 동기','적극적인 답변 자세']:['Confident attitude','Clear motivation','Active participation'],improvements:LANG==='ko'?['구체적인 경험 예시 추가','영어 표현 다양화','답변 간결화 연습']:['Add specific examples','Diversify expressions','Practice concise answers'],message:LANG==='ko'?'오늘 연습을 통해 한 발짝 더 성장했어요! 꾸준히 연습하면 반드시 합격할 수 있어요.':'Great effort today! Keep practicing and your dream will become reality.'});
+  }
+}
+
+function renderResult(r){
+  document.getElementById('r-score').textContent=r.score;
+  document.getElementById('r-level').textContent=r.level_ko+' · '+r.level;
+  if(r.message){
+    document.getElementById('r-coach-msg').innerHTML='<span class="coach-banner-ico">✈️</span><div><div class="coach-banner-title">Coach Message</div><div class="coach-banner-sub">'+r.message+'</div></div>';
+  }
+  // 세부 점수
+  if(r.score_breakdown){
+    var sb=r.score_breakdown;
+    var labels=LANG==='ko'?{delivery:'전달력',content:'내용',attitude:'태도',language:'언어'}:{delivery:'Delivery',content:'Content',attitude:'Attitude',language:'Language'};
+    var html='<div class="res-card-title">📊 '+(LANG==='ko'?'세부 점수':'Score Breakdown')+'</div>';
+    Object.keys(sb).forEach(function(k){
+      var pct=Math.round((sb[k]/25)*100);
+      html+='<div class="score-bar-row"><div class="score-bar-label"><span>'+(labels[k]||k)+'</span><span>'+sb[k]+'/25</span></div><div class="score-bar-bg"><div class="score-bar-fill" style="width:'+pct+'%"></div></div></div>';
+    });
+    document.getElementById('r-breakdown').innerHTML=html;
+  }
+  document.getElementById('r-strengths').innerHTML=r.strengths.map(function(s){return '<div class="res-item"><div class="res-dot"></div><div class="res-text">'+s+'</div></div>';}).join('');
+  document.getElementById('r-improvements').innerHTML=r.improvements.map(function(s){return '<div class="res-item"><div class="res-dot" style="opacity:0.4;"></div><div class="res-text">'+s+'</div></div>';}).join('');
+  showScreen('result');
+}
+</script>
+</body>
+</html>

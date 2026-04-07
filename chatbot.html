@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WonderfulCrew 승무원 면접 전용 코치</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#FAF7F0;font-family:'Noto Sans KR','Inter','Apple SD Gothic Neo',sans-serif;color:#1A2340;}
+@keyframes wcp{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes wcf{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes wcd{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(197,165,90,0.4)}70%{box-shadow:0 0 0 12px rgba(197,165,90,0)}}
+
+#wc-wrap{
+  font-family:'Noto Sans KR','Inter',sans-serif;
+  background:#FAF7F0;color:#1A2340;
+  height:85vh;max-width:860px;
+  margin:0 auto;border-radius:20px;
+  overflow:hidden;display:flex;flex-direction:column;
+  border:1px solid rgba(197,165,90,0.25);
+  position:relative;
+}
+#wc-topics::-webkit-scrollbar{display:none}
+#wc-topics::after{content:"";min-width:24px;height:1px;flex-shrink:0;display:block;}
+#wc-chat::-webkit-scrollbar{width:4px}
+#wc-chat::-webkit-scrollbar-thumb{background:rgba(197,165,90,0.3);border-radius:4px}
+#wc-input::placeholder{color:#8A7E6E;}
+
+.wc-dots-row{display:flex;gap:5px;align-items:center;}
+.wc-dot{width:8px;height:8px;border-radius:50%;background:rgba(197,165,90,0.25);transition:background 0.35s,transform 0.2s;}
+.wc-dot.used{background:#C5A55A;transform:scale(1.15);}
+.wc-dot.bonus{background:rgba(197,165,90,0.25);}
+.wc-dot.bonus.used{background:#C5A55A;transform:scale(1.15);}
+.wc-counter-label{font-size:0.71rem;color:#8A7E6E;white-space:nowrap;margin-left:4px;}
+.wc-counter-label.warn{color:#f87171;font-weight:700;}
+
+.wc-overlay{
+  display:none;position:absolute;inset:0;
+  background:rgba(240,234,216,0.97);
+  z-index:100;align-items:center;justify-content:center;
+  animation:fadeIn 0.3s ease;padding:20px;overflow-y:auto;
+}
+.wc-overlay.show{display:flex;}
+
+.wc-card{
+  background:#fff;border-radius:20px;padding:28px 24px;
+  width:100%;max-width:460px;animation:slideUp 0.4s ease;margin:auto;
+}
+.wc-card.form{border:1px solid rgba(197,165,90,0.3);max-height:86vh;overflow-y:auto;}
+.wc-card.form::-webkit-scrollbar{width:3px;}
+.wc-card.form::-webkit-scrollbar-thumb{background:rgba(197,165,90,0.3);border-radius:3px;}
+.wc-card.membership{border:1px solid rgba(197,165,90,0.4);max-width:480px;max-height:90vh;overflow-y:auto;}
+.wc-card.membership::-webkit-scrollbar{width:3px;}
+.wc-card.membership::-webkit-scrollbar-thumb{background:rgba(197,165,90,0.3);border-radius:3px;}
+
+.wc-form-icon{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#C5A55A,#D4B96E);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:700;color:#fff;margin:0 auto 14px;}
+.wc-form-title{font-size:1rem;font-weight:600;text-align:center;margin-bottom:6px;color:#1A2340;}
+.wc-form-sub{font-size:0.78rem;color:#8A7E6E;text-align:center;line-height:1.65;margin-bottom:22px;}
+.wc-form-sub b{color:#C5A55A;}
+.wc-field{margin-bottom:13px;}
+.wc-label{display:block;font-size:0.75rem;color:#8A7E6E;font-weight:600;margin-bottom:5px;}
+.wc-label em{color:#f87171;font-style:normal;}
+.wc-input{width:100%;background:#FAF7F0;border:1px solid rgba(197,165,90,0.3);border-radius:10px;padding:9px 13px;color:#1A2340;font-size:0.87rem;font-family:inherit;outline:none;transition:border-color 0.2s;}
+.wc-input::placeholder{color:#8A7E6E;}
+.wc-input:focus{border-color:rgba(197,165,90,0.7);}
+.wc-radio-group{display:flex;flex-direction:column;gap:7px;}
+.wc-radio-label{display:flex;align-items:center;gap:10px;padding:9px 13px;background:#FAF7F0;border:1px solid rgba(197,165,90,0.25);border-radius:10px;cursor:pointer;font-size:0.84rem;color:#8A7E6E;transition:border-color 0.2s,background 0.2s;}
+.wc-radio-label:hover{border-color:rgba(197,165,90,0.5);background:rgba(197,165,90,0.1);}
+.wc-radio-label input[type=radio]{accent-color:#C5A55A;flex-shrink:0;}
+
+.wc-btn-primary{width:100%;padding:13px;border-radius:12px;background:linear-gradient(135deg,#C5A55A,#D4B96E);border:none;color:#FAF7F0;font-size:0.93rem;font-weight:700;cursor:pointer;margin-top:6px;transition:opacity 0.2s,transform 0.1s;font-family:inherit;display:block;text-decoration:none;text-align:center;letter-spacing:0.03em;}
+.wc-btn-primary:hover{opacity:0.92;transform:translateY(-1px);}
+.wc-btn-outline{width:100%;padding:12px;border-radius:12px;background:transparent;border:1px solid rgba(197,165,90,0.5);color:#C5A55A;font-size:0.88rem;font-weight:600;cursor:pointer;margin-top:10px;transition:background 0.2s,transform 0.1s;font-family:inherit;display:block;text-decoration:none;text-align:center;letter-spacing:0.03em;}
+.wc-btn-outline:hover{background:rgba(197,165,90,0.15);transform:translateY(-1px);}
+.wc-btn-kakao{width:100%;padding:14px;border-radius:12px;background:#FEE500;border:none;color:#1a1a1a;font-size:0.95rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;transition:opacity 0.2s,transform 0.1s;text-decoration:none;font-family:inherit;}
+.wc-btn-kakao:hover{opacity:0.92;transform:translateY(-1px);}
+
+.wc-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(197,165,90,0.15);border:1px solid rgba(197,165,90,0.4);border-radius:20px;padding:5px 14px;font-size:0.73rem;color:#C5A55A;font-weight:600;margin-bottom:16px;letter-spacing:0.05em;}
+.wc-m-icon{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#C5A55A,#D4B96E);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:2.1rem;font-weight:700;color:#fff;margin:0 auto 16px;animation:pulse 2.5s infinite;}
+.wc-m-title{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;margin-bottom:10px;line-height:1.5;color:#1A2340;}
+.wc-m-title span{color:#C5A55A;}
+.wc-m-desc{font-size:0.81rem;color:#8A7E6E;margin-bottom:20px;line-height:1.8;}
+
+.wc-unlimited-badge{background:rgba(197,165,90,0.1);border:1px solid rgba(197,165,90,0.25);border-radius:12px;padding:12px 16px;margin-bottom:18px;display:flex;align-items:flex-start;gap:10px;}
+.wc-unlimited-badge .ico{font-size:1.2rem;flex-shrink:0;margin-top:2px;color:#C5A55A;}
+.wc-unlimited-badge .txt{font-size:0.81rem;color:#C5A55A;line-height:1.65;}
+.wc-unlimited-badge .txt strong{color:#1A2340;display:block;font-size:0.87rem;margin-bottom:3px;font-weight:600;}
+
+.wc-benefits{background:#FAF7F0;border:1px solid rgba(197,165,90,0.2);border-radius:14px;padding:16px 18px;margin-bottom:18px;text-align:left;}
+.wc-br{display:flex;align-items:flex-start;gap:10px;padding:7px 0;line-height:1.5;}
+.wc-br+.wc-br{border-top:1px solid rgba(197,165,90,0.15);}
+.wc-br-icon{font-size:0.9rem;flex-shrink:0;margin-top:3px;color:#C5A55A;}
+.wc-br-main{font-size:0.85rem;color:#1A2340;font-weight:600;}
+.wc-br-sub{font-size:0.75rem;color:#8A7E6E;margin-top:2px;}
+
+.wc-price-box{background:rgba(197,165,90,0.1);border:1px solid rgba(197,165,90,0.25);border-radius:12px;padding:14px 16px;margin-bottom:18px;text-align:center;}
+.wc-price-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:#1A2340;line-height:1;}
+.wc-price-num span{font-size:0.85rem;color:#8A7E6E;font-weight:400;margin-left:4px;font-family:'Noto Sans KR',sans-serif;}
+.wc-price-desc{font-size:0.75rem;color:#C5A55A;margin-top:6px;font-weight:500;letter-spacing:0.03em;}
+
+.wc-coach-strip{display:flex;align-items:center;gap:10px;background:#FAF7F0;border-radius:12px;padding:11px 14px;margin-top:14px;border:1px solid rgba(197,165,90,0.2);}
+.wc-coach-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#C5A55A,#D4B96E);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:#fff;flex-shrink:0;}
+.wc-coach-name{font-size:0.82rem;font-weight:600;color:#1A2340;}
+.wc-coach-sub{font-size:0.71rem;color:#8A7E6E;margin-top:2px;line-height:1.5;}
+</style>
+</head>
+<body>
+<div id="wc-wrap">
+
+  <!-- 헤더 -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:rgba(250,247,240,0.97);border-bottom:1px solid rgba(197,165,90,0.25);flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C5A55A,#D4B96E);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#fff;">W</div>
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:#1A2340;letter-spacing:0.02em;">Wonderful<span style="color:#C5A55A;">Crew</span><span style="font-family:'Noto Sans KR',sans-serif;font-size:0.85rem;font-weight:400;color:#1A2340;margin-left:8px;">승무원 면접 전용 코치</span></div>
+        <div style="font-size:0.72rem;color:#8A7E6E;margin-top:2px;">승무원 지망생 전용 1:1 코칭</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div class="wc-dots-row" id="wc-dots"></div>
+        <span class="wc-counter-label" id="wc-label">무료 2회</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:0.8rem;color:#8A7E6E;">
+        <div style="width:8px;height:8px;border-radius:50%;background:#22c55e;animation:wcp 2s infinite;"></div>온라인
+      </div>
+    </div>
+  </div>
+
+  <!-- 토픽 바 -->
+  <div id="wc-topics" style="display:flex;gap:8px;padding:12px 20px 12px 20px;overflow-x:auto;border-bottom:1px solid rgba(197,165,90,0.25);flex-shrink:0;scrollbar-width:none;-webkit-overflow-scrolling:touch;-ms-overflow-style:none;"></div>
+
+  <!-- 채팅 -->
+  <div id="wc-chat" style="flex:1;overflow-y:auto;padding:24px 20px;display:flex;flex-direction:column;gap:16px;">
+    <div style="text-align:center;padding:20px 0 8px;">
+      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#C5A55A,#D4B96E);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:700;color:#fff;">W</div>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:700;margin-bottom:8px;color:#C5A55A;letter-spacing:0.02em;">Welcome to WonderfulCrew</h2>
+      <p style="color:#8A7E6E;font-size:0.85rem;line-height:1.7;">자기소개서, 면접, 디스커션, 기내 상황 대처까지 도와드려요.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px;" id="wc-qs"></div>
+    </div>
+  </div>
+
+  <!-- 입력창 -->
+  <div style="padding:16px 20px;border-top:1px solid rgba(197,165,90,0.25);background:rgba(250,247,240,0.97);flex-shrink:0;">
+    <div style="display:flex;gap:10px;align-items:flex-end;background:#fff;border:1px solid #C5A55A;border-radius:14px;padding:10px 14px;">
+      <textarea id="wc-input" rows="1" placeholder="궁금한 것을 무엇이든 물어보세요..." style="flex:1;background:none;border:none;outline:none;color:#1A2340;font-size:0.92rem;resize:none;max-height:120px;line-height:1.5;font-family:inherit;"></textarea>
+      <button id="wc-send" style="width:36px;height:36px;border-radius:10px;background:#C5A55A;border:none;color:#1A2340;cursor:pointer;flex-shrink:0;font-size:1.1rem;">➤</button>
+    </div>
+    <div style="font-size:0.72rem;color:#8A7E6E;margin-top:8px;text-align:center;letter-spacing:0.03em;" id="wc-bottom-label">WonderfulCrew · 승무원 면접 전용 코치</div>
+  </div>
+
+  <!-- ① 정보 입력 폼 (2회 후) -->
+  <div class="wc-overlay" id="wc-form-overlay">
+    <div class="wc-card form">
+      <div class="wc-form-icon">W</div>
+      <div class="wc-form-title">무료 2회를 모두 사용하셨어요</div>
+      <div class="wc-form-sub">간단한 정보를 입력하시면 <b>3회를 추가로 무료</b>로 드려요.</div>
+      <div class="wc-field"><label class="wc-label">이름 <em>*</em></label><input class="wc-input" id="f-name" type="text" placeholder="홍길동"></div>
+      <div class="wc-field"><label class="wc-label">전화번호 <em>*</em></label><input class="wc-input" id="f-phone" type="tel" placeholder="010-0000-0000"></div>
+      <div class="wc-field"><label class="wc-label">이메일 <em>*</em></label><input class="wc-input" id="f-email" type="email" placeholder="example@email.com"></div>
+      <div class="wc-field">
+        <label class="wc-label">승무원 교육 경험</label>
+        <div class="wc-radio-group">
+          <label class="wc-radio-label"><input type="radio" name="edu" value="없음"> <span>없음 — 처음 준비해요</span></label>
+          <label class="wc-radio-label"><input type="radio" name="edu" value="독학"> <span>독학으로 준비 중이에요</span></label>
+          <label class="wc-radio-label"><input type="radio" name="edu" value="학원"> <span>학원 수강 경험 있어요</span></label>
+          <label class="wc-radio-label"><input type="radio" name="edu" value="코칭"> <span>1:1 코칭 받은 적 있어요</span></label>
+        </div>
+      </div>
+      <div class="wc-field">
+        <label class="wc-label">승무원 지원 경험</label>
+        <div class="wc-radio-group">
+          <label class="wc-radio-label"><input type="radio" name="apply" value="없음"> <span>아직 지원한 적 없어요</span></label>
+          <label class="wc-radio-label"><input type="radio" name="apply" value="서류탈락"> <span>지원했지만 서류에서 탈락했어요</span></label>
+          <label class="wc-radio-label"><input type="radio" name="apply" value="면접탈락"> <span>면접까지 갔다가 탈락했어요</span></label>
+          <label class="wc-radio-label"><input type="radio" name="apply" value="재도전"> <span>합격 후 재도전 중이에요</span></label>
+        </div>
+      </div>
+      <div class="wc-field">
+        <label class="wc-label">영어 수준</label>
+        <div class="wc-radio-group">
+          <label class="wc-radio-label"><input type="radio" name="eng" value="기초"> <span>기초 — 간단한 인사 정도예요</span></label>
+          <label class="wc-radio-label"><input type="radio" name="eng" value="일상회화"> <span>일상회화 — 불편하지 않게 대화해요</span></label>
+          <label class="wc-radio-label"><input type="radio" name="eng" value="비즈니스"> <span>비즈니스 — 면접도 자신 있어요</span></label>
+          <label class="wc-radio-label"><input type="radio" name="eng" value="원어민급"> <span>원어민급</span></label>
+        </div>
+      </div>
+      <button class="wc-btn-primary" id="wc-form-submit">3회 추가로 받기 →</button>
+    </div>
+  </div>
+
+  <!-- ② 멤버십 유도 팝업 (5회 소진 후) -->
+  <div class="wc-overlay" id="wc-membership-overlay">
+    <div class="wc-card membership">
+      <div style="text-align:center;">
+        <div class="wc-badge">FREE TRIAL COMPLETE · TOTAL 5</div>
+        <div class="wc-m-icon">W</div>
+        <div class="wc-m-title">5회 체험이 끝났어요.<br><span>이제 본격적으로 시작할 시간이에요.</span></div>
+        <div class="wc-m-desc">
+          AI 코치와 대화하면서 뭔가 느끼셨죠?<br>
+          근데 솔직히 말씀드릴게요.<br>
+          <strong style="color:#1A2340;">합격은 연습량이 아니라 방향이 결정해요.</strong><br><br>
+          실제 면접관이 보는 것, 디스커션에서 탈락하는 이유,<br>
+          에미레이트가 진짜 원하는 답변 — 이건 현장에서 나와요.<br><br>
+          <strong style="color:#C5A55A;">원더풀크루 본수업</strong>에서 그 모든 걸 드립니다.
+        </div>
+      </div>
+
+      <div class="wc-unlimited-badge">
+        <span class="ico">◆</span>
+        <div class="txt">
+          <strong>멤버십 등록 시 이 챗봇 무제한 이용</strong>
+          지금처럼 언제든 질문하고, 면접 답변 연습하고, 자소서 첨삭받으세요. 횟수 제한 없이.
+        </div>
+      </div>
+
+      <div class="wc-benefits">
+        <div class="wc-br"><span class="wc-br-icon">◆</span><div><div class="wc-br-main">모든 강의 영상 무제한 열람</div><div class="wc-br-sub">자소서·면접·디스커션·영어·기내상황 전 과정</div></div></div>
+        <div class="wc-br"><span class="wc-br-icon">◆</span><div><div class="wc-br-main">합격생 합격노트 전체 제공</div><div class="wc-br-sub">실제 합격자들의 답변과 전략 그대로</div></div></div>
+        <div class="wc-br"><span class="wc-br-icon">◆</span><div><div class="wc-br-main">오프라인 &amp; 줌 수업 무제한 참여</div><div class="wc-br-sub">합격할 때까지 횟수 제한 없이 계속 오세요</div></div></div>
+        <div class="wc-br"><span class="wc-br-icon">◆</span><div><div class="wc-br-main">카톡 피드백 무제한</div><div class="wc-br-sub">자소서 첨삭·면접 답변 검토 언제든지</div></div></div>
+        <div class="wc-br"><span class="wc-br-icon">◆</span><div><div class="wc-br-main">AI 면접 코치 챗봇 무제한</div><div class="wc-br-sub">24시간 언제든 이 챗봇 무제한 이용</div></div></div>
+        <div class="wc-br"><span class="wc-br-icon">◆</span><div><div class="wc-br-main">붙을 때까지 함께합니다</div><div class="wc-br-sub">기간 제한 없음 — 합격이 목표</div></div></div>
+      </div>
+
+      <div class="wc-price-box">
+        <div class="wc-price-num">1,800,000 <span>원 일시불</span></div>
+        <div class="wc-price-desc">합격할 때까지 — 기간 제한 없음</div>
+      </div>
+
+      <a href="https://blog.naver.com/olive2269/224174465110" target="_blank" class="wc-btn-outline">전체 커리큘럼 보기 →</a>
+      <a href="https://open.kakao.com/o/szoco22" target="_blank" class="wc-btn-kakao"><span style="font-size:1.1rem;">💬</span> 카카오톡으로 등록 문의하기 · zoco22</a>
+
+      <div class="wc-coach-strip">
+        <div class="wc-coach-av">W</div>
+        <div>
+          <div class="wc-coach-name">원더풀크루 대표 코치</div>
+          <div class="wc-coach-sub">에미레이트 7년 차 일등석 승무원 출신<br>13년간 22개국 1,000명 이상 글로벌 합격</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+const TOPICS=[['📝 자기소개서','자기소개서 작성 도와줘'],['📋 면접 Q&A','면접 예상 질문 알려줘'],['💬 1차 디스커션','1차 디스커션 준비 방법'],['💬 2차 디스커션','2차 디스커션 답변 예시'],['🛫 기내 상황','기내 서비스 상황 대처법'],['🌐 영어 코칭','영어 면접 표현 코칭']];
+const QS=[['✈️ 대한항공 자소서','대한항공 자기소개서 작성 도와줘'],['💡 디스커션 주의점','2차 디스커션에서 주의할 점'],['🛎️ 서비스 영어','기내 서비스 영어 표현 알려줘'],['🎯 항공사 스펙','항공사별 스펙 정보 알려줘'],['📈 파이널 면접','파이널 면접 준비 방법 알려줘']];
+const SYS=`당신은 "Wonderful Crew 승무원 면접 전용 코치"입니다. Wonderful Crew는 글로벌 항공·서비스직 역량 강화 전문 교육 기관입니다. 대표 강사는 에미레이트 항공 7년 경력의 현직 출신 전문가로, 13년간 1,000명 이상을 글로벌 항공사에 합격시켰습니다.\n\n담당 영역:\n1. 자기소개서 / 영문 커버레터 작성\n2. 1차 면접 예상 Q&A 및 모범 답변\n3. 1차 디스커션 — 진행 방식, 주의사항, 답변 예시\n4. 2차 디스커션 — 심화 주제, 리더/서포터 전략\n5. 파이널 면접 준비\n6. 기내 서비스 상황 대처 (밀 서비스, 컴플레인, 언어 장벽 등)\n7. 영어 표현 코칭 및 레벨 테스트\n8. 항공사별 스펙 정보\n9. 지원자 성향에 맞는 항공사 추천\n\n답변 원칙:\n- 친절하고 따뜻하게, 선배가 후배를 코칭하는 느낌으로\n- 구체적이고 실용적인 예시 스크립트 포함\n- 한국어 질문은 한국어로, 영어 질문은 영어로 답변\n- 승무원 채용 외 질문은 정중히 본 주제로 유도`;
+
+const KEY='wc_v3';
+function loadSt(){try{const s=localStorage.getItem(KEY);if(s)return JSON.parse(s);}catch(e){}return{used:0,formDone:false,unlimited:false};}
+function saveSt(){localStorage.setItem(KEY,JSON.stringify(st));}
+let st=loadSt(),loading=false,history=[];
+
+const chat=document.getElementById('wc-chat');
+const inp=document.getElementById('wc-input');
+const btn=document.getElementById('wc-send');
+const dotsEl=document.getElementById('wc-dots');
+const labelEl=document.getElementById('wc-label');
+const bottomLabel=document.getElementById('wc-bottom-label');
+
+function renderDots(){
+  dotsEl.innerHTML='';
+  for(let i=0;i<2;i++){const d=document.createElement('div');d.className='wc-dot'+(i<st.used&&!st.unlimited?' used':'');dotsEl.appendChild(d);}
+  if(st.formDone){
+    const sep=document.createElement('div');sep.style.cssText='width:1px;height:10px;background:rgba(197,165,90,0.3);margin:0 3px;';dotsEl.appendChild(sep);
+    for(let i=0;i<3;i++){const d=document.createElement('div');const b=Math.max(0,st.used-2);d.className='wc-dot bonus'+(i<b&&!st.unlimited?' used':'');dotsEl.appendChild(d);}
+  }
+  if(st.unlimited){labelEl.textContent='멤버십 · 무제한';labelEl.className='wc-counter-label';labelEl.style.color='#C5A55A';}
+  else{
+    const max=st.formDone?5:2;
+    const rem=Math.max(0,max-st.used);
+    if(rem===0){labelEl.textContent='체험 완료';labelEl.className='wc-counter-label warn';}
+    else if(rem===1){labelEl.textContent='마지막 1회';labelEl.className='wc-counter-label warn';}
+    else{labelEl.textContent=`${rem}회 남음`;labelEl.className='wc-counter-label';}
+  }
+}
+
+const tb=document.getElementById('wc-topics');
+TOPICS.forEach(([l,q])=>{const b=document.createElement('button');b.textContent=l;b.style.cssText='white-space:nowrap;padding:7px 16px;border-radius:20px;border:1px solid rgba(197,165,90,0.5);background:transparent;color:#C5A55A;font-size:0.78rem;cursor:pointer;flex-shrink:0;font-family:inherit;width:130px;text-align:center;letter-spacing:0.03em;transition:all 0.2s;';b.onmouseover=()=>{b.style.background='#C5A55A';b.style.color='#FAF7F0';};b.onmouseout=()=>{b.style.background='transparent';b.style.color='#C5A55A';};b.onclick=()=>send(q);tb.appendChild(b);});
+// 마지막 항목 짤림 방지 스페이서
+var spacer=document.createElement('div');spacer.style.cssText='min-width:20px;flex-shrink:0;';tb.appendChild(spacer);
+const qs=document.getElementById('wc-qs');
+QS.forEach(([l,q])=>{const b=document.createElement('button');b.textContent=l;b.style.cssText='padding:8px 18px;border-radius:20px;border:1px solid rgba(197,165,90,0.5);background:transparent;color:#C5A55A;font-size:0.8rem;cursor:pointer;font-family:inherit;letter-spacing:0.03em;transition:all 0.2s;';b.onmouseover=()=>{b.style.background='#C5A55A';b.style.color='#FAF7F0';};b.onmouseout=()=>{b.style.background='transparent';b.style.color='#C5A55A';};b.onclick=()=>send(q);qs.appendChild(b);});
+
+inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
+inp.addEventListener('input',()=>{inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,120)+'px';});
+btn.onclick=()=>send();
+
+document.getElementById('wc-form-submit').onclick=()=>{
+  const name=document.getElementById('f-name').value.trim();
+  const phone=document.getElementById('f-phone').value.trim();
+  const email=document.getElementById('f-email').value.trim();
+  if(!name||!phone||!email){alert('이름, 전화번호, 이메일은 필수예요.');return;}
+  console.log('[WC LEAD]',JSON.stringify({name,phone,email,edu:document.querySelector('input[name=edu]:checked')?.value||'',apply:document.querySelector('input[name=apply]:checked')?.value||'',eng:document.querySelector('input[name=eng]:checked')?.value||'',at:new Date().toISOString()}));
+  st.formDone=true;saveSt();
+  document.getElementById('wc-form-overlay').classList.remove('show');
+  renderDots();
+  addMsg('ai','정보를 입력해주셔서 감사해요.<br>3회가 추가되었어요. 합격까지 함께 열심히 준비해봐요.');
+};
+
+function addMsg(role,text){
+  const d=document.createElement('div');d.style.cssText='display:flex;gap:10px;animation:wcf 0.3s ease;';if(role==='user')d.style.flexDirection='row-reverse';
+  const av=document.createElement('div');av.style.cssText='width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;';
+  if(role==='ai'){av.style.background='linear-gradient(135deg,#C5A55A,#D4B96E)';av.style.fontFamily="'Cormorant Garamond',serif";av.style.fontSize='1.15rem';av.style.fontWeight='700';av.style.color='#fff';av.textContent='W';}
+  else{av.style.background='#1e3a5f';av.style.fontSize='0.7rem';av.style.color='#fff';av.textContent='You';av.style.fontWeight='600';av.style.letterSpacing='0.05em';}
+  const bub=document.createElement('div');bub.style.cssText='max-width:75%;padding:13px 16px;border-radius:14px;font-size:0.9rem;line-height:1.7;color:#1A2340;';
+  if(role==='ai'){bub.style.background='#fff';bub.style.border='1px solid rgba(197,165,90,0.2)';bub.style.borderTopLeftRadius='4px';}
+  else{bub.style.background='#F5E9C8';bub.style.border='1px solid rgba(197,165,90,0.3)';bub.style.borderTopRightRadius='4px';}
+  bub.innerHTML=text;d.appendChild(av);d.appendChild(bub);chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+}
+
+function showTyping(){
+  const d=document.createElement('div');d.id='wc-typing';d.style.cssText='display:flex;gap:10px;';
+  d.innerHTML=`<div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#C5A55A,#D4B96E);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:#fff;">W</div><div style="background:#fff;border:1px solid rgba(197,165,90,0.2);border-radius:14px;border-top-left-radius:4px;padding:13px 16px;display:flex;gap:4px;align-items:center;"><span style="width:7px;height:7px;border-radius:50%;background:#8A7E6E;animation:wcd 1.2s infinite;display:inline-block;"></span><span style="width:7px;height:7px;border-radius:50%;background:#8A7E6E;animation:wcd 1.2s 0.2s infinite;display:inline-block;"></span><span style="width:7px;height:7px;border-radius:50%;background:#8A7E6E;animation:wcd 1.2s 0.4s infinite;display:inline-block;"></span></div>`;
+  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+}
+
+function fmt(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong style="color:#C5A55A;">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');}
+
+async function send(text){
+  const msg=text||inp.value.trim();
+  if(!msg||loading)return;
+  if(!text){inp.value='';inp.style.height='auto';}
+  if(!st.unlimited){
+    if(!st.formDone&&st.used>=2){document.getElementById('wc-form-overlay').classList.add('show');return;}
+    if(st.formDone&&st.used>=5){document.getElementById('wc-membership-overlay').classList.add('show');return;}
+  }
+  loading=true;btn.disabled=true;
+  addMsg('user',msg);history.push({role:'user',content:msg});showTyping();
+  try{
+    const res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:history})});
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'죄송해요, 다시 시도해 주세요.';
+    history.push({role:'assistant',content:reply});
+    document.getElementById('wc-typing')?.remove();
+    addMsg('ai',fmt(reply));
+    st.used++;saveSt();renderDots();
+    const max=st.formDone?5:2;
+    const rem=max-st.used;
+    if(!st.unlimited&&rem===1){bottomLabel.textContent='무료 이용 마지막 1회예요';bottomLabel.style.color='#f87171';}
+    else{bottomLabel.textContent='WonderfulCrew · 승무원 면접 전용 코치';bottomLabel.style.color='#8A7E6E';}
+  }catch(e){document.getElementById('wc-typing')?.remove();addMsg('ai','연결에 문제가 생겼어요. 잠시 후 다시 시도해 주세요.');}
+  loading=false;btn.disabled=false;
+}
+
+// 멤버십 등록 확인 후 무제한 해제
+// 브라우저 콘솔에서: wcUnlock()
+window.wcUnlock=function(){st.unlimited=true;saveSt();document.getElementById('wc-membership-overlay').classList.remove('show');renderDots();addMsg('ai','멤버십 등록이 확인되었어요.<br><strong style="color:#C5A55A;">이제 챗봇을 무제한으로 이용하실 수 있어요.</strong><br>합격할 때까지 함께해요.');};
+
+renderDots();
+})();
+</script>
+</body>
+</html>

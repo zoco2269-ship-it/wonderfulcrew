@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WonderfulCrew — 커리큘럼</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--cream-dark:#F0EAD8;--navy:#1A2340;--navy-light:#2A3455;--text-dark:#1A1A1A;--text-mid:#3A3430;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"Noto Sans KR",sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:68px;background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"Cormorant Garamond",serif;font-size:1.45rem;font-weight:600;color:var(--navy);text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.82rem;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--gold);}
+#app{padding-top:68px;}
+.wrap{max-width:880px;margin:0 auto;padding:60px 24px;}
+.section{animation:fadeUp 0.5s ease;}
+.section+.section{margin-top:80px;padding-top:60px;border-top:1px solid var(--gold-pale);}
+.eyebrow{font-family:"Cormorant Garamond",serif;font-size:0.78rem;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;font-weight:600;}
+.title{font-family:"Noto Serif KR",serif;font-size:clamp(1.7rem,3vw,2.4rem);font-weight:400;color:var(--navy);line-height:1.35;margin-bottom:10px;}
+.title em{font-style:normal;color:var(--gold);}
+.sub{font-size:0.92rem;color:var(--text-muted);line-height:1.75;margin-bottom:8px;}
+.gold-bar{width:36px;height:2px;background:var(--gold);margin:18px 0 36px;}
+.level-banner{display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:#fff;padding:8px 18px;font-size:0.78rem;letter-spacing:0.1em;margin-bottom:24px;}
+.level-banner b{color:var(--gold-light);font-weight:700;}
+
+/* 항공사 카드 */
+.airline-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+.airline-card{background:#fff;border:1.5px solid rgba(201,168,76,0.25);padding:22px 20px;cursor:pointer;transition:all 0.2s;position:relative;text-align:left;font-family:inherit;}
+.airline-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,0.12);}
+.airline-card.recommended{border-color:var(--gold);background:linear-gradient(180deg,#fff 0%,rgba(201,168,76,0.05) 100%);}
+.airline-card.selected{border-color:var(--gold);background:var(--gold);color:#fff;}
+.airline-card.selected .airline-name-en,.airline-card.selected .airline-name-ko{color:#fff;}
+.airline-card.selected .airline-tier{background:#fff;color:var(--gold);}
+.airline-tier{position:absolute;top:10px;right:10px;background:var(--gold);color:#fff;font-size:0.62rem;font-weight:800;padding:3px 9px;letter-spacing:0.12em;}
+.airline-name-en{font-family:"Cormorant Garamond",serif;font-size:1.15rem;font-weight:600;color:var(--navy);margin-bottom:4px;line-height:1.2;}
+.airline-name-ko{font-size:0.84rem;color:var(--text-mid);font-weight:500;}
+.airline-region{font-size:0.7rem;color:var(--text-muted);margin-top:8px;letter-spacing:0.05em;text-transform:uppercase;}
+.airline-card.selected .airline-region{color:rgba(255,255,255,0.85);}
+
+/* 단계 카드 */
+.step-grid{display:flex;flex-direction:column;gap:14px;margin-top:8px;}
+.step-card{display:flex;align-items:center;gap:18px;background:#fff;border:1.5px solid rgba(201,168,76,0.2);padding:22px 24px;transition:all 0.2s;position:relative;text-decoration:none;color:inherit;font-family:inherit;text-align:left;cursor:default;}
+.step-card.active{cursor:pointer;border-color:var(--gold);background:linear-gradient(90deg,#fff 0%,rgba(201,168,76,0.06) 100%);}
+.step-card.active:hover{transform:translateX(4px);box-shadow:0 8px 24px rgba(201,168,76,0.15);}
+.step-card.disabled{opacity:0.55;}
+.step-num{font-family:"Cormorant Garamond",serif;font-size:2.2rem;font-weight:600;color:var(--gold);line-height:1;flex-shrink:0;width:48px;text-align:center;}
+.step-card.disabled .step-num{color:var(--text-muted);}
+.step-body{flex:1;}
+.step-title{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.step-desc{font-size:0.84rem;color:var(--text-muted);line-height:1.55;}
+.step-badge{font-size:0.68rem;font-weight:700;padding:5px 12px;letter-spacing:0.08em;flex-shrink:0;text-transform:uppercase;}
+.step-badge.ready{background:var(--gold);color:#fff;}
+.step-badge.soon{background:var(--gold-pale);color:var(--text-muted);}
+.step-arrow{font-size:1.3rem;color:var(--gold);flex-shrink:0;margin-left:6px;}
+.step-card.disabled .step-arrow{display:none;}
+
+#airline-empty{display:none;background:rgba(201,168,76,0.08);border-left:4px solid var(--gold);padding:18px 22px;margin-top:18px;font-size:0.86rem;color:var(--text-mid);line-height:1.7;}
+#section-curriculum{display:none;}
+
+@media(max-width:760px){
+  .airline-grid{grid-template-columns:repeat(2,1fr);}
+  .step-card{padding:18px 18px;gap:14px;}
+  .step-num{font-size:1.8rem;width:38px;}
+  .step-title{font-size:0.94rem;}
+  .step-desc{font-size:0.78rem;}
+}
+@media(max-width:480px){
+  .airline-grid{grid-template-columns:1fr;}
+  .wrap{padding:40px 18px;}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+</nav>
+<div id="app">
+<div class="wrap">
+
+  <!-- 섹션 1: 항공사 선택 -->
+  <div class="section" id="section-airline">
+    <div class="eyebrow">Step 1 — Choose Airline</div>
+    <h1 class="title">목표 항공사를<br><em>선택하세요</em></h1>
+    <div class="gold-bar"></div>
+    <div id="level-banner-wrap"></div>
+    <p class="sub">레벨 결과를 바탕으로 매칭률이 높은 항공사가 강조 표시되어 있어요.<br>지원하고 싶은 항공사를 선택하면 맞춤 커리큘럼이 시작됩니다.</p>
+    <div class="airline-grid" id="airline-grid"></div>
+    <div id="airline-empty">레벨테스트 결과가 없어요. <a href="leveltest.html" style="color:var(--gold);font-weight:700;">레벨테스트 먼저 받기 →</a></div>
+  </div>
+
+  <!-- 섹션 2: 커리큘럼 단계 -->
+  <div class="section" id="section-curriculum">
+    <div class="eyebrow">Step 2 — Your Curriculum</div>
+    <h1 class="title"><em id="cur-airline">선택한 항공사</em><br>맞춤 커리큘럼</h1>
+    <div class="gold-bar"></div>
+    <p class="sub">아래 6단계 커리큘럼으로 합격까지 함께합니다.<br>현재는 <b style="color:var(--gold);">⑤ 롤플레이 면접</b>이 활성화되어 있어요.</p>
+    <div class="step-grid" id="step-grid"></div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// ─── 데이터 ───
+var AIRLINES=[
+  {key:'emirates',en:'Emirates',ko:'에미레이트 항공',region:'UAE · Dubai'},
+  {key:'qatar',en:'Qatar Airways',ko:'카타르 항공',region:'Qatar · Doha'},
+  {key:'singapore',en:'Singapore Airlines',ko:'싱가포르 항공',region:'Singapore'},
+  {key:'etihad',en:'Etihad Airways',ko:'에티하드 항공',region:'UAE · Abu Dhabi'},
+  {key:'koreanair',en:'Korean Air',ko:'대한항공',region:'Korea'},
+  {key:'asiana',en:'Asiana Airlines',ko:'아시아나 항공',region:'Korea'}
+];
+
+var STEPS=[
+  {num:'①',title:'비디오 면접 준비',desc:'자기소개 영상 완성하기',active:false},
+  {num:'②',title:'1차 면접',desc:'기본 Q&A 완벽 준비',active:false},
+  {num:'③',title:'1차 디스커션',desc:'그룹 토론 전략',active:false},
+  {num:'④',title:'2차 디스커션',desc:'심화 토론 & 리더십',active:false},
+  {num:'⑤',title:'롤플레이 면접',desc:'실전 AI 면접 연습',active:true,href:'roleplay.html'},
+  {num:'⑥',title:'파이널 인터뷰',desc:'최종 면접 완성',active:false}
+];
+
+// ─── 레벨 결과 로드 ───
+var LEVEL=null;
+try{var _l=localStorage.getItem('wc_level_result');if(_l)LEVEL=JSON.parse(_l);}catch(e){}
+
+// ─── 추천 항공사 매핑 (레벨 결과의 airlines 이름 → key) ───
+function matchAirlineKey(name){
+  if(!name)return null;
+  var n=name.toLowerCase().replace(/\s/g,'');
+  if(n.indexOf('에미레이트')>=0||n.indexOf('emirates')>=0)return 'emirates';
+  if(n.indexOf('카타르')>=0||n.indexOf('qatar')>=0)return 'qatar';
+  if(n.indexOf('싱가포르')>=0||n.indexOf('singapore')>=0)return 'singapore';
+  if(n.indexOf('에티하드')>=0||n.indexOf('etihad')>=0)return 'etihad';
+  if(n.indexOf('대한항공')>=0||n.indexOf('korean')>=0)return 'koreanair';
+  if(n.indexOf('아시아나')>=0||n.indexOf('asiana')>=0)return 'asiana';
+  return null;
+}
+
+var recommendedKeys=[],topKey=null;
+if(LEVEL&&LEVEL.airlines){
+  LEVEL.airlines.forEach(function(a){
+    var k=matchAirlineKey(a.name);
+    if(k){
+      recommendedKeys.push(k);
+      if(a.top&&!topKey)topKey=k;
+    }
+  });
+}
+
+// ─── 레벨 배너 ───
+if(LEVEL){
+  document.getElementById('level-banner-wrap').innerHTML='<div class="level-banner">YOUR LEVEL · <b>'+(LEVEL.level_ko||'-')+' '+(LEVEL.level||'')+'</b> · '+(LEVEL.score||'-')+'/100</div>';
+}else{
+  document.getElementById('airline-empty').style.display='block';
+}
+
+// ─── 항공사 카드 렌더 ───
+var grid=document.getElementById('airline-grid');
+var savedAirline=null;
+try{savedAirline=localStorage.getItem('wc_airline');}catch(e){}
+
+AIRLINES.forEach(function(a){
+  var btn=document.createElement('button');
+  btn.className='airline-card';
+  btn.dataset.key=a.key;
+  if(topKey===a.key)btn.classList.add('recommended');
+  if(savedAirline===a.key)btn.classList.add('selected');
+  var tier='';
+  if(topKey===a.key)tier='<div class="airline-tier">BEST</div>';
+  else if(recommendedKeys.indexOf(a.key)>=0)tier='<div class="airline-tier" style="background:var(--navy);">추천</div>';
+  btn.innerHTML=tier+
+    '<div class="airline-name-en">'+a.en+'</div>'+
+    '<div class="airline-name-ko">'+a.ko+'</div>'+
+    '<div class="airline-region">'+a.region+'</div>';
+  btn.onclick=function(){selectAirline(a);};
+  grid.appendChild(btn);
+});
+
+// ─── 항공사 선택 ───
+function selectAirline(a){
+  try{localStorage.setItem('wc_airline',a.key);localStorage.setItem('wc_airline_name',a.ko);}catch(e){}
+  document.querySelectorAll('.airline-card').forEach(function(c){
+    c.classList.toggle('selected',c.dataset.key===a.key);
+  });
+  showCurriculum(a);
+  setTimeout(function(){
+    document.getElementById('section-curriculum').scrollIntoView({behavior:'smooth',block:'start'});
+  },120);
+}
+
+// ─── 커리큘럼 섹션 ───
+function showCurriculum(a){
+  document.getElementById('section-curriculum').style.display='block';
+  document.getElementById('cur-airline').textContent=a.ko;
+  var sg=document.getElementById('step-grid');
+  sg.innerHTML='';
+  STEPS.forEach(function(s){
+    var el=document.createElement(s.active?'a':'div');
+    el.className='step-card '+(s.active?'active':'disabled');
+    if(s.active)el.href=s.href;
+    el.innerHTML='<div class="step-num">'+s.num+'</div>'+
+      '<div class="step-body">'+
+        '<div class="step-title">'+s.title+'</div>'+
+        '<div class="step-desc">'+s.desc+'</div>'+
+      '</div>'+
+      '<div class="step-badge '+(s.active?'ready':'soon')+'">'+(s.active?'시작 가능':'준비 중')+'</div>'+
+      (s.active?'<div class="step-arrow">→</div>':'');
+    sg.appendChild(el);
+  });
+}
+
+// 이미 항공사 선택 이력이 있으면 자동으로 커리큘럼 노출
+if(savedAirline){
+  var found=AIRLINES.find(function(x){return x.key===savedAirline;});
+  if(found)showCurriculum(found);
+}
+</script>
+
+<!-- ─── 에미레이트 전용 커리큘럼 오버라이드 (기존 코드 비파괴) ─── -->
+<script>
+(function(){
+  var EMIRATES_RANDOM_Q=[
+    'Tell me about a time you went the extra mile for a customer.',
+    'What would you do if a passenger refused to wear a seatbelt?',
+    'Describe your ideal team member.',
+    'How would you handle a language barrier with a passenger?',
+    'What does excellent service mean to you?',
+    'Tell me about a moment you stayed calm under pressure.',
+    'What is your biggest strength as a future cabin crew?',
+    'How do you build rapport with passengers from different cultures?'
+  ];
+  function emiratesSteps(){
+    var randQ=EMIRATES_RANDOM_Q[Math.floor(Math.random()*EMIRATES_RANDOM_Q.length)];
+    return [
+      {num:'①',title:'비디오 면접',sub:'나를 1분으로 소개하세요',listHeader:'예상 질문',list:['간단한 자기소개를 해주세요','왜 승무원이 되고 싶나요?',randQ],linkToRoleplay:false},
+      {num:'②',title:'1차 발표',sub:'카메라 앞에서 발표하세요',listHeader:'답변 흐름',list:['자기소개 + Work Experience','What is your favourite destination and why?','If you could sit next to any celebrity, who would it be and why?'],linkToRoleplay:false},
+      {num:'③',title:'2차 디스커션',sub:'그룹 토론에서 리더십을 발휘하세요',linkToRoleplay:false},
+      {num:'④',title:'롤플레이',sub:'실전 AI 면접 연습',linkToRoleplay:true},
+      {num:'⑤',title:'파이널 인터뷰',sub:'최종 관문을 통과하세요',listHeader:'예상 질문 (6개)',list:['Tell me about your best service experience.','Have you ever dealt with a demanding customer?','Tell me about a time you helped a colleague.','Have you ever had a conflict with a colleague?','Have you ever shown respect for Muslim culture?','Why do you want to work for Emirates?'],linkToRoleplay:false}
+    ];
+  }
+  function renderEmirates(a){
+    document.getElementById('section-curriculum').style.display='block';
+    document.getElementById('cur-airline').textContent=a.ko;
+    var sg=document.getElementById('step-grid');
+    sg.innerHTML='';
+    emiratesSteps().forEach(function(s){
+      var el=document.createElement(s.linkToRoleplay?'a':'div');
+      el.className='step-card active';
+      el.style.alignItems='flex-start';
+      el.style.cursor=s.linkToRoleplay?'pointer':'default';
+      if(s.linkToRoleplay)el.href='roleplay.html';
+      var listHtml='';
+      if(s.list&&s.list.length){
+        listHtml='<div style="margin-top:12px;padding:11px 14px;background:rgba(201,168,76,0.08);border-left:3px solid var(--gold);">'+
+          '<div style="font-size:0.66rem;font-weight:800;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:7px;">'+s.listHeader+'</div>'+
+          '<ul style="list-style:none;padding:0;margin:0;font-size:0.8rem;color:var(--text-mid);line-height:1.75;">'+
+          s.list.map(function(q){return '<li style="padding:2px 0;">• '+q+'</li>';}).join('')+
+          '</ul></div>';
+      }
+      el.innerHTML='<div class="step-num" style="margin-top:2px;">'+s.num+'</div>'+
+        '<div class="step-body">'+
+          '<div class="step-title">'+s.title+'</div>'+
+          '<div class="step-desc">'+s.sub+'</div>'+
+          listHtml+
+        '</div>'+
+        (s.linkToRoleplay?'<div class="step-badge ready" style="margin-top:4px;">시작 가능</div><div class="step-arrow" style="margin-top:4px;">→</div>':'');
+      sg.appendChild(el);
+    });
+  }
+  // 기존 showCurriculum 함수 비파괴 오버라이드
+  var _orig=window.showCurriculum;
+  window.showCurriculum=function(a){
+    if(a&&a.key==='emirates')return renderEmirates(a);
+    return _orig(a);
+  };
+  // 페이지 로드 시 이미 에미레이트가 저장되어 있었다면 다시 렌더
+  try{
+    var saved=localStorage.getItem('wc_airline');
+    if(saved==='emirates'){
+      var f=AIRLINES.find(function(x){return x.key==='emirates';});
+      if(f)renderEmirates(f);
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

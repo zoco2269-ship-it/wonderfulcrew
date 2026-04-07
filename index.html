@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WonderfulCrew — 프리미엄 승무원 교육</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8C96A;
+  --gold-pale: #F5E9C8;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EAD8;
+  --navy: #1A2340;
+  --navy-light: #2A3455;
+  --text-dark: #1A1A1A;
+  --text-mid: #4A4438;
+  --text-muted: #5A5048;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;}
+
+/* ── NAV ── */
+nav {
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;height:72px;
+  background:rgba(250,247,240,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(201,168,76,0.2);
+  transition:all 0.3s;
+}
+.nav-logo {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;font-weight:600;
+  color:var(--navy);letter-spacing:0.02em;
+}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:36px;align-items:center;}
+.nav-links a{font-size:0.85rem;color:var(--text-mid);text-decoration:none;letter-spacing:0.05em;transition:color 0.2s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{
+  padding:10px 24px;border-radius:24px;
+  background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;
+  font-size:0.82rem;font-weight:600;letter-spacing:0.08em;
+  text-decoration:none;transition:all 0.2s;
+}
+.nav-cta:hover{background:linear-gradient(135deg,#F0D578,#D4B358);transform:translateY(-1px);box-shadow:0 4px 14px rgba(201,168,76,0.3);}
+
+/* ── HERO ── */
+#hero {
+  position:relative;height:100vh;min-height:680px;
+  display:flex;align-items:center;
+  overflow:hidden;
+}
+.hero-img {
+  position:absolute;inset:0;
+  background-size:cover;background-position:center 30%;
+  filter:brightness(0.82);
+}
+.hero-overlay {
+  position:absolute;inset:0;
+  background:linear-gradient(105deg,rgba(26,35,64,0.38) 0%,rgba(26,35,64,0.08) 60%,transparent 100%);
+}
+.hero-content {
+  position:relative;z-index:2;
+  padding:0 8%;max-width:700px;
+  opacity:0;transform:translateY(30px);
+  animation:fadeUp 1s ease 0.3s forwards;
+}
+.hero-label {
+  font-family:'Cormorant Garamond',serif;
+  font-size:0.85rem;letter-spacing:0.3em;
+  color:var(--gold-light);margin-bottom:20px;
+  text-transform:uppercase;
+}
+.hero-title {
+  font-family:'Noto Serif KR',serif;
+  font-size:clamp(2.3rem,4.5vw,4rem);
+  font-weight:300;line-height:1.15;
+  color:#fff;margin-bottom:12px;
+}
+.hero-title em {
+  font-style:normal;color:var(--gold-light);
+  display:block;font-weight:600;
+}
+.hero-sub {
+  font-size:1rem;color:rgba(255,255,255,0.8);
+  line-height:1.8;margin:20px 0 40px;
+  font-weight:300;max-width:480px;
+}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;}
+.btn-gold {
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);
+  color:#fff;font-size:0.88rem;font-weight:600;
+  letter-spacing:0.08em;text-decoration:none;
+  border:none;cursor:pointer;border-radius:28px;
+  transition:all 0.2s;font-family:inherit;
+}
+.btn-gold:hover{background:linear-gradient(135deg,#F0D578,#D4B358);transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,168,76,0.35);}
+.btn-outline-white {
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 32px;background:transparent;
+  color:#fff;font-size:0.88rem;font-weight:400;
+  letter-spacing:0.08em;text-decoration:none;
+  border:2px solid rgba(255,255,255,0.85);cursor:pointer;
+  border-radius:28px;
+  transition:border-color 0.2s,background 0.2s;
+}
+.btn-outline-white:hover{border-color:#fff;background:rgba(255,255,255,0.08);}
+
+/* ── SECTION COMMON ── */
+section{padding:100px 5%;}
+.sec-label {
+  font-family:'Cormorant Garamond',serif;
+  font-size:0.75rem;letter-spacing:0.35em;
+  color:var(--gold);text-transform:uppercase;
+  margin-bottom:14px;text-align:center;font-weight:800;
+}
+.sec-title {
+  font-family:'Noto Serif KR',serif;
+  font-size:clamp(1.8rem,3.5vw,2.6rem);
+  font-weight:400;color:var(--navy);
+  text-align:center;line-height:1.4;
+  margin-bottom:16px;
+}
+.sec-title em{font-style:normal;color:var(--gold);}
+.gold-line {
+  width:40px;height:1px;background:var(--gold);
+  margin:0 auto 60px;
+}
+
+/* ── ABOUT ── */
+#about{background:#fff;padding:100px 5%;}
+.about-inner {
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+}
+.about-text .sec-label,.about-text .sec-title{text-align:left;font-weight:700;}
+.about-text .gold-line{margin:0 0 36px;}
+.about-body {
+  font-size:0.96rem;color:var(--text-mid);
+  line-height:2;margin-bottom:16px;font-weight:400;
+}
+.about-body+.about-body{margin-bottom:16px;}
+.btn-text-gold {
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--gold);font-size:0.85rem;font-weight:500;
+  letter-spacing:0.08em;text-decoration:none;
+  margin-top:24px;border-bottom:1px solid transparent;
+  transition:border-color 0.2s;padding-bottom:2px;
+}
+.btn-text-gold:hover{border-color:var(--gold);}
+.about-img-wrap{position:relative;}
+.about-img {
+  width:100%;aspect-ratio:4/5;
+  object-fit:cover;object-position:center top;
+  display:block;
+}
+.about-stats {
+  position:absolute;bottom:-20px;left:-20px;
+  background:#fff;border:1px solid var(--gold-pale);
+  padding:24px 28px;
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;
+  box-shadow:0 8px 40px rgba(0,0,0,0.08);
+}
+.stat-item .num {
+  font-family:'Cormorant Garamond',serif;
+  font-size:2rem;font-weight:600;color:var(--gold);
+  line-height:1;
+}
+.stat-item .lbl{font-size:0.72rem;color:var(--text-muted);margin-top:4px;letter-spacing:0.05em;}
+
+/* ── EXPERTISE ── */
+#expertise{background:var(--cream);}
+.cards-row {
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:2px;
+}
+.exp-card {
+  background:#fff;padding:44px 36px;
+  border-left:3px solid var(--gold);
+  transition:transform 0.3s,box-shadow 0.3s;
+}
+.exp-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(201,168,76,0.12);}
+.exp-icon {
+  width:44px;height:44px;margin-bottom:24px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;
+}
+.exp-card-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.3rem;font-weight:600;color:var(--navy);
+  margin-bottom:14px;line-height:1.3;
+}
+.exp-card-body{font-size:0.9rem;color:#4A4438;line-height:1.85;font-weight:400;}
+.btn-card-more {
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--gold);font-size:0.8rem;font-weight:500;
+  letter-spacing:0.08em;text-decoration:none;
+  margin-top:24px;transition:gap 0.2s;
+}
+.btn-card-more:hover{gap:10px;}
+
+/* ── NUMBERS ── */
+#numbers{
+  background:var(--navy);
+  padding:80px 5%;
+}
+.numbers-inner {
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+}
+.num-big {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(5rem,12vw,9rem);
+  font-weight:300;color:var(--gold);
+  line-height:1;letter-spacing:-0.02em;
+}
+.num-big span{font-size:0.45em;vertical-align:super;}
+.num-label{font-size:1rem;color:rgba(255,255,255,0.7);margin-top:8px;font-weight:300;letter-spacing:0.1em;}
+.num-right-title {
+  font-family:'Noto Serif KR',serif;
+  font-size:1.3rem;font-weight:400;color:#fff;
+  margin-bottom:16px;padding-left:20px;
+  border-left:2px solid var(--gold);
+}
+.num-right-body{font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.9;font-weight:300;margin-bottom:32px;}
+.num-stats{display:flex;gap:48px;}
+.nstat .nval {
+  font-family:'Cormorant Garamond',serif;
+  font-size:2rem;font-weight:600;color:var(--gold);line-height:1;
+}
+.nstat .nlbl{font-size:0.72rem;color:rgba(255,255,255,0.5);margin-top:4px;letter-spacing:0.1em;text-transform:uppercase;}
+
+/* ── RESOURCES ── */
+#resources{background:#fff;}
+.res-header{
+  max-width:1100px;margin:0 auto 50px;
+  display:flex;justify-content:space-between;align-items:flex-end;
+}
+.res-header-left .sec-label{text-align:left;font-weight:800;font-size:0.75rem;}.res-header-left .sec-title{text-align:left;font-weight:700;font-size:1.6rem;}
+.res-header-right{font-size:0.84rem;color:var(--text-muted);text-align:right;line-height:1.7;font-weight:300;}
+.res-cards{
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+}
+.res-card{cursor:pointer;transition:transform 0.3s;}
+.res-card:hover{transform:translateY(-4px);}
+.res-card-img{
+  width:100%;aspect-ratio:4/3;
+  object-fit:cover;display:block;
+  position:relative;overflow:hidden;
+}
+.res-card-img-wrap{position:relative;overflow:hidden;}
+.res-card-img-wrap img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;transition:transform 0.4s;}
+.res-card:hover .res-card-img-wrap img{transform:scale(1.04);}
+.res-tag {
+  position:absolute;top:12px;left:12px;
+  background:var(--gold);color:#fff;
+  font-size:0.68rem;font-weight:500;
+  padding:4px 10px;letter-spacing:0.08em;
+}
+.res-card-body{padding:16px 0 0;}
+.res-card-title{font-size:0.96rem;font-weight:700;color:var(--navy);line-height:1.5;margin-bottom:8px;}
+.res-card-desc{font-size:0.85rem;color:#4A4438;line-height:1.7;font-weight:400;}
+.res-card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
+.res-read-time{font-size:0.72rem;color:var(--text-muted);}
+.res-more{font-size:0.75rem;color:var(--gold);font-weight:500;text-decoration:none;transition:gap 0.2s;display:flex;align-items:center;gap:4px;}
+.res-more:hover{gap:8px;}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--cream-dark);
+  border-top:1px solid rgba(201,168,76,0.3);
+  padding:64px 5% 32px;
+}
+.footer-inner{
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:48px;
+  margin-bottom:48px;
+}
+.footer-brand .logo {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem;font-weight:600;color:var(--navy);
+  margin-bottom:14px;
+}
+.footer-brand .logo span{color:var(--gold);}
+.footer-brand p{font-size:0.82rem;color:var(--text-muted);line-height:1.8;font-weight:300;margin-bottom:20px;}
+.footer-socials{display:flex;gap:12px;}
+.social-btn{
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(201,168,76,0.4);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-muted);font-size:0.85rem;text-decoration:none;
+  transition:border-color 0.2s,color 0.2s;
+}
+.social-btn:hover{border-color:var(--gold);color:var(--gold);}
+.footer-col h4{
+  font-size:0.78rem;font-weight:600;
+  color:var(--navy);letter-spacing:0.1em;
+  text-transform:uppercase;margin-bottom:18px;
+}
+.footer-col ul{list-style:none;}
+.footer-col ul li{margin-bottom:10px;}
+.footer-col ul li a{
+  font-size:0.8rem;color:var(--text-muted);
+  text-decoration:none;transition:color 0.2s;font-weight:300;
+}
+.footer-col ul li a:hover{color:var(--gold);}
+.footer-bottom{
+  max-width:1100px;margin:0 auto;
+  padding-top:24px;border-top:1px solid rgba(201,168,76,0.2);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.footer-bottom p{font-size:0.75rem;color:var(--text-muted);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-delay-1{transition-delay:0.1s;}
+.reveal-delay-2{transition-delay:0.2s;}
+.reveal-delay-3{transition-delay:0.3s;}
+
+@media(max-width:900px){
+  .about-inner,.numbers-inner{grid-template-columns:1fr;}
+  .cards-row{grid-template-columns:1fr;}
+  .res-cards{grid-template-columns:1fr 1fr;}
+  .footer-inner{grid-template-columns:1fr 1fr;}
+  .res-header{flex-direction:column;gap:12px;}
+}
+@media(max-width:600px){
+  .res-cards{grid-template-columns:1fr;}
+  .hero-title{font-size:2.4rem;}
+  .nav-links{display:none;}
+}
+
+/* ── AI DEMO SECTION ── */
+#ai-demo {
+  background: var(--navy);
+  padding: 90px 5%;
+  overflow: hidden;
+}
+.demo-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 64px;
+  align-items: center;
+}
+/* 세로형 영상 컨테이너 */
+.demo-video-col { position: relative; }
+.demo-video-frame {
+  position: relative;
+  border: 2px solid rgba(201,168,76,0.45);
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+  aspect-ratio: 9/16;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.demo-video-frame video {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.demo-video-frame:hover .demo-play-overlay { opacity: 1; }
+.demo-play-overlay {
+  position: absolute; inset: 0;
+  background: rgba(26,35,64,0.45);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.3s;
+}
+.demo-play-overlay.always-show { opacity: 1; }
+.demo-play-btn {
+  width: 68px; height: 68px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s;
+}
+.demo-play-btn:hover { background: var(--gold); transform: scale(1.1); }
+.demo-play-btn svg { margin-left: 5px; }
+.ai-pulse-badge {
+  position: absolute; top: 12px; left: 12px;
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(26,35,64,0.85);
+  padding: 5px 12px; font-size: 0.68rem;
+  color: var(--gold); font-weight: 700; letter-spacing: 0.1em;
+}
+.ai-pulse-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 1.4s infinite;
+}
+/* 텍스트 컬럼 */
+.demo-text-col {}
+.demo-text-col .sec-label { color: var(--gold-light); text-align: left; }
+.demo-text-col .sec-title { color: #fff; text-align: left; font-size: clamp(1.7rem,2.8vw,2.6rem); }
+.demo-text-col .sec-title em { color: var(--gold-light); }
+.demo-text-col .gold-line { margin: 0 0 28px; }
+.demo-body { font-size: 0.94rem; color: rgba(255,255,255,0.7); line-height: 1.9; margin-bottom: 12px; }
+.demo-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 30px; }
+.demo-tag {
+  padding: 6px 14px;
+  border: 1px solid rgba(201,168,76,0.3);
+  color: rgba(255,255,255,0.65);
+  font-size: 0.76rem; letter-spacing: 0.06em;
+}
+.demo-cta-row { display: flex; flex-direction: column; gap: 12px; max-width: 320px; }
+.demo-badge-row {
+  display: flex; gap: 12px; margin-top: 28px;
+}
+.demo-badge {
+  flex: 1; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(201,168,76,0.2);
+  padding: 14px 12px; text-align: center;
+}
+.demo-badge-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.55rem; font-weight: 600;
+  color: var(--gold); line-height: 1;
+}
+.demo-badge-lbl { font-size: 0.67rem; color: rgba(255,255,255,0.45); margin-top: 4px; letter-spacing: 0.05em; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+@media(max-width:900px){
+  .demo-inner { grid-template-columns: 1fr; gap: 40px; }
+  .demo-video-frame { max-width: 300px; margin: 0 auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Wonderful<span>Crew</span></div>
+  <div class="nav-links">
+    <a href="#about">소개</a>
+    <a href="#expertise">준비 과정</a>
+    <a href="#resources">학습 자료</a>
+    <a href="#">면접 연습</a>
+  </div>
+  <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-img" id="hero-bg" style="background-image:url(images/img1.jpg)"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-label">Premium Cabin Crew Coaching Solution</div>
+    <h1 class="hero-title">
+      당신의 꿈을
+      <em>현실로</em>
+    </h1>
+    <p class="hero-sub">AI 면접관과 함께하는 실전 승무원 면접 연습<br>맞춤형 피드백으로 합격을 완성하세요.</p>
+    <div class="hero-btns">
+      <a href="leveltest.html" class="btn-gold">무료 AI 면접 체험하기 →</a>
+      <a href="#about" class="btn-outline-white">더 알아보기</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-text reveal">
+      <div class="sec-label">About Us</div>
+      <h2 class="sec-title">AI 기술로 완성하는<br><em>프리미엄 승무원 교육</em></h2>
+      <div class="gold-line"></div>
+      <p class="about-body">원더풀크루 플랫폼은 최신 AI 기술을 활용해 실제 항공사 면접과 동일한 환경을 제공합니다. 20년 면접 코칭 내공의 에미레이트 일등석 출신 대표를 필두로 대한항공, 아시아나, 티웨이, 카타르, 캐세이퍼시픽, 싱가폴항공 등 현직 항공사 승무원이 자문단으로 참여합니다.</p>
+      <p class="about-body">단순한 암기식 준비가 아닌, 진짜 실력 향상을 위한 실전 경험을 통해 합격으로 이끕니다. 국내외 주요 항공사의 면접 트렌드를 분석하고, 개인 맞춤형 피드백으로 각 지원자의 강점을 극대화하는 커리큘럼을 제공합니다.</p>
+      <p class="about-body">1천 명 이상의 합격자를 배출한 검증된 교육 시스템으로, 당신의 꿈을 현실로 만들어 드리겠습니다.</p>
+      <a href="leveltest.html" class="btn-text-gold">체험하기 →</a>
+    </div>
+    <div class="about-img-wrap reveal reveal-delay-1">
+      <img id="about-img" class="about-img" src="images/img2.jpg" alt="원더풀크루 코치">
+      <div class="about-stats">
+        <div class="stat-item"><div class="num">1,000<span>+</span></div><div class="lbl">합격자 배출</div></div>
+        <div class="stat-item"><div class="num">22<span>+</span></div><div class="lbl">글로벌 국가</div></div>
+        <div class="stat-item"><div class="num">13<span>년</span></div><div class="lbl">코칭 경력</div></div>
+        <div class="stat-item"><div class="num">10,000<span>+</span></div><div class="lbl">합격 데이터</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI DEMO -->
+<section id="ai-demo">
+  <div class="demo-inner">
+
+    <!-- 왼쪽: 세로형 영상 (9:16) -->
+    <div class="demo-video-col">
+      <div class="demo-video-frame" id="demo-video-frame" onclick="playDemo()">
+        <div class="ai-pulse-badge"><div class="ai-pulse-dot"></div>AI LIVE</div>
+        <video id="demo-video" autoplay loop muted playsinline poster="" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <source src="demo_interview.mp4" type="video/mp4">
+        </video>
+        <div class="demo-play-overlay always-show" id="demo-play-overlay">
+          <div class="demo-play-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <polygon points="8,5 20,12 8,19" fill="#C9A84C"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 오른쪽: 텍스트 + 체험하기 -->
+    <div class="demo-text-col">
+      <div class="sec-label">AI Simulation · 실시간 면접 연습</div>
+      <h2 class="sec-title">실제 면접관이<br><em>바로 앞에 있는 것처럼</em></h2>
+      <div class="gold-line"></div>
+      <p class="demo-body">AI 면접관이 실제 항공사 면접 질문을 그대로 묻습니다.<br>카메라 앞에서 직접 대답하고, 즉각적인 피드백을 받으세요.</p>
+      <p class="demo-body">한국어 자기소개부터 영어 면접까지 — 국내 항공사, 외항사 모두 준비할 수 있어요.</p>
+      <div class="demo-tags">
+        <span class="demo-tag">✈ 에미레이트 · 카타르</span>
+        <span class="demo-tag">✈ 대한항공 · 아시아나</span>
+        <span class="demo-tag">🌏 22개국 글로벌</span>
+        <span class="demo-tag">🇰🇷 한국어 + 🇺🇸 영어</span>
+        <span class="demo-tag">AI 실시간 분석</span>
+      </div>
+      <div class="demo-cta-row">
+        <a href="leveltest.html" class="btn-gold" style="display:inline-flex;justify-content:center;">무료 AI 면접 체험하기 →</a>
+        <a href="chatbot.html" class="btn-outline-white" style="display:inline-flex;justify-content:center;font-size:0.84rem;">AI 면접 코치와 대화하기</a>
+      </div>
+      <div class="demo-badge-row">
+        <div class="demo-badge">
+          <div class="demo-badge-num">1,000+</div>
+          <div class="demo-badge-lbl">글로벌 합격자</div>
+        </div>
+        <div class="demo-badge">
+          <div class="demo-badge-num">22</div>
+          <div class="demo-badge-lbl">국가 취업</div>
+        </div>
+        <div class="demo-badge">
+          <div class="demo-badge-num">20년</div>
+          <div class="demo-badge-lbl">코칭 경력</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+<script>
+function playDemo(){
+  var video=document.getElementById('demo-video');
+  var overlay=document.getElementById('demo-play-overlay');
+  if(!video)return;
+  video.muted=true;
+  video.play().then(function(){
+    if(overlay)overlay.style.display='none';
+  }).catch(function(){});
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var video=document.getElementById('demo-video');
+  var overlay=document.getElementById('demo-play-overlay');
+  if(!video)return;
+  video.muted=true;
+  video.defaultMuted=true;
+  video.setAttribute('muted','');
+  video.play().then(function(){
+    if(overlay)overlay.style.display='none';
+  }).catch(function(){
+    // 브라우저 자동재생 차단시 클릭 유도
+    if(overlay){overlay.style.display='flex';overlay.style.opacity='1';}
+  });
+});
+</script>
+
+
+<!-- EXPERTISE -->
+<section id="expertise">
+  <div class="sec-label reveal">Our Expertise</div>
+  <h2 class="sec-title reveal" style="font-weight:700;">격이 다른 <em>커리어 솔루션</em></h2>
+  <div class="gold-line reveal"></div>
+  <div class="cards-row">
+    <div class="exp-card reveal">
+      <div class="exp-icon">🎙️</div>
+      <div class="exp-card-title">AI Mock Interviews</div>
+      <p class="exp-card-body">정교한 AI 알고리즘이 분석하는 실전 면접 시뮬레이션. 당신의 발화 톤부터 시선 처리까지 완벽하게 가이드합니다.</p>
+      <a href="#" class="btn-card-more">자세히 보기 →</a>
+    </div>
+    <div class="exp-card reveal reveal-delay-1">
+      <div class="exp-icon">✨</div>
+      <div class="exp-card-title">Personality Coaching</div>
+      <p class="exp-card-body">단순한 기술을 넘어선 품격. 내면의 가치를 외면으로 표현하는 법을 배우는 프리미엄 인성 코칭입니다.</p>
+      <a href="#" class="btn-card-more">자세히 보기 →</a>
+    </div>
+    <div class="exp-card reveal reveal-delay-2">
+      <div class="exp-icon">💎</div>
+      <div class="exp-card-title">Signature Image Making</div>
+      <p class="exp-card-body">당신만의 고유한 분위기를 완성합니다. 피지컬 컬러퍼티에이튜브까지, 가장 아름다운 '나'를 발견하세요.</p>
+      <a href="#" class="btn-card-more">자세히 보기 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- NUMBERS -->
+<section id="numbers">
+  <div class="numbers-inner">
+    <div class="reveal">
+      <div class="num-big">98<span>%</span></div>
+      <div class="num-label">수강생 합격 및 만족도</div>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <div class="num-right-title">증명된 탁월함</div>
+      <p class="num-right-body">원더풀크루의 정교한 AI 분석과 20년 전문가의 깊은 통찰이 만나 실질적인 결과로 이어집니다. 우리는 단순히 교육하는 것을 넘어, 당신의 커리어를 재정의합니다.</p>
+      <div class="num-stats">
+        <div class="nstat"><div class="nval">1,000<span style="font-size:0.6em">+</span></div><div class="nlbl">Global Alumni</div></div>
+        <div class="nstat"><div class="nval">22<span style="font-size:0.6em">+</span></div><div class="nlbl">Countries</div></div>
+        <div class="nstat"><div class="nval">15<span style="font-size:0.6em">+</span></div><div class="nlbl">Partner Airlines</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESOURCES -->
+<section id="resources">
+  <div class="res-header reveal">
+    <div class="res-header-left">
+      <div class="sec-label" style="text-align:left;font-size:0.75rem;">Resources</div>
+      <h2 class="sec-title" style="text-align:left">학습 자료</h2>
+    </div>
+    <div class="res-header-right">전문가가 직접 작성한 최신 가이드를 확인하세요.</div>
+  </div>
+  <div class="res-cards">
+    <div class="res-card reveal">
+      <div class="res-card-img-wrap">
+        <img src="images/img3.jpg" alt="면접 가이드">
+        <span class="res-tag">면접 가이드</span>
+      </div>
+      <div class="res-card-body">
+        <div class="res-card-title">승무원 면접 완벽 가이드</div>
+        <div class="res-card-desc">1차 서류부터 최종 면접까지 단계별 준비 전략과 실제 합격자 후기를 담았습니다.</div>
+        <div class="res-card-foot">
+          
+          <a href="#" class="res-more">자세히 보기 →</a>
+        </div>
+      </div>
+    </div>
+    <div class="res-card reveal reveal-delay-1">
+      <div class="res-card-img-wrap">
+        <img src="images/img4.jpg" alt="영어 면접">
+        <span class="res-tag">영어 면접</span>
+      </div>
+      <div class="res-card-body">
+        <div class="res-card-title">항공사 영어 면접 핵심 표현 100선</div>
+        <div class="res-card-desc">외국계 항공사 및 국내 항공사 영어 면접에서 자주 나오는 질문과 답변을 정리했습니다.</div>
+        <div class="res-card-foot">
+          
+          <a href="#" class="res-more">자세히 보기 →</a>
+        </div>
+      </div>
+    </div>
+    <div class="res-card reveal reveal-delay-2">
+      <div class="res-card-img-wrap">
+        <img src="images/img5.jpg" alt="이미지 메이킹">
+        <span class="res-tag">이미지 메이킹</span>
+      </div>
+      <div class="res-card-body">
+        <div class="res-card-title">승무원 이미지 메이킹 & 그루밍 정복</div>
+        <div class="res-card-desc">항공사가 원하는 이미지와 첫인상 관리법, 메이크업과 헤어스타일 가이드를 소개합니다.</div>
+        <div class="res-card-foot">
+          
+          <a href="#" class="res-more">자세히 보기 →</a>
+        </div>
+      </div>
+    </div>
+    <div class="res-card reveal reveal-delay-3">
+      <div class="res-card-img-wrap">
+        <img src="images/img6.jpg" alt="자기소개서">
+        <span class="res-tag">자기소개서</span>
+      </div>
+      <div class="res-card-body">
+        <div class="res-card-title">합격하는 승무원 자기소개서 작성법</div>
+        <div class="res-card-desc">인사담당자의 눈길을 사로잡는 자기소개서 구조와 차별화 전략을 알려드립니다.</div>
+        <div class="res-card-foot">
+          
+          <a href="#" class="res-more">자세히 보기 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Wonderful<span>Crew</span></div>
+      <p>AI와 함께 꿈을 이루세요.<br>승무원 지망생을 위한 최고의 준비 플랫폼.</p>
+      <div class="footer-socials">
+        <a href="https://instagram.com/crew_wonderful" target="_blank" class="social-btn">IG</a>
+        <a href="#" class="social-btn">YT</a>
+        <a href="#" class="social-btn">N</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>서비스</h4>
+      <ul>
+        <li><a href="#">AI 면접 연습</a></li>
+        <li><a href="#">학습 자료</a></li>
+        <li><a href="#">커리큘럼</a></li>
+        <li><a href="#">멤버십</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>회사 소개</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">팀 소개</a></li>
+        <li><a href="#">채용 공고</a></li>
+        <li><a href="#">파트너십</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>고객 지원</h4>
+      <ul>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">문의하기</a></li>
+        <li><a href="#">이용 가이드</a></li>
+        <li><a href="#">공지사항</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>법적 고지</h4>
+      <ul>
+        <li><a href="#">이용약관</a></li>
+        <li><a href="#">개인정보처리방침</a></li>
+        <li><a href="#">쿠키 정책</a></li>
+        <li><a href="#">저작권</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 WonderfulCrew (주식회사 원더풀크루). All rights reserved.</p>
+    <p>승무원 지망생을 위한 AI 면접 코칭 플랫폼</p>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

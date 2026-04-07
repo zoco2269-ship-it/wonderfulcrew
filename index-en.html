@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WonderfulCrew — Premium Cabin Crew Coaching</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8C96A;
+  --gold-pale: #F5E9C8;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EAD8;
+  --navy: #1A2340;
+  --navy-light: #2A3455;
+  --text-dark: #1A1A1A;
+  --text-mid: #4A4438;
+  --text-muted: #5A5048;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;}
+
+/* ── NAV ── */
+nav {
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;height:72px;
+  background:rgba(250,247,240,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(201,168,76,0.2);
+  transition:all 0.3s;
+}
+.nav-logo {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;font-weight:600;
+  color:var(--navy);letter-spacing:0.02em;
+}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:36px;align-items:center;}
+.nav-links a{font-size:0.85rem;color:var(--text-mid);text-decoration:none;letter-spacing:0.05em;transition:color 0.2s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{
+  padding:10px 24px;border-radius:24px;
+  background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;
+  font-size:0.82rem;font-weight:600;letter-spacing:0.08em;
+  text-decoration:none;transition:all 0.2s;
+}
+.nav-cta:hover{background:linear-gradient(135deg,#F0D578,#D4B358);transform:translateY(-1px);box-shadow:0 4px 14px rgba(201,168,76,0.3);}
+
+/* ── HERO ── */
+#hero {
+  position:relative;height:100vh;min-height:680px;
+  display:flex;align-items:center;
+  overflow:hidden;
+}
+.hero-img {
+  position:absolute;inset:0;
+  background-size:cover;background-position:center 30%;
+  filter:brightness(0.82);
+}
+.hero-overlay {
+  position:absolute;inset:0;
+  background:linear-gradient(105deg,rgba(26,35,64,0.38) 0%,rgba(26,35,64,0.08) 60%,transparent 100%);
+}
+.hero-content {
+  position:relative;z-index:2;
+  padding:0 8%;max-width:700px;
+  opacity:0;transform:translateY(30px);
+  animation:fadeUp 1s ease 0.3s forwards;
+}
+.hero-label {
+  font-family:'Cormorant Garamond',serif;
+  font-size:0.85rem;letter-spacing:0.3em;
+  color:var(--gold-light);margin-bottom:20px;
+  text-transform:uppercase;
+}
+.hero-title {
+  font-family:'Inter',sans-serif;
+  font-size:clamp(2.3rem,4.5vw,4rem);
+  font-weight:300;line-height:1.15;
+  color:#fff;margin-bottom:12px;
+}
+.hero-title em {
+  font-style:normal;color:var(--gold-light);
+  display:block;font-weight:600;
+}
+.hero-sub {
+  font-size:1rem;color:rgba(255,255,255,0.8);
+  line-height:1.8;margin:20px 0 40px;
+  font-weight:300;max-width:480px;
+}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;}
+.btn-gold {
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);
+  color:#fff;font-size:0.88rem;font-weight:600;
+  letter-spacing:0.08em;text-decoration:none;
+  border:none;cursor:pointer;border-radius:28px;
+  transition:all 0.2s;font-family:inherit;
+}
+.btn-gold:hover{background:linear-gradient(135deg,#F0D578,#D4B358);transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,168,76,0.35);}
+.btn-outline-white {
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 32px;background:transparent;
+  color:#fff;font-size:0.88rem;font-weight:400;
+  letter-spacing:0.08em;text-decoration:none;
+  border:2px solid rgba(255,255,255,0.85);cursor:pointer;
+  border-radius:28px;
+  transition:border-color 0.2s,background 0.2s;
+}
+.btn-outline-white:hover{border-color:#fff;background:rgba(255,255,255,0.08);}
+
+/* ── SECTION COMMON ── */
+section{padding:100px 5%;}
+.sec-label {
+  font-family:'Cormorant Garamond',serif;
+  font-size:0.75rem;letter-spacing:0.35em;
+  color:var(--gold);text-transform:uppercase;
+  margin-bottom:14px;text-align:center;font-weight:800;
+}
+.sec-title {
+  font-family:'Inter',sans-serif;
+  font-size:clamp(1.8rem,3.5vw,2.6rem);
+  font-weight:400;color:var(--navy);
+  text-align:center;line-height:1.4;
+  margin-bottom:16px;
+}
+.sec-title em{font-style:normal;color:var(--gold);}
+.gold-line {
+  width:40px;height:1px;background:var(--gold);
+  margin:0 auto 60px;
+}
+
+/* ── ABOUT ── */
+#about{background:#fff;padding:100px 5%;}
+.about-inner {
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+}
+.about-text .sec-label,.about-text .sec-title{text-align:left;font-weight:700;}
+.about-text .gold-line{margin:0 0 36px;}
+.about-body {
+  font-size:0.96rem;color:var(--text-mid);
+  line-height:2;margin-bottom:16px;font-weight:400;
+}
+.about-body+.about-body{margin-bottom:16px;}
+.btn-text-gold {
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--gold);font-size:0.85rem;font-weight:500;
+  letter-spacing:0.08em;text-decoration:none;
+  margin-top:24px;border-bottom:1px solid transparent;
+  transition:border-color 0.2s;padding-bottom:2px;
+}
+.btn-text-gold:hover{border-color:var(--gold);}
+.about-img-wrap{position:relative;}
+.about-img {
+  width:100%;aspect-ratio:4/5;
+  object-fit:cover;object-position:center top;
+  display:block;
+}
+.about-stats {
+  position:absolute;bottom:-20px;left:-20px;
+  background:#fff;border:1px solid var(--gold-pale);
+  padding:24px 28px;
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;
+  box-shadow:0 8px 40px rgba(0,0,0,0.08);
+}
+.stat-item .num {
+  font-family:'Cormorant Garamond',serif;
+  font-size:2rem;font-weight:600;color:var(--gold);
+  line-height:1;
+}
+.stat-item .lbl{font-size:0.72rem;color:var(--text-muted);margin-top:4px;letter-spacing:0.05em;}
+
+/* ── EXPERTISE ── */
+#expertise{background:var(--cream);}
+.cards-row {
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:2px;
+}
+.exp-card {
+  background:#fff;padding:44px 36px;
+  border-left:3px solid var(--gold);
+  transition:transform 0.3s,box-shadow 0.3s;
+}
+.exp-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(201,168,76,0.12);}
+.exp-icon {
+  width:44px;height:44px;margin-bottom:24px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;
+}
+.exp-card-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.3rem;font-weight:600;color:var(--navy);
+  margin-bottom:14px;line-height:1.3;
+}
+.exp-card-body{font-size:0.9rem;color:#4A4438;line-height:1.85;font-weight:400;}
+.btn-card-more {
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--gold);font-size:0.8rem;font-weight:500;
+  letter-spacing:0.08em;text-decoration:none;
+  margin-top:24px;transition:gap 0.2s;
+}
+.btn-card-more:hover{gap:10px;}
+
+/* ── NUMBERS ── */
+#numbers{
+  background:var(--navy);
+  padding:80px 5%;
+}
+.numbers-inner {
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+}
+.num-big {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(5rem,12vw,9rem);
+  font-weight:300;color:var(--gold);
+  line-height:1;letter-spacing:-0.02em;
+}
+.num-big span{font-size:0.45em;vertical-align:super;}
+.num-label{font-size:1rem;color:rgba(255,255,255,0.7);margin-top:8px;font-weight:300;letter-spacing:0.1em;}
+.num-right-title {
+  font-family:'Inter',sans-serif;
+  font-size:1.3rem;font-weight:400;color:#fff;
+  margin-bottom:16px;padding-left:20px;
+  border-left:2px solid var(--gold);
+}
+.num-right-body{font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.9;font-weight:300;margin-bottom:32px;}
+.num-stats{display:flex;gap:48px;}
+.nstat .nval {
+  font-family:'Cormorant Garamond',serif;
+  font-size:2rem;font-weight:600;color:var(--gold);line-height:1;
+}
+.nstat .nlbl{font-size:0.72rem;color:rgba(255,255,255,0.5);margin-top:4px;letter-spacing:0.1em;text-transform:uppercase;}
+
+/* ── RESOURCES ── */
+#resources{background:#fff;}
+.res-header{
+  max-width:1100px;margin:0 auto 50px;
+  display:flex;justify-content:space-between;align-items:flex-end;
+}
+.res-header-left .sec-label{text-align:left;font-weight:800;font-size:0.75rem;}.res-header-left .sec-title{text-align:left;font-weight:700;font-size:1.6rem;}
+.res-header-right{font-size:0.84rem;color:var(--text-muted);text-align:right;line-height:1.7;font-weight:300;}
+.res-cards{
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+}
+.res-card{cursor:pointer;transition:transform 0.3s;}
+.res-card:hover{transform:translateY(-4px);}
+.res-card-img{
+  width:100%;aspect-ratio:4/3;
+  object-fit:cover;display:block;
+  position:relative;overflow:hidden;
+}
+.res-card-img-wrap{position:relative;overflow:hidden;}
+.res-card-img-wrap img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;transition:transform 0.4s;}
+.res-card:hover .res-card-img-wrap img{transform:scale(1.04);}
+.res-tag {
+  position:absolute;top:12px;left:12px;
+  background:var(--gold);color:#fff;
+  font-size:0.68rem;font-weight:500;
+  padding:4px 10px;letter-spacing:0.08em;
+}
+.res-card-body{padding:16px 0 0;}
+.res-card-title{font-size:0.96rem;font-weight:700;color:var(--navy);line-height:1.5;margin-bottom:8px;}
+.res-card-desc{font-size:0.85rem;color:#4A4438;line-height:1.7;font-weight:400;}
+.res-card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
+.res-read-time{font-size:0.72rem;color:var(--text-muted);}
+.res-more{font-size:0.75rem;color:var(--gold);font-weight:500;text-decoration:none;transition:gap 0.2s;display:flex;align-items:center;gap:4px;}
+.res-more:hover{gap:8px;}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--cream-dark);
+  border-top:1px solid rgba(201,168,76,0.3);
+  padding:64px 5% 32px;
+}
+.footer-inner{
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:48px;
+  margin-bottom:48px;
+}
+.footer-brand .logo {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem;font-weight:600;color:var(--navy);
+  margin-bottom:14px;
+}
+.footer-brand .logo span{color:var(--gold);}
+.footer-brand p{font-size:0.82rem;color:var(--text-muted);line-height:1.8;font-weight:300;margin-bottom:20px;}
+.footer-socials{display:flex;gap:12px;}
+.social-btn{
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(201,168,76,0.4);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-muted);font-size:0.85rem;text-decoration:none;
+  transition:border-color 0.2s,color 0.2s;
+}
+.social-btn:hover{border-color:var(--gold);color:var(--gold);}
+.footer-col h4{
+  font-size:0.78rem;font-weight:600;
+  color:var(--navy);letter-spacing:0.1em;
+  text-transform:uppercase;margin-bottom:18px;
+}
+.footer-col ul{list-style:none;}
+.footer-col ul li{margin-bottom:10px;}
+.footer-col ul li a{
+  font-size:0.8rem;color:var(--text-muted);
+  text-decoration:none;transition:color 0.2s;font-weight:300;
+}
+.footer-col ul li a:hover{color:var(--gold);}
+.footer-bottom{
+  max-width:1100px;margin:0 auto;
+  padding-top:24px;border-top:1px solid rgba(201,168,76,0.2);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.footer-bottom p{font-size:0.75rem;color:var(--text-muted);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-delay-1{transition-delay:0.1s;}
+.reveal-delay-2{transition-delay:0.2s;}
+.reveal-delay-3{transition-delay:0.3s;}
+
+@media(max-width:900px){
+  .about-inner,.numbers-inner{grid-template-columns:1fr;}
+  .cards-row{grid-template-columns:1fr;}
+  .res-cards{grid-template-columns:1fr 1fr;}
+  .footer-inner{grid-template-columns:1fr 1fr;}
+  .res-header{flex-direction:column;gap:12px;}
+}
+@media(max-width:600px){
+  .res-cards{grid-template-columns:1fr;}
+  .hero-title{font-size:2.4rem;}
+  .nav-links{display:none;}
+}
+
+/* ── AI DEMO SECTION ── */
+#ai-demo {
+  background: var(--navy);
+  padding: 90px 5%;
+  overflow: hidden;
+}
+.demo-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 64px;
+  align-items: center;
+}
+/* Vertical video container */
+.demo-video-col { position: relative; }
+.demo-video-frame {
+  position: relative;
+  border: 2px solid rgba(201,168,76,0.45);
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+  aspect-ratio: 9/16;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.demo-video-frame video {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.demo-video-frame:hover .demo-play-overlay { opacity: 1; }
+.demo-play-overlay {
+  position: absolute; inset: 0;
+  background: rgba(26,35,64,0.45);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.3s;
+}
+.demo-play-overlay.always-show { opacity: 1; }
+.demo-play-btn {
+  width: 68px; height: 68px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s;
+}
+.demo-play-btn:hover { background: var(--gold); transform: scale(1.1); }
+.demo-play-btn svg { margin-left: 5px; }
+.ai-pulse-badge {
+  position: absolute; top: 12px; left: 12px;
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(26,35,64,0.85);
+  padding: 5px 12px; font-size: 0.68rem;
+  color: var(--gold); font-weight: 700; letter-spacing: 0.1em;
+}
+.ai-pulse-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 1.4s infinite;
+}
+/* Text column */
+.demo-text-col {}
+.demo-text-col .sec-label { color: var(--gold-light); text-align: left; }
+.demo-text-col .sec-title { color: #fff; text-align: left; font-size: clamp(1.7rem,2.8vw,2.6rem); }
+.demo-text-col .sec-title em { color: var(--gold-light); }
+.demo-text-col .gold-line { margin: 0 0 28px; }
+.demo-body { font-size: 0.94rem; color: rgba(255,255,255,0.7); line-height: 1.9; margin-bottom: 12px; }
+.demo-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 30px; }
+.demo-tag {
+  padding: 6px 14px;
+  border: 1px solid rgba(201,168,76,0.3);
+  color: rgba(255,255,255,0.65);
+  font-size: 0.76rem; letter-spacing: 0.06em;
+}
+.demo-cta-row { display: flex; flex-direction: column; gap: 12px; max-width: 320px; }
+.demo-badge-row {
+  display: flex; gap: 12px; margin-top: 28px;
+}
+.demo-badge {
+  flex: 1; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(201,168,76,0.2);
+  padding: 14px 12px; text-align: center;
+}
+.demo-badge-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.55rem; font-weight: 600;
+  color: var(--gold); line-height: 1;
+}
+.demo-badge-lbl { font-size: 0.67rem; color: rgba(255,255,255,0.45); margin-top: 4px; letter-spacing: 0.05em; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+@media(max-width:900px){
+  .demo-inner { grid-template-columns: 1fr; gap: 40px; }
+  .demo-video-frame { max-width: 300px; margin: 0 auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Wonderful<span>Crew</span></div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#expertise">Programs</a>
+    <a href="#resources">Resources</a>
+    <a href="#">Mock Interview</a>
+  </div>
+  <a href="leveltest.html" class="nav-cta">Start Practice</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-img" id="hero-bg" style="background-image:url(images/img1.jpg)"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-label">Premium Cabin Crew Coaching Solution</div>
+    <h1 class="hero-title">
+      Make Your Dream
+      <em>a Reality</em>
+    </h1>
+    <p class="hero-sub">Practice real cabin crew interviews with an AI interviewer.<br>Personalized feedback to help you succeed.</p>
+    <div class="hero-btns">
+      <a href="roleplay.html" class="btn-gold">Try Free AI Interview →</a>
+      <a href="#about" class="btn-outline-white">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-text reveal">
+      <div class="sec-label">About Us</div>
+      <h2 class="sec-title">AI-Powered<br><em>Premium Cabin Crew Training</em></h2>
+      <div class="gold-line"></div>
+      <p class="about-body">WonderfulCrew leverages cutting-edge AI technology to replicate real airline interview environments. Led by our CEO — a former Emirates First Class crew member with 20 years of coaching expertise — our advisory board includes active cabin crew from Korean Air, Asiana, T'way, Qatar Airways, Cathay Pacific, Singapore Airlines, and more.</p>
+      <p class="about-body">We go beyond rote memorization, building genuine skills through hands-on experience to guide you to success. We analyze interview trends from major airlines worldwide and offer a tailored curriculum that maximizes each candidate's strengths through personalized feedback.</p>
+      <p class="about-body">With a proven education system that has produced over 1,000 successful candidates, we will make your dream a reality.</p>
+      <a href="leveltest.html" class="btn-text-gold">Try It →</a>
+    </div>
+    <div class="about-img-wrap reveal reveal-delay-1">
+      <img id="about-img" class="about-img" src="images/img2.jpg" alt="원더풀크루 코치">
+      <div class="about-stats">
+        <div class="stat-item"><div class="num">1,000<span>+</span></div><div class="lbl">Successful Alumni</div></div>
+        <div class="stat-item"><div class="num">22<span>+</span></div><div class="lbl">Global Countries</div></div>
+        <div class="stat-item"><div class="num">20<span>yr</span></div><div class="lbl">Years Coaching</div></div>
+        <div class="stat-item"><div class="num">15<span>+</span></div><div class="lbl">Partner Airlines</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI DEMO -->
+<section id="ai-demo">
+  <div class="demo-inner">
+
+    <!-- Left: Vertical video (9:16) -->
+    <div class="demo-video-col">
+      <div class="demo-video-frame" id="demo-video-frame" onclick="playDemo()">
+        <div class="ai-pulse-badge"><div class="ai-pulse-dot"></div>AI LIVE</div>
+        <video id="demo-video" autoplay loop muted playsinline poster="" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <source src="demo_interview.mp4" type="video/mp4">
+        </video>
+        <div class="demo-play-overlay always-show" id="demo-play-overlay">
+          <div class="demo-play-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <polygon points="8,5 20,12 8,19" fill="#C9A84C"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Text + CTA -->
+    <div class="demo-text-col">
+      <div class="sec-label">AI Simulation · Real-Time Interview Practice</div>
+      <h2 class="sec-title">As If a Real Interviewer<br><em>Were Right in Front of You</em></h2>
+      <div class="gold-line"></div>
+      <p class="demo-body">Our AI interviewer asks real airline interview questions.<br>Respond on camera and receive instant feedback.</p>
+      <p class="demo-body">From self-introductions to English interviews — prepare for both domestic and international airlines.</p>
+      <div class="demo-tags">
+        <span class="demo-tag">✈ Emirates · Qatar</span>
+        <span class="demo-tag">✈ Korean Air · Asiana</span>
+        <span class="demo-tag">🌏 22 Countries</span>
+        <span class="demo-tag">🇰🇷 Korean + 🇺🇸 English</span>
+        <span class="demo-tag">AI Real-Time Analysis</span>
+      </div>
+      <div class="demo-cta-row">
+        <a href="roleplay.html" class="btn-gold" style="display:inline-flex;justify-content:center;">Try Free AI Interview →</a>
+        <a href="chatbot.html" class="btn-outline-white" style="display:inline-flex;justify-content:center;font-size:0.84rem;">Chat with AI Interview Coach</a>
+      </div>
+      <div class="demo-badge-row">
+        <div class="demo-badge">
+          <div class="demo-badge-num">1,000+</div>
+          <div class="demo-badge-lbl">Global Alumni</div>
+        </div>
+        <div class="demo-badge">
+          <div class="demo-badge-num">22</div>
+          <div class="demo-badge-lbl">Countries</div>
+        </div>
+        <div class="demo-badge">
+          <div class="demo-badge-num">20yr</div>
+          <div class="demo-badge-lbl">Years Coaching</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+<script>
+function playDemo(){
+  var video=document.getElementById('demo-video');
+  var overlay=document.getElementById('demo-play-overlay');
+  if(!video)return;
+  video.muted=true;
+  video.play().then(function(){
+    if(overlay)overlay.style.display='none';
+  }).catch(function(){});
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var video=document.getElementById('demo-video');
+  var overlay=document.getElementById('demo-play-overlay');
+  if(!video)return;
+  video.muted=true;
+  video.defaultMuted=true;
+  video.setAttribute('muted','');
+  video.play().then(function(){
+    if(overlay)overlay.style.display='none';
+  }).catch(function(){
+    // Prompt click if autoplay is blocked
+    if(overlay){overlay.style.display='flex';overlay.style.opacity='1';}
+  });
+});
+</script>
+
+
+<!-- EXPERTISE -->
+<section id="expertise">
+  <div class="sec-label reveal">Our Expertise</div>
+  <h2 class="sec-title reveal" style="font-weight:700;">A Class Apart — <em>Career Solutions</em></h2>
+  <div class="gold-line reveal"></div>
+  <div class="cards-row">
+    <div class="exp-card reveal">
+      <div class="exp-icon">🎙️</div>
+      <div class="exp-card-title">AI Mock Interviews</div>
+      <p class="exp-card-body">Realistic interview simulations powered by advanced AI algorithms. From your vocal tone to eye contact, we guide you to perfection.</p>
+      <a href="#" class="btn-card-more">Learn More →</a>
+    </div>
+    <div class="exp-card reveal reveal-delay-1">
+      <div class="exp-icon">✨</div>
+      <div class="exp-card-title">Personality Coaching</div>
+      <p class="exp-card-body">Elegance beyond mere technique. Premium personality coaching that teaches you to express your inner values outwardly.</p>
+      <a href="#" class="btn-card-more">Learn More →</a>
+    </div>
+    <div class="exp-card reveal reveal-delay-2">
+      <div class="exp-icon">💎</div>
+      <div class="exp-card-title">Signature Image Making</div>
+      <p class="exp-card-body">Craft your signature presence. From physical grooming to color analysis, discover the most radiant version of yourself.</p>
+      <a href="#" class="btn-card-more">Learn More →</a>
+    </div>
+  </div>
+</section>
+
+<!-- NUMBERS -->
+<section id="numbers">
+  <div class="numbers-inner">
+    <div class="reveal">
+      <div class="num-big">98<span>%</span></div>
+      <div class="num-label">Student Pass Rate & Satisfaction</div>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <div class="num-right-title">Proven Excellence</div>
+      <p class="num-right-body">WonderfulCrew's precision AI analysis combined with 20 years of expert insight delivers real results. We don't just educate — we redefine your career.</p>
+      <div class="num-stats">
+        <div class="nstat"><div class="nval">1,000<span style="font-size:0.6em">+</span></div><div class="nlbl">Global Alumni</div></div>
+        <div class="nstat"><div class="nval">22<span style="font-size:0.6em">+</span></div><div class="nlbl">Countries</div></div>
+        <div class="nstat"><div class="nval">15<span style="font-size:0.6em">+</span></div><div class="nlbl">Partner Airlines</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESOURCES -->
+<section id="resources">
+  <div class="res-header reveal">
+    <div class="res-header-left">
+      <div class="sec-label" style="text-align:left;font-size:0.75rem;">Resources</div>
+      <h2 class="sec-title" style="text-align:left">Resources</h2>
+    </div>
+    <div class="res-header-right">Explore the latest guides written by industry experts.</div>
+  </div>
+  <div class="res-cards">
+    <div class="res-card reveal">
+      <div class="res-card-img-wrap">
+        <img src="images/img3.jpg" alt="Interview Guide">
+        <span class="res-tag">Interview Guide</span>
+      </div>
+      <div class="res-card-body">
+        <div class="res-card-title">The Complete Cabin Crew Interview Guide</div>
+        <div class="res-card-desc">Step-by-step strategies from initial screening to final interview, with real success stories.</div>
+        <div class="res-card-foot">
+          
+          <a href="#" class="res-more">Learn More →</a>
+        </div>
+      </div>
+    </div>
+    <div class="res-card reveal reveal-delay-1">
+      <div class="res-card-img-wrap">
+        <img src="images/img4.jpg" alt="English Interview">
+        <span class="res-tag">English Interview</span>
+      </div>
+      <div class="res-card-body">
+        <div class="res-card-title">100 Essential English Expressions for Airline Interviews</div>
+        <div class="res-card-desc">Frequently asked questions and model answers for English interviews at international and domestic airlines.</div>
+        <div class="res-card-foot">
+          
+          <a href="#" class="res-more">Learn More →</a>
+        </div>
+      </div>
+    </div>
+    <div class="res-card reveal reveal-delay-2">
+      <div class="res-card-img-wrap">
+        <img src="images/img5.jpg" alt="Image Making">
+        <span class="res-tag">Image Making</span>
+      </div>
+      <div class="res-card-body">
+        <div class="res-card-title">Cabin Crew Image Making & Grooming Mastery</div>
+        <div class="res-card-desc">Learn the image airlines look for, first impression management, and makeup and hairstyle guides.</div>
+        <div class="res-card-foot">
+          
+          <a href="#" class="res-more">Learn More →</a>
+        </div>
+      </div>
+    </div>
+    <div class="res-card reveal reveal-delay-3">
+      <div class="res-card-img-wrap">
+        <img src="images/img6.jpg" alt="Cover Letter">
+        <span class="res-tag">Cover Letter</span>
+      </div>
+      <div class="res-card-body">
+        <div class="res-card-title">How to Write a Winning Cabin Crew Cover Letter</div>
+        <div class="res-card-desc">Discover the structure and differentiation strategies that catch recruiters' attention.</div>
+        <div class="res-card-foot">
+          
+          <a href="#" class="res-more">Learn More →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Wonderful<span>Crew</span></div>
+      <p>Achieve your dream with AI.<br>The ultimate preparation platform for aspiring cabin crew.</p>
+      <div class="footer-socials">
+        <a href="https://instagram.com/crew_wonderful" target="_blank" class="social-btn">IG</a>
+        <a href="#" class="social-btn">YT</a>
+        <a href="#" class="social-btn">N</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#">AI Mock Interview</a></li>
+        <li><a href="#">Resources</a></li>
+        <li><a href="#">Curriculum</a></li>
+        <li><a href="#">Membership</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Our Team</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Partnership</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">User Guide</a></li>
+        <li><a href="#">Announcements</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Cookie Policy</a></li>
+        <li><a href="#">Copyright</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 WonderfulCrew Inc. All rights reserved.</p>
+    <p>AI Interview Coaching Platform for Aspiring Cabin Crew</p>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

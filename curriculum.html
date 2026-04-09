@@ -238,11 +238,11 @@ if(savedAirline){
   function emiratesSteps(){
     var randQ=EMIRATES_RANDOM_Q[Math.floor(Math.random()*EMIRATES_RANDOM_Q.length)];
     return [
-      {num:'①',title:'비디오 면접',sub:'나를 1분으로 소개하세요',listHeader:'예상 질문',list:['간단한 자기소개를 해주세요','왜 승무원이 되고 싶나요?',randQ],linkToRoleplay:false},
-      {num:'②',title:'1차 발표',sub:'카메라 앞에서 발표하세요',listHeader:'답변 흐름',list:['자기소개 + Work Experience','What is your favourite destination and why?','If you could sit next to any celebrity, who would it be and why?'],linkToRoleplay:false},
-      {num:'③',title:'2차 디스커션',sub:'그룹 토론에서 리더십을 발휘하세요',linkToRoleplay:false},
-      {num:'④',title:'롤플레이',sub:'실전 AI 면접 연습',linkToRoleplay:true},
-      {num:'⑤',title:'파이널 인터뷰',sub:'최종 관문을 통과하세요',listHeader:'예상 질문 (6개)',list:['Tell me about your best service experience.','Have you ever dealt with a demanding customer?','Tell me about a time you helped a colleague.','Have you ever had a conflict with a colleague?','Have you ever shown respect for Muslim culture?','Why do you want to work for Emirates?'],linkToRoleplay:false}
+      {num:'①',title:'비디오 면접',sub:'나를 1분으로 소개하세요',listHeader:'예상 질문',list:['간단한 자기소개를 해주세요','왜 승무원이 되고 싶나요?',randQ],href:'video-interview.html'},
+      {num:'②',title:'1차 발표',sub:'카메라 앞에서 발표하세요',listHeader:'답변 흐름',list:['자기소개 + Work Experience','What is your favourite destination and why?','If you could sit next to any celebrity, who would it be and why?'],href:'presentation.html'},
+      {num:'③',title:'2차 디스커션',sub:'그룹 토론에서 리더십을 발휘하세요',href:'discussion.html'},
+      {num:'④',title:'롤플레이',sub:'실전 AI 면접 연습',href:'roleplay.html'},
+      {num:'⑤',title:'파이널 인터뷰',sub:'최종 관문을 통과하세요',listHeader:'예상 질문 (6개)',list:['Tell me about your best service experience.','Have you ever dealt with a demanding customer?','Tell me about a time you helped a colleague.','Have you ever had a conflict with a colleague?','Have you ever shown respect for Muslim culture?','Why do you want to work for Emirates?'],href:'final-interview.html'}
     ];
   }
   function renderEmirates(a){
@@ -251,11 +251,11 @@ if(savedAirline){
     var sg=document.getElementById('step-grid');
     sg.innerHTML='';
     emiratesSteps().forEach(function(s){
-      var el=document.createElement(s.linkToRoleplay?'a':'div');
+      var el=document.createElement('a');
       el.className='step-card active';
       el.style.alignItems='flex-start';
-      el.style.cursor=s.linkToRoleplay?'pointer':'default';
-      if(s.linkToRoleplay)el.href='roleplay.html';
+      el.style.cursor='pointer';
+      el.href=s.href;
       var listHtml='';
       if(s.list&&s.list.length){
         listHtml='<div style="margin-top:12px;padding:11px 14px;background:rgba(201,168,76,0.08);border-left:3px solid var(--gold);">'+
@@ -270,7 +270,8 @@ if(savedAirline){
           '<div class="step-desc">'+s.sub+'</div>'+
           listHtml+
         '</div>'+
-        (s.linkToRoleplay?'<div class="step-badge ready" style="margin-top:4px;">시작 가능</div><div class="step-arrow" style="margin-top:4px;">→</div>':'');
+        '<div class="step-badge ready" style="margin-top:4px;">시작 가능</div>'+
+        '<div class="step-arrow" style="margin-top:4px;">→</div>';
       sg.appendChild(el);
     });
   }

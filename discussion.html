@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WonderfulCrew — 2차 디스커션</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--cream-dark:#F0EAD8;--navy:#1A2340;--navy-light:#2A3455;--text-dark:#1A1A1A;--text-mid:#3A3430;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"Noto Sans KR",sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:68px;background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"Cormorant Garamond",serif;font-size:1.45rem;font-weight:600;color:var(--navy);text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.82rem;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--gold);}
+#app{padding-top:68px;animation:fadeUp 0.5s ease;}
+.wrap{max-width:720px;margin:0 auto;padding:60px 24px;}
+.eyebrow{font-family:"Cormorant Garamond",serif;font-size:0.78rem;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;font-weight:600;}
+.title{font-family:"Noto Serif KR",serif;font-size:clamp(1.7rem,3vw,2.4rem);font-weight:400;color:var(--navy);line-height:1.35;margin-bottom:10px;}
+.title em{font-style:normal;color:var(--gold);}
+.sub{font-size:0.92rem;color:var(--text-muted);line-height:1.75;margin-bottom:8px;}
+.gold-bar{width:36px;height:2px;background:var(--gold);margin:18px 0 36px;}
+
+.info-box{background:#fff;border:1.5px solid rgba(201,168,76,0.25);padding:24px 28px;margin-bottom:30px;}
+.info-title{font-size:0.74rem;font-weight:800;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;}
+.info-text{font-size:0.9rem;color:var(--text-mid);line-height:1.8;}
+.info-text b{color:var(--navy);}
+
+.topic-card{background:#fff;border:1.5px solid rgba(201,168,76,0.25);padding:22px 26px;margin-bottom:14px;animation:fadeUp 0.5s ease;}
+.topic-card.highlight{border-color:var(--gold);background:linear-gradient(180deg,#fff 0%,rgba(201,168,76,0.06) 100%);position:relative;}
+.topic-card.highlight::after{content:'TODAY';position:absolute;top:14px;right:18px;background:var(--gold);color:#fff;font-size:0.66rem;font-weight:800;letter-spacing:0.12em;padding:4px 10px;}
+.topic-num{font-family:"Cormorant Garamond",serif;font-size:0.95rem;color:var(--gold);font-weight:700;letter-spacing:0.12em;margin-bottom:8px;text-transform:uppercase;}
+.topic-text{font-size:0.98rem;color:var(--navy);font-weight:600;line-height:1.55;}
+.btn-gold{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;background:var(--gold);color:#fff;font-size:0.9rem;font-weight:700;letter-spacing:0.06em;border:none;cursor:pointer;font-family:inherit;text-decoration:none;transition:background 0.2s;margin-top:24px;}
+.btn-gold:hover{background:var(--gold-light);}
+.btn-back{display:inline-block;margin-top:24px;font-size:0.85rem;color:var(--gold);text-decoration:none;font-weight:600;letter-spacing:0.04em;}
+.btn-back:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="curriculum.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="curriculum.html" class="nav-back">← 커리큘럼</a>
+</nav>
+<div id="app">
+<div class="wrap">
+  <div class="eyebrow">Step 3 · Group Discussion</div>
+  <h1 class="title"><em>2차 디스커션</em></h1>
+  <div class="gold-bar"></div>
+  <p class="sub">에미레이트의 그룹 토론 단계에서 리더십과 협업 능력을 어떻게 보여줄지 연습합니다.<br>오늘의 주제(TODAY)를 중심으로 토론 흐름을 시뮬레이션하세요.</p>
+
+  <div class="info-box">
+    <div class="info-title">📖 그룹 토론 방식</div>
+    <div class="info-text">
+      6~8명이 한 조가 되어 <b>5분간 영어로 토론</b>합니다. 면접관은 각자의 발화 빈도, 경청 태도, 의견 정리, 결론 도출 능력을 봅니다.<br>
+      <b>핵심 전략</b>: ① 먼저 발언하되 짧게 ② 다른 사람 의견을 인용하며 발전시키기 ③ 결론에 한 번은 정리 발언 ④ 절대 다른 사람 말 끊지 않기.
+    </div>
+  </div>
+
+  <div class="topic-card highlight" id="topic-0">
+    <div class="topic-num">Topic 1</div>
+    <div class="topic-text">Should airlines charge extra for overweight passengers?</div>
+  </div>
+  <div class="topic-card" id="topic-1">
+    <div class="topic-num">Topic 2</div>
+    <div class="topic-text">Is it ethical for cabin crew to refuse alcohol service to a passenger?</div>
+  </div>
+  <div class="topic-card" id="topic-2">
+    <div class="topic-num">Topic 3</div>
+    <div class="topic-text">Should children under 12 be allowed in business class?</div>
+  </div>
+
+  <a href="roleplay.html" class="btn-gold">토론 연습 시작 →</a>
+  <br>
+  <a href="curriculum.html" class="btn-back">← 커리큘럼으로 돌아가기</a>
+</div>
+</div>
+<script>
+// 랜덤으로 1개 highlight
+(function(){
+  document.querySelectorAll('.topic-card').forEach(function(c){c.classList.remove('highlight');});
+  var i=Math.floor(Math.random()*3);
+  document.getElementById('topic-'+i).classList.add('highlight');
+})();
+</script>
+</body>
+</html>

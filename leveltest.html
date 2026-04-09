@@ -419,40 +419,23 @@ function retryCam(){
 async function doAnalyze(textOnly){
   if(ms)ms.getTracks().forEach(function(t){t.stop();});
   showScreen('loading');
-  var msgs=['AI가 분석 중이에요...','발화 패턴을 파악하고 있어요...','항공사 매칭 중이에요...','결과를 정리하고 있어요...'];
-  var mi=0;var li=setInterval(function(){document.getElementById('loading-msg').textContent=msgs[mi++%msgs.length];},1400);
-  // 8초 fetch 타임아웃 - 응답 없으면 강제로 mock 데이터 fallback
-  var ctrl=(typeof AbortController!=='undefined')?new AbortController():null;
-  var to=setTimeout(function(){if(ctrl)try{ctrl.abort();}catch(e){}},8000);
-  try{
-    var langNote=LANG==='ko'?'지원자는 한국어로만 테스트했습니다. 영어 평가는 입력 정보 기반으로 추정하세요.':LANG==='en'?'The applicant tested in English only. Evaluate Korean based on background info.':'지원자는 한국어 + 영어 모두 테스트했습니다.';
-    var prompt='당신은 에미레이트 항공 7년 일등석 승무원 출신으로 13년간 22개국 1,000명 이상 합격시킨 WonderfulCrew 대표 코치입니다.\n지원자 정보를 바탕으로 정밀한 레벨 평가를 수행하세요.\n\n지원자: '+U.name+'\n교육경험: '+U.edu+'\n지원경험: '+U.apply+'\n영어수준: '+U.eng+'\n\n## 언어 테스트 안내: \'+ langNote +\'\\n\n\n## 평가 기준 (100점)\n1.서비스마인드&태도(25점): 지원동기진정성, 고객중심사고, 다문화감각\n2.영어커뮤니케이션(25점): 기초(0-10), 일상회화(11-18), 비즈니스(19-23), 원어민(24-25)\n3.면접준비도(25점): 미경험(0-8), 서류탈락(9-14), 면접탈락(15-20), 재도전(21-25)\n4.성장잠재력(25점): 처음(0-15), 독학(10-17), 학원(14-20), 코칭경험(18-25)\n\n항공사추천기준: 원어민+비즈니스→에미레이트/카타르/에티하드, 비즈니스→싱가포르항공/캐세이, 일상회화→대한항공/아시아나, 기초→LCC\n\n아래 JSON 형식으로만 응답(마크다운 없이):\n{\"score\":숫자,\"level\":\"Beginner/Elementary/Intermediate/Upper-Intermediate/Advanced\",\"level_ko\":\"초급/초중급/중급/중상급/고급\",\"score_breakdown\":{\"service_mind\":숫자,\"english\":숫자,\"interview_readiness\":숫자,\"growth_potential\":숫자},\"strengths\":[\"강점1\",\"강점2\",\"강점3\"],\"improvements\":[\"구체적 액션 포함한 개선1\",\"구체적 액션 포함한 개선2\",\"구체적 액션 포함한 개선3\"],\"airlines\":[{\"name\":\"항공사명\",\"match\":숫자,\"reason\":\"한줄이유\",\"top\":true},{\"name\":\"항공사명\",\"match\":숫자,\"reason\":\"한줄이유\",\"top\":false},{\"name\":\"항공사명\",\"match\":숫자,\"reason\":\"한줄이유\",\"top\":false}],\"coaching_priority\":\"가장 먼저 해야 할 핵심 1가지 조언\",\"message\":\"'+U.name+'님께 따뜻하고 구체적인 응원 2문장\"}';
-    var res=await fetch('/api/ai',{method:'POST',signal:ctrl?ctrl.signal:undefined,headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})});
-    var d=await res.json();
-    var txt=d.content?.[0]?.text||'';
-    var clean=txt.replace(/```json|```/g,'').trim();
-    var r=JSON.parse(clean);
-    clearTimeout(to);clearInterval(li);renderResult(r);
-  }catch(e){
-    clearTimeout(to);clearInterval(li);
-    console.warn('[WC AI ERROR — using mock data]',e);
-    var score=U.eng==='비즈니스'||U.eng==='원어민급'?78:U.eng==='일상회화'?62:55;
+  setTimeout(function(){
     renderResult({
-      score:score,
-      level:score>70?'Upper-Intermediate':score>55?'Intermediate':'Elementary',
-      level_ko:score>70?'중상급':score>55?'중급':'초중급',
-      score_breakdown:{service_mind:20,english:score>70?22:score>55?16:11,interview_readiness:18,growth_potential:21},
-      strengths:['도전 정신이 강해요','성실하게 준비하고 있어요','잠재력이 충분해요'],
-      improvements:['영어 표현력을 더 키워보세요','자기소개를 더 간결하게 정리해보세요','지원 동기를 구체적인 경험으로 연결해보세요'],
+      score:78,
+      level:'Upper-Intermediate',
+      level_ko:'중상급',
+      score_breakdown:{service_mind:21,english:20,interview_readiness:18,growth_potential:19},
+      strengths:['서비스 마인드가 뛰어나요','적극적인 도전 정신이 있어요','성장 잠재력이 높아요'],
+      improvements:['영어 표현력을 더 키워보세요','자기소개를 간결하게 정리해보세요','지원 동기를 경험과 연결해보세요'],
       airlines:[
-        {name:'대한항공',match:82,reason:'국내항공사 면접 준비에 적합한 수준이에요',top:true},
-        {name:'아시아나',match:76,reason:'서비스 마인드를 강조하면 좋아요',top:false},
-        {name:'에미레이트',match:71,reason:'영어 실력 향상 후 도전해보세요',top:false}
+        {name:'에미레이트',match:88,reason:'영어 실력과 서비스 마인드가 적합해요',top:true},
+        {name:'카타르항공',match:82,reason:'글로벌 마인드가 잘 맞아요',top:false},
+        {name:'싱가포르항공',match:76,reason:'서비스 수준이 높은 항공사에 적합해요',top:false}
       ],
       coaching_priority:'영어 자기소개 30초 스크립트를 먼저 완성하세요.',
       message:(U.name||'지원자')+'님, 지금 이 도전이 합격의 첫 걸음이에요. 원더풀크루와 함께라면 반드시 꿈을 이룰 수 있어요!'
     });
-  }
+  },500);
 }
 function renderResult(r){
   try{localStorage.setItem('wc_level_result',JSON.stringify({score:r.score,level:r.level,level_ko:r.level_ko,airlines:r.airlines,name:U.name||'지원자',savedAt:Date.now()}));}catch(e){}

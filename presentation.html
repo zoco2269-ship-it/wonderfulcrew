@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WonderfulCrew — 1차 발표</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--cream-dark:#F0EAD8;--navy:#1A2340;--navy-light:#2A3455;--text-dark:#1A1A1A;--text-mid:#3A3430;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"Noto Sans KR",sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:68px;background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"Cormorant Garamond",serif;font-size:1.45rem;font-weight:600;color:var(--navy);text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.82rem;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--gold);}
+#app{padding-top:68px;animation:fadeUp 0.5s ease;}
+.wrap{max-width:720px;margin:0 auto;padding:60px 24px;}
+.eyebrow{font-family:"Cormorant Garamond",serif;font-size:0.78rem;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;font-weight:600;}
+.title{font-family:"Noto Serif KR",serif;font-size:clamp(1.7rem,3vw,2.4rem);font-weight:400;color:var(--navy);line-height:1.35;margin-bottom:10px;}
+.title em{font-style:normal;color:var(--gold);}
+.sub{font-size:0.92rem;color:var(--text-muted);line-height:1.75;margin-bottom:8px;}
+.gold-bar{width:36px;height:2px;background:var(--gold);margin:18px 0 36px;}
+
+.flow-box{background:#fff;border:1.5px solid rgba(201,168,76,0.25);padding:24px 28px;margin-bottom:30px;}
+.flow-title{font-size:0.74rem;font-weight:800;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:14px;}
+.flow-list{list-style:none;padding:0;margin:0;counter-reset:fl;}
+.flow-list li{position:relative;padding:12px 0 12px 42px;border-bottom:1px solid var(--gold-pale);font-size:0.92rem;color:var(--text-mid);line-height:1.6;}
+.flow-list li:last-child{border-bottom:none;}
+.flow-list li::before{counter-increment:fl;content:counter(fl);position:absolute;left:0;top:10px;width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;font-family:"Cormorant Garamond",serif;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:0.85rem;}
+
+.q-card{background:#fff;border:1.5px solid rgba(201,168,76,0.25);padding:22px 26px;margin-bottom:14px;animation:fadeUp 0.5s ease;}
+.q-num{font-family:"Cormorant Garamond",serif;font-size:0.95rem;color:var(--gold);font-weight:700;letter-spacing:0.12em;margin-bottom:8px;text-transform:uppercase;}
+.q-text{font-size:0.98rem;color:var(--navy);font-weight:600;line-height:1.55;}
+.btn-gold{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;background:var(--gold);color:#fff;font-size:0.9rem;font-weight:700;letter-spacing:0.06em;border:none;cursor:pointer;font-family:inherit;text-decoration:none;transition:background 0.2s;margin-top:24px;}
+.btn-gold:hover{background:var(--gold-light);}
+.btn-back{display:inline-block;margin-top:24px;font-size:0.85rem;color:var(--gold);text-decoration:none;font-weight:600;letter-spacing:0.04em;}
+.btn-back:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="curriculum.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="curriculum.html" class="nav-back">← 커리큘럼</a>
+</nav>
+<div id="app">
+<div class="wrap">
+  <div class="eyebrow">Step 2 · Presentation</div>
+  <h1 class="title"><em>1차 발표</em></h1>
+  <div class="gold-bar"></div>
+  <p class="sub">카메라 앞에서 자기소개부터 면접관 질문까지 자연스럽게 이어가는 발표 연습 단계예요.<br>아래 흐름과 질문을 기억한 채로 실전 연습을 시작하세요.</p>
+
+  <div class="flow-box">
+    <div class="flow-title">📋 발표 흐름</div>
+    <ol class="flow-list">
+      <li>자기소개 + Work Experience (1~1분 30초)</li>
+      <li>Favourite Destination 답변 (40초)</li>
+      <li>Celebrity 질문 답변 (40초)</li>
+    </ol>
+  </div>
+
+  <div class="q-card">
+    <div class="q-num">Question 1</div>
+    <div class="q-text">Tell me about yourself and your work experience.</div>
+  </div>
+  <div class="q-card">
+    <div class="q-num">Question 2</div>
+    <div class="q-text">What is your favourite destination and why?</div>
+  </div>
+  <div class="q-card">
+    <div class="q-num">Question 3</div>
+    <div class="q-text">If you could sit next to any celebrity, who would it be and why?</div>
+  </div>
+
+  <a href="roleplay.html" class="btn-gold">발표 연습 시작 →</a>
+  <br>
+  <a href="curriculum.html" class="btn-back">← 커리큘럼으로 돌아가기</a>
+</div>
+</div>
+</body>
+</html>

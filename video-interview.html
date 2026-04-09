@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WonderfulCrew — 비디오 면접 준비</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--cream-dark:#F0EAD8;--navy:#1A2340;--navy-light:#2A3455;--text-dark:#1A1A1A;--text-mid:#3A3430;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"Noto Sans KR",sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:68px;background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"Cormorant Garamond",serif;font-size:1.45rem;font-weight:600;color:var(--navy);text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.82rem;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--gold);}
+#app{padding-top:68px;animation:fadeUp 0.5s ease;}
+.wrap{max-width:720px;margin:0 auto;padding:60px 24px;}
+.eyebrow{font-family:"Cormorant Garamond",serif;font-size:0.78rem;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;font-weight:600;}
+.title{font-family:"Noto Serif KR",serif;font-size:clamp(1.7rem,3vw,2.4rem);font-weight:400;color:var(--navy);line-height:1.35;margin-bottom:10px;}
+.title em{font-style:normal;color:var(--gold);}
+.sub{font-size:0.92rem;color:var(--text-muted);line-height:1.75;margin-bottom:8px;}
+.gold-bar{width:36px;height:2px;background:var(--gold);margin:18px 0 36px;}
+
+.q-card{background:#fff;border:1.5px solid rgba(201,168,76,0.25);padding:26px 28px;margin-bottom:18px;animation:fadeUp 0.5s ease;}
+.q-card.highlight{border-color:var(--gold);background:linear-gradient(180deg,#fff 0%,rgba(201,168,76,0.05) 100%);}
+.q-num{font-family:"Cormorant Garamond",serif;font-size:1rem;color:var(--gold);font-weight:700;letter-spacing:0.15em;margin-bottom:10px;text-transform:uppercase;}
+.q-text{font-size:1.05rem;color:var(--navy);font-weight:700;line-height:1.55;margin-bottom:8px;}
+.q-hint{font-size:0.82rem;color:var(--text-mid);line-height:1.65;margin-bottom:18px;font-weight:400;}
+.q-hint b{color:var(--gold);font-weight:700;}
+.btn-gold{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;background:var(--gold);color:#fff;font-size:0.86rem;font-weight:700;letter-spacing:0.06em;border:none;cursor:pointer;font-family:inherit;text-decoration:none;transition:background 0.2s;}
+.btn-gold:hover{background:var(--gold-light);}
+.btn-back{display:inline-block;margin-top:30px;font-size:0.85rem;color:var(--gold);text-decoration:none;font-weight:600;letter-spacing:0.04em;}
+.btn-back:hover{text-decoration:underline;}
+.tip-box{background:rgba(201,168,76,0.08);border-left:3px solid var(--gold);padding:14px 18px;margin-bottom:30px;font-size:0.88rem;color:var(--text-mid);line-height:1.7;}
+.tip-box b{color:var(--gold);}
+</style>
+</head>
+<body>
+<nav>
+  <a href="curriculum.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="curriculum.html" class="nav-back">← 커리큘럼</a>
+</nav>
+<div id="app">
+<div class="wrap">
+  <div class="eyebrow">Step 1 · Video Interview</div>
+  <h1 class="title"><em>비디오 면접</em> 준비</h1>
+  <div class="gold-bar"></div>
+  <p class="sub">에미레이트 비디오 면접에서 자주 나오는 질문 3가지를 미리 연습하세요.<br>각 질문에서 "답변 연습하기"를 누르면 AI 면접관과 실전처럼 대화할 수 있어요.</p>
+
+  <div class="tip-box">💡 <b>TIP</b> — 카메라를 정면으로 응시하고, 30~60초 안에 핵심만 전달하세요. 자연스러운 미소와 또렷한 발음이 평가의 핵심입니다.</div>
+
+  <div class="q-card">
+    <div class="q-num">Question 1</div>
+    <div class="q-text">간단한 자기소개를 해주세요.</div>
+    <div class="q-hint">힌트: <b>이름 → 지원 동기 → 강점</b> (30~60초)</div>
+    <a href="roleplay.html" class="btn-gold">답변 연습하기 →</a>
+  </div>
+
+  <div class="q-card">
+    <div class="q-num">Question 2</div>
+    <div class="q-text">왜 승무원이 되고 싶으신가요?</div>
+    <div class="q-hint">힌트: 개인적 경험 + 항공사의 가치 연결 (40초)</div>
+    <a href="roleplay.html" class="btn-gold">답변 연습하기 →</a>
+  </div>
+
+  <div class="q-card highlight">
+    <div class="q-num">Question 3 · 랜덤 롤플레이</div>
+    <div class="q-text" id="random-q">—</div>
+    <div class="q-hint">힌트: STAR 구조(상황-행동-결과)로 30~50초 답변</div>
+    <a href="roleplay.html" class="btn-gold">답변 연습하기 →</a>
+  </div>
+
+  <a href="curriculum.html" class="btn-back">← 커리큘럼으로 돌아가기</a>
+</div>
+</div>
+<script>
+var RANDOM_QS=[
+  'Tell me about a time you went the extra mile for a customer.',
+  'What would you do if a passenger refused to wear a seatbelt?',
+  'Describe your ideal team member.',
+  'How would you handle a language barrier with a passenger?',
+  'What does excellent service mean to you?',
+  'Tell me about a moment you stayed calm under pressure.',
+  'What is your biggest strength as a future cabin crew?',
+  'How do you build rapport with passengers from different cultures?'
+];
+document.getElementById('random-q').textContent=RANDOM_QS[Math.floor(Math.random()*RANDOM_QS.length)];
+</script>
+</body>
+</html>

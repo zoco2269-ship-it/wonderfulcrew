@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WonderfulCrew — 파이널 인터뷰</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--cream-dark:#F0EAD8;--navy:#1A2340;--navy-light:#2A3455;--text-dark:#1A1A1A;--text-mid:#3A3430;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"Noto Sans KR",sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:68px;background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"Cormorant Garamond",serif;font-size:1.45rem;font-weight:600;color:var(--navy);text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.82rem;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--gold);}
+#app{padding-top:68px;animation:fadeUp 0.5s ease;}
+.wrap{max-width:720px;margin:0 auto;padding:60px 24px;}
+.eyebrow{font-family:"Cormorant Garamond",serif;font-size:0.78rem;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;font-weight:600;}
+.title{font-family:"Noto Serif KR",serif;font-size:clamp(1.7rem,3vw,2.4rem);font-weight:400;color:var(--navy);line-height:1.35;margin-bottom:10px;}
+.title em{font-style:normal;color:var(--gold);}
+.sub{font-size:0.92rem;color:var(--text-muted);line-height:1.75;margin-bottom:8px;}
+.gold-bar{width:36px;height:2px;background:var(--gold);margin:18px 0 36px;}
+
+.intro-box{background:rgba(201,168,76,0.08);border-left:3px solid var(--gold);padding:16px 20px;margin-bottom:30px;font-size:0.88rem;color:var(--text-mid);line-height:1.75;}
+.intro-box b{color:var(--gold);}
+
+.q-card{background:#fff;border:1.5px solid rgba(201,168,76,0.25);padding:20px 24px;margin-bottom:12px;animation:fadeUp 0.5s ease;display:flex;align-items:flex-start;gap:18px;}
+.q-card .num{font-family:"Cormorant Garamond",serif;font-size:1.6rem;color:var(--gold);font-weight:600;line-height:1;flex-shrink:0;width:32px;text-align:center;}
+.q-card .text{font-size:0.95rem;color:var(--navy);font-weight:600;line-height:1.55;}
+.btn-gold{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;background:var(--gold);color:#fff;font-size:0.9rem;font-weight:700;letter-spacing:0.06em;border:none;cursor:pointer;font-family:inherit;text-decoration:none;transition:background 0.2s;margin-top:30px;}
+.btn-gold:hover{background:var(--gold-light);}
+.btn-back{display:inline-block;margin-top:24px;font-size:0.85rem;color:var(--gold);text-decoration:none;font-weight:600;letter-spacing:0.04em;}
+.btn-back:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="curriculum.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="curriculum.html" class="nav-back">← 커리큘럼</a>
+</nav>
+<div id="app">
+<div class="wrap">
+  <div class="eyebrow">Step 5 · Final Interview</div>
+  <h1 class="title"><em>파이널 인터뷰</em></h1>
+  <div class="gold-bar"></div>
+  <p class="sub">에미레이트 최종 면접에서 가장 자주 나오는 6가지 질문이에요.<br>STAR 구조(Situation–Task–Action–Result)로 답변을 준비하세요.</p>
+
+  <div class="intro-box">💡 <b>에미레이트 최종 면접 핵심</b> — 1:1 면접관 + 30~45분 진행. 인성과 서비스 경험에 집중합니다. 답변은 <b>구체적인 경험</b>과 <b>숫자/결과</b>로 뒷받침하세요.</div>
+
+  <div class="q-card"><div class="num">1</div><div class="text">Tell me about your best service experience.</div></div>
+  <div class="q-card"><div class="num">2</div><div class="text">Have you ever dealt with a demanding customer?</div></div>
+  <div class="q-card"><div class="num">3</div><div class="text">Tell me about a time you helped a colleague.</div></div>
+  <div class="q-card"><div class="num">4</div><div class="text">Have you ever had a conflict with a colleague?</div></div>
+  <div class="q-card"><div class="num">5</div><div class="text">Have you ever shown respect for Muslim culture?</div></div>
+  <div class="q-card"><div class="num">6</div><div class="text">Why do you want to work for Emirates?</div></div>
+
+  <a href="roleplay.html" class="btn-gold">최종 면접 연습 →</a>
+  <br>
+  <a href="curriculum.html" class="btn-back">← 커리큘럼으로 돌아가기</a>
+</div>
+</div>
+</body>
+</html>

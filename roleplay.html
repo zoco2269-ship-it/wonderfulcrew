@@ -799,5 +799,61 @@ function renderResult(r){
   showScreen('result');
 }
 </script>
+
+<!-- ─── 음성 대화 개선 (TTS + W 아바타) — 비파괴 추가 ─── -->
+<style>
+#cam-placeholder.wc-w-mode .cam-placeholder-icon{display:none;}
+#cam-placeholder.wc-w-mode .wc-w-avatar{
+  width:120px;height:120px;border-radius:50%;
+  background:linear-gradient(135deg,#C5A55A,#D4B96E);
+  border:3px solid #C5A55A;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:700;
+  color:#fff;margin:0 auto 16px;
+  box-shadow:0 8px 30px rgba(197,165,90,0.35);
+}
+#cam-placeholder .wc-w-avatar{display:none;}
+#cam-placeholder.wc-w-mode .wc-w-avatar{display:flex;}
+</style>
+<script>
+(function(){
+  // 1) cam-placeholder에 W 아바타 주입 (카메라 OFF 상태일 때만 보이도록)
+  function injectWAvatar(){
+    var ph=document.getElementById('cam-placeholder');
+    if(!ph||ph.querySelector('.wc-w-avatar'))return;
+    var w=document.createElement('div');
+    w.className='wc-w-avatar';
+    w.textContent='W';
+    ph.insertBefore(w,ph.firstChild);
+    ph.classList.add('wc-w-mode');
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',injectWAvatar);
+  else injectWAvatar();
+
+  // 2) showQuestion 비파괴 오버라이드 → AI 질문 TTS 자동 재생
+  function speak(text){
+    try{
+      if(!('speechSynthesis' in window))return;
+      window.speechSynthesis.cancel();
+      var u=new SpeechSynthesisUtterance(text);
+      u.lang=(typeof LANG!=='undefined'&&LANG==='en')?'en-US':'ko-KR';
+      u.rate=0.95;u.pitch=1.0;u.volume=1.0;
+      // 약간의 딜레이 후 재생 (UI 렌더링 후)
+      setTimeout(function(){window.speechSynthesis.speak(u);},150);
+    }catch(e){console.warn('[TTS]',e);}
+  }
+  if(typeof window.showQuestion==='function'){
+    var _origShowQ=window.showQuestion;
+    window.showQuestion=function(idx){
+      var ret=_origShowQ.apply(this,arguments);
+      try{
+        var cfg=(typeof CONFIGS!=='undefined'&&typeof LANG!=='undefined')?CONFIGS[LANG]:null;
+        if(cfg&&cfg.questions&&cfg.questions[idx])speak(cfg.questions[idx].q);
+      }catch(e){}
+      return ret;
+    };
+  }
+})();
+</script>
 </body>
 </html>

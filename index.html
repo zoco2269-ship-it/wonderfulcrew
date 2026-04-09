@@ -34,7 +34,7 @@ nav {
 }
 .nav-logo {
   font-family:'DM Serif Display',serif;
-  font-size:1.5rem;font-weight:600;
+  font-size:1.5rem;font-weight:400;
   color:var(--navy);letter-spacing:0.02em;
 }
 .nav-logo span{color:var(--gold);}
@@ -148,12 +148,21 @@ section{padding:100px 5%;}
 .about-body+.about-body{margin-bottom:16px;}
 .btn-text-gold {
   display:inline-flex;align-items:center;gap:8px;
-  color:var(--gold);font-size:0.85rem;font-weight:500;
-  letter-spacing:0.08em;text-decoration:none;
-  margin-top:24px;border-bottom:1px solid transparent;
-  transition:border-color 0.2s;padding-bottom:2px;
+  color:var(--gold);font-size:0.92rem;font-weight:700;
+  letter-spacing:0.06em;text-decoration:none;
+  margin-top:24px;border-bottom:2px solid var(--gold);
+  transition:opacity 0.2s;padding-bottom:3px;
 }
-.btn-text-gold:hover{border-color:var(--gold);}
+.btn-text-gold:hover{opacity:0.75;}
+.btn-text-outline {
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--navy);font-size:0.92rem;font-weight:600;
+  letter-spacing:0.06em;text-decoration:none;
+  margin-top:24px;margin-left:24px;
+  border-bottom:2px solid var(--navy);
+  transition:opacity 0.2s;padding-bottom:3px;
+}
+.btn-text-outline:hover{opacity:0.6;}
 .about-img-wrap{position:relative;}
 .about-img {
   width:100%;aspect-ratio:4/5;
@@ -266,7 +275,7 @@ section{padding:100px 5%;}
 }
 .res-card-body{padding:16px 0 0;}
 .res-card-title{font-size:0.96rem;font-weight:700;color:var(--navy);line-height:1.5;margin-bottom:8px;}
-.res-card-desc{font-size:0.85rem;color:#4A4438;line-height:1.7;font-weight:400;}
+.res-card-desc{font-size:0.85rem;color:#4A4438;line-height:1.7;font-weight:400;min-height:60px;}
 .res-card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
 .res-read-time{font-size:0.72rem;color:var(--text-muted);}
 .res-more{font-size:0.75rem;color:var(--gold);font-weight:500;text-decoration:none;transition:gap 0.2s;display:flex;align-items:center;gap:4px;}
@@ -480,6 +489,7 @@ footer{
       <p class="about-body">단순한 암기식 준비가 아닌, 진짜 실력 향상을 위한 실전 경험을 통해 합격으로 이끕니다. 국내외 주요 항공사의 면접 트렌드를 분석하고, 개인 맞춤형 피드백으로 각 지원자의 강점을 극대화하는 커리큘럼을 제공합니다.</p>
       <p class="about-body">1천 명 이상의 합격자를 배출한 검증된 교육 시스템으로, 당신의 꿈을 현실로 만들어 드리겠습니다.</p>
       <a href="leveltest.html" class="btn-text-gold">체험하기 →</a>
+      <a href="#ai-demo" class="btn-text-outline">더 알아보기 →</a>
     </div>
     <div class="about-img-wrap reveal reveal-delay-1">
       <img id="about-img" class="about-img" src="images/img2.jpg" alt="원더풀크루 코치">

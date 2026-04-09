@@ -98,7 +98,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
     <div class="eyebrow">Your Curriculum</div>
     <h1 class="title"><em id="cur-airline">선택한 항공사</em><br>맞춤 커리큘럼</h1>
     <div class="gold-bar"></div>
-    <p class="sub">아래 6단계 커리큘럼으로 합격까지 함께합니다.<br>현재는 <b style="color:var(--gold);">⑤ 롤플레이 면접</b>이 활성화되어 있어요.</p>
+    <p class="sub">단계별로 시작하기 버튼을 눌러 AI 면접 연습을 시작하세요.</p>
     <div class="step-grid" id="step-grid"></div>
   </div>
 
@@ -184,13 +184,12 @@ AIRLINES.forEach(function(a){
 // ─── 항공사 선택 ───
 function selectAirline(a){
   try{localStorage.setItem('wc_airline',a.key);localStorage.setItem('wc_airline_name',a.ko);}catch(e){}
-  document.querySelectorAll('.airline-card').forEach(function(c){
-    c.classList.toggle('selected',c.dataset.key===a.key);
-  });
+  // 에미레이트는 프로세스 페이지로
+  if(a.key==='emirates'){location.href='emirates-process.html';return;}
+  // 나머지: 항공사 섹션 숨기고 커리큘럼만 보이게
+  document.getElementById('section-airline').style.display='none';
   showCurriculum(a);
-  setTimeout(function(){
-    document.getElementById('section-curriculum').scrollIntoView({behavior:'smooth',block:'start'});
-  },120);
+  window.scrollTo(0,0);
 }
 
 // ─── 커리큘럼 섹션 ───
@@ -217,7 +216,10 @@ function showCurriculum(a){
 // 이미 항공사 선택 이력이 있으면 자동으로 커리큘럼 노출
 if(savedAirline){
   var found=AIRLINES.find(function(x){return x.key===savedAirline;});
-  if(found)showCurriculum(found);
+  if(found&&found.key!=='emirates'){
+    document.getElementById('section-airline').style.display='none';
+    showCurriculum(found);
+  }
 }
 </script>
 
@@ -277,21 +279,9 @@ if(savedAirline){
   // 기존 showCurriculum 함수 비파괴 오버라이드
   var _orig=window.showCurriculum;
   window.showCurriculum=function(a){
-    if(a&&a.key==='emirates'){
-      // 에미레이트: 프로세스 페이지로 이동
-      location.href='emirates-process.html';
-      return;
-    }
+    if(a&&a.key==='emirates')return renderEmirates(a);
     return _orig(a);
   };
-  // 페이지 로드 시 이미 에미레이트가 저장되어 있었다면 다시 렌더
-  try{
-    var saved=localStorage.getItem('wc_airline');
-    if(saved==='emirates'){
-      var f=AIRLINES.find(function(x){return x.key==='emirates';});
-      if(f)renderEmirates(f);
-    }
-  }catch(e){}
 })();
 </script>
 </body>

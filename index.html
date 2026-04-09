@@ -455,6 +455,8 @@ footer{
     <a href="#expertise">준비 과정</a>
     <a href="#resources">학습 자료</a>
     <a href="#">면접 연습</a>
+    <a href="daily-english.html">영어연습</a>
+    <a href="jobs.html">채용정보</a>
   </div>
   <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
 </nav>
@@ -558,6 +560,101 @@ footer{
 
   </div>
 </section>
+
+<!-- RECRUITMENT -->
+<style>
+#recruitment{background:var(--cream);}
+.recruit-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+.recruit-card{background:#fff;border:1px solid var(--gold-pale);padding:36px;box-shadow:0 8px 40px rgba(0,0,0,0.04);}
+.recruit-card h3{font-family:'Noto Serif KR',serif;font-size:1.3rem;color:var(--navy);font-weight:600;margin-bottom:6px;}
+.recruit-card .sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:24px;letter-spacing:0.03em;}
+.dday-badge{display:inline-block;padding:6px 14px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;border-radius:14px;margin-bottom:18px;}
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.cal-month{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--navy);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;font-size:0.78rem;}
+.cal-dow{text-align:center;padding:8px 0;color:var(--text-muted);font-weight:600;font-size:0.7rem;letter-spacing:0.05em;}
+.cal-day{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:var(--text-dark);border:1px solid transparent;border-radius:4px;cursor:default;}
+.cal-day.muted{color:#ccc;}
+.cal-day.today{background:var(--navy);color:#fff;font-weight:600;}
+.cal-day.event::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--gold);}
+.cal-day.event{font-weight:600;color:var(--gold);}
+.cal-day.event.today{color:#fff;}
+.cal-legend{margin-top:18px;padding-top:18px;border-top:1px solid var(--gold-pale);}
+.cal-legend li{list-style:none;display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text-mid);padding:6px 0;}
+.cal-legend li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.news-list{list-style:none;}
+.news-item{display:block;padding:18px 0;border-bottom:1px solid var(--gold-pale);text-decoration:none;color:inherit;transition:padding 0.2s;}
+.news-item:hover{padding-left:6px;}
+.news-item:last-child{border-bottom:none;}
+.news-tag{display:inline-block;padding:3px 10px;background:var(--gold-pale);color:var(--gold);font-size:0.68rem;font-weight:700;letter-spacing:0.05em;border-radius:10px;margin-bottom:8px;}
+.news-title{font-size:0.95rem;color:var(--navy);font-weight:600;margin-bottom:4px;line-height:1.5;}
+.news-date{font-size:0.75rem;color:var(--text-muted);}
+.recruit-more{display:inline-flex;align-items:center;gap:8px;margin-top:24px;color:var(--gold);font-size:0.9rem;font-weight:700;letter-spacing:0.05em;text-decoration:none;}
+.recruit-more:hover{opacity:0.75;}
+@media(max-width:900px){.recruit-inner{grid-template-columns:1fr;}}
+</style>
+<section id="recruitment">
+  <div class="sec-label">Recruitment · 채용 정보</div>
+  <h2 class="sec-title">놓치면 안 되는<br><em>채용 일정 & 뉴스</em></h2>
+  <div class="gold-line"></div>
+  <div class="recruit-inner">
+    <div class="recruit-card">
+      <div class="dday-badge" id="dday-badge">에미레이트 오픈데이 D-14</div>
+      <h3>채용 캘린더</h3>
+      <div class="sub">이번 달 오픈데이 · 채용일정</div>
+      <div class="cal-head">
+        <div class="cal-month" id="cal-month">2026 April</div>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <ul class="cal-legend" id="cal-legend"></ul>
+    </div>
+    <div class="recruit-card">
+      <h3>최신 채용 뉴스</h3>
+      <div class="sub">항공사 공고 & 관련 소식</div>
+      <ul class="news-list">
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">EMIRATES</span><div class="news-title">에미레이트항공 서울 오픈데이 개최</div><div class="news-date">2026.04.24</div></a></li>
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">QATAR</span><div class="news-title">카타르항공 한국인 승무원 상시채용</div><div class="news-date">2026.04.18</div></a></li>
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">KOREAN AIR</span><div class="news-title">대한항공 신입 객실승무원 공개채용 예정</div><div class="news-date">2026.04.15</div></a></li>
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">SINGAPORE</span><div class="news-title">싱가포르항공 채용설명회 안내</div><div class="news-date">2026.04.10</div></a></li>
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">CATHAY</span><div class="news-title">캐세이퍼시픽 2026 Cabin Crew 모집</div><div class="news-date">2026.04.05</div></a></li>
+      </ul>
+      <a href="jobs.html" class="recruit-more">전체 채용정보 보기 →</a>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var events=[
+    {day:24,label:'에미레이트 오픈데이'},
+    {day:18,label:'카타르항공 인터뷰'},
+    {day:29,label:'싱가포르항공 설명회'}
+  ];
+  var today=new Date();
+  var y=today.getFullYear(),m=today.getMonth();
+  var first=new Date(y,m,1).getDay();
+  var last=new Date(y,m+1,0).getDate();
+  var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-month').textContent=y+' '+months[m];
+  var grid=document.getElementById('cal-grid');
+  var dows=['S','M','T','W','T','F','S'];
+  dows.forEach(function(d){var el=document.createElement('div');el.className='cal-dow';el.textContent=d;grid.appendChild(el);});
+  for(var i=0;i<first;i++){var e=document.createElement('div');e.className='cal-day muted';grid.appendChild(e);}
+  var eventDays=events.map(function(x){return x.day;});
+  for(var d=1;d<=last;d++){
+    var el=document.createElement('div');el.className='cal-day';el.textContent=d;
+    if(d===today.getDate())el.classList.add('today');
+    if(eventDays.indexOf(d)>-1)el.classList.add('event');
+    grid.appendChild(el);
+  }
+  var legend=document.getElementById('cal-legend');
+  events.forEach(function(x){var li=document.createElement('li');li.textContent=x.label+' · '+(m+1)+'월 '+x.day+'일';legend.appendChild(li);});
+  // D-day to nearest upcoming event
+  var upcoming=events.filter(function(x){return x.day>=today.getDate();}).sort(function(a,b){return a.day-b.day;})[0]||events[0];
+  var diff=upcoming.day-today.getDate();
+  document.getElementById('dday-badge').textContent=upcoming.label+' D-'+(diff>=0?diff:0);
+})();
+</script>
+
 <script>
 function playDemo(){
   var video=document.getElementById('demo-video');

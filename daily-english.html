@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>매일 영어 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}
+a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:36px;}
+.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;}
+
+.hero{padding:130px 5% 60px;text-align:center;background:var(--navy);color:#fff;}
+.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:clamp(1.9rem,3.6vw,2.8rem);font-weight:300;margin-bottom:10px;}
+.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.streak-row{display:inline-flex;gap:30px;margin-top:22px;padding:16px 32px;background:rgba(255,255,255,0.06);border:1px solid rgba(232,201,106,0.3);border-radius:40px;}
+.streak-item .n{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--gold-light);}
+.streak-item .l{font-size:0.72rem;color:rgba(255,255,255,0.7);letter-spacing:0.05em;}
+
+section{padding:80px 5%;}
+.sec-label{font-family:'DM Serif Display',serif;font-size:0.75rem;letter-spacing:0.35em;color:var(--gold);text-align:center;margin-bottom:14px;text-transform:uppercase;font-weight:700;}
+.sec-title{font-size:clamp(1.6rem,3vw,2.3rem);font-weight:400;color:var(--navy);text-align:center;margin-bottom:14px;}
+.sec-title em{font-style:normal;color:var(--gold);}
+.gold-line{width:40px;height:1px;background:var(--gold);margin:0 auto 48px;}
+
+.q-wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:26px;}
+.q-card{background:#fff;border:1px solid var(--gold-pale);border-left:3px solid var(--gold);padding:30px 32px;}
+.q-num{font-family:'DM Serif Display',serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:10px;text-transform:uppercase;}
+.q-text{font-size:1.1rem;color:var(--navy);font-weight:600;line-height:1.5;margin-bottom:18px;}
+.q-textarea{width:100%;min-height:110px;padding:14px 16px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.95rem;color:var(--text-dark);background:var(--cream);resize:vertical;}
+.q-textarea:focus{outline:none;border-color:var(--gold);}
+.q-submit{margin-top:14px;padding:10px 24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;cursor:pointer;}
+.q-submit:disabled{opacity:0.6;cursor:not-allowed;}
+.q-feedback{margin-top:18px;padding:18px 20px;background:var(--cream);border-left:3px solid var(--gold);font-size:0.92rem;line-height:1.75;color:var(--text-mid);white-space:pre-wrap;display:none;}
+.q-feedback.visible{display:block;}
+.q-feedback b{color:var(--navy);}
+
+#shadow{background:#fff;}
+.shadow-wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:22px;}
+.shadow-card{padding:26px 30px;border:1px solid var(--gold-pale);background:var(--cream);}
+.shadow-text{font-size:1.05rem;color:var(--navy);font-weight:500;line-height:1.55;margin-bottom:16px;font-family:'DM Serif Display',serif;}
+.shadow-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.shadow-btn{padding:9px 20px;border:1px solid var(--gold);background:#fff;color:var(--gold);font-family:inherit;font-size:0.8rem;font-weight:600;letter-spacing:0.04em;border-radius:20px;cursor:pointer;}
+.shadow-btn.primary{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-color:transparent;}
+.shadow-btn:hover{opacity:0.85;}
+.shadow-result{margin-top:12px;font-size:0.88rem;color:var(--text-mid);font-style:italic;}
+
+.done-banner{max-width:860px;margin:30px auto 0;padding:18px 24px;background:var(--gold-pale);border-left:3px solid var(--gold);color:var(--navy);font-size:0.92rem;display:none;text-align:center;}
+.done-banner.visible{display:block;}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <a href="index.html#about">소개</a>
+    <a href="index.html#expertise">준비 과정</a>
+    <a href="index.html#resources">학습 자료</a>
+    <a href="daily-english.html">영어연습</a>
+    <a href="jobs.html">채용정보</a>
+  </div>
+  <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
+</nav>
+
+<section class="hero">
+  <div class="label">Daily English Practice</div>
+  <h1>오늘도 한 걸음,<br><em>꾸준함이 합격의 비밀</em></h1>
+  <div id="today-date" style="margin-top:18px;color:rgba(255,255,255,0.72);font-size:0.95rem;"></div>
+  <div class="streak-row">
+    <div class="streak-item"><div class="n" id="streak-count">0</div><div class="l">연속 출석일</div></div>
+    <div class="streak-item"><div class="n" id="total-count">0</div><div class="l">총 출석일</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-label">100 Q&amp;A · Random 3</div>
+  <h2 class="sec-title">오늘의 <em>백문백답</em></h2>
+  <div class="gold-line"></div>
+  <div class="q-wrap" id="q-wrap"></div>
+  <div class="done-banner" id="done-banner">✓ 오늘의 영어 연습 완료! 연속 출석이 기록되었습니다.</div>
+</section>
+
+<section id="shadow">
+  <div class="sec-label">In-flight Announcement</div>
+  <h2 class="sec-title">기내방송 <em>쉐도잉</em></h2>
+  <div class="gold-line"></div>
+  <div class="shadow-wrap" id="shadow-wrap"></div>
+</section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+
+<script>
+// ============ DATE & STREAK ============
+var today=new Date();
+var todayKey=today.toISOString().slice(0,10);
+document.getElementById('today-date').textContent=todayKey+' ('+['일','월','화','수','목','금','토'][today.getDay()]+')';
+
+function loadStreak(){
+  var data=JSON.parse(localStorage.getItem('wc_english_streak')||'{}');
+  return {last:data.last||'',streak:data.streak||0,total:data.total||0,doneToday:data.last===todayKey};
+}
+function saveStreak(){
+  var s=loadStreak();
+  if(s.doneToday)return;
+  var y=new Date(today);y.setDate(y.getDate()-1);
+  var yKey=y.toISOString().slice(0,10);
+  var newStreak=(s.last===yKey)?s.streak+1:1;
+  localStorage.setItem('wc_english_streak',JSON.stringify({last:todayKey,streak:newStreak,total:s.total+1}));
+  renderStreak();
+  document.getElementById('done-banner').classList.add('visible');
+}
+function renderStreak(){
+  var s=loadStreak();
+  document.getElementById('streak-count').textContent=s.streak;
+  document.getElementById('total-count').textContent=s.total;
+  if(s.doneToday)document.getElementById('done-banner').classList.add('visible');
+}
+renderStreak();
+
+// ============ Q&A ============
+var QUESTIONS=[
+  "Please introduce yourself.",
+  "Why do you want to be a cabin crew member?",
+  "What is your greatest strength?",
+  "Tell me about a time you handled a difficult situation.",
+  "Why do you want to work for our airline?",
+  "What does excellent service mean to you?",
+  "Describe your ideal team member.",
+  "How do you handle stress?",
+  "Tell me about your customer service experience.",
+  "What would you do if a passenger refused to follow safety instructions?",
+  "How do you build rapport with people from different cultures?",
+  "Tell me about a time you went above and beyond for someone.",
+  "What is your favourite travel destination and why?",
+  "How do you stay calm under pressure?",
+  "What makes you different from other candidates?",
+  "Tell me about a time you worked as part of a team.",
+  "How would you handle a language barrier with a passenger?",
+  "What do you know about our airline?",
+  "Describe a time you showed leadership.",
+  "Why should we choose you?"
+];
+function pick3(){
+  var arr=QUESTIONS.slice(),out=[];
+  for(var i=0;i<3;i++){var idx=Math.floor(Math.random()*arr.length);out.push(arr.splice(idx,1)[0]);}
+  return out;
+}
+var picked=pick3();
+var qWrap=document.getElementById('q-wrap');
+picked.forEach(function(q,i){
+  var card=document.createElement('div');
+  card.className='q-card';
+  card.innerHTML='<div class="q-num">Question '+(i+1)+'</div>'+
+    '<div class="q-text">'+q+'</div>'+
+    '<textarea class="q-textarea" placeholder="Type your answer in English..."></textarea>'+
+    '<button class="q-submit">AI 피드백 받기 →</button>'+
+    '<div class="q-feedback"></div>';
+  qWrap.appendChild(card);
+  var btn=card.querySelector('.q-submit');
+  var ta=card.querySelector('.q-textarea');
+  var fb=card.querySelector('.q-feedback');
+  btn.addEventListener('click',async function(){
+    var ans=ta.value.trim();
+    if(!ans){fb.textContent='답변을 입력해 주세요.';fb.classList.add('visible');return;}
+    btn.disabled=true;btn.textContent='분석 중...';
+    fb.classList.add('visible');fb.innerHTML='<b>AI 피드백을 생성하고 있어요...</b>';
+    try{
+      var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:700,
+        system:'You are an English interview coach for cabin crew candidates. Give concise, warm feedback in Korean. Structure: 1) 잘한 점 2) 개선할 점 3) 모범 답변 예시 (1-2 sentences in English). Keep total under 250 Korean characters plus the English example.',
+        messages:[{role:'user',content:'Interview question: "'+q+'"\n\nCandidate answer:\n'+ans}]
+      })});
+      var data=await res.json();
+      var text=(data&&data.content&&data.content[0]&&data.content[0].text)||data.text||JSON.stringify(data);
+      fb.innerHTML=text.replace(/\n/g,'<br>');
+      checkAllAnswered();
+    }catch(e){
+      fb.innerHTML='<b>오류:</b> 피드백을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.';
+    }
+    btn.disabled=false;btn.textContent='다시 받기';
+  });
+});
+function checkAllAnswered(){
+  var all=document.querySelectorAll('.q-feedback.visible');
+  if(all.length>=3)saveStreak();
+}
+
+// ============ SHADOWING ============
+var SHADOW=[
+  "Ladies and gentlemen, welcome aboard. Please fasten your seatbelts.",
+  "We will be landing shortly. Please return your seat to the upright position.",
+  "In the event of a water landing, your seat cushion may be used as a flotation device."
+];
+var sWrap=document.getElementById('shadow-wrap');
+SHADOW.forEach(function(s,i){
+  var card=document.createElement('div');
+  card.className='shadow-card';
+  card.innerHTML='<div class="shadow-text">"'+s+'"</div>'+
+    '<div class="shadow-btns"><button class="shadow-btn primary" data-act="tts">🔊 듣기</button>'+
+    '<button class="shadow-btn" data-act="rec">🎙 따라읽기 시작</button></div>'+
+    '<div class="shadow-result"></div>';
+  sWrap.appendChild(card);
+  var result=card.querySelector('.shadow-result');
+  card.querySelector('[data-act="tts"]').addEventListener('click',function(){
+    if(!('speechSynthesis' in window)){result.textContent='이 브라우저는 음성 합성을 지원하지 않아요.';return;}
+    var u=new SpeechSynthesisUtterance(s);u.lang='en-US';u.rate=0.9;
+    window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+  });
+  card.querySelector('[data-act="rec"]').addEventListener('click',function(){
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){result.textContent='이 브라우저는 음성 인식을 지원하지 않아요. (Chrome 권장)';return;}
+    var rec=new SR();rec.lang='en-US';rec.interimResults=false;
+    result.textContent='🎙 듣고 있어요... 따라 말해 보세요.';
+    rec.onresult=function(ev){
+      var said=ev.results[0][0].transcript;
+      var norm=function(x){return x.toLowerCase().replace(/[^a-z ]/g,'').trim();};
+      var a=norm(said),b=norm(s);
+      var aw=a.split(/\s+/),bw=b.split(/\s+/);
+      var match=aw.filter(function(w){return bw.indexOf(w)>-1;}).length;
+      var pct=Math.round((match/bw.length)*100);
+      result.innerHTML='<b>들은 내용:</b> '+said+'<br><b>정확도:</b> '+pct+'%';
+    };
+    rec.onerror=function(){result.textContent='인식 실패. 다시 시도해 주세요.';};
+    rec.start();
+  });
+});
+</script>
+</body>
+</html>

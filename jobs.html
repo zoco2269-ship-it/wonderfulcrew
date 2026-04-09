@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>채용정보 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}
+a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:36px;}
+.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;}
+
+.hero{background:var(--navy);color:#fff;padding:160px 5% 100px;text-align:center;}
+.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:300;line-height:1.25;margin-bottom:14px;}
+.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.hero p{color:rgba(255,255,255,0.72);font-size:1rem;max-width:600px;margin:0 auto;font-weight:300;line-height:1.8;}
+
+section{padding:90px 5%;}
+.sec-label{font-family:'DM Serif Display',serif;font-size:0.75rem;letter-spacing:0.35em;color:var(--gold);text-align:center;margin-bottom:14px;text-transform:uppercase;font-weight:700;}
+.sec-title{font-size:clamp(1.7rem,3vw,2.4rem);font-weight:400;color:var(--navy);text-align:center;margin-bottom:14px;}
+.sec-title em{font-style:normal;color:var(--gold);}
+.gold-line{width:40px;height:1px;background:var(--gold);margin:0 auto 54px;}
+
+.airline-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.airline-card{background:#fff;border:1px solid var(--gold-pale);padding:32px;border-left:3px solid var(--gold);transition:transform 0.3s,box-shadow 0.3s;}
+.airline-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(201,168,76,0.12);}
+.airline-name{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:8px;}
+.airline-meta{display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap;}
+.status{padding:4px 12px;border-radius:12px;font-size:0.72rem;font-weight:700;letter-spacing:0.04em;}
+.status.open{background:#E6F4EA;color:#1E7E34;}
+.status.soon{background:#FFF3DC;color:#8A6D1A;}
+.dday{font-size:0.78rem;color:var(--gold);font-weight:700;}
+.airline-desc{font-size:0.88rem;color:var(--text-mid);line-height:1.7;margin-bottom:22px;min-height:60px;}
+.apply-btn{display:inline-block;padding:10px 22px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.8rem;font-weight:600;letter-spacing:0.06em;border-radius:20px;}
+.apply-btn.disabled{background:#ddd;color:#888;cursor:not-allowed;}
+
+#news{background:#fff;}
+.news-wrap{max-width:900px;margin:0 auto;}
+.news-item{display:block;padding:22px 0;border-bottom:1px solid var(--gold-pale);transition:padding 0.2s;}
+.news-item:hover{padding-left:8px;}
+.news-tag{display:inline-block;padding:3px 10px;background:var(--gold-pale);color:var(--gold);font-size:0.68rem;font-weight:700;border-radius:10px;margin-bottom:8px;letter-spacing:0.04em;}
+.news-title{font-size:1.02rem;color:var(--navy);font-weight:600;margin-bottom:4px;}
+.news-date{font-size:0.76rem;color:var(--text-muted);}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.airline-grid{grid-template-columns:1fr;}.nav-links{display:none;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <a href="index.html#about">소개</a>
+    <a href="index.html#expertise">준비 과정</a>
+    <a href="index.html#resources">학습 자료</a>
+    <a href="daily-english.html">영어연습</a>
+    <a href="jobs.html">채용정보</a>
+  </div>
+  <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
+</nav>
+
+<section class="hero">
+  <div class="label">Cabin Crew Recruitment</div>
+  <h1>지금 열려있는<br><em>글로벌 항공사 채용</em></h1>
+  <p>에미레이트, 카타르, 싱가포르, 캐세이, 대한항공, 아시아나 — 주요 항공사 채용 소식을 한 곳에서 확인하세요.</p>
+</section>
+
+<section>
+  <div class="sec-label">Airlines</div>
+  <h2 class="sec-title">항공사별 <em>채용 현황</em></h2>
+  <div class="gold-line"></div>
+  <div class="airline-grid">
+    <div class="airline-card">
+      <div class="airline-name">Emirates</div>
+      <div class="airline-meta"><span class="status open">채용중</span><span class="dday">D-14</span></div>
+      <p class="airline-desc">두바이 베이스 · 서울 오픈데이 진행. 영어 인터뷰 + 암아즈 테스트 포함.</p>
+      <a href="emirates-process.html" class="apply-btn">지원하기 →</a>
+    </div>
+    <div class="airline-card">
+      <div class="airline-name">Qatar Airways</div>
+      <div class="airline-meta"><span class="status open">채용중</span><span class="dday">상시</span></div>
+      <p class="airline-desc">도하 베이스 · 한국인 승무원 상시 채용. 온라인 CV 심사부터 시작.</p>
+      <a href="#" class="apply-btn">지원하기 →</a>
+    </div>
+    <div class="airline-card">
+      <div class="airline-name">Singapore Airlines</div>
+      <div class="airline-meta"><span class="status open">채용중</span><span class="dday">D-19</span></div>
+      <p class="airline-desc">싱가포르 베이스 · 서울 채용설명회 및 면접. 스몰토크 & 그룹 인터뷰.</p>
+      <a href="#" class="apply-btn">지원하기 →</a>
+    </div>
+    <div class="airline-card">
+      <div class="airline-name">Cathay Pacific</div>
+      <div class="airline-meta"><span class="status open">채용중</span><span class="dday">D-28</span></div>
+      <p class="airline-desc">홍콩 베이스 · 2026 Cabin Crew 모집. 영어 인터뷰 및 Safety Demo.</p>
+      <a href="#" class="apply-btn">지원하기 →</a>
+    </div>
+    <div class="airline-card">
+      <div class="airline-name">Korean Air</div>
+      <div class="airline-meta"><span class="status soon">준비중</span><span class="dday">예정</span></div>
+      <p class="airline-desc">국내 최대 FSC · 신입 객실승무원 공개채용 하반기 예정.</p>
+      <a href="#" class="apply-btn disabled">준비중</a>
+    </div>
+    <div class="airline-card">
+      <div class="airline-name">Asiana Airlines</div>
+      <div class="airline-meta"><span class="status soon">준비중</span><span class="dday">예정</span></div>
+      <p class="airline-desc">스타얼라이언스 · 인천 베이스. 공채 일정 공지 대기중.</p>
+      <a href="#" class="apply-btn disabled">준비중</a>
+    </div>
+  </div>
+</section>
+
+<section id="news">
+  <div class="sec-label">Latest News</div>
+  <h2 class="sec-title">전체 <em>채용 · 뉴스</em></h2>
+  <div class="gold-line"></div>
+  <div class="news-wrap">
+    <a href="#" class="news-item"><span class="news-tag">EMIRATES</span><div class="news-title">에미레이트항공 서울 오픈데이 개최 (4월 24일)</div><div class="news-date">2026.04.24</div></a>
+    <a href="#" class="news-item"><span class="news-tag">QATAR</span><div class="news-title">카타르항공 한국인 승무원 상시채용 안내</div><div class="news-date">2026.04.18</div></a>
+    <a href="#" class="news-item"><span class="news-tag">KOREAN AIR</span><div class="news-title">대한항공 신입 객실승무원 공개채용 예정</div><div class="news-date">2026.04.15</div></a>
+    <a href="#" class="news-item"><span class="news-tag">SINGAPORE</span><div class="news-title">싱가포르항공 채용설명회 안내 (4월 29일)</div><div class="news-date">2026.04.10</div></a>
+    <a href="#" class="news-item"><span class="news-tag">CATHAY</span><div class="news-title">캐세이퍼시픽 2026 Cabin Crew 모집 개시</div><div class="news-date">2026.04.05</div></a>
+    <a href="#" class="news-item"><span class="news-tag">ASIANA</span><div class="news-title">아시아나항공 하반기 공채 일정 발표 예정</div><div class="news-date">2026.04.02</div></a>
+    <a href="#" class="news-item"><span class="news-tag">EMIRATES</span><div class="news-title">에미레이트 Grooming Tip: 면접 복장 가이드</div><div class="news-date">2026.03.28</div></a>
+    <a href="#" class="news-item"><span class="news-tag">QATAR</span><div class="news-title">카타르항공 Final Interview 합격 후기 모음</div><div class="news-date">2026.03.22</div></a>
+    <a href="#" class="news-item"><span class="news-tag">INDUSTRY</span><div class="news-title">2026 글로벌 항공사 채용 트렌드 리포트</div><div class="news-date">2026.03.15</div></a>
+    <a href="#" class="news-item"><span class="news-tag">TIPS</span><div class="news-title">영어 인터뷰 합격률을 높이는 5가지 습관</div><div class="news-date">2026.03.10</div></a>
+  </div>
+</section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+</body>
+</html>

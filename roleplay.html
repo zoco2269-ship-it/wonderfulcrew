@@ -328,8 +328,8 @@ nav{
 <!-- SCREEN 0: 언어 선택 -->
 <div id="screen-lang" class="screen active">
   <div class="lang-wrap">
-    <div class="eyebrow">AI Interview Simulation</div>
-    <h1 class="big-title">실제 면접처럼<br><em>AI와 롤플레이</em></h1>
+    <div class="eyebrow" id="lang-eyebrow">AI Interview Simulation</div>
+    <h1 class="big-title" id="lang-main-title">실제 면접처럼<br><em>AI와 롤플레이</em></h1>
     <div class="gold-bar"></div>
     <p class="sub-txt">AI 면접관이 질문을 던집니다. 카메라 앞에서 직접 답하고, 즉각적인 피드백을 받으세요.</p>
     <div class="lang-cards">
@@ -448,13 +448,28 @@ nav{
 </div><!-- #app -->
 
 <script>
-// 레벨테스트 + 항공사 선택 가드 — 둘 다 없으면 leveltest로 리다이렉트
+// 레벨테스트 + 항공사 선택 가드
 (function(){
   var hasLevel=false,hasAirline=false;
   try{hasLevel=!!localStorage.getItem('wc_level_result');}catch(e){}
   try{hasAirline=!!localStorage.getItem('wc_airline');}catch(e){}
   if(!hasLevel&&!hasAirline){location.replace('leveltest.html');return;}
 })();
+
+// ── 단계 모드 (URL ?mode=video|presentation|discussion1|discussion2|roleplay|final) ──
+var URL_PARAMS=new URLSearchParams(location.search);
+var PAGE_MODE=URL_PARAMS.get('mode')||'roleplay';
+var MODE_CONFIG={
+  'video':       {titleKo:'비디오 면접',    eyebrow:'Step 1 — Video Interview',    hasCamera:true},
+  'presentation':{titleKo:'1차 발표',       eyebrow:'Step 2 — 1st Presentation',   hasCamera:true},
+  'discussion1': {titleKo:'1차 디스커션',   eyebrow:'Step 3 — 1st Discussion',     hasCamera:true},
+  'discussion2': {titleKo:'2차 디스커션',   eyebrow:'Step 4 — 2nd Discussion',     hasCamera:false},
+  'roleplay':    {titleKo:'롤플레이 면접',  eyebrow:'Step 5 — Roleplay Interview',  hasCamera:false},
+  'final':       {titleKo:'파이널 인터뷰',  eyebrow:'Step 6 — Final Interview',     hasCamera:false}
+};
+var MCONF=MODE_CONFIG[PAGE_MODE]||MODE_CONFIG['roleplay'];
+document.title='WonderfulCrew — '+MCONF.titleKo;
+
 var U_RP={};
 var LANG='ko';
 var SESSION={qIdx:0,answers:[],mediaStream:null,mediaRec:null,recChunks:[],isRecording:false,history:[]};
@@ -587,27 +602,30 @@ function showScreen(n){
 async function startSession(lang){
   LANG=lang;
   var cfg=CONFIGS[lang];
-  // 면접관 정보 세팅
   document.getElementById('interviewer-name').textContent=cfg.interviewerName;
   if(U_RP.name){document.getElementById('cq-hint').textContent='안녕하세요, '+U_RP.name+'님! 마이크 버튼을 눌러 답변을 시작하세요';}
   document.getElementById('interviewer-role').textContent=cfg.interviewerRole;
   document.getElementById('panel-title').textContent=cfg.panelTitle;
-  // Q 진행 바
   var pb=document.getElementById('q-progress');
   pb.innerHTML=cfg.questions.map(function(_,i){return '<div class="q-pip" id="qpip-'+i+'"></div>';}).join('');
   document.getElementById('qpip-0').classList.add('active');
   showScreen('roleplay');
-  // 카메라 시작
-  try{
-
+  // 카메라: hasCamera 모드만 시작, 아니면 텍스트 전용 플레이스홀더
+  if(MCONF.hasCamera){
+    try{await initCamera();}catch(e){}
+  } else {
+    // 텍스트 채팅 모드 — 아바타 이미지만 표시
     var v=document.getElementById('user-video');
-    v.srcObject=SESSION.mediaStream;
-    document.getElementById('cam-placeholder').style.display='none';
-    document.getElementById('rec-badge').style.display='flex';
-  }catch(e){
-    // 카메라 없이도 진행 가능
+    v.style.display='none';
+    var ph=document.getElementById('cam-placeholder');
+    ph.style.display='flex';
+    ph.innerHTML='<div style="text-align:center;padding:30px 20px;">'
+      +'<div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#8B6914);display:flex;align-items:center;justify-content:center;font-size:2.8rem;margin:0 auto 16px;border:2px solid rgba(201,168,76,0.4);">✈️</div>'
+      +'<div style="font-size:0.9rem;color:rgba(255,255,255,0.7);font-weight:600;margin-bottom:6px;">'+MCONF.titleKo+'</div>'
+      +'<div style="font-size:0.78rem;color:rgba(255,255,255,0.4);line-height:1.6;">AI 면접관과 텍스트로<br>실시간 대화를 나눠요</div>'
+      +'</div>';
+    document.getElementById('rec-badge').style.display='none';
   }
-  // 첫 질문 출력
   setTimeout(function(){showQuestion(0);},800);
 }
 
@@ -836,10 +854,38 @@ function renderResult(r){
       if(!('speechSynthesis' in window))return;
       window.speechSynthesis.cancel();
       var u=new SpeechSynthesisUtterance(text);
-      u.lang=(typeof LANG!=='undefined'&&LANG==='en')?'en-US':'ko-KR';
-      u.rate=0.95;u.pitch=1.0;u.volume=1.0;
-      // 약간의 딜레이 후 재생 (UI 렌더링 후)
-      setTimeout(function(){window.speechSynthesis.speak(u);},150);
+      var isKo=(typeof LANG!=='undefined'&&LANG==='ko');
+      u.lang=isKo?'ko-KR':'en-US';
+      u.rate=isKo?0.88:0.92;
+      u.pitch=isKo?1.05:1.0;
+      u.volume=1.0;
+      // 더 자연스러운 음성 선택 시도
+      var voices=window.speechSynthesis.getVoices();
+      if(voices.length>0){
+        var preferred=null;
+        if(isKo){
+          // 한국어 음성 우선순위: Google > Microsoft > 기타
+          preferred=voices.find(function(v){return v.lang==='ko-KR'&&v.name.indexOf('Google')>=0;})
+            ||voices.find(function(v){return v.lang==='ko-KR'&&v.name.indexOf('여성')>=0;})
+            ||voices.find(function(v){return v.lang==='ko-KR'&&v.name.indexOf('Female')>=0;})
+            ||voices.find(function(v){return v.lang==='ko-KR';});
+        } else {
+          preferred=voices.find(function(v){return v.lang==='en-US'&&v.name.indexOf('Google')>=0;})
+            ||voices.find(function(v){return v.lang==='en-US';});
+        }
+        if(preferred)u.voice=preferred;
+      }
+      setTimeout(function(){
+        // voices가 아직 로딩 안 됐을 수 있어서 한 번 더 시도
+        if(u.voice===undefined||u.voice===null){
+          var v2=window.speechSynthesis.getVoices();
+          var p2=isKo
+            ?v2.find(function(v){return v.lang==='ko-KR'&&v.name.indexOf('Google')>=0;})||v2.find(function(v){return v.lang==='ko-KR';})
+            :v2.find(function(v){return v.lang==='en-US';});
+          if(p2)u.voice=p2;
+        }
+        window.speechSynthesis.speak(u);
+      },200);
     }catch(e){console.warn('[TTS]',e);}
   }
   if(typeof window.showQuestion==='function'){
@@ -853,6 +899,18 @@ function renderResult(r){
       return ret;
     };
   }
+
+  // 언어 선택 화면 타이틀 동적 변경
+  function applyModeTitle(){
+    var eyebrowEl=document.getElementById('lang-eyebrow');
+    var titleEl=document.getElementById('lang-main-title');
+    if(!eyebrowEl||!titleEl)return;
+    if(typeof MCONF==='undefined')return;
+    eyebrowEl.textContent=MCONF.eyebrow;
+    titleEl.innerHTML='AI와 함께하는<br><em>'+MCONF.titleKo+'</em>';
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyModeTitle);
+  else applyModeTitle();
 })();
 </script>
 </body>

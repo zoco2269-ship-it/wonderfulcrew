@@ -201,16 +201,16 @@ function showCurriculum(a){
   var sg=document.getElementById('step-grid');
   sg.innerHTML='';
   STEPS.forEach(function(s){
-    var el=document.createElement(s.active?'a':'div');
-    el.className='step-card '+(s.active?'active':'disabled');
-    if(s.active)el.href=s.href;
+    var el=document.createElement('a');
+    el.className='step-card active';
+    el.href=s.href||'roleplay.html';
     el.innerHTML='<div class="step-num">'+s.num+'</div>'+
       '<div class="step-body">'+
         '<div class="step-title">'+s.title+'</div>'+
         '<div class="step-desc">'+s.desc+'</div>'+
       '</div>'+
-      '<div class="step-badge '+(s.active?'ready':'soon')+'">'+(s.active?'시작 가능':'준비 중')+'</div>'+
-      (s.active?'<div class="step-arrow">→</div>':'');
+      '<div class="step-badge ready">시작하기</div>'+
+      '<div class="step-arrow">→</div>';
     sg.appendChild(el);
   });
 }
@@ -270,7 +270,7 @@ if(savedAirline){
           '<div class="step-desc">'+s.sub+'</div>'+
           listHtml+
         '</div>'+
-        '<div class="step-badge ready" style="margin-top:4px;">시작 가능</div>'+
+        '<div class="step-badge ready" style="margin-top:4px;">시작하기</div>'+
         '<div class="step-arrow" style="margin-top:4px;">→</div>';
       sg.appendChild(el);
     });

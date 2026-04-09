@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WonderfulCrew — 레벨 테스트</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--cream-dark:#F0EAD8;--navy:#1A2340;--navy-light:#2A3455;--text-dark:#1A1A1A;--text-mid:#3A3430;--text-muted:#5A5048;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -14,7 +14,7 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--cream);color:var(--t
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 @keyframes spin{to{transform:rotate(360deg)}}
 nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:68px;background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
-.nav-logo{font-family:"Cormorant Garamond",serif;font-size:1.45rem;font-weight:600;color:var(--navy);text-decoration:none;}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.45rem;font-weight:600;color:var(--navy);text-decoration:none;}
 .nav-logo span{color:var(--gold);}
 .nav-back{font-size:0.82rem;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
 .nav-back:hover{color:var(--gold);}
@@ -22,7 +22,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 .screen{display:none;animation:fadeUp 0.4s ease;}
 .screen.active{display:block;}
 .wrap{max-width:660px;margin:0 auto;padding:60px 24px;}
-.step-eyebrow{font-family:"Cormorant Garamond",serif;font-size:0.75rem;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;font-weight:600;}
+.step-eyebrow{font-family:"DM Serif Display",serif;font-size:0.75rem;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;font-weight:600;}
 .step-title{font-family:"Noto Serif KR",serif;font-size:clamp(1.7rem,3vw,2.3rem);font-weight:400;color:var(--navy);line-height:1.35;margin-bottom:10px;}
 .step-title em{font-style:normal;color:var(--gold);}
 .step-sub{font-size:0.9rem;color:var(--text-muted);line-height:1.75;font-weight:400;margin-bottom:36px;}
@@ -71,7 +71,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 .loading-wrap{text-align:center;padding:80px 20px;}
 .spinner{width:42px;height:42px;border:3px solid var(--gold-pale);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px;}
 .loading-msg{font-size:0.9rem;color:var(--text-muted);}
-.result-score-big{font-family:"Cormorant Garamond",serif;font-size:5.5rem;font-weight:600;color:var(--gold);line-height:1;text-align:center;}
+.result-score-big{font-family:"DM Serif Display",serif;font-size:5.5rem;font-weight:600;color:var(--gold);line-height:1;text-align:center;}
 .result-level-badge{display:inline-block;background:var(--navy);color:#fff;padding:7px 22px;font-size:0.8rem;font-weight:700;letter-spacing:0.15em;margin-top:12px;}
 .res-section{background:#fff;border:1px solid rgba(201,168,76,0.2);padding:22px;margin-bottom:14px;}
 .res-section-title{font-size:0.72rem;font-weight:700;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:14px;}
@@ -84,7 +84,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 .airline-card:hover{border-color:var(--gold);transform:translateY(-2px);}
 .airline-card.top{border-color:var(--gold);}
 .airline-best{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--gold);color:#fff;font-size:0.6rem;font-weight:700;padding:2px 8px;white-space:nowrap;}
-.airline-name{font-family:"Cormorant Garamond",serif;font-size:1rem;font-weight:600;color:var(--navy);margin-bottom:4px;}
+.airline-name{font-family:"DM Serif Display",serif;font-size:1rem;font-weight:600;color:var(--navy);margin-bottom:4px;}
 .airline-match{font-size:0.75rem;color:var(--gold);font-weight:700;}
 .airline-reason{font-size:0.7rem;color:var(--text-muted);margin-top:5px;line-height:1.4;}
 .coach-msg{background:var(--navy);border-left:3px solid var(--gold);padding:20px 22px;margin-bottom:24px;}
@@ -435,7 +435,7 @@ async function doAnalyze(textOnly){
       coaching_priority:'영어 자기소개 30초 스크립트를 먼저 완성하세요.',
       message:(U.name||'지원자')+'님, 지금 이 도전이 합격의 첫 걸음이에요. 원더풀크루와 함께라면 반드시 꿈을 이룰 수 있어요!'
     });
-  },500);
+  },0);
 }
 function renderResult(r){
   try{localStorage.setItem('wc_level_result',JSON.stringify({score:r.score,level:r.level,level_ko:r.level_ko,airlines:r.airlines,name:U.name||'지원자',savedAt:Date.now()}));}catch(e){}

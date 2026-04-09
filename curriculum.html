@@ -213,10 +213,20 @@ function showCurriculum(a){
   });
 }
 
+// URL 파라미터 ?airline=xxx 처리 (예: ?airline=emirates)
+var _urlAirline=null;
+try{_urlAirline=new URLSearchParams(location.search).get('airline');}catch(e){}
+if(_urlAirline){
+  var _foundUrl=AIRLINES.find(function(x){return x.key===_urlAirline;});
+  if(_foundUrl){
+    try{localStorage.setItem('wc_airline',_foundUrl.key);localStorage.setItem('wc_airline_name',_foundUrl.ko);}catch(e){}
+    savedAirline=_foundUrl.key;
+  }
+}
 // 이미 항공사 선택 이력이 있으면 자동으로 커리큘럼 노출
 if(savedAirline){
   var found=AIRLINES.find(function(x){return x.key===savedAirline;});
-  if(found&&found.key!=='emirates'){
+  if(found){
     document.getElementById('section-airline').style.display='none';
     showCurriculum(found);
   }
@@ -282,6 +292,17 @@ if(savedAirline){
     if(a&&a.key==='emirates')return renderEmirates(a);
     return _orig(a);
   };
+  // 페이지 로드 시 에미레이트면 즉시 재렌더 (URL 파라미터 또는 저장된 값)
+  try{
+    var saved=localStorage.getItem('wc_airline');
+    if(saved==='emirates'){
+      var f=AIRLINES.find(function(x){return x.key==='emirates';});
+      if(f){
+        document.getElementById('section-airline').style.display='none';
+        renderEmirates(f);
+      }
+    }
+  }catch(e){}
 })();
 </script>
 </body>

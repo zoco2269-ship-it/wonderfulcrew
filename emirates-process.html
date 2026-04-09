@@ -13,7 +13,7 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--cream);color:var(--t
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
 nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:68px;background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
-.nav-logo{font-family:"DM Serif Display",serif;font-size:1.45rem;font-weight:600;color:var(--navy);text-decoration:none;}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);text-decoration:none;}
 .nav-logo span{color:var(--gold);}
 .nav-back{font-size:0.82rem;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
 .nav-back:hover{color:var(--gold);}
@@ -56,7 +56,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   font-family:"DM Serif Display",serif;font-size:1rem;font-weight:600;
   color:var(--gold);flex-shrink:0;position:relative;z-index:1;
 }
-.tl-circle.highlight{background:var(--gold);color:#fff;border-color:var(--gold);}
 
 .tl-body{flex:1;padding:12px 0 48px 24px;}
 .tl-tag{display:inline-flex;align-items:center;gap:6px;font-size:0.66rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;padding:3px 10px;margin-bottom:10px;}
@@ -72,11 +71,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 }
 .tl-point-label{font-size:0.66rem;font-weight:800;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;}
 .tl-warn{
-  background:rgba(201,168,76,0.08);border-left:3px solid var(--gold);
+  background:#C9A84C;border-left:3px solid #A07830;
   padding:14px 18px;margin-top:10px;
-  font-size:0.84rem;color:var(--text-mid);line-height:1.75;
+  font-size:0.84rem;color:#fff;line-height:1.75;
 }
-.tl-warn-label{font-size:0.66rem;font-weight:800;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;}
+.tl-warn-label{font-size:0.66rem;font-weight:800;color:#fff;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;}
 
 /* CTA */
 .cta-section{background:var(--navy);padding:70px 5%;text-align:center;}
@@ -135,7 +134,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 
     <!-- STEP 1 -->
     <div class="tl-step">
-      <div class="tl-left"><div class="tl-circle highlight">1</div></div>
+      <div class="tl-left"><div class="tl-circle">1</div></div>
       <div class="tl-body">
         <div class="tl-tag required">필수</div>
         <div class="tl-title">CV / 이력서 제출</div>
@@ -229,7 +228,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 
     <!-- STEP 7 -->
     <div class="tl-step">
-      <div class="tl-left"><div class="tl-circle highlight">7</div></div>
+      <div class="tl-left"><div class="tl-circle">7</div></div>
       <div class="tl-body">
         <div class="tl-tag required">최종</div>
         <div class="tl-title">파이널 인터뷰</div>
@@ -249,8 +248,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 <div class="cta-section">
   <div class="cta-title">이제 <em>단계별 연습</em>을 시작하세요</div>
   <p class="cta-sub">프로세스를 파악했다면, 각 단계별 AI 연습으로 실력을 키워보세요.</p>
-  <a href="curriculum.html" class="btn-gold" onclick="localStorage.setItem('wc_airline','emirates')">커리큘럼 시작하기 →</a>
-  <a href="curriculum.html" class="btn-outline">← 다시 선택하기</a>
+  <a href="curriculum.html?airline=emirates" class="btn-gold" onclick="localStorage.setItem('wc_airline','emirates')">커리큘럼 시작하기 →</a>
 </div>
 
 <script>

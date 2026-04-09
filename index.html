@@ -358,7 +358,7 @@ footer{
 .demo-video-frame {
   position: relative;
   border: 2px solid rgba(201,168,76,0.45);
-  background: rgba(255,255,255,0.04);
+  background: #000;
   overflow: hidden;
   aspect-ratio: 9/16;
   border-radius: 4px;
@@ -370,6 +370,7 @@ footer{
 .demo-video-frame video {
   width: 100%; height: 100%;
   object-fit: cover; display: block;
+  background: #000;
 }
 .demo-video-frame:hover .demo-play-overlay { opacity: 1; }
 .demo-play-overlay {
@@ -529,7 +530,6 @@ footer{
       </div>
       <div class="demo-cta-row">
         <a href="leveltest.html" class="btn-gold" style="display:inline-flex;justify-content:center;">무료 AI 면접 체험하기 →</a>
-        <a href="chatbot.html" class="btn-outline-white" style="display:inline-flex;justify-content:center;font-size:0.84rem;">AI 면접 코치와 대화하기</a>
       </div>
       <div class="demo-badge-row">
         <div class="demo-badge">
@@ -566,10 +566,15 @@ document.addEventListener('DOMContentLoaded',function(){
   video.muted=true;
   video.defaultMuted=true;
   video.setAttribute('muted','');
+  // 루프 전환 시 하얀 화면 방지 — 끝나기 0.3초 전에 다시 시작
+  video.addEventListener('timeupdate',function(){
+    if(video.duration&&video.currentTime>video.duration-0.3){
+      video.currentTime=0;
+    }
+  });
   video.play().then(function(){
     if(overlay)overlay.style.display='none';
   }).catch(function(){
-    // 브라우저 자동재생 차단시 클릭 유도
     if(overlay){overlay.style.display='flex';overlay.style.opacity='1';}
   });
 });
@@ -690,6 +695,27 @@ document.addEventListener('DOMContentLoaded',function(){
     </div>
   </div>
 </section>
+
+<!-- 플로팅 챗봇 버튼 -->
+<style>
+.chat-float{
+  position:fixed;bottom:28px;right:28px;z-index:999;
+  display:flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,#E8C96A,#C9A84C);
+  color:#1A2340;padding:12px 20px;
+  border-radius:32px;
+  box-shadow:0 4px 20px rgba(201,168,76,0.4);
+  text-decoration:none;font-family:'Noto Sans KR',sans-serif;
+  font-size:0.82rem;font-weight:700;letter-spacing:0.04em;
+  transition:all 0.25s;
+}
+.chat-float:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,0.5);}
+.chat-float-icon{font-size:1.1rem;flex-shrink:0;}
+</style>
+<a href="chatbot.html" class="chat-float">
+  <span class="chat-float-icon">💬</span>
+  AI 면접 코치와 대화하기
+</a>
 
 <!-- FOOTER -->
 <footer>

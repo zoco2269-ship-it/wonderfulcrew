@@ -332,7 +332,7 @@ nav{
     <h1 class="big-title" id="lang-main-title">실제 면접처럼<br><em>AI와 롤플레이</em></h1>
     <div class="gold-bar"></div>
     <p class="sub-txt">AI 면접관이 질문을 던집니다. 카메라 앞에서 직접 답하고, 즉각적인 피드백을 받으세요.</p>
-    <div class="lang-cards">
+    <div class="lang-cards" id="lang-cards">
       <button class="lang-card" onclick="startSession('ko')">
         <span class="lang-card-flag">🇰🇷</span>
         <span>
@@ -448,28 +448,25 @@ nav{
 </div><!-- #app -->
 
 <script>
-// 레벨테스트 + 항공사 선택 가드
 (function(){
   var hasLevel=false,hasAirline=false;
   try{hasLevel=!!localStorage.getItem('wc_level_result');}catch(e){}
   try{hasAirline=!!localStorage.getItem('wc_airline');}catch(e){}
   if(!hasLevel&&!hasAirline){location.replace('leveltest.html');return;}
 })();
-
-// ── 단계 모드 (URL ?mode=video|presentation|discussion1|discussion2|roleplay|final) ──
 var URL_PARAMS=new URLSearchParams(location.search);
 var PAGE_MODE=URL_PARAMS.get('mode')||'roleplay';
 var MODE_CONFIG={
-  'video':       {titleKo:'비디오 면접',    eyebrow:'Step 1 — Video Interview',    hasCamera:true},
-  'presentation':{titleKo:'1차 발표',       eyebrow:'Step 2 — 1st Presentation',   hasCamera:true},
-  'discussion1': {titleKo:'1차 디스커션',   eyebrow:'Step 3 — 1st Discussion',     hasCamera:true},
-  'discussion2': {titleKo:'2차 디스커션',   eyebrow:'Step 4 — 2nd Discussion',     hasCamera:false},
-  'roleplay':    {titleKo:'롤플레이 면접',  eyebrow:'Step 5 — Roleplay Interview',  hasCamera:false},
-  'final':       {titleKo:'파이널 인터뷰',  eyebrow:'Step 6 — Final Interview',     hasCamera:false}
+  'video':       {titleKo:'비디오 면접',   eyebrow:'Step 1 — Video Interview',   hasCamera:true},
+  'presentation':{titleKo:'1차 발표',      eyebrow:'Step 2 — 1st Presentation',  hasCamera:true},
+  'discussion2': {titleKo:'2차 디스커션',  eyebrow:'Step 3 — 2nd Discussion',    hasCamera:false},
+  'roleplay':    {titleKo:'롤플레이 면접', eyebrow:'Step 4 — Roleplay Interview', hasCamera:false},
+  'final':       {titleKo:'파이널 인터뷰', eyebrow:'Step 5 — Final Interview',    hasCamera:false}
 };
 var MCONF=MODE_CONFIG[PAGE_MODE]||MODE_CONFIG['roleplay'];
 document.title='WonderfulCrew — '+MCONF.titleKo;
-
+var AIRLINE='';try{AIRLINE=localStorage.getItem('wc_airline')||'';}catch(e){}
+var IS_EMIRATES=(AIRLINE==='emirates');
 var U_RP={};
 var LANG='ko';
 var SESSION={qIdx:0,answers:[],mediaStream:null,mediaRec:null,recChunks:[],isRecording:false,history:[]};
@@ -477,6 +474,23 @@ var SESSION={qIdx:0,answers:[],mediaStream:null,mediaRec:null,recChunks:[],isRec
 // 레벨테스트 결과 불러오기
 var LEVEL_RESULT=null;
 try{var _lr=localStorage.getItem('wc_level_result');if(_lr)LEVEL_RESULT=JSON.parse(_lr);}catch(e){}
+
+// 에미레이트면 언어 선택 없이 바로 영어 시작
+if(IS_EMIRATES){
+  document.addEventListener('DOMContentLoaded',function(){
+    var cards=document.getElementById('lang-cards');
+    if(cards){
+      cards.innerHTML='<div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.3);padding:20px 22px;text-align:center;">'
+        +'<div style="font-size:0.72rem;font-weight:800;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Emirates Airlines</div>'
+        +'<div style="font-size:0.88rem;color:rgba(255,255,255,0.7);margin-bottom:16px;">에미레이트 면접은 영어로 진행됩니다.</div>'
+        +'<button class="lang-card" onclick="startSession(\'en\')" style="width:100%;">'
+        +'<span class="lang-card-flag">🌎</span>'
+        +'<span><span class="lang-card-title">Start English Interview</span>'
+        +'<span class="lang-card-sub">Emirates · English Only Practice</span></span>'
+        +'<span class="lang-card-arrow">→</span></button></div>';
+    }
+  });
+}
 
 function getLevelTier(){
   if(!LEVEL_RESULT||!LEVEL_RESULT.level)return 'intermediate';
@@ -506,16 +520,70 @@ function getLevelAdjustment(){
   };
 }
 
+// 단계별 질문 설정
+var STAGE_QUESTIONS={
+  ko:{
+    video:[
+      {label:'자기소개',q:'안녕하세요! 간단한 자기소개를 부탁드립니다. 승무원이 되고 싶은 이유도 함께 말씀해 주세요.',hint:'이름 → 지원 동기 → 나의 강점 (30~60초)'},
+      {label:'지원 동기',q:'우리 항공사에 지원하게 된 특별한 이유가 있나요?',hint:'항공사 특징 + 본인 가치관 연결 (30초)'},
+      {label:'강점',q:'본인의 가장 큰 강점 하나를 구체적인 경험과 함께 말씀해 주세요.',hint:'STAR 구조: 상황 → 행동 → 결과 (40초)'}
+    ],
+    presentation:[
+      {label:'자기소개',q:'자기소개와 주요 업무 경험을 발표해 주세요.',hint:'이름 → Work Experience → 강점 순서로 (60초)'},
+      {label:'목적지',q:'가장 좋아하는 여행지는 어디인가요? 이유도 함께 말씀해 주세요.',hint:'구체적인 이유 + 경험 포함 (30초)'},
+      {label:'유명인',q:'비행기 옆자리에 어떤 유명인이 앉았으면 좋겠나요? 이유는요?',hint:'재치 있고 자연스럽게 (30초)'}
+    ],
+    discussion2:[
+      {label:'상황 대처',q:'오버부킹 상황이 발생했습니다. 8명의 승객 중 2명만 탑승할 수 있어요. 어떻게 해결하겠습니까?',hint:'우선순위 기준 + 공감 + 해결책 (60초)'},
+      {label:'컴플레인',q:'까다로운 승객이 지속적으로 불만을 제기하고 있습니다. 어떻게 대응하겠습니까?',hint:'공감 → 경청 → 해결 → 마무리 (40초)'},
+      {label:'팀플레이',q:'팀원과 의견 충돌이 생겼을 때 어떻게 해결하나요? 실제 경험을 말씀해 주세요.',hint:'STAR 구조로 구체적으로 (40초)'}
+    ],
+    roleplay:[
+      {label:'기내 상황 1',q:'승객이 알레르기 반응을 보이고 있습니다. 어떻게 대처하겠습니까?',hint:'침착하게 단계별로 (40초)'},
+      {label:'기내 상황 2',q:'술에 취한 승객이 다른 승객에게 불편을 주고 있습니다. 어떻게 하겠습니까?',hint:'안전 + 서비스 균형 (40초)'},
+      {label:'서비스',q:'비즈니스 클래스 승객이 특별 식사를 요청했는데 해당 메뉴가 없습니다. 어떻게 대응하겠습니까?',hint:'대안 제시 + 따뜻한 서비스 (30초)'}
+    ],
+    final:[
+      {label:'서비스 경험',q:'지금까지 경험한 최고의 서비스 순간을 말씀해 주세요.',hint:'구체적인 에피소드 + 감정 (40초)'},
+      {label:'어려운 고객',q:'까다로운 고객을 응대했던 경험이 있나요? 어떻게 해결했나요?',hint:'STAR 구조로 (40초)'},
+      {label:'동료 지원',q:'동료를 도운 경험이 있나요? 어떤 상황이었나요?',hint:'팀워크 강조 (30초)'}
+    ]
+  },
+  en:{
+    video:[
+      {label:'Self Introduction',q:'Welcome! Please introduce yourself and tell me why you want to be a cabin crew member.',hint:'Name → Motivation → Your Strength (30–60 sec)'},
+      {label:'Motivation',q:'Why did you apply to our airline specifically? What do you know about us?',hint:'Research + Personal Value Match (30 sec)'},
+      {label:'Strength',q:'Tell me about one of your greatest strengths with a specific example.',hint:'STAR: Situation → Action → Result (40 sec)'}
+    ],
+    presentation:[
+      {label:'Self Introduction',q:'Please introduce yourself and walk me through your work experience.',hint:'Name → Work Experience → Key Strength (60 sec)'},
+      {label:'Favourite Destination',q:'What is your favourite destination and why?',hint:'Specific reason + personal experience (30 sec)'},
+      {label:'Celebrity',q:'If you could sit next to any celebrity on a flight, who would it be and why?',hint:'Be natural and witty (30 sec)'}
+    ],
+    discussion2:[
+      {label:'Overbooking',q:'You work at a car rental. System error — only 2 of 8 customers can get a car. How do you handle this?',hint:'Priority criteria + empathy + solution (60 sec)'},
+      {label:'Complaint',q:'A passenger has been repeatedly complaining throughout the flight. How do you respond?',hint:'Empathy → Listen → Resolve → Close (40 sec)'},
+      {label:'Teamwork',q:'Tell me about a time you had a disagreement with a colleague. How did you resolve it?',hint:'STAR structure with specific example (40 sec)'}
+    ],
+    roleplay:[
+      {label:'Emergency',q:'A passenger is showing signs of an allergic reaction. What do you do?',hint:'Stay calm, step by step (40 sec)'},
+      {label:'Difficult Passenger',q:'An intoxicated passenger is disturbing others. How do you handle the situation?',hint:'Safety + service balance (40 sec)'},
+      {label:'Special Request',q:'A business class passenger requests a special meal that is not available. How do you respond?',hint:'Offer alternatives + warm service (30 sec)'}
+    ],
+    final:[
+      {label:'Best Service',q:'Tell me about your best service experience.',hint:'Specific episode + emotion (40 sec)'},
+      {label:'Demanding Customer',q:'Have you ever dealt with a very demanding customer? How did you handle it?',hint:'STAR structure (40 sec)'},
+      {label:'Helping a Colleague',q:'Tell me about a time you helped a colleague.',hint:'Emphasize teamwork (30 sec)'}
+    ]
+  }
+};
+
 var CONFIGS={
   ko:{
     interviewerName:'원더풀크루 AI',
     interviewerRole:'한국어 면접관',
     panelTitle:'AI 면접관 · 한국어',
-    questions:[
-      {label:'자기소개','q':'안녕하세요! 먼저 간단한 자기소개를 부탁드립니다. 승무원이 되고 싶으신 이유도 함께 말씀해 주세요.','hint':'이름 → 지원 동기 → 나의 강점 (30~60초)'},
-      {label:'지원 동기','q':'우리 항공사에 지원하게 된 특별한 이유가 있나요?','hint':'항공사 특징 + 본인 가치관 연결 (30초)'},
-      {label:'강점','q':'본인의 가장 큰 강점 하나를 구체적인 경험과 함께 말씀해 주세요.','hint':'STAR 구조: 상황 → 행동 → 결과 (40초)'},
-    ],
+    get questions(){return STAGE_QUESTIONS.ko[PAGE_MODE]||STAGE_QUESTIONS.ko.roleplay;},
     sys:`당신은 WonderfulCrew 소속의 한국어 승무원 면접관입니다. 에미레이트 항공 출신 20년 경력 코치입니다.
 지원자의 답변을 듣고 다음을 수행하세요:
 1) 답변에 대해 간결하고 따뜻한 피드백 1~2문장
@@ -527,11 +595,7 @@ var CONFIGS={
     interviewerName:'WonderfulCrew AI',
     interviewerRole:'English Interviewer',
     panelTitle:'AI Interviewer · English',
-    questions:[
-      {label:'Self Introduction','q':'Welcome! Please introduce yourself and tell me why you want to be a cabin crew member.','hint':'Name → Motivation → Your Strength (30–60 sec)'},
-      {label:'Motivation','q':'Why did you apply to our airline specifically? What do you know about us?','hint':'Research + Personal Value Match (30 sec)'},
-      {label:'Strength','q':'Tell me about one of your greatest strengths with a specific example.','hint':'STAR: Situation → Action → Result (40 sec)'},
-    ],
+    get questions(){return STAGE_QUESTIONS.en[PAGE_MODE]||STAGE_QUESTIONS.en.roleplay;},
     sys:`You are a professional cabin crew interviewer from WonderfulCrew, with 20 years of experience placing candidates at Emirates, Qatar, and other global airlines.
 When the applicant answers, you:
 1) Give brief, warm, constructive feedback (1-2 sentences)
@@ -602,30 +666,27 @@ function showScreen(n){
 async function startSession(lang){
   LANG=lang;
   var cfg=CONFIGS[lang];
+  // 면접관 정보 세팅
   document.getElementById('interviewer-name').textContent=cfg.interviewerName;
   if(U_RP.name){document.getElementById('cq-hint').textContent='안녕하세요, '+U_RP.name+'님! 마이크 버튼을 눌러 답변을 시작하세요';}
   document.getElementById('interviewer-role').textContent=cfg.interviewerRole;
   document.getElementById('panel-title').textContent=cfg.panelTitle;
+  // Q 진행 바
   var pb=document.getElementById('q-progress');
   pb.innerHTML=cfg.questions.map(function(_,i){return '<div class="q-pip" id="qpip-'+i+'"></div>';}).join('');
   document.getElementById('qpip-0').classList.add('active');
   showScreen('roleplay');
-  // 카메라: hasCamera 모드만 시작, 아니면 텍스트 전용 플레이스홀더
-  if(MCONF.hasCamera){
-    try{await initCamera();}catch(e){}
-  } else {
-    // 텍스트 채팅 모드 — 아바타 이미지만 표시
+  // 카메라 시작
+  try{
+
     var v=document.getElementById('user-video');
-    v.style.display='none';
-    var ph=document.getElementById('cam-placeholder');
-    ph.style.display='flex';
-    ph.innerHTML='<div style="text-align:center;padding:30px 20px;">'
-      +'<div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#8B6914);display:flex;align-items:center;justify-content:center;font-size:2.8rem;margin:0 auto 16px;border:2px solid rgba(201,168,76,0.4);">✈️</div>'
-      +'<div style="font-size:0.9rem;color:rgba(255,255,255,0.7);font-weight:600;margin-bottom:6px;">'+MCONF.titleKo+'</div>'
-      +'<div style="font-size:0.78rem;color:rgba(255,255,255,0.4);line-height:1.6;">AI 면접관과 텍스트로<br>실시간 대화를 나눠요</div>'
-      +'</div>';
-    document.getElementById('rec-badge').style.display='none';
+    v.srcObject=SESSION.mediaStream;
+    document.getElementById('cam-placeholder').style.display='none';
+    document.getElementById('rec-badge').style.display='flex';
+  }catch(e){
+    // 카메라 없이도 진행 가능
   }
+  // 첫 질문 출력
   setTimeout(function(){showQuestion(0);},800);
 }
 
@@ -854,38 +915,10 @@ function renderResult(r){
       if(!('speechSynthesis' in window))return;
       window.speechSynthesis.cancel();
       var u=new SpeechSynthesisUtterance(text);
-      var isKo=(typeof LANG!=='undefined'&&LANG==='ko');
-      u.lang=isKo?'ko-KR':'en-US';
-      u.rate=isKo?0.88:0.92;
-      u.pitch=isKo?1.05:1.0;
-      u.volume=1.0;
-      // 더 자연스러운 음성 선택 시도
-      var voices=window.speechSynthesis.getVoices();
-      if(voices.length>0){
-        var preferred=null;
-        if(isKo){
-          // 한국어 음성 우선순위: Google > Microsoft > 기타
-          preferred=voices.find(function(v){return v.lang==='ko-KR'&&v.name.indexOf('Google')>=0;})
-            ||voices.find(function(v){return v.lang==='ko-KR'&&v.name.indexOf('여성')>=0;})
-            ||voices.find(function(v){return v.lang==='ko-KR'&&v.name.indexOf('Female')>=0;})
-            ||voices.find(function(v){return v.lang==='ko-KR';});
-        } else {
-          preferred=voices.find(function(v){return v.lang==='en-US'&&v.name.indexOf('Google')>=0;})
-            ||voices.find(function(v){return v.lang==='en-US';});
-        }
-        if(preferred)u.voice=preferred;
-      }
-      setTimeout(function(){
-        // voices가 아직 로딩 안 됐을 수 있어서 한 번 더 시도
-        if(u.voice===undefined||u.voice===null){
-          var v2=window.speechSynthesis.getVoices();
-          var p2=isKo
-            ?v2.find(function(v){return v.lang==='ko-KR'&&v.name.indexOf('Google')>=0;})||v2.find(function(v){return v.lang==='ko-KR';})
-            :v2.find(function(v){return v.lang==='en-US';});
-          if(p2)u.voice=p2;
-        }
-        window.speechSynthesis.speak(u);
-      },200);
+      u.lang=(typeof LANG!=='undefined'&&LANG==='en')?'en-US':'ko-KR';
+      u.rate=0.95;u.pitch=1.0;u.volume=1.0;
+      // 약간의 딜레이 후 재생 (UI 렌더링 후)
+      setTimeout(function(){window.speechSynthesis.speak(u);},150);
     }catch(e){console.warn('[TTS]',e);}
   }
   if(typeof window.showQuestion==='function'){
@@ -899,18 +932,6 @@ function renderResult(r){
       return ret;
     };
   }
-
-  // 언어 선택 화면 타이틀 동적 변경
-  function applyModeTitle(){
-    var eyebrowEl=document.getElementById('lang-eyebrow');
-    var titleEl=document.getElementById('lang-main-title');
-    if(!eyebrowEl||!titleEl)return;
-    if(typeof MCONF==='undefined')return;
-    eyebrowEl.textContent=MCONF.eyebrow;
-    titleEl.innerHTML='AI와 함께하는<br><em>'+MCONF.titleKo+'</em>';
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyModeTitle);
-  else applyModeTitle();
 })();
 </script>
 </body>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>영어 면접 핵심 표현 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}
+a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:36px;}
+.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;}
+.hero{background:var(--navy);color:#fff;padding:140px 5% 80px;text-align:center;}
+.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:clamp(1.9rem,3.8vw,3rem);font-weight:300;margin-bottom:12px;line-height:1.25;}
+.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.hero p{color:rgba(255,255,255,0.7);font-size:0.95rem;max-width:620px;margin:0 auto;line-height:1.8;}
+.tab-bar{max-width:1000px;margin:0 auto;padding:40px 5% 0;display:flex;gap:0;}
+.tab-btn{flex:1;padding:16px 0;text-align:center;font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text-muted);background:#fff;border:1px solid var(--gold-pale);cursor:pointer;transition:all 0.2s;}
+.tab-btn:first-child{border-radius:8px 0 0 0;}
+.tab-btn:last-child{border-radius:0 8px 0 0;}
+.tab-btn.active{background:var(--navy);color:var(--gold-light);border-color:var(--navy);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+section{padding:50px 5% 80px;}
+.wrap{max-width:1000px;margin:0 auto;}
+.sec-label{font-family:'DM Serif Display',serif;font-size:0.72rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;font-weight:700;}
+.sec-title{font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:400;color:var(--navy);margin-bottom:10px;}
+.sec-title em{font-style:normal;color:var(--gold);}
+.gold-line{width:36px;height:1.5px;background:var(--gold);margin:16px 0 40px;}
+.cat-title{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin:40px 0 18px;padding-left:14px;border-left:4px solid var(--gold);}
+.qa-card{background:#fff;border:1px solid var(--gold-pale);margin-bottom:12px;overflow:hidden;}
+.qa-header{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;transition:background 0.2s;}
+.qa-header:hover{background:rgba(201,168,76,0.04);}
+.qa-num{font-family:'DM Serif Display',serif;font-size:0.82rem;color:var(--gold);min-width:28px;}
+.qa-q{font-size:0.92rem;color:var(--navy);font-weight:600;flex:1;line-height:1.5;}
+.qa-arrow{color:var(--gold);font-size:0.9rem;transition:transform 0.2s;}
+.qa-card.open .qa-arrow{transform:rotate(90deg);}
+.qa-body{display:none;padding:0 20px 18px 62px;font-size:0.88rem;color:var(--text-mid);line-height:1.8;}
+.qa-card.open .qa-body{display:block;}
+.qa-body .ans-label{font-size:0.72rem;color:var(--gold);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;}
+.qa-body .ans{font-family:'Noto Sans KR',sans-serif;background:var(--cream);padding:14px 16px;border-left:3px solid var(--gold);margin-bottom:10px;font-size:0.88rem;line-height:1.75;color:var(--text-dark);}
+.qa-body .ans-ko{font-size:0.82rem;color:var(--text-muted);line-height:1.7;}
+
+.vocab-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.vocab-card{background:#fff;border:1px solid var(--gold-pale);padding:18px 20px;}
+.vocab-en{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);margin-bottom:4px;}
+.vocab-ko{font-size:0.82rem;color:var(--text-mid);margin-bottom:6px;}
+.vocab-ex{font-size:0.8rem;color:var(--text-muted);font-style:italic;line-height:1.6;}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.vocab-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <a href="index.html#about">소개</a>
+    <a href="index.html#expertise">준비 과정</a>
+    <a href="index.html#resources">학습 자료</a>
+    <a href="daily-english.html">영어쉐도잉</a>
+    <a href="jobs.html">채용정보</a>
+  </div>
+  <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
+</nav>
+
+<div class="hero">
+  <div class="label">English Interview</div>
+  <h1>항공사 영어 면접<br><em>핵심 표현</em></h1>
+  <p>항공사에서 실제로 묻는 영어 면접 질문과 spoken 스타일 답변 예시, 그리고 합격 후 훈련에서 꼭 알아야 할 항공 영어 표현을 정리했습니다.</p>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('questions')">영어 면접 질문</button>
+  <button class="tab-btn" onclick="showTab('aviation')">꼭 알아야 하는 항공 영어 표현</button>
+</div>
+
+<section>
+<div class="wrap">
+
+<!-- ========== TAB 1: 영어 면접 질문 ========== -->
+<div class="tab-content active" id="tab-questions">
+  <div class="sec-label">Interview Questions</div>
+  <h2 class="sec-title">항공사 영어 면접 <em>빈출 질문</em></h2>
+  <div class="gold-line"></div>
+
+  <div class="cat-title">Self Introduction · 자기소개</div>
+  <div id="qa-container"></div>
+</div>
+
+<!-- ========== TAB 2: 항공 영어 표현 ========== -->
+<div class="tab-content" id="tab-aviation">
+  <div class="sec-label">Aviation English</div>
+  <h2 class="sec-title">꼭 알아야 하는 <em>항공 영어 표현</em></h2>
+  <div class="gold-line"></div>
+  <p style="font-size:0.9rem;color:var(--text-mid);line-height:1.8;margin-bottom:36px;">합격 후 훈련(Training)에서 매일 사용하는 항공 영어 표현입니다. 미리 익혀두면 훈련 적응이 훨씬 빨라집니다.</p>
+
+  <div class="cat-title">Safety & Emergency · 안전/비상</div>
+  <div class="vocab-grid" id="vocab-safety"></div>
+
+  <div class="cat-title">Service · 기내 서비스</div>
+  <div class="vocab-grid" id="vocab-service"></div>
+
+  <div class="cat-title">Announcements · 기내 방송</div>
+  <div class="vocab-grid" id="vocab-announce"></div>
+
+  <div class="cat-title">Crew Communication · 승무원 간 소통</div>
+  <div class="vocab-grid" id="vocab-crew"></div>
+
+  <div class="cat-title">Aircraft & Equipment · 기체/장비</div>
+  <div class="vocab-grid" id="vocab-aircraft"></div>
+</div>
+
+</div>
+</section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+
+<script>
+function showTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
+  document.getElementById('tab-'+tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===== Q&A DATA =====
+var QA=[
+  // Self Introduction (1-10)
+  {cat:'Self Introduction',q:'Please introduce yourself.',a:"Hi, my name is [Name]. I've been working in customer service for about three years, and I really enjoy connecting with people. I'm applying because I'd love to bring that passion to the sky.",ko:'안녕하세요, [이름]입니다. 약 3년간 고객 서비스 분야에서 일했고, 사람들과 소통하는 걸 정말 좋아합니다.'},
+  {cat:'Self Introduction',q:'Tell me about yourself in one minute.',a:"I'm a positive and detail-oriented person. I studied hospitality in university, and after that I worked at a five-star hotel. That experience taught me how to stay calm and take care of guests even under pressure.",ko:'저는 긍정적이고 꼼꼼한 사람입니다. 대학에서 호스피탈리티를 전공하고 5성급 호텔에서 근무하며 압박 속에서도 차분하게 고객을 돌보는 법을 배웠습니다.'},
+  {cat:'Self Introduction',q:'What are your strengths?',a:"I'd say my biggest strength is empathy. I'm really good at reading people's feelings and adjusting my approach. That helps me give each person the kind of service they actually need.",ko:'제 가장 큰 강점은 공감 능력입니다. 상대방의 감정을 잘 읽고 그에 맞게 대응할 수 있어요.'},
+  {cat:'Self Introduction',q:'What is your weakness?',a:"Sometimes I focus too much on details. But I've learned to step back and look at the bigger picture first, then handle the details after.",ko:'때때로 세부 사항에 너무 집중하는 편이지만, 큰 그림을 먼저 보고 세부 사항은 후에 처리하는 법을 배웠습니다.'},
+  {cat:'Self Introduction',q:'How would your friends describe you?',a:"They'd say I'm the one who always makes sure everyone is okay. I'm usually the person who notices when someone is quiet and checks in on them.",ko:'친구들은 제가 항상 모두의 안부를 챙기는 사람이라고 말할 거예요.'},
+  // Motivation (6-15)
+  {cat:'Motivation',q:'Why do you want to be a cabin crew member?',a:"I love meeting people from different backgrounds and making their day a little better. Being cabin crew lets me do that while traveling the world. It's the perfect fit for who I am.",ko:'다양한 배경의 사람들을 만나 그들의 하루를 더 좋게 만드는 걸 좋아합니다. 승무원이 되면 세계를 여행하며 그걸 할 수 있어요.'},
+  {cat:'Motivation',q:'Why do you want to work for our airline?',a:"Your airline is known for world-class service, and that really inspires me. I want to be part of a team that sets the standard, not just follows it.",ko:'귀사는 세계 최고 수준의 서비스로 유명합니다. 기준을 따라가는 게 아니라 기준을 만드는 팀의 일원이 되고 싶습니다.'},
+  {cat:'Motivation',q:'What do you know about our airline?',a:"I know your airline was founded in [year] and is based in [city]. You're well known for your premium service and have won several Skytrax awards. I really admire how you treat every passenger like a VIP.",ko:'귀사는 [년도]에 설립되어 [도시]에 본사를 두고 있으며, 프리미엄 서비스와 다수의 Skytrax 수상 경력으로 유명합니다.'},
+  {cat:'Motivation',q:'Where do you see yourself in five years?',a:"I see myself growing within the airline — maybe as a senior crew member or even a purser. I want to keep learning and eventually help train new crew too.",ko:'항공사 안에서 성장하고 싶습니다. 시니어 승무원이나 퍼서가 되어 신입 교육에도 참여하고 싶어요.'},
+  {cat:'Motivation',q:'Are you willing to relocate?',a:"Absolutely. I'm excited about the chance to live in a new city and experience a different culture every day. I think it would make me grow as a person.",ko:'물론이요. 새로운 도시에서 살며 매일 다른 문화를 경험하는 것이 저를 성장시킬 거라고 생각합니다.'},
+  // Service (16-30)
+  {cat:'Service Mind',q:'What does excellent service mean to you?',a:"It means the passenger doesn't have to ask. You notice what they need before they do, and you handle it with a warm smile. It's about making people feel genuinely cared for.",ko:'승객이 요청하기 전에 필요한 걸 알아차리고 따뜻한 미소로 해결하는 것. 진심으로 보살핌을 받는다고 느끼게 하는 것입니다.'},
+  {cat:'Service Mind',q:'Tell me about your customer service experience.',a:"I worked at a busy cafe for two years. I learned how to stay calm during rush hours and make every customer feel welcome, even when we were packed.",ko:'바쁜 카페에서 2년간 일하며 러시아워에도 침착하게 모든 고객을 환영하는 법을 배웠습니다.'},
+  {cat:'Service Mind',q:'How would you handle a difficult passenger?',a:"I'd stay calm and listen first. People usually just want to feel heard. Then I'd apologize sincerely and find a solution. If I couldn't fix it, I'd offer the best alternative I can.",ko:'먼저 침착하게 경청하겠습니다. 진심으로 사과하고 해결책을 찾고, 안 되면 최선의 대안을 제시합니다.'},
+  {cat:'Service Mind',q:'What would you do if a passenger complained about the food?',a:"I'd apologize and say, 'I'm sorry about that. Let me check if we have another option for you.' Then I'd try to find something they'd enjoy and make sure they feel taken care of.",ko:'사과 후 다른 옵션이 있는지 확인하겠습니다. 고객이 만족할 만한 것을 찾아 보살핌을 느끼게 하겠습니다.'},
+  {cat:'Service Mind',q:'How would you handle a language barrier with a passenger?',a:"I'd use simple words, gestures, and a warm smile. If needed, I'd try a translation app or ask a colleague who speaks their language. The key is to never make them feel embarrassed.",ko:'쉬운 단어, 제스처, 따뜻한 미소를 사용하고 필요하면 번역 앱이나 해당 언어를 아는 동료의 도움을 받겠습니다.'},
+  {cat:'Service Mind',q:'Tell me about a time you went above and beyond for someone.',a:"A guest at my hotel mentioned it was her birthday. I arranged a small cake and a card from our team. She was so touched she almost cried. It was a small thing but it made her whole trip.",ko:'호텔에서 생일인 고객에게 작은 케이크와 카드를 준비했더니 감동으로 눈물을 글썽이셨어요.'},
+  {cat:'Service Mind',q:'How do you build rapport with people from different cultures?',a:"I stay curious and respectful. I ask questions, I listen, and I never assume. A genuine smile works everywhere in the world.",ko:'호기심과 존중을 유지합니다. 질문하고, 경청하고, 절대 추측하지 않습니다. 진심 어린 미소는 어디서든 통합니다.'},
+  {cat:'Service Mind',q:'What would you do if a VIP passenger made an unreasonable request?',a:"I'd listen carefully and show I understand. Then I'd explain what I can do instead, in a positive way. The goal is to make them feel valued even if I can't say yes to everything.",ko:'경청하고 이해를 보여준 뒤 가능한 대안을 긍정적으로 제시합니다. 모든 요청에 응할 수 없어도 존중받는다고 느끼게 합니다.'},
+  // Safety (31-40)
+  {cat:'Safety',q:'What would you do if a passenger refused to follow safety instructions?',a:"Safety always comes first. I'd calmly explain why it matters — for their own protection. If they still refused, I'd involve my senior. We never compromise on safety.",ko:'안전이 최우선입니다. 왜 중요한지 차분히 설명하고, 거부하면 시니어에게 보고합니다. 안전은 절대 타협하지 않습니다.'},
+  {cat:'Safety',q:'How would you handle a medical emergency on board?',a:"I'd stay calm, call for any medical professionals on board, and follow our emergency procedures. I'd keep the passenger comfortable and update the captain right away.",ko:'침착하게 기내 의료 전문가를 호출하고 비상 절차를 따릅니다. 승객을 편안하게 하고 기장에게 즉시 보고합니다.'},
+  {cat:'Safety',q:'What would you do if you smelled smoke in the cabin?',a:"I'd immediately locate the source, alert my crew, and follow the fire-fighting procedure. Every second counts with fire on an aircraft.",ko:'즉시 출처를 파악하고 동료에게 알리며 화재 진압 절차를 따릅니다. 기내 화재는 매 초가 중요합니다.'},
+  {cat:'Safety',q:'What would you do if a passenger was extremely intoxicated?',a:"I'd stop serving alcohol and try to distract them with conversation or the entertainment system. If they became aggressive, I'd involve my senior. On an aircraft, intoxication is a safety issue.",ko:'알코올 서비스를 중단하고 대화나 엔터테인먼트로 주의를 돌립니다. 공격적이면 시니어에게 보고합니다.'},
+  {cat:'Safety',q:'Why is safety more important than service?',a:"Because without safety, there is no service. A cabin crew member's number one job is to make sure every single person lands safely. Service is what makes the journey enjoyable, but safety is what makes it possible.",ko:'안전 없이는 서비스도 없습니다. 승무원의 첫 번째 임무는 모든 승객의 안전한 착륙입니다.'},
+  // Teamwork (41-50)
+  {cat:'Teamwork',q:'Tell me about a time you worked as part of a team.',a:"At my previous job, we had a huge event with 200 guests. I coordinated with the kitchen and front desk team. We each covered different areas but kept communicating. It went perfectly because we worked as one.",ko:'이전 직장에서 200명 이벤트를 팀으로 운영했습니다. 각자 다른 구역을 맡되 계속 소통하며 하나로 움직였습니다.'},
+  {cat:'Teamwork',q:'How do you handle conflict with a colleague?',a:"I'd talk to them privately and calmly. I'd listen to their side first, then share mine. Most conflicts come from miscommunication, not bad intentions.",ko:'조용히 개인적으로 대화하고, 상대의 이야기를 먼저 듣겠습니다. 대부분의 갈등은 의도가 아니라 소통 부족에서 옵니다.'},
+  {cat:'Teamwork',q:'Describe your ideal team member.',a:"Someone who watches out for the whole team, not just their own tasks. Someone who jumps in to help without being asked — that's the kind of teammate I try to be too.",ko:'자기 일만 하는 게 아니라 팀 전체를 살피고 도움이 필요한 곳에 먼저 다가가는 사람. 저도 그런 팀원이 되려고 합니다.'},
+  {cat:'Teamwork',q:'How would you support a new colleague who is struggling?',a:"I'd check in with them, share tips from my own experience, and make sure they don't feel alone. Everyone was new once. A little support goes a long way.",ko:'다가가서 제 경험에서 우러난 팁을 나누고 혼자가 아니라는 걸 느끼게 합니다.'},
+  {cat:'Teamwork',q:'What role do you usually take in a team?',a:"I usually take the supporter role. I like making sure everyone is heard and the team runs smoothly. But if we need someone to step up, I'm happy to lead too.",ko:'보통 서포터 역할을 합니다. 모두의 의견이 반영되게 하지만, 필요하면 리더십도 발휘합니다.'},
+  // Personality (51-60)
+  {cat:'Personality',q:'How do you handle stress?',a:"I take a deep breath and focus on what I can control. After work, I like going for a walk or exercising. Staying active really helps me reset.",ko:'심호흡을 하고 통제할 수 있는 것에 집중합니다. 퇴근 후에는 산책이나 운동으로 리셋합니다.'},
+  {cat:'Personality',q:'How do you stay calm under pressure?',a:"I remind myself that panicking doesn't help anyone. I focus on the task at hand, take it step by step, and trust my training.",ko:'당황해도 아무 도움이 안 된다는 걸 떠올리고, 한 단계씩 차근히 처리하며 훈련을 믿습니다.'},
+  {cat:'Personality',q:'What makes you different from other candidates?',a:"I think it's my ability to connect with people quickly. Within a few minutes of talking, people usually feel comfortable with me. That's really important in this job.",ko:'사람들과 빠르게 친해지는 능력이라고 생각합니다. 몇 분 대화만으로도 편안함을 느끼게 합니다.'},
+  {cat:'Personality',q:'What motivates you?',a:"Making someone's day better. Even a small act of kindness — like remembering a passenger's name — can turn a regular flight into something special.",ko:'누군가의 하루를 더 좋게 만드는 것. 승객 이름을 기억하는 작은 친절도 특별한 비행이 될 수 있어요.'},
+  {cat:'Personality',q:'How do you handle criticism?',a:"I see it as a chance to improve. I listen without getting defensive, think about whether it's valid, and then work on it. Feedback is a gift.",ko:'개선의 기회로 봅니다. 방어적이지 않게 듣고, 타당한지 생각한 후 개선합니다.'},
+  {cat:'Personality',q:'Tell me about a failure and what you learned.',a:"I once forgot to confirm a VIP reservation. The guest was upset, and I felt terrible. From that day on, I always double-check everything. That one mistake taught me how important attention to detail is.",ko:'VIP 예약을 확인하지 않아 고객이 화났던 적이 있습니다. 그 이후 항상 재확인하는 습관을 들였습니다.'},
+  {cat:'Personality',q:'What is your favourite travel destination and why?',a:"I love Japan. The culture of hospitality there — omotenashi — really inspires me. Everyone pays attention to the smallest details to make guests happy.",ko:'일본을 좋아합니다. 오모테나시(환대 문화)가 저에게 영감을 줍니다. 작은 디테일까지 신경 쓰는 자세가 인상적이에요.'},
+  // Situational (61-80)
+  {cat:'Situational',q:'What would you do if a passenger was scared of flying?',a:"I'd crouch down to their eye level, speak softly, and reassure them. I'd explain what each sound means and check on them throughout the flight.",ko:'눈높이에 맞춰 앉아 부드럽게 말하고 안심시킵니다. 비행 중 계속 확인하며 각 소리가 뭔지 설명합니다.'},
+  {cat:'Situational',q:'What would you do if you saw a colleague not following procedures?',a:"I'd talk to them privately first. Maybe they didn't realize. If it continued, I'd report it. Safety procedures exist for a reason — everyone needs to follow them.",ko:'먼저 개인적으로 이야기합니다. 모르고 그랬을 수도 있으니까요. 계속되면 보고합니다.'},
+  {cat:'Situational',q:'How would you handle a crying baby on a long flight?',a:"I'd approach the parents with empathy and offer to help — maybe warm milk, a blanket, or walking with the baby. I'd also reassure nearby passengers.",ko:'부모에게 공감하며 따뜻한 우유, 담요, 아기 안아주기 등을 제안합니다. 주변 승객에게도 양해를 구합니다.'},
+  {cat:'Situational',q:'What would you do if two passengers were arguing?',a:"I'd calmly approach them, lower my voice to set the tone, and separate them if needed. I'd listen to both sides and try to find a solution that works for everyone.",ko:'차분히 접근해 목소리를 낮추고, 필요하면 분리합니다. 양쪽 이야기를 듣고 해결책을 찾습니다.'},
+  {cat:'Situational',q:'What if a passenger asked for something you couldn\'t provide?',a:"I'd never just say no. I'd apologize and offer the closest alternative. I'd say something like, 'I'm sorry we don't have that, but may I recommend this instead?'",ko:"절대 그냥 거절하지 않겠습니다. 사과 후 가장 가까운 대안을 추천합니다."},
+  {cat:'Situational',q:'How would you handle jet lag and irregular schedules?',a:"I'd stick to a routine — good sleep habits, exercise, and eating well. I've worked shifts before, so I'm used to adjusting my body clock.",ko:'수면 습관, 운동, 식습관 루틴을 유지합니다. 교대 근무 경험이 있어 생체리듬 조절에 익숙합니다.'},
+  {cat:'Situational',q:'What would you do on a long layover in a new city?',a:"I'd explore the city, try local food, and learn about the culture. That's one of the best parts of this job — every trip is a chance to grow.",ko:'도시를 탐험하고, 현지 음식을 먹고, 문화를 배웁니다. 이 직업의 가장 좋은 점 중 하나입니다.'},
+  {cat:'Situational',q:'How would you handle working with someone you don\'t get along with?',a:"I'd stay professional and focus on our shared goal — taking care of the passengers. Personal feelings shouldn't affect the team or the service.",ko:'프로페셔널하게 공통 목표인 승객 케어에 집중합니다. 개인 감정이 팀과 서비스에 영향을 주면 안 됩니다.'},
+  {cat:'Situational',q:'What if you made a mistake during service?',a:"I'd own it immediately. I'd apologize to the passenger, fix what I can, and learn from it. Honesty and quick action build trust.",ko:'즉시 인정하고 사과한 뒤 고칠 수 있는 건 바로 고칩니다. 정직과 빠른 대응이 신뢰를 만듭니다.'},
+  {cat:'Situational',q:'What would you do if a senior crew member gave you unfair instructions?',a:"I'd follow the instruction first, then talk to them privately later. In the air, team unity matters most. I'd share my perspective respectfully after the flight.",ko:'먼저 지시를 따르고, 비행 후 개인적으로 제 의견을 공유합니다. 기내에서는 팀 단결이 가장 중요합니다.'},
+  // Closing (81-90)
+  {cat:'Closing',q:'Why should we choose you?',a:"Because I don't just want to do this job — I want to be great at it. I bring empathy, energy, and a genuine love for making people feel special.",ko:'이 일을 하고 싶은 게 아니라 잘하고 싶기 때문입니다. 공감, 에너지, 사람들을 특별하게 만드는 진심을 가져옵니다.'},
+  {cat:'Closing',q:'Do you have any questions for us?',a:"Yes — what does a typical training day look like? I'd love to know what to expect so I can start preparing.",ko:'네 — 일반적인 훈련 하루가 어떤지 궁금합니다. 미리 준비하고 싶어요.'},
+  {cat:'Closing',q:'Is there anything else you\'d like to add?',a:"I just want to say thank you for this opportunity. Whatever the result, this experience has made me even more excited about becoming cabin crew.",ko:'이 기회를 주셔서 감사합니다. 결과와 관계없이 이 경험이 승무원에 대한 열정을 더 키워주었습니다.'},
+  {cat:'Closing',q:'When can you start?',a:"I can start as soon as you need me. I'm flexible and ready to relocate whenever the training begins.",ko:'필요하실 때 바로 시작할 수 있습니다. 훈련이 시작되면 언제든 이동할 준비가 되어 있습니다.'},
+  {cat:'Closing',q:'How do you feel about living away from your family?',a:"I'll miss them, of course. But they fully support my dream, and we can stay connected easily. This is something I've wanted for a long time.",ko:'물론 그리울 거예요. 하지만 가족이 제 꿈을 전적으로 지지하고, 쉽게 연락할 수 있습니다.'}
+];
+
+// Render Q&A
+var container=document.getElementById('qa-container');
+var currentCat='';
+QA.forEach(function(item,idx){
+  if(item.cat!==currentCat){
+    currentCat=item.cat;
+    if(idx>0){
+      var catEl=document.createElement('div');
+      catEl.className='cat-title';
+      catEl.textContent=item.cat;
+      container.appendChild(catEl);
+    }
+  }
+  var card=document.createElement('div');
+  card.className='qa-card';
+  card.innerHTML='<div class="qa-header" onclick="this.parentElement.classList.toggle(\'open\')">'+
+    '<div class="qa-num">'+(idx+1)+'</div>'+
+    '<div class="qa-q">'+item.q+'</div>'+
+    '<div class="qa-arrow">→</div>'+
+  '</div>'+
+  '<div class="qa-body">'+
+    '<div class="ans-label">Model Answer</div>'+
+    '<div class="ans">'+item.a+'</div>'+
+    '<div class="ans-ko">'+item.ko+'</div>'+
+  '</div>';
+  container.appendChild(card);
+});
+
+// ===== AVIATION VOCAB =====
+var VOCAB={
+  safety:[
+    {en:'Brace for impact',ko:'충격 대비 자세',ex:'"Brace, brace! Heads down, stay down!"'},
+    {en:'Emergency exit',ko:'비상구',ex:'"Your nearest emergency exit may be behind you."'},
+    {en:'Life vest / Life jacket',ko:'구명조끼',ex:'"Your life vest is located under your seat."'},
+    {en:'Oxygen mask',ko:'산소 마스크',ex:'"Place the mask over your nose and mouth."'},
+    {en:'Evacuate / Evacuation',ko:'탈출 / 대피',ex:'"Leave everything behind and evacuate immediately."'},
+    {en:'Turbulence',ko:'난기류',ex:'"We are experiencing some turbulence. Please remain seated."'},
+    {en:'Ditching',ko:'수상 착륙 (비상 착수)',ex:'"In the unlikely event of a water landing..."'},
+    {en:'Fire extinguisher',ko:'소화기',ex:'"Use the BCF extinguisher for electrical fires."'},
+    {en:'Defibrillator (AED)',ko:'자동 심장 충격기',ex:'"Get the AED from the forward galley."'},
+    {en:'First aid kit',ko:'구급 상자',ex:'"I need the enhanced first aid kit at row 23."'},
+    {en:'Smoke hood / PBE',ko:'방연 마스크',ex:'"Put on your PBE before entering the smoke-filled area."'},
+    {en:'Cabin pressure',ko:'기내 기압',ex:'"We have a loss of cabin pressure."'},
+  ],
+  service:[
+    {en:'Boarding',ko:'탑승',ex:'"Boarding will begin shortly through gate 12."'},
+    {en:'Pre-departure beverage',ko:'출발 전 음료 서비스',ex:'"May I offer you a pre-departure beverage?"'},
+    {en:'Meal service / In-flight meal',ko:'기내식 서비스',ex:'"We have chicken or fish for today\'s meal service."'},
+    {en:'Duty-free',ko:'면세품',ex:'"Would you like to see our duty-free catalogue?"'},
+    {en:'Blanket and pillow',ko:'담요와 베개',ex:'"Would you like a blanket or a pillow?"'},
+    {en:'Amenity kit',ko:'어메니티 키트',ex:'"Here is your amenity kit with eye mask and ear plugs."'},
+    {en:'Upgrade',ko:'업그레이드',ex:'"We have upgraded your seat to business class."'},
+    {en:'Galley',ko:'기내 주방',ex:'"I\'ll prepare your drink in the galley."'},
+    {en:'Trolley / Cart',ko:'서비스 카트',ex:'"Excuse me, the trolley is coming through."'},
+    {en:'Ice / No ice',ko:'얼음 / 얼음 빼고',ex:'"Would you like ice with that?"'},
+  ],
+  announce:[
+    {en:'Ladies and gentlemen',ko:'승객 여러분',ex:'"Ladies and gentlemen, welcome aboard."'},
+    {en:'On behalf of the captain and crew',ko:'기장과 승무원을 대표하여',ex:'"On behalf of the captain and the entire crew..."'},
+    {en:'Fasten your seatbelt',ko:'안전벨트를 매주세요',ex:'"Please fasten your seatbelt and keep it fastened."'},
+    {en:'Upright position',ko:'등받이를 세워주세요',ex:'"Please return your seat to the upright position."'},
+    {en:'Electronic devices',ko:'전자기기',ex:'"Please switch all electronic devices to flight mode."'},
+    {en:'Descent / Final approach',ko:'하강 / 최종 접근',ex:'"We have now begun our descent into Dubai."'},
+    {en:'Local time',ko:'현지 시간',ex:'"The local time in London is 3:45 PM."'},
+    {en:'Connecting flights',ko:'환승편',ex:'"For passengers with connecting flights, please check the monitors."'},
+  ],
+  crew:[
+    {en:'Cross-check',ko:'크로스 체크',ex:'"Cabin crew, doors to automatic and cross-check."'},
+    {en:'All-call',ko:'전체 호출',ex:'"Cabin crew, report to stations for all-call."'},
+    {en:'Purser / Senior',ko:'사무장 / 시니어',ex:'"I\'ll check with the purser and get back to you."'},
+    {en:'Deadheading',ko:'비번 이동 (빈 좌석 탑승)',ex:'"I\'m deadheading to Dubai for my next roster."'},
+    {en:'Roster / Schedule',ko:'근무 스케줄',ex:'"My roster this month has mostly long-haul flights."'},
+    {en:'Layover',ko:'체류 (경유지 숙박)',ex:'"We have a 24-hour layover in Singapore."'},
+    {en:'Briefing / Debriefing',ko:'브리핑 / 디브리핑',ex:'"We\'ll have our pre-flight briefing at gate 7."'},
+    {en:'PA (Public Address)',ko:'기내 방송',ex:'"Could you make a PA for boarding completion?"'},
+  ],
+  aircraft:[
+    {en:'Overhead bin / Hat rack',ko:'머리 위 짐칸',ex:'"Please store your bag in the overhead bin."'},
+    {en:'Aisle / Window / Middle seat',ko:'통로석 / 창가석 / 가운데석',ex:'"Would you prefer an aisle or window seat?"'},
+    {en:'Tray table',ko:'테이블 (접이식)',ex:'"Please fold your tray table for landing."'},
+    {en:'Armrest',ko:'팔걸이',ex:'"The life vest is under your armrest."'},
+    {en:'Lavatory',ko:'화장실',ex:'"The lavatories are located at the front and rear."'},
+    {en:'Cockpit / Flight deck',ko:'조종실',ex:'"The captain is in the flight deck."'},
+    {en:'Fuselage',ko:'기체 동체',ex:'"The fuselage is the main body of the aircraft."'},
+    {en:'Bulkhead',ko:'격벽 (칸막이)',ex:'"Bassinet seats are at the bulkhead."'},
+  ]
+};
+function renderVocab(id,data){
+  var el=document.getElementById(id);
+  data.forEach(function(v){
+    var card=document.createElement('div');
+    card.className='vocab-card';
+    card.innerHTML='<div class="vocab-en">'+v.en+'</div><div class="vocab-ko">'+v.ko+'</div><div class="vocab-ex">'+v.ex+'</div>';
+    el.appendChild(card);
+  });
+}
+renderVocab('vocab-safety',VOCAB.safety);
+renderVocab('vocab-service',VOCAB.service);
+renderVocab('vocab-announce',VOCAB.announce);
+renderVocab('vocab-crew',VOCAB.crew);
+renderVocab('vocab-aircraft',VOCAB.aircraft);
+</script>
+</body>
+</html>

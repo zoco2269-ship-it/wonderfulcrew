@@ -182,38 +182,41 @@ picked.forEach(function(q,i){
       '<button class="q-record-btn" data-state="idle">답변 녹음 시작</button>'+
       '<div class="q-transcript" id="transcript-'+i+'"></div>'+
     '</div>'+
-    // ③ 피드백
+    // ③ 제출 (피드백 + 모범답변 1회 호출)
     '<div class="q-btn-row" id="step3-'+i+'">'+
-      '<button class="q-btn feedback" data-act="get-fb" disabled>피드백 받기</button>'+
+      '<button class="q-btn feedback" data-act="submit-answer" disabled>답변 제출</button>'+
     '</div>'+
     '<div class="q-feedback" id="fb-'+i+'"></div>'+
-    // ④⑤ 모범답변 + 쉐도잉 (피드백 후 잠금해제)
+    '<div class="q-feedback" id="sample-'+i+'" style="display:none;"></div>'+
+    // ④⑤ 모범답변 + 쉐도잉 (피드백 확인 후)
     '<div id="step45-'+i+'" style="display:none;">'+
-      '<div class="q-btn-row"><button class="q-btn sample" data-act="get-sample">모범 답변 보기</button></div>'+
-      '<div class="q-feedback" id="sample-'+i+'"></div>'+
-      '<div class="q-btn-row" id="shadow-btns-'+i+'" style="display:none;">'+
-        '<button class="q-btn feedback" data-act="tts-sample">예시 듣기</button>'+
-        '<button class="q-btn sample" data-act="shadow-rec">따라하기</button>'+
+      '<div class="q-btn-row">'+
+        '<button class="q-btn sample" data-act="show-sample">모범 답변 보기</button>'+
       '</div>'+
-      '<div class="shadow-result" id="shadow-result-'+i+'"></div>'+
     '</div>'+
+    '<div class="q-btn-row" id="shadow-btns-'+i+'" style="display:none;">'+
+      '<button class="q-btn feedback" data-act="tts-sample">예시 듣기</button>'+
+      '<button class="q-btn sample" data-act="shadow-rec">따라하기</button>'+
+    '</div>'+
+    '<div class="shadow-result" id="shadow-result-'+i+'"></div>'+
     // ⑥ 완료
     '<div id="done-'+i+'" style="display:none;margin-top:14px;padding:12px 18px;background:var(--gold-pale);border-left:3px solid var(--gold);color:var(--navy);font-size:0.88rem;">이 문제 연습 완료!</div>';
   qWrap.appendChild(card);
 
   var recBtn=card.querySelector('.q-record-btn');
   var transcript=card.querySelector('.q-transcript');
-  var fbBtn=card.querySelector('[data-act="get-fb"]');
+  var submitBtn=card.querySelector('[data-act="submit-answer"]');
   var fbArea=document.getElementById('fb-'+i);
-  var step45=document.getElementById('step45-'+i);
-  var sampleBtn=card.querySelector('[data-act="get-sample"]');
   var sampleArea=document.getElementById('sample-'+i);
+  var step45=document.getElementById('step45-'+i);
+  var showSampleBtn=card.querySelector('[data-act="show-sample"]');
   var shadowBtns=document.getElementById('shadow-btns-'+i);
   var shadowResult=document.getElementById('shadow-result-'+i);
   var doneEl=document.getElementById('done-'+i);
   var recognition=null;
   var sampleText='';
   var activeShRec=null;
+  var cachedSampleHtml='';
 
   // ① 질문 듣기 TTS
   card.querySelector('[data-act="listen-q"]').addEventListener('click',function(){
@@ -246,7 +249,7 @@ picked.forEach(function(q,i){
       recBtn.dataset.state='idle';recBtn.classList.remove('recording');recBtn.textContent='다시 녹음';
       if(finalText.trim()||transcript.textContent.trim()){
         transcript.textContent=finalText.trim()||transcript.textContent.trim();
-        fbBtn.disabled=false;
+        submitBtn.disabled=false;
       }
     };
     recognition.onerror=function(e){
@@ -256,63 +259,59 @@ picked.forEach(function(q,i){
     recognition.start();
   });
 
-  // ③ 피드백
-  fbBtn.addEventListener('click',async function(){
+  // ③ 답변 제출 → 피드백 + 모범답변 1회 API 호출
+  submitBtn.addEventListener('click',async function(){
     var ans=transcript.textContent.trim();
     if(!ans)return;
-    fbBtn.disabled=true;fbBtn.textContent='분석 중...';
-    fbArea.classList.add('visible');fbArea.innerHTML='피드백을 생성하고 있어요...';
+    submitBtn.disabled=true;submitBtn.textContent='분석 중...';
+    fbArea.classList.add('visible');fbArea.innerHTML='피드백과 모범 답변을 생성하고 있어요...';
     try{
       var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:700,
-        system:'You are an English interview coach for cabin crew candidates. The input is a speech-to-text transcription. Give feedback in Korean, plain text only (no markdown, no **, no asterisks). Structure:\n1) 잘한 점 — 구체적으로 어떤 내용이나 표현이 좋았는지\n2) 개선할 점 — 내용의 깊이나 구성에 대해서만. 음성인식 텍스트이므로 대소문자, 구두점, 띄어쓰기는 절대 지적하지 마세요\n3) 표현 교정 — 문법적으로 확실히 틀린 표현만. 대문자/소문자, 구두점은 음성인식 특성이므로 절대 무시\nKeep under 300 Korean characters.',
+        model:'claude-sonnet-4-20250514',max_tokens:900,
+        system:'You are an English interview coach for cabin crew candidates. The input is speech-to-text. Respond in plain text only (no markdown, no **, no asterisks). Use this exact format:\n\n[피드백]\n1) 잘한 점 — 구체적으로 어떤 내용/표현이 좋았는지\n2) 개선할 점 — 내용 깊이/구성만. 대소문자, 구두점, 띄어쓰기는 음성인식 특성이므로 절대 지적하지 마세요\n3) 표현 교정 — 확실히 틀린 문법만. 대소문자/구두점 무시\n\n[모범답변]\nNatural spoken English, 3-4 SHORT simple sentences (20-30 sec). Easy vocabulary. Then one blank line and brief Korean translation.\n\nKeep feedback under 300 Korean characters. Keep model answer under 100 English words.',
         messages:[{role:'user',content:'Interview question: "'+q+'"\n\nCandidate spoken answer (speech-to-text — ignore capitalization/punctuation):\n'+ans}]
       })});
       var data=await res.json();
-      var text=(data&&data.content&&data.content[0]&&data.content[0].text)||data.text||JSON.stringify(data);
-      fbArea.innerHTML=text.replace(/\*\*/g,'').replace(/\n/g,'<br>');
-      // ④⑤ 잠금해제
+      var raw=(data&&data.content&&data.content[0]&&data.content[0].text)||data.text||JSON.stringify(data);
+      raw=raw.replace(/\*\*/g,'');
+      // 분리: [피드백] ... [모범답변] ...
+      var parts=raw.split(/\[모범답변\]/i);
+      var fbText=(parts[0]||'').replace(/\[피드백\]/i,'').trim();
+      var sampleRaw=(parts[1]||'').trim();
+      // 피드백 표시
+      fbArea.innerHTML=fbText.replace(/\n/g,'<br>');
+      // 모범답변 캐시 (아직 숨김)
+      var lines=sampleRaw.split('\n');
+      var engLines=[];
+      for(var li=0;li<lines.length;li++){if(/[a-zA-Z]{3,}/.test(lines[li])&&!/[가-힣]/.test(lines[li]))engLines.push(lines[li]);else if(engLines.length>0)break;}
+      sampleText=engLines.join(' ').trim()||lines[0]||sampleRaw;
+      cachedSampleHtml=sampleRaw.replace(/\n/g,'<br>');
+      // ④ 모범답변 보기 버튼 잠금해제
       step45.style.display='block';
     }catch(e){
       fbArea.innerHTML='오류: 잠시 후 다시 시도해 주세요.';
     }
-    fbBtn.disabled=false;fbBtn.textContent='피드백 받기';
+    submitBtn.disabled=false;submitBtn.textContent='답변 제출';
   });
 
-  // ④ 모범 답변
-  sampleBtn.addEventListener('click',async function(){
-    sampleBtn.disabled=true;sampleBtn.textContent='생성 중...';
-    sampleArea.classList.add('visible');sampleArea.innerHTML='모범 답변을 생성하고 있어요...';
-    try{
-      var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:500,
-        system:'You are an English interview coach. Give a model answer in natural spoken English — conversational, easy to say out loud. 3-4 SHORT simple sentences (20-30 sec when spoken). No complex vocabulary. Plain text only (no markdown, no **, no asterisks). Then one blank line and a brief Korean translation.',
-        messages:[{role:'user',content:'Spoken-style model answer for: "'+q+'"'}]
-      })});
-      var data=await res.json();
-      var text=(data&&data.content&&data.content[0]&&data.content[0].text)||data.text||JSON.stringify(data);
-      text=text.replace(/\*\*/g,'');
-      // 영어 문장만 추출 (첫 영어 라인들)
-      var lines=text.split('\n');
-      var engLines=[];
-      for(var li=0;li<lines.length;li++){if(/[a-zA-Z]{3,}/.test(lines[li])&&!/[가-힣]/.test(lines[li]))engLines.push(lines[li]);else if(engLines.length>0)break;}
-      sampleText=engLines.join(' ').trim()||lines[0]||text;
-      sampleArea.innerHTML=text.replace(/\n/g,'<br>');
-      // ④ 모범답변 자동 음성 재생
-      if('speechSynthesis' in window){
-        var u=new SpeechSynthesisUtterance(sampleText);u.lang='en-US';u.rate=0.85;
-        window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
-      }
-      // ⑤ 쉐도잉 버튼 표시
-      shadowBtns.style.display='flex';
-      // ⑥ 완료 체크
-      completedCount++;
-      doneEl.style.display='block';
-      if(completedCount>=3)saveStreak();
-    }catch(e){
-      sampleArea.innerHTML='오류: 잠시 후 다시 시도해 주세요.';
+  // ④ 모범 답변 보기 (캐시에서 표시 — 추가 API 호출 없음)
+  showSampleBtn.addEventListener('click',function(){
+    if(!cachedSampleHtml){return;}
+    sampleArea.style.display='block';
+    sampleArea.classList.add('visible');
+    sampleArea.innerHTML=cachedSampleHtml;
+    // 자동 TTS 재생
+    if(sampleText&&'speechSynthesis' in window){
+      var u=new SpeechSynthesisUtterance(sampleText);u.lang='en-US';u.rate=0.85;
+      window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
     }
-    sampleBtn.disabled=false;sampleBtn.textContent='모범 답변 보기';
+    // ⑤ 쉐도잉 버튼 표시
+    shadowBtns.style.display='flex';
+    // ⑥ 완료 체크
+    completedCount++;
+    doneEl.style.display='block';
+    if(completedCount>=3)saveStreak();
+    showSampleBtn.style.display='none';
   });
 
   // ⑤ 예시 듣기 TTS

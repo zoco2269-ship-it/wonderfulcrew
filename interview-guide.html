@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>승무원 면접 완벽 가이드 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}
+a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:36px;}
+.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;}
+
+.hero{background:var(--navy);color:#fff;padding:140px 5% 80px;text-align:center;}
+.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:clamp(1.9rem,3.8vw,3rem);font-weight:300;margin-bottom:12px;line-height:1.25;}
+.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.hero p{color:rgba(255,255,255,0.7);font-size:0.95rem;max-width:600px;margin:0 auto;line-height:1.8;font-weight:300;}
+
+.tab-bar{max-width:1000px;margin:0 auto;padding:40px 5% 0;display:flex;gap:0;}
+.tab-btn{flex:1;padding:16px 0;text-align:center;font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text-muted);background:#fff;border:1px solid var(--gold-pale);cursor:pointer;transition:all 0.2s;letter-spacing:0.05em;}
+.tab-btn:first-child{border-radius:8px 0 0 0;}
+.tab-btn:last-child{border-radius:0 8px 0 0;}
+.tab-btn.active{background:var(--navy);color:var(--gold-light);border-color:var(--navy);}
+
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+section{padding:50px 5% 80px;}
+.wrap{max-width:1000px;margin:0 auto;}
+.sec-label{font-family:'DM Serif Display',serif;font-size:0.72rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;font-weight:700;}
+.sec-title{font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:400;color:var(--navy);margin-bottom:10px;}
+.sec-title em{font-style:normal;color:var(--gold);}
+.gold-line{width:36px;height:1.5px;background:var(--gold);margin:16px 0 40px;}
+
+.airline-section{margin-bottom:48px;background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:36px 32px;}
+.airline-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px;}
+.airline-name{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);}
+.airline-name-ko{font-size:0.88rem;color:var(--text-mid);font-weight:500;margin-bottom:16px;}
+.airline-base{display:inline-block;padding:4px 12px;background:var(--gold-pale);color:var(--gold);font-size:0.7rem;font-weight:700;letter-spacing:0.06em;border-radius:12px;}
+
+.process-title{font-size:0.92rem;font-weight:700;color:var(--navy);margin:20px 0 12px;padding-left:14px;border-left:3px solid var(--gold);}
+.process-list{list-style:none;padding:0;margin:0 0 8px;}
+.process-list li{padding:10px 0 10px 20px;font-size:0.88rem;color:var(--text-mid);line-height:1.7;border-bottom:1px solid var(--gold-pale);position:relative;}
+.process-list li::before{content:'';position:absolute;left:0;top:18px;width:8px;height:8px;border-radius:50%;background:var(--gold);opacity:0.6;}
+.process-list li:last-child{border-bottom:none;}
+.process-list li strong{color:var(--navy);font-weight:600;}
+
+.tip-box{margin:16px 0;padding:16px 18px;background:rgba(201,168,76,0.06);border-left:3px solid var(--gold);font-size:0.85rem;color:var(--text-mid);line-height:1.75;}
+.tip-box b{color:var(--navy);}
+
+.q-toggle{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:10px 22px;background:var(--navy);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.05em;cursor:pointer;transition:all 0.2s;}
+.q-toggle:hover{background:var(--gold);}
+.q-list{display:none;margin-top:16px;padding:20px 22px;background:var(--cream);border:1px solid var(--gold-pale);border-radius:8px;}
+.q-list.open{display:block;}
+.q-list h4{font-size:0.82rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:12px;font-family:'DM Serif Display',serif;}
+.q-list ol{padding-left:20px;margin:0;}
+.q-list ol li{font-size:0.86rem;color:var(--text-dark);line-height:1.8;padding:4px 0;}
+.q-list ol li em{font-style:normal;color:var(--text-muted);font-size:0.8rem;}
+
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.airline-section{padding:28px 20px;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <a href="index.html#about">소개</a>
+    <a href="index.html#expertise">준비 과정</a>
+    <a href="index.html#resources">학습 자료</a>
+    <a href="daily-english.html">영어쉐도잉</a>
+    <a href="jobs.html">채용정보</a>
+  </div>
+  <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
+</nav>
+
+<div class="hero">
+  <div class="label">Interview Guide</div>
+  <h1>승무원 면접<br><em>완벽 가이드</em></h1>
+  <p>국내 항공사부터 글로벌 항공사까지, 항공사별 면접 프로세스와 기출 질문을 한 곳에서 확인하세요.</p>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('domestic')">국내 항공사</button>
+  <button class="tab-btn" onclick="showTab('international')">외국 항공사</button>
+</div>
+
+<!-- ========== 국내 항공사 ========== -->
+<section>
+<div class="wrap">
+<div class="tab-content active" id="tab-domestic">
+  <div class="sec-label">Domestic Airlines</div>
+  <h2 class="sec-title">국내 항공사 <em>면접 가이드</em></h2>
+  <div class="gold-line"></div>
+
+  <!-- 대한항공 -->
+  <div class="airline-section">
+    <div class="airline-header">
+      <div class="airline-name">Korean Air</div>
+      <span class="airline-base">Korea · Incheon</span>
+    </div>
+    <div class="airline-name-ko">대한항공</div>
+    <div class="process-title">면접 프로세스</div>
+    <ol class="process-list">
+      <li><strong>서류 전형</strong> — 이력서, 자기소개서, 영어 성적(TOEIC 등) 제출</li>
+      <li><strong>1차 면접 (실무진)</strong> — 한국어 자기소개, 지원 동기, 서비스 경험 질문. 그룹 면접 형태 (5~6인)</li>
+      <li><strong>2차 면접 (임원진)</strong> — 심층 인성 면접. 돌발 상황 대처, 가치관, 팀워크 질문</li>
+      <li><strong>체력 측정 / 수영 테스트</strong> — 체력 기준 충족 여부 확인</li>
+      <li><strong>건강 검진</strong> — 항공 신체검사 기준 통과</li>
+      <li><strong>최종 합격</strong></li>
+    </ol>
+    <div class="tip-box"><b>TIP:</b> 대한항공은 품격 있는 이미지를 중시합니다. 단정한 외모와 차분한 말투, 예의 바른 태도가 핵심입니다. 자기소개서에서 '팀워크'와 '서비스 정신'을 구체적 경험으로 녹여내세요.</div>
+    <button class="q-toggle" onclick="toggleQ(this)">기출 질문 보기</button>
+    <div class="q-list">
+      <h4>Korean Air 기출 질문</h4>
+      <ol>
+        <li>1분 자기소개를 해주세요.</li>
+        <li>대한항공에 지원한 이유가 무엇인가요?</li>
+        <li>승무원이 되고 싶은 이유를 말씀해주세요.</li>
+        <li>본인의 장단점을 말씀해주세요.</li>
+        <li>서비스 경험 중 가장 기억에 남는 에피소드는?</li>
+        <li>팀원과 갈등이 생기면 어떻게 해결하나요?</li>
+        <li>야근이나 불규칙한 생활이 괜찮으신가요?</li>
+        <li>기내에서 승객이 불만을 제기하면 어떻게 하겠습니까?</li>
+        <li>본인이 대한항공에 기여할 수 있는 점은?</li>
+        <li>마지막으로 하고 싶은 말이 있나요?</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- 아시아나항공 -->
+  <div class="airline-section">
+    <div class="airline-header">
+      <div class="airline-name">Asiana Airlines</div>
+      <span class="airline-base">Korea · Incheon</span>
+    </div>
+    <div class="airline-name-ko">아시아나항공</div>
+    <div class="process-title">면접 프로세스</div>
+    <ol class="process-list">
+      <li><strong>서류 전형</strong> — 이력서, 자기소개서, 어학 성적 제출</li>
+      <li><strong>1차 면접 (그룹)</strong> — 5~6인 그룹. 자기소개 + 지원 동기 + 상황 대처 질문</li>
+      <li><strong>2차 면접 (임원)</strong> — 인성 심층 면접. 개인 가치관, 위기 상황 대처력 확인</li>
+      <li><strong>영어 면접</strong> — 기본 영어 회화 능력 평가 (간단한 Q&A)</li>
+      <li><strong>체력 / 건강 검진</strong></li>
+      <li><strong>최종 합격</strong></li>
+    </ol>
+    <div class="tip-box"><b>TIP:</b> 아시아나는 '따뜻한 서비스'를 강조합니다. 고객에게 진심 어린 공감을 보여줄 수 있는 경험을 준비하세요. 스타얼라이언스 소속이므로 글로벌 네트워크에 대한 이해도 어필 포인트입니다.</div>
+    <button class="q-toggle" onclick="toggleQ(this)">기출 질문 보기</button>
+    <div class="q-list">
+      <h4>Asiana Airlines 기출 질문</h4>
+      <ol>
+        <li>자기소개를 해주세요.</li>
+        <li>아시아나항공을 선택한 이유는?</li>
+        <li>가장 힘들었던 경험과 극복 방법을 말씀해주세요.</li>
+        <li>좋은 서비스란 무엇이라고 생각하나요?</li>
+        <li>본인의 성격을 한마디로 표현하면?</li>
+        <li>타인과 협력했던 경험을 말씀해주세요.</li>
+        <li>기내에서 아이가 계속 울면 어떻게 하겠습니까?</li>
+        <li>해외 경험이 있다면 말씀해주세요.</li>
+        <li>스트레스를 해소하는 본인만의 방법은?</li>
+        <li>10년 후 본인의 모습을 그려보세요.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- 진에어 -->
+  <div class="airline-section">
+    <div class="airline-header">
+      <div class="airline-name">Jin Air</div>
+      <span class="airline-base">Korea · Incheon</span>
+    </div>
+    <div class="airline-name-ko">진에어</div>
+    <div class="process-title">면접 프로세스</div>
+    <ol class="process-list">
+      <li><strong>서류 전형</strong> — 이력서, 자기소개서</li>
+      <li><strong>1차 면접</strong> — 그룹 면접. 자기소개, 서비스 마인드, 상황 대처</li>
+      <li><strong>2차 면접</strong> — 실무진/임원 심층 면접</li>
+      <li><strong>건강 검진 → 최종 합격</strong></li>
+    </ol>
+    <div class="tip-box"><b>TIP:</b> 진에어는 활기차고 친근한 분위기를 좋아합니다. 밝은 에너지와 긍정적인 태도를 보여주세요. LCC 특유의 멀티태스킹 능력도 어필 포인트입니다.</div>
+    <button class="q-toggle" onclick="toggleQ(this)">기출 질문 보기</button>
+    <div class="q-list">
+      <h4>Jin Air 기출 질문</h4>
+      <ol>
+        <li>자기소개를 해주세요.</li>
+        <li>진에어에 지원한 이유는?</li>
+        <li>LCC와 FSC의 차이를 알고 있나요?</li>
+        <li>서비스업 경험이 있다면 말씀해주세요.</li>
+        <li>동료와 의견이 다를 때 어떻게 하나요?</li>
+        <li>비행 중 승객이 음식에 알레르기 반응을 보이면?</li>
+        <li>체력 관리는 어떻게 하고 있나요?</li>
+        <li>본인을 색깔로 표현하면?</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- 티웨이항공 -->
+  <div class="airline-section">
+    <div class="airline-header">
+      <div class="airline-name">T'way Air</div>
+      <span class="airline-base">Korea · Incheon</span>
+    </div>
+    <div class="airline-name-ko">티웨이항공</div>
+    <div class="process-title">면접 프로세스</div>
+    <ol class="process-list">
+      <li><strong>서류 전형</strong> — 이력서, 자기소개서</li>
+      <li><strong>1차 실무 면접</strong> — 그룹 면접 (자기소개, 지원 동기, 서비스 질문)</li>
+      <li><strong>2차 임원 면접</strong> — 인성 + 상황 대처 심층</li>
+      <li><strong>건강 검진 → 최종 합격</strong></li>
+    </ol>
+    <div class="tip-box"><b>TIP:</b> 티웨이는 성실하고 책임감 있는 인재를 찾습니다. 꾸준히 노력한 경험, 맡은 일에 끝까지 책임진 사례를 준비하세요.</div>
+    <button class="q-toggle" onclick="toggleQ(this)">기출 질문 보기</button>
+    <div class="q-list">
+      <h4>T'way Air 기출 질문</h4>
+      <ol>
+        <li>자기소개를 해주세요.</li>
+        <li>티웨이항공에 지원한 이유는?</li>
+        <li>불만 고객을 응대한 경험이 있나요?</li>
+        <li>팀 프로젝트에서 본인의 역할은?</li>
+        <li>승무원에게 가장 중요한 자질은?</li>
+        <li>야간 비행이 힘들 수 있는데 괜찮나요?</li>
+        <li>본인의 서비스 철학을 말씀해주세요.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- 에어서울 -->
+  <div class="airline-section">
+    <div class="airline-header">
+      <div class="airline-name">Air Seoul</div>
+      <span class="airline-base">Korea · Incheon</span>
+    </div>
+    <div class="airline-name-ko">에어서울</div>
+    <div class="process-title">면접 프로세스</div>
+    <ol class="process-list">
+      <li><strong>서류 전형</strong> — 이력서, 자기소개서</li>
+      <li><strong>1차 면접</strong> — 그룹 면접 (자기소개 + 서비스 질문)</li>
+      <li><strong>2차 면접</strong> — 임원 면접 (인성 + 상황 대처)</li>
+      <li><strong>건강 검진 → 최종 합격</strong></li>
+    </ol>
+    <button class="q-toggle" onclick="toggleQ(this)">기출 질문 보기</button>
+    <div class="q-list">
+      <h4>Air Seoul 기출 질문</h4>
+      <ol>
+        <li>자기소개를 해주세요.</li>
+        <li>에어서울에 지원한 이유는?</li>
+        <li>승무원이 되기 위해 어떤 노력을 했나요?</li>
+        <li>서비스 중 실수한 경험과 대처 방법은?</li>
+        <li>본인만의 강점을 한가지 말씀해주세요.</li>
+        <li>비행기 안에서 화재가 발생하면 어떻게 하겠습니까?</li>
+      </ol>
+    </div>
+  </div>
+
+</div>
+
+<!-- ========== 외국 항공사 ========== -->
+<div class="tab-content" id="tab-international">
+  <div class="sec-label">International Airlines</div>
+  <h2 class="sec-title">외국 항공사 <em>면접 가이드</em></h2>
+  <div class="gold-line"></div>
+
+  <!-- 에미레이트 -->
+  <div class="airline-section">
+    <div class="airline-header">
+      <div class="airline-name">Emirates</div>
+      <span class="airline-base">UAE · Dubai</span>
+    </div>
+    <div class="airline-name-ko">에미레이트 항공</div>
+    <div class="process-title">면접 프로세스 (7단계)</div>
+    <ol class="process-list">
+      <li><strong>온라인 지원 / CV Drop</strong> — 이력서 제출. 오픈데이 또는 어세스먼트 데이 인비테이션</li>
+      <li><strong>스몰톡 (Small Talk)</strong> — 면접관과 1:1 캐주얼 대화. 첫인상, 영어 커뮤니케이션 능력 확인</li>
+      <li><strong>1차 발표 (Presentation)</strong> — 주어진 주제로 그룹 앞에서 영어 발표 (1분)</li>
+      <li><strong>2차 디스커션 (Group Discussion)</strong> — 그룹 토론. 의견 제시 + 경청 + 리더십 확인</li>
+      <li><strong>영어 테스트</strong> — 독해, 품사, 어휘력 평가</li>
+      <li><strong>롤플레이 (Roleplay)</strong> — 기내 상황 시뮬레이션. 서비스 마인드 + 문제 해결력</li>
+      <li><strong>파이널 인터뷰 (Final Interview)</strong> — 1:1 심층 면접. 가치관, 서비스 경험, 에미레이트 지원 동기</li>
+    </ol>
+    <div class="tip-box"><b>TIP:</b> 에미레이트는 '오너십(Ownership)'과 'Going Beyond'를 중시합니다. 단순 서비스가 아닌, 승객에게 memorable moment를 만들어줄 수 있는 마인드셋을 보여주세요. 영어는 완벽하지 않아도 됩니다 — 쉬운 단어로 자신 있게 말하는 것이 핵심입니다.</div>
+    <button class="q-toggle" onclick="toggleQ(this)">기출 질문 보기</button>
+    <div class="q-list">
+      <h4>Emirates 기출 질문</h4>
+      <ol>
+        <li>Please introduce yourself. <em>(자기소개)</em></li>
+        <li>Why do you want to work for Emirates? <em>(에미레이트 지원 동기)</em></li>
+        <li>Tell me about your best service experience. <em>(최고의 서비스 경험)</em></li>
+        <li>What would you do if a passenger refused to wear a seatbelt? <em>(안전벨트 거부 승객)</em></li>
+        <li>Have you ever dealt with a demanding customer? <em>(까다로운 고객 대응)</em></li>
+        <li>Tell me about a time you went the extra mile for someone. <em>(기대 이상 서비스)</em></li>
+        <li>How would you handle a language barrier with a passenger? <em>(언어 장벽 대처)</em></li>
+        <li>What does excellent service mean to you? <em>(훌륭한 서비스란)</em></li>
+        <li>Have you ever had a conflict with a colleague? How did you resolve it? <em>(동료 갈등 해결)</em></li>
+        <li>Have you ever shown respect for Muslim culture? <em>(이슬람 문화 존중)</em></li>
+        <li>Why should we choose you? <em>(왜 당신이어야 하는가)</em></li>
+        <li>What is your favourite travel destination and why? <em>(좋아하는 여행지)</em></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- 카타르항공 -->
+  <div class="airline-section">
+    <div class="airline-header">
+      <div class="airline-name">Qatar Airways</div>
+      <span class="airline-base">Qatar · Doha</span>
+    </div>
+    <div class="airline-name-ko">카타르 항공</div>
+    <div class="process-title">면접 프로세스</div>
+    <ol class="process-list">
+      <li><strong>온라인 지원 → CV 심사</strong> — 인비테이션 받아야 다음 단계 진행</li>
+      <li><strong>어세스먼트 데이</strong> — 그룹 디스커션 + 영어 테스트 + 간단한 프레젠테이션</li>
+      <li><strong>파이널 인터뷰</strong> — 1:1 심층 면접 (서비스 마인드, 가치관, 팀워크)</li>
+      <li><strong>건강 검진 → 최종 합격</strong></li>
+    </ol>
+    <div class="tip-box"><b>TIP:</b> 카타르항공은 '5성급 서비스'에 자부심이 강합니다. 세심한 배려와 럭셔리 서비스 마인드를 어필하세요. 에미레이트보다 스카(흉터)에 엄격한 편입니다.</div>
+    <button class="q-toggle" onclick="toggleQ(this)">기출 질문 보기</button>
+    <div class="q-list">
+      <h4>Qatar Airways 기출 질문</h4>
+      <ol>
+        <li>Tell me about yourself.</li>
+        <li>Why Qatar Airways?</li>
+        <li>What do you know about Doha?</li>
+        <li>How do you handle stress?</li>
+        <li>Describe a time you provided excellent customer service.</li>
+        <li>What would you do if a VIP passenger complained about the food?</li>
+        <li>How do you work in a multicultural team?</li>
+        <li>Are you willing to relocate to Doha?</li>
+        <li>Tell me about a time you showed leadership.</li>
+        <li>What makes you different from other candidates?</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- 싱가포르항공 -->
+  <div class="airline-section">
+    <div class="airline-header">
+      <div class="airline-name">Singapore Airlines</div>
+      <span class="airline-base">Singapore</span>
+    </div>
+    <div class="airline-name-ko">싱가포르 항공</div>
+    <div class="process-title">면접 프로세스</div>
+    <ol class="process-list">
+      <li><strong>온라인 지원</strong> — 사진, 이력서, 학력 제출</li>
+      <li><strong>채용 설명회 + 스몰톡</strong> — 영어 기본 대화, 첫인상 평가</li>
+      <li><strong>그룹 디스커션</strong> — 주제 토론. 영어 표현력 + 팀워크</li>
+      <li><strong>영어 시험 + 심리 검사</strong></li>
+      <li><strong>파이널 인터뷰</strong> — 1:1 심층. 서비스 철학, 위기 대처, 개인 가치관</li>
+      <li><strong>워터 서바이벌 테스트 + 건강 검진</strong></li>
+    </ol>
+    <div class="tip-box"><b>TIP:</b> 싱가포르항공은 'Singapore Girl' 이미지로 유명합니다. 우아하면서도 따뜻한 서비스 태도를 보여주세요. 그룹 디스커션에서 다른 지원자를 배려하며 의견을 제시하는 모습이 중요합니다.</div>
+    <button class="q-toggle" onclick="toggleQ(this)">기출 질문 보기</button>
+    <div class="q-list">
+      <h4>Singapore Airlines 기출 질문</h4>
+      <ol>
+        <li>Introduce yourself in 1 minute.</li>
+        <li>Why do you want to join Singapore Airlines?</li>
+        <li>What is your greatest strength and weakness?</li>
+        <li>How would you handle a difficult passenger?</li>
+        <li>Tell me about a time you worked as part of a team.</li>
+        <li>What does the Singapore Girl image mean to you?</li>
+        <li>How do you stay calm under pressure?</li>
+        <li>Are you comfortable living away from home?</li>
+        <li>Describe your ideal work environment.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- 캐세이퍼시픽 -->
+  <div class="airline-section">
+    <div class="airline-header">
+      <div class="airline-name">Cathay Pacific</div>
+      <span class="airline-base">Hong Kong</span>
+    </div>
+    <div class="airline-name-ko">캐세이퍼시픽</div>
+    <div class="process-title">면접 프로세스</div>
+    <ol class="process-list">
+      <li><strong>온라인 지원</strong> — 이력서, 커버레터</li>
+      <li><strong>비디오 면접</strong> — 녹화형. 주어진 질문에 영어로 답변 녹화</li>
+      <li><strong>그룹 어세스먼트</strong> — 디스커션 + 롤플레이 + 영어 테스트</li>
+      <li><strong>파이널 인터뷰</strong> — 1:1 심층 면접</li>
+      <li><strong>건강 검진 → 최종 합격</strong></li>
+    </ol>
+    <div class="tip-box"><b>TIP:</b> 캐세이는 Safety Demo가 면접에 포함될 수 있습니다. 안전 장비 사용법을 미리 숙지하고, 자신감 있게 시연하세요. 홍콩 베이스 생활에 대한 긍정적인 태도도 중요합니다.</div>
+    <button class="q-toggle" onclick="toggleQ(this)">기출 질문 보기</button>
+    <div class="q-list">
+      <h4>Cathay Pacific 기출 질문</h4>
+      <ol>
+        <li>Tell me about yourself.</li>
+        <li>Why Cathay Pacific?</li>
+        <li>What do you know about Hong Kong?</li>
+        <li>How would you deal with a passenger who is afraid of flying?</li>
+        <li>Tell me about a time you made a mistake and how you fixed it.</li>
+        <li>What would you do if you saw a colleague not following safety procedures?</li>
+        <li>How do you build rapport with people from different cultures?</li>
+        <li>What are your hobbies?</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- 에티하드 -->
+  <div class="airline-section">
+    <div class="airline-header">
+      <div class="airline-name">Etihad Airways</div>
+      <span class="airline-base">UAE · Abu Dhabi</span>
+    </div>
+    <div class="airline-name-ko">에티하드 항공</div>
+    <div class="process-title">면접 프로세스</div>
+    <ol class="process-list">
+      <li><strong>온라인 지원</strong> — CV 제출</li>
+      <li><strong>어세스먼트 데이</strong> — 그룹 디스커션 + 영어 시험 + 스몰톡</li>
+      <li><strong>파이널 인터뷰</strong> — 1:1 심층 면접 (서비스, 가치관, 팀워크)</li>
+      <li><strong>건강 검진 → 최종 합격</strong></li>
+    </ol>
+    <div class="tip-box"><b>TIP:</b> 에티하드는 에미레이트와 프로세스가 유사하지만 규모가 작아 경쟁이 다를 수 있습니다. 아부다비 생활에 대한 열린 태도와 프리미엄 서비스 마인드를 어필하세요.</div>
+    <button class="q-toggle" onclick="toggleQ(this)">기출 질문 보기</button>
+    <div class="q-list">
+      <h4>Etihad Airways 기출 질문</h4>
+      <ol>
+        <li>Introduce yourself.</li>
+        <li>Why Etihad?</li>
+        <li>What do you know about Abu Dhabi?</li>
+        <li>Tell me about a time you delivered great service.</li>
+        <li>How do you handle working long hours?</li>
+        <li>What would you do if two passengers were arguing?</li>
+        <li>How do you manage homesickness?</li>
+        <li>Why should we hire you?</li>
+      </ol>
+    </div>
+  </div>
+
+</div>
+</div>
+</section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+
+<script>
+function showTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
+  document.getElementById('tab-'+tab).classList.add('active');
+  event.target.classList.add('active');
+}
+function toggleQ(btn){
+  var list=btn.nextElementSibling;
+  list.classList.toggle('open');
+  btn.textContent=list.classList.contains('open')?'기출 질문 닫기':'기출 질문 보기';
+}
+</script>
+</body>
+</html>

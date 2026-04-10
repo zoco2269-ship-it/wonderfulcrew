@@ -274,7 +274,7 @@ section{padding:100px 5%;}
 }
 .res-card-body{padding:16px 0 0;}
 .res-card-title{font-size:0.96rem;font-weight:700;color:var(--navy);line-height:1.5;margin-bottom:8px;}
-.res-card-desc{font-size:0.85rem;color:#4A4438;line-height:1.7;font-weight:400;min-height:60px;}
+.res-card-desc{font-family:'Noto Sans KR',sans-serif;font-size:0.85rem;color:#4A4438;line-height:1.7;font-weight:400;min-height:60px;}
 .res-card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
 .res-read-time{font-size:0.72rem;color:var(--text-muted);}
 .res-more{font-size:0.75rem;color:var(--gold);font-weight:500;text-decoration:none;transition:gap 0.2s;display:flex;align-items:center;gap:4px;}
@@ -458,7 +458,13 @@ footer{
     <a href="daily-english.html">영어연습</a>
     <a href="jobs.html">채용정보</a>
   </div>
-  <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
+    <button onclick="alert('준비 중입니다')" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:24px;background:#fff;border:1px solid rgba(26,35,64,0.15);color:#1A2340;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.04em;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9A84C';" onmouseout="this.style.borderColor='rgba(26,35,64,0.15)';">
+      <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      로그인
+    </button>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -473,7 +479,7 @@ footer{
     </h1>
     <p class="hero-sub">AI 면접관과 함께하는 실전 승무원 면접 연습<br>맞춤형 피드백으로 합격을 완성하세요.</p>
     <div class="hero-btns">
-      <a href="leveltest.html" class="btn-gold">무료 AI 면접 체험하기 →</a>
+      <a href="leveltest.html" class="btn-gold">무료 면접 체험하기 →</a>
       <a href="#about" class="btn-outline-white">더 알아보기</a>
     </div>
   </div>
@@ -538,9 +544,10 @@ footer{
         <span class="demo-tag">🌏 22개국 글로벌</span>
         <span class="demo-tag">🇰🇷 한국어 + 🇺🇸 영어</span>
         <span class="demo-tag">AI 실시간 분석</span>
+        <span class="demo-tag">✈ 자문단 10개 항공사</span>
       </div>
       <div class="demo-cta-row">
-        <a href="leveltest.html" class="btn-gold" style="display:inline-flex;justify-content:center;">무료 AI 면접 체험하기 →</a>
+        <a href="leveltest.html" class="btn-gold" style="display:inline-flex;justify-content:center;">무료 면접 체험하기 →</a>
       </div>
       <div class="demo-badge-row">
         <div class="demo-badge">
@@ -697,19 +704,16 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="exp-icon">🎙️</div>
       <div class="exp-card-title">AI Mock Interviews</div>
       <p class="exp-card-body">정교한 AI 알고리즘이 분석하는 실전 면접 시뮬레이션. 당신의 발화 톤부터 시선 처리까지 완벽하게 가이드합니다.</p>
-      <a href="#" class="btn-card-more">자세히 보기 →</a>
     </div>
     <div class="exp-card reveal reveal-delay-1">
       <div class="exp-icon">✨</div>
       <div class="exp-card-title">Personality Coaching</div>
       <p class="exp-card-body">단순한 스킬을 넘어선 품격. 내면의 가치를 외면으로 표현하는 법을 배우는 프리미엄 인성 코칭입니다.</p>
-      <a href="#" class="btn-card-more">자세히 보기 →</a>
     </div>
     <div class="exp-card reveal reveal-delay-2">
       <div class="exp-icon">💎</div>
       <div class="exp-card-title">Signature Image Making</div>
       <p class="exp-card-body">당신만의 고유한 분위기를 완성합니다. 피지컬 컬러퍼티에이튜브까지, 가장 아름다운 '나'를 발견하세요.</p>
-      <a href="#" class="btn-card-more">자세히 보기 →</a>
     </div>
   </div>
 </section>
@@ -727,7 +731,9 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="num-stats">
         <div class="nstat"><div class="nval">1,000<span style="font-size:0.6em">+</span></div><div class="nlbl">Global Alumni</div></div>
         <div class="nstat"><div class="nval">22<span style="font-size:0.6em">+</span></div><div class="nlbl">Countries</div></div>
-        <div class="nstat"><div class="nval">15<span style="font-size:0.6em">+</span></div><div class="nlbl">Partner Airlines</div></div>
+        <div class="nstat"><div class="nval">10</div><div class="nlbl">자문단 항공사</div></div>
+        <div class="nstat"><div class="nval">20<span style="font-size:0.6em">년</span></div><div class="nlbl">코칭 경력</div></div>
+        <div class="nstat"><div class="nval">10,000<span style="font-size:0.6em">+</span></div><div class="nlbl">합격 데이터</div></div>
       </div>
     </div>
   </div>
@@ -819,7 +825,7 @@ document.addEventListener('DOMContentLoaded',function(){
 .chat-float-icon{font-size:1.1rem;flex-shrink:0;}
 </style>
 <a href="chatbot.html" class="chat-float">
-  <span class="chat-float-icon">💬</span>
+  <span class="chat-float-icon" style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#fff;color:#C9A84C;font-size:0.95rem;">✈️</span>
   AI 면접 코치와 대화하기
 </a>
 

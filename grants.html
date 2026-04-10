@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정부지원사업 에이전트 · WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Noto+Serif+KR:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF8F3;
+    --navy: #1A2340;
+    --gold: #B8972A;
+    --gold-light: #E8D48A;
+    --text: #2C2C2A;
+    --muted: #7A7870;
+    --border: rgba(26,35,64,0.12);
+    --card-bg: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nanum Gothic', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    background: var(--navy);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .topbar-logo {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15px;
+    color: var(--gold-light);
+    letter-spacing: 0.04em;
+  }
+  .topbar-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.06em;
+  }
+  .today-badge {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    border: 0.5px solid rgba(255,255,255,0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  /* MAIN */
+  .main { max-width: 860px; margin: 0 auto; padding: 36px 24px 80px; }
+
+  /* SEARCH */
+  .search-block {
+    background: var(--navy);
+    border-radius: 16px;
+    padding: 28px 28px 24px;
+    margin-bottom: 28px;
+  }
+  .search-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    color: #fff;
+    font-weight: 300;
+    margin-bottom: 4px;
+  }
+  .search-title span { color: var(--gold-light); }
+  .search-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+  .search-row {
+    display: flex;
+    gap: 10px;
+  }
+  .search-row input {
+    flex: 1;
+    background: rgba(255,255,255,0.08);
+    border: 0.5px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 11px 16px;
+    font-size: 14px;
+    color: #fff;
+    font-family: 'Nanum Gothic', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-row input::placeholder { color: rgba(255,255,255,0.35); }
+  .search-row input:focus { border-color: var(--gold-light); }
+  .search-btn {
+    background: var(--gold);
+    border: none;
+    border-radius: 10px;
+    padding: 11px 24px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    cursor: pointer;
+    font-family: 'Nanum Gothic', sans-serif;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .search-btn:hover { background: var(--gold-light); }
+  .search-btn:active { transform: scale(0.98); }
+  .search-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* FILTER TAGS */
+  .filter-row {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .tag {
+    font-size: 12px;
+    padding: 5px 13px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border);
+    cursor: pointer;
+    color: var(--muted);
+    background: var(--card-bg);
+    transition: all 0.15s;
+    font-family: 'Nanum Gothic', sans-serif;
+  }
+  .tag:hover { border-color: var(--navy); color: var(--navy); }
+  .tag.on {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+  }
+
+  /* STATUS & SORT */
+  .meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    min-height: 22px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .status {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .status.loading::after {
+    content: '';
+    animation: dots 1s infinite;
+  }
+  @keyframes dots { 0%{content:'.'} 33%{content:'..'} 66%{content:'...'} 100%{content:'';} }
+  .sort-sel {
+    font-size: 12px;
+    padding: 4px 8px;
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text);
+    font-family: 'Nanum Gothic', sans-serif;
+    cursor: pointer;
+  }
+
+  /* STATS */
+  .stats-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .stat-chip {
+    background: var(--card-bg);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    text-align: center;
+  }
+  .stat-chip .n { font-size: 18px; font-weight: 800; color: var(--navy); }
+  .stat-chip .l { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  /* CARDS */
+  .cards { display: flex; flex-direction: column; gap: 10px; }
+  .card {
+    background: var(--card-bg);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    transition: box-shadow 0.15s;
+  }
+  .card:hover { box-shadow: 0 2px 12px rgba(26,35,64,0.08); }
+  .card.urgent { border-left: 3px solid #C0392B; }
+  .card-top { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 7px; }
+  .badge {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-weight: 700;
+  }
+  .b-startup { background: #EBF4FF; color: #1A4A7A; }
+  .b-ai      { background: #E8F8F2; color: #0D5E42; }
+  .b-content { background: #FFF8E8; color: #7A5200; }
+  .b-ip      { background: #F0EEFF; color: #3D2D8A; }
+  .b-export  { background: #EAFAF0; color: #1A6B3C; }
+  .b-edu     { background: #FFF0F5; color: #7A1A40; }
+  .b-seoul   { background: #FFF3E8; color: #7A3000; }
+  .b-other   { background: #F4F3F0; color: #5A5850; }
+
+  .card-title { font-size: 14px; font-weight: 700; color: var(--navy); line-height: 1.4; flex: 1; }
+  .card-meta { display: flex; gap: 12px; font-size: 12px; color: var(--muted); flex-wrap: wrap; margin-bottom: 5px; }
+  .urgent-txt { color: #C0392B; font-weight: 700; }
+  .card-desc { font-size: 13px; color: #5A5850; line-height: 1.55; }
+  .card-link {
+    display: inline-block;
+    margin-top: 9px;
+    font-size: 12px;
+    color: var(--gold);
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .card-link:hover { color: var(--navy); }
+
+  /* EMPTY */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+    background: var(--card-bg);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+  }
+  .empty .icon { font-size: 36px; margin-bottom: 14px; }
+  .empty p { font-size: 14px; line-height: 1.8; }
+  .empty small { font-size: 12px; color: #aaa; }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 48px;
+    text-align: center;
+    font-size: 11px;
+    color: #ccc;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="topbar-logo">WonderfulCrew</div>
+    <div class="topbar-sub">PRIVATE · 정부지원사업 에이전트</div>
+  </div>
+  <div class="today-badge" id="todayBadge"></div>
+</div>
+
+<div class="main">
+
+  <div class="search-block">
+    <div class="search-title">정부·지자체 지원사업 <span>전체 검색</span></div>
+    <div class="search-sub">K-Startup · NIPA · KOTRA · 특허청 · KOCCA · 서울시SBA · 소진공 · 고용부 · 창진원 · 팁스 · IP디딤돌 · 데이터바우처 등 전체 동시 검색</div>
+    <div class="search-row">
+      <input id="kw" type="text" placeholder="키워드 추가 (예: 에듀테크, 여성창업, AI... 비워도 됩니다)" />
+      <button class="search-btn" id="btn" onclick="doSearch()">검색 →</button>
+    </div>
+  </div>
+
+  <div class="filter-row" id="ftags">
+    <span class="tag on" data-c="all">전체</span>
+    <span class="tag" data-c="startup">창업/스타트업</span>
+    <span class="tag" data-c="ai">AI/데이터/기술</span>
+    <span class="tag" data-c="content">콘텐츠/미디어</span>
+    <span class="tag" data-c="ip">지식재산</span>
+    <span class="tag" data-c="export">수출/글로벌</span>
+    <span class="tag" data-c="edu">교육/인재</span>
+    <span class="tag" data-c="seoul">서울시·지자체</span>
+    <span class="tag" data-c="other">기타</span>
+  </div>
+
+  <div class="meta-row">
+    <div class="status" id="statusBar">검색 버튼을 눌러 시작하세요.</div>
+    <select class="sort-sel" id="sortSel" onchange="render()" style="display:none;">
+      <option value="deadline">마감일 순</option>
+      <option value="agency">기관명 순</option>
+      <option value="cat">카테고리 순</option>
+    </select>
+  </div>
+
+  <div class="stats-row" id="statsRow"></div>
+
+  <div class="cards" id="cards">
+    <div class="empty">
+      <div class="icon">🔍</div>
+      <p>검색 버튼을 눌러<br>오늘의 정부·지자체 지원사업을 불러오세요.</p>
+      <small style="display:block;margin-top:10px;">전체 중앙부처 + 서울시 + 공공기관 동시 검색</small>
+    </div>
+  </div>
+
+  <div class="footer">© 2026 WonderfulCrew Co., Ltd. · PRIVATE USE ONLY</div>
+</div>
+
+<script>
+// Today date
+const todayStr = new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('todayBadge').textContent = todayStr + ' 기준';
+
+let ALL = [], activeCat = 'all';
+
+document.getElementById('ftags').addEventListener('click', e => {
+  if (!e.target.classList.contains('tag')) return;
+  document.querySelectorAll('.tag').forEach(t => t.classList.remove('on'));
+  e.target.classList.add('on');
+  activeCat = e.target.dataset.c;
+  render();
+});
+
+const BADGE = {
+  startup: ['창업/스타트업','b-startup'],
+  ai:      ['AI/데이터','b-ai'],
+  content: ['콘텐츠/미디어','b-content'],
+  ip:      ['지식재산','b-ip'],
+  export:  ['수출/글로벌','b-export'],
+  edu:     ['교육/인재','b-edu'],
+  seoul:   ['서울시·지자체','b-seoul'],
+  other:   ['기타','b-other']
+};
+
+function render() {
+  const sort = document.getElementById('sortSel').value || 'deadline';
+  let d = activeCat === 'all' ? [...ALL] : ALL.filter(x => x.category === activeCat);
+  if (sort === 'deadline') d.sort((a,b) => (a.deadlineSortKey??99)-(b.deadlineSortKey??99));
+  else if (sort === 'agency') d.sort((a,b) => a.agency.localeCompare(b.agency));
+  else d.sort((a,b) => a.category.localeCompare(b.category));
+
+  const el = document.getElementById('cards');
+  if (!d.length) { el.innerHTML = '<div class="empty"><div class="icon">📭</div><p>해당 카테고리 결과가 없습니다.</p></div>'; return; }
+
+  el.innerHTML = d.map(x => {
+    const [bl, bc] = BADGE[x.category] || BADGE.other;
+    return `<div class="card${x.urgent?' urgent':''}">
+      <div class="card-top">
+        <span class="badge ${bc}">${bl}</span>
+        <span class="card-title">${x.title}</span>
+      </div>
+      <div class="card-meta">
+        <span>🏛 ${x.agency}</span>
+        <span class="${x.urgent?'urgent-txt':''}">📅 ${x.deadline}</span>
+        ${x.budget ? `<span>💰 ${x.budget}</span>` : ''}
+      </div>
+      ${x.desc ? `<div class="card-desc">${x.desc}</div>` : ''}
+      ${x.url ? `<a class="card-link" href="${x.url}" target="_blank">공고 바로가기 →</a>` : ''}
+    </div>`;
+  }).join('');
+
+  // Stats
+  const cats = {};
+  ALL.forEach(x => { cats[x.category] = (cats[x.category]||0)+1; });
+  const sr = document.getElementById('statsRow');
+  sr.innerHTML = `<div class="stat-chip"><div class="n">${ALL.length}</div><div class="l">전체</div></div>` +
+    Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>{
+      const [lbl] = BADGE[k]||BADGE.other;
+      return `<div class="stat-chip"><div class="n">${v}</div><div class="l">${lbl}</div></div>`;
+    }).join('');
+
+  document.getElementById('sortSel').style.display = 'block';
+}
+
+async function doSearch() {
+  const btn = document.getElementById('btn');
+  const stat = document.getElementById('statusBar');
+  const kw = document.getElementById('kw').value.trim();
+  btn.disabled = true;
+  stat.className = 'status loading';
+  stat.textContent = 'AI가 전체 정부·지자체 지원사업 검색 중';
+  document.getElementById('cards').innerHTML = '';
+  document.getElementById('statsRow').innerHTML = '';
+  document.getElementById('sortSel').style.display = 'none';
+
+  const prompt = `오늘 ${todayStr} 기준으로 현재 접수 중이거나 30일 이내 마감 예정인 한국 정부/공공기관/서울시 지원사업을 웹에서 검색해서 최대한 많이 리스트업해줘.
+
+반드시 검색해야 할 채널:
+- 중앙부처: K-Startup(창업진흥원), 중소벤처기업부, 과학기술정보통신부, 고용노동부, 교육부, 문화체육관광부, 산업통상자원부
+- 공공기관: NIPA(정보통신산업진흥원), NIA(한국지능정보사회진흥원), KOTRA, KITA, KOCCA(한국콘텐츠진흥원), 특허청/KIPO, 소진공(소상공인진흥공단), 창진원
+- 서울시/지자체: 서울산업진흥원(SBA), 서울시 소상공인 지원, 서울시 스타트업 지원
+- 기타: 팁스(TIPS), IP디딤돌, 데이터바우처, 디지털바우처${kw ? `\n추가 키워드: ${kw}` : ''}
+
+대상 분야: AI, 에듀테크, 콘텐츠, 스타트업, 지식재산, 수출, 여성창업, 소상공인, 데이터, 기술사업화
+
+반드시 순수 JSON 배열만 응답. 앞뒤 텍스트나 마크다운 없이 [ 로 시작해서 ] 로 끝나야 함.
+각 항목:
+{"title":"사업명","agency":"주관기관","category":"startup|ai|content|ip|export|edu|seoul|other","deadline":"마감일","deadlineSortKey":남은일수숫자,"urgent":7일이내true,"budget":"지원금액또는null","desc":"한줄설명50자이내","url":"공식URL또는null"}
+최소 15개 이상 반환.`;
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await r.json();
+    let txt = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    txt = txt.replace(/```json|```/g,'').trim();
+    const s = txt.indexOf('['), e = txt.lastIndexOf(']');
+    if (s !== -1 && e !== -1) txt = txt.slice(s, e+1);
+    ALL = JSON.parse(txt);
+    stat.className = 'status';
+    stat.textContent = `${todayStr} 기준 · ${ALL.length}개 사업 검색 완료 · 빨간 테두리 = 마감 임박`;
+    render();
+  } catch(err) {
+    stat.className = 'status';
+    stat.textContent = '오류 발생. 다시 시도해주세요.';
+    document.getElementById('cards').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>검색 중 오류가 발생했습니다.<br>다시 시도해주세요.</p></div>';
+  }
+  btn.disabled = false;
+}
+
+// Enter key
+document.getElementById('kw').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+</script>
+</body>
+</html>

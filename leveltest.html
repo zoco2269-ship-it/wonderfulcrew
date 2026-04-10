@@ -142,7 +142,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   <div class="gold-bar"></div>
   <div class="lang-select-wrap">
     <button class="lang-btn" onclick="setLang('ko')">
-      <span class="lang-btn-flag">👩🏻</span>
+      <span class="lang-btn-flag">💁🏻‍♀️</span>
       <span>
         <span class="lang-btn-text-main">한국어로 테스트</span>
         <span class="lang-btn-text-sub">대한항공 · 아시아나 · 국내 LCC 지망생 추천<br>한국어 자기소개 + AI 평가</span>
@@ -475,7 +475,7 @@ function renderResult(r){
   if(!document.getElementById('r-go-curriculum')){
     var goBtn=document.createElement('a');
     goBtn.id='r-go-curriculum';
-    goBtn.href='curriculum.html';
+    goBtn.href='curriculum.html';goBtn.onclick=function(){try{localStorage.removeItem('wc_airline');localStorage.removeItem('wc_airline_name');}catch(e){}};
     goBtn.className='btn-gold';
     goBtn.style.cssText='text-decoration:none;display:flex;align-items:center;justify-content:center;margin-top:12px;';
     goBtn.textContent='내 레벨에 맞는 면접 연습 시작하기 →';

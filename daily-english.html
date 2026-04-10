@@ -36,10 +36,19 @@ section{padding:80px 5%;}
 .q-card{background:#fff;border:1px solid var(--gold-pale);border-left:3px solid var(--gold);padding:30px 32px;}
 .q-num{font-family:'DM Serif Display',serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:10px;text-transform:uppercase;}
 .q-text{font-size:1.1rem;color:var(--navy);font-weight:600;line-height:1.5;margin-bottom:18px;}
-.q-textarea{width:100%;min-height:110px;padding:14px 16px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.95rem;color:var(--text-dark);background:var(--cream);resize:vertical;}
-.q-textarea:focus{outline:none;border-color:var(--gold);}
-.q-submit{margin-top:14px;padding:10px 24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;cursor:pointer;}
-.q-submit:disabled{opacity:0.6;cursor:not-allowed;}
+.q-voice-area{margin-bottom:14px;}
+.q-record-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--navy);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.85rem;font-weight:600;letter-spacing:0.05em;cursor:pointer;transition:all 0.2s;}
+.q-record-btn.recording{background:#C0392B;animation:pulse-rec 1s infinite;}
+@keyframes pulse-rec{0%,100%{opacity:1;}50%{opacity:0.7;}}
+.q-record-btn:hover{opacity:0.9;}
+.q-transcript{margin-top:12px;padding:14px 16px;border:1px solid var(--gold-pale);border-radius:8px;background:var(--cream);font-size:0.95rem;color:var(--text-dark);line-height:1.7;min-height:50px;}
+.q-transcript:empty::before{content:'음성 입력 대기 중...';color:var(--text-muted);font-size:0.88rem;}
+.q-btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.q-btn{padding:10px 22px;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:all 0.2s;}
+.q-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.q-btn.feedback{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}
+.q-btn.sample{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}
+.q-btn.sample:hover{background:var(--navy);color:#fff;}
 .q-feedback{margin-top:18px;padding:18px 20px;background:var(--cream);border-left:3px solid var(--gold);font-size:0.92rem;line-height:1.75;color:var(--text-mid);white-space:pre-wrap;display:none;}
 .q-feedback.visible{display:block;}
 .q-feedback b{color:var(--navy);}
@@ -86,7 +95,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <section>
   <div class="sec-label">100 Q&amp;A · Random 3</div>
-  <h2 class="sec-title">오늘의 <em>백문백답</em></h2>
+  <h2 class="sec-title">English <em>Practice</em></h2>
   <div class="gold-line"></div>
   <div class="q-wrap" id="q-wrap"></div>
   <div class="done-banner" id="done-banner">✓ 오늘의 영어 연습 완료! 연속 출석이 기록되었습니다.</div>
@@ -164,32 +173,99 @@ picked.forEach(function(q,i){
   card.className='q-card';
   card.innerHTML='<div class="q-num">Question '+(i+1)+'</div>'+
     '<div class="q-text">'+q+'</div>'+
-    '<textarea class="q-textarea" placeholder="Type your answer in English..."></textarea>'+
-    '<button class="q-submit">AI 피드백 받기 →</button>'+
-    '<div class="q-feedback"></div>';
+    '<div class="q-voice-area">'+
+      '<button class="q-record-btn" data-state="idle">말하기 시작</button>'+
+      '<div class="q-transcript" id="transcript-'+i+'"></div>'+
+    '</div>'+
+    '<div class="q-btn-row">'+
+      '<button class="q-btn feedback" disabled>AI 피드백</button>'+
+      '<button class="q-btn sample" disabled>답변 예시</button>'+
+    '</div>'+
+    '<div class="q-feedback" id="fb-'+i+'"></div>'+
+    '<div class="q-feedback" id="sample-'+i+'"></div>';
   qWrap.appendChild(card);
-  var btn=card.querySelector('.q-submit');
-  var ta=card.querySelector('.q-textarea');
-  var fb=card.querySelector('.q-feedback');
-  btn.addEventListener('click',async function(){
-    var ans=ta.value.trim();
-    if(!ans){fb.textContent='답변을 입력해 주세요.';fb.classList.add('visible');return;}
-    btn.disabled=true;btn.textContent='분석 중...';
-    fb.classList.add('visible');fb.innerHTML='<b>AI 피드백을 생성하고 있어요...</b>';
+
+  var recBtn=card.querySelector('.q-record-btn');
+  var transcript=card.querySelector('.q-transcript');
+  var fbBtn=card.querySelector('.q-btn.feedback');
+  var sampleBtn=card.querySelector('.q-btn.sample');
+  var fbArea=card.querySelector('[id^="fb-"]');
+  var sampleArea=card.querySelector('[id^="sample-"]');
+  var recognition=null;
+
+  recBtn.addEventListener('click',function(){
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){transcript.textContent='Chrome 브라우저에서 사용해 주세요.';return;}
+    if(recBtn.dataset.state==='recording'){
+      if(recognition)recognition.stop();
+      return;
+    }
+    recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
+    var finalText='';
+    recBtn.dataset.state='recording';recBtn.classList.add('recording');recBtn.textContent='녹음 중... (클릭하여 중지)';
+    transcript.textContent='';
+    recognition.onresult=function(ev){
+      var interim='';finalText='';
+      for(var r=0;r<ev.results.length;r++){
+        if(ev.results[r].isFinal)finalText+=ev.results[r][0].transcript+' ';
+        else interim+=ev.results[r][0].transcript;
+      }
+      transcript.textContent=finalText+interim;
+    };
+    recognition.onend=function(){
+      recBtn.dataset.state='idle';recBtn.classList.remove('recording');recBtn.textContent='다시 말하기';
+      if(finalText.trim()||transcript.textContent.trim()){
+        transcript.textContent=finalText.trim()||transcript.textContent.trim();
+        fbBtn.disabled=false;sampleBtn.disabled=false;
+      }
+    };
+    recognition.onerror=function(e){
+      recBtn.dataset.state='idle';recBtn.classList.remove('recording');recBtn.textContent='다시 말하기';
+      if(e.error!=='aborted')transcript.textContent='인식 실패 — 다시 시도해 주세요.';
+    };
+    recognition.start();
+  });
+
+  // AI 피드백
+  fbBtn.addEventListener('click',async function(){
+    var ans=transcript.textContent.trim();
+    if(!ans)return;
+    fbBtn.disabled=true;fbBtn.textContent='분석 중...';
+    fbArea.classList.add('visible');fbArea.innerHTML='<b>AI 피드백을 생성하고 있어요...</b>';
     try{
       var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
         model:'claude-sonnet-4-20250514',max_tokens:700,
-        system:'You are an English interview coach for cabin crew candidates. Give concise, warm feedback in Korean. Structure: 1) 잘한 점 2) 개선할 점 3) 모범 답변 예시 (1-2 sentences in English). Keep total under 250 Korean characters plus the English example.',
-        messages:[{role:'user',content:'Interview question: "'+q+'"\n\nCandidate answer:\n'+ans}]
+        system:'You are an English interview coach for cabin crew candidates. Give concise, warm feedback in Korean. Structure: 1) 잘한 점 2) 개선할 점 3) 발음/문법 교정 (if any). Keep total under 300 Korean characters.',
+        messages:[{role:'user',content:'Interview question: "'+q+'"\n\nCandidate spoken answer:\n'+ans}]
       })});
       var data=await res.json();
       var text=(data&&data.content&&data.content[0]&&data.content[0].text)||data.text||JSON.stringify(data);
-      fb.innerHTML=text.replace(/\n/g,'<br>');
+      fbArea.innerHTML=text.replace(/\n/g,'<br>');
       checkAllAnswered();
     }catch(e){
-      fb.innerHTML='<b>오류:</b> 피드백을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.';
+      fbArea.innerHTML='<b>오류:</b> 잠시 후 다시 시도해 주세요.';
     }
-    btn.disabled=false;btn.textContent='다시 받기';
+    fbBtn.disabled=false;fbBtn.textContent='AI 피드백';
+  });
+
+  // 답변 예시
+  sampleBtn.addEventListener('click',async function(){
+    sampleBtn.disabled=true;sampleBtn.textContent='생성 중...';
+    sampleArea.classList.add('visible');sampleArea.innerHTML='<b>모범 답변을 생성하고 있어요...</b>';
+    try{
+      var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:700,
+        system:'You are an English interview coach for cabin crew candidates. Provide a model answer in English (3-5 sentences, natural and professional) for the given cabin crew interview question. Then add a brief Korean translation below. Keep the answer concise and suitable for a 30-60 second spoken response.',
+        messages:[{role:'user',content:'Give a model answer for this cabin crew interview question:\n"'+q+'"'}]
+      })});
+      var data=await res.json();
+      var text=(data&&data.content&&data.content[0]&&data.content[0].text)||data.text||JSON.stringify(data);
+      sampleArea.innerHTML=text.replace(/\n/g,'<br>');
+      checkAllAnswered();
+    }catch(e){
+      sampleArea.innerHTML='<b>오류:</b> 잠시 후 다시 시도해 주세요.';
+    }
+    sampleBtn.disabled=false;sampleBtn.textContent='답변 예시';
   });
 });
 function checkAllAnswered(){

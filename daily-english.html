@@ -98,7 +98,11 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <h2 class="sec-title">English <em>Practice</em></h2>
   <div class="gold-line"></div>
   <div class="q-wrap" id="q-wrap"></div>
-  <div class="done-banner" id="done-banner">✓ 오늘의 영어 연습 완료! 연속 출석이 기록되었습니다.</div>
+  <div class="done-banner" id="done-banner">✓ 오늘의 ���어 연습 완��! 연속 출석��� 기록되었습니다.</div>
+  <div style="max-width:860px;margin:30px auto 0;text-align:center;">
+    <button id="more-practice-btn" class="q-btn feedback" style="display:none;padding:14px 32px;font-size:0.9rem;" onclick="addMoreQuestions()">더 연습하기</button>
+    <div id="token-info" style="display:none;margin-top:10px;font-size:0.8rem;color:var(--text-muted);"></div>
+  </div>
 </section>
 
 <section id="shadow">
@@ -106,6 +110,9 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <h2 class="sec-title">기내방송 <em>쉐도잉</em></h2>
   <div class="gold-line"></div>
   <div class="shadow-wrap" id="shadow-wrap"></div>
+  <div style="max-width:860px;margin:24px auto 0;text-align:center;">
+    <button class="q-btn feedback" style="padding:14px 32px;font-size:0.9rem;" onclick="refreshShadowing()">더 연습하기</button>
+  </div>
 </section>
 
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
@@ -161,14 +168,45 @@ var QUESTIONS=[
   "Describe a time you showed leadership.",
   "Why should we choose you?"
 ];
-function pick3(){
+function pickN(n){
   var arr=QUESTIONS.slice(),out=[];
-  for(var i=0;i<3;i++){var idx=Math.floor(Math.random()*arr.length);out.push(arr.splice(idx,1)[0]);}
+  for(var i=0;i<n&&arr.length>0;i++){var idx=Math.floor(Math.random()*arr.length);out.push(arr.splice(idx,1)[0]);}
   return out;
 }
-var picked=pick3();
+
+// ===== 토큰 시스템 =====
+function loadTokens(){
+  var d=JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');
+  return {firstFree:d.firstFree!==false,tokens:d.tokens||0};
+}
+function saveTokens(t){localStorage.setItem('wc_eng_tokens',JSON.stringify(t));}
+function useToken(){
+  var t=loadTokens();
+  // 최초 1회(3문제) 무료
+  if(t.firstFree){return true;}
+  if(t.tokens>0){t.tokens--;saveTokens(t);return true;}
+  return false;
+}
+function markFirstUsed(){
+  var t=loadTokens();
+  if(t.firstFree){t.firstFree=false;saveTokens(t);}
+}
+function renderTokenInfo(){
+  var t=loadTokens();
+  var el=document.getElementById('token-info');
+  if(t.firstFree)el.textContent='첫 이용 무료';
+  else el.textContent='남은 토큰: '+t.tokens+'개';
+  el.style.display='block';
+}
+
 var qWrap=document.getElementById('q-wrap');
 var completedCount=0;
+var totalQuestionIdx=0;
+
+function buildCards(questions,startIdx){
+  questions.forEach(function(q,offset){
+    var i=startIdx+offset;
+    totalQuestionIdx=i+1;
 picked.forEach(function(q,i){
   var card=document.createElement('div');
   card.className='q-card';
@@ -221,7 +259,7 @@ picked.forEach(function(q,i){
   // ① 질문 듣기 TTS
   card.querySelector('[data-act="listen-q"]').addEventListener('click',function(){
     if(!('speechSynthesis' in window))return;
-    var u=new SpeechSynthesisUtterance(q);u.lang='en-US';u.rate=0.85;
+    var u=new SpeechSynthesisUtterance(q);u.lang='en-GB';u.rate=0.85;u.pitch=1.05;
     window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
   });
 
@@ -263,12 +301,17 @@ picked.forEach(function(q,i){
   submitBtn.addEventListener('click',async function(){
     var ans=transcript.textContent.trim();
     if(!ans)return;
+    // 토큰 체크 (최초 3문제 무료, 이후 토큰 차감)
+    if(!useToken()){
+      alert('토큰이 부족합니다. 토큰을 구매해주세요.');
+      return;
+    }
     submitBtn.disabled=true;submitBtn.textContent='분석 중...';
     fbArea.classList.add('visible');fbArea.innerHTML='피드백과 모범 답변을 생성하고 있어요...';
     try{
       var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
         model:'claude-sonnet-4-20250514',max_tokens:900,
-        system:'You are an English interview coach for cabin crew candidates. The input is speech-to-text. Respond in plain text only (no markdown, no **, no asterisks). Use this exact format:\n\n[피드백]\n1) 잘한 점 — 구체적으로 어떤 내용/표현이 좋았는지\n2) 개선할 점 — 내용 깊이/구성만. 대소문자, 구두점, 띄어쓰기는 음성인식 특성이므로 절대 지적하지 마세요\n3) 표현 교정 — 확실히 틀린 문법만. 대소문자/구두점 무시\n\n[모범답변]\nNatural spoken English, 3-4 SHORT simple sentences (20-30 sec). Easy vocabulary. Then one blank line and brief Korean translation.\n\nKeep feedback under 300 Korean characters. Keep model answer under 100 English words.',
+        system:'You are an English interview coach for cabin crew candidates. The input is speech-to-text. Respond in plain text only (no markdown, no **, no asterisks). Use this exact format:\n\n[피드백]\n1) 잘한 점 — 구체적으로 어떤 내용/표현이 좋았는지\n2) 개선할 점 — 내용 깊이/구성만. 대소문자, 구두점, 띄어쓰기는 음성인식 특성이므로 절대 지적하지 마세요\n3) 표현 교정 — 확실히 틀린 문법만. 대소문자/구두점 무시\n4) 말하기 톤 조언 — 승무원 면접에 맞는 따뜻하고 친절한 인토네이션 팁. 예: 문장 끝을 살짝 올려서 부드럽게, 핵심 단어에 강세를 주세요, 미소 띤 목소리로 등 구체적으로\n\n[모범답변]\nNatural spoken English in a warm, friendly cabin crew tone. 3-4 SHORT simple sentences (20-30 sec). Easy vocabulary. The answer should sound kind, approachable, and professional — like a real cabin crew member speaking to a passenger. Then one blank line and brief Korean translation.\n\nKeep feedback under 350 Korean characters. Keep model answer under 100 English words.',
         messages:[{role:'user',content:'Interview question: "'+q+'"\n\nCandidate spoken answer (speech-to-text — ignore capitalization/punctuation):\n'+ans}]
       })});
       var data=await res.json();
@@ -300,9 +343,9 @@ picked.forEach(function(q,i){
     sampleArea.style.display='block';
     sampleArea.classList.add('visible');
     sampleArea.innerHTML=cachedSampleHtml;
-    // 자동 TTS 재생
+    // 자동 TTS 재생 (따뜻한 톤, 영국식)
     if(sampleText&&'speechSynthesis' in window){
-      var u=new SpeechSynthesisUtterance(sampleText);u.lang='en-US';u.rate=0.85;
+      var u=new SpeechSynthesisUtterance(sampleText);u.lang='en-GB';u.rate=0.82;u.pitch=1.1;
       window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
     }
     // ⑤ 쉐도잉 버튼 표시
@@ -310,14 +353,14 @@ picked.forEach(function(q,i){
     // ⑥ 완료 체크
     completedCount++;
     doneEl.style.display='block';
-    if(completedCount>=3)saveStreak();
+    if(completedCount>=3){saveStreak();markFirstUsed();checkShowMore();}
     showSampleBtn.style.display='none';
   });
 
   // ⑤ 예시 듣기 TTS
   card.querySelector('[data-act="tts-sample"]').addEventListener('click',function(){
     if(!sampleText||!('speechSynthesis' in window))return;
-    var u=new SpeechSynthesisUtterance(sampleText);u.lang='en-US';u.rate=0.85;
+    var u=new SpeechSynthesisUtterance(sampleText);u.lang='en-GB';u.rate=0.82;u.pitch=1.1;
     window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
   });
 
@@ -355,61 +398,107 @@ picked.forEach(function(q,i){
     rec.onerror=function(){activeShRec=null;btn.textContent='따라하기';shadowResult.textContent='인식 실패. 다시 시도해 주세요.';};
     rec.start();
   });
-});
+  });
+}
+
+// 초기 3문제 생성
+var initialPicked=pickN(3);
+buildCards(initialPicked,0);
+
+// 3문제 완료 후 "더 연습하기" 버튼 표시
+function checkShowMore(){
+  if(completedCount>=3){
+    document.getElementById('more-practice-btn').style.display='inline-block';
+    renderTokenInfo();
+  }
+}
+
+function addMoreQuestions(){
+  var t=loadTokens();
+  if(!t.firstFree&&t.tokens<=0){
+    alert('토큰이 부족합니다. 토큰을 구매해주세요.');
+    return;
+  }
+  var newQs=pickN(3);
+  buildCards(newQs,totalQuestionIdx);
+  document.getElementById('more-practice-btn').style.display='none';
+  document.getElementById('token-info').style.display='none';
+  completedCount=0;
+}
 
 // ============ SHADOWING ============
-var SHADOW=[
+var ALL_SHADOW=[
   "Ladies and gentlemen, welcome aboard. Please fasten your seatbelts.",
   "We will be landing shortly. Please return your seat to the upright position.",
-  "In the event of a water landing, your seat cushion may be used as a flotation device."
+  "In the event of a water landing, your seat cushion may be used as a flotation device.",
+  "Please make sure your tray table is folded and your seat is in the upright position.",
+  "On behalf of the entire crew, we would like to thank you for flying with us today.",
+  "We ask that you please remain seated with your seatbelt fastened until the sign is turned off.",
+  "If you need any assistance during the flight, please do not hesitate to call one of our crew members.",
+  "We will now begin our in-flight service. Please sit back, relax, and enjoy your flight.",
+  "For your safety, please keep your seatbelt fastened at all times while you are seated.",
+  "Ladies and gentlemen, we have begun our descent. Please turn off all electronic devices.",
+  "Welcome aboard. My name is Sarah and I will be taking care of you in the cabin today.",
+  "Excuse me, may I offer you something to drink before we take off?",
+  "I am sorry for the inconvenience. Let me see what I can do for you right away.",
+  "Please let me know if there is anything else I can help you with.",
+  "We hope you had a pleasant flight. We look forward to seeing you again soon."
 ];
-var sWrap=document.getElementById('shadow-wrap');
-SHADOW.forEach(function(s,i){
-  var card=document.createElement('div');
-  card.className='shadow-card';
-  card.innerHTML='<div class="shadow-text">"'+s+'"</div>'+
-    '<div class="shadow-btns"><button class="shadow-btn primary" data-act="tts">🔊 듣기</button>'+
-    '<button class="shadow-btn" data-act="rec">🎙 따라읽기 시작</button></div>'+
-    '<div class="shadow-result"></div>';
-  sWrap.appendChild(card);
-  var result=card.querySelector('.shadow-result');
-  card.querySelector('[data-act="tts"]').addEventListener('click',function(){
-    if(!('speechSynthesis' in window)){result.textContent='이 브라우저는 음성 합성을 지원하지 않아요.';return;}
-    var u=new SpeechSynthesisUtterance(s);u.lang='en-US';u.rate=0.9;
-    window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+function pickShadow3(){
+  var arr=ALL_SHADOW.slice(),out=[];
+  for(var j=0;j<3&&arr.length>0;j++){var idx=Math.floor(Math.random()*arr.length);out.push(arr.splice(idx,1)[0]);}
+  return out;
+}
+function buildShadowCards(sentences){
+  var sWrap=document.getElementById('shadow-wrap');
+  sWrap.innerHTML='';
+  sentences.forEach(function(s){
+    var card=document.createElement('div');
+    card.className='shadow-card';
+    card.innerHTML='<div class="shadow-text">"'+s+'"</div>'+
+      '<div class="shadow-btns"><button class="shadow-btn primary" data-act="tts">듣기</button>'+
+      '<button class="shadow-btn" data-act="rec">따라읽기 시작</button></div>'+
+      '<div class="shadow-result"></div>';
+    sWrap.appendChild(card);
+    var result=card.querySelector('.shadow-result');
+    card.querySelector('[data-act="tts"]').addEventListener('click',function(){
+      if(!('speechSynthesis' in window)){result.textContent='이 브라우저는 음성 합성을 지원하지 않아요.';return;}
+      var u=new SpeechSynthesisUtterance(s);u.lang='en-GB';u.rate=0.85;u.pitch=1.1;
+      window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+    });
+    var recBtn2=card.querySelector('[data-act="rec"]');
+    var activeRec=null;
+    recBtn2.addEventListener('click',function(){
+      var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+      if(!SR){result.textContent='Chrome 브라우저에서 사용해 주세요.';return;}
+      if(activeRec){activeRec.stop();activeRec=null;return;}
+      var rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;
+      activeRec=rec;
+      var fullText='';
+      recBtn2.textContent='녹음 중... (클릭하여 중지)';
+      result.textContent='듣고 있어요... 다 읽은 후 버튼을 클릭하세요.';
+      rec.onresult=function(ev){
+        fullText='';
+        for(var r=0;r<ev.results.length;r++){fullText+=ev.results[r][0].transcript+' ';}
+        result.textContent='듣고 있어요: '+fullText.trim();
+      };
+      rec.onend=function(){
+        activeRec=null;recBtn2.textContent='따라읽기 시작';
+        if(!fullText.trim()){result.textContent='인식된 내용이 없어요. 다시 시도해 주세요.';return;}
+        var norm=function(x){return x.toLowerCase().replace(/[^a-z ]/g,'').trim();};
+        var a=norm(fullText),b=norm(s);
+        var aw=a.split(/\s+/),bw=b.split(/\s+/);
+        var match=aw.filter(function(w){return bw.indexOf(w)>-1;}).length;
+        var pct=Math.round((match/Math.max(bw.length,1))*100);
+        result.innerHTML='들은 내용: '+fullText.trim()+'<br>정확도: '+pct+'%';
+      };
+      rec.onerror=function(){activeRec=null;recBtn2.textContent='따라읽기 시작';result.textContent='인식 실패. 다시 시도해 주세요.';};
+      rec.start();
+    });
   });
-  var recBtn2=card.querySelector('[data-act="rec"]');
-  var activeRec=null;
-  recBtn2.addEventListener('click',function(){
-    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){result.textContent='이 브라우저는 음성 인식을 지원하지 않아요. (Chrome 권장)';return;}
-    // 이미 녹음 중이면 중지
-    if(activeRec){activeRec.stop();activeRec=null;return;}
-    var rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;
-    activeRec=rec;
-    var fullText='';
-    recBtn2.textContent='녹음 중... (클릭하여 중지)';
-    result.textContent='듣고 있어요... 다 읽은 후 버튼을 클릭하세요.';
-    rec.onresult=function(ev){
-      fullText='';
-      for(var r=0;r<ev.results.length;r++){fullText+=ev.results[r][0].transcript+' ';}
-      result.textContent='듣고 있어요: '+fullText.trim();
-    };
-    rec.onend=function(){
-      activeRec=null;
-      recBtn2.textContent='🎙 따라읽기 시작';
-      if(!fullText.trim()){result.textContent='인식된 내용이 없어요. 다시 시도해 주세요.';return;}
-      var norm=function(x){return x.toLowerCase().replace(/[^a-z ]/g,'').trim();};
-      var a=norm(fullText),b=norm(s);
-      var aw=a.split(/\s+/),bw=b.split(/\s+/);
-      var match=aw.filter(function(w){return bw.indexOf(w)>-1;}).length;
-      var pct=Math.round((match/Math.max(bw.length,1))*100);
-      result.innerHTML='들은 내용: '+fullText.trim()+'<br>정확도: '+pct+'%';
-    };
-    rec.onerror=function(){activeRec=null;recBtn2.textContent='🎙 따라읽기 시작';result.textContent='인식 실패. 다시 시도해 주세요.';};
-    rec.start();
-  });
-});
+}
+buildShadowCards(pickShadow3());
+function refreshShadowing(){buildShadowCards(pickShadow3());}
 </script>
 </body>
 </html>

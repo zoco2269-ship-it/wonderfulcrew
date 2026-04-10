@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WonderfulCrew — Premium Cabin Crew Coaching</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root {
   --gold: #C9A84C;
@@ -20,7 +20,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;}
 
 /* ── NAV ── */
 nav {
@@ -34,7 +34,7 @@ nav {
 }
 .nav-logo {
   font-family:'DM Serif Display',serif;
-  font-size:1.5rem;font-weight:600;
+  font-size:1.5rem;font-weight:400;
   color:var(--navy);letter-spacing:0.02em;
 }
 .nav-logo span{color:var(--gold);}
@@ -77,7 +77,7 @@ nav {
   text-transform:uppercase;
 }
 .hero-title {
-  font-family:'Inter',sans-serif;
+  font-family:'Noto Serif KR',serif;
   font-size:clamp(2.3rem,4.5vw,4rem);
   font-weight:300;line-height:1.15;
   color:#fff;margin-bottom:12px;
@@ -121,7 +121,7 @@ section{padding:100px 5%;}
   margin-bottom:14px;text-align:center;font-weight:800;
 }
 .sec-title {
-  font-family:'Inter',sans-serif;
+  font-family:'Noto Serif KR',serif;
   font-size:clamp(1.8rem,3.5vw,2.6rem);
   font-weight:400;color:var(--navy);
   text-align:center;line-height:1.4;
@@ -148,12 +148,20 @@ section{padding:100px 5%;}
 .about-body+.about-body{margin-bottom:16px;}
 .btn-text-gold {
   display:inline-flex;align-items:center;gap:8px;
-  color:var(--gold);font-size:0.85rem;font-weight:500;
-  letter-spacing:0.08em;text-decoration:none;
-  margin-top:24px;border-bottom:1px solid transparent;
-  transition:border-color 0.2s;padding-bottom:2px;
+  color:var(--gold);font-size:0.92rem;font-weight:700;
+  letter-spacing:0.06em;text-decoration:none;
+  margin-top:24px;
+  transition:opacity 0.2s;padding-bottom:3px;
 }
-.btn-text-gold:hover{border-color:var(--gold);}
+.btn-text-gold:hover{opacity:0.75;}
+.btn-text-outline {
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--navy);font-size:0.92rem;font-weight:600;
+  letter-spacing:0.06em;text-decoration:none;
+  margin-top:24px;margin-left:24px;
+  transition:opacity 0.2s;padding-bottom:3px;
+}
+.btn-text-outline:hover{opacity:0.6;}
 .about-img-wrap{position:relative;}
 .about-img {
   width:100%;aspect-ratio:4/5;
@@ -223,7 +231,7 @@ section{padding:100px 5%;}
 .num-big span{font-size:0.45em;vertical-align:super;}
 .num-label{font-size:1rem;color:rgba(255,255,255,0.7);margin-top:8px;font-weight:300;letter-spacing:0.1em;}
 .num-right-title {
-  font-family:'Inter',sans-serif;
+  font-family:'Noto Serif KR',serif;
   font-size:1.3rem;font-weight:400;color:#fff;
   margin-bottom:16px;padding-left:20px;
   border-left:2px solid var(--gold);
@@ -266,7 +274,7 @@ section{padding:100px 5%;}
 }
 .res-card-body{padding:16px 0 0;}
 .res-card-title{font-size:0.96rem;font-weight:700;color:var(--navy);line-height:1.5;margin-bottom:8px;}
-.res-card-desc{font-size:0.85rem;color:#4A4438;line-height:1.7;font-weight:400;}
+.res-card-desc{font-family:'Noto Sans KR',sans-serif;font-size:0.85rem;color:#4A4438;line-height:1.7;font-weight:400;min-height:60px;}
 .res-card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
 .res-read-time{font-size:0.72rem;color:var(--text-muted);}
 .res-more{font-size:0.75rem;color:var(--gold);font-weight:500;text-decoration:none;transition:gap 0.2s;display:flex;align-items:center;gap:4px;}
@@ -353,12 +361,11 @@ footer{
   gap: 64px;
   align-items: center;
 }
-/* Vertical video container */
 .demo-video-col { position: relative; }
 .demo-video-frame {
   position: relative;
   border: 2px solid rgba(201,168,76,0.45);
-  background: rgba(255,255,255,0.04);
+  background: #000;
   overflow: hidden;
   aspect-ratio: 9/16;
   border-radius: 4px;
@@ -370,6 +377,7 @@ footer{
 .demo-video-frame video {
   width: 100%; height: 100%;
   object-fit: cover; display: block;
+  background: #000;
 }
 .demo-video-frame:hover .demo-play-overlay { opacity: 1; }
 .demo-play-overlay {
@@ -400,7 +408,6 @@ footer{
   background: var(--gold);
   animation: pulse 1.4s infinite;
 }
-/* Text column */
 .demo-text-col {}
 .demo-text-col .sec-label { color: var(--gold-light); text-align: left; }
 .demo-text-col .sec-title { color: #fff; text-align: left; font-size: clamp(1.7rem,2.8vw,2.6rem); }
@@ -445,9 +452,17 @@ footer{
     <a href="#about">About</a>
     <a href="#expertise">Programs</a>
     <a href="#resources">Resources</a>
-    <a href="#">Mock Interview</a>
+    <a href="#">Interview Prep</a>
+    <a href="daily-english.html">English Practice</a>
+    <a href="jobs.html">Careers</a>
   </div>
-  <a href="leveltest.html" class="nav-cta">Start Practice</a>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="leveltest.html" class="nav-cta">Start Practice</a>
+    <button onclick="alert('Coming soon')" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:24px;background:#fff;border:1px solid rgba(26,35,64,0.15);color:#1A2340;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.04em;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9A84C';" onmouseout="this.style.borderColor='rgba(26,35,64,0.15)';">
+      <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Sign In
+    </button>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -457,12 +472,12 @@ footer{
   <div class="hero-content">
     <div class="hero-label">Premium Cabin Crew Coaching Solution</div>
     <h1 class="hero-title">
-      Make Your Dream
-      <em>a Reality</em>
+      Turn Your Dream
+      <em>Into Reality</em>
     </h1>
-    <p class="hero-sub">Practice real cabin crew interviews with an AI interviewer.<br>Personalized feedback to help you succeed.</p>
+    <p class="hero-sub">Practice real airline interviews with AI interviewers.<br>Get personalized feedback and land your dream role.</p>
     <div class="hero-btns">
-      <a href="roleplay.html" class="btn-gold">Try Free AI Interview →</a>
+      <a href="leveltest.html" class="btn-gold">Free Mock Interview →</a>
       <a href="#about" class="btn-outline-white">Learn More</a>
     </div>
   </div>
@@ -473,20 +488,21 @@ footer{
   <div class="about-inner">
     <div class="about-text reveal">
       <div class="sec-label">About Us</div>
-      <h2 class="sec-title">AI-Powered<br><em>Premium Cabin Crew Training</em></h2>
+      <h2 class="sec-title">AI-Powered<br><em>Premium Crew Coaching</em></h2>
       <div class="gold-line"></div>
-      <p class="about-body">WonderfulCrew leverages cutting-edge AI technology to replicate real airline interview environments. Led by our CEO — a former Emirates First Class crew member with 20 years of coaching expertise — our advisory board includes active cabin crew from Korean Air, Asiana, T'way, Qatar Airways, Cathay Pacific, Singapore Airlines, and more.</p>
-      <p class="about-body">We go beyond rote memorization, building genuine skills through hands-on experience to guide you to success. We analyze interview trends from major airlines worldwide and offer a tailored curriculum that maximizes each candidate's strengths through personalized feedback.</p>
-      <p class="about-body">With a proven education system that has produced over 1,000 successful candidates, we will make your dream a reality.</p>
-      <a href="leveltest.html" class="btn-text-gold">Try It →</a>
+      <p class="about-body">WonderfulCrew leverages cutting-edge AI to replicate real airline interview environments. Led by our CEO, a former Emirates First Class crew member with 20 years of coaching expertise, our advisory board includes active crew from Korean Air, Asiana, T'way, Qatar, Cathay Pacific, and Singapore Airlines.</p>
+      <p class="about-body">We go beyond rote memorization, building real skills through hands-on practice. We analyze interview trends across major airlines worldwide and deliver a curriculum that maximizes each candidate's strengths with personalized feedback.</p>
+      <p class="about-body">With a proven track record of over 1,000 successful placements, we are committed to turning your dream into reality.</p>
+      <a href="leveltest.html" class="btn-text-gold">Try It Free →</a>
+      <a href="#ai-demo" class="btn-text-outline">Learn More →</a>
     </div>
     <div class="about-img-wrap reveal reveal-delay-1">
-      <img id="about-img" class="about-img" src="images/img2.jpg" alt="원더풀크루 코치">
+      <img id="about-img" class="about-img" src="images/img2.jpg" alt="WonderfulCrew Coach">
       <div class="about-stats">
-        <div class="stat-item"><div class="num">1,000<span>+</span></div><div class="lbl">Successful Alumni</div></div>
-        <div class="stat-item"><div class="num">22<span>+</span></div><div class="lbl">Global Countries</div></div>
-        <div class="stat-item"><div class="num">20<span>yr</span></div><div class="lbl">Years Coaching</div></div>
-        <div class="stat-item"><div class="num">15<span>+</span></div><div class="lbl">Partner Airlines</div></div>
+        <div class="stat-item"><div class="num">1,000<span>+</span></div><div class="lbl">Successful Hires</div></div>
+        <div class="stat-item"><div class="num">22<span>+</span></div><div class="lbl">Countries</div></div>
+        <div class="stat-item"><div class="num">13<span>yr</span></div><div class="lbl">Coaching Career</div></div>
+        <div class="stat-item"><div class="num">10,000<span>+</span></div><div class="lbl">Success Data</div></div>
       </div>
     </div>
   </div>
@@ -495,8 +511,6 @@ footer{
 <!-- AI DEMO -->
 <section id="ai-demo">
   <div class="demo-inner">
-
-    <!-- Left: Vertical video (9:16) -->
     <div class="demo-video-col">
       <div class="demo-video-frame" id="demo-video-frame" onclick="playDemo()">
         <div class="ai-pulse-badge"><div class="ai-pulse-dot"></div>AI LIVE</div>
@@ -512,29 +526,27 @@ footer{
         </div>
       </div>
     </div>
-
-    <!-- Right: Text + CTA -->
     <div class="demo-text-col">
-      <div class="sec-label">AI Simulation · Real-Time Interview Practice</div>
-      <h2 class="sec-title">As If a Real Interviewer<br><em>Were Right in Front of You</em></h2>
+      <div class="sec-label">AI Simulation · Live Practice</div>
+      <h2 class="sec-title">As If the Interviewer<br><em>Were Right in Front of You</em></h2>
       <div class="gold-line"></div>
-      <p class="demo-body">Our AI interviewer asks real airline interview questions.<br>Respond on camera and receive instant feedback.</p>
-      <p class="demo-body">From self-introductions to English interviews — prepare for both domestic and international airlines.</p>
+      <p class="demo-body">Our AI interviewer asks the exact questions used by real airlines.<br>Answer on camera and receive instant, actionable feedback.</p>
+      <p class="demo-body">From Korean self-introductions to English interviews — prepare for both domestic and international airlines.</p>
       <div class="demo-tags">
-        <span class="demo-tag">✈ Emirates · Qatar</span>
-        <span class="demo-tag">✈ Korean Air · Asiana</span>
-        <span class="demo-tag">🌏 22 Countries</span>
-        <span class="demo-tag">🇰🇷 Korean + 🇺🇸 English</span>
-        <span class="demo-tag">AI Real-Time Analysis</span>
+        <span class="demo-tag">Emirates · Qatar</span>
+        <span class="demo-tag">Korean Air · Asiana</span>
+        <span class="demo-tag">22 Countries</span>
+        <span class="demo-tag">Korean + English</span>
+        <span class="demo-tag">Real-time AI Analysis</span>
+        <span class="demo-tag">10 Advisory Airlines</span>
       </div>
       <div class="demo-cta-row">
-        <a href="roleplay.html" class="btn-gold" style="display:inline-flex;justify-content:center;">Try Free AI Interview →</a>
-        <a href="chatbot.html" class="btn-outline-white" style="display:inline-flex;justify-content:center;font-size:0.84rem;">Chat with AI Interview Coach</a>
+        <a href="leveltest.html" class="btn-gold" style="display:inline-flex;justify-content:center;">Free Mock Interview →</a>
       </div>
       <div class="demo-badge-row">
         <div class="demo-badge">
           <div class="demo-badge-num">1,000+</div>
-          <div class="demo-badge-lbl">Global Alumni</div>
+          <div class="demo-badge-lbl">Global Hires</div>
         </div>
         <div class="demo-badge">
           <div class="demo-badge-num">22</div>
@@ -542,13 +554,106 @@ footer{
         </div>
         <div class="demo-badge">
           <div class="demo-badge-num">20yr</div>
-          <div class="demo-badge-lbl">Years Coaching</div>
+          <div class="demo-badge-lbl">Coaching Career</div>
         </div>
       </div>
     </div>
-
   </div>
 </section>
+
+<!-- RECRUITMENT -->
+<style>
+#recruitment{background:var(--cream);}
+.recruit-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+.recruit-card{background:#fff;border:1px solid var(--gold-pale);padding:36px;box-shadow:0 8px 40px rgba(0,0,0,0.04);}
+.recruit-card h3{font-family:'Noto Serif KR',serif;font-size:1.3rem;color:var(--navy);font-weight:600;margin-bottom:6px;}
+.recruit-card .sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:24px;letter-spacing:0.03em;}
+.dday-badge{display:inline-block;padding:6px 14px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;border-radius:14px;margin-bottom:18px;}
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.cal-month{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--navy);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;font-size:0.78rem;}
+.cal-dow{text-align:center;padding:8px 0;color:var(--text-muted);font-weight:600;font-size:0.7rem;letter-spacing:0.05em;}
+.cal-day{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:var(--text-dark);border:1px solid transparent;border-radius:4px;cursor:default;}
+.cal-day.muted{color:#ccc;}
+.cal-day.today{background:var(--navy);color:#fff;font-weight:600;}
+.cal-day.event::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--gold);}
+.cal-day.event{font-weight:600;color:var(--gold);}
+.cal-day.event.today{color:#fff;}
+.cal-legend{margin-top:18px;padding-top:18px;border-top:1px solid var(--gold-pale);}
+.cal-legend li{list-style:none;display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text-mid);padding:6px 0;}
+.cal-legend li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.news-list{list-style:none;}
+.news-item{display:block;padding:18px 0;border-bottom:1px solid var(--gold-pale);text-decoration:none;color:inherit;transition:padding 0.2s;}
+.news-item:hover{padding-left:6px;}
+.news-item:last-child{border-bottom:none;}
+.news-tag{display:inline-block;padding:3px 10px;background:var(--gold-pale);color:var(--gold);font-size:0.68rem;font-weight:700;letter-spacing:0.05em;border-radius:10px;margin-bottom:8px;}
+.news-title{font-size:0.95rem;color:var(--navy);font-weight:600;margin-bottom:4px;line-height:1.5;}
+.news-date{font-size:0.75rem;color:var(--text-muted);}
+.recruit-more{display:inline-flex;align-items:center;gap:8px;margin-top:24px;color:var(--gold);font-size:0.9rem;font-weight:700;letter-spacing:0.05em;text-decoration:none;}
+.recruit-more:hover{opacity:0.75;}
+@media(max-width:900px){.recruit-inner{grid-template-columns:1fr;}}
+</style>
+<section id="recruitment">
+  <div class="sec-label">Recruitment · Careers</div>
+  <h2 class="sec-title">Don't Miss the<br><em>Latest Openings & News</em></h2>
+  <div class="gold-line"></div>
+  <div class="recruit-inner">
+    <div class="recruit-card">
+      <div class="dday-badge" id="dday-badge">Emirates Open Day D-14</div>
+      <h3>Recruitment Calendar</h3>
+      <div class="sub">This Month's Open Days & Schedules</div>
+      <div class="cal-head">
+        <div class="cal-month" id="cal-month">2026 April</div>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <ul class="cal-legend" id="cal-legend"></ul>
+    </div>
+    <div class="recruit-card">
+      <h3>Latest Recruitment News</h3>
+      <div class="sub">Airline Openings & Updates</div>
+      <ul class="news-list">
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">EMIRATES</span><div class="news-title">Emirates Seoul Open Day Announced</div><div class="news-date">2026.04.24</div></a></li>
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">QATAR</span><div class="news-title">Qatar Airways Open Recruitment for Korean Crew</div><div class="news-date">2026.04.18</div></a></li>
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">KOREAN AIR</span><div class="news-title">Korean Air New Cabin Crew Hiring Expected</div><div class="news-date">2026.04.15</div></a></li>
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">SINGAPORE</span><div class="news-title">Singapore Airlines Recruitment Info Session</div><div class="news-date">2026.04.10</div></a></li>
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">CATHAY</span><div class="news-title">Cathay Pacific 2026 Cabin Crew Recruitment</div><div class="news-date">2026.04.05</div></a></li>
+      </ul>
+      <a href="jobs.html" class="recruit-more">View All Openings →</a>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var events=[
+    {day:24,label:'Emirates Open Day'},
+    {day:18,label:'Qatar Airways Interview'},
+    {day:29,label:'Singapore Airlines Info Session'}
+  ];
+  var today=new Date();
+  var y=today.getFullYear(),m=today.getMonth();
+  var first=new Date(y,m,1).getDay();
+  var last=new Date(y,m+1,0).getDate();
+  var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-month').textContent=y+' '+months[m];
+  var grid=document.getElementById('cal-grid');
+  var dows=['S','M','T','W','T','F','S'];
+  dows.forEach(function(d){var el=document.createElement('div');el.className='cal-dow';el.textContent=d;grid.appendChild(el);});
+  for(var i=0;i<first;i++){var e=document.createElement('div');e.className='cal-day muted';grid.appendChild(e);}
+  var eventDays=events.map(function(x){return x.day;});
+  for(var d=1;d<=last;d++){
+    var el=document.createElement('div');el.className='cal-day';el.textContent=d;
+    if(d===today.getDate())el.classList.add('today');
+    if(eventDays.indexOf(d)>-1)el.classList.add('event');
+    grid.appendChild(el);
+  }
+  var legend=document.getElementById('cal-legend');
+  events.forEach(function(x){var li=document.createElement('li');li.textContent=x.label+' · '+months[m]+' '+x.day;legend.appendChild(li);});
+  var upcoming=events.filter(function(x){return x.day>=today.getDate();}).sort(function(a,b){return a.day-b.day;})[0]||events[0];
+  var diff=upcoming.day-today.getDate();
+  document.getElementById('dday-badge').textContent=upcoming.label+' D-'+(diff>=0?diff:0);
+})();
+</script>
+
 <script>
 function playDemo(){
   var video=document.getElementById('demo-video');
@@ -566,10 +671,14 @@ document.addEventListener('DOMContentLoaded',function(){
   video.muted=true;
   video.defaultMuted=true;
   video.setAttribute('muted','');
+  video.addEventListener('timeupdate',function(){
+    if(video.duration&&video.currentTime>video.duration-0.3){
+      video.currentTime=0;
+    }
+  });
   video.play().then(function(){
     if(overlay)overlay.style.display='none';
   }).catch(function(){
-    // Prompt click if autoplay is blocked
     if(overlay){overlay.style.display='flex';overlay.style.opacity='1';}
   });
 });
@@ -579,26 +688,23 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- EXPERTISE -->
 <section id="expertise">
   <div class="sec-label reveal">Our Expertise</div>
-  <h2 class="sec-title reveal" style="font-weight:700;">A Class Apart — <em>Career Solutions</em></h2>
+  <h2 class="sec-title reveal" style="font-weight:700;">A Cut Above — <em>Career Solutions</em></h2>
   <div class="gold-line reveal"></div>
   <div class="cards-row">
     <div class="exp-card reveal">
       <div class="exp-icon">🎙️</div>
       <div class="exp-card-title">AI Mock Interviews</div>
-      <p class="exp-card-body">Realistic interview simulations powered by advanced AI algorithms. From your vocal tone to eye contact, we guide you to perfection.</p>
-      <a href="#" class="btn-card-more">Learn More →</a>
+      <p class="exp-card-body">Sophisticated AI analyzes your mock interview in real time — from vocal tone and eye contact to delivery and confidence.</p>
     </div>
     <div class="exp-card reveal reveal-delay-1">
       <div class="exp-icon">✨</div>
       <div class="exp-card-title">Personality Coaching</div>
-      <p class="exp-card-body">Elegance beyond mere technique. Premium personality coaching that teaches you to express your inner values outwardly.</p>
-      <a href="#" class="btn-card-more">Learn More →</a>
+      <p class="exp-card-body">Go beyond skills to cultivate true elegance. Premium coaching that helps you express your inner values outwardly.</p>
     </div>
     <div class="exp-card reveal reveal-delay-2">
       <div class="exp-icon">💎</div>
       <div class="exp-card-title">Signature Image Making</div>
-      <p class="exp-card-body">Craft your signature presence. From physical grooming to color analysis, discover the most radiant version of yourself.</p>
-      <a href="#" class="btn-card-more">Learn More →</a>
+      <p class="exp-card-body">Craft your signature presence. From physique and color to attitude — discover the most radiant version of yourself.</p>
     </div>
   </div>
 </section>
@@ -608,15 +714,17 @@ document.addEventListener('DOMContentLoaded',function(){
   <div class="numbers-inner">
     <div class="reveal">
       <div class="num-big">98<span>%</span></div>
-      <div class="num-label">Student Pass Rate & Satisfaction</div>
+      <div class="num-label">Student Pass & Satisfaction Rate</div>
     </div>
     <div class="reveal reveal-delay-1">
       <div class="num-right-title">Proven Excellence</div>
-      <p class="num-right-body">WonderfulCrew's precision AI analysis combined with 20 years of expert insight delivers real results. We don't just educate — we redefine your career.</p>
+      <p class="num-right-body">WonderfulCrew's precision AI analysis meets 20 years of expert insight, delivering tangible results. We don't just educate — we redefine your career trajectory.</p>
       <div class="num-stats">
         <div class="nstat"><div class="nval">1,000<span style="font-size:0.6em">+</span></div><div class="nlbl">Global Alumni</div></div>
         <div class="nstat"><div class="nval">22<span style="font-size:0.6em">+</span></div><div class="nlbl">Countries</div></div>
-        <div class="nstat"><div class="nval">15<span style="font-size:0.6em">+</span></div><div class="nlbl">Partner Airlines</div></div>
+        <div class="nstat"><div class="nval">10</div><div class="nlbl">Advisory Airlines</div></div>
+        <div class="nstat"><div class="nval">20<span style="font-size:0.6em">yr</span></div><div class="nlbl">Coaching Career</div></div>
+        <div class="nstat"><div class="nval">10,000<span style="font-size:0.6em">+</span></div><div class="nlbl">Success Data</div></div>
       </div>
     </div>
   </div>
@@ -627,9 +735,9 @@ document.addEventListener('DOMContentLoaded',function(){
   <div class="res-header reveal">
     <div class="res-header-left">
       <div class="sec-label" style="text-align:left;font-size:0.75rem;">Resources</div>
-      <h2 class="sec-title" style="text-align:left">Resources</h2>
+      <h2 class="sec-title" style="text-align:left">Study Materials</h2>
     </div>
-    <div class="res-header-right">Explore the latest guides written by industry experts.</div>
+    <div class="res-header-right">Expert-written guides to help you prepare.</div>
   </div>
   <div class="res-cards">
     <div class="res-card reveal">
@@ -638,11 +746,11 @@ document.addEventListener('DOMContentLoaded',function(){
         <span class="res-tag">Interview Guide</span>
       </div>
       <div class="res-card-body">
-        <div class="res-card-title">The Complete Cabin Crew Interview Guide</div>
-        <div class="res-card-desc">Step-by-step strategies from initial screening to final interview, with real success stories.</div>
+        <div class="res-card-title">Complete Cabin Crew Interview Guide</div>
+        <div class="res-card-desc">Step-by-step prep strategies from resume screening to final interview, with real success stories.</div>
         <div class="res-card-foot">
-          
-          <a href="#" class="res-more">Learn More →</a>
+
+          <a href="#" class="res-more">Read More →</a>
         </div>
       </div>
     </div>
@@ -652,11 +760,11 @@ document.addEventListener('DOMContentLoaded',function(){
         <span class="res-tag">English Interview</span>
       </div>
       <div class="res-card-body">
-        <div class="res-card-title">100 Essential English Expressions for Airline Interviews</div>
-        <div class="res-card-desc">Frequently asked questions and model answers for English interviews at international and domestic airlines.</div>
+        <div class="res-card-title">Top 100 Airline English Interview Phrases</div>
+        <div class="res-card-desc">Frequently asked questions and model answers for international and domestic airline English interviews.</div>
         <div class="res-card-foot">
-          
-          <a href="#" class="res-more">Learn More →</a>
+
+          <a href="#" class="res-more">Read More →</a>
         </div>
       </div>
     </div>
@@ -666,11 +774,11 @@ document.addEventListener('DOMContentLoaded',function(){
         <span class="res-tag">Image Making</span>
       </div>
       <div class="res-card-body">
-        <div class="res-card-title">Cabin Crew Image Making & Grooming Mastery</div>
-        <div class="res-card-desc">Learn the image airlines look for, first impression management, and makeup and hairstyle guides.</div>
+        <div class="res-card-title">Cabin Crew Image & Grooming Mastery</div>
+        <div class="res-card-desc">Learn the look airlines want — first impressions, makeup tips, and hairstyle guides all in one place.</div>
         <div class="res-card-foot">
-          
-          <a href="#" class="res-more">Learn More →</a>
+
+          <a href="#" class="res-more">Read More →</a>
         </div>
       </div>
     </div>
@@ -680,23 +788,43 @@ document.addEventListener('DOMContentLoaded',function(){
         <span class="res-tag">Cover Letter</span>
       </div>
       <div class="res-card-body">
-        <div class="res-card-title">How to Write a Winning Cabin Crew Cover Letter</div>
-        <div class="res-card-desc">Discover the structure and differentiation strategies that catch recruiters' attention.</div>
+        <div class="res-card-title">Writing a Winning Cabin Crew Cover Letter</div>
+        <div class="res-card-desc">Structure and differentiation strategies to make your application stand out to hiring managers.</div>
         <div class="res-card-foot">
-          
-          <a href="#" class="res-more">Learn More →</a>
+
+          <a href="#" class="res-more">Read More →</a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- Floating chatbot button -->
+<style>
+.chat-float{
+  position:fixed;bottom:28px;right:28px;z-index:999;
+  display:flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,#E8C96A,#C9A84C);
+  color:#1A2340;padding:12px 20px;
+  border-radius:32px;
+  box-shadow:0 4px 20px rgba(201,168,76,0.4);
+  text-decoration:none;font-family:'Noto Sans KR',sans-serif;
+  font-size:0.82rem;font-weight:700;letter-spacing:0.04em;
+  transition:all 0.25s;
+}
+.chat-float:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,0.5);}
+.chat-float-icon{font-size:1.1rem;flex-shrink:0;}
+</style>
+<a href="chatbot.html" class="chat-float">
+  Chat with AI Coach
+</a>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
       <div class="logo">Wonderful<span>Crew</span></div>
-      <p>Achieve your dream with AI.<br>The ultimate preparation platform for aspiring cabin crew.</p>
+      <p>Achieve your dream with AI.<br>The premier prep platform for aspiring cabin crew.</p>
       <div class="footer-socials">
         <a href="https://instagram.com/crew_wonderful" target="_blank" class="social-btn">IG</a>
         <a href="#" class="social-btn">YT</a>
@@ -707,7 +835,7 @@ document.addEventListener('DOMContentLoaded',function(){
       <h4>Services</h4>
       <ul>
         <li><a href="#">AI Mock Interview</a></li>
-        <li><a href="#">Resources</a></li>
+        <li><a href="#">Study Materials</a></li>
         <li><a href="#">Curriculum</a></li>
         <li><a href="#">Membership</a></li>
       </ul>
@@ -718,7 +846,7 @@ document.addEventListener('DOMContentLoaded',function(){
         <li><a href="#">About Us</a></li>
         <li><a href="#">Our Team</a></li>
         <li><a href="#">Careers</a></li>
-        <li><a href="#">Partnership</a></li>
+        <li><a href="#">Partnerships</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -741,8 +869,8 @@ document.addEventListener('DOMContentLoaded',function(){
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2025 WonderfulCrew Inc. All rights reserved.</p>
-    <p>AI Interview Coaching Platform for Aspiring Cabin Crew</p>
+    <p>© 2026 WonderfulCrew Co., Ltd. All rights reserved.</p>
+    <p>AI Interview Coaching for Aspiring Cabin Crew</p>
   </div>
 </footer>
 

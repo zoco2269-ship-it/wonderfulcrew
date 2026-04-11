@@ -41,6 +41,12 @@ nav {
 .nav-links{display:flex;gap:36px;align-items:center;}
 .nav-links a{font-size:0.85rem;color:var(--text-mid);text-decoration:none;letter-spacing:0.05em;transition:color 0.2s;}
 .nav-links a:hover{color:var(--gold);}
+.nav-dropdown{position:relative;}
+.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
+.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid var(--gold-pale);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:180px;z-index:1001;}
+.nav-dropdown:hover .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:10px 20px;font-size:0.82rem;color:var(--text-mid);white-space:nowrap;}
+.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:var(--gold);}
 .nav-cta{
   padding:10px 24px;border-radius:24px;
   background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;
@@ -452,7 +458,7 @@ footer{
   <div class="nav-logo">Wonderful<span>Crew</span></div>
   <div class="nav-links">
     <a href="#about">소개</a>
-    <a href="#expertise">준비 과정</a>
+    <div class="nav-dropdown"><a href="#expertise">준비 과정</a><div class="nav-dropdown-menu"><a href="leveltest.html">💎 항공사 승무원</a><a href="walking-analysis.html">💎 워킹 & 자세 분석</a><a href="#">💎 호텔 · 럭셔리</a><a href="#">💎 크루즈</a></div></div>
     <a href="#resources">학습 자료</a>
     <a href="daily-english.html">영어쉐도잉</a>
     <a href="jobs.html">채용정보</a>

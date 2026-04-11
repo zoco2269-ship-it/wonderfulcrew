@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>워킹 & 자세 분석 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:28px;align-items:center;}.nav-links a{font-size:0.82rem;color:var(--text-mid);letter-spacing:0.04em;}.nav-links a:hover{color:var(--gold);}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
+.nav-dropdown{position:relative;}.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid var(--gold-pale);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:180px;z-index:1001;}.nav-dropdown:hover .nav-dropdown-menu{display:block;}.nav-dropdown-menu a{display:block;padding:10px 20px;font-size:0.82rem;color:var(--text-mid);white-space:nowrap;}.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:var(--gold);}
+.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:600px;margin:0 auto;line-height:1.8;}
+section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
+.card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:28px 30px;margin-bottom:24px;}
+.card h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin-bottom:12px;}
+.card p,.card li{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;}
+.card ul{padding-left:18px;margin:8px 0;}.card li{margin-bottom:4px;}.card li strong{color:var(--navy);}
+.tip{margin:16px 0;padding:14px 18px;background:rgba(201,168,76,0.06);border-left:3px solid var(--gold);font-size:0.84rem;color:var(--text-mid);line-height:1.7;}.tip b{color:var(--navy);}
+.upload-area{border:2px dashed var(--gold-pale);padding:48px 24px;text-align:center;cursor:pointer;transition:border-color 0.2s;margin:20px 0;border-radius:8px;background:#fff;}
+.upload-area:hover{border-color:var(--gold);}
+.upload-area .icon{font-size:2.4rem;margin-bottom:12px;}
+.upload-area p{font-size:0.88rem;color:var(--text-muted);}
+.btn-gold{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;margin-top:12px;}
+.result{display:none;margin-top:28px;}
+.result.visible{display:block;}
+.result h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin-bottom:18px;}
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.score-item{background:#fff;border:1px solid var(--gold-pale);padding:16px;display:flex;justify-content:space-between;align-items:center;}
+.score-item .label{font-size:0.84rem;color:var(--text-mid);}
+.score-item .badge{padding:4px 14px;border-radius:12px;font-size:0.78rem;font-weight:700;}
+.score-item .badge.ok{background:#E8F5E9;color:#2E7D32;}
+.score-item .badge.warn{background:#FFF3E0;color:#E65100;}
+.score-item .badge.bad{background:#FFEBEE;color:#C62828;}
+.feedback-box{margin-top:20px;padding:20px;background:var(--cream);border:1px solid var(--gold-pale);border-left:4px solid var(--gold);font-size:0.88rem;color:var(--text-mid);line-height:1.8;}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.score-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <a href="index.html#about">소개</a>
+    <div class="nav-dropdown"><a href="index.html#expertise">준비 과정</a><div class="nav-dropdown-menu"><a href="leveltest.html">💎 항공사 승무원</a><a href="walking-analysis.html">💎 워킹 & 자세 분석</a><a href="#">💎 호텔 · 럭셔리</a><a href="#">💎 크루즈</a></div></div>
+    <a href="index.html#resources">학습 자료</a>
+    <a href="daily-english.html">영어쉐도잉</a>
+    <a href="jobs.html">채용정보</a>
+    <a href="community.html">커뮤니티</a>
+    <a href="token-rewards.html">토큰받기</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
+    <a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;transition:all 0.2s;">로그인</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="label">Walking & Posture Analysis</div>
+  <h1>워킹 & 자세 <em>AI 분석</em></h1>
+  <p>국내 항공사는 워킹과 다리 라인을 중점적으로 평가합니다. AI가 당신의 워킹 영상을 분석해 개선 포인트를 알려드립니다.</p>
+</div>
+
+<section><div class="wrap">
+
+<div class="card">
+  <h3>촬영 가이드</h3>
+  <ul>
+    <li><strong>전신이 보이게</strong> 촬영 (머리부터 발끝까지)</li>
+    <li><strong>정면 + 측면</strong> 두 각도 권장</li>
+    <li><strong>밝은 곳</strong>에서 촬영 (자연광 추천)</li>
+    <li>편안한 구두 착용 (면접 때 신을 구두 권장)</li>
+    <li>5~10초 정도 걸어오는 영상</li>
+  </ul>
+</div>
+
+<div class="tip"><b>참고:</b> 무릎이 붙는 일자 다리가 유리합니다. 국내 항공사는 특히 워킹과 다리 라인을 중점적으로 평가합니다.</div>
+
+<div class="upload-area" onclick="document.getElementById('video-upload').click();">
+  <div class="icon">📹</div>
+  <p>워킹 영상을 업로드하세요</p>
+  <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">MP4, MOV, WebM (최대 50MB)</p>
+  <input type="file" id="video-upload" accept="video/*" style="display:none;" onchange="handleUpload(this)">
+</div>
+
+<div id="video-preview" style="display:none;margin:16px 0;">
+  <video id="uploaded-video" controls style="width:100%;max-height:400px;border-radius:8px;background:#000;"></video>
+  <button class="btn-gold" onclick="analyzeWalking()">AI 분석 시작</button>
+</div>
+
+<div id="analyzing" style="display:none;text-align:center;padding:40px;">
+  <div style="font-size:2rem;margin-bottom:12px;">🔍</div>
+  <div style="font-size:0.92rem;color:var(--navy);font-weight:600;">AI가 워킹 영상을 분석하고 있어요...</div>
+  <div style="font-size:0.82rem;color:var(--text-muted);margin-top:6px;">약 10초 소요</div>
+</div>
+
+<div class="result" id="result">
+  <h3>AI 분석 결과</h3>
+  <div class="score-grid">
+    <div class="score-item"><span class="label">어깨 수평</span><span class="badge" id="r1"></span></div>
+    <div class="score-item"><span class="label">거북목 여부</span><span class="badge" id="r2"></span></div>
+    <div class="score-item"><span class="label">워킹 라인 (일자)</span><span class="badge" id="r3"></span></div>
+    <div class="score-item"><span class="label">무릎 붙는지</span><span class="badge" id="r4"></span></div>
+    <div class="score-item"><span class="label">다리 라인 (O/X자)</span><span class="badge" id="r5"></span></div>
+    <div class="score-item"><span class="label">발끝 방향</span><span class="badge" id="r6"></span></div>
+    <div class="score-item"><span class="label">보폭</span><span class="badge" id="r7"></span></div>
+    <div class="score-item"><span class="label">시선 정면 유지</span><span class="badge" id="r8"></span></div>
+    <div class="score-item" style="grid-column:span 2;"><span class="label">전체 인상 / 자신감</span><span class="badge" id="r9"></span></div>
+  </div>
+  <div class="feedback-box" id="feedback-text"></div>
+</div>
+
+</div></section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+
+<script>
+function handleUpload(input){
+  if(!input.files||!input.files[0])return;
+  var file=input.files[0];
+  var video=document.getElementById('uploaded-video');
+  video.src=URL.createObjectURL(file);
+  document.getElementById('video-preview').style.display='block';
+  document.querySelector('.upload-area').style.display='none';
+}
+
+function analyzeWalking(){
+  document.getElementById('video-preview').style.display='none';
+  document.getElementById('analyzing').style.display='block';
+
+  // 더미 분석 (MediaPipe + Gemini 연동은 다음 단계)
+  setTimeout(function(){
+    document.getElementById('analyzing').style.display='none';
+    var result=document.getElementById('result');
+    result.classList.add('visible');
+
+    var items=[
+      {id:'r1',scores:['양호','약간 기울어짐','기울어짐']},
+      {id:'r2',scores:['정상','약간 앞으로','거북목 주의']},
+      {id:'r3',scores:['일자 보행','약간 벗어남','흔들림']},
+      {id:'r4',scores:['무릎 밀착','약간 벌어짐','벌어짐']},
+      {id:'r5',scores:['정상','약간 O자','O자/X자 주의']},
+      {id:'r6',scores:['정면 향함','약간 바깥','바깥쪽']},
+      {id:'r7',scores:['적절','약간 넓음','보폭 조절 필요']},
+      {id:'r8',scores:['정면 유지','가끔 아래','시선 불안정']},
+      {id:'r9',scores:['자신감 있음','보통','개선 필요']}
+    ];
+    items.forEach(function(item){
+      var r=Math.floor(Math.random()*3);
+      var el=document.getElementById(item.id);
+      el.textContent=item.scores[r];
+      el.className='badge '+(r===0?'ok':r===1?'warn':'bad');
+    });
+
+    document.getElementById('feedback-text').innerHTML=
+      '<b>승무원 면접 기준 피드백:</b><br><br>'+
+      '현재는 더미 분석 결과입니다. MediaPipe + Gemini API 연동 후 실제 영상 기반 정밀 분석으로 업데이트됩니다.<br><br>'+
+      '<b>일반 개선 포인트:</b><br>'+
+      '· 어깨를 펴고 가슴을 살짝 열어주세요 — 자신감 있는 인상을 줍니다<br>'+
+      '· 턱을 살짝 당기면 거북목이 교정되고 목선이 길어 보입니다<br>'+
+      '· 무릎이 스치듯 걷는 연습을 하세요 — 다리 라인이 예뻐 보입니다<br>'+
+      '· 보폭은 어깨 넓이의 0.7배가 적당합니다<br>'+
+      '· 시선은 정면 약 3m 앞을 보세요 — 고개를 숙이지 않도록 주의';
+  },2500);
+}
+</script>
+</body>
+</html>

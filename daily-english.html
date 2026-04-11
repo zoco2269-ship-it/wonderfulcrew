@@ -210,8 +210,7 @@ function buildCards(questions,startIdx){
   questions.forEach(function(q,offset){
     var i=startIdx+offset;
     totalQuestionIdx=i+1;
-picked.forEach(function(q,i){
-  var card=document.createElement('div');
+    var card=document.createElement('div');
   card.className='q-card';
   card.innerHTML=
     '<div class="q-num">Question '+(i+1)+'</div>'+

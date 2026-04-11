@@ -8,40 +8,66 @@
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
 *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
-.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}
-.nav-links{display:flex;gap:36px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}.nav-links a:hover{color:var(--gold);}
-.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
-.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}
-.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}
-.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
-.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:560px;margin:0 auto;line-height:1.8;}
-section{padding:60px 5%;}
-.board-grid{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:28px;}
-.board-card{background:#fff;border:1px solid var(--gold-pale);padding:36px;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;text-align:center;}
-.board-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(201,168,76,0.12);}
-.board-icon{font-size:2.4rem;margin-bottom:16px;}
-.board-title{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:8px;}
-.board-desc{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.7;margin-bottom:20px;}
-.board-btn{display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:22px;font-size:0.82rem;font-weight:600;letter-spacing:0.05em;}
-.board-count{font-size:0.78rem;color:var(--text-muted);margin-top:12px;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:36px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}.nav-links a:hover{color:var(--gold);}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
+.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:560px;margin:0 auto;line-height:1.8;}
+section{padding:60px 5%;}.wrap{max-width:1000px;margin:0 auto;}
+.board-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.board-card{background:#fff;border:1px solid var(--gold-pale);padding:28px 24px;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;text-align:center;}
+.board-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(201,168,76,0.1);}
+.board-card.active{border-color:var(--gold);border-width:2px;background:linear-gradient(180deg,#fff,rgba(201,168,76,0.04));}
+.board-icon{font-size:2rem;margin-bottom:10px;}
+.board-title{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin-bottom:6px;}
+.board-desc{font-family:'Noto Sans KR',sans-serif;font-size:0.82rem;color:var(--text-muted);line-height:1.6;}
+.board-count{font-size:0.72rem;color:var(--text-muted);margin-top:8px;}
 
 /* 게시판 공통 */
-.wrap{max-width:900px;margin:0 auto;}
-.post-form{background:#fff;border:1px solid var(--gold-pale);padding:24px;margin-bottom:28px;display:none;}
-.post-form.active{display:block;}
-.post-form input,.post-form textarea{width:100%;padding:10px 14px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.9rem;margin-bottom:10px;}
-.post-form textarea{min-height:100px;resize:vertical;}
-.post-form button{padding:10px 24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}
-.post-list{list-style:none;}
-.post-item{background:#fff;border:1px solid var(--gold-pale);padding:20px;margin-bottom:12px;cursor:pointer;transition:transform 0.2s;}
+.panel{display:none;}.panel.active{display:block;}
+.panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.panel-header h2{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--navy);}
+.write-btn{padding:10px 22px;background:var(--navy);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}
+.write-btn:hover{background:var(--gold);}
+
+/* 스터디 카드 (당근마켓 스타일) */
+.study-card{display:flex;gap:16px;background:#fff;border:1px solid var(--gold-pale);padding:20px;margin-bottom:12px;cursor:pointer;transition:transform 0.15s;}
+.study-card:hover{transform:translateX(4px);}
+.study-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.study-tag{padding:3px 10px;font-size:0.68rem;font-weight:700;border-radius:10px;letter-spacing:0.03em;}
+.study-tag.loc{background:#EBF5FF;color:#2B6CB0;}
+.study-tag.air{background:var(--gold-pale);color:var(--gold);}
+.study-tag.ppl{background:#E8F5E9;color:#2E7D32;}
+.study-title{font-size:0.95rem;color:var(--navy);font-weight:600;margin-bottom:4px;}
+.study-meta{font-size:0.76rem;color:var(--text-muted);}
+
+/* 일반 게시글 */
+.post-item{background:#fff;border:1px solid var(--gold-pale);padding:18px 20px;margin-bottom:10px;cursor:pointer;transition:transform 0.15s;}
 .post-item:hover{transform:translateX(4px);}
-.post-item .title{font-size:0.96rem;color:var(--navy);font-weight:600;margin-bottom:6px;}
-.post-item .meta{font-size:0.76rem;color:var(--text-muted);}
-.post-item .preview{font-size:0.85rem;color:var(--text-mid);margin-top:8px;line-height:1.6;}
-.write-btn{display:inline-block;padding:10px 22px;background:var(--navy);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;margin-bottom:20px;}
-.back-btn{display:inline-block;padding:8px 18px;background:transparent;color:var(--text-muted);border:1px solid var(--gold-pale);border-radius:20px;font-family:inherit;font-size:0.82rem;cursor:pointer;margin-bottom:20px;}
-.error-msg{color:#C0392B;font-size:0.82rem;margin-top:-6px;margin-bottom:10px;display:none;}
+.post-item .title{font-size:0.94rem;color:var(--navy);font-weight:600;margin-bottom:4px;}
+.post-item .meta{font-size:0.74rem;color:var(--text-muted);}
+.post-item .preview{font-size:0.84rem;color:var(--text-mid);margin-top:6px;line-height:1.5;}
+.post-item .tags{display:flex;gap:6px;margin-bottom:6px;}
+
+/* 합격 후기 배지 */
+.verified{display:inline-block;padding:2px 8px;background:#E8F5E9;color:#2E7D32;font-size:0.66rem;font-weight:700;border-radius:8px;}
+
+/* 폼 */
+.form-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:2000;align-items:center;justify-content:center;}
+.form-overlay.active{display:flex;}
+.form-box{background:#fff;padding:32px;max-width:520px;width:90%;max-height:85vh;overflow-y:auto;border:1px solid var(--gold-pale);}
+.form-box h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin-bottom:16px;}
+.form-box input,.form-box textarea,.form-box select{width:100%;padding:10px 12px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;margin-bottom:10px;}
+.form-box textarea{min-height:100px;resize:vertical;}
+.form-box label{font-size:0.82rem;color:var(--text-mid);font-weight:600;margin-bottom:4px;display:block;}
+.chip-group{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.chip{padding:7px 14px;border:1px solid var(--gold-pale);border-radius:20px;font-size:0.8rem;cursor:pointer;transition:all 0.15s;font-family:inherit;background:#fff;color:var(--text-mid);}
+.chip.sel{background:var(--gold);color:#fff;border-color:var(--gold);}
+.form-btns{display:flex;gap:10px;margin-top:14px;}
+.form-btns button{padding:10px 22px;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}
+.form-btns .submit{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}
+.form-btns .cancel{background:#fff;color:var(--text-muted);border:1px solid var(--gold-pale);}
+.error-msg{color:#C0392B;font-size:0.8rem;display:none;margin-bottom:8px;}
+.empty{text-align:center;padding:40px;color:var(--text-muted);font-size:0.88rem;}
+.reward-box{background:var(--gold-pale);border-left:4px solid var(--gold);padding:16px 20px;margin-bottom:20px;font-size:0.85rem;color:var(--text-mid);line-height:1.7;}
+.reward-box b{color:var(--navy);}
 footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
 @media(max-width:900px){.nav-links{display:none;}.board-grid{grid-template-columns:1fr;}}
 </style>
@@ -56,116 +82,274 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <div class="hero">
   <div class="label">Community</div>
   <h1>함께 준비하면<br><em>합격이 가까워져요</em></h1>
-  <p>스터디를 구하고, 고민을 나누고, 서로 응원하세요.</p>
+  <p>스터디를 구하고, 고민을 나누고, 면접 후기와 합격 후기를 공유하세요.</p>
 </div>
 
-<!-- 메인 게시판 선택 화면 -->
-<section id="main-view">
+<section>
+<div class="wrap">
+
+<!-- 4개 게시판 선택 -->
 <div class="board-grid">
-  <div class="board-card" onclick="openBoard('study')">
+  <div class="board-card" id="bc-study" onclick="openPanel('study')">
     <div class="board-icon">📚</div>
     <div class="board-title">스터디 구해요</div>
-    <div class="board-desc">함께 면접 준비할 스터디 멤버를 찾아보세요. 같은 항공사를 준비하는 동료와 함께하면 합격률이 올라갑니다.</div>
-    <div class="board-btn">스터디 찾기 →</div>
-    <div class="board-count" id="study-count">게시글 0개</div>
+    <div class="board-desc">내 주변 / 같은 항공사 스터디 찾기</div>
+    <div class="board-count" id="cnt-study">0개</div>
   </div>
-  <div class="board-card" onclick="openBoard('talk')">
+  <div class="board-card" id="bc-talk" onclick="openPanel('talk')">
     <div class="board-icon">💬</div>
     <div class="board-title">이야기 나눠요</div>
-    <div class="board-desc">면접 준비 중 궁금한 점, 어려운 점, 혼자 하고 싶은 말까지. 무엇이든 자유롭게 이야기하세요.</div>
-    <div class="board-btn">이야기하기 →</div>
-    <div class="board-count" id="talk-count">게시글 0개</div>
+    <div class="board-desc">고민, 질문, 자유 토크</div>
+    <div class="board-count" id="cnt-talk">0개</div>
   </div>
+  <div class="board-card" id="bc-review" onclick="openPanel('review')">
+    <div class="board-icon">📝</div>
+    <div class="board-title">면접 후기</div>
+    <div class="board-desc">항공사별 면접 질문 & 경험 공유</div>
+    <div class="board-count" id="cnt-review">0개</div>
+  </div>
+  <div class="board-card" id="bc-pass" onclick="openPanel('pass')">
+    <div class="board-icon">🏆</div>
+    <div class="board-title">합격 후기</div>
+    <div class="board-desc">합격 인증 회원만 작성 가능</div>
+    <div class="board-count" id="cnt-pass">0개</div>
+  </div>
+</div>
+
+<!-- ===== 스터디 패널 ===== -->
+<div class="panel" id="panel-study">
+  <div class="panel-header"><h2>📚 스터디 구해요</h2><button class="write-btn" onclick="openForm('study')">스터디 올리기</button></div>
+  <div id="list-study"></div>
+  <div class="empty" id="empty-study">아직 스터디 모집글이 없어요. 첫 글을 올려보세요!</div>
+</div>
+
+<!-- ===== 이야기 패널 ===== -->
+<div class="panel" id="panel-talk">
+  <div class="panel-header"><h2>💬 이야기 나눠요</h2><button class="write-btn" onclick="openForm('talk')">글쓰기</button></div>
+  <div id="list-talk"></div>
+  <div class="empty" id="empty-talk">아직 글이 없어요. 첫 이야기를 나눠보세요!</div>
+</div>
+
+<!-- ===== 면접 후기 패널 ===== -->
+<div class="panel" id="panel-review">
+  <div class="panel-header"><h2>📝 면접 후기</h2><button class="write-btn" onclick="openForm('review')">후기 작성</button></div>
+  <div id="list-review"></div>
+  <div class="empty" id="empty-review">아직 면접 후기가 없어요. 경험을 공유해주세요!</div>
+</div>
+
+<!-- ===== 합격 후기 패널 ===== -->
+<div class="panel" id="panel-pass">
+  <div class="panel-header"><h2>🏆 합격 후기</h2><button class="write-btn" onclick="alert('합격 인증 후 작성 가능합니다. 관리자에게 문의해주세요.')">합격 후기 작성 (인증 필요)</button></div>
+  <div class="reward-box"><b>합격 후기 보상 안내</b><br>텍스트 후기 작성 → 스타벅스 기프티콘 지급<br>얼굴 공개 후기 영상 제출 → 수강료 50% 환급</div>
+  <div id="list-pass"></div>
+  <div class="empty" id="empty-pass">아직 합격 후기가 없어요.</div>
+</div>
+
 </div>
 </section>
 
-<!-- 게시판 상세 -->
-<section id="board-view" style="display:none;">
-<div class="wrap">
-  <button class="back-btn" onclick="closeBoard()">← 커뮤니티로 돌아가기</button>
-  <h2 style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:20px;" id="board-title"></h2>
-  <button class="write-btn" onclick="toggleForm()">글쓰기</button>
-  <div class="post-form" id="post-form">
-    <input type="text" id="post-author" placeholder="닉네임" maxlength="20">
-    <input type="text" id="post-title" placeholder="제목" maxlength="100">
-    <textarea id="post-body" placeholder="내용을 입력하세요..."></textarea>
-    <div class="error-msg" id="error-msg"></div>
-    <button onclick="submitPost()">등록하기</button>
+<!-- ===== 폼 오버레이 ===== -->
+<div class="form-overlay" id="form-overlay" onclick="if(event.target===this)closeForm();">
+  <!-- 스터디 폼 -->
+  <div class="form-box" id="form-study" style="display:none;">
+    <h3>📚 스터디 올리기</h3>
+    <label>항공사</label>
+    <div class="chip-group" id="chips-airline">
+      <div class="chip" onclick="selChip(this)">에미레이트</div><div class="chip" onclick="selChip(this)">카타르</div><div class="chip" onclick="selChip(this)">에티하드</div><div class="chip" onclick="selChip(this)">싱가포르항공</div><div class="chip" onclick="selChip(this)">캐세이퍼시픽</div><div class="chip" onclick="selChip(this)">핀에어</div><div class="chip" onclick="selChip(this)">KLM</div><div class="chip" onclick="selChip(this)">대한항공</div><div class="chip" onclick="selChip(this)">아시아나</div><div class="chip" onclick="selChip(this)">기타</div>
+    </div>
+    <label>지역</label>
+    <div class="chip-group" id="chips-loc">
+      <div class="chip" onclick="selChip(this)">서울</div><div class="chip" onclick="selChip(this)">부산</div><div class="chip" onclick="selChip(this)">대구</div><div class="chip" onclick="selChip(this)">인천</div><div class="chip" onclick="selChip(this)">광주</div><div class="chip" onclick="selChip(this)">대전</div><div class="chip" onclick="selChip(this)">제주</div><div class="chip" onclick="selChip(this)">온라인</div>
+    </div>
+    <label>인원</label>
+    <div class="chip-group" id="chips-ppl">
+      <div class="chip" onclick="selChip(this)">2명</div><div class="chip" onclick="selChip(this)">3명</div><div class="chip" onclick="selChip(this)">4명 이상</div>
+    </div>
+    <label>일정</label>
+    <div class="chip-group" id="chips-sched">
+      <div class="chip" onclick="selChip(this)">주말</div><div class="chip" onclick="selChip(this)">평일</div><div class="chip" onclick="selChip(this)">온라인 가능</div>
+    </div>
+    <label>닉네임</label><input type="text" id="s-author" placeholder="닉네임" maxlength="20">
+    <label>제목</label><input type="text" id="s-title" placeholder="예: 에미레이트 준비 스터디 구해요" maxlength="80">
+    <label>상세 내용</label><textarea id="s-body" placeholder="자기소개, 현재 준비 단계, 원하는 스터디 방식, 연락처(카카오 오픈채팅 등)"></textarea>
+    <div class="error-msg" id="err-study"></div>
+    <div class="form-btns"><button class="submit" onclick="submitStudy()">올리기</button><button class="cancel" onclick="closeForm()">취소</button></div>
   </div>
-  <ul class="post-list" id="post-list"></ul>
-  <div id="empty-msg" style="text-align:center;padding:40px;color:var(--text-muted);font-size:0.9rem;">아직 게시글이 없습니다. 첫 글을 작성해보세요!</div>
+  <!-- 일반글 폼 -->
+  <div class="form-box" id="form-talk" style="display:none;">
+    <h3>💬 글쓰기</h3>
+    <label>닉네임</label><input type="text" id="t-author" placeholder="닉네임" maxlength="20">
+    <label>제목</label><input type="text" id="t-title" placeholder="제목" maxlength="100">
+    <label>내용</label><textarea id="t-body" placeholder="자유롭게 이야기하세요."></textarea>
+    <div class="error-msg" id="err-talk"></div>
+    <div class="form-btns"><button class="submit" onclick="submitGeneral('talk')">등록하기</button><button class="cancel" onclick="closeForm()">취소</button></div>
+  </div>
+  <!-- 면접 후기 폼 -->
+  <div class="form-box" id="form-review" style="display:none;">
+    <h3>📝 면접 후기</h3>
+    <label>항공사</label>
+    <div class="chip-group" id="chips-rv-air">
+      <div class="chip" onclick="selChip(this)">에미레이트</div><div class="chip" onclick="selChip(this)">카타르</div><div class="chip" onclick="selChip(this)">싱가포르항공</div><div class="chip" onclick="selChip(this)">캐세이퍼시픽</div><div class="chip" onclick="selChip(this)">대한항공</div><div class="chip" onclick="selChip(this)">아시아나</div><div class="chip" onclick="selChip(this)">기타</div>
+    </div>
+    <label>면접 단계</label>
+    <div class="chip-group" id="chips-rv-stage">
+      <div class="chip" onclick="selChip(this)">서류</div><div class="chip" onclick="selChip(this)">비디오면접</div><div class="chip" onclick="selChip(this)">1차 면접</div><div class="chip" onclick="selChip(this)">2차 면접</div><div class="chip" onclick="selChip(this)">파이널</div>
+    </div>
+    <label>닉네임</label><input type="text" id="rv-author" placeholder="닉네임" maxlength="20">
+    <label>면접 날짜</label><input type="date" id="rv-date">
+    <label>후기 내용</label><textarea id="rv-body" placeholder="면접 분위기, 질문 내용, 팁 등을 공유해주세요."></textarea>
+    <div class="error-msg" id="err-review"></div>
+    <div class="form-btns"><button class="submit" onclick="submitReview()">후기 등록</button><button class="cancel" onclick="closeForm()">취소</button></div>
+  </div>
 </div>
-</section>
 
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
 
 <script>
-var currentBoard='';
-// 금지어 (과외, 코칭, 레슨 등 — 노출하지 않음)
-var BANNED=/과외|레슨|수업|가르쳐|튜터|tutor|lesson|coaching|코칭비|수강료|1:1\s*수업|개인\s*지도|개인\s*레슨/i;
+var BANNED=/과외|레슨|수업료|가르쳐|튜터|tutor|lesson|coaching|코칭비|수강료|1:1\s*수업|개인\s*지도|개인\s*레슨|과외비/i;
+function getB(n){return JSON.parse(localStorage.getItem('wc_cm_'+n)||'[]');}
+function setB(n,a){localStorage.setItem('wc_cm_'+n,JSON.stringify(a));}
+function selChip(el){el.classList.toggle('sel');}
+function getSelChips(id){var r=[];document.querySelectorAll('#'+id+' .chip.sel').forEach(function(c){r.push(c.textContent);});return r;}
+function clearChips(id){document.querySelectorAll('#'+id+' .chip').forEach(function(c){c.classList.remove('sel');});}
+function banned(t){return BANNED.test(t);}
 
-function getBoard(name){return JSON.parse(localStorage.getItem('wc_board_'+name)||'[]');}
-function saveBoard(name,arr){localStorage.setItem('wc_board_'+name,JSON.stringify(arr));}
-
-function openBoard(name){
-  currentBoard=name;
-  document.getElementById('main-view').style.display='none';
-  document.getElementById('board-view').style.display='block';
-  document.getElementById('board-title').textContent=name==='study'?'스터디 구해요':'이야기 나눠요';
-  renderPosts();
-  window.scrollTo(0,0);
+var curPanel='';
+function openPanel(name){
+  curPanel=name;
+  document.querySelectorAll('.board-card').forEach(function(c){c.classList.remove('active');});
+  document.getElementById('bc-'+name).classList.add('active');
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('panel-'+name).classList.add('active');
+  render(name);
 }
-function closeBoard(){
-  document.getElementById('main-view').style.display='block';
-  document.getElementById('board-view').style.display='none';
-  document.getElementById('post-form').classList.remove('active');
-  updateCounts();
+function openForm(name){
+  document.getElementById('form-overlay').classList.add('active');
+  document.querySelectorAll('.form-box').forEach(function(f){f.style.display='none';});
+  document.getElementById('form-'+name).style.display='block';
 }
-function toggleForm(){document.getElementById('post-form').classList.toggle('active');}
-
-function submitPost(){
-  var author=document.getElementById('post-author').value.trim()||'익명';
-  var title=document.getElementById('post-title').value.trim();
-  var body=document.getElementById('post-body').value.trim();
-  var err=document.getElementById('error-msg');
-  err.style.display='none';
-  if(!title||!body){err.textContent='제목과 내용을 모두 입력해주세요.';err.style.display='block';return;}
-  if(BANNED.test(title)||BANNED.test(body)){
-    err.textContent='죄송합니다. 해당 내용은 커뮤니티 정책에 의해 등록할 수 없습니다.';err.style.display='block';return;
-  }
-  var arr=getBoard(currentBoard);
-  arr.unshift({author:author,title:title,body:body,date:new Date().toISOString().slice(0,10),time:new Date().toTimeString().slice(0,5)});
-  saveBoard(currentBoard,arr);
-  document.getElementById('post-title').value='';document.getElementById('post-body').value='';
-  document.getElementById('post-form').classList.remove('active');
-  renderPosts();
+function closeForm(){
+  document.getElementById('form-overlay').classList.remove('active');
 }
 
-function renderPosts(){
-  var arr=getBoard(currentBoard);
-  var list=document.getElementById('post-list');
-  var empty=document.getElementById('empty-msg');
+// 스터디 제출
+function submitStudy(){
+  var airline=getSelChips('chips-airline'),loc=getSelChips('chips-loc'),ppl=getSelChips('chips-ppl'),sched=getSelChips('chips-sched');
+  var author=document.getElementById('s-author').value.trim()||'익명';
+  var title=document.getElementById('s-title').value.trim();
+  var body=document.getElementById('s-body').value.trim();
+  var err=document.getElementById('err-study');err.style.display='none';
+  if(!title||!body){err.textContent='제목과 내용을 입력해주세요.';err.style.display='block';return;}
+  if(banned(title+body)){err.textContent='커뮤니티 정책에 의해 등록할 수 없는 내용입니다.';err.style.display='block';return;}
+  var arr=getB('study');
+  arr.unshift({airline:airline[0]||'',loc:loc[0]||'',ppl:ppl[0]||'',sched:sched[0]||'',author:author,title:title,body:body,date:new Date().toISOString().slice(0,10)});
+  setB('study',arr);closeForm();render('study');clearChips('chips-airline');clearChips('chips-loc');clearChips('chips-ppl');clearChips('chips-sched');
+  document.getElementById('s-title').value='';document.getElementById('s-body').value='';
+}
+
+// 일반글 제출
+function submitGeneral(type){
+  var author=document.getElementById('t-author').value.trim()||'익명';
+  var title=document.getElementById('t-title').value.trim();
+  var body=document.getElementById('t-body').value.trim();
+  var err=document.getElementById('err-talk');err.style.display='none';
+  if(!title||!body){err.textContent='제목과 내용을 입력해주세요.';err.style.display='block';return;}
+  if(banned(title+body)){err.textContent='커뮤니티 정책에 의해 등록할 수 없는 내용입니다.';err.style.display='block';return;}
+  var arr=getB('talk');arr.unshift({author:author,title:title,body:body,date:new Date().toISOString().slice(0,10)});
+  setB('talk',arr);closeForm();render('talk');
+  document.getElementById('t-title').value='';document.getElementById('t-body').value='';
+}
+
+// 면접 후기 제출
+function submitReview(){
+  var airline=getSelChips('chips-rv-air'),stage=getSelChips('chips-rv-stage');
+  var author=document.getElementById('rv-author').value.trim()||'익명';
+  var idate=document.getElementById('rv-date').value;
+  var body=document.getElementById('rv-body').value.trim();
+  var err=document.getElementById('err-review');err.style.display='none';
+  if(!body){err.textContent='후기 내용을 입력해주세요.';err.style.display='block';return;}
+  if(banned(body)){err.textContent='커뮤니티 정책에 의해 등록할 수 없는 내용입니다.';err.style.display='block';return;}
+  var arr=getB('review');
+  arr.unshift({airline:airline[0]||'',stage:stage[0]||'',author:author,idate:idate,body:body,date:new Date().toISOString().slice(0,10)});
+  setB('review',arr);closeForm();render('review');clearChips('chips-rv-air');clearChips('chips-rv-stage');
+  document.getElementById('rv-body').value='';
+}
+
+// 더미 합격 후기
+var DUMMY_PASS=[
+  {author:'김서연',airline:'에미레이트',body:'3번 탈락 후 원더풀크루와 함께 4번째 도전에서 합격했습니다. 롤플레이 연습이 정말 큰 도움이 됐어요. 포기하지 마세요!',date:'2026-03-28',verified:true},
+  {author:'이하늘',airline:'카타르항공',body:'영어가 부족했지만 쉬운 단어로 자신감 있게 말하는 연습을 반복했더니 파이널까지 통과했습니다. 감사합니다 정미 코치님!',date:'2026-03-15',verified:true},
+  {author:'박지민',airline:'싱가포르항공',body:'그루밍 가이드 보고 메이크업 확 바꿨더니 1차에서 바로 통과! 이미지가 정말 중요하다는 걸 체감했어요.',date:'2026-02-20',verified:true}
+];
+
+function render(name){
+  var arr=getB(name);
+  var list=document.getElementById('list-'+name);
+  var empty=document.getElementById('empty-'+name);
   list.innerHTML='';
-  if(arr.length===0){empty.style.display='block';return;}
-  empty.style.display='none';
-  arr.forEach(function(p,idx){
-    var li=document.createElement('li');
-    li.className='post-item';
-    li.innerHTML='<div class="title">'+p.title+'</div>'+
-      '<div class="meta">'+p.author+' · '+p.date+' '+p.time+'</div>'+
-      '<div class="preview">'+p.body.substring(0,120)+(p.body.length>120?'...':'')+'</div>';
-    li.onclick=function(){alert(p.title+'\n\n'+p.body+'\n\n— '+p.author+' ('+p.date+')');};
-    list.appendChild(li);
-  });
+
+  if(name==='pass'){
+    // 합격 후기는 더미 데이터
+    empty.style.display=DUMMY_PASS.length?'none':'block';
+    DUMMY_PASS.forEach(function(p){
+      var d=document.createElement('div');d.className='post-item';
+      d.innerHTML='<div class="tags"><span class="study-tag air">'+p.airline+'</span><span class="verified">합격 인증</span></div>'+
+        '<div class="title">'+p.author+'님의 합격 후기</div>'+
+        '<div class="preview">'+p.body+'</div>'+
+        '<div class="meta">'+p.date+'</div>';
+      list.appendChild(d);
+    });
+    return;
+  }
+
+  empty.style.display=arr.length?'none':'block';
+
+  if(name==='study'){
+    arr.forEach(function(p){
+      var d=document.createElement('div');d.className='study-card';
+      d.innerHTML='<div style="flex:1;">'+
+        '<div class="study-tags">'+
+          (p.loc?'<span class="study-tag loc">📍 '+p.loc+'</span>':'')+
+          (p.airline?'<span class="study-tag air">✈️ '+p.airline+'</span>':'')+
+          (p.ppl?'<span class="study-tag ppl">👥 '+p.ppl+'</span>':'')+
+        '</div>'+
+        '<div class="study-title">'+p.title+'</div>'+
+        '<div class="study-meta">'+(p.sched||'')+' · '+p.date+' · '+p.author+'</div>'+
+      '</div>';
+      d.onclick=function(){alert(p.title+'\n\n'+p.body+'\n\n'+p.author+' · '+p.date);};
+      list.appendChild(d);
+    });
+  } else if(name==='review'){
+    arr.forEach(function(p){
+      var d=document.createElement('div');d.className='post-item';
+      d.innerHTML='<div class="tags">'+
+        (p.airline?'<span class="study-tag air">'+p.airline+'</span>':'')+
+        (p.stage?'<span class="study-tag loc">'+p.stage+'</span>':'')+
+      '</div>'+
+      '<div class="title">'+p.author+'의 면접 후기'+(p.idate?' ('+p.idate+')':'')+'</div>'+
+      '<div class="preview">'+p.body.substring(0,150)+(p.body.length>150?'...':'')+'</div>'+
+      '<div class="meta">'+p.date+'</div>';
+      d.onclick=function(){alert(p.body+'\n\n— '+p.author);};
+      list.appendChild(d);
+    });
+  } else {
+    arr.forEach(function(p){
+      var d=document.createElement('div');d.className='post-item';
+      d.innerHTML='<div class="title">'+p.title+'</div>'+
+        '<div class="preview">'+p.body.substring(0,120)+(p.body.length>120?'...':'')+'</div>'+
+        '<div class="meta">'+p.author+' · '+p.date+'</div>';
+      d.onclick=function(){alert(p.title+'\n\n'+p.body+'\n\n— '+p.author);};
+      list.appendChild(d);
+    });
+  }
 }
 
-function deletePost(idx){
-  var arr=getBoard(currentBoard);arr.splice(idx,1);saveBoard(currentBoard,arr);renderPosts();
-}
-
+// 카운트 업데이트
 function updateCounts(){
-  document.getElementById('study-count').textContent='게시글 '+getBoard('study').length+'개';
-  document.getElementById('talk-count').textContent='게시글 '+getBoard('talk').length+'개';
+  ['study','talk','review'].forEach(function(n){
+    document.getElementById('cnt-'+n).textContent=getB(n).length+'개';
+  });
+  document.getElementById('cnt-pass').textContent=DUMMY_PASS.length+'개';
 }
 updateCounts();
 </script>

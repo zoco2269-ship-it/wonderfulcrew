@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>관리자 대시보드 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:60px;background:var(--navy);color:#fff;}
+.top-bar h1{font-family:'DM Serif Display',serif;font-size:1.2rem;font-weight:400;}.top-bar h1 span{color:var(--gold);}
+.top-bar .admin-label{font-size:0.78rem;color:var(--gold-light);letter-spacing:0.1em;}
+.layout{display:flex;min-height:calc(100vh - 60px);}
+.sidebar{width:220px;background:#fff;border-right:1px solid var(--gold-pale);padding:20px 0;flex-shrink:0;}
+.sidebar a{display:block;padding:12px 24px;font-size:0.84rem;color:var(--text-mid);transition:all 0.15s;border-left:3px solid transparent;}
+.sidebar a:hover,.sidebar a.active{background:rgba(201,168,76,0.06);color:var(--navy);border-left-color:var(--gold);font-weight:600;}
+.main{flex:1;padding:32px;overflow-y:auto;}
+.page{display:none;}.page.active{display:block;}
+.page h2{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:8px;}
+.page .sub{font-size:0.84rem;color:var(--text-muted);margin-bottom:24px;}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.stat-box{background:#fff;border:1px solid var(--gold-pale);padding:20px;text-align:center;}
+.stat-box .num{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold);line-height:1;}
+.stat-box .lbl{font-size:0.74rem;color:var(--text-muted);margin-top:4px;}
+.card{background:#fff;border:1px solid var(--gold-pale);padding:24px;margin-bottom:20px;}
+.card h3{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:14px;}
+table{width:100%;border-collapse:collapse;}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--gold-pale);font-size:0.84rem;}
+th{background:var(--navy);color:var(--gold-light);font-size:0.76rem;letter-spacing:0.06em;}
+td{color:var(--text-mid);}
+.badge{padding:3px 10px;border-radius:10px;font-size:0.7rem;font-weight:700;}
+.badge.green{background:#E8F5E9;color:#2E7D32;}
+.badge.yellow{background:#FFF3E0;color:#E65100;}
+.badge.red{background:#FFEBEE;color:#C62828;}
+.btn-sm{padding:6px 14px;border:none;border-radius:14px;font-size:0.76rem;font-weight:600;cursor:pointer;}
+.btn-sm.gold{background:var(--gold);color:#fff;}
+.btn-sm.navy{background:var(--navy);color:#fff;}
+.btn-sm.red{background:#E74C3C;color:#fff;}
+input[type=text],input[type=number],input[type=email],textarea,select{padding:8px 12px;border:1px solid var(--gold-pale);border-radius:6px;font-family:inherit;font-size:0.84rem;width:100%;}
+textarea{min-height:80px;resize:vertical;}
+.form-row{display:flex;gap:12px;margin-bottom:12px;align-items:flex-end;}
+.form-row>div{flex:1;}
+.form-row label{display:block;font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;font-weight:600;}
+@media(max-width:900px){.sidebar{display:none;}.stat-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <h1>Wonderful<span>Crew</span></h1>
+  <div class="admin-label">ADMIN DASHBOARD</div>
+</div>
+
+<div class="layout">
+<div class="sidebar">
+  <a class="active" onclick="showPage('overview')">📊 대시보드</a>
+  <a onclick="showPage('members')">👥 회원 관리</a>
+  <a onclick="showPage('payments')">💳 결제 현황</a>
+  <a onclick="showPage('tokens')">🪙 토큰 관리</a>
+  <a onclick="showPage('approval')">🏆 합격 인증 승인</a>
+  <a onclick="showPage('live')">📅 라이브 수업</a>
+  <a onclick="showPage('stats')">📈 사용 통계</a>
+  <a onclick="showPage('marketing')">📧 마케팅 자동화</a>
+  <a onclick="showPage('noti')">🔔 알림 발송</a>
+  <a href="index.html" style="margin-top:24px;color:var(--text-muted);font-size:0.8rem;">← 홈으로</a>
+</div>
+
+<div class="main">
+
+<!-- 대시보드 -->
+<div class="page active" id="page-overview">
+  <h2>대시보드</h2>
+  <div class="sub">오늘의 현황을 한눈에 확인하세요.</div>
+  <div class="stat-grid">
+    <div class="stat-box"><div class="num">127</div><div class="lbl">총 회원</div></div>
+    <div class="stat-box"><div class="num">23</div><div class="lbl">오늘 방문</div></div>
+    <div class="stat-box"><div class="num">5</div><div class="lbl">이달 결제</div></div>
+    <div class="stat-box"><div class="num">1,250만</div><div class="lbl">이달 매출</div></div>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-box"><div class="num">342</div><div class="lbl">오늘 API 호출</div></div>
+    <div class="stat-box"><div class="num">89</div><div class="lbl">영어쉐도잉 이용</div></div>
+    <div class="stat-box"><div class="num">15</div><div class="lbl">면접 연습 이용</div></div>
+    <div class="stat-box"><div class="num">8</div><div class="lbl">커뮤니티 글</div></div>
+  </div>
+</div>
+
+<!-- 회원 관리 -->
+<div class="page" id="page-members">
+  <h2>회원 관리</h2>
+  <div class="sub">가입자 목록, 토큰 현황, 결제 내역</div>
+  <div class="card">
+    <table>
+      <tr><th>이름</th><th>이메일</th><th>가입일</th><th>토큰</th><th>결제</th><th>상태</th></tr>
+      <tr><td>김서연</td><td>sy@email.com</td><td>2026-03-15</td><td>8</td><td>올패키지</td><td><span class="badge green">활성</span></td></tr>
+      <tr><td>이하늘</td><td>hn@email.com</td><td>2026-03-20</td><td>3</td><td>토큰 10개</td><td><span class="badge green">활성</span></td></tr>
+      <tr><td>박지민</td><td>jm@email.com</td><td>2026-04-01</td><td>0</td><td>무료</td><td><span class="badge yellow">토큰 소진</span></td></tr>
+      <tr><td>최유나</td><td>yn@email.com</td><td>2026-04-05</td><td>10</td><td>무료</td><td><span class="badge green">활성</span></td></tr>
+      <tr><td>정민수</td><td>ms@email.com</td><td>2026-04-08</td><td>5</td><td>토큰 5개</td><td><span class="badge green">활성</span></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 결제 현황 -->
+<div class="page" id="page-payments">
+  <h2>결제 현황</h2>
+  <div class="sub">일별/월별 매출, 결제 방법별 통계</div>
+  <div class="stat-grid">
+    <div class="stat-box"><div class="num">5건</div><div class="lbl">이달 결제 건수</div></div>
+    <div class="stat-box"><div class="num">1,250만</div><div class="lbl">이달 매출</div></div>
+    <div class="stat-box"><div class="num">3건</div><div class="lbl">카드 결제</div></div>
+    <div class="stat-box"><div class="num">2건</div><div class="lbl">가상계좌</div></div>
+  </div>
+  <div class="card">
+    <h3>최근 결제 내역</h3>
+    <table>
+      <tr><th>날짜</th><th>회원</th><th>상품</th><th>금액</th><th>방법</th><th>상태</th></tr>
+      <tr><td>2026-04-10</td><td>김서연</td><td>올패키지</td><td>250만원</td><td>카드</td><td><span class="badge green">완료</span></td></tr>
+      <tr><td>2026-04-08</td><td>정민수</td><td>토큰 5개</td><td>2만원</td><td>카드</td><td><span class="badge green">완료</span></td></tr>
+      <tr><td>2026-04-05</td><td>이하늘</td><td>토큰 10개</td><td>3.5만원</td><td>가상계좌</td><td><span class="badge green">완료</span></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 토큰 관리 -->
+<div class="page" id="page-tokens">
+  <h2>토큰 관리</h2>
+  <div class="sub">수동 토큰 지급/차감</div>
+  <div class="card">
+    <h3>토큰 수동 지급/차감</h3>
+    <div class="form-row">
+      <div><label>회원 이메일</label><input type="email" placeholder="user@email.com"></div>
+      <div><label>토큰 수</label><input type="number" placeholder="5" min="-100" max="100"></div>
+      <div><label>사유</label><select><option>이벤트 지급</option><option>보상 지급</option><option>오류 보정</option><option>수동 차감</option></select></div>
+      <div><label>&nbsp;</label><button class="btn-sm gold" onclick="alert('토큰 지급/차감 처리됨 (더미)')">실행</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>토큰 지급 이력</h3>
+    <table>
+      <tr><th>날짜</th><th>회원</th><th>변동</th><th>사유</th></tr>
+      <tr><td>2026-04-10</td><td>김서연</td><td style="color:#2E7D32;">+무제한</td><td>올패키지 구매</td></tr>
+      <tr><td>2026-04-08</td><td>정민수</td><td style="color:#2E7D32;">+5</td><td>토큰 구매</td></tr>
+      <tr><td>2026-04-05</td><td>이하늘</td><td style="color:#2E7D32;">+10</td><td>토큰 구매</td></tr>
+      <tr><td>2026-04-01</td><td>박지민</td><td style="color:#C62828;">-1</td><td>영어쉐도잉 사용</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 합격 인증 승인 -->
+<div class="page" id="page-approval">
+  <h2>합격 인증 승인</h2>
+  <div class="sub">합격 후기 승인/거절, 보상 지급 처리</div>
+  <div class="card">
+    <table>
+      <tr><th>신청일</th><th>회원</th><th>항공사</th><th>유형</th><th>인증</th><th>액션</th></tr>
+      <tr><td>2026-04-09</td><td>김서연</td><td>에미레이트</td><td>텍스트 후기</td><td><span class="badge yellow">대기</span></td><td><button class="btn-sm gold" onclick="alert('승인 처리됨')">승인</button> <button class="btn-sm red" onclick="alert('거절 처리됨')">거절</button></td></tr>
+      <tr><td>2026-04-07</td><td>이하늘</td><td>카타르</td><td>영상 후기</td><td><span class="badge yellow">대기</span></td><td><button class="btn-sm gold" onclick="alert('승인 처리됨')">승인</button> <button class="btn-sm red" onclick="alert('거절 처리됨')">거절</button></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 라이브 수업 -->
+<div class="page" id="page-live">
+  <h2>라이브 수업 관리</h2>
+  <div class="sub">수업 일정 등록, 신청자/대기자 관리</div>
+  <div class="card">
+    <h3>새 수업 등록</h3>
+    <div class="form-row">
+      <div><label>수업명</label><input type="text" placeholder="에미레이트 면접 실전 연습"></div>
+      <div><label>유형</label><select><option>오프라인 · 홍대</option><option>온라인 · Zoom</option></select></div>
+    </div>
+    <div class="form-row">
+      <div><label>날짜</label><input type="date"></div>
+      <div><label>시간</label><input type="text" placeholder="14:00~17:00"></div>
+      <div><label>정원</label><input type="number" placeholder="8"></div>
+      <div><label>&nbsp;</label><button class="btn-sm gold" onclick="alert('수업 등록됨 (더미)')">등록</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>현재 수업 목록</h3>
+    <table>
+      <tr><th>수업명</th><th>날짜</th><th>유형</th><th>신청/정원</th><th>대기</th></tr>
+      <tr><td>에미레이트 면접 실전 연습</td><td>4/19</td><td>오프라인</td><td>5/8</td><td>0</td></tr>
+      <tr><td>영어 면접 집중 클래스</td><td>4/22</td><td>온라인</td><td>7/15</td><td>0</td></tr>
+      <tr><td>그루밍 워크샵</td><td>4/26</td><td>오프라인</td><td>6/6</td><td>2</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 사용 통계 -->
+<div class="page" id="page-stats">
+  <h2>사용 통계</h2>
+  <div class="sub">페이지별 이용 현황</div>
+  <div class="card">
+    <table>
+      <tr><th>페이지</th><th>오늘</th><th>이번 주</th><th>이번 달</th></tr>
+      <tr><td>홈페이지 (index)</td><td>89</td><td>423</td><td>1,847</td></tr>
+      <tr><td>영어쉐도잉</td><td>34</td><td>189</td><td>756</td></tr>
+      <tr><td>레벨테스트</td><td>12</td><td>67</td><td>298</td></tr>
+      <tr><td>면접 연습 (비디오)</td><td>8</td><td>45</td><td>178</td></tr>
+      <tr><td>면접 연습 (디스커션)</td><td>5</td><td>28</td><td>112</td></tr>
+      <tr><td>면접 연습 (롤플레이)</td><td>6</td><td>32</td><td>134</td></tr>
+      <tr><td>면접 연습 (파이널)</td><td>3</td><td>18</td><td>89</td></tr>
+      <tr><td>챗봇</td><td>15</td><td>78</td><td>345</td></tr>
+      <tr><td>커뮤니티</td><td>7</td><td>34</td><td>156</td></tr>
+      <tr><td>채용정보</td><td>11</td><td>56</td><td>234</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 마케팅 자동화 -->
+<div class="page" id="page-marketing">
+  <h2>마케팅 자동화</h2>
+  <div class="sub">구글폼 신청자에게 일괄 메시지 발송</div>
+  <div class="card">
+    <h3>1단계: 구글 시트 연결</h3>
+    <div class="form-row">
+      <div style="flex:3;"><label>구글 시트 공유 URL</label><input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/..."></div>
+      <div><label>&nbsp;</label><button class="btn-sm navy" onclick="parseSheet()">연락처 불러오기</button></div>
+    </div>
+    <div id="contact-preview" style="display:none;margin-top:14px;">
+      <table id="contact-table">
+        <tr><th>이름</th><th>전화번호</th><th>이메일</th></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <h3>2단계: 메시지 작성</h3>
+    <div class="form-row"><div><label>제목</label><input type="text" id="msg-subject" value="WonderfulCrew 무료 강의 안내"></div></div>
+    <div class="form-row"><div><label>본문</label><textarea id="msg-body">안녕하세요 {이름}님!
+
+WonderfulCrew 무료 강의에 신청해주셔서 감사합니다.
+아래 링크에서 무료 강의를 수강하실 수 있습니다.
+
+▶ 무료 강의 보기: https://wonderfulcrew.vercel.app
+
+감사합니다.
+WonderfulCrew 드림</textarea></div></div>
+  </div>
+  <div class="card">
+    <h3>3단계: 발송</h3>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-sm gold" onclick="sendEmail()">📧 이메일 발송</button>
+      <button class="btn-sm navy" onclick="alert('문자 발송은 추후 연동 예정입니다.')">📱 문자 발송 (준비중)</button>
+      <button class="btn-sm navy" onclick="alert('카카오톡 발송은 추후 연동 예정입니다.')">💬 카카오톡 (준비중)</button>
+    </div>
+    <div id="send-result" style="margin-top:14px;font-size:0.84rem;color:var(--text-mid);"></div>
+  </div>
+</div>
+
+<!-- 알림 발송 -->
+<div class="page" id="page-noti">
+  <h2>알림 발송</h2>
+  <div class="sub">전체 회원에게 수동 알림 발송</div>
+  <div class="card">
+    <div class="form-row"><div><label>알림 제목</label><input type="text" placeholder="새 채용 공고가 등록되었습니다!"></div></div>
+    <div class="form-row"><div><label>알림 내용</label><textarea placeholder="에미레이트 항공 서울 오픈데이가 4월 24일에 열립니다. 지금 바로 확인하세요!"></textarea></div></div>
+    <div class="form-row"><div><label>대상</label><select><option>전체 회원</option><option>유료 회원만</option><option>무료 회원만</option><option>7일 이상 미접속</option></select></div></div>
+    <button class="btn-sm gold" onclick="alert('알림 발송됨 (더미)')">발송하기</button>
+  </div>
+</div>
+
+</div>
+</div>
+
+<script>
+// 관리자 접근 체크 (간단 비밀번호)
+(function(){
+  var key=localStorage.getItem('wc_admin');
+  if(key!=='wonderfulcrew2026'){
+    var pw=prompt('관리자 비밀번호를 입력하세요:');
+    if(pw!=='wonderfulcrew2026'){alert('접근 권한이 없습니다.');location.href='index.html';return;}
+    localStorage.setItem('wc_admin',pw);
+  }
+})();
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.sidebar a').forEach(function(a){a.classList.remove('active');});
+  event.target.classList.add('active');
+}
+
+// 마케팅: 더미 연락처 파싱
+var contacts=[];
+function parseSheet(){
+  var url=document.getElementById('sheet-url').value;
+  if(!url){alert('구글 시트 URL을 입력해주세요.');return;}
+  // 더미 데이터 (실제 연동 시 Google Sheets API 사용)
+  contacts=[
+    {name:'김지현',phone:'010-1234-5678',email:'jihyun@email.com'},
+    {name:'이수빈',phone:'010-2345-6789',email:'subin@email.com'},
+    {name:'박하은',phone:'010-3456-7890',email:'haeun@email.com'},
+    {name:'최서윤',phone:'010-4567-8901',email:'seoyun@email.com'},
+    {name:'정다인',phone:'010-5678-9012',email:'dain@email.com'}
+  ];
+  var table=document.getElementById('contact-table');
+  table.innerHTML='<tr><th>이름</th><th>전화번호</th><th>이메일</th></tr>';
+  contacts.forEach(function(c){
+    table.innerHTML+='<tr><td>'+c.name+'</td><td>'+c.phone+'</td><td>'+c.email+'</td></tr>';
+  });
+  document.getElementById('contact-preview').style.display='block';
+  alert(contacts.length+'명의 연락처를 불러왔습니다.');
+}
+
+function sendEmail(){
+  if(!contacts.length){alert('먼저 연락처를 불러와주세요.');return;}
+  var subject=document.getElementById('msg-subject').value;
+  var body=document.getElementById('msg-body').value;
+  var result=document.getElementById('send-result');
+  var sent=0;
+  contacts.forEach(function(c){
+    var personalBody=body.replace(/{이름}/g,c.name);
+    // mailto 방식 (실제로는 EmailJS 또는 서버 API)
+    var link='mailto:'+c.email+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(personalBody);
+    window.open(link,'_blank');
+    sent++;
+  });
+  result.innerHTML='✅ '+sent+'명에게 이메일 발송 시도 완료. (브라우저 mailto 사용)<br><span style="font-size:0.78rem;color:var(--text-muted);">대량 발송은 EmailJS 또는 서버 API 연동 후 자동화됩니다.</span>';
+}
+</script>
+</body>
+</html>

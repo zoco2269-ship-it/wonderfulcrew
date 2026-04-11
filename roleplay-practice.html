@@ -44,6 +44,39 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </div>
 </nav>
 <div class="hero"><div class="label">Step 4 · Roleplay</div><h1>롤플레이 면접 <em>연습</em></h1><p>기내 상황 시뮬레이션 — 사과, 해결, 대안, Service Recovery의 정석을 연습하세요.</p></div>
+
+<!-- 면접관 & 악센트 선택 -->
+<section style="padding:40px 5% 0;"><div class="wrap">
+<div style="background:#fff;border:1px solid var(--gold-pale);padding:28px;margin-bottom:0;">
+  <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:16px;">💎 면접관 & 악센트 설정</div>
+  <div style="display:flex;gap:24px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:200px;">
+      <div style="font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:8px;">면접관 아바타</div>
+      <div id="avatar-select" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;cursor:pointer;font-size:0.82rem;"><input type="radio" name="avatar" value="wm" checked style="accent-color:var(--gold);"> 👨🏻 서양 남성</label>
+        <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;cursor:pointer;font-size:0.82rem;"><input type="radio" name="avatar" value="wf" style="accent-color:var(--gold);"> 👩🏻 서양 여성</label>
+        <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;cursor:pointer;font-size:0.82rem;"><input type="radio" name="avatar" value="am" style="accent-color:var(--gold);"> 👨🏻‍💼 동양 남성</label>
+        <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;cursor:pointer;font-size:0.82rem;"><input type="radio" name="avatar" value="af" style="accent-color:var(--gold);"> 👩🏻‍💼 동양 여성</label>
+      </div>
+    </div>
+    <div style="flex:1;min-width:200px;">
+      <div style="font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:8px;">영어 악센트</div>
+      <select id="accent-select" style="width:100%;padding:10px 12px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.84rem;">
+        <option value="en-GB">🇬🇧 British English</option>
+        <option value="en-US">🇺🇸 American English</option>
+        <option value="en-AU">🇦🇺 Australian English</option>
+        <option value="en-IN">🇮🇳 Indian English</option>
+        <option value="es-ES">🇪🇸 Spanish English</option>
+        <option value="ar-AE">🇦🇪 Arabic English</option>
+        <option value="th-TH">🇹🇭 Southeast Asian English</option>
+        <option value="ja-JP">🇯🇵 Japanese English</option>
+      </select>
+      <div style="font-size:0.74rem;color:var(--text-muted);margin-top:6px;">한국어 음성: ClovaVoice 연동 예정 (현재 브라우저 TTS)</div>
+    </div>
+  </div>
+</div>
+</div></section>
+
 <section><div class="wrap">
 <div class="info-box"><h3>롤플레이 답변 구조</h3><ul>
 <li><strong>1. 사과:</strong> 즉각적이고 진심 어린 사과</li>

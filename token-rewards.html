@@ -74,6 +74,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <div class="num" id="my-tokens">0</div>
     <div class="lbl">내 토큰</div>
   </div>
+  <div id="token-expiry" style="margin-top:10px;font-size:0.8rem;color:rgba(255,255,255,0.6);"></div>
 </div>
 
 <!-- ① 출석 체크 -->
@@ -157,6 +158,11 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <!-- 토큰 충전 -->
 <section style="background:#fff;">
 <div class="wrap">
+  <div style="background:linear-gradient(135deg,#1A2340,#2A3455);padding:20px 24px;border-radius:8px;margin-bottom:28px;text-align:center;color:#fff;">
+    <div style="font-size:0.72rem;letter-spacing:0.15em;color:var(--gold-light);margin-bottom:6px;">LIMITED EVENT</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:6px;">이벤트 기간 <span style="color:var(--gold-light);">특별가</span></div>
+    <div style="font-size:0.84rem;color:rgba(255,255,255,0.7);">지금 가입하면 무료 토큰 10개 지급 + 충전 할인</div>
+  </div>
   <div class="sec-num">04</div>
   <div class="sec-title">토큰 <em>충전하기</em></div>
   <div class="gold-line"></div>
@@ -188,9 +194,22 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
 
 <script>
-// 토큰 표시 (UI만 — 실제 증감 비활성화)
-function loadTokens(){var d=JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');return d.tokens||0;}
-document.getElementById('my-tokens').textContent=loadTokens();
+// 토큰 표시 + 유효기간
+function loadTokenData(){return JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');}
+var td=loadTokenData();
+// 초기 가입 토큰 10개 (이벤트)
+if(!td.initialized){td.tokens=10;td.initialized=true;td.firstFree=true;td.purchaseDate=new Date().toISOString();localStorage.setItem('wc_eng_tokens',JSON.stringify(td));}
+document.getElementById('my-tokens').textContent=td.tokens||0;
+// 유효기간 표시
+if(td.purchaseDate){
+  var exp=new Date(td.purchaseDate);exp.setDate(exp.getDate()+30);
+  var now=new Date();var diff=Math.ceil((exp-now)/(1000*60*60*24));
+  var el=document.getElementById('token-expiry');
+  if(td.unlimited){el.textContent='무제한 이용권';}
+  else if(diff<=0){el.textContent='토큰 유효기간 만료';el.style.color='#FF6B6B';}
+  else if(diff<=7){el.textContent='유효기간 D-'+diff+' (만료 임박!)';el.style.color='#FF6B6B';}
+  else{el.textContent='유효기간 D-'+diff;}
+}
 
 // 출석 캘린더
 var today=new Date();

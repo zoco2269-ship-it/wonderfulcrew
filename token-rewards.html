@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>토큰받기 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:28px;}.nav-links a{font-size:0.82rem;color:var(--text-mid);letter-spacing:0.04em;}.nav-links a:hover{color:var(--gold);}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
+.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:560px;margin:0 auto;line-height:1.8;}
+.token-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(232,201,106,0.3);padding:12px 28px;border-radius:32px;margin-top:24px;}
+.token-badge .num{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold-light);}.token-badge .lbl{font-size:0.82rem;color:rgba(255,255,255,0.7);}
+section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
+.sec-num{font-family:'DM Serif Display',serif;font-size:0.72rem;color:var(--gold);letter-spacing:0.3em;text-transform:uppercase;margin-bottom:10px;}
+.sec-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:14px;}.sec-title em{font-style:normal;color:var(--gold);}
+.gold-line{width:36px;height:1.5px;background:var(--gold);margin:14px 0 32px;}
+.card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:28px;margin-bottom:20px;}
+.card h3{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:12px;}
+.card p,.card li{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;}
+.card ul{padding-left:18px;margin:8px 0;}.card li{margin-bottom:4px;}.card li strong{color:var(--navy);}
+.reward-table{width:100%;border-collapse:collapse;margin:16px 0;}
+.reward-table th,.reward-table td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--gold-pale);font-size:0.86rem;}
+.reward-table th{background:var(--navy);color:var(--gold-light);font-size:0.78rem;letter-spacing:0.08em;}
+.reward-table td{color:var(--text-mid);}
+.reward-table .token{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--gold);font-weight:600;}
+.cal-mini{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;max-width:350px;margin:16px 0;}
+.cal-mini .dow{text-align:center;font-size:0.68rem;color:var(--text-muted);font-weight:600;padding:6px 0;}
+.cal-mini .day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:0.78rem;border-radius:50%;color:var(--text-dark);}
+.cal-mini .day.done{background:var(--gold);color:#fff;font-weight:600;}
+.cal-mini .day.today{border:2px solid var(--navy);}
+.cal-mini .day.future{color:#ccc;}
+.btn-gold{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;margin-top:12px;}
+.btn-gold:hover{opacity:0.9;}
+.btn-outline{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:24px;font-family:inherit;font-size:0.84rem;font-weight:600;cursor:pointer;margin-top:10px;}
+.invite-box{background:var(--cream);border:1px solid var(--gold-pale);padding:20px;margin:16px 0;border-radius:8px;}
+.invite-link{display:flex;gap:8px;align-items:center;margin:12px 0;}
+.invite-link input{flex:1;padding:10px 12px;border:1px solid var(--gold-pale);border-radius:8px;font-size:0.85rem;font-family:inherit;}
+.invite-link button{padding:10px 18px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;}
+.share-btns{display:flex;gap:10px;margin-top:12px;}
+.share-btn{padding:10px 20px;border:none;border-radius:20px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}
+.share-btn.kakao{background:#FEE500;color:#3C1E1E;}
+.share-btn.copy{background:var(--navy);color:#fff;}
+.tip{margin:16px 0;padding:14px 18px;background:rgba(201,168,76,0.06);border-left:3px solid var(--gold);font-size:0.84rem;color:var(--text-mid);line-height:1.7;}
+.tip b{color:var(--navy);}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links"><a href="index.html">홈</a><a href="index.html#about">소개</a><a href="index.html#resources">학습자료</a><a href="daily-english.html">영어쉐도잉</a><a href="jobs.html">채용정보</a><a href="community.html">커뮤니티</a><a href="token-rewards.html">토큰받기</a></div>
+  <a href="login.html" class="nav-cta">로그인</a>
+</nav>
+
+<div class="hero">
+  <div class="label">Token & Rewards</div>
+  <h1>토큰을 모아<br><em>더 많이 연습하세요</em></h1>
+  <p>출석, 친구 초대, 합격 후기로 무료 토큰을 받을 수 있어요.</p>
+  <div class="token-badge">
+    <div class="num" id="my-tokens">0</div>
+    <div class="lbl">내 토큰</div>
+  </div>
+</div>
+
+<!-- ① 출석 체크 -->
+<section>
+<div class="wrap">
+  <div class="sec-num">01</div>
+  <div class="sec-title">출석 <em>체크</em></div>
+  <div class="gold-line"></div>
+
+  <div class="card">
+    <h3>연속 출석 보상</h3>
+    <table class="reward-table">
+      <tr><th>연속 출석</th><th>보상</th></tr>
+      <tr><td>7일 연속</td><td class="token">토큰 1개</td></tr>
+      <tr><td>14일 연속</td><td class="token">토큰 2개</td></tr>
+      <tr><td>30일 연속</td><td class="token">토큰 5개</td></tr>
+    </table>
+    <div class="tip"><b>출석 기준:</b> 영어 쉐도잉 3문제 완료 시 자동 출석 인정. 하루라도 빠지면 streak 리셋!</div>
+  </div>
+
+  <div class="card">
+    <h3>이번 달 출석 현황</h3>
+    <div class="cal-mini" id="att-cal"></div>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-top:8px;">연속 출석: <b id="att-streak">0</b>일 · 총 출석: <b id="att-total">0</b>일</p>
+    <button class="btn-gold" onclick="checkIn()">오늘 출석하기</button>
+  </div>
+</div>
+</section>
+
+<!-- ② 친구 초대 -->
+<section style="background:#fff;">
+<div class="wrap">
+  <div class="sec-num">02</div>
+  <div class="sec-title">친구 <em>초대</em></div>
+  <div class="gold-line"></div>
+
+  <div class="card">
+    <h3>초대 보상</h3>
+    <table class="reward-table">
+      <tr><th>조건</th><th>나</th><th>친구</th></tr>
+      <tr><td>친구가 링크로 가입</td><td class="token">토큰 2개</td><td class="token">토큰 2개</td></tr>
+      <tr><td>친구가 첫 결제</td><td class="token">추가 토큰 3개</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>내 초대 링크</h3>
+    <div class="invite-link">
+      <input type="text" id="invite-url" readonly value="" placeholder="로그인 후 생성됩니다">
+      <button onclick="copyLink()">복사</button>
+    </div>
+    <div class="share-btns">
+      <button class="share-btn kakao" onclick="shareKakao()">카카오톡 공유</button>
+      <button class="share-btn copy" onclick="copyLink()">링크 복사</button>
+    </div>
+    <div class="tip" style="margin-top:16px;"><b>카톡 공유 문구:</b><br>"나 원더풀크루로 에미레이트 면접 준비 중인데 진짜 좋아. 좋은 기능 너무 많고 같이 하자! 이 링크로 가입하면 토큰도 2개 무료로 더 줘 ✈️"</div>
+  </div>
+</div>
+</section>
+
+<!-- ③ 합격 후기 보상 -->
+<section>
+<div class="wrap">
+  <div class="sec-num">03</div>
+  <div class="sec-title">합격 후기 <em>보상</em></div>
+  <div class="gold-line"></div>
+
+  <div class="card">
+    <h3>합격 후기 작성 보상</h3>
+    <table class="reward-table">
+      <tr><th>유형</th><th>보상</th></tr>
+      <tr><td>텍스트 합격 후기 작성<br><span style="font-size:0.78rem;color:var(--text-muted);">합격 페이지 인증 + 관리자 승인 필요</span></td><td><b style="color:var(--navy);">스타벅스 기프티콘</b></td></tr>
+      <tr><td>합격 후기 영상 제출 (얼굴 공개)<br><span style="font-size:0.78rem;color:var(--text-muted);">영상 검수 후 지급</span></td><td><b style="color:var(--navy);">수강료 50% 환급</b></td></tr>
+    </table>
+    <div class="tip"><b>참고:</b> 합격 인증은 관리자 수동 승인으로 진행됩니다. 합격 통보 캡처 또는 입사 서류 일부를 제출해주세요.</div>
+    <button class="btn-outline" onclick="alert('합격 인증은 관리자에게 문의해주세요.\n카카오톡: @wonderfulcrew')">합격 인증 신청</button>
+  </div>
+</div>
+</section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+
+<script>
+// 토큰 표시 (UI만 — 실제 증감 비활성화)
+function loadTokens(){var d=JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');return d.tokens||0;}
+document.getElementById('my-tokens').textContent=loadTokens();
+
+// 출석 캘린더
+var today=new Date();
+var y=today.getFullYear(),m=today.getMonth(),d=today.getDate();
+var first=new Date(y,m,1).getDay();
+var last=new Date(y,m+1,0).getDate();
+var att=JSON.parse(localStorage.getItem('wc_english_streak')||'{}');
+var attDays=JSON.parse(localStorage.getItem('wc_att_days')||'[]');
+
+function renderCal(){
+  var cal=document.getElementById('att-cal');cal.innerHTML='';
+  ['일','월','화','수','목','금','토'].forEach(function(w){var e=document.createElement('div');e.className='dow';e.textContent=w;cal.appendChild(e);});
+  for(var i=0;i<first;i++){var e=document.createElement('div');e.className='day future';cal.appendChild(e);}
+  for(var dd=1;dd<=last;dd++){
+    var e=document.createElement('div');e.className='day';e.textContent=dd;
+    if(attDays.indexOf(y+'-'+(m+1<10?'0':'')+(m+1)+'-'+(dd<10?'0':'')+dd)>-1)e.classList.add('done');
+    if(dd===d)e.classList.add('today');
+    if(dd>d)e.classList.add('future');
+    cal.appendChild(e);
+  }
+  document.getElementById('att-streak').textContent=att.streak||0;
+  document.getElementById('att-total').textContent=att.total||0;
+}
+renderCal();
+
+function checkIn(){
+  var key=today.toISOString().slice(0,10);
+  if(attDays.indexOf(key)>-1){alert('이미 오늘 출석했어요!');return;}
+  attDays.push(key);
+  localStorage.setItem('wc_att_days',JSON.stringify(attDays));
+  alert('출석 완료! (테스트 모드 — 토큰 지급은 정식 오픈 후 활성화됩니다)');
+  renderCal();
+}
+
+// 초대 링크 (더미)
+var uid=Math.random().toString(36).substring(2,8);
+document.getElementById('invite-url').value='https://wonderfulcrew.vercel.app/?ref='+uid;
+
+function copyLink(){
+  var input=document.getElementById('invite-url');
+  input.select();document.execCommand('copy');
+  alert('링크가 복사되었습니다!');
+}
+function shareKakao(){
+  var msg='나 원더풀크루로 에미레이트 면접 준비 중인데 진짜 좋아. 좋은 기능 너무 많고 같이 하자! 이 링크로 가입하면 토큰도 2개 무료로 더 줘 ✈️\n\n'+document.getElementById('invite-url').value;
+  if(navigator.share){navigator.share({title:'WonderfulCrew 초대',text:msg}).catch(function(){});}
+  else{prompt('아래 메시지를 카카오톡에 붙여넣기 하세요:',msg);}
+}
+</script>
+</body>
+</html>

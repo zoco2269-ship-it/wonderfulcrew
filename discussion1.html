@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1차 디스커션 연습 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:36px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
+.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:600px;margin:0 auto;line-height:1.8;}
+section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
+.info-box{background:#fff;border-left:4px solid var(--gold);padding:28px 30px;margin-bottom:40px;}.info-box h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin-bottom:12px;}.info-box p,.info-box li{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;}.info-box ul{padding-left:18px;margin-top:8px;}.info-box li{margin-bottom:4px;}.info-box li strong{color:var(--navy);}
+.q-card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:30px;margin-bottom:28px;}.q-num{font-family:'DM Serif Display',serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:8px;}.q-text{font-size:1.05rem;color:var(--navy);font-weight:600;line-height:1.5;margin-bottom:18px;}
+.cam-box{width:100%;max-width:480px;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;position:relative;margin-bottom:16px;}.cam-box video{width:100%;height:100%;object-fit:cover;}.cam-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:0.88rem;}.rec-badge{position:absolute;top:12px;left:12px;display:none;align-items:center;gap:6px;background:rgba(192,57,43,0.9);color:#fff;padding:4px 10px;font-size:0.7rem;font-weight:700;border-radius:12px;}.rec-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1s infinite;}@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}.btn{padding:10px 22px;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;}.btn:disabled{opacity:0.45;cursor:not-allowed;}.btn-navy{background:var(--navy);color:#fff;}.btn-navy.recording{background:#C0392B;}.btn-gold{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}
+.transcript{padding:12px 14px;border:1px solid var(--gold-pale);border-radius:8px;background:var(--cream);font-size:0.9rem;color:var(--text-dark);line-height:1.7;min-height:44px;margin-bottom:14px;}.transcript:empty::before{content:'음성 답변 대기 중...';color:var(--text-muted);font-size:0.85rem;}
+.score-card{display:none;margin-top:18px;padding:24px;background:var(--cream);border:1px solid var(--gold-pale);border-left:4px solid var(--gold);}.score-card.visible{display:block;}.score-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);margin-bottom:16px;}.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}.score-item{background:#fff;padding:16px;border:1px solid var(--gold-pale);text-align:center;}.score-item .label{font-size:0.72rem;color:var(--text-muted);letter-spacing:0.08em;margin-bottom:6px;}.score-item .value{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold);}.score-item .value span{font-size:0.8rem;color:var(--text-muted);}.score-msg{margin-top:16px;font-size:0.88rem;color:var(--text-mid);line-height:1.75;padding:14px 16px;background:#fff;border-left:3px solid var(--gold);}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.score-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a><div class="nav-links"><a href="index.html#about">소개</a><a href="daily-english.html">영어쉐도잉</a><a href="jobs.html">채용정보</a></div><a href="leveltest.html" class="nav-cta">면접 연습 시작</a></nav>
+
+<div class="hero">
+  <div class="label">Step 2 · 1st Discussion</div>
+  <h1>1차 디스커션 <em>연습</em></h1>
+  <p>많은 사람들 앞에서 자신감 있게 발표하는 것이 핵심입니다. 승무원은 안전요원 — 떨지 않고 당당하게!</p>
+</div>
+
+<section><div class="wrap">
+<div class="info-box">
+  <h3>1차 디스커션 핵심</h3>
+  <p>What to say가 아니라 <b>How to say</b>가 전부입니다. 주제 내용은 합격과 직접 관련 없습니다.</p>
+  <ul>
+    <li><strong>왜 발표를 시키나:</strong> 비상 상황에서 수백 명 앞에서 침착하게 안내할 수 있는지 확인</li>
+    <li><strong>자신감:</strong> 20명 앞에서 발표도 못하면 승객 안전을 책임질 수 없음</li>
+    <li><strong>4~5문장:</strong> 깔끔하게. 쉬운 단어. 어려운 단어 쓰다 막히면 마이너스</li>
+    <li><strong>눈맞춤:</strong> 면접관이 아닌 청중 전체를 보며 발표</li>
+    <li><strong>항상 미소:</strong> 밝고 따뜻한 에너지</li>
+  </ul>
+</div>
+
+<div class="q-card">
+  <div class="q-num">Topic 1</div>
+  <div class="q-text">서비스 경험을 포함해서 간단히 자기소개하고, 가장 좋아하는 여행지(Favorite Destination)를 말해주세요.</div>
+  <div class="cam-box"><video id="vid-0" autoplay muted playsinline></video><div class="cam-placeholder" id="ph-0">카메라를 시작하세요</div><div class="rec-badge" id="rec-0"><div class="rec-dot"></div>REC</div></div>
+  <div class="btn-row"><button class="btn btn-navy" id="start-0" onclick="startRec(0)">카메라 시작 & 녹음</button><button class="btn btn-navy" id="stop-0" style="display:none" onclick="stopRec(0)">녹음 중지</button></div>
+  <div class="transcript" id="tr-0"></div>
+  <div class="btn-row"><button class="btn btn-gold" id="fb-0" disabled onclick="showScore(0)">피드백 보기</button><button class="btn btn-outline" onclick="alert('강의 영상 준비 중입니다.')">강의 영상 보기</button></div>
+  <div class="score-card" id="sc-0"></div>
+</div>
+
+<div class="q-card">
+  <div class="q-num">Topic 2</div>
+  <div class="q-text">서비스 경험을 포함해서 간단히 자기소개하고, 기내에서 옆자리에 유명인(Celebrity)을 앉힐 수 있다면 누구를 앉히겠어요? 이유와 함께 발표해주세요.</div>
+  <div class="cam-box"><video id="vid-1" autoplay muted playsinline></video><div class="cam-placeholder" id="ph-1">카메라를 시작하세요</div><div class="rec-badge" id="rec-1"><div class="rec-dot"></div>REC</div></div>
+  <div class="btn-row"><button class="btn btn-navy" id="start-1" onclick="startRec(1)">카메라 시작 & 녹음</button><button class="btn btn-navy" id="stop-1" style="display:none" onclick="stopRec(1)">녹음 중지</button></div>
+  <div class="transcript" id="tr-1"></div>
+  <div class="btn-row"><button class="btn btn-gold" id="fb-1" disabled onclick="showScore(1)">피드백 보기</button><button class="btn btn-outline" onclick="alert('강의 영상 준비 중입니다.')">강의 영상 보기</button></div>
+  <div class="score-card" id="sc-1"></div>
+</div>
+
+</div></section>
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+<script>
+var streams=[],recs=[];
+function startRec(i){
+  var vid=document.getElementById('vid-'+i),ph=document.getElementById('ph-'+i),badge=document.getElementById('rec-'+i);
+  var startBtn=document.getElementById('start-'+i),stopBtn=document.getElementById('stop-'+i),tr=document.getElementById('tr-'+i);
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true}).then(function(stream){
+    streams[i]=stream;vid.srcObject=stream;ph.style.display='none';badge.style.display='flex';
+    startBtn.style.display='none';stopBtn.style.display='inline-flex';tr.textContent='';
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(SR){var rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;recs[i]=rec;var f='';
+    rec.onresult=function(ev){var interim='';f='';for(var r=0;r<ev.results.length;r++){if(ev.results[r].isFinal)f+=ev.results[r][0].transcript+' ';else interim+=ev.results[r][0].transcript;}tr.textContent=f+interim;};
+    rec.onend=function(){if(f.trim())tr.textContent=f.trim();};rec.start();}
+  }).catch(function(){ph.textContent='카메라 권한이 필요합니다.';});
+}
+function stopRec(i){
+  document.getElementById('rec-'+i).style.display='none';document.getElementById('stop-'+i).style.display='none';
+  var s=document.getElementById('start-'+i);s.textContent='다시 녹음';s.style.display='inline-flex';
+  if(recs[i])try{recs[i].stop();}catch(e){}if(streams[i])streams[i].getTracks().forEach(function(t){t.stop();});
+  if(document.getElementById('tr-'+i).textContent.trim())document.getElementById('fb-'+i).disabled=false;
+}
+function showScore(i){
+  var sc=document.getElementById('sc-'+i);
+  var scores=[Math.floor(Math.random()*20)+65,Math.floor(Math.random()*20)+60,Math.floor(Math.random()*20)+55,Math.floor(Math.random()*25)+50];
+  sc.innerHTML='<div class="score-title">1st Discussion Score</div>'+
+    '<div class="score-grid">'+
+    '<div class="score-item"><div class="label">자신감 / Confidence</div><div class="value">'+scores[0]+'<span>/100</span></div></div>'+
+    '<div class="score-item"><div class="label">미소 & 에너지</div><div class="value">'+scores[1]+'<span>/100</span></div></div>'+
+    '<div class="score-item"><div class="label">전달력 / Delivery</div><div class="value">'+scores[2]+'<span>/100</span></div></div>'+
+    '<div class="score-item"><div class="label">내용 구성</div><div class="value">'+scores[3]+'<span>/100</span></div></div>'+
+    '</div>'+
+    '<div class="score-msg">종합 점수: <b>'+Math.round((scores[0]+scores[1]+scores[2]+scores[3])/4)+'/100</b><br><br>'+
+    '현재는 더미 점수입니다. AI 엔진 학습 완료 후 영상+음성 분석 기반 정교한 피드백으로 업데이트됩니다.<br><br>'+
+    '<b>핵심:</b> 발표 내용보다 자신감 있는 태도, 따뜻한 미소, 청중과의 눈맞춤이 합격을 결정합니다.</div>';
+  sc.classList.add('visible');
+}
+</script>
+</body>
+</html>

@@ -181,11 +181,14 @@ function loadTokens(){
 }
 function saveTokens(t){localStorage.setItem('wc_eng_tokens',JSON.stringify(t));}
 function useToken(){
+  // 테스트 모드 — 토큰 체크 비활성화 (모든 기능 활성화)
+  return true;
+  /*
   var t=loadTokens();
-  // 최초 1회(3문제) 무료
   if(t.firstFree){return true;}
   if(t.tokens>0){t.tokens--;saveTokens(t);return true;}
   return false;
+  */
 }
 function markFirstUsed(){
   var t=loadTokens();

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>비디오 면접 연습 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}
+a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:36px;}
+.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;}
+.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}
+.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}
+.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:600px;margin:0 auto;line-height:1.8;}
+section{padding:60px 5%;}
+.wrap{max-width:900px;margin:0 auto;}
+.info-box{background:#fff;border-left:4px solid var(--gold);padding:28px 30px;margin-bottom:40px;}
+.info-box h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin-bottom:12px;}
+.info-box p,.info-box li{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;}
+.info-box ul{padding-left:18px;margin-top:8px;}
+.info-box li{margin-bottom:4px;}
+.info-box li strong{color:var(--navy);}
+.q-card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:30px;margin-bottom:28px;}
+.q-num{font-family:'DM Serif Display',serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:8px;}
+.q-text{font-size:1.05rem;color:var(--navy);font-weight:600;line-height:1.5;margin-bottom:6px;}
+.q-hint{font-size:0.82rem;color:var(--text-muted);margin-bottom:18px;}
+.cam-box{width:100%;max-width:480px;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;position:relative;margin-bottom:16px;}
+.cam-box video{width:100%;height:100%;object-fit:cover;}
+.cam-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:0.88rem;}
+.rec-badge{position:absolute;top:12px;left:12px;display:none;align-items:center;gap:6px;background:rgba(192,57,43,0.9);color:#fff;padding:4px 10px;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;border-radius:12px;}
+.rec-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+.btn{padding:10px 22px;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;letter-spacing:0.04em;}
+.btn:disabled{opacity:0.45;cursor:not-allowed;}
+.btn-navy{background:var(--navy);color:#fff;}
+.btn-navy.recording{background:#C0392B;animation:pulse-rec 1s infinite;}
+@keyframes pulse-rec{0%,100%{opacity:1}50%{opacity:0.7}}
+.btn-gold{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}
+.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}
+.transcript{padding:12px 14px;border:1px solid var(--gold-pale);border-radius:8px;background:var(--cream);font-size:0.9rem;color:var(--text-dark);line-height:1.7;min-height:44px;margin-bottom:14px;}
+.transcript:empty::before{content:'음성 답변 대기 중...';color:var(--text-muted);font-size:0.85rem;}
+.score-card{display:none;margin-top:18px;padding:24px;background:var(--cream);border:1px solid var(--gold-pale);border-left:4px solid var(--gold);}
+.score-card.visible{display:block;}
+.score-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);margin-bottom:16px;}
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.score-item{background:#fff;padding:16px;border:1px solid var(--gold-pale);text-align:center;}
+.score-item .label{font-size:0.72rem;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
+.score-item .value{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold);}
+.score-item .value span{font-size:0.8rem;color:var(--text-muted);}
+.score-msg{margin-top:16px;font-size:0.88rem;color:var(--text-mid);line-height:1.75;padding:14px 16px;background:#fff;border-left:3px solid var(--gold);}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.score-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <a href="index.html#about">소개</a>
+    <a href="index.html#resources">학습 자료</a>
+    <a href="daily-english.html">영어쉐도잉</a>
+    <a href="jobs.html">채용정보</a>
+  </div>
+  <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
+</nav>
+
+<div class="hero">
+  <div class="label">Step 1 · Video Interview</div>
+  <h1>비디오 면접 <em>연습</em></h1>
+  <p>이 단계는 이미지 면접입니다. What to say보다 How to say가 압도적으로 중요합니다.</p>
+</div>
+
+<section>
+<div class="wrap">
+
+<div class="info-box">
+  <h3>비디오 면접 핵심 포인트</h3>
+  <p>면접관은 영상에서 '이 사람이 승객 앞에 서면 어떤 느낌일까'를 상상합니다.</p>
+  <ul>
+    <li><strong>Smiling Face:</strong> 자연스러운 미소 유지. 승객이 feel welcomed 되는 따뜻한 표정</li>
+    <li><strong>Voice Tone:</strong> 밝고 약간 하이톤. 처진 목소리는 감점. 자신감 + 따뜻함</li>
+    <li><strong>Eye Contact:</strong> 카메라를 보며 대화하듯. 시선이 흔들리면 자신감 부족으로 보임</li>
+    <li><strong>Energy:</strong> 적당한 에너지 레벨. 너무 조용하면 안 되고, 과하면 부담스러움</li>
+  </ul>
+</div>
+
+<div id="questions"></div>
+
+</div>
+</section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+
+<script>
+var ROLEPLAY_QS=[
+  "A passenger wants a window seat but the flight is full.",
+  "A business class passenger's meal choice has run out.",
+  "A passenger complains the cabin is too cold but others say it's fine.",
+  "A child is crying and disturbing other passengers.",
+  "A passenger asks for alcohol but appears intoxicated.",
+  "A passenger's bag doesn't fit in the overhead bin.",
+  "A passenger requests a special meal that wasn't pre-ordered.",
+  "Two passengers are arguing over an armrest."
+];
+var randRP=ROLEPLAY_QS[Math.floor(Math.random()*ROLEPLAY_QS.length)];
+
+var QUESTIONS=[
+  {num:'Question 1',q:'Please introduce yourself.',hint:'자기소개 — 이름, 경험, 강점을 30~60초로 말하세요.'},
+  {num:'Question 2',q:'Why do you want to be a cabin crew member?',hint:'지원동기 — 여행이 아닌, 본인의 자질이 승무원과 어떻게 부합하는지 강조하세요.'},
+  {num:'Question 3',q:randRP,hint:'롤플레이 — 사과 → 해결책 → 대안(장점 설명) → Service Recovery 순서로 답변하세요.'}
+];
+
+var container=document.getElementById('questions');
+QUESTIONS.forEach(function(item,i){
+  var div=document.createElement('div');
+  div.className='q-card';
+  div.innerHTML=
+    '<div class="q-num">'+item.num+'</div>'+
+    '<div class="q-text">'+item.q+'</div>'+
+    '<div class="q-hint">'+item.hint+'</div>'+
+    '<div class="cam-box"><video id="vid-'+i+'" autoplay muted playsinline></video><div class="cam-placeholder" id="ph-'+i+'">카메라를 시작하세요</div><div class="rec-badge" id="rec-'+i+'"><div class="rec-dot"></div>REC</div></div>'+
+    '<div class="btn-row">'+
+      '<button class="btn btn-navy" id="start-'+i+'" onclick="startRec('+i+')">카메라 시작 & 녹음</button>'+
+      '<button class="btn btn-navy" id="stop-'+i+'" style="display:none" onclick="stopRec('+i+')">녹음 중지</button>'+
+    '</div>'+
+    '<div class="transcript" id="tr-'+i+'"></div>'+
+    '<div class="btn-row">'+
+      '<button class="btn btn-gold" id="fb-'+i+'" disabled onclick="showScore('+i+')">피드백 보기</button>'+
+    '</div>'+
+    '<div class="score-card" id="sc-'+i+'">'+
+      '<div class="score-title">Video Interview Score</div>'+
+      '<div class="score-grid">'+
+        '<div class="score-item"><div class="label">첫인상 / Image</div><div class="value">--<span>/100</span></div></div>'+
+        '<div class="score-item"><div class="label">미소 / Smile</div><div class="value">--<span>/100</span></div></div>'+
+        '<div class="score-item"><div class="label">목소리 톤 / Tone</div><div class="value">--<span>/100</span></div></div>'+
+        '<div class="score-item"><div class="label">답변 내용 / Content</div><div class="value">--<span>/100</span></div></div>'+
+      '</div>'+
+      '<div class="score-msg"></div>'+
+    '</div>';
+  container.appendChild(div);
+});
+
+// Camera + Speech Recognition
+var streams=[];var recs=[];
+function startRec(i){
+  var vid=document.getElementById('vid-'+i);
+  var ph=document.getElementById('ph-'+i);
+  var badge=document.getElementById('rec-'+i);
+  var startBtn=document.getElementById('start-'+i);
+  var stopBtn=document.getElementById('stop-'+i);
+  var tr=document.getElementById('tr-'+i);
+
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true}).then(function(stream){
+    streams[i]=stream;
+    vid.srcObject=stream;
+    ph.style.display='none';
+    badge.style.display='flex';
+    startBtn.style.display='none';
+    stopBtn.style.display='inline-flex';
+    tr.textContent='';
+
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(SR){
+      var rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;
+      recs[i]=rec;
+      var finalText='';
+      rec.onresult=function(ev){
+        var interim='';finalText='';
+        for(var r=0;r<ev.results.length;r++){
+          if(ev.results[r].isFinal)finalText+=ev.results[r][0].transcript+' ';
+          else interim+=ev.results[r][0].transcript;
+        }
+        tr.textContent=finalText+interim;
+      };
+      rec.onend=function(){
+        if(finalText.trim())tr.textContent=finalText.trim();
+      };
+      rec.start();
+    }
+  }).catch(function(){
+    ph.textContent='카메라 권한이 필요합니다.';
+  });
+}
+
+function stopRec(i){
+  var badge=document.getElementById('rec-'+i);
+  var startBtn=document.getElementById('start-'+i);
+  var stopBtn=document.getElementById('stop-'+i);
+  var fbBtn=document.getElementById('fb-'+i);
+  badge.style.display='none';
+  stopBtn.style.display='none';
+  startBtn.textContent='다시 녹음';startBtn.style.display='inline-flex';
+  if(recs[i])try{recs[i].stop();}catch(e){}
+  if(streams[i])streams[i].getTracks().forEach(function(t){t.stop();});
+  var tr=document.getElementById('tr-'+i);
+  if(tr.textContent.trim())fbBtn.disabled=false;
+}
+
+function showScore(i){
+  var tr=document.getElementById('tr-'+i).textContent.trim();
+  if(!tr)return;
+  var sc=document.getElementById('sc-'+i);
+  // Dummy scores — 추후 AI 엔진 학습 후 교체
+  var scores=[
+    Math.floor(Math.random()*20)+65,
+    Math.floor(Math.random()*20)+60,
+    Math.floor(Math.random()*20)+55,
+    Math.floor(Math.random()*25)+50
+  ];
+  var vals=sc.querySelectorAll('.score-item .value');
+  vals[0].innerHTML=scores[0]+'<span>/100</span>';
+  vals[1].innerHTML=scores[1]+'<span>/100</span>';
+  vals[2].innerHTML=scores[2]+'<span>/100</span>';
+  vals[3].innerHTML=scores[3]+'<span>/100</span>';
+  var avg=Math.round((scores[0]+scores[1]+scores[2]+scores[3])/4);
+  sc.querySelector('.score-msg').innerHTML=
+    '종합 점수: <b>'+avg+'/100</b><br><br>'+
+    '현재는 더미 점수입니다. AI 엔진 학습 완료 후 영상 분석 + 음성 톤 + 표정 분석 기반의 정교한 피드백으로 업데이트됩니다.<br><br>'+
+    '<b>핵심 체크포인트:</b><br>'+
+    '· 미소가 자연스럽게 유지되었나요?<br>'+
+    '· 목소리가 밝고 따뜻했나요?<br>'+
+    '· 카메라를 보며 자신감 있게 말했나요?<br>'+
+    '· 지원동기에서 "여행" 대신 "자질과 부합"을 강조했나요?';
+  sc.classList.add('visible');
+}
+</script>
+</body>
+</html>

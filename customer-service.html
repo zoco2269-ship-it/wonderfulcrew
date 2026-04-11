@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>고객 응대 스킬 WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:28px;align-items:center;}.nav-links a{font-size:0.82rem;color:var(--text-mid);}.nav-links a:hover{color:var(--gold);}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
+.nav-dropdown{position:relative;}.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid var(--gold-pale);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:200px;z-index:1001;}.nav-dropdown:hover .nav-dropdown-menu{display:block;}.nav-dropdown-menu a{display:block;padding:10px 20px;font-size:0.82rem;white-space:nowrap;}.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:var(--gold);}
+.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:600px;margin:0 auto;line-height:1.8;}
+.tab-bar{max-width:1000px;margin:0 auto;padding:40px 5% 0;display:flex;gap:0;}.tab-btn{flex:1;padding:14px 0;text-align:center;font-family:'DM Serif Display',serif;font-size:0.95rem;color:var(--text-muted);background:#fff;border:1px solid var(--gold-pale);cursor:pointer;transition:all 0.2s;}.tab-btn:first-child{border-radius:8px 0 0 0;}.tab-btn:last-child{border-radius:0 8px 0 0;}.tab-btn.active{background:var(--navy);color:var(--gold-light);border-color:var(--navy);}
+.tab-content{display:none;}.tab-content.active{display:block;}
+section{padding:50px 5% 80px;}.wrap{max-width:1000px;margin:0 auto;}
+.sec-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:10px;}.sec-title em{font-style:normal;color:var(--gold);}
+.gold-line{width:36px;height:1.5px;background:var(--gold);margin:16px 0 32px;}
+.preview{font-size:0.9rem;color:var(--text-mid);line-height:1.8;margin-bottom:24px;padding:18px;background:#fff;border-left:4px solid var(--gold);}
+.skill-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.skill-card{background:#fff;border:1px solid var(--gold-pale);padding:24px 20px;text-align:center;transition:transform 0.2s;}.skill-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(201,168,76,0.1);}
+.skill-letter{font-family:'DM Serif Display',serif;font-size:2.4rem;color:var(--gold);line-height:1;margin-bottom:4px;}
+.skill-name{font-family:'DM Serif Display',serif;font-size:0.95rem;color:var(--navy);margin-bottom:10px;}
+.skill-desc{font-family:'Noto Sans KR',sans-serif;font-size:0.82rem;color:var(--text-mid);line-height:1.7;}
+.tip-gold{background:var(--gold-pale);border-left:4px solid var(--gold);padding:18px 22px;font-size:0.86rem;color:var(--text-mid);line-height:1.75;margin-top:24px;}.tip-gold b{color:var(--navy);}
+.lock-overlay{position:relative;}.lock-content{filter:blur(4px);pointer-events:none;}.lock-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:14px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;z-index:10;box-shadow:0 4px 16px rgba(201,168,76,0.3);}
+.placeholder{text-align:center;padding:60px 20px;color:var(--text-muted);font-size:0.9rem;background:#fff;border:1px solid var(--gold-pale);}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.skill-grid{grid-template-columns:1fr 1fr;}}.
+@media(max-width:600px){.skill-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a><div class="nav-links"><a href="index.html#about">소개</a><div class="nav-dropdown"><a href="index.html#expertise">준비 과정</a><div class="nav-dropdown-menu"><a href="leveltest.html">항공사 승무원</a><a href="walking-analysis.html">워킹 & 자세 분석</a><a href="coach-feedback.html">1:1 코치 피드백</a><a href="ai-coach.html">AI 코치</a><a href="hotel.html">호텔 · 럭셔리</a><a href="cruise.html">크루즈</a></div></div><div class="nav-dropdown"><a href="index.html#resources">학습 자료</a><div class="nav-dropdown-menu"><a href="interview-guide.html">면접 완벽 가이드</a><a href="english-interview.html">한국어 & 영어 면접</a><a href="grooming-guide.html">이미지 메이킹 & 그루밍</a><a href="resume-guide.html">자기소개서 & CV</a><a href="customer-service.html">고객 응대 스킬</a></div></div><a href="daily-english.html">영어쉐도잉</a><a href="jobs.html">채용정보</a><a href="community.html">커뮤니티</a><a href="token-rewards.html">토큰받기</a></div><div style="display:flex;align-items:center;gap:12px;"><a href="leveltest.html" class="nav-cta">면접 연습 시작</a><a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;text-decoration:none;">로그인</a></div></nav>
+
+<div class="hero">
+  <div class="label">Customer Service Skills</div>
+  <h1>고객 응대 <em>스킬</em></h1>
+  <p>실제 기내에서 쓰이는 검증된 고객 응대 기술. 면접에서도, 입사 후에도 평생 써먹는 스킬입니다.</p>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('leap')">LEAP 스킬</button>
+  <button class="tab-btn" onclick="showTab('4ds')">4Ds</button>
+  <button class="tab-btn" onclick="showTab('regular')">단골 손님</button>
+  <button class="tab-btn" onclick="showTab('vip')">VIP 응대</button>
+</div>
+
+<section><div class="wrap">
+
+<!-- LEAP -->
+<div class="tab-content active" id="tab-leap">
+  <h2 class="sec-title">화가 난 고객 응대 4단계 <em>LEAP</em></h2>
+  <div class="gold-line"></div>
+  <div class="preview">고객이 화났을 때 절대 당황하지 마세요. LEAP 4단계만 알면 어떤 컴플레인도 해결할 수 있습니다.</div>
+  <div id="leap-locked" class="lock-overlay">
+    <button class="lock-btn" onclick="unlock('leap')">토큰 2개로 전체 보기</button>
+    <div class="lock-content">
+      <div class="skill-grid">
+        <div class="skill-card"><div class="skill-letter">L</div><div class="skill-name">Listen</div><div class="skill-desc">경청. 절대 말을 끊지 마세요. 고객이 하는 말을 끝까지 경청할 것. 인터럽트 금지.</div></div>
+        <div class="skill-card"><div class="skill-letter">E</div><div class="skill-name">Empathise</div><div class="skill-desc">공감. 고객에게 공감 표현하기. 끄덕이기, 추임새 넣기. "아, 정말 속상하셨겠어요." "정말 불쾌하셨겠어요." "충분히 이해됩니다."</div></div>
+        <div class="skill-card"><div class="skill-letter">A</div><div class="skill-name">Ask Open Questions</div><div class="skill-desc">열린 질문. 관련된 질문을 더 하기. 고객의 불만을 더 깊이 알아낼 수 있음. 이전에 안 좋은 서비스 기억이 있을 수도 있으니 충분히 들을 것.</div></div>
+        <div class="skill-card"><div class="skill-letter">P</div><div class="skill-name">Paraphrase</div><div class="skill-desc">패러프레이즈. 고객의 말을 내 언어로 다시 반복하기. '처음부터 끝까지 다 듣고 있다'는 걸 보여주는 행동.</div></div>
+      </div>
+    </div>
+  </div>
+  <div id="leap-unlocked" style="display:none;">
+    <div class="skill-grid">
+      <div class="skill-card"><div class="skill-letter">L</div><div class="skill-name">Listen</div><div class="skill-desc">경청. 절대 말을 끊지 마세요. 고객이 하는 말을 끝까지 경청할 것. 인터럽트 금지.</div></div>
+      <div class="skill-card"><div class="skill-letter">E</div><div class="skill-name">Empathise</div><div class="skill-desc">공감. 고객에게 공감 표현하기. 끄덕이기, 추임새 넣기. "아, 정말 속상하셨겠어요." "정말 불쾌하셨겠어요." "충분히 이해됩니다."</div></div>
+      <div class="skill-card"><div class="skill-letter">A</div><div class="skill-name">Ask Open Questions</div><div class="skill-desc">열린 질문. 관련된 질문을 더 하기. 고객의 불만을 더 깊이 알아낼 수 있음. 이전에 안 좋은 서비스 기억이 있을 수도 있으니 충분히 들을 것.</div></div>
+      <div class="skill-card"><div class="skill-letter">P</div><div class="skill-name">Paraphrase</div><div class="skill-desc">패러프레이즈. 고객의 말을 내 언어로 다시 반복하기. '처음부터 끝까지 다 듣고 있다'는 걸 보여주는 행동.</div></div>
+    </div>
+    <div class="tip-gold"><b>TIP:</b> LEAP는 단순한 스킬이 아닙니다. 고객이 진정으로 원하는 것은 해결책보다 '내 말을 들어주는 사람'입니다. LEAP를 몸에 익히면 면접 롤플레이에서도, 실제 기내에서도 빛을 발합니다.</div>
+  </div>
+</div>
+
+<!-- 4Ds -->
+<div class="tab-content" id="tab-4ds">
+  <h2 class="sec-title">술 취한 승객 응대 4단계 <em>4Ds</em></h2>
+  <div class="gold-line"></div>
+  <div class="preview">기내에서 음주 승객 응대는 안전과 직결됩니다. 4Ds를 알면 당황하지 않고 전문적으로 대처할 수 있습니다.</div>
+  <div id="4ds-locked" class="lock-overlay">
+    <button class="lock-btn" onclick="unlock('4ds')">토큰 2개로 전체 보기</button>
+    <div class="lock-content">
+      <div class="skill-grid">
+        <div class="skill-card"><div class="skill-letter">D</div><div class="skill-name">Delay</div><div class="skill-desc">지연. 최대한 천천히 서비스하기. 서두르지 말고 시간을 끌 것.</div></div>
+        <div class="skill-card"><div class="skill-letter">D</div><div class="skill-name">Dilute</div><div class="skill-desc">묽게. 알코올을 묽게 만들기. 물을 타거나, 얼음을 많이 넣거나, 컵 립에만 알코올을 묻히기.</div></div>
+        <div class="skill-card"><div class="skill-letter">D</div><div class="skill-name">Distract</div><div class="skill-desc">관심 돌리기. 다른 관심사로 돌리기. 말을 걸거나 다른 음식/음료 제안하기.</div></div>
+        <div class="skill-card"><div class="skill-letter">D</div><div class="skill-name">Deny</div><div class="skill-desc">거절. 시니어 크루만 할 수 있음. 아무나 하면 안 됨. 반드시 시니어의 판단 하에 진행.</div></div>
+      </div>
+    </div>
+  </div>
+  <div id="4ds-unlocked" style="display:none;">
+    <div class="skill-grid">
+      <div class="skill-card"><div class="skill-letter">D</div><div class="skill-name">Delay</div><div class="skill-desc">지연. 최대한 천천히 서비스하기. 서두르지 말고 시간을 끌 것.</div></div>
+      <div class="skill-card"><div class="skill-letter">D</div><div class="skill-name">Dilute</div><div class="skill-desc">묽게. 알코올을 묽게 만들기. 물을 타거나, 얼음을 많이 넣거나, 컵 립에만 알코올을 묻히기.</div></div>
+      <div class="skill-card"><div class="skill-letter">D</div><div class="skill-name">Distract</div><div class="skill-desc">관심 돌리기. 다른 관심사로 돌리기. 말을 걸거나 다른 음식/음료 제안하기.</div></div>
+      <div class="skill-card"><div class="skill-letter">D</div><div class="skill-name">Deny</div><div class="skill-desc">거절. 시니어 크루만 할 수 있음. 아무나 하면 안 됨. 반드시 시니어의 판단 하에 진행.</div></div>
+    </div>
+    <div class="tip-gold"><b>TIP:</b> 4Ds는 순서대로 진행합니다. Deny는 반드시 시니어 크루가 판단해야 합니다. 면접에서 이 스킬을 언급하면 실무 이해도가 높다는 인상을 줄 수 있습니다.</div>
+  </div>
+</div>
+
+<!-- 단골 손님 -->
+<div class="tab-content" id="tab-regular">
+  <h2 class="sec-title">단골 손님 <em>만드는 법</em></h2>
+  <div class="gold-line"></div>
+  <div class="placeholder">콘텐츠 준비 중입니다. 곧 업데이트됩니다.<br><br><button class="lock-btn" style="position:static;transform:none;" onclick="alert('토큰 차감 비활성화 (테스트 기간)')">토큰 2개로 전체 보기</button></div>
+</div>
+
+<!-- VIP 응대 -->
+<div class="tab-content" id="tab-vip">
+  <h2 class="sec-title">VIP 응대 <em>스킬</em></h2>
+  <div class="gold-line"></div>
+  <div class="placeholder">콘텐츠 준비 중입니다. 곧 업데이트됩니다.<br><br><button class="lock-btn" style="position:static;transform:none;" onclick="alert('토큰 차감 비활성화 (테스트 기간)')">토큰 2개로 전체 보기</button></div>
+</div>
+
+</div></section>
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+<script>
+function showTab(t){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
+  document.getElementById('tab-'+t).classList.add('active');
+  event.target.classList.add('active');
+}
+function unlock(section){
+  // 테스트 기간: 토큰 차감 비활성화
+  document.getElementById(section+'-locked').style.display='none';
+  document.getElementById(section+'-unlocked').style.display='block';
+}
+</script>
+</body>
+</html>

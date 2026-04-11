@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WonderfulCrew — AI 면접 시뮬레이션</title>
+<title>WonderfulCrew   AI 면접 시뮬레이션</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -476,14 +476,14 @@ nav{
 var URL_PARAMS=new URLSearchParams(location.search);
 var PAGE_MODE=URL_PARAMS.get('mode')||'roleplay';
 var MODE_CONFIG={
-  'video':       {titleKo:'비디오 면접',   eyebrow:'Step 1 — Video Interview',   hasCamera:true},
-  'presentation':{titleKo:'1차 발표',      eyebrow:'Step 2 — 1st Presentation',  hasCamera:true},
-  'discussion2': {titleKo:'2차 디스커션',  eyebrow:'Step 3 — 2nd Discussion',    hasCamera:false},
-  'roleplay':    {titleKo:'롤플레이 면접', eyebrow:'Step 4 — Roleplay Interview', hasCamera:false},
-  'final':       {titleKo:'파이널 인터뷰', eyebrow:'Step 5 — Final Interview',    hasCamera:false}
+  'video':       {titleKo:'비디오 면접',   eyebrow:'Step 1   Video Interview',   hasCamera:true},
+  'presentation':{titleKo:'1차 발표',      eyebrow:'Step 2   1st Presentation',  hasCamera:true},
+  'discussion2': {titleKo:'2차 디스커션',  eyebrow:'Step 3   2nd Discussion',    hasCamera:false},
+  'roleplay':    {titleKo:'롤플레이 면접', eyebrow:'Step 4   Roleplay Interview', hasCamera:false},
+  'final':       {titleKo:'파이널 인터뷰', eyebrow:'Step 5   Final Interview',    hasCamera:false}
 };
 var MCONF=MODE_CONFIG[PAGE_MODE]||MODE_CONFIG['roleplay'];
-document.title='WonderfulCrew — '+MCONF.titleKo;
+document.title='WonderfulCrew   '+MCONF.titleKo;
 var AIRLINE='';try{AIRLINE=localStorage.getItem('wc_airline')||'';}catch(e){}
 var IS_EMIRATES=(AIRLINE==='emirates');
 var U_RP={};
@@ -580,7 +580,7 @@ var STAGE_QUESTIONS={
       {label:'Celebrity',q:'If you could sit next to any celebrity on a flight, who would it be and why?',hint:'Be natural and witty (30 sec)'}
     ],
     discussion2:[
-      {label:'Overbooking',q:'You work at a car rental. System error — only 2 of 8 customers can get a car. How do you handle this?',hint:'Priority criteria + empathy + solution (60 sec)'},
+      {label:'Overbooking',q:'You work at a car rental. System error   only 2 of 8 customers can get a car. How do you handle this?',hint:'Priority criteria + empathy + solution (60 sec)'},
       {label:'Complaint',q:'A passenger has been repeatedly complaining throughout the flight. How do you respond?',hint:'Empathy → Listen → Resolve → Close (40 sec)'},
       {label:'Teamwork',q:'Tell me about a time you had a disagreement with a colleague. How did you resolve it?',hint:'STAR structure with specific example (40 sec)'}
     ],
@@ -619,7 +619,7 @@ var CONFIGS={
 When the applicant answers, you:
 1) Give brief, warm, constructive feedback (1-2 sentences)
 2) Naturally transition to the next interview question
-Keep responses concise and practical. Coaching tone — like a senior colleague.
+Keep responses concise and practical. Coaching tone   like a senior colleague.
 Respond in English.`
   }
 };
@@ -898,7 +898,7 @@ function renderResult(r){
 }
 </script>
 
-<!-- ─── 음성 대화 개선 (TTS + W 아바타) — 비파괴 추가 ─── -->
+<!-- ─── 음성 대화 개선 (TTS + W 아바타)   비파괴 추가 ─── -->
 <style>
 #cam-placeholder.wc-w-mode .cam-placeholder-icon{display:none;}
 #cam-placeholder.wc-w-mode .wc-w-avatar{

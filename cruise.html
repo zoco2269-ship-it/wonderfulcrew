@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>크루즈 면접 — WonderfulCrew</title>
+<title>크루즈 면접   WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
@@ -56,7 +56,7 @@ LINES.forEach(function(h){
     pa.innerHTML='<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;">'+h.en+' 면접 프로세스</h2><p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:24px;">서류/CV 제출 → 에이전시 면접 → 본사 면접 → 서류 준비 → 안전교육 → 승선</p>';
     STEPS.forEach(function(s){
       var c=document.createElement('div');c.className='card';
-      c.innerHTML='<h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul><button class="step-btn" onclick="alert(\'더미 점수 — AI 연동 후 활성화\')">시작하기</button>';
+      c.innerHTML='<h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul><button class="step-btn" onclick="alert(\'더미 점수   AI 연동 후 활성화\')">시작하기</button>';
       pa.appendChild(c);
     });
   };

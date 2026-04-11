@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 코치 — WonderfulCrew</title>
+<title>AI 코치   WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
@@ -87,7 +87,7 @@ async function getAIFeedback(){
     var stage=document.getElementById('ai-stage').value;
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-sonnet-4-20250514',max_tokens:1000,
-      system:'You are WonderfulCrew AI coach with 20 years of Emirates First Class cabin crew coaching experience. Give feedback in Korean, plain text only (no **, no markdown, no asterisks). Structure:\n\n1) 잘한 점 — 구체적으로 어떤 내용/표현이 좋았는지 (2~3줄)\n2) 개선할 점 — 내용의 깊이, 구성, 서비스 마인드 관점에서 (2~3줄)\n3) 서비스 마인드 평가 — WonderfulCrew 6가지 철학 기준 (유니폼의 본질, 일관된 신뢰, 원팀, 공감과 시각, 컴플레인은 선물, 면접관이 보는 것) 중 어떤 점이 잘 드러났고 어떤 점이 보완되어야 하는지 (2~3줄)\n4) 모범 답변 예시 — spoken English로 5~6문장. 따뜻하고 자연스러운 승무원 톤. 이어서 한국어 번역\n\nBe warm, professional, and specific. Not generic praise.',
+      system:'You are WonderfulCrew AI coach with 20 years of Emirates First Class cabin crew coaching experience. Give feedback in Korean, plain text only (no **, no markdown, no asterisks). Structure:\n\n1) 잘한 점   구체적으로 어떤 내용/표현이 좋았는지 (2~3줄)\n2) 개선할 점   내용의 깊이, 구성, 서비스 마인드 관점에서 (2~3줄)\n3) 서비스 마인드 평가   WonderfulCrew 6가지 철학 기준 (유니폼의 본질, 일관된 신뢰, 원팀, 공감과 시각, 컴플레인은 선물, 면접관이 보는 것) 중 어떤 점이 잘 드러났고 어떤 점이 보완되어야 하는지 (2~3줄)\n4) 모범 답변 예시   spoken English로 5~6문장. 따뜻하고 자연스러운 승무원 톤. 이어서 한국어 번역\n\nBe warm, professional, and specific. Not generic praise.',
       messages:[{role:'user',content:'항공사: '+airline+'\n면접 단계: '+stage+'\n\n질문: '+q+'\n\n학생 답변:\n'+a}]
     })});
     var data=await res.json();

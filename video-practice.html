@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>비디오 면접 연습 — WonderfulCrew</title>
+<title>비디오 면접 연습   WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
@@ -130,9 +130,9 @@ var ROLEPLAY_QS=[
 var randRP=ROLEPLAY_QS[Math.floor(Math.random()*ROLEPLAY_QS.length)];
 
 var QUESTIONS=[
-  {num:'Question 1',q:'Please introduce yourself.',hint:'자기소개 — 이름, 경험, 강점을 30~60초로 말하세요.'},
-  {num:'Question 2',q:'Why do you want to be a cabin crew member?',hint:'지원동기 — 여행이 아닌, 본인의 자질이 승무원과 어떻게 부합하는지 강조하세요.'},
-  {num:'Question 3',q:randRP,hint:'롤플레이 — 사과 → 해결책 → 대안(장점 설명) → Service Recovery 순서로 답변하세요.'}
+  {num:'Question 1',q:'Please introduce yourself.',hint:'자기소개   이름, 경험, 강점을 30~60초로 말하세요.'},
+  {num:'Question 2',q:'Why do you want to be a cabin crew member?',hint:'지원동기   여행이 아닌, 본인의 자질이 승무원과 어떻게 부합하는지 강조하세요.'},
+  {num:'Question 3',q:randRP,hint:'롤플레이   사과 → 해결책 → 대안(장점 설명) → Service Recovery 순서로 답변하세요.'}
 ];
 
 var container=document.getElementById('questions');
@@ -246,7 +246,7 @@ function showScore(i){
   var tr=document.getElementById('tr-'+i).textContent.trim();
   if(!tr)return;
   var sc=document.getElementById('sc-'+i);
-  // Dummy scores — 추후 AI 엔진 학습 후 교체
+  // Dummy scores   추후 AI 엔진 학습 후 교체
   var scores=[
     Math.floor(Math.random()*20)+65,
     Math.floor(Math.random()*20)+60,

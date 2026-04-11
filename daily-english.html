@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>매일 영어 — WonderfulCrew</title>
+<title>매일 영어   WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
@@ -193,7 +193,7 @@ function loadTokens(){
 }
 function saveTokens(t){localStorage.setItem('wc_eng_tokens',JSON.stringify(t));}
 function useToken(){
-  // 테스트 모드 — 토큰 체크 비활성화 (모든 기능 활성화)
+  // 테스트 모드   토큰 체크 비활성화 (모든 기능 활성화)
   return true;
   /*
   var t=loadTokens();
@@ -306,7 +306,7 @@ function buildCards(questions,startIdx){
     };
     recognition.onerror=function(e){
       recBtn.dataset.state='idle';recBtn.classList.remove('recording');recBtn.textContent='다시 녹음';
-      if(e.error!=='aborted')transcript.textContent='인식 실패 — 다시 시도해 주세요.';
+      if(e.error!=='aborted')transcript.textContent='인식 실패   다시 시도해 주세요.';
     };
     recognition.start();
   });
@@ -325,8 +325,8 @@ function buildCards(questions,startIdx){
     try{
       var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
         model:'claude-sonnet-4-20250514',max_tokens:900,
-        system:'You are an English interview coach for cabin crew candidates. The input is speech-to-text. Respond in plain text only (no markdown, no **, no asterisks). Use this exact format:\n\n[피드백]\n1) 잘한 점 — 구체적으로 어떤 내용/표현이 좋았는지\n2) 개선할 점 — 내용 깊이/구성만. 대소문자, 구두점, 띄어쓰기는 음성인식 특성이므로 절대 지적하지 마세요\n3) 표현 교정 — 확실히 틀린 문법만. 대소문자/구두점 무시\n4) 말하기 톤 조언 — 승무원 면접에 맞는 따뜻하고 친절한 인토네이션 팁. 예: 문장 끝을 살짝 올려서 부드럽게, 핵심 단어에 강세를 주세요, 미소 띤 목소리로 등 구체적으로\n\n[모범답변]\nNatural spoken English in a warm, friendly cabin crew tone. 3-4 SHORT simple sentences (20-30 sec). Easy vocabulary. The answer should sound kind, approachable, and professional — like a real cabin crew member speaking to a passenger. Then one blank line and brief Korean translation.\n\nKeep feedback under 350 Korean characters. Keep model answer under 100 English words.',
-        messages:[{role:'user',content:'Interview question: "'+q+'"\n\nCandidate spoken answer (speech-to-text — ignore capitalization/punctuation):\n'+ans}]
+        system:'You are an English interview coach for cabin crew candidates. The input is speech-to-text. Respond in plain text only (no markdown, no **, no asterisks). Use this exact format:\n\n[피드백]\n1) 잘한 점   구체적으로 어떤 내용/표현이 좋았는지\n2) 개선할 점   내용 깊이/구성만. 대소문자, 구두점, 띄어쓰기는 음성인식 특성이므로 절대 지적하지 마세요\n3) 표현 교정   확실히 틀린 문법만. 대소문자/구두점 무시\n4) 말하기 톤 조언   승무원 면접에 맞는 따뜻하고 친절한 인토네이션 팁. 예: 문장 끝을 살짝 올려서 부드럽게, 핵심 단어에 강세를 주세요, 미소 띤 목소리로 등 구체적으로\n\n[모범답변]\nNatural spoken English in a warm, friendly cabin crew tone. 3-4 SHORT simple sentences (20-30 sec). Easy vocabulary. The answer should sound kind, approachable, and professional   like a real cabin crew member speaking to a passenger. Then one blank line and brief Korean translation.\n\nKeep feedback under 350 Korean characters. Keep model answer under 100 English words.',
+        messages:[{role:'user',content:'Interview question: "'+q+'"\n\nCandidate spoken answer (speech-to-text   ignore capitalization/punctuation):\n'+ans}]
       })});
       var data=await res.json();
       var raw=(data&&data.content&&data.content[0]&&data.content[0].text)||data.text||JSON.stringify(data);
@@ -351,7 +351,7 @@ function buildCards(questions,startIdx){
     submitBtn.disabled=false;submitBtn.textContent='답변 제출';
   });
 
-  // ④ 모범 답변 보기 (캐시에서 표시 — 추가 API 호출 없음)
+  // ④ 모범 답변 보기 (캐시에서 표시   추가 API 호출 없음)
   showSampleBtn.addEventListener('click',function(){
     if(!cachedSampleHtml){return;}
     sampleArea.style.display='block';

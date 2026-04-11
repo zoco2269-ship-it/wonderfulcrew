@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WonderfulCrew — 레벨 테스트</title>
+<title>WonderfulCrew   레벨 테스트</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--cream-dark:#F0EAD8;--navy:#1A2340;--navy-light:#2A3455;--text-dark:#1A1A1A;--text-mid:#3A3430;--text-muted:#5A5048;}
@@ -133,6 +133,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 </nav>
 <div id="app">
 
+<!-- 레벨테스트 이미 완료 시 결과로 이동 -->
+<script>
+(function(){
+  var done=localStorage.getItem('wc_level_result');
+  if(done){
+    var go=confirm('이미 레벨테스트를 완료하셨습니다.\n결과를 다시 보시겠어요?\n\n취소를 누르면 항공사 선택 페이지로 이동합니다.');
+    if(!go){location.href='curriculum.html';return;}
+  }
+})();
+</script>
 <!-- STEP 0: 언어 선택 -->
 <div id="screen-lang" class="screen active">
 <div class="wrap">
@@ -166,7 +176,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 <div id="screen-info" class="screen">
 <div class="wrap">
   <div class="prog-steps"><div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div></div>
-  <div class="prog-label">STEP 1 / 3 — 기본 정보</div>
+  <div class="prog-label">STEP 1 / 3   기본 정보</div>
   <h1 class="step-title">먼저 <em>나에 대해</em><br>알려주세요</h1>
   <p class="step-sub">맞춤형 레벨 평가와 항공사 추천을 위해<br>간단한 정보를 입력해주세요.</p>
   <div class="gold-bar"></div>
@@ -176,7 +186,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   <div class="field" style="margin-top:24px;">
     <label class="field-label">승무원 교육 경험 <em>*</em></label>
     <div class="radio-group">
-      <label class="radio-opt"><input type="radio" name="edu" value="없음"><span class="radio-text">없음 — 처음 준비해요</span></label>
+      <label class="radio-opt"><input type="radio" name="edu" value="없음"><span class="radio-text">없음   처음 준비해요</span></label>
       <label class="radio-opt"><input type="radio" name="edu" value="독학"><span class="radio-text">독학으로 준비 중이에요</span></label>
       <label class="radio-opt"><input type="radio" name="edu" value="학원"><span class="radio-text">학원 수강 경험 있어요</span></label>
       <label class="radio-opt"><input type="radio" name="edu" value="코칭"><span class="radio-text">1:1 코칭 받은 적 있어요</span></label>
@@ -194,9 +204,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   <div class="field" style="margin-top:20px;">
     <label class="field-label">영어 수준 <em>*</em></label>
     <div class="radio-group">
-      <label class="radio-opt"><input type="radio" name="eng" value="기초"><span class="radio-text">기초 — 간단한 인사 정도예요</span></label>
-      <label class="radio-opt"><input type="radio" name="eng" value="일상회화"><span class="radio-text">일상회화 — 불편하지 않게 대화해요</span></label>
-      <label class="radio-opt"><input type="radio" name="eng" value="비즈니스"><span class="radio-text">비즈니스 — 면접도 자신 있어요</span></label>
+      <label class="radio-opt"><input type="radio" name="eng" value="기초"><span class="radio-text">기초   간단한 인사 정도예요</span></label>
+      <label class="radio-opt"><input type="radio" name="eng" value="일상회화"><span class="radio-text">일상회화   불편하지 않게 대화해요</span></label>
+      <label class="radio-opt"><input type="radio" name="eng" value="비즈니스"><span class="radio-text">비즈니스   면접도 자신 있어요</span></label>
       <label class="radio-opt"><input type="radio" name="eng" value="원어민급"><span class="radio-text">원어민급</span></label>
     </div>
   </div>
@@ -208,7 +218,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 <div id="screen-camera" class="screen">
 <div class="wrap">
   <div class="prog-steps"><div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div></div>
-  <div class="prog-label">STEP 2 / 3 — 영상 면접 테스트</div>
+  <div class="prog-label">STEP 2 / 3   영상 면접 테스트</div>
   <h2 class="step-title">카메라 앞에서<br><em>자기소개</em>를 해주세요</h2>
   <p class="step-sub" id="camera-sub">잠시 후 질문이 표시됩니다.</p>
   <div class="gold-bar"></div>
@@ -246,7 +256,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 <div id="screen-result" class="screen">
 <div class="wrap">
   <div class="prog-steps"><div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div></div>
-  <div class="prog-label">STEP 3 / 3 — 결과 & 추천</div>
+  <div class="prog-label">STEP 3 / 3   결과 & 추천</div>
   <div class="step-eyebrow">Result</div>
   <h2 class="step-title"><em id="r-name">지원자</em>님의<br>레벨 분석 결과예요</h2>
   <div class="gold-bar"></div>
@@ -295,7 +305,7 @@ var QUESTIONS={
     sub:'한국어 자기소개 → 영어 답변 순서로 말해주세요.<br>각 60초 이내, AI가 이미지·발화 톤·전달력을 함께 분석합니다.',
     boxes:[
       {badge:'🇰🇷 한국어 질문','ey':'QUESTION 1','q':'자기소개를 해주세요. 승무원이 되고 싶은 이유를 포함해서 말씀해 주세요.','hint':'💡 이름 → 지원 동기 → 나의 강점 순서로 말해보세요 (30~60초)','en':false},
-      {badge:'🇺🇸 English Question','ey':'QUESTION 2','q':'Why do you want to be a cabin crew member? What makes you the right person for this role?','hint':'💡 Answer in English — Name → Motivation → Your Strength (30~60 sec)','en':true}
+      {badge:'🇺🇸 English Question','ey':'QUESTION 2','q':'Why do you want to be a cabin crew member? What makes you the right person for this role?','hint':'💡 Answer in English   Name → Motivation → Your Strength (30~60 sec)','en':true}
     ]
   }
 };

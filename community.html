@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>커뮤니티 — WonderfulCrew</title>
+<title>커뮤니티   WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
@@ -352,7 +352,7 @@ function render(name){
       '<div class="title">'+p.author+'의 면접 후기'+(p.idate?' ('+p.idate+')':'')+'</div>'+
       '<div class="preview">'+p.body.substring(0,150)+(p.body.length>150?'...':'')+'</div>'+
       '<div class="meta">'+p.date+'</div>';
-      d.onclick=function(){alert(p.body+'\n\n— '+p.author);};
+      d.onclick=function(){alert(p.body+'\n\n  '+p.author);};
       list.appendChild(d);
     });
   } else {
@@ -361,7 +361,7 @@ function render(name){
       d.innerHTML='<div class="title">'+p.title+'</div>'+
         '<div class="preview">'+p.body.substring(0,120)+(p.body.length>120?'...':'')+'</div>'+
         '<div class="meta">'+p.author+' · '+p.date+'</div>';
-      d.onclick=function(){alert(p.title+'\n\n'+p.body+'\n\n— '+p.author);};
+      d.onclick=function(){alert(p.title+'\n\n'+p.body+'\n\n  '+p.author);};
       list.appendChild(d);
     });
   }

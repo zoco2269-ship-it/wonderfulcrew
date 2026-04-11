@@ -91,7 +91,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
       <tr><td>14일 연속</td><td class="token">토큰 2개</td></tr>
       <tr><td>30일 연속</td><td class="token">토큰 5개</td></tr>
     </table>
-    <div class="tip"><b>출석 기준:</b> 영어 쉐도잉 3문제 완료 시 자동 출석 인정. 하루라도 빠지면 streak 리셋!</div>
+    <div class="tip"><b>출석 기준:</b> "오늘 출석하기" 버튼을 눌러주세요. 하루라도 빠지면 streak 리셋!</div>
   </div>
 
   <div class="card">
@@ -123,12 +123,12 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <h3>내 초대 링크</h3>
     <div class="invite-link">
       <input type="text" id="invite-url" readonly value="" placeholder="로그인 후 생성됩니다">
-      <button onclick="copyLink()">복사</button>
     </div>
     <div class="share-btns">
       <button class="share-btn kakao" onclick="shareKakao()">카카오톡 공유</button>
       <button class="share-btn copy" onclick="copyLink()">링크 복사</button>
     </div>
+    <div id="toast" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:14px 28px;border-radius:28px;font-size:0.88rem;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.2);"></div>
     <div class="tip" style="margin-top:16px;"><b>카톡 공유 문구:</b><br>"나 원더풀크루로 에미레이트 면접 준비 중인데 진짜 좋아. 좋은 기능 너무 많고 같이 하자! 이 링크로 가입하면 토큰도 2개 무료로 더 줘 ✈️"</div>
   </div>
 </div>
@@ -198,15 +198,24 @@ function checkIn(){
 var uid=Math.random().toString(36).substring(2,8);
 document.getElementById('invite-url').value='https://wonderfulcrew.vercel.app/?ref='+uid;
 
+function showToast(msg){
+  var t=document.getElementById('toast');t.textContent=msg;t.style.display='block';
+  setTimeout(function(){t.style.display='none';},3000);
+}
 function copyLink(){
   var input=document.getElementById('invite-url');
   input.select();document.execCommand('copy');
-  alert('링크가 복사되었습니다!');
+  showToast('링크가 복사되었습니다!');
 }
 function shareKakao(){
   var msg='나 원더풀크루로 에미레이트 면접 준비 중인데 진짜 좋아. 좋은 기능 너무 많고 같이 하자! 이 링크로 가입하면 토큰도 2개 무료로 더 줘 ✈️\n\n'+document.getElementById('invite-url').value;
-  if(navigator.share){navigator.share({title:'WonderfulCrew 초대',text:msg}).catch(function(){});}
-  else{prompt('아래 메시지를 카카오톡에 붙여넣기 하세요:',msg);}
+  // 클립보드에 자동 복사
+  navigator.clipboard.writeText(msg).catch(function(){
+    var ta=document.createElement('textarea');ta.value=msg;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+  });
+  // 카카오톡 열기 시도
+  window.location.href='kakaotalk://msg';
+  showToast('복사됐어요! 카카오톡 열어서 붙여넣기 하세요 ✈️');
 }
 </script>
 </body>

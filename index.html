@@ -582,9 +582,10 @@ footer{
 .dday-badge{display:inline-block;padding:6px 14px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;border-radius:14px;margin-bottom:18px;}
 .cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
 .cal-month{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--navy);}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;font-size:0.78rem;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-size:0.74rem;}
 .cal-dow{text-align:center;padding:8px 0;color:var(--text-muted);font-weight:600;font-size:0.7rem;letter-spacing:0.05em;}
-.cal-day{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:var(--text-dark);border:1px solid transparent;border-radius:4px;cursor:default;}
+.cal-day{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:var(--text-dark);border:1px solid transparent;border-radius:4px;cursor:pointer;transition:background 0.15s;}
+.cal-day:hover:not(.muted){background:rgba(201,168,76,0.1);}
 .cal-day.muted{color:#ccc;}
 .cal-day.today{background:var(--navy);color:#fff;font-weight:600;}
 .cal-day.event::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--gold);}
@@ -664,6 +665,7 @@ footer{
     var el=document.createElement('div');el.className='cal-day';el.textContent=d;
     if(d===today.getDate())el.classList.add('today');
     if(eventDays.indexOf(d)>-1)el.classList.add('event');
+    el.onclick=(function(day){return function(){document.getElementById('my-event-day').value=day;document.getElementById('my-event-text').focus();};})(d);
     grid.appendChild(el);
   }
   var legend=document.getElementById('cal-legend');
@@ -791,7 +793,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <div class="res-header-right">전문가가 직접 작성한 최신 가이드를 확인하세요.</div>
   </div>
   <div class="res-cards">
-    <div class="res-card reveal">
+    <div class="res-card reveal" onclick="location.href='interview-guide.html'" style="cursor:pointer;">
       <div class="res-card-img-wrap">
         <img src="images/img3.jpg" alt="면접 가이드">
         <span class="res-tag">면접 가이드</span>
@@ -805,7 +807,7 @@ document.addEventListener('DOMContentLoaded',function(){
         </div>
       </div>
     </div>
-    <div class="res-card reveal reveal-delay-1">
+    <div class="res-card reveal reveal-delay-1" onclick="location.href='english-interview.html'" style="cursor:pointer;">
       <div class="res-card-img-wrap">
         <img src="images/img4.jpg" alt="영어 면접">
         <span class="res-tag">영어 면접</span>
@@ -819,7 +821,7 @@ document.addEventListener('DOMContentLoaded',function(){
         </div>
       </div>
     </div>
-    <div class="res-card reveal reveal-delay-2">
+    <div class="res-card reveal reveal-delay-2" onclick="location.href='grooming-guide.html'" style="cursor:pointer;">
       <div class="res-card-img-wrap">
         <img src="images/img5.jpg" alt="이미지 메이킹">
         <span class="res-tag">이미지 메이킹</span>
@@ -833,7 +835,7 @@ document.addEventListener('DOMContentLoaded',function(){
         </div>
       </div>
     </div>
-    <div class="res-card reveal reveal-delay-3">
+    <div class="res-card reveal reveal-delay-3" onclick="location.href='resume-guide.html'" style="cursor:pointer;">
       <div class="res-card-img-wrap">
         <img src="images/img6.jpg" alt="증명사진 & 이력서">
         <span class="res-tag">증명사진 & 이력서</span>

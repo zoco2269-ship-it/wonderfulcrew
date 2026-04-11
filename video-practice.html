@@ -138,12 +138,13 @@ QUESTIONS.forEach(function(item,i){
     '<div class="q-hint">'+item.hint+'</div>'+
     '<div class="cam-box"><video id="vid-'+i+'" autoplay muted playsinline></video><div class="cam-placeholder" id="ph-'+i+'">카메라를 시작하세요</div><div class="rec-badge" id="rec-'+i+'"><div class="rec-dot"></div>REC</div></div>'+
     '<div class="btn-row">'+
-      '<button class="btn btn-navy" id="start-'+i+'" onclick="startRec('+i+')">카메라 시작 & 녹음</button>'+
-      '<button class="btn btn-navy" id="stop-'+i+'" style="display:none" onclick="stopRec('+i+')">녹음 중지</button>'+
+      '<button class="btn btn-navy" id="start-'+i+'" onclick="startRec('+i+')">카메라 시작 & 녹화</button>'+
+      '<button class="btn btn-navy" id="stop-'+i+'" style="display:none" onclick="stopRec('+i+')">녹화 중지</button>'+
     '</div>'+
     '<div class="transcript" id="tr-'+i+'"></div>'+
     '<div class="btn-row">'+
       '<button class="btn btn-gold" id="fb-'+i+'" disabled onclick="showScore('+i+')">피드백 보기</button>'+
+      '<button class="btn btn-outline" id="save-'+i+'" style="display:none" onclick="saveVideo('+i+')">녹화 영상 저장</button>'+
     '</div>'+
     '<div class="score-card" id="sc-'+i+'">'+
       '<div class="score-title">Video Interview Score</div>'+
@@ -159,7 +160,7 @@ QUESTIONS.forEach(function(item,i){
 });
 
 // Camera + Speech Recognition
-var streams=[];var recs=[];
+var streams=[];var recs=[];var mediaRecs=[];var videoChunks={};
 function startRec(i){
   var vid=document.getElementById('vid-'+i);
   var ph=document.getElementById('ph-'+i);
@@ -176,6 +177,15 @@ function startRec(i){
     startBtn.style.display='none';
     stopBtn.style.display='inline-flex';
     tr.textContent='';
+
+    // MediaRecorder for video saving
+    try{
+      videoChunks[i]=[];
+      var mr=new MediaRecorder(stream,{mimeType:'video/webm'});
+      mr.ondataavailable=function(e){if(e.data.size>0)videoChunks[i].push(e.data);};
+      mr.start();
+      mediaRecs[i]=mr;
+    }catch(e){}
 
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     if(SR){
@@ -207,13 +217,24 @@ function stopRec(i){
   var fbBtn=document.getElementById('fb-'+i);
   badge.style.display='none';
   stopBtn.style.display='none';
-  startBtn.textContent='다시 녹음';startBtn.style.display='inline-flex';
+  startBtn.textContent='다시 녹화';startBtn.style.display='inline-flex';
   if(recs[i])try{recs[i].stop();}catch(e){}
+  if(mediaRecs[i])try{mediaRecs[i].stop();}catch(e){}
   if(streams[i])streams[i].getTracks().forEach(function(t){t.stop();});
   var tr=document.getElementById('tr-'+i);
-  if(tr.textContent.trim())fbBtn.disabled=false;
+  if(tr.textContent.trim()){fbBtn.disabled=false;}
+  document.getElementById('save-'+i).style.display='inline-flex';
 }
 
+function saveVideo(i){
+  if(!videoChunks[i]||!videoChunks[i].length){alert('저장할 영상이 없어요.');return;}
+  var blob=new Blob(videoChunks[i],{type:'video/webm'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download='wonderfulcrew_video_Q'+(i+1)+'_'+new Date().toISOString().slice(0,10)+'.webm';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 function showScore(i){
   var tr=document.getElementById('tr-'+i).textContent.trim();
   if(!tr)return;

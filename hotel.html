@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>호텔·럭셔리 면접 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:28px;align-items:center;}.nav-links a{font-size:0.82rem;color:var(--text-mid);}.nav-links a:hover{color:var(--gold);}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
+.nav-dropdown{position:relative;}.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid var(--gold-pale);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:200px;z-index:1001;}.nav-dropdown:hover .nav-dropdown-menu{display:block;}.nav-dropdown-menu a{display:block;padding:10px 20px;font-size:0.82rem;white-space:nowrap;}.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:var(--gold);}
+.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:560px;margin:0 auto;line-height:1.8;}
+section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
+.brand-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:36px;}
+.brand-card{background:#fff;border:2px solid var(--gold-pale);padding:20px 16px;text-align:center;cursor:pointer;transition:all 0.2s;}.brand-card:hover,.brand-card.active{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 20px rgba(201,168,76,0.1);}
+.brand-name{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);margin-bottom:2px;}.brand-sub{font-size:0.74rem;color:var(--text-muted);}
+.card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:28px;margin-bottom:20px;}.card h3{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:12px;}.card li{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-bottom:4px;}.card ul{padding-left:18px;margin:8px 0;}.card li strong{color:var(--navy);}
+.step-btn{display:inline-block;margin-top:14px;padding:10px 22px;background:var(--navy);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}.step-btn:hover{background:var(--gold);}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.brand-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a><div class="nav-links"><a href="index.html#about">소개</a><div class="nav-dropdown"><a href="index.html#expertise">준비 과정</a><div class="nav-dropdown-menu"><a href="leveltest.html">항공사 승무원</a><a href="walking-analysis.html">워킹 & 자세 분석</a><a href="coach-feedback.html">1:1 코치 피드백</a><a href="hotel.html">호텔 · 럭셔리</a><a href="cruise.html">크루즈</a></div></div><a href="index.html#resources">학습 자료</a><a href="daily-english.html">영어쉐도잉</a><a href="jobs.html">채용정보</a><a href="community.html">커뮤니티</a><a href="token-rewards.html">토큰받기</a></div><div style="display:flex;align-items:center;gap:12px;"><a href="leveltest.html" class="nav-cta">면접 연습 시작</a><a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;text-decoration:none;">로그인</a></div></nav>
+
+<div class="hero">
+  <div class="label">Hotel & Luxury</div>
+  <h1>호텔 · 럭셔리<br><em>면접 준비</em></h1>
+  <p>국내 최고급 호텔부터 글로벌 럭셔리 브랜드까지, 면접 프로세스와 실전 연습을 한 곳에서.</p>
+</div>
+
+<section><div class="wrap">
+<div class="brand-grid" id="brands"></div>
+<div id="process-area"></div>
+</div></section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+<script>
+var HOTELS=[
+  {name:'롯데호텔',en:'Lotte Hotel'},{name:'신라호텔',en:'The Shilla'},{name:'파크하얏트',en:'Park Hyatt'},
+  {name:'JW메리어트',en:'JW Marriott'},{name:'포시즌스',en:'Four Seasons'},{name:'인터컨티넨탈',en:'InterContinental'},{name:'힐튼',en:'Hilton'}
+];
+var STEPS=[
+  {title:'1차 면접 (HR)',items:['1분 자기소개 (한국어)','English self-introduction','호텔 지원 이유','서비스란 무엇인가','본인의 강점','이미지 피드백 (카메라 ON)']},
+  {title:'2차 면접 (부서장 1:1)',items:['입사 후 어떤 계획이 있는가','어려운 고객 대응 경험','팀워크 경험','호텔리어로서 본인의 자질','롤플레이: 컴플레인 고객 대응']},
+  {title:'임원면접',items:['입사 후 포부','5년 후 모습','마지막으로 하고 싶은 말']}
+];
+var bg=document.getElementById('brands'),pa=document.getElementById('process-area');
+HOTELS.forEach(function(h){
+  var d=document.createElement('div');d.className='brand-card';
+  d.innerHTML='<div class="brand-name">'+h.en+'</div><div class="brand-sub">'+h.name+'</div>';
+  d.onclick=function(){
+    document.querySelectorAll('.brand-card').forEach(function(c){c.classList.remove('active');});d.classList.add('active');
+    pa.innerHTML='<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;">'+h.name+' 면접 프로세스</h2><p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:24px;">서류전형 → 1차 면접 → 2차 면접 (부서장) → 임원면접 → 건강검진</p>';
+    STEPS.forEach(function(s){
+      var c=document.createElement('div');c.className='card';
+      c.innerHTML='<h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul><button class="step-btn" onclick="alert(\'더미 점수 — AI 연동 후 활성화\')">시작하기</button>';
+      pa.appendChild(c);
+    });
+  };
+  bg.appendChild(d);
+});
+</script>
+</body>
+</html>

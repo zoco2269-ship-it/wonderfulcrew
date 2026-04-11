@@ -112,9 +112,36 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
   <div class="card">
     <h3>예시 사진</h3>
-    <p>아래에 좋은 예시와 나쁜 예시를 비교합니다.</p>
-    <!-- 예시 사진 자리 — 나중에 이미지 교체 -->
-    <div class="photo-placeholder">예시 사진 자리<br>(추후 업데이트 예정)</div>
+    <p style="text-align:center;font-size:1rem;color:var(--gold);font-weight:600;margin-bottom:20px;line-height:1.6;">승무원의 기본은 미소!<br>활짝 웃는 사진으로 면접관에게 좋은 첫인상을 남기세요!</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:500px;margin:0 auto;">
+      <div style="text-align:center;">
+        <div style="width:200px;height:267px;margin:0 auto;border:3px solid var(--gold);border-radius:4px;overflow:hidden;background:var(--cream);display:flex;align-items:center;justify-content:center;">
+          <img src="images/photo-good.png" alt="좋은 예시" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=color:var(--text-muted);font-size:0.82rem;padding:20px;>좋은 예시<br>(이미지 추후 업로드)</div>';">
+        </div>
+        <div style="margin-top:10px;font-size:0.84rem;color:#2E7D32;font-weight:600;">✅ 좋은 예시</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.5;margin-top:4px;">윗니가 드러나도록 활짝 웃기<br>단정한 헤어, 깔끔한 의상</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:200px;height:267px;margin:0 auto;border:3px solid #ccc;border-radius:4px;overflow:hidden;background:var(--cream);display:flex;align-items:center;justify-content:center;">
+          <img src="images/photo-bad.png" alt="나쁜 예시" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=color:var(--text-muted);font-size:0.82rem;padding:20px;>나쁜 예시<br>(이미지 추후 업로드)</div>';">
+        </div>
+        <div style="margin-top:10px;font-size:0.84rem;color:#C62828;font-weight:600;">❌ 나쁜 예시</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.5;margin-top:4px;">입을 다물거나<br>어중간한 미소는 안돼요</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>외국항공사 증명사진 TIP</h3>
+    <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;">
+      <div style="width:200px;height:267px;border:3px solid var(--gold);border-radius:4px;overflow:hidden;flex-shrink:0;background:var(--cream);display:flex;align-items:center;justify-content:center;">
+        <img src="images/photo-good-global.png" alt="외국항공사 예시" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=color:var(--text-muted);font-size:0.82rem;padding:20px;text-align:center;>이미지<br>추후 업로드</div>';">
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <p>외국항공사는 다양한 컬러의 자켓도 괜찮아요. 국내항공사와 달리 개성과 활기를 중요하게 보기 때문에 레드, 블루 등 밝은 컬러의 자켓도 좋은 인상을 줄 수 있습니다.</p>
+        <p style="margin-top:10px;"><strong>단, 어떤 컬러든 환한 미소는 필수!</strong></p>
+      </div>
+    </div>
   </div>
 
   <div class="card">
@@ -236,7 +263,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <h3>합격 CV 예시</h3>
     <div class="sample-box">
       <span class="sample-label">Sample CV</span>
-      <div class="content" style="font-family:monospace;font-size:0.82rem;line-height:1.7;">JANE KIM
+      <div class="content" style="font-family:'Noto Sans KR',sans-serif;font-size:0.84rem;line-height:1.9;">JANE KIM
 Seoul, South Korea | jane.kim@email.com | +82-10-1234-5678
 Nationality: Korean | DOB: 15 March 1998 | Height: 168cm
 

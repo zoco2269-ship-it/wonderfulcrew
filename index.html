@@ -615,7 +615,9 @@ footer{
       <h3>채용 캘린더</h3>
       <div class="sub">이번 달 오픈데이 · 채용일정</div>
       <div class="cal-head">
+        <button onclick="changeMonth(-1)" style="background:none;border:1px solid var(--gold-pale);border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8rem;color:var(--text-mid);">&lt;</button>
         <div class="cal-month" id="cal-month">2026 April</div>
+        <button onclick="changeMonth(1)" style="background:none;border:1px solid var(--gold-pale);border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8rem;color:var(--text-mid);">&gt;</button>
       </div>
       <div class="cal-grid" id="cal-grid"></div>
       <ul class="cal-legend" id="cal-legend"></ul>
@@ -644,36 +646,41 @@ footer{
   </div>
 </section>
 <script>
+var calEvents=[
+  {day:24,month:3,label:'에미레이트 오픈데이'},
+  {day:18,month:3,label:'카타르항공 인터뷰'},
+  {day:29,month:3,label:'싱가포르항공 설명회'}
+];
+var calY,calM;
 (function(){
-  var events=[
-    {day:24,label:'에미레이트 오픈데이'},
-    {day:18,label:'카타르항공 인터뷰'},
-    {day:29,label:'싱가포르항공 설명회'}
-  ];
   var today=new Date();
-  var y=today.getFullYear(),m=today.getMonth();
-  var first=new Date(y,m,1).getDay();
-  var last=new Date(y,m+1,0).getDate();
+  calY=today.getFullYear();calM=today.getMonth();
+  renderCalendar();
+  // D-day
+  var upcoming=calEvents.filter(function(x){return x.month===calM&&x.day>=today.getDate();}).sort(function(a,b){return a.day-b.day;})[0]||calEvents[0];
+  if(upcoming){var diff=upcoming.day-today.getDate();document.getElementById('dday-badge').textContent=upcoming.label+' D-'+(diff>=0?diff:0);}
+}());
+function changeMonth(dir){calM+=dir;if(calM>11){calM=0;calY++;}if(calM<0){calM=11;calY--;}renderCalendar();}
+function renderCalendar(){
+  var today=new Date();
   var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('cal-month').textContent=y+' '+months[m];
-  var grid=document.getElementById('cal-grid');
-  var dows=['S','M','T','W','T','F','S'];
-  dows.forEach(function(d){var el=document.createElement('div');el.className='cal-dow';el.textContent=d;grid.appendChild(el);});
+  document.getElementById('cal-month').textContent=calY+' '+months[calM];
+  var grid=document.getElementById('cal-grid');grid.innerHTML='';
+  var first=new Date(calY,calM,1).getDay();
+  var last=new Date(calY,calM+1,0).getDate();
+  ['S','M','T','W','T','F','S'].forEach(function(d){var el=document.createElement('div');el.className='cal-dow';el.textContent=d;grid.appendChild(el);});
   for(var i=0;i<first;i++){var e=document.createElement('div');e.className='cal-day muted';grid.appendChild(e);}
-  var eventDays=events.map(function(x){return x.day;});
+  var eventDays=calEvents.filter(function(x){return x.month===calM;}).map(function(x){return x.day;});
+  var myEvts=getMyEvents().map(function(x){return x.day;});
   for(var d=1;d<=last;d++){
     var el=document.createElement('div');el.className='cal-day';el.textContent=d;
-    if(d===today.getDate())el.classList.add('today');
-    if(eventDays.indexOf(d)>-1)el.classList.add('event');
+    if(calY===today.getFullYear()&&calM===today.getMonth()&&d===today.getDate())el.classList.add('today');
+    if(eventDays.indexOf(d)>-1||myEvts.indexOf(d)>-1)el.classList.add('event');
     el.onclick=(function(day){return function(){document.getElementById('my-event-day').value=day;document.getElementById('my-event-text').focus();};})(d);
     grid.appendChild(el);
   }
-  var legend=document.getElementById('cal-legend');
-  events.forEach(function(x){var li=document.createElement('li');li.textContent=x.label+' · '+(m+1)+'월 '+x.day+'일';legend.appendChild(li);});
-  // D-day to nearest upcoming event
-  var upcoming=events.filter(function(x){return x.day>=today.getDate();}).sort(function(a,b){return a.day-b.day;})[0]||events[0];
-  var diff=upcoming.day-today.getDate();
-  document.getElementById('dday-badge').textContent=upcoming.label+' D-'+(diff>=0?diff:0);
+  var legend=document.getElementById('cal-legend');legend.innerHTML='';
+  calEvents.filter(function(x){return x.month===calM;}).forEach(function(x){var li=document.createElement('li');li.textContent=x.label+' · '+(calM+1)+'월 '+x.day+'일';legend.appendChild(li);});
   // 내 일정 로드
   renderMyEvents();
 })();
@@ -775,8 +782,8 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="num-stats">
         <div class="nstat"><div class="nval">1,000<span style="font-size:0.6em">+</span></div><div class="nlbl">Global Alumni</div></div>
         <div class="nstat"><div class="nval">22<span style="font-size:0.6em">+</span></div><div class="nlbl">Countries</div></div>
-        <div class="nstat"><div class="nval">10</div><div class="nlbl">자문단 항공사</div></div>
-        <div class="nstat"><div class="nval">20<span style="font-size:0.6em">년</span></div><div class="nlbl">코칭 경력</div></div>
+        <div class="nstat"><div class="nval">10</div><div class="nlbl" style="white-space:nowrap;">자문단 항공사</div></div>
+        <div class="nstat"><div class="nval" style="white-space:nowrap;">20년</div><div class="nlbl">코칭 경력</div></div>
         <div class="nstat"><div class="nval">10,000<span style="font-size:0.6em">+</span></div><div class="nlbl">합격 데이터</div></div>
       </div>
     </div>
@@ -809,12 +816,12 @@ document.addEventListener('DOMContentLoaded',function(){
     </div>
     <div class="res-card reveal reveal-delay-1" onclick="location.href='english-interview.html'" style="cursor:pointer;">
       <div class="res-card-img-wrap">
-        <img src="images/img4.jpg" alt="영어 면접">
-        <span class="res-tag">영어 면접</span>
+        <img src="images/img4.jpg" alt="한국어 & 영어 면접">
+        <span class="res-tag">한국어 & 영어</span>
       </div>
       <div class="res-card-body">
-        <div class="res-card-title">항공사 영어 면접 핵심 표현</div>
-        <div class="res-card-desc">영어 면접 빈출 질문과 답변 예시, 훈련 때 꼭 알아야 할 항공 영어 표현까지 정리했습니다.</div>
+        <div class="res-card-title">한국어 & 영어 면접 핵심 표현</div>
+        <div class="res-card-desc">한국어·영어·항공영어 빈출 질문과 모범 답변 예시를 한번에 정리했습니다.</div>
         <div class="res-card-foot">
 
           <a href="english-interview.html" class="res-more">자세히 보기 →</a>

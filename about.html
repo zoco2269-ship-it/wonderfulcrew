@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:36px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}.nav-links a:hover{color:var(--gold);}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
+.hero{background:var(--navy);color:#fff;padding:140px 5% 80px;text-align:center;}
+.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:600px;margin:0 auto;line-height:1.8;}
+section{padding:80px 5%;}.wrap{max-width:900px;margin:0 auto;}
+.person-card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:36px;margin-bottom:36px;display:flex;gap:32px;align-items:flex-start;}
+.person-photo{width:160px;height:200px;background:var(--cream);border:2px dashed var(--gold-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);font-size:0.82rem;text-align:center;}
+.person-info{flex:1;}
+.person-name{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:4px;}
+.person-role{font-size:0.82rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;margin-bottom:14px;}
+.person-bio{font-family:'Noto Sans KR',sans-serif;font-size:0.9rem;color:var(--text-mid);line-height:1.85;}
+.sec-title{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--navy);margin-bottom:12px;}.sec-title em{font-style:normal;color:var(--gold);}
+.gold-line{width:36px;height:1.5px;background:var(--gold);margin:16px 0 40px;}
+.advisor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.advisor-card{background:#fff;border:1px solid var(--gold-pale);padding:24px;text-align:center;}
+.advisor-photo{width:80px;height:80px;border-radius:50%;background:var(--cream);border:2px dashed var(--gold-pale);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.7rem;}
+.advisor-name{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);margin-bottom:4px;}
+.advisor-role{font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:8px;}
+.advisor-desc{font-family:'Noto Sans KR',sans-serif;font-size:0.82rem;color:var(--text-muted);line-height:1.6;}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.person-card{flex-direction:column;}.advisor-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.advisor-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links"><a href="index.html#about">소개</a><a href="daily-english.html">영어쉐도잉</a><a href="jobs.html">채용정보</a><a href="community.html">커뮤니티</a></div>
+  <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
+</nav>
+
+<div class="hero">
+  <div class="label">About Us</div>
+  <h1>원더풀크루를<br><em>소개합니다</em></h1>
+  <p>에미레이트 일등석 출신 대표와 현직 승무원 자문단이 함께 만드는 프리미엄 승무원 교육 플랫폼</p>
+</div>
+
+<section>
+<div class="wrap">
+  <h2 class="sec-title">대표 <em>소개</em></h2>
+  <div class="gold-line"></div>
+
+  <div class="person-card">
+    <div class="person-photo">사진<br>(추후 업데이트)</div>
+    <div class="person-info">
+      <div class="person-name">정미 대표</div>
+      <div class="person-role">WonderfulCrew Founder & Head Coach</div>
+      <div class="person-bio">
+        (대표 소개 내용 추후 업데이트 예정)
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section style="background:#fff;">
+<div class="wrap">
+  <h2 class="sec-title">현직 승무원 <em>자문단</em></h2>
+  <div class="gold-line"></div>
+  <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.8;margin-bottom:36px;">대한항공, 아시아나, 에미레이트, 카타르, 캐세이퍼시픽, 싱가포르항공 등 현직 승무원이 자문단으로 참여하여 최신 면접 트렌드와 실전 노하우를 공유합니다.</p>
+
+  <div class="advisor-grid">
+    <div class="advisor-card">
+      <div class="advisor-photo">사진</div>
+      <div class="advisor-name">자문위원 1</div>
+      <div class="advisor-role">항공사명 · 직급</div>
+      <div class="advisor-desc">(추후 업데이트 예정)</div>
+    </div>
+    <div class="advisor-card">
+      <div class="advisor-photo">사진</div>
+      <div class="advisor-name">자문위원 2</div>
+      <div class="advisor-role">항공사명 · 직급</div>
+      <div class="advisor-desc">(추후 업데이트 예정)</div>
+    </div>
+    <div class="advisor-card">
+      <div class="advisor-photo">사진</div>
+      <div class="advisor-name">자문위원 3</div>
+      <div class="advisor-role">항공사명 · 직급</div>
+      <div class="advisor-desc">(추후 업데이트 예정)</div>
+    </div>
+    <div class="advisor-card">
+      <div class="advisor-photo">사진</div>
+      <div class="advisor-name">자문위원 4</div>
+      <div class="advisor-role">항공사명 · 직급</div>
+      <div class="advisor-desc">(추후 업데이트 예정)</div>
+    </div>
+    <div class="advisor-card">
+      <div class="advisor-photo">사진</div>
+      <div class="advisor-name">자문위원 5</div>
+      <div class="advisor-role">항공사명 · 직급</div>
+      <div class="advisor-desc">(추후 업데이트 예정)</div>
+    </div>
+    <div class="advisor-card">
+      <div class="advisor-photo">사진</div>
+      <div class="advisor-name">자문위원 6</div>
+      <div class="advisor-role">항공사명 · 직급</div>
+      <div class="advisor-desc">(추후 업데이트 예정)</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+</body>
+</html>

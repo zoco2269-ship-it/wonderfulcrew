@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>커뮤니티 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:36px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}.nav-links a:hover{color:var(--gold);}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
+.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}
+.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:560px;margin:0 auto;line-height:1.8;}
+section{padding:60px 5%;}
+.board-grid{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+.board-card{background:#fff;border:1px solid var(--gold-pale);padding:36px;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;text-align:center;}
+.board-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(201,168,76,0.12);}
+.board-icon{font-size:2.4rem;margin-bottom:16px;}
+.board-title{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:8px;}
+.board-desc{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.7;margin-bottom:20px;}
+.board-btn{display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:22px;font-size:0.82rem;font-weight:600;letter-spacing:0.05em;}
+.board-count{font-size:0.78rem;color:var(--text-muted);margin-top:12px;}
+
+/* 게시판 공통 */
+.wrap{max-width:900px;margin:0 auto;}
+.post-form{background:#fff;border:1px solid var(--gold-pale);padding:24px;margin-bottom:28px;display:none;}
+.post-form.active{display:block;}
+.post-form input,.post-form textarea{width:100%;padding:10px 14px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.9rem;margin-bottom:10px;}
+.post-form textarea{min-height:100px;resize:vertical;}
+.post-form button{padding:10px 24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}
+.post-list{list-style:none;}
+.post-item{background:#fff;border:1px solid var(--gold-pale);padding:20px;margin-bottom:12px;cursor:pointer;transition:transform 0.2s;}
+.post-item:hover{transform:translateX(4px);}
+.post-item .title{font-size:0.96rem;color:var(--navy);font-weight:600;margin-bottom:6px;}
+.post-item .meta{font-size:0.76rem;color:var(--text-muted);}
+.post-item .preview{font-size:0.85rem;color:var(--text-mid);margin-top:8px;line-height:1.6;}
+.write-btn{display:inline-block;padding:10px 22px;background:var(--navy);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;margin-bottom:20px;}
+.back-btn{display:inline-block;padding:8px 18px;background:transparent;color:var(--text-muted);border:1px solid var(--gold-pale);border-radius:20px;font-family:inherit;font-size:0.82rem;cursor:pointer;margin-bottom:20px;}
+.error-msg{color:#C0392B;font-size:0.82rem;margin-top:-6px;margin-bottom:10px;display:none;}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.board-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links"><a href="index.html#about">소개</a><a href="daily-english.html">영어쉐도잉</a><a href="jobs.html">채용정보</a><a href="community.html">커뮤니티</a></div>
+  <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
+</nav>
+
+<div class="hero">
+  <div class="label">Community</div>
+  <h1>함께 준비하면<br><em>합격이 가까워져요</em></h1>
+  <p>스터디를 구하고, 고민을 나누고, 서로 응원하세요.</p>
+</div>
+
+<!-- 메인 게시판 선택 화면 -->
+<section id="main-view">
+<div class="board-grid">
+  <div class="board-card" onclick="openBoard('study')">
+    <div class="board-icon">📚</div>
+    <div class="board-title">스터디 구해요</div>
+    <div class="board-desc">함께 면접 준비할 스터디 멤버를 찾아보세요. 같은 항공사를 준비하는 동료와 함께하면 합격률이 올라갑니다.</div>
+    <div class="board-btn">스터디 찾기 →</div>
+    <div class="board-count" id="study-count">게시글 0개</div>
+  </div>
+  <div class="board-card" onclick="openBoard('talk')">
+    <div class="board-icon">💬</div>
+    <div class="board-title">이야기 나눠요</div>
+    <div class="board-desc">면접 준비 중 궁금한 점, 어려운 점, 혼자 하고 싶은 말까지. 무엇이든 자유롭게 이야기하세요.</div>
+    <div class="board-btn">이야기하기 →</div>
+    <div class="board-count" id="talk-count">게시글 0개</div>
+  </div>
+</div>
+</section>
+
+<!-- 게시판 상세 -->
+<section id="board-view" style="display:none;">
+<div class="wrap">
+  <button class="back-btn" onclick="closeBoard()">← 커뮤니티로 돌아가기</button>
+  <h2 style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:20px;" id="board-title"></h2>
+  <button class="write-btn" onclick="toggleForm()">글쓰기</button>
+  <div class="post-form" id="post-form">
+    <input type="text" id="post-author" placeholder="닉네임" maxlength="20">
+    <input type="text" id="post-title" placeholder="제목" maxlength="100">
+    <textarea id="post-body" placeholder="내용을 입력하세요..."></textarea>
+    <div class="error-msg" id="error-msg"></div>
+    <button onclick="submitPost()">등록하기</button>
+  </div>
+  <ul class="post-list" id="post-list"></ul>
+  <div id="empty-msg" style="text-align:center;padding:40px;color:var(--text-muted);font-size:0.9rem;">아직 게시글이 없습니다. 첫 글을 작성해보세요!</div>
+</div>
+</section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+
+<script>
+var currentBoard='';
+// 금지어 (과외, 코칭, 레슨 등 — 노출하지 않음)
+var BANNED=/과외|레슨|수업|가르쳐|튜터|tutor|lesson|coaching|코칭비|수강료|1:1\s*수업|개인\s*지도|개인\s*레슨/i;
+
+function getBoard(name){return JSON.parse(localStorage.getItem('wc_board_'+name)||'[]');}
+function saveBoard(name,arr){localStorage.setItem('wc_board_'+name,JSON.stringify(arr));}
+
+function openBoard(name){
+  currentBoard=name;
+  document.getElementById('main-view').style.display='none';
+  document.getElementById('board-view').style.display='block';
+  document.getElementById('board-title').textContent=name==='study'?'스터디 구해요':'이야기 나눠요';
+  renderPosts();
+  window.scrollTo(0,0);
+}
+function closeBoard(){
+  document.getElementById('main-view').style.display='block';
+  document.getElementById('board-view').style.display='none';
+  document.getElementById('post-form').classList.remove('active');
+  updateCounts();
+}
+function toggleForm(){document.getElementById('post-form').classList.toggle('active');}
+
+function submitPost(){
+  var author=document.getElementById('post-author').value.trim()||'익명';
+  var title=document.getElementById('post-title').value.trim();
+  var body=document.getElementById('post-body').value.trim();
+  var err=document.getElementById('error-msg');
+  err.style.display='none';
+  if(!title||!body){err.textContent='제목과 내용을 모두 입력해주세요.';err.style.display='block';return;}
+  if(BANNED.test(title)||BANNED.test(body)){
+    err.textContent='죄송합니다. 해당 내용은 커뮤니티 정책에 의해 등록할 수 없습니다.';err.style.display='block';return;
+  }
+  var arr=getBoard(currentBoard);
+  arr.unshift({author:author,title:title,body:body,date:new Date().toISOString().slice(0,10),time:new Date().toTimeString().slice(0,5)});
+  saveBoard(currentBoard,arr);
+  document.getElementById('post-title').value='';document.getElementById('post-body').value='';
+  document.getElementById('post-form').classList.remove('active');
+  renderPosts();
+}
+
+function renderPosts(){
+  var arr=getBoard(currentBoard);
+  var list=document.getElementById('post-list');
+  var empty=document.getElementById('empty-msg');
+  list.innerHTML='';
+  if(arr.length===0){empty.style.display='block';return;}
+  empty.style.display='none';
+  arr.forEach(function(p,idx){
+    var li=document.createElement('li');
+    li.className='post-item';
+    li.innerHTML='<div class="title">'+p.title+'</div>'+
+      '<div class="meta">'+p.author+' · '+p.date+' '+p.time+'</div>'+
+      '<div class="preview">'+p.body.substring(0,120)+(p.body.length>120?'...':'')+'</div>';
+    li.onclick=function(){alert(p.title+'\n\n'+p.body+'\n\n— '+p.author+' ('+p.date+')');};
+    list.appendChild(li);
+  });
+}
+
+function deletePost(idx){
+  var arr=getBoard(currentBoard);arr.splice(idx,1);saveBoard(currentBoard,arr);renderPosts();
+}
+
+function updateCounts(){
+  document.getElementById('study-count').textContent='게시글 '+getBoard('study').length+'개';
+  document.getElementById('talk-count').textContent='게시글 '+getBoard('talk').length+'개';
+}
+updateCounts();
+</script>
+</body>
+</html>

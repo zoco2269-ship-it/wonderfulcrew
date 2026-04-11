@@ -457,13 +457,11 @@ footer{
     <a href="#">면접 연습</a>
     <a href="daily-english.html">영어쉐도잉</a>
     <a href="jobs.html">채용정보</a>
+    <a href="community.html">커뮤니티</a>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
-    <button onclick="alert('준비 중입니다')" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:24px;background:#fff;border:1px solid rgba(26,35,64,0.15);color:#1A2340;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.04em;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9A84C';" onmouseout="this.style.borderColor='rgba(26,35,64,0.15)';">
-      <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-      로그인
-    </button>
+    <a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;transition:all 0.2s;">로그인</a>
   </div>
 </nav>
 
@@ -496,7 +494,7 @@ footer{
       <p class="about-body">단순한 암기식 준비가 아닌, 진짜 실력 향상을 위한 실전 경험을 통해 합격으로 이끕니다. 국내외 주요 항공사의 면접 트렌드를 분석하고, 개인 맞춤형 피드백으로 각 지원자의 강점을 극대화하는 커리큘럼을 제공합니다.</p>
       <p class="about-body">1천 명 이상의 합격자를 배출한 검증된 교육 시스템으로, 당신의 꿈을 현실로 만들어 드리겠습니다.</p>
       <a href="leveltest.html" class="btn-text-gold">체험하기 →</a>
-      <a href="#ai-demo" class="btn-text-outline">더 알아보기 →</a>
+      <a href="about.html" class="btn-text-outline">더 알아보기 →</a>
     </div>
     <div class="about-img-wrap reveal reveal-delay-1">
       <img id="about-img" class="about-img" src="images/img2.jpg" alt="원더풀크루 코치">
@@ -614,6 +612,15 @@ footer{
       </div>
       <div class="cal-grid" id="cal-grid"></div>
       <ul class="cal-legend" id="cal-legend"></ul>
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--gold-pale);">
+        <div style="font-size:0.82rem;color:var(--navy);font-weight:600;margin-bottom:10px;">내 일정 추가</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <input type="number" id="my-event-day" min="1" max="31" placeholder="일" style="width:50px;padding:7px 8px;border:1px solid var(--gold-pale);border-radius:6px;font-size:0.82rem;font-family:inherit;">
+          <input type="text" id="my-event-text" placeholder="일정 메모 (예: 에미레이트 서류 마감)" style="flex:1;min-width:140px;padding:7px 10px;border:1px solid var(--gold-pale);border-radius:6px;font-size:0.82rem;font-family:inherit;">
+          <button onclick="addMyEvent()" style="padding:7px 16px;background:var(--navy);color:#fff;border:none;border-radius:6px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;">추가</button>
+        </div>
+        <ul id="my-events" style="list-style:none;margin-top:10px;"></ul>
+      </div>
     </div>
     <div class="recruit-card">
       <h3>최신 채용 뉴스</h3>
@@ -659,7 +666,36 @@ footer{
   var upcoming=events.filter(function(x){return x.day>=today.getDate();}).sort(function(a,b){return a.day-b.day;})[0]||events[0];
   var diff=upcoming.day-today.getDate();
   document.getElementById('dday-badge').textContent=upcoming.label+' D-'+(diff>=0?diff:0);
+  // 내 일정 로드
+  renderMyEvents();
 })();
+function getMyEvents(){return JSON.parse(localStorage.getItem('wc_my_events')||'[]');}
+function saveMyEvents(arr){localStorage.setItem('wc_my_events',JSON.stringify(arr));}
+function addMyEvent(){
+  var day=parseInt(document.getElementById('my-event-day').value);
+  var text=document.getElementById('my-event-text').value.trim();
+  if(!day||!text){alert('날짜와 메모를 입력해주세요.');return;}
+  var arr=getMyEvents();arr.push({day:day,text:text});saveMyEvents(arr);
+  document.getElementById('my-event-day').value='';document.getElementById('my-event-text').value='';
+  renderMyEvents();
+  // 캘린더에 점 표시
+  var cells=document.querySelectorAll('#cal-grid .cal-day');
+  cells.forEach(function(c){if(parseInt(c.textContent)===day)c.classList.add('event');});
+}
+function removeMyEvent(idx){var arr=getMyEvents();arr.splice(idx,1);saveMyEvents(arr);renderMyEvents();}
+function renderMyEvents(){
+  var arr=getMyEvents();var el=document.getElementById('my-events');el.innerHTML='';
+  arr.forEach(function(e,idx){
+    var li=document.createElement('li');
+    li.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(201,168,76,0.15);font-size:0.82rem;color:var(--text-mid);';
+    li.innerHTML='<span>'+e.day+'일 · '+e.text+'</span><button onclick="removeMyEvent('+idx+')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.78rem;">삭제</button>';
+    el.appendChild(li);
+  });
+  // 캘린더에 내 이벤트 점 표시
+  var cells=document.querySelectorAll('#cal-grid .cal-day');
+  var myDays=arr.map(function(e){return e.day;});
+  cells.forEach(function(c){if(myDays.indexOf(parseInt(c.textContent))>-1)c.classList.add('event');});
+}
 </script>
 
 <script>

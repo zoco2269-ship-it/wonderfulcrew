@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>롤플레이 면접 연습 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:36px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
+.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:600px;margin:0 auto;line-height:1.8;}
+section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
+.info-box{background:#fff;border-left:4px solid var(--gold);padding:28px 30px;margin-bottom:40px;}.info-box h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin-bottom:12px;}.info-box li{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-bottom:4px;}.info-box li strong{color:var(--navy);}.info-box ul{padding-left:18px;margin-top:8px;}
+.card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:30px;margin-bottom:24px;}
+.card .num{font-family:'DM Serif Display',serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:8px;}
+.card .q{font-size:1.02rem;color:var(--navy);font-weight:600;line-height:1.5;margin-bottom:16px;}
+.card textarea{width:100%;min-height:100px;padding:12px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.9rem;resize:vertical;margin-bottom:14px;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+.btn{padding:10px 22px;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}.btn-gold{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}.btn-navy{background:var(--navy);color:#fff;}
+.sc{display:none;margin-top:16px;padding:20px;background:var(--cream);border:1px solid var(--gold-pale);border-left:4px solid var(--gold);}.sc.v{display:block;}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}.si{background:#fff;padding:14px;border:1px solid var(--gold-pale);text-align:center;}.si .l{font-size:0.72rem;color:var(--text-muted);margin-bottom:6px;}.si .v{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);}.si .v span{font-size:0.8rem;color:var(--text-muted);}
+.sm{margin-top:14px;font-size:0.86rem;color:var(--text-mid);line-height:1.7;padding:12px 14px;background:#fff;border-left:3px solid var(--gold);}
+.model{display:none;margin-top:14px;padding:16px;background:#fff;border:1px solid var(--gold-pale);font-size:0.88rem;color:var(--text-mid);line-height:1.8;}.model.v{display:block;}.model b{color:var(--navy);}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.sg{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a><div class="nav-links"><a href="index.html#about">소개</a><a href="daily-english.html">영어쉐도잉</a><a href="jobs.html">채용정보</a></div><a href="leveltest.html" class="nav-cta">면접 연습 시작</a></nav>
+<div class="hero"><div class="label">Step 4 · Roleplay</div><h1>롤플레이 면접 <em>연습</em></h1><p>기내 상황 시뮬레이션 — 사과, 해결, 대안, Service Recovery의 정석을 연습하세요.</p></div>
+<section><div class="wrap">
+<div class="info-box"><h3>롤플레이 답변 구조</h3><ul>
+<li><strong>1. 사과:</strong> 즉각적이고 진심 어린 사과</li>
+<li><strong>2. 해결책 제시:</strong> 고객이 원하는 exactly same한 것을 먼저 찾으려는 모습</li>
+<li><strong>3. 대안 제시:</strong> 없으면 대안 — "이거 할래요?" 절대 금지! 대안의 장점과 이득을 충분히 설명</li>
+<li><strong>4. Service Recovery:</strong> 원래 원하는 것을 주지 못한 데 대한 보상 (업그레이드, 음료, 사과 카드 등)</li>
+</ul></div>
+<div id="cards"></div>
+<div style="text-align:center;margin-top:32px;"><button class="btn btn-navy" style="padding:14px 32px;font-size:0.9rem;" onclick="refresh()">더 연습하기</button></div>
+</div></section>
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+<script>
+var SCENARIOS=[
+  {q:"A passenger wants a window seat but the flight is completely full.",m:"I'm really sorry about that. Let me check all sections to see if any window seat opened up. Unfortunately, they're all taken. May I recommend this aisle seat near the front? It has extra legroom and you'll be one of the first to deplane. And as a small apology, I'd love to bring you a complimentary drink once we're airborne."},
+  {q:"A business class passenger's preferred meal choice has run out.",m:"I sincerely apologize. Let me check if any other cabin has one available. I'm afraid it's fully gone. However, our chef's second option today is also excellent — it's a grilled salmon with truffle sauce. Many passengers actually request it specifically. I'll also bring you a glass of champagne on the house as my apology."},
+  {q:"A passenger complains the cabin is too cold, but nearby passengers say it's fine.",m:"I completely understand, and I'm sorry for your discomfort. Let me bring you a warm blanket right away. I'll also check if we can slightly adjust the airflow above your seat. Would you like a warm cup of tea as well? Your comfort is my priority."},
+  {q:"A child passenger has been crying for 30 minutes and other passengers are complaining.",m:"I understand this must be frustrating. Let me first check on the family — the parents might need some help. I'll bring some warm milk and a coloring kit for the little one. For you, I'd like to offer our noise-cancelling headphones and perhaps move you to a quieter seat if one becomes available."},
+  {q:"A passenger asks for more alcohol but appears quite intoxicated.",m:"I appreciate you enjoying the flight. I want to make sure you arrive feeling great, so may I suggest a refreshing juice or sparkling water for now? We have an amazing fresh orange juice. I'll also bring you some snacks — sometimes a good meal makes the rest of the flight even more enjoyable."},
+  {q:"A passenger's carry-on bag doesn't fit in the overhead bin.",m:"Let me help you with that. I'll try rearranging some items first. If it still doesn't fit, I can safely gate-check it for you — it'll be the first bag out when we land. I'll put a priority tag on it so you won't have to wait."},
+  {q:"A passenger requests a Hindu vegetarian meal that wasn't pre-ordered.",m:"I'm sorry we don't have that specific meal pre-ordered for you. Let me see what we have that would work — we do have a vegetarian pasta that's completely meat-free. I'll personally check all the ingredients to make sure it meets your dietary needs. And I'll make a note for your return flight so this is arranged in advance."},
+  {q:"Two passengers are arguing loudly over the shared armrest.",m:"I understand the space can be a bit tight. May I suggest a solution? I have a spare cushion that might help. And if either of you would like, we have a seat near the window with a bit more space that just opened up. Can I bring you both a drink to help you relax and enjoy the flight?"},
+  {q:"A passenger refuses to fasten their seatbelt during turbulence.",m:"I completely understand, and I know it can be uncomfortable. However, your safety is our top priority. The captain has turned on the seatbelt sign because we're expecting some rough air. I need to make sure you're safe. Can I help you adjust the belt so it's more comfortable? When it comes to safety, we never compromise."},
+  {q:"A passenger's in-flight entertainment screen is not working.",m:"I'm so sorry about that. Let me try resetting it for you. If that doesn't work, I have a spare tablet with our full movie library that I can lend you. I'll also make sure this is reported so it's fixed before the next flight. And please, let me bring you a complimentary drink while I sort this out."},
+  {q:"A drink was accidentally spilled on a passenger's clothes.",m:"Oh, I am so sorry about this. Let me get you some club soda and napkins right away — that's the best for preventing a stain. We also have a spare amenity kit with a clean shirt if you'd like to change. I'll arrange for dry cleaning at our destination at no cost to you. Again, my deepest apologies."},
+  {q:"A passenger is having an allergic reaction after eating the meal.",m:"Please stay calm. I'll call for any medical professionals on board immediately and get our first aid kit. Can you tell me what you're allergic to? I'll inform the captain right away so we can arrange priority landing if needed. Your safety is the absolute priority right now."},
+  {q:"A passenger demands to be upgraded to business class for free.",m:"I understand you'd like a more comfortable experience, and I wish I could help with that. Unfortunately, upgrades are managed by our ground team. What I can do is make your economy experience as comfortable as possible — let me bring you an extra pillow, a blanket, and our premium amenity kit. I'll also check if there's a seat with more space available."},
+  {q:"A passenger discovers their passport is missing after boarding.",m:"I understand how stressful this must be. Let me help you look carefully around your seat and in the overhead bin first. I'll also check with the gate team to see if anything was turned in. If we can't find it, I'll connect you with our ground services at arrival who can assist with emergency documentation."}
+];
+function pick3(){var a=SCENARIOS.slice(),o=[];for(var i=0;i<3&&a.length;i++){var x=Math.floor(Math.random()*a.length);o.push(a.splice(x,1)[0]);}return o;}
+function render(){
+  var c=document.getElementById('cards');c.innerHTML='';
+  pick3().forEach(function(s,i){
+    var d=document.createElement('div');d.className='card';
+    d.innerHTML='<div class="num">Scenario '+(i+1)+'</div><div class="q">'+s.q+'</div>'+
+      '<textarea placeholder="영어로 답변하세요..."></textarea>'+
+      '<div class="btn-row"><button class="btn btn-gold" onclick="score(this)">피드백 보기</button><button class="btn btn-outline" onclick="model(this)">모범 답변 보기</button></div>'+
+      '<div class="sc"></div><div class="model" data-m="'+s.m.replace(/"/g,'&quot;')+'"></div>';
+    c.appendChild(d);
+  });
+}
+function score(btn){
+  var sc=btn.closest('.card').querySelector('.sc');var s=[r(),r(),r(),r()];
+  sc.innerHTML='<div style="font-family:DM Serif Display,serif;font-size:1rem;color:var(--navy);margin-bottom:14px;">Roleplay Score</div>'+
+    '<div class="sg"><div class="si"><div class="l">사과 표현</div><div class="v">'+s[0]+'<span>/100</span></div></div>'+
+    '<div class="si"><div class="l">해결책 제시</div><div class="v">'+s[1]+'<span>/100</span></div></div>'+
+    '<div class="si"><div class="l">대안 & 설득력</div><div class="v">'+s[2]+'<span>/100</span></div></div>'+
+    '<div class="si"><div class="l">Service Recovery</div><div class="v">'+s[3]+'<span>/100</span></div></div></div>'+
+    '<div class="sm">종합: <b>'+Math.round((s[0]+s[1]+s[2]+s[3])/4)+'/100</b><br><br>더미 점수 — AI 엔진 학습 후 정교한 피드백으로 업데이트 예정</div>';
+  sc.classList.add('v');
+}
+function model(btn){var m=btn.closest('.card').querySelector('.model');m.innerHTML='<b>Model Answer:</b><br><br>'+m.dataset.m;m.classList.toggle('v');}
+function r(){return Math.floor(Math.random()*36)+50;}
+function refresh(){render();window.scrollTo(0,0);}
+render();
+</script>
+</body>
+</html>

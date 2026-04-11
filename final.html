@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>파이널 인터뷰 연습 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:36px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
+.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:600px;margin:0 auto;line-height:1.8;}
+section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
+.info-box{background:#fff;border-left:4px solid var(--gold);padding:28px 30px;margin-bottom:40px;}.info-box h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin-bottom:12px;}.info-box li{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-bottom:4px;}.info-box li strong{color:var(--navy);}.info-box ul{padding-left:18px;margin-top:8px;}
+.card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:30px;margin-bottom:24px;}
+.card .num{font-family:'DM Serif Display',serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:8px;}
+.card .q{font-size:1.02rem;color:var(--navy);font-weight:600;line-height:1.5;margin-bottom:4px;}
+.card .qko{font-size:0.82rem;color:var(--text-muted);margin-bottom:16px;}
+.transcript{padding:12px 14px;border:1px solid var(--gold-pale);border-radius:8px;background:var(--cream);font-size:0.9rem;color:var(--text-dark);line-height:1.7;min-height:44px;margin-bottom:14px;}.transcript:empty::before{content:'음성 답변 대기 중...';color:var(--text-muted);font-size:0.85rem;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+.btn{padding:10px 22px;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}.btn-gold{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}.btn-navy{background:var(--navy);color:#fff;}.btn-navy.rec{background:#C0392B;}
+.sc{display:none;margin-top:16px;padding:20px;background:var(--cream);border:1px solid var(--gold-pale);border-left:4px solid var(--gold);}.sc.v{display:block;}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}.si{background:#fff;padding:14px;border:1px solid var(--gold-pale);text-align:center;}.si .l{font-size:0.72rem;color:var(--text-muted);margin-bottom:6px;}.si .v{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);}.si .v span{font-size:0.8rem;color:var(--text-muted);}
+.sm{margin-top:14px;font-size:0.86rem;color:var(--text-mid);line-height:1.7;padding:12px 14px;background:#fff;border-left:3px solid var(--gold);}
+.model{display:none;margin-top:14px;padding:16px;background:#fff;border:1px solid var(--gold-pale);font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;}.model.v{display:block;}.model b{color:var(--navy);}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.sg{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a><div class="nav-links"><a href="index.html#about">소개</a><a href="daily-english.html">영어쉐도잉</a><a href="jobs.html">채용정보</a></div><a href="leveltest.html" class="nav-cta">면접 연습 시작</a></nav>
+<div class="hero"><div class="label">Step 5 · Final Interview</div><h1>파이널 인터뷰 <em>연습</em></h1><p>최종 관문 — 서비스 경험, 가치관, 에미레이트 지원 동기까지 깊이 있는 답변을 완성하세요.</p></div>
+<section><div class="wrap">
+<div class="info-box"><h3>파이널 인터뷰 핵심</h3><ul>
+<li><strong>내 이야기로:</strong> 남의 문장이 아닌 나만의 경험과 가치관으로 답변</li>
+<li><strong>구체적으로:</strong> "잘했습니다" 대신 구체적 상황-행동-결과(STAR)</li>
+<li><strong>서비스 마인드:</strong> 모든 답변에 WonderfulCrew 서비스 철학이 녹아들어야</li>
+<li><strong>쉬운 단어로:</strong> 어려운 단어 쓰다 막히면 마이너스. 자연스럽게</li>
+</ul></div>
+<div id="cards"></div>
+</div></section>
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+<script>
+var QS=[
+  {q:"Tell me about your best service experience.",ko:"최고의 서비스 경험을 말해주세요.",m:"At my hotel job, an elderly couple was celebrating their anniversary. I arranged a special table with flowers and a handwritten card from our team. When they saw it, the wife actually cried with joy. It wasn't anything expensive — it was about noticing what mattered to them and acting on it. That moment taught me that the best service comes from genuine care, not a manual."},
+  {q:"Describe a time you dealt with a demanding customer.",ko:"까다로운 고객을 대응한 경험을 말해주세요.",m:"A guest at my cafe was upset because his order was wrong twice. Instead of just remaking it, I sat down with him, apologized sincerely, and asked him to describe exactly what he wanted. I made it myself and brought it with a complimentary dessert. He left a five-star review that night. The key was not taking it personally and turning his frustration into trust."},
+  {q:"Tell me about a time you helped a colleague.",ko:"동료를 도운 경험을 말해주세요.",m:"A new team member was struggling during a busy weekend shift. She looked overwhelmed and close to tears. I quietly took over two of her tables and walked her through the process between orders. By the end of the night, she was handling things on her own. I believe the team is only as strong as its newest member."},
+  {q:"Describe a conflict with a colleague and how you resolved it.",ko:"동료와의 갈등과 해결 경험을 말해주세요.",m:"A colleague and I disagreed on how to handle a VIP guest's special request. Instead of arguing in front of guests, I suggested we talk privately after the shift. We listened to each other's perspectives and realized we had the same goal — making the guest happy. We combined our ideas and it actually worked better than either approach alone."},
+  {q:"How do you show respect for Muslim culture?",ko:"이슬람 문화를 존중하는 방법을 말해주세요.",m:"I've taken time to learn about Islamic customs — like greeting with Assalamu Alaikum, understanding Ramadan and prayer times, and being mindful about food preparation and halal requirements. In Dubai, this isn't just courtesy, it's professionalism. I believe respecting someone's culture is the foundation of genuine service."},
+  {q:"Why do you want to work for Emirates?",ko:"왜 에미레이트에서 일하고 싶은지 말해주세요.",m:"Emirates doesn't just fly people — you create experiences. Your commitment to going beyond expectations matches exactly how I approach service. I want to be part of a team where excellence is the standard, not the exception. And honestly, the opportunity to serve passengers from over 150 nationalities excites me — every flight would be a chance to connect with someone new."}
+];
+var container=document.getElementById('cards');
+var activeRecs={};
+QS.forEach(function(item,i){
+  var d=document.createElement('div');d.className='card';
+  d.innerHTML='<div class="num">Question '+(i+1)+'</div><div class="q">'+item.q+'</div><div class="qko">'+item.ko+'</div>'+
+    '<div class="btn-row"><button class="btn btn-outline" onclick="tts('+i+')">질문 듣기</button><button class="btn btn-navy" id="rb-'+i+'" onclick="toggleRec('+i+')">답변 녹음</button></div>'+
+    '<div class="transcript" id="tr-'+i+'"></div>'+
+    '<div class="btn-row"><button class="btn btn-gold" onclick="score('+i+')">피드백 보기</button><button class="btn btn-outline" onclick="model('+i+')">답변 예시 보기</button><button class="btn btn-outline" onclick="alert(\'강의 영상 준비 중입니다.\')">강의 영상 보기</button></div>'+
+    '<div class="sc" id="sc-'+i+'"></div><div class="model" id="md-'+i+'" data-m="'+item.m.replace(/"/g,'&quot;')+'"></div>';
+  container.appendChild(d);
+});
+function tts(i){
+  if(!('speechSynthesis' in window))return;
+  var u=new SpeechSynthesisUtterance(QS[i].q);u.lang='en-GB';u.rate=0.85;u.pitch=1.05;
+  window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+}
+function toggleRec(i){
+  var btn=document.getElementById('rb-'+i);var tr=document.getElementById('tr-'+i);
+  if(activeRecs[i]){activeRecs[i].stop();activeRecs[i]=null;btn.textContent='답변 녹음';btn.classList.remove('rec');return;}
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){tr.textContent='Chrome 브라우저에서 사용해 주세요.';return;}
+  var rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;
+  activeRecs[i]=rec;var full='';
+  btn.textContent='녹음 중... (클릭하여 중지)';btn.classList.add('rec');tr.textContent='';
+  rec.onresult=function(ev){full='';for(var r=0;r<ev.results.length;r++){if(ev.results[r].isFinal)full+=ev.results[r][0].transcript+' ';else full+=ev.results[r][0].transcript;}tr.textContent=full.trim();};
+  rec.onend=function(){activeRecs[i]=null;btn.textContent='답변 녹음';btn.classList.remove('rec');if(full.trim())tr.textContent=full.trim();};
+  rec.onerror=function(){activeRecs[i]=null;btn.textContent='답변 녹음';btn.classList.remove('rec');};
+  rec.start();
+}
+function score(i){
+  var sc=document.getElementById('sc-'+i);var s=[r(),r(),r(),r()];
+  sc.innerHTML='<div style="font-family:DM Serif Display,serif;font-size:1rem;color:var(--navy);margin-bottom:14px;">Final Interview Score</div>'+
+    '<div class="sg"><div class="si"><div class="l">내용 깊이</div><div class="v">'+s[0]+'<span>/100</span></div></div>'+
+    '<div class="si"><div class="l">구체성</div><div class="v">'+s[1]+'<span>/100</span></div></div>'+
+    '<div class="si"><div class="l">서비스 마인드</div><div class="v">'+s[2]+'<span>/100</span></div></div>'+
+    '<div class="si"><div class="l">자기다움</div><div class="v">'+s[3]+'<span>/100</span></div></div></div>'+
+    '<div class="sm">종합: <b>'+Math.round((s[0]+s[1]+s[2]+s[3])/4)+'/100</b><br><br>더미 점수 — AI 엔진 학습 후 강의 기반 정교한 피드백으로 업데이트 예정</div>';
+  sc.classList.add('v');
+}
+function model(i){var m=document.getElementById('md-'+i);m.innerHTML='<b>Model Answer:</b><br><br>'+m.dataset.m;m.classList.toggle('v');}
+function r(){return Math.floor(Math.random()*36)+50;}
+</script>
+</body>
+</html>

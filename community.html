@@ -130,6 +130,11 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <!-- ===== 스터디 패널 ===== -->
 <div class="panel" id="panel-study">
   <div class="panel-header"><h2>📚 스터디 구해요</h2><button class="write-btn" onclick="openForm('study')">스터디 올리기</button></div>
+  <div id="gps-bar" style="display:none;margin-bottom:16px;padding:12px 16px;background:#fff;border:1px solid var(--gold-pale);border-left:3px solid var(--gold);font-size:0.84rem;color:var(--text-mid);display:flex;align-items:center;gap:8px;">
+    <span id="gps-loc">📍 위치 확인 중...</span>
+    <button onclick="sortByLocation()" style="padding:4px 12px;background:var(--navy);color:#fff;border:none;border-radius:12px;font-size:0.76rem;cursor:pointer;">내 주변 먼저</button>
+  </div>
+  <button onclick="enableGPS()" style="margin-bottom:16px;padding:8px 18px;background:#fff;border:1px solid var(--gold-pale);border-radius:20px;font-size:0.82rem;color:var(--text-mid);cursor:pointer;font-family:inherit;">📍 내 주변 스터디 보기</button>
   <div id="list-study"></div>
   <div class="empty" id="empty-study">아직 스터디 모집글이 없어요. 첫 글을 올려보세요!</div>
 </div>
@@ -356,6 +361,47 @@ function render(name){
 }
 
 // 카운트 업데이트
+// GPS
+var userLoc=null;
+var LOC_MAP={서울:[37.5665,126.978],부산:[35.1796,129.0756],대구:[35.8714,128.6014],인천:[37.4563,126.7052],광주:[35.1595,126.8526],대전:[36.3504,127.3845],제주:[33.4996,126.5312]};
+function enableGPS(){
+  if(!navigator.geolocation){alert('위치 서비스를 지원하지 않는 브라우저입니다.');return;}
+  navigator.geolocation.getCurrentPosition(function(pos){
+    userLoc={lat:pos.coords.latitude,lng:pos.coords.longitude};
+    // 가장 가까운 도시 찾기
+    var closest='온라인',minDist=Infinity;
+    Object.keys(LOC_MAP).forEach(function(city){
+      var d=Math.sqrt(Math.pow(LOC_MAP[city][0]-userLoc.lat,2)+Math.pow(LOC_MAP[city][1]-userLoc.lng,2));
+      if(d<minDist){minDist=d;closest=city;}
+    });
+    document.getElementById('gps-loc').textContent='📍 '+closest+' 근처';
+    document.getElementById('gps-bar').style.display='flex';
+    localStorage.setItem('wc_user_city',closest);
+    sortByLocation();
+  },function(){alert('위치 권한을 허용해주세요.');});
+}
+function sortByLocation(){
+  var city=localStorage.getItem('wc_user_city')||'';
+  if(!city){enableGPS();return;}
+  var arr=getB('study');
+  arr.sort(function(a,b){
+    var aMatch=(a.loc===city||a.loc==='온라인')?0:1;
+    var bMatch=(b.loc===city||b.loc==='온라인')?0:1;
+    return aMatch-bMatch;
+  });
+  // Re-render with sorted
+  var list=document.getElementById('list-study');list.innerHTML='';
+  var empty=document.getElementById('empty-study');
+  if(!arr.length){empty.style.display='block';return;}
+  empty.style.display='none';
+  arr.forEach(function(p){
+    var d=document.createElement('div');d.className='study-card';
+    d.innerHTML='<div style="flex:1;"><div class="study-tags">'+(p.loc?'<span class="study-tag loc">📍 '+p.loc+'</span>':'')+(p.airline?'<span class="study-tag air">✈️ '+p.airline+'</span>':'')+(p.ppl?'<span class="study-tag ppl">👥 '+p.ppl+'</span>':'')+'</div><div class="study-title">'+p.title+'</div><div class="study-meta">'+(p.sched||'')+' · '+p.date+' · '+p.author+'</div></div>';
+    d.onclick=function(){alert(p.title+'\n\n'+p.body+'\n\n'+p.author+' · '+p.date);};
+    list.appendChild(d);
+  });
+}
+
 function updateCounts(){
   ['study','talk','review'].forEach(function(n){
     document.getElementById('cnt-'+n).textContent=getB(n).length+'개';

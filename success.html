@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>결제 완료 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--cream:#FAF7F0;--navy:#1A2340;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.card{background:#fff;padding:48px 40px;max-width:520px;width:100%;text-align:center;border:1px solid rgba(201,168,76,0.3);box-shadow:0 8px 40px rgba(0,0,0,0.06);}
+.icon{font-size:3rem;margin-bottom:16px;}
+h1{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--navy);margin-bottom:12px;}
+p{font-size:0.92rem;color:#4A4438;line-height:1.8;margin-bottom:8px;}
+.benefits{text-align:left;margin:24px 0;padding:20px;background:var(--cream);border-left:4px solid var(--gold);font-size:0.86rem;color:#4A4438;line-height:1.8;}
+a.btn{display:inline-block;margin-top:20px;padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.9rem;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">🎉</div>
+  <h1>결제가 완료되었습니다!</h1>
+  <p>원더풀크루 올패키지 결제가 완료됐어요!<br>지금 바로 무제한 서비스를 즐기세요.</p>
+  <div class="benefits">
+    <b>포함 혜택:</b><br>
+    ✓ 플랫폼 무제한 이용<br>
+    ✓ 강의 영상 무제한<br>
+    ✓ 라이브 수강권<br>
+    ✓ 1:1 코치 피드백<br>
+    ✓ AI 코칭 토큰 무제한
+  </div>
+  <a href="index.html" class="btn">홈으로 돌아가기 →</a>
+</div>
+<script>
+// 결제 완료 시 localStorage에 기록
+localStorage.setItem('wc_paid','true');
+localStorage.setItem('wc_paid_date',new Date().toISOString());
+// 토큰 무제한 설정
+var t=JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');
+t.tokens=99999;t.unlimited=true;
+localStorage.setItem('wc_eng_tokens',JSON.stringify(t));
+</script>
+</body>
+</html>

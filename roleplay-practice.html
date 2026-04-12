@@ -42,7 +42,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 /* Video area */
 .video-area{flex:1;display:flex;align-items:center;justify-content:center;gap:24px;padding:24px;min-height:0;}
 .card-frame{width:220px;aspect-ratio:9/16;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:0;}
-.card-frame.speaking{border-color:var(--gold);animation:goldPulse 1.5s infinite;}
+.card-frame.speaking{border-color:var(--gold);animation:goldPulse 1.5s infinite;will-change:box-shadow;}
 @keyframes goldPulse{0%,100%{box-shadow:0 0 15px rgba(201,168,76,0.2);}50%{box-shadow:0 0 30px rgba(201,168,76,0.45);}}
 .card-label{position:absolute;bottom:0;left:0;right:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,0.8));text-align:center;}
 .card-label .name{font-family:'DM Serif Display',serif;font-size:0.85rem;color:#fff;}
@@ -240,12 +240,14 @@ function selAvatar(el){
 
 function startInterview(){
   var count=document.getElementById('s-count').value;
-  var arr=SCENARIOS.slice();
-  if(count==='all'){questions=arr;}
-  else{var n=parseInt(count);questions=[];for(var i=0;i<n&&arr.length;i++){var x=Math.floor(Math.random()*arr.length);questions.push({q:arr.splice(x,1)[0],origIdx:x});}}
-  if(!questions[0].q)questions=questions.map(function(q,i){return typeof q==='string'?{q:q,origIdx:i}:q;});
-  // Normalize
-  questions=questions.map(function(item){return typeof item==='string'?{q:item,origIdx:SCENARIOS.indexOf(item)}:item;});
+  // 원래 인덱스를 유지하며 셔플
+  var indexed=SCENARIOS.map(function(q,i){return {q:q,origIdx:i};});
+  if(count==='all'){questions=indexed;}
+  else{
+    var n=parseInt(count);questions=[];
+    var pool=indexed.slice();
+    for(var i=0;i<n&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
+  }
 
   qIdx=0;
   document.getElementById('setup').style.display='none';

@@ -3,141 +3,370 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>롤플레이 면접 연습   WonderfulCrew</title>
+<title>롤플레이 면접 연습 WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
-*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:36px;}.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
-.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:600px;margin:0 auto;line-height:1.8;}
-section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
-.info-box{background:#fff;border-left:4px solid var(--gold);padding:28px 30px;margin-bottom:40px;}.info-box h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin-bottom:12px;}.info-box li{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-bottom:4px;}.info-box li strong{color:var(--navy);}.info-box ul{padding-left:18px;margin-top:8px;}
-.card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:30px;margin-bottom:24px;}
-.card .num{font-family:'DM Serif Display',serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:8px;}
-.card .q{font-size:1.02rem;color:var(--navy);font-weight:600;line-height:1.5;margin-bottom:16px;}
-.card textarea{width:100%;min-height:100px;padding:12px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.9rem;resize:vertical;margin-bottom:14px;}
-.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
-.btn{padding:10px 22px;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}.btn-gold{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}.btn-navy{background:var(--navy);color:#fff;}
-.sc{display:none;margin-top:16px;padding:20px;background:var(--cream);border:1px solid var(--gold-pale);border-left:4px solid var(--gold);}.sc.v{display:block;}
-.sg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}.si{background:#fff;padding:14px;border:1px solid var(--gold-pale);text-align:center;}.si .l{font-size:0.72rem;color:var(--text-muted);margin-bottom:6px;}.si .v{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);}.si .v span{font-size:0.8rem;color:var(--text-muted);}
-.sm{margin-top:14px;font-size:0.86rem;color:var(--text-mid);line-height:1.7;padding:12px 14px;background:#fff;border-left:3px solid var(--gold);}
-.model{display:none;margin-top:14px;padding:16px;background:#fff;border:1px solid var(--gold-pale);font-size:0.88rem;color:var(--text-mid);line-height:1.8;}.model.v{display:block;}.model b{color:var(--navy);}
-footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
-@media(max-width:900px){.nav-links{display:none;}.sg{grid-template-columns:1fr;}}
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--navy-dark:#111B2E;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--navy-dark);color:#fff;min-height:100vh;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
 
-.nav-dropdown{position:relative;}
-.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
-.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid rgba(245,233,200,1);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:200px;z-index:1001;}
-.nav-dropdown:hover .nav-dropdown-menu{display:block;}
-.nav-dropdown-menu a{display:block;padding:10px 20px;font-size:0.82rem;color:#4A4438;white-space:nowrap;}
-.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:#C9A84C;}
+/* Nav - minimal for dark bg */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:rgba(17,27,46,0.95);border-bottom:1px solid rgba(201,168,76,0.15);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.8rem;color:rgba(255,255,255,0.5);transition:color 0.2s;}.nav-back:hover{color:var(--gold);}
+
+/* Setup screen */
+.setup{padding:60px 20px;text-align:center;max-width:700px;margin:0 auto;}
+.setup h1{font-family:'DM Serif Display',serif;font-size:1.8rem;color:#fff;margin-bottom:8px;}
+.setup h1 em{font-style:normal;color:var(--gold);}
+.setup p{color:rgba(255,255,255,0.6);font-size:0.88rem;line-height:1.7;margin-bottom:28px;}
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;text-align:left;}
+.setup-label{font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:6px;letter-spacing:0.06em;}
+.setup-select{width:100%;padding:10px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.3);border-radius:8px;color:#fff;font-family:inherit;font-size:0.85rem;}
+.setup-select option{background:var(--navy);color:#fff;}
+.avatar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.avatar-opt{padding:14px 8px;background:rgba(255,255,255,0.04);border:2px solid rgba(201,168,76,0.15);border-radius:8px;text-align:center;cursor:pointer;transition:all 0.2s;font-size:0.78rem;color:rgba(255,255,255,0.7);}
+.avatar-opt:hover,.avatar-opt.sel{border-color:var(--gold);background:rgba(201,168,76,0.1);color:#fff;}
+.avatar-opt .emoji{font-size:1.8rem;margin-bottom:4px;display:block;}
+.btn-start{padding:16px 40px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:28px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.04em;}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,168,76,0.4);}
+
+/* Interview screen */
+.interview{display:none;flex:1;flex-direction:column;}
+.interview.active{display:flex;}
+.q-banner{text-align:center;padding:16px 20px;background:rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.15);}
+.q-banner .label{font-size:0.7rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px;}
+.q-banner .question{font-size:0.95rem;color:#fff;font-weight:500;line-height:1.5;}
+
+/* Video area */
+.video-area{flex:1;display:flex;align-items:center;justify-content:center;gap:24px;padding:24px;min-height:0;}
+.card-frame{width:220px;aspect-ratio:9/16;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:0;}
+.card-frame.speaking{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76,0.3);animation:goldPulse 1.5s infinite;}
+@keyframes goldPulse{0%,100%{box-shadow:0 0 20px rgba(201,168,76,0.2);}50%{box-shadow:0 0 35px rgba(201,168,76,0.5);}}
+.card-label{position:absolute;bottom:0;left:0;right:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,0.8));text-align:center;}
+.card-label .name{font-family:'DM Serif Display',serif;font-size:0.85rem;color:#fff;}
+.card-label .role{font-size:0.68rem;color:var(--gold);letter-spacing:0.05em;}
+
+/* Avatar */
+.avatar-display{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#1A2340 0%,#2A3455 100%);}
+.avatar-face{text-align:center;}
+.avatar-face .face{font-size:4rem;line-height:1;margin-bottom:8px;}
+.avatar-face .mouth{width:20px;height:8px;background:var(--gold);border-radius:0 0 10px 10px;margin:0 auto;transition:height 0.1s;opacity:0.7;}
+.avatar-face .mouth.talking{animation:mouthMove 0.3s infinite alternate;}
+@keyframes mouthMove{0%{height:4px;width:16px;}100%{height:12px;width:22px;}}
+
+/* Camera */
+.cam-frame video{width:100%;height:100%;object-fit:cover;}
+.cam-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.3);font-size:0.82rem;flex-direction:column;gap:8px;}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:#E74C3C;display:none;}
+.rec-dot.on{display:inline-block;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* Waveform */
+.waveform{height:30px;display:flex;align-items:center;justify-content:center;gap:3px;padding:0 20px;}
+.waveform .bar{width:3px;background:var(--gold);border-radius:2px;animation:wave 0.5s ease-in-out infinite alternate;opacity:0.4;}
+.waveform.active .bar{opacity:1;}
+@keyframes wave{0%{height:4px;}100%{height:20px;}}
+
+/* Controls */
+.controls{display:flex;align-items:center;justify-content:center;gap:14px;padding:20px;background:rgba(17,27,46,0.95);border-top:1px solid rgba(201,168,76,0.15);}
+.ctrl-btn{padding:12px 22px;border:none;border-radius:24px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;}
+.ctrl-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.ctrl-btn.primary{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;}
+.ctrl-btn.secondary{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);}
+.ctrl-btn.secondary:hover:not(:disabled){background:rgba(255,255,255,0.12);}
+.ctrl-btn.danger{background:#E74C3C;color:#fff;}
+
+/* Feedback panel */
+.feedback-panel{display:none;padding:20px 24px;background:rgba(0,0,0,0.3);max-height:200px;overflow-y:auto;font-size:0.86rem;color:rgba(255,255,255,0.8);line-height:1.7;}
+.feedback-panel.active{display:block;}
+.feedback-panel b{color:var(--gold);}
+
+/* Transcript */
+.transcript-bar{padding:10px 20px;background:rgba(255,255,255,0.04);font-size:0.84rem;color:rgba(255,255,255,0.6);min-height:36px;border-top:1px solid rgba(255,255,255,0.05);}
+
+@media(max-width:600px){
+  .card-frame{width:140px;}
+  .video-area{gap:12px;padding:12px;}
+  .controls{flex-wrap:wrap;gap:8px;}
+  .avatar-grid{grid-template-columns:1fr 1fr;}
+  .setup-grid{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
+
 <nav>
   <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
-  <div class="nav-links">
-    <a href="index.html#about">소개</a>
-    <div class="nav-dropdown"><a href="index.html#expertise">준비 과정</a><div class="nav-dropdown-menu"><a href="leveltest.html">항공사 승무원</a><a href="walking-analysis.html">워킹 & 자세 분석</a><a href="coach-feedback.html">1:1 ��치 피드백</a><a href="ai-coach.html">AI 코치</a><a href="hotel.html">호텔 · 럭셔리</a><a href="cruise.html">크루즈</a></div></div>
-    <div class="nav-dropdown"><a href="index.html#resources">학습 자료</a><div class="nav-dropdown-menu"><a href="interview-guide.html">면접 완벽 가이드</a><a href="english-interview.html">한국어 & 영어 면접</a><a href="grooming-guide.html">이미지 메이킹 & 그루밍</a><a href="resume-guide.html">자기소개서 & CV</a><a href="customer-service.html">고객 응대 스킬</a></div></div>
-    <a href="daily-english.html">영어쉐도잉</a>
-    <a href="jobs.html">채용정보</a>
-    <a href="community.html">커뮤니티</a>
-    <a href="token-rewards.html">토큰받기</a>
-  </div>
-  <div style="display:flex;align-items:center;gap:12px;">
-    <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
-    <a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;">로그인</a>
-  </div>
+  <a href="curriculum.html" class="nav-back">← 커리큘럼</a>
 </nav>
-<div class="hero"><div class="label">Step 4 · Roleplay</div><h1>롤플레이 면접 <em>연습</em></h1><p>기내 상황 시뮬레이션   사과, 해결, 대안, Service Recovery의 정석을 연습하세요.</p></div>
 
-<!-- 면접관 & 악센트 선택 -->
-<section style="padding:40px 5% 0;"><div class="wrap">
-<div style="background:#fff;border:1px solid var(--gold-pale);padding:28px;margin-bottom:0;">
-  <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:16px;">💎 면접관 & 악센트 설정</div>
-  <div style="display:flex;gap:24px;flex-wrap:wrap;">
-    <div style="flex:1;min-width:200px;">
-      <div style="font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:8px;">면접관 아바타</div>
-      <div id="avatar-select" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;cursor:pointer;font-size:0.82rem;"><input type="radio" name="avatar" value="wm" checked style="accent-color:var(--gold);"> 👨🏻 서양 남성</label>
-        <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;cursor:pointer;font-size:0.82rem;"><input type="radio" name="avatar" value="wf" style="accent-color:var(--gold);"> 👩🏻 서양 여성</label>
-        <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;cursor:pointer;font-size:0.82rem;"><input type="radio" name="avatar" value="am" style="accent-color:var(--gold);"> 👨🏻‍💼 동양 남성</label>
-        <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;cursor:pointer;font-size:0.82rem;"><input type="radio" name="avatar" value="af" style="accent-color:var(--gold);"> 👩🏻‍💼 동양 여성</label>
+<!-- SETUP SCREEN -->
+<div class="setup" id="setup">
+  <h1>롤플레이 <em>면접 연습</em></h1>
+  <p>면접관 아바타가 기내 상황 질문을 읽어드립니다.<br>카메라 앞에서 실전처럼 답변하세요.</p>
+
+  <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.06em;">면접관 아바타</div>
+  <div class="avatar-grid" id="avatar-grid">
+    <div class="avatar-opt sel" data-avatar="👨🏻" onclick="selAvatar(this)"><span class="emoji">👨🏻</span>서양 남성</div>
+    <div class="avatar-opt" data-avatar="👩🏻" onclick="selAvatar(this)"><span class="emoji">👩🏻</span>서양 여성</div>
+    <div class="avatar-opt" data-avatar="👨🏻‍💼" onclick="selAvatar(this)"><span class="emoji">👨🏻‍💼</span>동양 남성</div>
+    <div class="avatar-opt" data-avatar="👩🏻‍💼" onclick="selAvatar(this)"><span class="emoji">👩🏻‍💼</span>동양 여성</div>
+  </div>
+
+  <div class="setup-grid">
+    <div>
+      <div class="setup-label">영어 악센트</div>
+      <select class="setup-select" id="s-accent">
+        <option value="en-GB">British English</option>
+        <option value="en-US">American English</option>
+        <option value="en-AU">Australian English</option>
+      </select>
+    </div>
+    <div>
+      <div class="setup-label">시나리오</div>
+      <select class="setup-select" id="s-count">
+        <option value="3">랜덤 3개</option>
+        <option value="5">랜덤 5개</option>
+        <option value="all">전체</option>
+      </select>
+    </div>
+  </div>
+
+  <button class="btn-start" onclick="startInterview()">면접 시작하기</button>
+</div>
+
+<!-- INTERVIEW SCREEN -->
+<div class="interview" id="interview">
+  <div class="q-banner">
+    <div class="label">Question <span id="q-idx">1</span> / <span id="q-total">3</span></div>
+    <div class="question" id="q-text"></div>
+  </div>
+
+  <div class="video-area">
+    <!-- 면접관 아바타 -->
+    <div class="card-frame" id="interviewer-card">
+      <div class="avatar-display">
+        <div class="avatar-face">
+          <div class="face" id="avatar-emoji">👨🏻</div>
+          <div class="mouth" id="avatar-mouth"></div>
+        </div>
+      </div>
+      <div class="card-label">
+        <div class="name" id="interviewer-name">Interviewer</div>
+        <div class="role">WonderfulCrew AI</div>
       </div>
     </div>
-    <div style="flex:1;min-width:200px;">
-      <div style="font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:8px;">영어 악센트</div>
-      <select id="accent-select" style="width:100%;padding:10px 12px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.84rem;">
-        <option value="en-GB">🇬🇧 British English</option>
-        <option value="en-US">🇺🇸 American English</option>
-        <option value="en-AU">🇦🇺 Australian English</option>
-        <option value="en-IN">🇮🇳 Indian English</option>
-        <option value="es-ES">🇪🇸 Spanish English</option>
-        <option value="ar-AE">🇦🇪 Arabic English</option>
-        <option value="th-TH">🇹🇭 Southeast Asian English</option>
-        <option value="ja-JP">🇯🇵 Japanese English</option>
-      </select>
-      <div style="font-size:0.74rem;color:var(--text-muted);margin-top:6px;">한국어 음성: ClovaVoice 연동 예정 (현재 브라우저 TTS)</div>
+
+    <!-- 학생 카메라 -->
+    <div class="card-frame" id="student-card">
+      <video id="cam-video" autoplay muted playsinline style="display:none;"></video>
+      <div class="cam-placeholder" id="cam-ph">
+        <div>📷</div>
+        <div>카메라 준비 중</div>
+      </div>
+      <div class="card-label">
+        <div class="name">You</div>
+        <div class="role"><span class="rec-dot" id="rec-dot"></span> <span id="rec-label">대기</span></div>
+      </div>
     </div>
   </div>
-</div>
-</div></section>
 
-<section><div class="wrap">
-<div class="info-box"><h3>롤플레이 답변 구조</h3><ul>
-<li><strong>1. 사과:</strong> 즉각적이고 진심 어린 사과</li>
-<li><strong>2. 해결책 제시:</strong> 고객이 원하는 exactly same한 것을 먼저 찾으려는 모습</li>
-<li><strong>3. 대안 제시:</strong> 없으면 대안   "이거 할래요?" 절대 금지! 대안의 장점과 이득을 충분히 설명</li>
-<li><strong>4. Service Recovery:</strong> 원래 원하는 것을 주지 못한 데 대한 보상 (업그레이드, 음료, 사과 카드 등)</li>
-</ul></div>
-<div id="cards"></div>
-<div style="text-align:center;margin-top:32px;"><button class="btn btn-navy" style="padding:14px 32px;font-size:0.9rem;" onclick="refresh()">더 연습하기</button></div>
-</div></section>
-<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+  <div class="waveform" id="waveform">
+    <div class="bar" style="animation-delay:0s;"></div><div class="bar" style="animation-delay:0.1s;"></div><div class="bar" style="animation-delay:0.2s;"></div>
+    <div class="bar" style="animation-delay:0.3s;"></div><div class="bar" style="animation-delay:0.15s;"></div><div class="bar" style="animation-delay:0.25s;"></div>
+    <div class="bar" style="animation-delay:0.05s;"></div><div class="bar" style="animation-delay:0.35s;"></div><div class="bar" style="animation-delay:0.12s;"></div>
+  </div>
+
+  <div class="transcript-bar" id="transcript">음성 답변 대기 중...</div>
+  <div class="feedback-panel" id="feedback"></div>
+
+  <div class="controls">
+    <button class="ctrl-btn primary" id="btn-answer" onclick="startAnswer()">🎙 답변 시작</button>
+    <button class="ctrl-btn danger" id="btn-stop" onclick="stopAnswer()" style="display:none;">⏹ 답변 완료</button>
+    <button class="ctrl-btn secondary" id="btn-model" onclick="showModel()" disabled>모범 답변</button>
+    <button class="ctrl-btn secondary" id="btn-next" onclick="nextQuestion()" disabled>다음 질문 →</button>
+  </div>
+</div>
+
 <script>
+// Scenarios
 var SCENARIOS=[
-  {q:"A passenger wants a window seat but the flight is completely full.",m:"I'm really sorry about that. Let me check all sections to see if any window seat opened up. Unfortunately, they're all taken. May I recommend this aisle seat near the front? It has extra legroom and you'll be one of the first to deplane. And as a small apology, I'd love to bring you a complimentary drink once we're airborne."},
-  {q:"A business class passenger's preferred meal choice has run out.",m:"I sincerely apologize. Let me check if any other cabin has one available. I'm afraid it's fully gone. However, our chef's second option today is also excellent   it's a grilled salmon with truffle sauce. Many passengers actually request it specifically. I'll also bring you a glass of champagne on the house as my apology."},
-  {q:"A passenger complains the cabin is too cold, but nearby passengers say it's fine.",m:"I completely understand, and I'm sorry for your discomfort. Let me bring you a warm blanket right away. I'll also check if we can slightly adjust the airflow above your seat. Would you like a warm cup of tea as well? Your comfort is my priority."},
-  {q:"A child passenger has been crying for 30 minutes and other passengers are complaining.",m:"I understand this must be frustrating. Let me first check on the family   the parents might need some help. I'll bring some warm milk and a coloring kit for the little one. For you, I'd like to offer our noise-cancelling headphones and perhaps move you to a quieter seat if one becomes available."},
-  {q:"A passenger asks for more alcohol but appears quite intoxicated.",m:"I appreciate you enjoying the flight. I want to make sure you arrive feeling great, so may I suggest a refreshing juice or sparkling water for now? We have an amazing fresh orange juice. I'll also bring you some snacks   sometimes a good meal makes the rest of the flight even more enjoyable."},
-  {q:"A passenger's carry-on bag doesn't fit in the overhead bin.",m:"Let me help you with that. I'll try rearranging some items first. If it still doesn't fit, I can safely gate-check it for you   it'll be the first bag out when we land. I'll put a priority tag on it so you won't have to wait."},
-  {q:"A passenger requests a Hindu vegetarian meal that wasn't pre-ordered.",m:"I'm sorry we don't have that specific meal pre-ordered for you. Let me see what we have that would work   we do have a vegetarian pasta that's completely meat-free. I'll personally check all the ingredients to make sure it meets your dietary needs. And I'll make a note for your return flight so this is arranged in advance."},
-  {q:"Two passengers are arguing loudly over the shared armrest.",m:"I understand the space can be a bit tight. May I suggest a solution? I have a spare cushion that might help. And if either of you would like, we have a seat near the window with a bit more space that just opened up. Can I bring you both a drink to help you relax and enjoy the flight?"},
-  {q:"A passenger refuses to fasten their seatbelt during turbulence.",m:"I completely understand, and I know it can be uncomfortable. However, your safety is our top priority. The captain has turned on the seatbelt sign because we're expecting some rough air. I need to make sure you're safe. Can I help you adjust the belt so it's more comfortable? When it comes to safety, we never compromise."},
-  {q:"A passenger's in-flight entertainment screen is not working.",m:"I'm so sorry about that. Let me try resetting it for you. If that doesn't work, I have a spare tablet with our full movie library that I can lend you. I'll also make sure this is reported so it's fixed before the next flight. And please, let me bring you a complimentary drink while I sort this out."},
-  {q:"A drink was accidentally spilled on a passenger's clothes.",m:"Oh, I am so sorry about this. Let me get you some club soda and napkins right away   that's the best for preventing a stain. We also have a spare amenity kit with a clean shirt if you'd like to change. I'll arrange for dry cleaning at our destination at no cost to you. Again, my deepest apologies."},
-  {q:"A passenger is having an allergic reaction after eating the meal.",m:"Please stay calm. I'll call for any medical professionals on board immediately and get our first aid kit. Can you tell me what you're allergic to? I'll inform the captain right away so we can arrange priority landing if needed. Your safety is the absolute priority right now."},
-  {q:"A passenger demands to be upgraded to business class for free.",m:"I understand you'd like a more comfortable experience, and I wish I could help with that. Unfortunately, upgrades are managed by our ground team. What I can do is make your economy experience as comfortable as possible   let me bring you an extra pillow, a blanket, and our premium amenity kit. I'll also check if there's a seat with more space available."},
-  {q:"A passenger discovers their passport is missing after boarding.",m:"I understand how stressful this must be. Let me help you look carefully around your seat and in the overhead bin first. I'll also check with the gate team to see if anything was turned in. If we can't find it, I'll connect you with our ground services at arrival who can assist with emergency documentation."}
+  "A passenger wants a window seat but the flight is completely full.",
+  "A business class passenger's preferred meal choice has run out.",
+  "A passenger complains the cabin is too cold, but nearby passengers say it's fine.",
+  "A child has been crying for 30 minutes and other passengers are complaining.",
+  "A passenger asks for more alcohol but appears quite intoxicated.",
+  "A passenger's carry-on bag doesn't fit in the overhead bin.",
+  "A passenger requests a Hindu vegetarian meal that wasn't pre-ordered.",
+  "Two passengers are arguing loudly over the shared armrest.",
+  "A passenger refuses to fasten their seatbelt during turbulence.",
+  "A passenger's in-flight entertainment screen is not working.",
+  "A drink was accidentally spilled on a passenger's clothes.",
+  "A passenger is having an allergic reaction after eating the meal.",
+  "A passenger demands to be upgraded to business class for free.",
+  "A passenger discovers their passport is missing after boarding."
 ];
-function pick3(){var a=SCENARIOS.slice(),o=[];for(var i=0;i<3&&a.length;i++){var x=Math.floor(Math.random()*a.length);o.push(a.splice(x,1)[0]);}return o;}
-function render(){
-  var c=document.getElementById('cards');c.innerHTML='';
-  pick3().forEach(function(s,i){
-    var d=document.createElement('div');d.className='card';
-    d.innerHTML='<div class="num">Scenario '+(i+1)+'</div><div class="q">'+s.q+'</div>'+
-      '<textarea placeholder="영어로 답변하세요..."></textarea>'+
-      '<div class="btn-row"><button class="btn btn-gold" onclick="score(this)">피드백 보기</button><button class="btn btn-outline" onclick="model(this)">모범 답변 보기</button></div>'+
-      '<div class="sc"></div><div class="model" data-m="'+s.m.replace(/"/g,'&quot;')+'"></div>';
-    c.appendChild(d);
-  });
+
+var MODELS={
+  0:"I'm really sorry about that. Let me check all sections for any window seat. Unfortunately they're all taken. May I recommend this aisle seat near the front? It has extra legroom. And I'll bring you a complimentary drink once we're airborne.",
+  1:"I sincerely apologize. Let me check other cabins. I'm afraid it's gone, but our chef's second option is excellent. I'll also bring champagne on the house as my apology.",
+  2:"I completely understand. Let me bring you a warm blanket right away and adjust the airflow above your seat. Would you like some hot tea as well?",
+  3:"Let me check on the family first. I'll bring warm milk and a coloring kit. For you, may I offer noise-cancelling headphones?",
+  4:"I want you to arrive feeling great. May I suggest a refreshing juice instead? We have amazing fresh orange juice. I'll bring some snacks too.",
+  5:"Let me help rearrange some items. If it still doesn't fit, I can gate-check it with a priority tag so it's first out.",
+  6:"I'm sorry we don't have that pre-ordered. We have a vegetarian pasta that's meat-free. I'll personally check ingredients and note it for your return flight.",
+  7:"I understand space can be tight. I have a spare cushion, and there's a seat with more space nearby. Can I bring you both a drink?",
+  8:"Your safety is our top priority. The captain turned on the sign because of rough air ahead. Can I help adjust the belt so it's comfortable?",
+  9:"So sorry about that. Let me try resetting it. If not, I have a spare tablet with our full movie library. Let me bring a complimentary drink too.",
+  10:"I am so sorry. Let me get club soda and napkins right away. We have a spare shirt, and I'll arrange dry cleaning at no cost.",
+  11:"Please stay calm. I'll call for medical professionals and get our first aid kit. I'll inform the captain for priority landing if needed.",
+  12:"I understand. Unfortunately upgrades are managed by ground team. Let me bring extra pillows, blanket, and our premium amenity kit instead.",
+  13:"I understand how stressful this is. Let me help you look carefully. I'll also check with the gate team. If we can't find it, I'll connect you with emergency documentation."
+};
+
+var chosenAvatar='👨🏻';
+var questions=[];
+var qIdx=0;
+var stream=null;
+var recognition=null;
+var fullText='';
+
+function selAvatar(el){
+  document.querySelectorAll('.avatar-opt').forEach(function(a){a.classList.remove('sel');});
+  el.classList.add('sel');chosenAvatar=el.dataset.avatar;
 }
-function score(btn){
-  var sc=btn.closest('.card').querySelector('.sc');var s=[r(),r(),r(),r()];
-  sc.innerHTML='<div style="font-family:DM Serif Display,serif;font-size:1rem;color:var(--navy);margin-bottom:14px;">Roleplay Score</div>'+
-    '<div class="sg"><div class="si"><div class="l">사과 표현</div><div class="v">'+s[0]+'<span>/100</span></div></div>'+
-    '<div class="si"><div class="l">해결책 제시</div><div class="v">'+s[1]+'<span>/100</span></div></div>'+
-    '<div class="si"><div class="l">대안 & 설득력</div><div class="v">'+s[2]+'<span>/100</span></div></div>'+
-    '<div class="si"><div class="l">Service Recovery</div><div class="v">'+s[3]+'<span>/100</span></div></div></div>'+
-    '<div class="sm">종합: <b>'+Math.round((s[0]+s[1]+s[2]+s[3])/4)+'/100</b><br><br>더미 점수   AI 엔진 학습 후 정교한 피드백으로 업데이트 예정</div>';
-  sc.classList.add('v');
+
+function startInterview(){
+  var count=document.getElementById('s-count').value;
+  var arr=SCENARIOS.slice();
+  if(count==='all'){questions=arr;}
+  else{var n=parseInt(count);questions=[];for(var i=0;i<n&&arr.length;i++){var x=Math.floor(Math.random()*arr.length);questions.push({q:arr.splice(x,1)[0],origIdx:x});}}
+  if(!questions[0].q)questions=questions.map(function(q,i){return typeof q==='string'?{q:q,origIdx:i}:q;});
+  // Normalize
+  questions=questions.map(function(item){return typeof item==='string'?{q:item,origIdx:SCENARIOS.indexOf(item)}:item;});
+
+  qIdx=0;
+  document.getElementById('setup').style.display='none';
+  document.getElementById('interview').classList.add('active');
+  document.getElementById('avatar-emoji').textContent=chosenAvatar;
+  document.getElementById('q-total').textContent=questions.length;
+
+  // Start camera
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true}).then(function(s){
+    stream=s;
+    var v=document.getElementById('cam-video');
+    v.srcObject=s;v.style.display='block';
+    document.getElementById('cam-ph').style.display='none';
+  }).catch(function(){});
+
+  showQuestion();
 }
-function model(btn){var m=btn.closest('.card').querySelector('.model');m.innerHTML='<b>Model Answer:</b><br><br>'+m.dataset.m;m.classList.toggle('v');}
+
+function showQuestion(){
+  var q=questions[qIdx];
+  document.getElementById('q-idx').textContent=qIdx+1;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('transcript').textContent='음성 답변 대기 중...';
+  document.getElementById('feedback').classList.remove('active');
+  document.getElementById('feedback').innerHTML='';
+  document.getElementById('btn-answer').style.display='inline-flex';
+  document.getElementById('btn-answer').disabled=false;
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('btn-model').disabled=true;
+  document.getElementById('btn-next').disabled=true;
+  document.getElementById('waveform').classList.remove('active');
+  fullText='';
+
+  // TTS question
+  var accent=document.getElementById('s-accent').value;
+  speakQuestion(q.q,accent);
+}
+
+function speakQuestion(text,lang){
+  if(!('speechSynthesis' in window))return;
+  var iCard=document.getElementById('interviewer-card');
+  var mouth=document.getElementById('avatar-mouth');
+  iCard.classList.add('speaking');
+  mouth.classList.add('talking');
+  var u=new SpeechSynthesisUtterance(text);
+  u.lang=lang;u.rate=0.85;u.pitch=1.05;
+  u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+function startAnswer(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){document.getElementById('transcript').textContent='Chrome에서 사용해 주세요.';return;}
+  recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
+  fullText='';
+  document.getElementById('btn-answer').style.display='none';
+  document.getElementById('btn-stop').style.display='inline-flex';
+  document.getElementById('rec-dot').classList.add('on');
+  document.getElementById('rec-label').textContent='녹음 중';
+  document.getElementById('waveform').classList.add('active');
+  recognition.onresult=function(ev){
+    var interim='';fullText='';
+    for(var r=0;r<ev.results.length;r++){
+      if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';
+      else interim+=ev.results[r][0].transcript;
+    }
+    document.getElementById('transcript').textContent=fullText+interim;
+  };
+  recognition.onend=function(){
+    if(fullText.trim())document.getElementById('transcript').textContent=fullText.trim();
+  };
+  recognition.start();
+}
+
+function stopAnswer(){
+  if(recognition)recognition.stop();
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('btn-answer').style.display='inline-flex';
+  document.getElementById('btn-answer').disabled=true;
+  document.getElementById('rec-dot').classList.remove('on');
+  document.getElementById('rec-label').textContent='완료';
+  document.getElementById('waveform').classList.remove('active');
+
+  // Show dummy score
+  var fb=document.getElementById('feedback');
+  var s=[r(),r(),r(),r()];
+  var avg=Math.round((s[0]+s[1]+s[2]+s[3])/4);
+  fb.innerHTML='<b>Roleplay Score: '+avg+'/100</b><br><br>'+
+    '사과 표현: '+s[0]+'/100 | 해결책 제시: '+s[1]+'/100<br>'+
+    '대안 & 설득력: '+s[2]+'/100 | Service Recovery: '+s[3]+'/100<br><br>'+
+    '<span style="color:rgba(255,255,255,0.5);font-size:0.78rem;">더미 점수 - AI 엔진 학습 후 정교한 피드백으로 업데이트 예정</span>';
+  fb.classList.add('active');
+  document.getElementById('btn-model').disabled=false;
+  document.getElementById('btn-next').disabled=false;
+}
+
+function showModel(){
+  var q=questions[qIdx];
+  var idx=q.origIdx!==undefined?q.origIdx:SCENARIOS.indexOf(q.q);
+  var model=MODELS[idx]||"I sincerely apologize for the inconvenience. Let me see what I can do to help. I'll find the best solution for you right away, and as a small gesture, I'd like to offer you a complimentary drink.";
+  var fb=document.getElementById('feedback');
+  fb.innerHTML+=('<br><br><b style="color:var(--gold);">Model Answer:</b><br>'+model);
+  // TTS model answer
+  var accent=document.getElementById('s-accent').value;
+  speakQuestion(model,accent);
+}
+
+function nextQuestion(){
+  qIdx++;
+  if(qIdx>=questions.length){
+    document.getElementById('q-banner').innerHTML='<div class="label">COMPLETE</div><div class="question">모든 질문을 완료했습니다!</div>';
+    document.getElementById('feedback').innerHTML='<b style="color:var(--gold);">롤플레이 연습 완료</b><br><br><a href="curriculum.html" style="color:var(--gold);">← 커리큘럼으로 돌아가기</a>';
+    document.getElementById('feedback').classList.add('active');
+    document.querySelectorAll('.ctrl-btn').forEach(function(b){b.style.display='none';});
+    return;
+  }
+  showQuestion();
+}
+
 function r(){return Math.floor(Math.random()*36)+50;}
-function refresh(){render();window.scrollTo(0,0);}
-render();
 </script>
 </body>
 </html>

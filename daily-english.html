@@ -109,6 +109,30 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="sec-label">100 Q&amp;A · Random 3</div>
   <h2 class="sec-title">English <em>Practice</em></h2>
   <div class="gold-line"></div>
+  <!-- 설정 패널 -->
+  <div style="max-width:860px;margin:0 auto 28px;display:flex;gap:16px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:180px;background:#fff;border:1px solid var(--gold-pale);padding:16px 18px;">
+      <div style="font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:8px;">영어 액센트</div>
+      <select id="accent-choice" onchange="localStorage.setItem('wc_accent',this.value)" style="width:100%;padding:8px 10px;border:1px solid var(--gold-pale);border-radius:6px;font-family:inherit;font-size:0.85rem;">
+        <option value="en-GB">British English</option>
+        <option value="en-US">American English</option>
+      </select>
+    </div>
+    <div style="flex:1;min-width:180px;background:#fff;border:1px solid var(--gold-pale);padding:16px 18px;">
+      <div style="font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:8px;">답변 수준</div>
+      <select id="level-choice" onchange="localStorage.setItem('wc_level',this.value)" style="width:100%;padding:8px 10px;border:1px solid var(--gold-pale);border-radius:6px;font-family:inherit;font-size:0.85rem;">
+        <option value="easy">쉬운 버전 (초급)</option>
+        <option value="advanced">고급 버전 (중상급)</option>
+      </select>
+    </div>
+  </div>
+  <script>
+  // 저장된 설정 복원
+  var savedAccent=localStorage.getItem('wc_accent');
+  var savedLevel=localStorage.getItem('wc_level');
+  if(savedAccent)document.getElementById('accent-choice').value=savedAccent;
+  if(savedLevel)document.getElementById('level-choice').value=savedLevel;
+  </script>
   <div class="q-wrap" id="q-wrap"></div>
   <div class="done-banner" id="done-banner">✓ 오늘의 ���어 연습 완��! 연속 출석��� 기록되었습니다.</div>
   <div style="max-width:860px;margin:30px auto 0;text-align:center;">
@@ -273,7 +297,7 @@ function buildCards(questions,startIdx){
   // ① 질문 듣기 TTS
   card.querySelector('[data-act="listen-q"]').addEventListener('click',function(){
     if(!('speechSynthesis' in window))return;
-    var u=new SpeechSynthesisUtterance(q);u.lang='en-GB';u.rate=0.85;u.pitch=1.05;
+    var u=new SpeechSynthesisUtterance(q);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.85;u.pitch=1.05;
     window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
   });
 
@@ -325,14 +349,14 @@ function buildCards(questions,startIdx){
     try{
       var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
         model:'claude-sonnet-4-20250514',max_tokens:900,
-        system:'You are an English interview coach for cabin crew candidates. The input is speech-to-text. Respond in plain text only (no markdown, no **, no asterisks). Use this exact format:\n\n[피드백]\n1) 잘한 점   구체적으로 어떤 내용/표현이 좋았는지\n2) 개선할 점   내용 깊이/구성만. 대소문자, 구두점, 띄어쓰기는 음성인식 특성이므로 절대 지적하지 마세요\n3) 표현 교정   확실히 틀린 문법만. 대소문자/구두점 무시\n4) 말하기 톤 조언   승무원 면접에 맞는 따뜻하고 친절한 인토네이션 팁. 예: 문장 끝을 살짝 올려서 부드럽게, 핵심 단어에 강세를 주세요, 미소 띤 목소리로 등 구체적으로\n\n[모범답변]\nNatural spoken English in a warm, friendly cabin crew tone. 3-4 SHORT simple sentences (20-30 sec). Easy vocabulary. The answer should sound kind, approachable, and professional   like a real cabin crew member speaking to a passenger. Then one blank line and brief Korean translation.\n\nKeep feedback under 350 Korean characters. Keep model answer under 100 English words.',
-        messages:[{role:'user',content:'Interview question: "'+q+'"\n\nCandidate spoken answer (speech-to-text   ignore capitalization/punctuation):\n'+ans}]
+        system:'You are an English interview coach for cabin crew candidates. The input is speech-to-text. Respond in plain text only (no markdown, no **, no asterisks). Use this exact format:\n\n[피드백]\n1) 잘한 점 - 구체적으로 어떤 내용/표현이 좋았는지\n2) 개선할 점 - 내용 깊이/구성만. 대소문자, 구두점은 음성인식이므로 절대 지적 금지. 말하기 속도에 대한 지적도 하지 마세요(천천히 하세요 같은 피드백 금지)\n3) 표현 교정 - 확실히 틀린 문법만. 대소문자/구두점 무시\n4) 목소리 & 톤 - 반드시 포함: 친절하고 밝은 목소리로 말하세요! 승무원은 고객이 환영받는 느낌을 받아야 합니다. 구체적 팁: 문장 끝을 살짝 올려서 부드럽게, 핵심 단어에 자연스러운 강세, 미소 띤 목소리가 면접에서 가장 중요합니다\n\n[나은 답변]\nIMPORTANT: 학생의 원래 답변을 기반으로 내용을 살리되 더 좋은 표현으로 다듬은 개선 버전을 제시하세요. 학생이 하고 싶은 말을 그대로 유지하면서 문법, 표현, 구조만 개선합니다. 완전히 새로운 답변을 만들지 마세요.\n답변 수준: '+(document.getElementById('level-choice').value==='easy'?'Easy level - 쉬운 단어, 짧은 문장 3-4개 (초급자용)':'Advanced level - 자연스럽고 풍부한 표현, 5-6 sentences (중상급)')+'.\nWarm, friendly cabin crew tone. Then one blank line and brief Korean translation.\n\nKeep feedback under 350 Korean characters. Keep improved answer under 120 English words.',
+        messages:[{role:'user',content:'Interview question: "'+q+'"\n\nCandidate spoken answer (speech-to-text, ignore capitalization/punctuation):\n'+ans}]
       })});
       var data=await res.json();
       var raw=(data&&data.content&&data.content[0]&&data.content[0].text)||data.text||JSON.stringify(data);
       raw=raw.replace(/\*\*/g,'');
       // 분리: [피드백] ... [모범답변] ...
-      var parts=raw.split(/\[모범답변\]/i);
+      var parts=raw.split(/\[나은 답변\]|\[모범답변\]/i);
       var fbText=(parts[0]||'').replace(/\[피드백\]/i,'').trim();
       var sampleRaw=(parts[1]||'').trim();
       // 피드백 표시
@@ -359,7 +383,7 @@ function buildCards(questions,startIdx){
     sampleArea.innerHTML=cachedSampleHtml;
     // 자동 TTS 재생 (따뜻한 톤, 영국식)
     if(sampleText&&'speechSynthesis' in window){
-      var u=new SpeechSynthesisUtterance(sampleText);u.lang='en-GB';u.rate=0.82;u.pitch=1.1;
+      var u=new SpeechSynthesisUtterance(sampleText);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.82;u.pitch=1.1;
       window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
     }
     // ⑤ 쉐도잉 버튼 표시
@@ -374,7 +398,7 @@ function buildCards(questions,startIdx){
   // ⑤ 예시 듣기 TTS
   card.querySelector('[data-act="tts-sample"]').addEventListener('click',function(){
     if(!sampleText||!('speechSynthesis' in window))return;
-    var u=new SpeechSynthesisUtterance(sampleText);u.lang='en-GB';u.rate=0.82;u.pitch=1.1;
+    var u=new SpeechSynthesisUtterance(sampleText);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.82;u.pitch=1.1;
     window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
   });
 
@@ -477,7 +501,7 @@ function buildShadowCards(sentences){
     var result=card.querySelector('.shadow-result');
     card.querySelector('[data-act="tts"]').addEventListener('click',function(){
       if(!('speechSynthesis' in window)){result.textContent='이 브라우저는 음성 합성을 지원하지 않아요.';return;}
-      var u=new SpeechSynthesisUtterance(s);u.lang='en-GB';u.rate=0.85;u.pitch=1.1;
+      var u=new SpeechSynthesisUtterance(s);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.85;u.pitch=1.1;
       window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
     });
     var recBtn2=card.querySelector('[data-act="rec"]');

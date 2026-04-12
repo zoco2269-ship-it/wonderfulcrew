@@ -42,8 +42,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 /* Video area */
 .video-area{flex:1;display:flex;align-items:center;justify-content:center;gap:24px;padding:24px;min-height:0;}
 .card-frame{width:220px;aspect-ratio:9/16;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:0;}
-.card-frame.speaking{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76,0.3);animation:goldPulse 1.5s infinite;}
-@keyframes goldPulse{0%,100%{box-shadow:0 0 20px rgba(201,168,76,0.2);}50%{box-shadow:0 0 35px rgba(201,168,76,0.5);}}
+.card-frame.speaking{border-color:var(--gold);animation:goldPulse 1.5s infinite;}
+@keyframes goldPulse{0%,100%{box-shadow:0 0 15px rgba(201,168,76,0.2);}50%{box-shadow:0 0 30px rgba(201,168,76,0.45);}}
 .card-label{position:absolute;bottom:0;left:0;right:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,0.8));text-align:center;}
 .card-label .name{font-family:'DM Serif Display',serif;font-size:0.85rem;color:#fff;}
 .card-label .role{font-size:0.68rem;color:var(--gold);letter-spacing:0.05em;}
@@ -254,17 +254,29 @@ function startInterview(){
   document.getElementById('q-total').textContent=questions.length;
 
   // Start camera
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true}).then(function(s){
-    stream=s;
-    var v=document.getElementById('cam-video');
-    v.srcObject=s;v.style.display='block';
-    document.getElementById('cam-ph').style.display='none';
-  }).catch(function(){});
+  // 카메라: 정면(셀카) 우선, 실패 시 기본 카메라
+  var camOpts=[
+    {video:{facingMode:{exact:'user'}},audio:true},
+    {video:{facingMode:'user'},audio:true},
+    {video:true,audio:true}
+  ];
+  (async function(){
+    for(var i=0;i<camOpts.length;i++){
+      try{
+        stream=await navigator.mediaDevices.getUserMedia(camOpts[i]);
+        var v=document.getElementById('cam-video');
+        v.srcObject=stream;v.style.display='block';
+        document.getElementById('cam-ph').style.display='none';
+        break;
+      }catch(e){if(i===camOpts.length-1)document.getElementById('cam-ph').innerHTML='<div>카메라 연결 실패</div>';}
+    }
+  })();
 
   showQuestion();
 }
 
 function showQuestion(){
+  chatHistory=[];
   var q=questions[qIdx];
   document.getElementById('q-idx').textContent=qIdx+1;
   document.getElementById('q-text').textContent=q.q;
@@ -321,26 +333,79 @@ function startAnswer(){
   recognition.start();
 }
 
-function stopAnswer(){
+var chatHistory=[];
+var conversationMode=true;
+
+async function stopAnswer(){
   if(recognition)recognition.stop();
   document.getElementById('btn-stop').style.display='none';
-  document.getElementById('btn-answer').style.display='inline-flex';
-  document.getElementById('btn-answer').disabled=true;
   document.getElementById('rec-dot').classList.remove('on');
-  document.getElementById('rec-label').textContent='완료';
+  document.getElementById('rec-label').textContent='처리 중';
   document.getElementById('waveform').classList.remove('active');
 
-  // Show dummy score
+  var ans=fullText.trim()||document.getElementById('transcript').textContent.trim();
+  if(!ans){document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=false;return;}
+
+  // Add to chat history
+  chatHistory.push({role:'user',content:ans});
+
+  // Call AI for conversational response
   var fb=document.getElementById('feedback');
-  var s=[r(),r(),r(),r()];
-  var avg=Math.round((s[0]+s[1]+s[2]+s[3])/4);
-  fb.innerHTML='<b>Roleplay Score: '+avg+'/100</b><br><br>'+
-    '사과 표현: '+s[0]+'/100 | 해결책 제시: '+s[1]+'/100<br>'+
-    '대안 & 설득력: '+s[2]+'/100 | Service Recovery: '+s[3]+'/100<br><br>'+
-    '<span style="color:rgba(255,255,255,0.5);font-size:0.78rem;">더미 점수 - AI 엔진 학습 후 정교한 피드백으로 업데이트 예정</span>';
+  fb.innerHTML='<span style="color:var(--gold);">면접관이 답변을 듣고 있어요...</span>';
   fb.classList.add('active');
-  document.getElementById('btn-model').disabled=false;
-  document.getElementById('btn-next').disabled=false;
+
+  try{
+    var q=questions[qIdx];
+    var scenario=typeof q==='string'?q:q.q;
+    var turnCount=chatHistory.filter(function(m){return m.role==='user';}).length;
+
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:300,
+      system:'You are a cabin crew interviewer conducting a LIVE roleplay interview. The scenario is: "'+scenario+'"\n\nYou are the passenger/interviewer. Respond naturally IN ENGLISH as the character in this scenario would. Keep responses 2-3 sentences max.\n\nRules:\n- Stay in character as the passenger/interviewer\n- If the student apologized well and offered a solution, acknowledge it but push back gently or ask a follow-up (e.g. "But I specifically requested..." or "What if that doesn\'t work?")\n- After 3-4 exchanges, wrap up by saying something like "Alright, thank you for handling that." and add [END] at the very end\n- If student answer is poor, express more dissatisfaction as the passenger\n- Be realistic but not overly aggressive\n- Turn '+turnCount+' of conversation',
+      messages:chatHistory
+    })});
+    var data=await res.json();
+    var aiText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Thank you for your response.';
+    aiText=aiText.replace(/\*\*/g,'');
+
+    chatHistory.push({role:'assistant',content:aiText});
+
+    // Check if conversation should end
+    var isEnd=aiText.includes('[END]')||turnCount>=4;
+    var displayText=aiText.replace('[END]','').trim();
+
+    // Show AI response
+    fb.innerHTML='<b style="color:var(--gold);">Interviewer:</b> '+displayText;
+
+    // TTS the response
+    var accent=document.getElementById('s-accent').value;
+    speakQuestion(displayText,accent);
+
+    if(isEnd){
+      // Show final score
+      setTimeout(function(){
+        var s=[r(),r(),r(),r()];
+        var avg=Math.round((s[0]+s[1]+s[2]+s[3])/4);
+        fb.innerHTML+='<br><br><b>Roleplay Score: '+avg+'/100</b><br>'+
+          '사과: '+s[0]+' | 해결책: '+s[1]+' | 대안: '+s[2]+' | Recovery: '+s[3]+'<br>'+
+          '<span style="color:rgba(255,255,255,0.4);font-size:0.76rem;">더미 점수</span>';
+        document.getElementById('btn-model').disabled=false;
+        document.getElementById('btn-next').disabled=false;
+        document.getElementById('btn-answer').style.display='inline-flex';
+        document.getElementById('btn-answer').disabled=true;
+        document.getElementById('rec-label').textContent='완료';
+      },2000);
+    } else {
+      // Continue conversation
+      document.getElementById('btn-answer').style.display='inline-flex';
+      document.getElementById('btn-answer').disabled=false;
+      document.getElementById('rec-label').textContent='대기';
+    }
+  }catch(e){
+    fb.innerHTML='<span style="color:#E74C3C;">오류 발생. 다시 시도해주세요.</span>';
+    document.getElementById('btn-answer').style.display='inline-flex';
+    document.getElementById('btn-answer').disabled=false;
+  }
 }
 
 function showModel(){

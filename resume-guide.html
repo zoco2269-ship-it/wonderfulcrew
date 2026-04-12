@@ -84,10 +84,16 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <p>인사담당자의 눈길을 사로잡는 증명사진과 이력서 작성의 차별화 전략을 알려드립니다.</p>
 </div>
 
-<div class="tab-bar">
+<div style="max-width:1000px;margin:0 auto;padding:24px 5% 0;">
+  <div style="border:2px solid #C9A84C;padding:18px 22px;background:rgba(232,201,106,0.06);font-size:0.88rem;color:var(--text-mid);line-height:1.7;">WonderfulCrew AI는 에미레이트항공 일등석 출신 대표와 22개국 현직 승무원 자문단의 실전 경험이 학습된 전문 코칭 엔진입니다. 이곳에서 작성되는 자소서와 CV는 승무원·하이엔드 서비스직 면접에 완전히 최적화되어 있습니다.</div>
+</div>
+<div class="tab-bar" style="flex-wrap:wrap;">
   <button class="tab-btn active" onclick="showTab('photo')">증명사진</button>
   <button class="tab-btn" onclick="showTab('domestic')">국내 자기소개서</button>
   <button class="tab-btn" onclick="showTab('cv')">외국 항공사 CV</button>
+  <button class="tab-btn" onclick="showTab('ai-write')">자소서 작성 AI</button>
+  <button class="tab-btn" onclick="showTab('ai-cv')">CV 작성 AI</button>
+  <button class="tab-btn" onclick="showTab('ai-edit')">답변 첨삭</button>
 </div>
 
 <section>
@@ -321,6 +327,59 @@ Travel: Visited 12 countries across Asia and Europe</div>
   </div>
 </div>
 
+<!-- AI 자소서 작성 -->
+<div class="tab-content" id="tab-ai-write">
+  <div class="sec-label">AI Writer</div>
+  <h2 class="sec-title">AI 자기소개서 <em>작성</em></h2>
+  <div class="gold-line"></div>
+  <div class="card">
+    <label style="display:block;font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:4px;">목표 항공사</label>
+    <select id="aw-airline" style="width:100%;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;margin-bottom:12px;"><option>대한항공</option><option>아시아나</option><option>제주항공</option><option>진에어</option><option>티웨이</option><option>에어프레미아</option><option>에어서울</option></select>
+    <label style="display:block;font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:4px;">지원 동기 키워드</label>
+    <input type="text" id="aw-keyword" placeholder="예: 서비스 열정, 해외 경험, 팀워크" style="width:100%;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;margin-bottom:12px;">
+    <label style="display:block;font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:4px;">본인 경험 (간단히)</label>
+    <textarea id="aw-exp" placeholder="호텔 프론트 3년, 카페 아르바이트 2년, 영어 TOEIC 900 등" style="width:100%;min-height:80px;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;margin-bottom:12px;resize:vertical;"></textarea>
+    <button onclick="aiWrite()" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">WonderfulCrew AI로 자소서 초안 생성</button>
+    <span style="font-size:0.78rem;color:var(--text-muted);margin-left:10px;">토큰 2개 (테스트 무료)</span>
+    <div id="aw-result" style="display:none;margin-top:18px;padding:20px;background:var(--cream);border-left:4px solid var(--gold);font-size:0.9rem;line-height:1.9;color:var(--text-dark);white-space:pre-wrap;"></div>
+    <div id="aw-note" style="display:none;margin-top:10px;font-size:0.78rem;color:var(--text-muted);">이 자소서는 WonderfulCrew AI가 해당 항공사 면접 기준에 맞게 작성했습니다.</div>
+  </div>
+</div>
+
+<!-- AI CV 작성 -->
+<div class="tab-content" id="tab-ai-cv">
+  <div class="sec-label">AI CV Writer</div>
+  <h2 class="sec-title">AI 영문 CV <em>작성</em></h2>
+  <div class="gold-line"></div>
+  <div class="card">
+    <label style="display:block;font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:4px;">목표 항공사</label>
+    <select id="ac-airline" style="width:100%;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;margin-bottom:12px;"><option>에미레이트</option><option>카타르</option><option>싱가포르</option><option>캐세이</option><option>KLM</option><option>핀에어</option><option>에어아시아</option></select>
+    <label style="display:block;font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:4px;">이름 (영문)</label>
+    <input type="text" id="ac-name" placeholder="Jane Kim" style="width:100%;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;margin-bottom:12px;">
+    <label style="display:block;font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:4px;">경력 (간단히)</label>
+    <textarea id="ac-exp" placeholder="Hotel front desk 3 years, Cafe barista 2 years, TOEIC 900, Korean (Native), English (Fluent)" style="width:100%;min-height:80px;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;margin-bottom:12px;resize:vertical;"></textarea>
+    <button onclick="aiCV()" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">WonderfulCrew AI로 CV 초안 생성</button>
+    <span style="font-size:0.78rem;color:var(--text-muted);margin-left:10px;">토큰 2개 (테스트 무료)</span>
+    <div id="ac-result" style="display:none;margin-top:18px;padding:20px;background:var(--cream);border-left:4px solid var(--gold);font-size:0.88rem;line-height:1.8;color:var(--text-dark);white-space:pre-wrap;"></div>
+    <div id="ac-note" style="display:none;margin-top:10px;font-size:0.78rem;color:var(--text-muted);">이 CV는 WonderfulCrew AI가 해당 항공사 채용 기준에 맞게 작성했습니다.</div>
+  </div>
+</div>
+
+<!-- 답변 첨삭 -->
+<div class="tab-content" id="tab-ai-edit">
+  <div class="sec-label">AI Edit</div>
+  <h2 class="sec-title">답변 <em>첨삭</em></h2>
+  <div class="gold-line"></div>
+  <div class="card">
+    <label style="display:block;font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:4px;">기존 자소서/CV 붙여넣기</label>
+    <textarea id="ae-text" placeholder="기존 자소서 또는 CV 전체를 붙여넣기 하세요." style="width:100%;min-height:160px;padding:12px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;margin-bottom:12px;resize:vertical;"></textarea>
+    <button onclick="aiEdit()" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">WonderfulCrew AI 첨삭 받기</button>
+    <span style="font-size:0.78rem;color:var(--text-muted);margin-left:10px;">토큰 1개 (테스트 무료)</span>
+    <div id="ae-result" style="display:none;margin-top:18px;padding:20px;background:var(--cream);border-left:4px solid var(--gold);font-size:0.9rem;line-height:1.9;color:var(--text-dark);white-space:pre-wrap;"></div>
+    <div id="ae-note" style="display:none;margin-top:10px;font-size:0.78rem;color:var(--text-muted);">승무원 면접관의 시선으로 첨삭했습니다.</div>
+  </div>
+</div>
+
 </div>
 </section>
 
@@ -332,6 +391,37 @@ function showTab(tab){
   document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
   document.getElementById('tab-'+tab).classList.add('active');
   event.target.classList.add('active');
+}
+var SYS='당신은 에미레이트항공 일등석 승무원 7년, 20년 코칭 경력, 22개국 1,000명 이상 합격생을 배출한 WonderfulCrew의 전문 코칭 AI입니다. 승무원/하이엔드 서비스직 면접에 최적화된 자소서와 CV를 작성해주세요. 서비스 마인드, 공감 능력, 팀워크, 진정성을 중심으로 작성하세요. plain text only, no markdown.';
+async function callAI(prompt,resultId,noteId){
+  var r=document.getElementById(resultId);var n=document.getElementById(noteId);
+  r.style.display='block';r.textContent='생성 중...';
+  try{
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:SYS,messages:[{role:'user',content:prompt}]})});
+    var data=await res.json();
+    var text=(data&&data.content&&data.content[0]&&data.content[0].text)||'생성 실패';
+    r.textContent=text.replace(/\*\*/g,'');
+    if(n)n.style.display='block';
+  }catch(e){r.textContent='오류가 발생했습니다.';}
+}
+function aiWrite(){
+  var airline=document.getElementById('aw-airline').value;
+  var keyword=document.getElementById('aw-keyword').value;
+  var exp=document.getElementById('aw-exp').value;
+  if(!keyword&&!exp){alert('키워드와 경험을 입력해주세요.');return;}
+  callAI('목표 항공사: '+airline+'\n지원 동기 키워드: '+keyword+'\n본인 경험: '+exp+'\n\n위 정보를 바탕으로 '+airline+' 면접에 최적화된 한국어 자기소개서를 작성해주세요. 두괄식으로, 구체적 경험 포함, 5~6단락.','aw-result','aw-note');
+}
+function aiCV(){
+  var airline=document.getElementById('ac-airline').value;
+  var name=document.getElementById('ac-name').value||'Jane Kim';
+  var exp=document.getElementById('ac-exp').value;
+  if(!exp){alert('경력을 입력해주세요.');return;}
+  callAI('Target airline: '+airline+'\nName: '+name+'\nExperience: '+exp+'\n\nCreate a professional English CV optimized for '+airline+' cabin crew application. Include: Contact Info, Personal Summary (3 lines), Work Experience (detailed with numbers), Education, Skills, Additional. Professional format.','ac-result','ac-note');
+}
+function aiEdit(){
+  var text=document.getElementById('ae-text').value;
+  if(!text){alert('자소서/CV를 붙여넣기 해주세요.');return;}
+  callAI('아래 자소서/CV를 승무원 면접 전문가의 시선으로 첨삭해주세요.\n\n수정 전:\n'+text+'\n\n형식: 수정 전/후 비교 + 수정 이유 설명. 서비스 마인드, 구체성, 진정성 관점에서 평가.','ae-result','ae-note');
 }
 </script>
 </body>

@@ -181,7 +181,7 @@ function startRec(i){
   var stopBtn=document.getElementById('stop-'+i);
   var tr=document.getElementById('tr-'+i);
 
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true}).then(function(stream){
+  navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(function(stream){
     streams[i]=stream;
     vid.srcObject=stream;
     ph.style.display='none';

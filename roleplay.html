@@ -643,7 +643,7 @@ async function initCamera(){
   // 순서대로 시도: 전면HD → 전면기본 → 후면포함 → 오디오만
   var attempts=[
     {video:{facingMode:{ideal:'user'},width:{ideal:1280},height:{ideal:720}},audio:true},
-    {video:{facingMode:'user'},audio:true},
+    {video:true,audio:true},
     {video:true,audio:true},
     {video:false,audio:true}
   ];

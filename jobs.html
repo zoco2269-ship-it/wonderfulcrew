@@ -152,5 +152,43 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 </section>
 
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+<script>
+// RSS 뉴스 자동 로딩 (fallback: 기존 하드코딩 유지)
+(async function(){
+  try{
+    var queries=[
+      {tag:'EMIRATES',q:'Emirates cabin crew recruitment'},
+      {tag:'QATAR',q:'Qatar Airways cabin crew'},
+      {tag:'KOREAN AIR',q:'대한항공 승무원 채용'},
+      {tag:'SINGAPORE',q:'Singapore Airlines cabin crew'},
+      {tag:'ASIANA',q:'아시아나항공 승무원 채용'}
+    ];
+    var newsWrap=document.querySelector('.news-wrap');
+    var allNews=[];
+    for(var i=0;i<queries.length;i++){
+      var res=await fetch('/api/news?query='+encodeURIComponent(queries[i].q));
+      if(!res.ok)continue;
+      var xml=await res.text();
+      var parser=new DOMParser();
+      var doc=parser.parseFromString(xml,'text/xml');
+      var items=doc.querySelectorAll('item');
+      for(var j=0;j<Math.min(2,items.length);j++){
+        var title=items[j].querySelector('title');
+        var link=items[j].querySelector('link');
+        var pubDate=items[j].querySelector('pubDate');
+        if(title&&link){
+          allNews.push({tag:queries[i].tag,title:title.textContent,link:link.textContent,date:pubDate?new Date(pubDate.textContent).toISOString().slice(0,10):''});
+        }
+      }
+    }
+    if(allNews.length>0){
+      newsWrap.innerHTML='';
+      allNews.sort(function(a,b){return b.date.localeCompare(a.date);}).slice(0,10).forEach(function(n){
+        newsWrap.innerHTML+='<a href="'+n.link+'" target="_blank" class="news-item"><span class="news-tag">'+n.tag+'</span><div class="news-title">'+n.title+' →</div><div class="news-date">'+n.date+'</div></a>';
+      });
+    }
+  }catch(e){/* fallback: 기존 하드코딩 뉴스 유지 */}
+})();
+</script>
 </body>
 </html>

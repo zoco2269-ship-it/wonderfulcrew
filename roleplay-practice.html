@@ -111,9 +111,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
   <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.06em;">면접관 아바타</div>
   <div class="avatar-grid" style="grid-template-columns:1fr 1fr;max-width:300px;margin:0 auto 20px;" id="avatar-grid">
-    <div class="avatar-opt sel" data-avatar="👨🏻" onclick="selAvatar(this)"><span class="emoji">👨🏻</span>남성 면접관</div>
-    <div class="avatar-opt" data-avatar="👩🏻" onclick="selAvatar(this)"><span class="emoji">👩🏻</span>여성 면접관</div>
+    <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/avatar-male.png" onclick="selAvatar(this)"><span class="emoji">👨🏻</span>남성 면접관</div>
+    <div class="avatar-opt" data-avatar="👩🏻" data-img="images/avatar-female.png" onclick="selAvatar(this)"><span class="emoji">👩🏻</span>여성 면접관</div>
   </div>
+  <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:16px;">아바타 이미지는 images/avatar-male.png, avatar-female.png에 넣으면 자동 적용됩니다.</div>
 
   <div class="setup-grid">
     <div>
@@ -150,7 +151,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
     <!-- 면접관 아바타 -->
     <div class="card-frame" id="interviewer-card">
       <div class="avatar-display">
-        <div class="avatar-face">
+        <img id="avatar-img" src="" alt="Interviewer" style="width:100%;height:100%;object-fit:cover;display:none;">
+        <div class="avatar-face" id="avatar-face-fallback">
           <div class="face" id="avatar-emoji">👨🏻</div>
           <div class="mouth" id="avatar-mouth"></div>
         </div>
@@ -163,7 +165,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
     <!-- 학생 카메라 -->
     <div class="card-frame" id="student-card">
-      <video id="cam-video" autoplay muted playsinline style="display:none;"></video>
+      <video id="cam-video" autoplay muted playsinline style="display:none;transform:scaleX(-1);"></video>
       <div class="cam-placeholder" id="cam-ph">
         <div>📷</div>
         <div>카메라 준비 중</div>
@@ -229,6 +231,7 @@ var MODELS={
 };
 
 var chosenAvatar='👨🏻';
+var chosenImg='images/avatar-male.png';
 var questions=[];
 var qIdx=0;
 var stream=null;
@@ -237,7 +240,9 @@ var fullText='';
 
 function selAvatar(el){
   document.querySelectorAll('.avatar-opt').forEach(function(a){a.classList.remove('sel');});
-  el.classList.add('sel');chosenAvatar=el.dataset.avatar;
+  el.classList.add('sel');
+  chosenAvatar=el.dataset.avatar;
+  chosenImg=el.dataset.img||'';
 }
 
 function startInterview(){
@@ -254,6 +259,15 @@ function startInterview(){
   qIdx=0;
   document.getElementById('setup').style.display='none';
   document.getElementById('interview').classList.add('active');
+  // 아바타 이미지 또는 이모지 표시
+  var avatarImg=document.getElementById('avatar-img');
+  var avatarFallback=document.getElementById('avatar-face-fallback');
+  if(chosenImg){
+    avatarImg.src=chosenImg;
+    avatarImg.style.display='block';
+    avatarFallback.style.display='none';
+    avatarImg.onerror=function(){avatarImg.style.display='none';avatarFallback.style.display='flex';};
+  }
   document.getElementById('avatar-emoji').textContent=chosenAvatar;
   document.getElementById('q-total').textContent=questions.length;
 
@@ -300,6 +314,9 @@ function showQuestion(){
   speakQuestion(q.q,accent);
 }
 
+// 음성 목록 미리 로드
+if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}
+
 // 페이지 나갈 때 TTS + 카메라 + 마이크 모두 중지
 window.addEventListener('beforeunload',function(){
   if('speechSynthesis' in window)window.speechSynthesis.cancel();
@@ -318,18 +335,21 @@ function speakQuestion(text,lang){
   mouth.classList.add('talking');
   var u=new SpeechSynthesisUtterance(text);
   u.lang=lang;
-  // 아바타 성별에 따라 pitch 조정 (남성: 낮게, 여성: 높게)
   var isMale=(chosenAvatar==='👨🏻');
   u.rate=0.85;
-  u.pitch=isMale?0.85:1.15;
-  // 가능하면 성별 맞는 음성 선택
+  u.pitch=isMale?0.75:1.2;
+  // 성별 음성 선택
   var voices=window.speechSynthesis.getVoices();
-  if(voices.length>0){
-    var filtered=voices.filter(function(v){return v.lang.startsWith(lang.split('-')[0]);});
-    if(filtered.length>1){
-      var genderVoice=filtered.find(function(v){return isMale?/male|daniel|james|george/i.test(v.name):/ female|samantha|karen|victoria|fiona/i.test(v.name);});
-      if(genderVoice)u.voice=genderVoice;
-    }
+  var langPrefix=lang.split('-')[0];
+  var filtered=voices.filter(function(v){return v.lang.startsWith(langPrefix);});
+  if(filtered.length>0){
+    // 남성: 이름에 male/daniel/james/david/thomas/mark 포함 또는 pitch가 낮은 것
+    // 여성: female/samantha/karen/victoria/fiona/zira/google 포함
+    var maleNames=/male|daniel|james|david|thomas|mark|richard|google uk english male/i;
+    var femaleNames=/female|samantha|karen|victoria|fiona|zira|susan|google uk english female/i;
+    var match=filtered.find(function(v){return isMale?maleNames.test(v.name):femaleNames.test(v.name);});
+    if(match)u.voice=match;
+    else if(filtered.length>=2)u.voice=filtered[isMale?0:1]; // fallback: 첫번째=남, 두번째=여
   }
   u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
   window.speechSynthesis.cancel();

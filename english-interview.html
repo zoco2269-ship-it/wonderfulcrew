@@ -250,21 +250,27 @@ function rv(id,data){
 }
 rv('v-safety',VOCAB.safety);rv('v-service',VOCAB.service);rv('v-announce',VOCAB.announce);rv('v-crew',VOCAB.crew);rv('v-aircraft',VOCAB.aircraft);
 
-// Free/Paid UI
+// 토큰 1개당 3개 질문 열기
+var unlocked={};
 function applyLockUI(id){
+  unlocked[id]=2;
   var cards=document.getElementById(id).querySelectorAll('.qa-card');
   if(cards.length<=2)return;
   for(var i=2;i<cards.length;i++){cards[i].style.filter='blur(4px)';cards[i].style.pointerEvents='none';}
   var b=document.createElement('div');
   b.id='lock-'+id;
   b.style.cssText='text-align:center;padding:28px;margin:16px 0;background:linear-gradient(135deg,rgba(232,201,106,0.15),rgba(201,168,76,0.08));border:2px solid #C9A84C;border-radius:8px;';
-  b.innerHTML='<div style="font-size:0.95rem;color:#1A2340;font-weight:600;margin-bottom:12px;">토큰 1개로 전체 질문 & 답변을 확인하세요</div><button onclick="unlockTab(\''+id+'\')" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">토큰 1개로 전체 보기</button>';
+  b.innerHTML='<div style="font-size:0.95rem;color:#1A2340;font-weight:600;margin-bottom:12px;">토큰 1개로 질문 3개를 열어볼 수 있습니다</div><button onclick="unlock3(\''+id+'\')" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">토큰 1개로 3개 열기</button>';
   cards[2].parentElement.insertBefore(b,cards[2]);
 }
-function unlockTab(id){
+function unlock3(id){
   var cards=document.getElementById(id).querySelectorAll('.qa-card');
-  for(var i=0;i<cards.length;i++){cards[i].style.filter='none';cards[i].style.pointerEvents='auto';}
-  var lock=document.getElementById('lock-'+id);if(lock)lock.remove();
+  var start=unlocked[id];
+  var end=Math.min(start+3,cards.length);
+  for(var i=start;i<end;i++){cards[i].style.filter='none';cards[i].style.pointerEvents='auto';}
+  unlocked[id]=end;
+  if(end>=cards.length){var lock=document.getElementById('lock-'+id);if(lock)lock.remove();}
+  else{var lock=document.getElementById('lock-'+id);if(lock&&cards[end])cards[end].parentElement.insertBefore(lock,cards[end]);}
 }
 applyLockUI('ko-container');
 applyLockUI('en-container');

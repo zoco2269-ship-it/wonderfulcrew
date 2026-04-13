@@ -11,12 +11,14 @@
 html{scroll-behavior:smooth;}
 body{font-family:"Noto Sans KR",sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:68px;background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
 .nav-logo{font-family:'DM Serif Display',serif;font-size:1.5rem;font-weight:400;color:var(--navy);text-decoration:none;}
 .nav-logo span{color:var(--gold);}
-.nav-back{font-size:0.82rem;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
-.nav-back:hover{color:var(--gold);}
-#app{padding-top:68px;}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links a{font-size:0.82rem;color:var(--text-mid);text-decoration:none;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;text-decoration:none;}
+#app{padding-top:72px;}
 .wrap{max-width:880px;margin:0 auto;padding:60px 24px;}
 .section{animation:fadeUp 0.5s ease;}
 .section+.section{margin-top:80px;padding-top:60px;border-top:1px solid var(--gold-pale);}

@@ -638,6 +638,18 @@ footer{
         </div>
         <ul id="my-events" style="list-style:none;margin-top:10px;"></ul>
       </div>
+      <!-- 라이브 강의 -->
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--gold-pale);">
+        <div style="font-size:0.82rem;color:var(--navy);font-weight:600;margin-bottom:10px;">라이브 직강</div>
+        <div style="background:var(--cream);padding:12px 14px;border-left:3px solid var(--gold);font-size:0.82rem;color:var(--text-mid);line-height:1.6;margin-bottom:12px;">
+          <b style="color:var(--gold);">4월 30일 (수)</b> 실전 면접 라이브 수업<br>
+          <span style="font-size:0.76rem;color:var(--text-muted);">선착순 10명 · 프리미엄 패키지 전용</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="if(localStorage.getItem('wc_paid')==='true'){alert('라이브 강의 예약이 완료되었습니다! (선착순 10명)');}else{alert('프리미엄 패키지(199만원) 구매 후 이용 가능합니다.');}" style="padding:8px 16px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:18px;font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer;">라이브 강의 신청</button>
+          <a href="live-booking.html" style="display:inline-flex;align-items:center;padding:8px 16px;background:#fff;color:var(--navy);border:1px solid var(--gold-pale);border-radius:18px;font-size:0.78rem;font-weight:600;">더 알아보기</a>
+        </div>
+      </div>
     </div>
     <div class="recruit-card">
       <h3>최신 채용 뉴스</h3>
@@ -657,7 +669,8 @@ footer{
 var calEvents=[
   {day:24,month:3,label:'에미레이트 오픈데이'},
   {day:18,month:3,label:'카타르항공 인터뷰'},
-  {day:29,month:3,label:'싱가포르항공 설명회'}
+  {day:29,month:3,label:'싱가포르항공 설명회'},
+  {day:30,month:3,label:'라이브 직강 (선착순 10명)'}
 ];
 var calY,calM;
 (function(){

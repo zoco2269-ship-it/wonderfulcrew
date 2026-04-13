@@ -74,6 +74,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <h2 class="sec-title">한국어 면접 <em>빈출 질문</em></h2>
   <div class="gold-line"></div>
   <div id="ko-container"></div>
+  <div style="text-align:center;margin-top:28px;"><button onclick="loadMoreKo()" style="padding:14px 32px;background:var(--navy);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.9rem;font-weight:600;cursor:pointer;">더 학습하기</button></div>
 </div>
 
 <!-- ===== 영어 면접 ===== -->
@@ -82,6 +83,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <h2 class="sec-title">영어 면접 <em>빈출 질문</em></h2>
   <div class="gold-line"></div>
   <div id="en-container"></div>
+  <div style="text-align:center;margin-top:28px;"><button onclick="loadMoreEn()" style="padding:14px 32px;background:var(--navy);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.9rem;font-weight:600;cursor:pointer;">더 학습하기</button></div>
 </div>
 
 <!-- ===== 항공 영어 표현 ===== -->
@@ -278,6 +280,48 @@ applyLockUI('en-container');
 function toggleQA(header,idx,type){
   var card=header.parentElement;
   card.classList.toggle('open');
+}
+
+// 더 학습하기 - 추가 질문 로드
+var EXTRA_KO=[
+  {q:'비행 중 승객이 쓰러지면 어떻게 하겠습니까?',key:'핵심: 침착한 대처 + 매뉴얼 숙지',ans:'먼저 침착하게 주변 상황을 파악하고, 기내 의료 장비(First Aid Kit, AED)를 즉시 가져옵니다. 동시에 기내 방송으로 의료 전문가가 있는지 확인합니다. 기장에게 보고하여 필요 시 긴급 착륙을 준비합니다. 승객이 의식이 있다면 편안한 자세를 취하게 하고, 지속적으로 상태를 확인하며 안심시킵니다.',tip:'면접관 포인트: 당황하지 않는 침착함, 절차를 아는 것, 기장 보고 순서를 보여주세요.'},
+  {q:'기내에서 승객끼리 다투면 어떻게 하겠습니까?',key:'핵심: 중립 + 분리 + 해결',ans:'먼저 차분한 목소리로 두 분 사이에 다가가 상황을 파악합니다. 필요하면 한 분을 다른 좌석으로 안내하여 물리적으로 분리합니다. 양쪽 이야기를 각각 경청한 후 합리적인 해결책을 제시합니다. 상황이 심각하면 시니어 승무원에게 보고합니다.',tip:'면접관 포인트: 양쪽 모두 존중하는 태도, 분리 후 해결하는 순서가 핵심입니다.'},
+  {q:'왜 다른 항공사가 아닌 우리 항공사인가요?',key:'핵심: 해당 항공사만의 가치를 구체적으로',ans:'단순히 "좋은 항공사"가 아니라 해당 항공사만의 차별점을 구체적으로 언급해야 합니다. 서비스 철학, 노선 특성, 기업 문화 등을 사전에 조사하고 본인의 가치관과 연결하세요. "귀사의 OO 가치가 제 서비스 철학과 일치합니다"처럼 구체적으로 답변하세요.',tip:'면접관 포인트: 사전 조사를 했다는 것이 느껴져야 합니다. 복붙 티 나면 역효과.'}
+];
+var EXTRA_EN=[
+  {q:'How would you handle a medical emergency on board?',key:'Key: Stay calm, follow procedure, report to captain',ans:"First, I would stay calm and assess the situation quickly. I'd get the first aid kit and AED immediately while asking for any medical professionals on board through the PA system. I'd keep the passenger comfortable, monitor their condition, and update the captain right away so we can arrange priority landing if needed. Clear communication and quick action are everything in a medical emergency.",ko:'먼저 침착하게 상황을 파악하고 기내 의료 장비를 가져옵니다. 기내 방송으로 의료 전문가를 호출하고, 기장에게 보고합니다.',expressions:['assess the situation','priority landing','clear communication']},
+  {q:'What would you do if you disagreed with a senior crew member?',key:'Key: Respect hierarchy, discuss privately',ans:"I would follow their instruction first, because in the air, team unity and safety come before personal opinions. After the flight, I would approach them privately and share my perspective respectfully. Most disagreements come from having the same goal but different approaches, and a calm private conversation usually leads to a better understanding for both sides.",ko:'먼저 지시를 따르고, 비행 후 개인적으로 의견을 공유합니다.',expressions:['team unity comes first','approach privately','respectful perspective']},
+  {q:'How do you handle homesickness while living abroad?',key:'Key: Healthy coping + positive attitude',ans:"I stay connected with family through video calls, but I also make sure to build a life where I am. I explore the local culture, make friends with colleagues from different countries, and keep a routine that includes exercise and hobbies. Living abroad is actually one of the things that excites me most about this job. Every layover is a chance to discover something new.",ko:'가족과 화상통화로 연락하면서도 현지 생활을 적극적으로 즐깁니다.',expressions:['build a life where I am','explore local culture','every layover is a chance']}
+];
+function loadMoreKo(){
+  var c=document.getElementById('ko-container');
+  EXTRA_KO.forEach(function(item,idx){
+    var i=KO.length+idx;
+    var card=document.createElement('div');card.className='qa-card';
+    card.style.filter='blur(4px)';card.style.pointerEvents='none';
+    card.innerHTML='<div class="qa-header" onclick="toggleQA(this,'+i+',\'ko\')"><div class="qa-num">'+(i+1)+'</div><div class="qa-q">'+item.q+'</div><div class="qa-lock">🔒</div><div class="qa-arrow">→</div></div><div class="qa-body"><div class="key">'+item.key+'</div><div class="ans">'+item.ans+'</div><div class="tip"><b>코칭 TIP:</b> '+item.tip+'</div></div>';
+    c.appendChild(card);
+  });
+  // 잠금해제 배너
+  var b=document.createElement('div');
+  b.style.cssText='text-align:center;padding:20px;margin:16px 0;background:linear-gradient(135deg,rgba(232,201,106,0.15),rgba(201,168,76,0.08));border:2px solid #C9A84C;border-radius:8px;';
+  b.innerHTML='<button onclick="this.parentElement.previousElementSibling.style.filter=\\'none\\';this.parentElement.previousElementSibling.style.pointerEvents=\\'auto\\';this.parentElement.previousElementSibling.previousElementSibling.style.filter=\\'none\\';this.parentElement.previousElementSibling.previousElementSibling.style.pointerEvents=\\'auto\\';this.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.style.filter=\\'none\\';this.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.style.pointerEvents=\\'auto\\';this.parentElement.remove();" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">토큰 1개로 3개 열기</button>';
+  c.appendChild(b);
+}
+function loadMoreEn(){
+  var c=document.getElementById('en-container');
+  EXTRA_EN.forEach(function(item,idx){
+    var i=EN.length+idx;
+    var exprHtml=item.expressions?'<div style="margin-top:10px;">'+item.expressions.map(function(e){return '<span class="expr">'+e+'</span>';}).join(' ')+'</div>':'';
+    var card=document.createElement('div');card.className='qa-card';
+    card.style.filter='blur(4px)';card.style.pointerEvents='none';
+    card.innerHTML='<div class="qa-header" onclick="toggleQA(this,'+i+',\'en\')"><div class="qa-num">'+(i+1)+'</div><div class="qa-q">'+item.q+'</div><div class="qa-lock">🔒</div><div class="qa-arrow">→</div></div><div class="qa-body"><div class="key">'+item.key+'</div><div class="ans">'+item.ans+exprHtml+'</div><div class="ko">'+item.ko+'</div></div>';
+    c.appendChild(card);
+  });
+  var b=document.createElement('div');
+  b.style.cssText='text-align:center;padding:20px;margin:16px 0;background:linear-gradient(135deg,rgba(232,201,106,0.15),rgba(201,168,76,0.08));border:2px solid #C9A84C;border-radius:8px;';
+  b.innerHTML='<button onclick="var cards=this.parentElement.parentElement.querySelectorAll(\\'[style*=blur]\\');for(var i=0;i<cards.length;i++){cards[i].style.filter=\\'none\\';cards[i].style.pointerEvents=\\'auto\\';}this.parentElement.remove();" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">토큰 1개로 3개 열기</button>';
+  c.appendChild(b);
 }
 </script>
 </body>

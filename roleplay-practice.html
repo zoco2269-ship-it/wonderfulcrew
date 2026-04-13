@@ -317,7 +317,20 @@ function speakQuestion(text,lang){
   iCard.classList.add('speaking');
   mouth.classList.add('talking');
   var u=new SpeechSynthesisUtterance(text);
-  u.lang=lang;u.rate=0.85;u.pitch=1.05;
+  u.lang=lang;
+  // 아바타 성별에 따라 pitch 조정 (남성: 낮게, 여성: 높게)
+  var isMale=(chosenAvatar==='👨🏻');
+  u.rate=0.85;
+  u.pitch=isMale?0.85:1.15;
+  // 가능하면 성별 맞는 음성 선택
+  var voices=window.speechSynthesis.getVoices();
+  if(voices.length>0){
+    var filtered=voices.filter(function(v){return v.lang.startsWith(lang.split('-')[0]);});
+    if(filtered.length>1){
+      var genderVoice=filtered.find(function(v){return isMale?/male|daniel|james|george/i.test(v.name):/ female|samantha|karen|victoria|fiona/i.test(v.name);});
+      if(genderVoice)u.voice=genderVoice;
+    }
+  }
   u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(u);

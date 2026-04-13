@@ -545,6 +545,10 @@ function buildShadowCards(sentences){
 }
 buildShadowCards(pickShadow3());
 function refreshShadowing(){buildShadowCards(pickShadow3());}
+
+// 페이지 나갈 때 TTS 중지
+window.addEventListener('beforeunload',function(){if('speechSynthesis' in window)window.speechSynthesis.cancel();});
+window.addEventListener('pagehide',function(){if('speechSynthesis' in window)window.speechSynthesis.cancel();});
 </script>
 </body>
 </html>

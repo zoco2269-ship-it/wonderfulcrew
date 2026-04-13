@@ -208,11 +208,32 @@ AIRLINES.forEach(function(a){
 });
 
 // ─── 항공사 선택 ───
+// 항공사별 프로세스 페이지 매핑
+var PROCESS_PAGES={
+  emirates:'emirates-process.html',
+  qatar:'qatar-process.html',
+  singapore:'singapore-process.html',
+  etihad:'#',
+  koreanair:'koreanair-process.html',
+  asiana:'asiana-process.html'
+};
+// 항공사별 커리큘럼 페이지 매핑
+var CURRICULUM_PAGES={
+  emirates:'curriculum.html?airline=emirates',
+  qatar:'curriculum-qatar.html',
+  singapore:'curriculum-singapore.html',
+  koreanair:'curriculum-koreanair.html',
+  asiana:'curriculum-asiana.html'
+};
 function selectAirline(a){
   try{localStorage.setItem('wc_airline',a.key);localStorage.setItem('wc_airline_name',a.ko);}catch(e){}
-  // 에미레이트는 프로세스 페이지로
-  if(a.key==='emirates'){location.href='emirates-process.html';return;}
-  // 나머지: 항공사 섹션 숨기고 커리큘럼만 보이게
+  // 모든 항공사: 프로세스 페이지로 이동
+  var processPage=PROCESS_PAGES[a.key];
+  if(processPage&&processPage!=='#'){location.href=processPage;return;}
+  // 프로세스 페이지 없는 항공사: 바로 커리큘럼
+  var curPage=CURRICULUM_PAGES[a.key];
+  if(curPage){location.href=curPage;return;}
+  // fallback
   document.getElementById('section-airline').style.display='none';
   showCurriculum(a);
   window.scrollTo(0,0);

@@ -56,7 +56,7 @@ LINES.forEach(function(h){
   d.innerHTML='<div class="brand-name">'+h.en+'</div><div class="brand-sub">'+h.name+'</div>';
   d.onclick=function(){
     document.querySelectorAll('.brand-card').forEach(function(c){c.classList.remove('active');});d.classList.add('active');
-    pa.innerHTML='<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;">'+h.en+' 면접 프로세스</h2><p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:24px;">서류/CV 제출 → 에이전시 면접 → 본사 면접 → 서류 준비 → 안전교육 → 승선</p>';
+    pa.innerHTML='<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;">크루즈 면접 프로세스</h2><p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:24px;">서류/CV 제출 → 에이전시 면접 → 본사 면접 → 서류 준비 → 안전교육 → 승선</p>';
     STEPS.forEach(function(s){
       var c=document.createElement('div');c.className='card';
       c.innerHTML='<h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul><button class="step-btn" onclick="alert(\'더미 점수   AI 연동 후 활성화\')">시작하기</button>';

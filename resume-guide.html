@@ -22,10 +22,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 .hero h1{font-size:clamp(1.9rem,3.8vw,3rem);font-weight:300;margin-bottom:12px;line-height:1.25;}
 .hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
 .hero p{color:rgba(255,255,255,0.7);font-size:0.95rem;max-width:600px;margin:0 auto;line-height:1.8;}
-.tab-bar{max-width:1000px;margin:0 auto;padding:40px 5% 0;display:flex;gap:0;}
-.tab-btn{flex:1;padding:16px 0;text-align:center;font-family:'DM Serif Display',serif;font-size:1rem;color:var(--text-muted);background:#fff;border:1px solid var(--gold-pale);cursor:pointer;transition:all 0.2s;}
-.tab-btn:first-child{border-radius:8px 0 0 0;}
-.tab-btn:last-child{border-radius:0 8px 0 0;}
+.tab-bar{max-width:1000px;margin:0 auto;padding:40px 5% 0;display:flex;gap:6px;flex-wrap:wrap;}
+.tab-btn{flex:1;min-width:120px;padding:12px 8px;text-align:center;font-family:'DM Serif Display',serif;font-size:0.88rem;color:var(--text-muted);background:#fff;border:1px solid var(--gold-pale);cursor:pointer;transition:all 0.2s;border-radius:20px;}
+.tab-btn:first-child{border-radius:20px;}
+.tab-btn:last-child{border-radius:20px;}
 .tab-btn.active{background:var(--navy);color:var(--gold-light);border-color:var(--navy);}
 .tab-content{display:none;}
 .tab-content.active{display:block;}
@@ -208,11 +208,13 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <h3>합격 자기소개서 예시</h3>
     <div class="sample-box">
       <span class="sample-label">합격 예시 · 지원 동기</span>
-      <div class="content">"5성급 호텔 프론트에서 2년간 근무하며, 고객의 불만을 기회로 바꾸는 경험을 했습니다. 체크인 오류로 화가 난 고객에게 즉시 업그레이드와 웰컴 과일을 준비해 드렸고, 그 고객은 퇴실 시 '이 호텔의 팬이 되었다'는 후기를 남겼습니다.
+      <div class="content">"5성급 호텔 프론트에서 2년간 매일 50명 이상의 고객을 응대하며, 서비스의 본질이 '문제 해결'이 아니라 '기대를 넘는 경험 창조'라는 것을 현장에서 배웠습니다.
 
-이 경험을 통해 서비스는 문제를 해결하는 것을 넘어, 고객의 기대를 초과하는 순간에 완성된다는 것을 배웠습니다. 대한항공이 추구하는 'Excellence in Flight'의 가치가 바로 이것이라 생각합니다.
+가장 기억에 남는 순간은 체크인 오류로 화가 난 VIP 고객을 대응했던 경험입니다. 저는 즉시 객실을 스위트로 업그레이드하고, 고객이 좋아하시는 와인 브랜드를 확인하여 객실에 미리 준비해두었습니다. 추가로 '불편을 드려 죄송합니다'라는 손편지와 웰컴 과일 바스켓을 직접 세팅했습니다. 그 고객은 체크아웃 시 '이 호텔의 팬이 되었다. 당신 때문에 다시 올 것이다'라는 후기를 남기셨고, 이후 3번이나 재방문하시며 저를 지정 요청하셨습니다.
 
-저는 단순히 기내 서비스를 제공하는 승무원이 아니라, 매 비행마다 승객에게 '다시 타고 싶은 항공사'라는 인상을 남기는 승무원이 되겠습니다."</div>
+이 경험은 제게 두 가지를 가르쳐주었습니다. 첫째, 고객의 컴플레인은 위기가 아니라 신뢰를 쌓을 수 있는 가장 값진 기회라는 것. 둘째, 진정한 서비스는 매뉴얼에 있는 것이 아니라 고객 한 분 한 분의 상황에 맞게 '즉석에서 창조'하는 것이라는 점입니다.
+
+대한항공이 추구하는 'Excellence in Flight'의 가치가 바로 이것이라 확신합니다. 저는 기내에서 승객이 요청하기 전에 먼저 필요를 파악하고, 작은 배려로 '이 항공사를 다시 타고 싶다'는 인상을 남기는 승무원이 되겠습니다. 유니폼을 입는 순간, 앞선 선배들이 쌓아온 대한항공의 신뢰를 제가 이어받겠다는 책임감으로 매 비행에 임하겠습니다."</div>
     </div>
     <div class="tip"><b>포인트:</b> 첫 문장에서 바로 경험을 던지고(두괄식), 구체적 상황과 결과를 보여주며, 항공사의 가치와 자연스럽게 연결한 구조입니다.</div>
   </div>

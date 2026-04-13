@@ -130,7 +130,12 @@ function startDiscussion(){
     (async function(){try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});var v=document.getElementById('cam-video');v.srcObject=stream;v.style.display='block';document.getElementById('cam-ph').style.display='none';}catch(e){}})();
   }
   // AI가 먼저 의견 제시
-  aiTurn('Let me start. I think we should prioritize based on safety and medical needs first. What do you think?');
+  var openers={
+    0:"So we have 7 passengers who all booked the extra legroom seat, but only 1 is available. Who do you think should get it?",
+    1:"We have 10 guests but only 2 rooms available. As hotel managers, who should we prioritize? What do you think?",
+    2:"We have 6 issues happening at the same time in our restaurant. Which one should we handle first?"
+  };
+  aiTurn(openers[selectedTopic]||"So, what do you think we should do first?");
 }
 
 function aiTurn(text){

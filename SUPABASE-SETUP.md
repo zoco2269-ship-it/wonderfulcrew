@@ -39,6 +39,22 @@ CREATE TABLE practice_records (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- 영상 기록 (레벨테스트/롤플레이 첫 영상)
+CREATE TABLE video_records (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  type TEXT, -- 'level_test' or 'roleplay_first'
+  airline TEXT,
+  storage_path TEXT NOT NULL,
+  duration_sec INTEGER DEFAULT 0,
+  tag TEXT DEFAULT '', -- 'before' or 'after'
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE video_records ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users own video data" ON video_records FOR ALL TO authenticated USING (user_id = auth.uid()::text);
+-- 관리자는 전체 조회 가능 (service_role key 사용);
+
 -- AI 피드백
 CREATE TABLE ai_feedback (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,

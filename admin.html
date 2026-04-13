@@ -43,6 +43,14 @@ textarea{min-height:80px;resize:vertical;}
 .form-row>div{flex:1;}
 .form-row label{display:block;font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;font-weight:600;}
 @media(max-width:900px){.sidebar{display:none;}.stat-grid{grid-template-columns:1fr 1fr;}}
+.video-card{background:#fff;border:1px solid var(--gold-pale);padding:16px;margin-bottom:12px;display:flex;gap:16px;align-items:center;}
+.video-card video{width:160px;height:90px;object-fit:cover;background:#000;border-radius:4px;}
+.video-card .info{flex:1;}
+.video-card .info .name{font-size:0.88rem;color:var(--navy);font-weight:600;}
+.video-card .info .meta{font-size:0.76rem;color:var(--text-muted);}
+.tag-btn{padding:5px 12px;border:none;border-radius:12px;font-size:0.72rem;font-weight:700;cursor:pointer;margin-top:6px;}
+.tag-btn.before{background:var(--gold);color:#fff;}
+.tag-btn.after{background:#2E7D32;color:#fff;}
 </style>
 </head>
 <body>
@@ -62,6 +70,7 @@ textarea{min-height:80px;resize:vertical;}
   <a onclick="showPage('live')">📅 라이브 수업</a>
   <a onclick="showPage('stats')">📈 사용 통계</a>
   <a onclick="showPage('marketing')">📧 마케팅 자동화</a>
+  <a onclick="showPage('videos')">🎬 영상 관리</a>
   <a onclick="showPage('noti')">🔔 알림 발송</a>
   <a href="index.html" style="margin-top:24px;color:var(--text-muted);font-size:0.8rem;">← 홈으로</a>
 </div>
@@ -251,6 +260,45 @@ WonderfulCrew 드림</textarea></div></div>
 </div>
 
 <!-- 알림 발송 -->
+<!-- 영상 관리 -->
+<div class="page" id="page-videos">
+  <h2>영상 관리</h2>
+  <div class="sub">유저별 레벨테스트 / 롤플레이 첫 영상 확인 및 비포 영상 태깅</div>
+  <div class="card">
+    <h3>유저 영상 목록</h3>
+    <div id="video-list">
+      <!-- 더미 데이터 -->
+      <div class="video-card">
+        <video controls><source src="#" type="video/webm"></video>
+        <div class="info">
+          <div class="name">김서연</div>
+          <div class="meta">레벨테스트 · 2026-04-12 · 45초</div>
+          <button class="tag-btn before" onclick="this.textContent='비포 확정';this.classList.add('before');">비포 영상 확정</button>
+        </div>
+      </div>
+      <div class="video-card">
+        <video controls><source src="#" type="video/webm"></video>
+        <div class="info">
+          <div class="name">이하늘</div>
+          <div class="meta">롤플레이 첫 영상 · 에미레이트 · 2026-04-11 · 32초</div>
+          <button class="tag-btn before" onclick="this.textContent='비포 확정';this.classList.add('before');">비포 영상 확정</button>
+        </div>
+      </div>
+      <div class="video-card">
+        <video controls><source src="#" type="video/webm"></video>
+        <div class="info">
+          <div class="name">박지민</div>
+          <div class="meta">레벨테스트 · 2026-04-10 · 58초</div>
+          <button class="tag-btn before" onclick="this.textContent='비포 확정';this.classList.add('before');">비포 영상 확정</button>
+          <button class="tag-btn after" onclick="alert('합격 후 영상 확정')">애프터 영상 확정</button>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:16px;font-size:0.78rem;color:var(--text-muted);">더미 데이터. Supabase 연동 후 실제 영상 표시됩니다.</div>
+    <button class="btn-sm navy" style="margin-top:12px;" onclick="loadVideos()">Supabase에서 영상 불러오기</button>
+  </div>
+</div>
+
 <div class="page" id="page-noti">
   <h2>알림 발송</h2>
   <div class="sub">전체 회원에게 수동 알림 발송</div>
@@ -265,7 +313,34 @@ WonderfulCrew 드림</textarea></div></div>
 </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script>
+// Supabase 영상 로딩
+async function loadVideos(){
+  if(typeof getVideoRecords!=='function'){alert('Supabase 미설정');return;}
+  var records=await getVideoRecords(20);
+  var list=document.getElementById('video-list');
+  if(!records.length){alert('저장된 영상이 없습니다.');return;}
+  list.innerHTML='';
+  records.forEach(function(r){
+    var url=typeof getPublicUrl==='function'?getPublicUrl(r.storage_path):'#';
+    var card=document.createElement('div');card.className='video-card';
+    card.innerHTML='<video controls><source src="'+url+'" type="video/webm"></video>'+
+      '<div class="info"><div class="name">'+r.user_id.substring(0,8)+'...</div>'+
+      '<div class="meta">'+r.type+' · '+(r.airline||'')+' · '+r.created_at.slice(0,10)+'</div>'+
+      '<button class="tag-btn before" onclick="tagVideo(this,\'before\',\''+r.id+'\')">비포 영상 확정</button> '+
+      '<button class="tag-btn after" onclick="tagVideo(this,\'after\',\''+r.id+'\')">애프터 영상 확정</button></div>';
+    list.appendChild(card);
+  });
+}
+async function tagVideo(btn,tag,id){
+  btn.textContent=tag==='before'?'비포 확정':'애프터 확정';
+  btn.disabled=true;
+  var sb=getSupabase();
+  if(sb){try{await sb.from('video_records').update({tag:tag}).eq('id',id);}catch(e){}}
+}
+
 // 관리자 접근 체크 (간단 비밀번호)
 (function(){
   var key=localStorage.getItem('wc_admin');

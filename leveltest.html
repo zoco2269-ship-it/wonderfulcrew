@@ -126,6 +126,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 .lang-btn-arrow { margin-left:auto; color:var(--gold); font-size:1.2rem; flex-shrink:0; }
 .nav-dropdown:hover .nav-dropdown-menu[style*="grid-template"]{display:grid!important;}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 </head>
 <body>
 <nav>
@@ -392,7 +394,14 @@ async function startCam(){
     document.getElementById('btn-stop').style.display='flex';
     rc=[];mr=new MediaRecorder(ms);
     mr.ondataavailable=function(e){if(e.data.size>0)rc.push(e.data);};
-    mr.onstop=function(){document.getElementById('wrap-analyze').style.display='block';};
+    mr.onstop=function(){
+      document.getElementById('wrap-analyze').style.display='block';
+      // 레벨테스트 영상 자동 저장 (Supabase)
+      if(rc.length>0&&typeof saveLevelTestVideo==='function'){
+        var blob=new Blob(rc,{type:'video/webm'});
+        saveLevelTestVideo(blob).then(function(p){if(p)console.log('Level test video saved:',p);});
+      }
+    };
     mr.start();
     document.getElementById('rec-badge').style.display='flex';
     var t=document.getElementById('timer');t.style.display='block';

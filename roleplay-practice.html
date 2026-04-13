@@ -237,6 +237,9 @@ var qIdx=0;
 var stream=null;
 var recognition=null;
 var fullText='';
+var mediaRecorder=null;
+var recordChunks=[];
+var recordStartTime=0;
 
 function selAvatar(el){
   document.querySelectorAll('.avatar-opt').forEach(function(a){a.classList.remove('sel');});
@@ -366,6 +369,16 @@ function startAnswer(){
   document.getElementById('rec-dot').classList.add('on');
   document.getElementById('rec-label').textContent='녹음 중';
   document.getElementById('waveform').classList.add('active');
+  // 백그라운드 영상 녹화 (첫 영상 저장용)
+  recordStartTime=Date.now();
+  recordChunks=[];
+  if(stream){
+    try{
+      mediaRecorder=new MediaRecorder(stream,{mimeType:'video/webm'});
+      mediaRecorder.ondataavailable=function(e){if(e.data.size>0)recordChunks.push(e.data);};
+      mediaRecorder.start();
+    }catch(e){}
+  }
   recognition.onresult=function(ev){
     var interim='';fullText='';
     for(var r=0;r<ev.results.length;r++){
@@ -389,6 +402,16 @@ async function stopAnswer(){
   document.getElementById('rec-dot').classList.remove('on');
   document.getElementById('rec-label').textContent='처리 중';
   document.getElementById('waveform').classList.remove('active');
+
+  // 녹화 중지
+  if(mediaRecorder&&mediaRecorder.state==='recording')try{mediaRecorder.stop();}catch(e){}
+  var duration=Math.round((Date.now()-recordStartTime)/1000);
+
+  // 20초 이상이면 롤플레이 첫 영상 자동 저장
+  if(duration>=20&&recordChunks.length>0&&typeof saveRoleplayFirstVideo==='function'){
+    var blob=new Blob(recordChunks,{type:'video/webm'});
+    saveRoleplayFirstVideo(blob,'Emirates').then(function(p){if(p)console.log('Roleplay first video saved:',p);});
+  }
 
   var ans=fullText.trim()||document.getElementById('transcript').textContent.trim();
   if(!ans){document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=false;return;}

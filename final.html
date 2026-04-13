@@ -3,38 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>파이널 인터뷰 연습   WonderfulCrew</title>
+<title>파이널 인터뷰 연습 WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
-*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:36px;}.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
-.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:600px;margin:0 auto;line-height:1.8;}
-section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
-.info-box{background:#fff;border-left:4px solid var(--gold);padding:28px 30px;margin-bottom:40px;}.info-box h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin-bottom:12px;}.info-box li{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-bottom:4px;}.info-box li strong{color:var(--navy);}.info-box ul{padding-left:18px;margin-top:8px;}
-.card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:30px;margin-bottom:24px;}
-.card .num{font-family:'DM Serif Display',serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:8px;}
-.card .q{font-size:1.02rem;color:var(--navy);font-weight:600;line-height:1.5;margin-bottom:4px;}
-.card .qko{font-size:0.82rem;color:var(--text-muted);margin-bottom:16px;}
-.transcript{padding:12px 14px;border:1px solid var(--gold-pale);border-radius:8px;background:var(--cream);font-size:0.9rem;color:var(--text-dark);line-height:1.7;min-height:44px;margin-bottom:14px;}.transcript:empty::before{content:'음성 답변 대기 중...';color:var(--text-muted);font-size:0.85rem;}
-.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
-.btn{padding:10px 22px;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}.btn-gold{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}.btn-navy{background:var(--navy);color:#fff;}.btn-navy.rec{background:#C0392B;}
-.sc{display:none;margin-top:16px;padding:20px;background:var(--cream);border:1px solid var(--gold-pale);border-left:4px solid var(--gold);}.sc.v{display:block;}
-.sg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}.si{background:#fff;padding:14px;border:1px solid var(--gold-pale);text-align:center;}.si .l{font-size:0.72rem;color:var(--text-muted);margin-bottom:6px;}.si .v{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);}.si .v span{font-size:0.8rem;color:var(--text-muted);}
-.sm{margin-top:14px;font-size:0.86rem;color:var(--text-mid);line-height:1.7;padding:12px 14px;background:#fff;border-left:3px solid var(--gold);}
-.model{display:none;margin-top:14px;padding:16px;background:#fff;border:1px solid var(--gold-pale);font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;}.model.v{display:block;}.model b{color:var(--navy);}
-footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
-@media(max-width:900px){.nav-links{display:none;}.sg{grid-template-columns:1fr;}}
-
-.nav-dropdown{position:relative;}
-.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
-.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid rgba(245,233,200,1);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:200px;z-index:1001;}
-.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}
-.nav-dropdown-menu a{display:block;padding:10px 20px;font-size:0.82rem;color:#4A4438;white-space:nowrap;}
-.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:#C9A84C;}
-
-.nav-dd-grid{min-width:320px;display:none;grid-template-columns:1fr 1fr;gap:0;}
-.nav-dropdown:hover .nav-dd-grid{display:grid!important;}
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--navy-dark:#111B2E;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--navy-dark);color:#fff;min-height:100vh;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:rgba(17,27,46,0.95);border-bottom:1px solid rgba(201,168,76,0.15);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.8rem;color:rgba(255,255,255,0.5);}.nav-back:hover{color:var(--gold);}
+.setup{padding:60px 20px;text-align:center;max-width:700px;margin:0 auto;}
+.setup h1{font-family:'DM Serif Display',serif;font-size:1.8rem;color:#fff;margin-bottom:8px;}
+.setup h1 em{font-style:normal;color:var(--gold);}
+.setup p{color:rgba(255,255,255,0.6);font-size:0.88rem;line-height:1.7;margin-bottom:24px;}
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;text-align:left;}
+.setup-label{font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:6px;}
+.setup-select{width:100%;padding:10px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.3);border-radius:8px;color:#fff;font-family:inherit;font-size:0.85rem;}
+.setup-select option{background:var(--navy);color:#fff;}
+.toggle-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;justify-content:center;}
+.toggle-row label{font-size:0.84rem;color:rgba(255,255,255,0.7);}
+.toggle-row input{accent-color:var(--gold);width:18px;height:18px;}
+.btn-start{padding:16px 40px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:28px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,168,76,0.4);}
+.interview{display:none;flex:1;flex-direction:column;}.interview.active{display:flex;}
+.q-banner{text-align:center;padding:16px 20px;background:rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.15);}
+.q-banner .label{font-size:0.7rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px;}
+.q-banner .question{font-size:0.95rem;color:#fff;font-weight:500;line-height:1.5;}
+.video-area{flex:1;display:flex;align-items:center;justify-content:center;gap:24px;padding:24px;min-height:0;}
+.card-frame{width:220px;aspect-ratio:9/16;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:0;}
+.card-frame.speaking{border-color:var(--gold);animation:goldPulse 1.5s infinite;will-change:box-shadow;}
+@keyframes goldPulse{0%,100%{box-shadow:0 0 15px rgba(201,168,76,0.2);}50%{box-shadow:0 0 30px rgba(201,168,76,0.45);}}
+.card-label{position:absolute;bottom:0;left:0;right:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,0.8));text-align:center;}
+.card-label .name{font-family:'DM Serif Display',serif;font-size:0.85rem;color:#fff;}
+.card-label .role{font-size:0.68rem;color:var(--gold);}
+.avatar-display{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#1A2340,#2A3455);}
+.avatar-face{text-align:center;}.avatar-face .face{font-size:4rem;line-height:1;margin-bottom:8px;}
+.avatar-face .mouth{width:20px;height:8px;background:var(--gold);border-radius:0 0 10px 10px;margin:0 auto;opacity:0.7;}
+.avatar-face .mouth.talking{animation:mouthMove 0.3s infinite alternate;}
+@keyframes mouthMove{0%{height:4px;width:16px;}100%{height:12px;width:22px;}}
+.cam-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.3);font-size:0.82rem;flex-direction:column;gap:8px;}
+.waveform{height:30px;display:flex;align-items:center;justify-content:center;gap:3px;padding:0 20px;}
+.waveform .bar{width:3px;background:var(--gold);border-radius:2px;animation:wave 0.5s ease-in-out infinite alternate;opacity:0.4;}
+.waveform.active .bar{opacity:1;}
+@keyframes wave{0%{height:4px;}100%{height:20px;}}
+.transcript-bar{padding:10px 20px;background:rgba(255,255,255,0.04);font-size:0.84rem;color:rgba(255,255,255,0.6);min-height:36px;border-top:1px solid rgba(255,255,255,0.05);}
+.feedback-panel{display:none;padding:20px 24px;background:rgba(0,0,0,0.3);max-height:200px;overflow-y:auto;font-size:0.86rem;color:rgba(255,255,255,0.8);line-height:1.7;}
+.feedback-panel.active{display:block;}.feedback-panel b{color:var(--gold);}
+.controls{display:flex;align-items:center;justify-content:center;gap:14px;padding:20px;background:rgba(17,27,46,0.95);border-top:1px solid rgba(201,168,76,0.15);}
+.ctrl-btn{padding:12px 22px;border:none;border-radius:24px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;}
+.ctrl-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.ctrl-btn.primary{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;}
+.ctrl-btn.secondary{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);}
+.ctrl-btn.danger{background:#E74C3C;color:#fff;}
+@media(max-width:600px){.card-frame{width:140px;}.video-area{gap:12px;}.controls{flex-wrap:wrap;gap:8px;}.setup-grid{grid-template-columns:1fr;}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
@@ -42,80 +64,207 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <body>
 <nav>
   <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
-  <div class="nav-links">
-    <a href="index.html#about">소개</a>
-    <div class="nav-dropdown"><a href="index.html#expertise">준비 과정</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest.html">✈️ 항공사 승무원</a><a href="hotel.html">🏨 호텔·럭셔리</a><a href="walking-analysis.html">🚶 워킹 & 자세 분석</a><a href="cruise.html">🚢 크루즈</a><a href="coach-feedback.html">💬 1:1 코치 피드백</a><a href="ai-coach.html">✨ AI 코치</a></div></div>
-    <div class="nav-dropdown"><a href="index.html#resources">학습 자료</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide.html">📋 면접 완벽 가이드</a><a href="english-interview.html">💬 한국어 & 영어 면접</a><a href="grooming-guide.html">👗 이미지 메이킹 & 그루밍</a><a href="resume-guide.html">📄 자기소개서 & CV</a><a href="customer-service.html">🎯 고객 응대 스킬</a></div></div>
-    <a href="daily-english.html">영어쉐도잉</a>
-    <a href="jobs.html">채용정보</a>
-    <a href="community.html">커뮤니티</a>
-    <a href="token-rewards.html">토큰받기</a>
-  </div>
-  <div style="display:flex;align-items:center;gap:12px;">
-    <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
-    <a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;">로그인</a>
-  </div>
+  <a href="curriculum.html" class="nav-back">← 커리큘럼</a>
 </nav>
-<div class="hero"><div class="label">Step 5 · Final Interview</div><h1>파이널 인터뷰 <em>연습</em></h1><p>최종 관문   서비스 경험, 가치관, 에미레이트 지원 동기까지 깊이 있는 답변을 완성하세요.</p></div>
-<section><div class="wrap">
-<div class="info-box"><h3>파이널 인터뷰 핵심</h3><ul>
-<li><strong>내 이야기로:</strong> 남의 문장이 아닌 나만의 경험과 가치관으로 답변</li>
-<li><strong>구체적으로:</strong> "잘했습니다" 대신 구체적 상황-행동-결과(STAR)</li>
-<li><strong>서비스 마인드:</strong> 모든 답변에 WonderfulCrew 서비스 철학이 녹아들어야</li>
-<li><strong>쉬운 단어로:</strong> 어려운 단어 쓰다 막히면 마이너스. 자연스럽게</li>
-</ul></div>
-<div id="cards"></div>
-</div></section>
-<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+
+<!-- SETUP -->
+<div class="setup" id="setup">
+  <h1>파이널 인터뷰 <em>연습</em></h1>
+  <p>면접관과 실시간으로 대화하며 파이널 면접을 연습하세요.<br>내 이야기, 내 경험으로 자연스럽게 답변하는 것이 핵심입니다.</p>
+
+  <div class="setup-grid">
+    <div>
+      <div class="setup-label">영어 악센트</div>
+      <select class="setup-select" id="s-accent">
+        <option value="en-GB">British English</option>
+        <option value="en-US">American English</option>
+        <option value="en-SG">Southeast Asian English</option>
+        <option value="fr-FR">French English</option>
+        <option value="es-ES">Spanish English</option>
+      </select>
+    </div>
+    <div>
+      <div class="setup-label">면접관</div>
+      <select class="setup-select" id="s-avatar">
+        <option value="male">👨🏻 남성 면접관</option>
+        <option value="female">👩🏻 여성 면접관</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="toggle-row">
+    <input type="checkbox" id="cam-toggle" checked>
+    <label for="cam-toggle">카메라 ON (실전 연습 권장)</label>
+  </div>
+
+  <button class="btn-start" onclick="startInterview()">면접 시작하기</button>
+</div>
+
+<!-- INTERVIEW -->
+<div class="interview" id="interview">
+  <div class="q-banner">
+    <div class="label">Question <span id="q-idx">1</span> / <span id="q-total">6</span></div>
+    <div class="question" id="q-text"></div>
+  </div>
+  <div class="video-area">
+    <div class="card-frame" id="interviewer-card">
+      <div class="avatar-display">
+        <div class="avatar-face"><div class="face" id="avatar-emoji">👨🏻</div><div class="mouth" id="avatar-mouth"></div></div>
+      </div>
+      <div class="card-label"><div class="name" id="interviewer-name">Interviewer</div><div class="role">WonderfulCrew AI</div></div>
+    </div>
+    <div class="card-frame" id="student-card">
+      <video id="cam-video" autoplay muted playsinline style="display:none;transform:scaleX(-1);"></video>
+      <div class="cam-placeholder" id="cam-ph"><div>📷</div><div>카메라 OFF</div></div>
+      <div class="card-label"><div class="name">You</div><div class="role"><span id="rec-label">대기</span></div></div>
+    </div>
+  </div>
+  <div class="waveform" id="waveform"><div class="bar" style="animation-delay:0s;"></div><div class="bar" style="animation-delay:0.1s;"></div><div class="bar" style="animation-delay:0.2s;"></div><div class="bar" style="animation-delay:0.3s;"></div><div class="bar" style="animation-delay:0.15s;"></div><div class="bar" style="animation-delay:0.25s;"></div></div>
+  <div class="transcript-bar" id="transcript">음성 답변 대기 중...</div>
+  <div class="feedback-panel" id="feedback"></div>
+  <div class="controls">
+    <button class="ctrl-btn primary" id="btn-answer" onclick="startAnswer()">🎙 답변 시작</button>
+    <button class="ctrl-btn danger" id="btn-stop" onclick="stopAnswer()" style="display:none;">⏹ 답변 완료</button>
+    <button class="ctrl-btn secondary" id="btn-model" onclick="showModel()" disabled>모범 답변</button>
+    <button class="ctrl-btn secondary" id="btn-next" onclick="nextQuestion()" disabled>다음 질문 →</button>
+  </div>
+</div>
+
 <script>
 var QS=[
-  {q:"Tell me about your best service experience.",ko:"최고의 서비스 경험을 말해주세요.",m:"When I worked at a five-star hotel, I noticed a couple checking in late at night looking completely exhausted. They mentioned they had been traveling for over 20 hours. Without them asking, I upgraded their room to a suite, arranged for a pot of hot chamomile tea and warm towels to be waiting, and left a handwritten note saying 'Welcome home. You deserve a good rest tonight.' The next morning, the wife came down to the lobby in tears, saying it was the most thoughtful thing anyone had ever done for them during their travels. She said 'You didn't just give us a room, you gave us a feeling.' That experience changed everything for me. I realized that the best service isn't about following a checklist. It's about seeing what someone needs before they even know they need it, and acting on it with genuine heart. That's exactly the kind of service I want to bring to every single flight."},
-  {q:"Describe a time you dealt with a demanding customer.",ko:"까다로운 고객을 대응한 경험을 말해주세요.",m:"At my previous job, a regular VIP guest arrived and found that his usual table had been given to someone else due to a booking system error. He was visibly upset and raised his voice in front of other guests. I didn't take it personally. I calmly approached him, made eye contact at his level, and said 'I completely understand how frustrating this must be, and I sincerely apologize.' I didn't make excuses. Instead, I immediately offered him our best available table near the window, personally arranged his preferred wine to be ready, and added a complimentary appetizer plate. I also checked on him three times during the meal, not in an intrusive way, but just enough to show I genuinely cared. By the end of the evening, he pulled me aside and said 'You turned a terrible start into the best dinner I've had here.' He came back the following week and specifically requested me. That taught me that a complaint is never the end. It's actually the biggest opportunity to build trust. Don't take it personally, fix it with heart, and always add something extra. That's service recovery."},
-  {q:"Tell me about a time you helped a colleague.",ko:"동료를 도운 경험을 말해주세요.",m:"During a particularly busy weekend brunch service, I noticed one of our new team members was struggling badly. She had too many tables, orders were backing up, and I could see her eyes starting to water. She was too proud to ask for help. Instead of waiting for her to come to me, I quietly took over three of her tables without making a big deal about it. Between orders, I walked her through some shortcuts I had learned, like how to batch similar drink orders and how to read a table's energy to know who needs attention first. By the second half of the shift, she was handling things much more smoothly on her own. After we closed, she thanked me and said 'I was about to quit today, but you made me feel like I belong here.' That's what teamwork means to me. It's not about my section and your section. We work together, we finish together, we go home together. The team is only as strong as the person having the hardest day."},
-  {q:"Describe a conflict with a colleague and how you resolved it.",ko:"동료와의 갈등과 해결 경험을 말해주세요.",m:"A senior colleague and I had a disagreement about how to handle a VIP guest who had a very specific dietary restriction that wasn't in the system. My colleague wanted to just offer what we had available, but I felt we should go further and create something custom from the kitchen. We were both getting frustrated, and I could feel the tension rising. But I made a conscious decision not to argue in front of the team. I said 'Let's talk about this after we finish service.' After the shift, we sat down calmly. I listened to her perspective first. She was worried about setting a precedent that would overwhelm the kitchen. I understood her concern, but I explained that for this particular guest, the extra effort would mean everything. We ended up combining our ideas. We offered the guest a custom dish from available ingredients, and my colleague suggested we create a note in the system for future visits so the kitchen could prepare in advance. It worked beautifully. The guest was thrilled, and the kitchen actually appreciated the heads-up for next time. That experience taught me that most conflicts come from having the same goal but different approaches. Listen first, find the overlap, and build from there."},
-  {q:"How do you show respect for Muslim culture?",ko:"이슬람 문화를 존중하는 방법을 말해주세요.",m:"I believe respecting someone's culture is the foundation of genuine service, and I've made a real effort to educate myself. I've learned to greet with Assalamu Alaikum, which always brings a warm smile. I understand that during Ramadan, passengers may be fasting from sunrise to sunset, so I would be mindful about when and how I offer food and beverages. I know that halal requirements aren't just about food preparation but also about the source and handling, so I would always double-check with the galley before confirming to a passenger. I also understand the importance of prayer times and would do my best to accommodate passengers who need space for prayer, perhaps offering a quieter area or a blanket for comfort. When serving alcohol to other passengers nearby, I would be discreet and respectful. Living and working in Dubai taught me that cultural sensitivity isn't an extra skill. It's a basic professional requirement. And honestly, learning about different cultures has made me a more empathetic person overall, not just a better service provider."},
-  {q:"Why do you want to work for Emirates?",ko:"왜 에미레이트에서 일하고 싶은지 말해주세요.",m:"Emirates doesn't just fly people from one city to another. You create experiences that passengers remember for the rest of their lives. I've watched your cabin crew in videos and read countless passenger reviews, and what strikes me most is the consistency. Whether it's a 2-hour flight or a 14-hour flight, the service standard never drops. That matches exactly how I believe service should be. Not something that changes depending on how tired you are, but a professional standard you maintain because every single passenger deserves your best. Your commitment to going beyond expectations, your investment in training, and the way you empower crew members to make decisions on the spot for passengers, that's the environment where I know I will thrive. I'm not looking for just any airline. I want to be part of a team where excellence is the baseline, not the exception. The opportunity to serve passengers from over 150 nationalities on every flight excites me deeply. Every flight is a chance to connect with someone new, to learn something new, and to create a moment they'll never forget. That's not a job to me. That's exactly what I was made for."}
+  {q:"Tell me about your best service experience.",ko:"최고의 서비스 경험"},
+  {q:"Describe a time you dealt with a demanding customer.",ko:"까다로운 고객 대응"},
+  {q:"Tell me about a time you helped a colleague.",ko:"동료를 도운 경험"},
+  {q:"Describe a conflict with a colleague and how you resolved it.",ko:"동료와의 갈등 해결"},
+  {q:"How do you show respect for Muslim culture?",ko:"이슬람 문화 존중"},
+  {q:"Why do you want to work for Emirates?",ko:"에미레이트 지원 동기"}
 ];
-var container=document.getElementById('cards');
-var activeRecs={};
-QS.forEach(function(item,i){
-  var d=document.createElement('div');d.className='card';
-  d.innerHTML='<div class="num">Question '+(i+1)+'</div><div class="q">'+item.q+'</div><div class="qko">'+item.ko+'</div>'+
-    '<div class="btn-row"><button class="btn btn-outline" onclick="tts('+i+')">질문 듣기</button><button class="btn btn-navy" id="rb-'+i+'" onclick="toggleRec('+i+')">답변 녹음</button></div>'+
-    '<div class="transcript" id="tr-'+i+'"></div>'+
-    '<div class="btn-row"><button class="btn btn-gold" onclick="score('+i+')">피드백 보기</button><button class="btn btn-outline" onclick="model('+i+')">답변 예시 보기</button><button class="btn btn-outline" onclick="alert(\'강의 영상 준비 중입니다.\')">강의 영상 보기</button></div>'+
-    '<div class="sc" id="sc-'+i+'"></div><div class="model" id="md-'+i+'" data-m="'+item.m.replace(/"/g,'&quot;')+'"></div>';
-  container.appendChild(d);
-});
-function tts(i){
+
+var stream=null,recognition=null,fullText='',qIdx=0,chatHistory=[];
+var chosenAvatar='male';
+
+// 음성 미리 로드
+if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}
+window.addEventListener('beforeunload',function(){if('speechSynthesis' in window)window.speechSynthesis.cancel();if(stream)stream.getTracks().forEach(function(t){t.stop();});});
+
+function startInterview(){
+  chosenAvatar=document.getElementById('s-avatar').value;
+  document.getElementById('avatar-emoji').textContent=chosenAvatar==='male'?'👨🏻':'👩🏻';
+  document.getElementById('q-total').textContent=QS.length;
+  document.getElementById('setup').style.display='none';
+  document.getElementById('interview').classList.add('active');
+
+  // 카메라
+  if(document.getElementById('cam-toggle').checked){
+    var opts=[{video:{facingMode:{exact:'user'}},audio:true},{video:{facingMode:'user'},audio:true},{video:true,audio:true}];
+    (async function(){for(var i=0;i<opts.length;i++){try{stream=await navigator.mediaDevices.getUserMedia(opts[i]);var v=document.getElementById('cam-video');v.srcObject=stream;v.style.display='block';document.getElementById('cam-ph').style.display='none';break;}catch(e){}}})();
+  }
+  qIdx=0;showQuestion();
+}
+
+function showQuestion(){
+  chatHistory=[];fullText='';
+  document.getElementById('q-idx').textContent=qIdx+1;
+  document.getElementById('q-text').textContent=QS[qIdx].q+' ('+QS[qIdx].ko+')';
+  document.getElementById('transcript').textContent='음성 답변 대기 중...';
+  document.getElementById('feedback').classList.remove('active');
+  document.getElementById('feedback').innerHTML='';
+  document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=false;
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('btn-model').disabled=true;document.getElementById('btn-next').disabled=true;
+  document.getElementById('waveform').classList.remove('active');
+  var accent=document.getElementById('s-accent').value;
+  speakQ(QS[qIdx].q,accent);
+}
+
+function speakQ(text,lang){
   if(!('speechSynthesis' in window))return;
-  var u=new SpeechSynthesisUtterance(QS[i].q);u.lang='en-GB';u.rate=0.85;u.pitch=1.05;
+  var iCard=document.getElementById('interviewer-card');
+  var mouth=document.getElementById('avatar-mouth');
+  iCard.classList.add('speaking');mouth.classList.add('talking');
+  var u=new SpeechSynthesisUtterance(text);u.lang=lang;
+  var isMale=(chosenAvatar==='male');u.rate=0.85;u.pitch=isMale?0.75:1.2;
+  var voices=window.speechSynthesis.getVoices();
+  var filtered=voices.filter(function(v){return v.lang.startsWith(lang.split('-')[0]);});
+  if(filtered.length>=2){
+    var match=filtered.find(function(v){return isMale?/male|daniel|james|david/i.test(v.name):/female|samantha|karen|victoria/i.test(v.name);});
+    if(match)u.voice=match;else u.voice=filtered[isMale?0:1];
+  }
+  u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
   window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
 }
-function toggleRec(i){
-  var btn=document.getElementById('rb-'+i);var tr=document.getElementById('tr-'+i);
-  if(activeRecs[i]){activeRecs[i].stop();activeRecs[i]=null;btn.textContent='답변 녹음';btn.classList.remove('rec');return;}
+
+function startAnswer(){
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){tr.textContent='Chrome 브라우저에서 사용해 주세요.';return;}
-  var rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;
-  activeRecs[i]=rec;var full='';
-  btn.textContent='녹음 중... (클릭하여 중지)';btn.classList.add('rec');tr.textContent='';
-  rec.onresult=function(ev){full='';for(var r=0;r<ev.results.length;r++){if(ev.results[r].isFinal)full+=ev.results[r][0].transcript+' ';else full+=ev.results[r][0].transcript;}tr.textContent=full.trim();};
-  rec.onend=function(){activeRecs[i]=null;btn.textContent='답변 녹음';btn.classList.remove('rec');if(full.trim())tr.textContent=full.trim();};
-  rec.onerror=function(){activeRecs[i]=null;btn.textContent='답변 녹음';btn.classList.remove('rec');};
-  rec.start();
+  if(!SR)return;
+  recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
+  fullText='';
+  document.getElementById('btn-answer').style.display='none';
+  document.getElementById('btn-stop').style.display='inline-flex';
+  document.getElementById('rec-label').textContent='녹음 중';
+  document.getElementById('waveform').classList.add('active');
+  recognition.onresult=function(ev){var interim='';fullText='';for(var r=0;r<ev.results.length;r++){if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';else interim+=ev.results[r][0].transcript;}document.getElementById('transcript').textContent=fullText+interim;};
+  recognition.onend=function(){if(fullText.trim())document.getElementById('transcript').textContent=fullText.trim();};
+  recognition.start();
 }
-function score(i){
-  var sc=document.getElementById('sc-'+i);var s=[r(),r(),r(),r()];
-  sc.innerHTML='<div style="font-family:DM Serif Display,serif;font-size:1rem;color:var(--navy);margin-bottom:14px;">Final Interview Score</div>'+
-    '<div class="sg"><div class="si"><div class="l">내용 깊이</div><div class="v">'+s[0]+'<span>/100</span></div></div>'+
-    '<div class="si"><div class="l">구체성</div><div class="v">'+s[1]+'<span>/100</span></div></div>'+
-    '<div class="si"><div class="l">서비스 마인드</div><div class="v">'+s[2]+'<span>/100</span></div></div>'+
-    '<div class="si"><div class="l">자기다움</div><div class="v">'+s[3]+'<span>/100</span></div></div></div>'+
-    '<div class="sm">종합: <b>'+Math.round((s[0]+s[1]+s[2]+s[3])/4)+'/100</b><br><br>더미 점수   AI 엔진 학습 후 강의 기반 정교한 피드백으로 업데이트 예정</div>';
-  sc.classList.add('v');
+
+async function stopAnswer(){
+  if(recognition)recognition.stop();
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('rec-label').textContent='처리 중';
+  document.getElementById('waveform').classList.remove('active');
+  var ans=fullText.trim()||document.getElementById('transcript').textContent.trim();
+  if(!ans){document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=false;return;}
+  chatHistory.push({role:'user',content:ans});
+  var fb=document.getElementById('feedback');
+  fb.innerHTML='<span style="color:var(--gold);">면접관이 답변을 듣고 있어요...</span>';fb.classList.add('active');
+  try{
+    var turnCount=chatHistory.filter(function(m){return m.role==='user';}).length;
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:300,
+      system:'You are a senior cabin crew interviewer conducting a FINAL INTERVIEW for Emirates. The question is: "'+QS[qIdx].q+'"\n\nRespond IN ENGLISH as an interviewer. 2-3 sentences max.\n\nRules:\n- Ask follow-up questions based on the answer (dig deeper into their experience)\n- If answer is vague, ask for specific examples\n- After 2-3 exchanges, say "Thank you, that was a great answer." and add [END]\n- Be warm but professional\n- Turn '+turnCount,
+      messages:chatHistory
+    })});
+    var data=await res.json();
+    var aiText=((data&&data.content&&data.content[0]&&data.content[0].text)||'Thank you.').replace(/\*\*/g,'');
+    chatHistory.push({role:'assistant',content:aiText});
+    var isEnd=aiText.includes('[END]')||turnCount>=3;
+    var displayText=aiText.replace('[END]','').trim();
+    fb.innerHTML='<b style="color:var(--gold);">Interviewer:</b> '+displayText;
+    speakQ(displayText,document.getElementById('s-accent').value);
+    if(isEnd){
+      setTimeout(function(){
+        var s=[r(),r(),r(),r()];
+        fb.innerHTML+='<br><br><b>Score: '+Math.round((s[0]+s[1]+s[2]+s[3])/4)+'/100</b> (내용: '+s[0]+' | 구체성: '+s[1]+' | 서비스: '+s[2]+' | 자기다움: '+s[3]+')';
+        document.getElementById('btn-model').disabled=false;document.getElementById('btn-next').disabled=false;
+        document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=true;
+        document.getElementById('rec-label').textContent='완료';
+      },2000);
+    } else {
+      document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=false;
+      document.getElementById('rec-label').textContent='대기';
+    }
+  }catch(e){fb.innerHTML='<span style="color:#E74C3C;">오류. 다시 시도해주세요.</span>';document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=false;}
 }
-function model(i){var m=document.getElementById('md-'+i);m.innerHTML='<b>Model Answer:</b><br><br>'+m.dataset.m;m.classList.toggle('v');}
+
+function showModel(){
+  var models=["When I worked at a five-star hotel, I noticed a couple checking in late looking exhausted. Without them asking, I upgraded their room and left a handwritten note with hot tea. The wife cried the next morning saying it was the most thoughtful thing anyone had done. That taught me service is about noticing needs before people know they have them.","A VIP guest was furious because his usual table was given away. I crouched to his eye level, apologized sincerely, offered the best window table with his preferred wine ready. He came back the next week and specifically requested me. Complaints are opportunities to build trust.","A new colleague was struggling during rush hour and close to tears. I quietly took over her tables without making a scene and taught her shortcuts between orders. By end of night she said I made her feel like she belongs. The team is only as strong as the person having the hardest day.","My colleague and I disagreed about a VIP's dietary request. Instead of arguing in front of guests, we talked privately after shift. We combined our ideas and it worked better than either approach alone. Most conflicts come from same goal, different methods.","I learned to greet with Assalamu Alaikum, understand Ramadan fasting, check halal requirements carefully, and accommodate prayer times. In Dubai, cultural sensitivity isn't an extra skill, it's a basic professional requirement.","Emirates doesn't just fly people, you create experiences. Your consistency, your commitment to going beyond, your investment in crew excellence. I want to be part of a team where excellence is the baseline, not the exception."];
+  var fb=document.getElementById('feedback');
+  fb.innerHTML+='<br><br><b style="color:var(--gold);">Model Answer:</b><br>'+models[qIdx];
+  speakQ(models[qIdx],document.getElementById('s-accent').value);
+}
+
+function nextQuestion(){
+  qIdx++;
+  if(qIdx>=QS.length){
+    document.getElementById('q-banner').innerHTML='<div class="label">COMPLETE</div><div class="question">파이널 인터뷰 완료!</div>';
+    document.getElementById('feedback').innerHTML='<b style="color:var(--gold);">모든 질문 완료</b><br><a href="curriculum.html" style="color:var(--gold);">← 커리큘럼</a>';
+    document.getElementById('feedback').classList.add('active');
+    document.querySelectorAll('.ctrl-btn').forEach(function(b){b.style.display='none';});
+    return;
+  }
+  showQuestion();
+}
 function r(){return Math.floor(Math.random()*36)+50;}
 </script>
 </body>

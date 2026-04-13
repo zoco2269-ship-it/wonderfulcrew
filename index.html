@@ -47,7 +47,7 @@ nav {
 .nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid var(--gold-pale);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:180px;z-index:1001;}
 .nav-dropdown-menu.wide{min-width:340px;display:none;grid-template-columns:1fr 1fr;gap:0;}
 .nav-dropdown:hover .nav-dropdown-menu.wide{display:grid;}
-.nav-dropdown:hover .nav-dropdown-menu{display:block;}
+.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}
 .nav-dropdown-menu a{display:block;padding:10px 20px;font-size:0.82rem;color:var(--text-mid);white-space:nowrap;}
 .nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:var(--gold);}
 .nav-cta{

@@ -42,7 +42,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 .nav-dropdown{position:relative;}
 .nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
 .nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid rgba(245,233,200,1);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:200px;z-index:1001;}
-.nav-dropdown:hover .nav-dropdown-menu{display:block;}
+.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}
 .nav-dropdown-menu a{display:block;padding:10px 20px;font-size:0.82rem;color:#4A4438;white-space:nowrap;}
 .nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:#C9A84C;}
 .nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}

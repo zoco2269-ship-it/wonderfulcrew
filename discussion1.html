@@ -3,129 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1차 디스커션 연습   WonderfulCrew</title>
+<title>1차 디스커션 연습 WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
-*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:36px;}.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
-.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:600px;margin:0 auto;line-height:1.8;}
-section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
-.info-box{background:#fff;border-left:4px solid var(--gold);padding:28px 30px;margin-bottom:40px;}.info-box h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin-bottom:12px;}.info-box p,.info-box li{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;}.info-box ul{padding-left:18px;margin-top:8px;}.info-box li{margin-bottom:4px;}.info-box li strong{color:var(--navy);}
-.q-card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:30px;margin-bottom:28px;}.q-num{font-family:'DM Serif Display',serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:8px;}.q-text{font-size:1.05rem;color:var(--navy);font-weight:600;line-height:1.5;margin-bottom:18px;}
-.cam-box{width:100%;max-width:480px;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;position:relative;margin-bottom:16px;}.cam-box video{width:100%;height:100%;object-fit:cover;}.cam-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:0.88rem;}.rec-badge{position:absolute;top:12px;left:12px;display:none;align-items:center;gap:6px;background:rgba(192,57,43,0.9);color:#fff;padding:4px 10px;font-size:0.7rem;font-weight:700;border-radius:12px;}.rec-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1s infinite;}@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}.btn{padding:10px 22px;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;}.btn:disabled{opacity:0.45;cursor:not-allowed;}.btn-navy{background:var(--navy);color:#fff;}.btn-navy.recording{background:#C0392B;}.btn-gold{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}
-.transcript{padding:12px 14px;border:1px solid var(--gold-pale);border-radius:8px;background:var(--cream);font-size:0.9rem;color:var(--text-dark);line-height:1.7;min-height:44px;margin-bottom:14px;}.transcript:empty::before{content:'음성 답변 대기 중...';color:var(--text-muted);font-size:0.85rem;}
-.score-card{display:none;margin-top:18px;padding:24px;background:var(--cream);border:1px solid var(--gold-pale);border-left:4px solid var(--gold);}.score-card.visible{display:block;}.score-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);margin-bottom:16px;}.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}.score-item{background:#fff;padding:16px;border:1px solid var(--gold-pale);text-align:center;}.score-item .label{font-size:0.72rem;color:var(--text-muted);letter-spacing:0.08em;margin-bottom:6px;}.score-item .value{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold);}.score-item .value span{font-size:0.8rem;color:var(--text-muted);}.score-msg{margin-top:16px;font-size:0.88rem;color:var(--text-mid);line-height:1.75;padding:14px 16px;background:#fff;border-left:3px solid var(--gold);}
-footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
-@media(max-width:900px){.nav-links{display:none;}.score-grid{grid-template-columns:1fr;}}
-
-.nav-dropdown{position:relative;}
-.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
-.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid rgba(245,233,200,1);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:200px;z-index:1001;}
-.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}
-.nav-dropdown-menu a{display:block;padding:10px 20px;font-size:0.82rem;color:#4A4438;white-space:nowrap;}
-.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:#C9A84C;}
-
-.nav-dd-grid{min-width:320px;display:none;grid-template-columns:1fr 1fr;gap:0;}
-.nav-dropdown:hover .nav-dd-grid{display:grid!important;}
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--navy-dark:#111B2E;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--navy-dark);color:#fff;min-height:100vh;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:rgba(17,27,46,0.95);border-bottom:1px solid rgba(201,168,76,0.15);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.8rem;color:rgba(255,255,255,0.5);}.nav-back:hover{color:var(--gold);}
+.setup{padding:50px 20px;text-align:center;max-width:650px;margin:0 auto;}
+.setup h1{font-family:'DM Serif Display',serif;font-size:1.8rem;color:#fff;margin-bottom:8px;}.setup h1 em{font-style:normal;color:var(--gold);}
+.setup p{color:rgba(255,255,255,0.6);font-size:0.88rem;line-height:1.7;margin-bottom:20px;}
+.info-card{text-align:left;padding:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(201,168,76,0.2);border-radius:8px;margin-bottom:20px;}
+.info-card h3{font-size:0.92rem;color:var(--gold);margin-bottom:8px;}
+.info-card li{font-size:0.82rem;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:3px;}
+.info-card ul{padding-left:16px;}
+.topic-card{padding:16px 20px;background:rgba(255,255,255,0.04);border:2px solid rgba(201,168,76,0.15);border-radius:8px;cursor:pointer;transition:all 0.2s;margin-bottom:10px;text-align:left;}
+.topic-card:hover,.topic-card.sel{border-color:var(--gold);background:rgba(201,168,76,0.1);}
+.topic-card h3{font-size:0.92rem;color:#fff;}.topic-card p{font-size:0.78rem;color:rgba(255,255,255,0.6);}
+.toggle-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;justify-content:center;}
+.toggle-row label{font-size:0.84rem;color:rgba(255,255,255,0.7);}
+.toggle-row input{accent-color:var(--gold);width:18px;height:18px;}
+.btn-start{padding:16px 40px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:28px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;}
+.interview{display:none;flex:1;flex-direction:column;}.interview.active{display:flex;}
+.q-banner{text-align:center;padding:14px 20px;background:rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.15);}
+.q-banner .label{font-size:0.7rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;}
+.q-banner .question{font-size:0.9rem;color:#fff;font-weight:500;line-height:1.5;margin-top:4px;}
+.cam-area{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;}
+.cam-frame{width:340px;aspect-ratio:4/3;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);}
+.cam-frame video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);}
+.cam-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.3);font-size:0.88rem;}
+.waveform{height:28px;display:flex;align-items:center;justify-content:center;gap:3px;}
+.waveform .bar{width:3px;background:var(--gold);border-radius:2px;animation:wv 0.5s ease-in-out infinite alternate;opacity:0.3;}
+.waveform.active .bar{opacity:1;}
+@keyframes wv{0%{height:4px;}100%{height:18px;}}
+.transcript-bar{padding:10px 20px;background:rgba(255,255,255,0.04);font-size:0.84rem;color:rgba(255,255,255,0.6);min-height:36px;}
+.feedback-panel{display:none;padding:18px 24px;background:rgba(0,0,0,0.3);max-height:220px;overflow-y:auto;font-size:0.86rem;color:rgba(255,255,255,0.8);line-height:1.7;}
+.feedback-panel.active{display:block;}.feedback-panel b{color:var(--gold);}
+.controls{display:flex;align-items:center;justify-content:center;gap:14px;padding:18px;background:rgba(17,27,46,0.95);border-top:1px solid rgba(201,168,76,0.15);}
+.ctrl-btn{padding:11px 20px;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;}
+.ctrl-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.ctrl-btn.primary{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;}
+.ctrl-btn.secondary{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);}
+.ctrl-btn.danger{background:#E74C3C;color:#fff;}
+@media(max-width:600px){.cam-frame{width:100%;max-width:300px;}.controls{flex-wrap:wrap;gap:8px;}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
-  <div class="nav-links">
-    <a href="index.html#about">소개</a>
-    <div class="nav-dropdown"><a href="index.html#expertise">준비 과정</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest.html">✈️ 항공사 승무원</a><a href="hotel.html">🏨 호텔·럭셔리</a><a href="walking-analysis.html">🚶 워킹 & 자세 분석</a><a href="cruise.html">🚢 크루즈</a><a href="coach-feedback.html">💬 1:1 코치 피드백</a><a href="ai-coach.html">✨ AI 코치</a></div></div>
-    <div class="nav-dropdown"><a href="index.html#resources">학습 자료</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide.html">📋 면접 완벽 가이드</a><a href="english-interview.html">💬 한국어 & 영어 면접</a><a href="grooming-guide.html">👗 이미지 메이킹 & 그루밍</a><a href="resume-guide.html">📄 자기소개서 & CV</a><a href="customer-service.html">🎯 고객 응대 스킬</a></div></div>
-    <a href="daily-english.html">영어쉐도잉</a>
-    <a href="jobs.html">채용정보</a>
-    <a href="community.html">커뮤니티</a>
-    <a href="token-rewards.html">토큰받기</a>
-  </div>
-  <div style="display:flex;align-items:center;gap:12px;">
-    <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
-    <a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;">로그인</a>
-  </div>
-</nav>
+<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a><a href="curriculum.html" class="nav-back">← 커리큘럼</a></nav>
 
-<div class="hero">
-  <div class="label">Step 2 · 1st Discussion</div>
+<div class="setup" id="setup">
   <h1>1차 디스커션 <em>연습</em></h1>
-  <p>많은 사람들 앞에서 자신감 있게 발표하는 것이 핵심입니다. 승무원은 안전요원   떨지 않고 당당하게!</p>
+  <p>카메라 앞에서 자신감 있게 발표하세요.<br>What to say가 아닌 How to say가 전부입니다.</p>
+  <div class="info-card">
+    <h3>핵심 포인트</h3>
+    <ul>
+      <li><strong>왜 발표를 시키나:</strong> 비상 상황에서 수백 명 앞에서 침착하게 안내할 수 있는지 확인</li>
+      <li><strong>4~5문장으로 깔끔하게.</strong> 쉬운 단어. 어려운 단어 쓰다 막히면 마이너스</li>
+      <li><strong>미소 + 자신감 + 친절한 톤:</strong> 밝고 따뜻한 에너지가 합격을 결정합니다</li>
+    </ul>
+  </div>
+  <div class="topic-card sel" onclick="selTopic(0,this)"><h3>Topic 1</h3><p>서비스 경험을 포함한 자기소개 + 가장 좋아하는 여행지 (Favorite Destination)</p></div>
+  <div class="topic-card" onclick="selTopic(1,this)"><h3>Topic 2</h3><p>서비스 경험을 포함한 자기소개 + 기내에서 옆자리에 유명인(Celebrity)을 앉힌다면 누구?</p></div>
+  <div class="toggle-row"><input type="checkbox" id="cam-toggle" checked><label for="cam-toggle">카메라 ON (이미지 면접 필수)</label></div>
+  <button class="btn-start" onclick="startPresentation()">발표 시작</button>
 </div>
 
-<section><div class="wrap">
-<div class="info-box">
-  <h3>1차 디스커션 핵심</h3>
-  <p>What to say가 아니라 <b>How to say</b>가 전부입니다. 주제 내용은 합격과 직접 관련 없습니다.</p>
-  <ul>
-    <li><strong>왜 발표를 시키나:</strong> 비상 상황에서 수백 명 앞에서 침착하게 안내할 수 있는지 확인</li>
-    <li><strong>자신감:</strong> 20명 앞에서 발표도 못하면 승객 안전을 책임질 수 없음</li>
-    <li><strong>4~5문장:</strong> 깔끔하게. 쉬운 단어. 어려운 단어 쓰다 막히면 마이너스</li>
-    <li><strong>눈맞춤:</strong> 면접관이 아닌 청중 전체를 보며 발표</li>
-    <li><strong>항상 미소:</strong> 밝고 따뜻한 에너지</li>
-  </ul>
+<div class="interview" id="interview">
+  <div class="q-banner"><div class="label">1st Discussion / Presentation</div><div class="question" id="q-text"></div></div>
+  <div class="cam-area"><div class="cam-frame"><video id="cam-video" autoplay muted playsinline style="display:none;"></video><div class="cam-placeholder" id="cam-ph">카메라 준비 중</div></div></div>
+  <div class="waveform" id="waveform"><div class="bar" style="animation-delay:0s;"></div><div class="bar" style="animation-delay:0.1s;"></div><div class="bar" style="animation-delay:0.15s;"></div><div class="bar" style="animation-delay:0.2s;"></div><div class="bar" style="animation-delay:0.25s;"></div></div>
+  <div class="transcript-bar" id="transcript">발표를 시작하세요...</div>
+  <div class="feedback-panel" id="feedback"></div>
+  <div class="controls">
+    <button class="ctrl-btn primary" id="btn-rec" onclick="startRec()">🎙 발표 시작</button>
+    <button class="ctrl-btn danger" id="btn-stop" onclick="stopRec()" style="display:none;">⏹ 발표 완료</button>
+    <button class="ctrl-btn secondary" id="btn-fb" onclick="getFeedback()" disabled>피드백 보기</button>
+    <button class="ctrl-btn secondary" onclick="alert('강의 영상 준비 중')">강의 영상</button>
+  </div>
 </div>
 
-<div class="q-card">
-  <div class="q-num">Topic 1</div>
-  <div class="q-text">서비스 경험을 포함해서 간단히 자기소개하고, 가장 좋아하는 여행지(Favorite Destination)를 말해주세요.</div>
-  <div class="cam-box"><video id="vid-0" autoplay muted playsinline></video><div class="cam-placeholder" id="ph-0">카메라를 시작하세요</div><div class="rec-badge" id="rec-0"><div class="rec-dot"></div>REC</div></div>
-  <div class="btn-row"><button class="btn btn-navy" id="start-0" onclick="startRec(0)">카메라 시작 & 녹음</button><button class="btn btn-navy" id="stop-0" style="display:none" onclick="stopRec(0)">녹음 중지</button></div>
-  <div class="transcript" id="tr-0"></div>
-  <div class="btn-row"><button class="btn btn-gold" id="fb-0" disabled onclick="showScore(0)">피드백 보기</button><button class="btn btn-outline" onclick="alert('강의 영상 준비 중입니다.')">강의 영상 보기</button></div>
-  <div class="score-card" id="sc-0"></div>
-</div>
-
-<div class="q-card">
-  <div class="q-num">Topic 2</div>
-  <div class="q-text">서비스 경험을 포함해서 간단히 자기소개하고, 기내에서 옆자리에 유명인(Celebrity)을 앉힐 수 있다면 누구를 앉히겠어요? 이유와 함께 발표해주세요.</div>
-  <div class="cam-box"><video id="vid-1" autoplay muted playsinline></video><div class="cam-placeholder" id="ph-1">카메라를 시작하세요</div><div class="rec-badge" id="rec-1"><div class="rec-dot"></div>REC</div></div>
-  <div class="btn-row"><button class="btn btn-navy" id="start-1" onclick="startRec(1)">카메라 시작 & 녹음</button><button class="btn btn-navy" id="stop-1" style="display:none" onclick="stopRec(1)">녹음 중지</button></div>
-  <div class="transcript" id="tr-1"></div>
-  <div class="btn-row"><button class="btn btn-gold" id="fb-1" disabled onclick="showScore(1)">피드백 보기</button><button class="btn btn-outline" onclick="alert('강의 영상 준비 중입니다.')">강의 영상 보기</button></div>
-  <div class="score-card" id="sc-1"></div>
-</div>
-
-</div></section>
-<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
 <script>
-var streams=[],recs=[];
-function startRec(i){
-  var vid=document.getElementById('vid-'+i),ph=document.getElementById('ph-'+i),badge=document.getElementById('rec-'+i);
-  var startBtn=document.getElementById('start-'+i),stopBtn=document.getElementById('stop-'+i),tr=document.getElementById('tr-'+i);
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true}).then(function(stream){
-    streams[i]=stream;vid.srcObject=stream;ph.style.display='none';badge.style.display='flex';
-    startBtn.style.display='none';stopBtn.style.display='inline-flex';tr.textContent='';
-    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(SR){var rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;recs[i]=rec;var f='';
-    rec.onresult=function(ev){var interim='';f='';for(var r=0;r<ev.results.length;r++){if(ev.results[r].isFinal)f+=ev.results[r][0].transcript+' ';else interim+=ev.results[r][0].transcript;}tr.textContent=f+interim;};
-    rec.onend=function(){if(f.trim())tr.textContent=f.trim();};rec.start();}
-  }).catch(function(){ph.textContent='카메라 권한이 필요합니다.';});
+var TOPICS=['Introduce yourself including your service experience, and tell us about your favorite travel destination and why.','Introduce yourself including your service experience. If you could sit next to any celebrity on a flight, who would it be and why?'];
+var selectedTopic=0,stream=null,recognition=null,fullText='';
+function selTopic(i,el){selectedTopic=i;document.querySelectorAll('.topic-card').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');}
+window.addEventListener('beforeunload',function(){if('speechSynthesis' in window)window.speechSynthesis.cancel();if(stream)stream.getTracks().forEach(function(t){t.stop();});});
+
+function startPresentation(){
+  document.getElementById('setup').style.display='none';
+  document.getElementById('interview').classList.add('active');
+  document.getElementById('q-text').textContent=TOPICS[selectedTopic];
+  if(document.getElementById('cam-toggle').checked){
+    (async function(){try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});var v=document.getElementById('cam-video');v.srcObject=stream;v.style.display='block';document.getElementById('cam-ph').style.display='none';}catch(e){document.getElementById('cam-ph').textContent='카메라 연결 실패';}})();
+  }
 }
-function stopRec(i){
-  document.getElementById('rec-'+i).style.display='none';document.getElementById('stop-'+i).style.display='none';
-  var s=document.getElementById('start-'+i);s.textContent='다시 녹음';s.style.display='inline-flex';
-  if(recs[i])try{recs[i].stop();}catch(e){}if(streams[i])streams[i].getTracks().forEach(function(t){t.stop();});
-  if(document.getElementById('tr-'+i).textContent.trim())document.getElementById('fb-'+i).disabled=false;
+function startRec(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;
+  recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;fullText='';
+  document.getElementById('btn-rec').style.display='none';document.getElementById('btn-stop').style.display='inline-flex';
+  document.getElementById('waveform').classList.add('active');document.getElementById('transcript').textContent='발표 중...';
+  recognition.onresult=function(ev){var interim='';fullText='';for(var r=0;r<ev.results.length;r++){if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';else interim+=ev.results[r][0].transcript;}document.getElementById('transcript').textContent=fullText+interim;};
+  recognition.onend=function(){if(fullText.trim())document.getElementById('transcript').textContent=fullText.trim();};
+  recognition.start();
 }
-function showScore(i){
-  var sc=document.getElementById('sc-'+i);
-  var scores=[Math.floor(Math.random()*20)+65,Math.floor(Math.random()*20)+60,Math.floor(Math.random()*20)+55,Math.floor(Math.random()*25)+50];
-  sc.innerHTML='<div class="score-title">1st Discussion Score</div>'+
-    '<div class="score-grid">'+
-    '<div class="score-item"><div class="label">자신감 / Confidence</div><div class="value">'+scores[0]+'<span>/100</span></div></div>'+
-    '<div class="score-item"><div class="label">미소 & 에너지</div><div class="value">'+scores[1]+'<span>/100</span></div></div>'+
-    '<div class="score-item"><div class="label">전달력 / Delivery</div><div class="value">'+scores[2]+'<span>/100</span></div></div>'+
-    '<div class="score-item"><div class="label">내용 구성</div><div class="value">'+scores[3]+'<span>/100</span></div></div>'+
-    '</div>'+
-    '<div class="score-msg">종합 점수: <b>'+Math.round((scores[0]+scores[1]+scores[2]+scores[3])/4)+'/100</b><br><br>'+
-    '현재는 더미 점수입니다. AI 엔진 학습 완료 후 영상+음성 분석 기반 정교한 피드백으로 업데이트됩니다.<br><br>'+
-    '<b>핵심:</b> 발표 내용보다 자신감 있는 태도, 따뜻한 미소, 청중과의 눈맞춤이 합격을 결정합니다.</div>';
-  sc.classList.add('visible');
+function stopRec(){
+  if(recognition)recognition.stop();
+  document.getElementById('btn-stop').style.display='none';document.getElementById('btn-rec').style.display='inline-flex';document.getElementById('btn-rec').disabled=true;
+  document.getElementById('waveform').classList.remove('active');document.getElementById('btn-fb').disabled=false;
+}
+async function getFeedback(){
+  var ans=fullText.trim()||document.getElementById('transcript').textContent.trim();if(!ans)return;
+  var fb=document.getElementById('feedback');fb.classList.add('active');fb.innerHTML='<span style="color:var(--gold);">피드백 생성 중...</span>';
+  try{
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:500,
+      system:'You are a cabin crew interview coach evaluating a 1ST DISCUSSION presentation. This is an IMAGE interview. How to say matters far more than what to say.\n\nGive feedback in Korean, plain text (no **, no markdown):\n1) 자신감 & 에너지: 떨지 않고 당당하게 발표했는지. 밝고 친절한 톤이었는지\n2) 내용 구성: 4-5문장으로 깔끔했는지. 쉬운 단어를 사용했는지\n3) 서비스 마인드: 답변에서 서비스 경험이 자연스럽게 드러났는지\n4) 개선 포인트: 구체적으로 무엇을 바꾸면 좋을지\n\nKeep under 400 Korean characters.',
+      messages:[{role:'user',content:'Topic: '+TOPICS[selectedTopic]+'\n\nStudent presentation:\n'+ans}]
+    })});
+    var data=await res.json();var text=((data&&data.content&&data.content[0]&&data.content[0].text)||'').replace(/\*\*/g,'');
+    var s=[Math.floor(Math.random()*20)+65,Math.floor(Math.random()*20)+60,Math.floor(Math.random()*20)+55,Math.floor(Math.random()*25)+50];
+    fb.innerHTML=text.replace(/\n/g,'<br>')+'<br><br><b>Score: '+Math.round((s[0]+s[1]+s[2]+s[3])/4)+'/100</b> (자신감: '+s[0]+' | 에너지: '+s[1]+' | 전달력: '+s[2]+' | 내용: '+s[3]+')';
+  }catch(e){fb.innerHTML='오류. 다시 시도해주세요.';}
 }
 </script>
 </body>

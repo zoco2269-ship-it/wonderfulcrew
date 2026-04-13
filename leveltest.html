@@ -134,13 +134,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 </nav>
 <div id="app">
 
-<!-- 레벨테스트 이미 완료 시 결과로 이동 -->
+<!-- 레벨테스트 이미 완료 시 바로 항공사 선택으로 -->
 <script>
 (function(){
   var done=localStorage.getItem('wc_level_result');
   if(done){
-    var go=confirm('이미 레벨테스트를 완료하셨습니다.\n결과를 다시 보시겠어요?\n\n취소를 누르면 항공사 선택 페이지로 이동합니다.');
-    if(!go){location.href='curriculum.html';return;}
+    location.href='curriculum.html';
+    return;
   }
 })();
 </script>

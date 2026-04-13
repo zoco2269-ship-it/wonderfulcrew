@@ -185,9 +185,9 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
   <h3 style="font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin-bottom:18px;">월정액</h3>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;">
-    <div class="card" style="text-align:center;"><h3>월 무제한</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">50만원<span style="font-size:0.7rem;color:var(--text-muted);">/월</span></p><button class="btn-gold" style="width:100%;" onclick="alert('결제 기능 준비 중입니다.')">구독하기</button></div>
-    <div class="card" style="text-align:center;"><h3>3개월 무제한</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">130만원</p><p style="font-size:0.78rem;color:var(--text-muted);">월 43만원 · 14% 할인</p><button class="btn-gold" style="width:100%;" onclick="alert('결제 기능 준비 중입니다.')">구독하기</button></div>
-    <div class="card" style="text-align:center;"><h3>6개월 무제한</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">230만원</p><p style="font-size:0.78rem;color:var(--text-muted);">월 38만원 · 24% 할인</p><button class="btn-gold" style="width:100%;" onclick="alert('결제 기능 준비 중입니다.')">구독하기</button></div>
+    <div class="card" style="text-align:center;"><h3>월 무제한</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">50만원<span style="font-size:0.7rem;color:var(--text-muted);">/월</span></p><p style="font-size:0.74rem;color:var(--text-muted);">매월 자동 결제 · 언제든 해지 가능</p><button class="btn-gold" style="width:100%;" onclick="startSubscription('monthly')">정기 구독하기</button></div>
+    <div class="card" style="text-align:center;"><h3>3개월 무제한</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">130만원</p><p style="font-size:0.78rem;color:var(--text-muted);">월 43만원 · 14% 할인</p><p style="font-size:0.74rem;color:var(--text-muted);">3개월마다 자동 결제 · 언제든 해지 가능</p><button class="btn-gold" style="width:100%;" onclick="startSubscription('quarter')">정기 구독하기</button></div>
+    <div class="card" style="text-align:center;"><h3>6개월 무제한</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">230만원</p><p style="font-size:0.78rem;color:var(--text-muted);">월 38만원 · 24% 할인</p><p style="font-size:0.74rem;color:var(--text-muted);">6개월마다 자동 결제 · 언제든 해지 가능</p><button class="btn-gold" style="width:100%;" onclick="startSubscription('half')">정기 구독하기</button></div>
   </div>
 
   <div style="background:var(--navy);padding:36px;text-align:center;position:relative;overflow:hidden;">
@@ -219,6 +219,18 @@ if(td.purchaseDate){
   else if(diff<=0){el.textContent='토큰 유효기간 만료';el.style.color='#FF6B6B';}
   else if(diff<=7){el.textContent='유효기간 D-'+diff+' (만료 임박!)';el.style.color='#FF6B6B';}
   else{el.textContent='유효기간 D-'+diff;}
+}
+
+// 정기 구독 (Stripe Subscription)
+async function startSubscription(plan){
+  try{
+    var res=await fetch('/api/create-subscription',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:plan})});
+    var data=await res.json();
+    if(data.url){window.location.href=data.url;}
+    else{alert('구독 세션 생성 실패: '+(data.error||'알 수 없는 오류'));}
+  }catch(e){
+    alert('결제 연결 실패. 카카오톡으로 문의해주세요.');
+  }
 }
 
 // 출석 캘린더

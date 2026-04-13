@@ -156,7 +156,7 @@ function startInterview(){
 
   // 카메라
   if(document.getElementById('cam-toggle').checked){
-    var opts=[{video:{facingMode:{exact:'user'}},audio:true},{video:{facingMode:'user'},audio:true},{video:true,audio:true}];
+    var opts=[{video:true,audio:true},{video:{facingMode:'user'},audio:true}];
     (async function(){for(var i=0;i<opts.length;i++){try{stream=await navigator.mediaDevices.getUserMedia(opts[i]);var v=document.getElementById('cam-video');v.srcObject=stream;v.style.display='block';document.getElementById('cam-ph').style.display='none';break;}catch(e){}}})();
   }
   qIdx=0;showQuestion();
@@ -222,7 +222,7 @@ async function stopAnswer(){
     var turnCount=chatHistory.filter(function(m){return m.role==='user';}).length;
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-sonnet-4-20250514',max_tokens:300,
-      system:'You are a senior cabin crew interviewer conducting a FINAL INTERVIEW for Emirates. The question is: "'+QS[qIdx].q+'"\n\nRespond IN ENGLISH as an interviewer. 2-3 sentences max.\n\nRules:\n- Ask follow-up questions based on the answer (dig deeper into their experience)\n- If answer is vague, ask for specific examples\n- After 2-3 exchanges, say "Thank you, that was a great answer." and add [END]\n- Be warm but professional\n- Turn '+turnCount,
+      system:'You are a senior cabin crew interviewer conducting a FINAL INTERVIEW for Emirates. Question: "'+QS[qIdx].q+'"\n\nRules:\n- Reply in ENGLISH only\n- Keep responses VERY SHORT: 1 sentence max. Just a brief follow-up question or acknowledgment.\n- Examples of good responses: "Can you give me a specific example?" / "How did that make you feel?" / "What did you learn from that?" / "Interesting. And what happened next?"\n- Do NOT give long responses. Real interviewers are concise.\n- After 2-3 exchanges, just say "Thank you." and add [END]\n- Turn '+turnCount,
       messages:chatHistory
     })});
     var data=await res.json();

@@ -254,7 +254,7 @@ function showCurriculum(a){
         '<div class="step-title">'+s.title+'</div>'+
         '<div class="step-desc">'+s.desc+'</div>'+
       '</div>'+
-      '<div class="step-badge ready">시작하기</div>'+
+      '<div class="step-badge ready">시작하기</div>'+'<div class="step-badge" style="background:var(--gold-pale);color:var(--gold);margin-top:4px;cursor:pointer;" onclick="event.preventDefault();alert(\'강의 영상 준비 중\')">강의영상</div>'+
       '<div class="step-arrow">→</div>';
     sg.appendChild(el);
   });
@@ -328,7 +328,7 @@ if(_urlAirline && savedAirline){
           '<div class="step-desc">'+s.sub+'</div>'+
           listHtml+
         '</div>'+
-        '<div class="step-badge ready" style="margin-top:4px;">시작하기</div>'+
+        '<div class="step-badge ready" style="margin-top:4px;">시작하기</div>'+'<div class="step-badge" style="background:var(--gold-pale);color:var(--gold);margin-top:4px;cursor:pointer;" onclick="event.preventDefault();alert(\'강의 영상 준비 중\')">강의영상</div>'+
         '<div class="step-arrow" style="margin-top:4px;">→</div>';
       sg.appendChild(el);
     });

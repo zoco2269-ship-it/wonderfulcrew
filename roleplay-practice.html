@@ -42,8 +42,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 /* Video area */
 .video-area{flex:1;display:flex;align-items:center;justify-content:center;gap:24px;padding:24px;min-height:0;}
 .card-frame{width:220px;aspect-ratio:9/16;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:0;}
-.card-frame.speaking{border-color:var(--gold);animation:goldPulse 1.5s infinite;will-change:box-shadow;}
-@keyframes goldPulse{0%,100%{box-shadow:0 0 15px rgba(201,168,76,0.2);}50%{box-shadow:0 0 30px rgba(201,168,76,0.45);}}
+.card-frame.speaking{border-color:var(--gold);outline:3px solid rgba(201,168,76,0.4);outline-offset:2px;animation:goldGlow 1.5s infinite;}
+@keyframes goldGlow{0%,100%{outline-color:rgba(201,168,76,0.2);}50%{outline-color:rgba(201,168,76,0.6);}}
 .card-label{position:absolute;bottom:0;left:0;right:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,0.8));text-align:center;}
 .card-label .name{font-family:'DM Serif Display',serif;font-size:0.85rem;color:#fff;}
 .card-label .role{font-size:0.68rem;color:var(--gold);letter-spacing:0.05em;}

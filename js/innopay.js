@@ -42,9 +42,9 @@ async function payWithInnopay(plan, buyerInfo) {
       GoodsName: data.goodsName,   // 상품명
       Amt: data.amount.toString(),  // 결제금액
       Moid: data.moid,             // 주문번호
-      BuyerName: data.buyerName,
-      BuyerEmail: data.buyerEmail,
-      BuyerTel: data.buyerTel,
+      BuyerName: data.buyerName || 'WonderfulCrew',
+      BuyerEmail: data.buyerEmail || 'user@wonderfulcrew.com',
+      BuyerTel: data.buyerTel || '01000000000',
       ReturnURL: data.returnUrl,   // 인증 완료 후 서버 콜백
       Signature: data.signature,
       Timestamp: data.timestamp,

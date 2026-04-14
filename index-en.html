@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WonderfulCrew   Premium Cabin Crew Coaching</title>
+<title>WonderfulCrew — Premium Cabin Crew Coaching   프리미엄 승무원 교육</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -38,9 +38,19 @@ nav {
   color:var(--navy);letter-spacing:0.02em;
 }
 .nav-logo span{color:var(--gold);}
-.nav-links{display:flex;gap:36px;align-items:center;}
-.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);text-decoration:none;letter-spacing:0.05em;transition:color 0.2s;}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}
+.nav-links a{font-size:0.85rem;color:var(--text-mid);text-decoration:none;letter-spacing:0.05em;transition:color 0.2s;}
 .nav-links a:hover{color:var(--gold);}
+.nav-dropdown{position:relative;}
+.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
+.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid var(--gold-pale);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:180px;z-index:1001;}
+.nav-dropdown-menu.wide{min-width:260px;display:none;grid-template-columns:1fr 1fr;gap:0;padding:4px 0;}
+.nav-dropdown-menu.wide a{padding:5px 12px;font-size:0.76rem;}
+.nav-dropdown:hover .nav-dropdown-menu.wide{display:grid;}
+.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}
+.nav-dropdown-menu a{display:block;padding:6px 14px;font-size:0.82rem;color:var(--text-mid);white-space:nowrap;}
+.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:var(--gold);}
 .nav-cta{
   padding:10px 24px;border-radius:24px;
   background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;
@@ -361,6 +371,7 @@ footer{
   gap: 64px;
   align-items: center;
 }
+/* 세로형 영상 컨테이너 */
 .demo-video-col { position: relative; }
 .demo-video-frame {
   position: relative;
@@ -408,6 +419,7 @@ footer{
   background: var(--gold);
   animation: pulse 1.4s infinite;
 }
+/* 텍스트 컬럼 */
 .demo-text-col {}
 .demo-text-col .sec-label { color: var(--gold-light); text-align: left; }
 .demo-text-col .sec-title { color: #fff; text-align: left; font-size: clamp(1.7rem,2.8vw,2.6rem); }
@@ -441,7 +453,9 @@ footer{
   .demo-inner { grid-template-columns: 1fr; gap: 40px; }
   .demo-video-frame { max-width: 300px; margin: 0 auto; }
 }
-.nav-dropdown:hover .nav-dropdown-menu[style*="grid-template"]{display:grid!important;}
+
+.nav-dd-grid{min-width:260px;display:none;grid-template-columns:1fr 1fr;gap:0;padding:4px 0;}
+.nav-dropdown:hover .nav-dd-grid{display:grid!important;}
 </style>
 </head>
 <body>
@@ -451,18 +465,16 @@ footer{
   <div class="nav-logo">Wonderful<span>Crew</span></div>
   <div class="nav-links">
     <a href="#about">About</a>
-    <a href="#expertise">Programs</a>
-    <a href="#resources">Resources</a>
-    <a href="#">Interview Prep</a>
+    <div class="nav-dropdown"><a href="#expertise">Programs</a><div class="nav-dropdown-menu wide"><a href="leveltest.html">✈️ 항공사 승무원</a><a href="hotel.html">🏨 호텔 · 럭셔리</a><a href="walking-analysis.html">🚶 워킹 & 자세 분석</a><a href="cruise.html">🚢 크루즈</a><a href="coach-feedback.html">💬 1:1 코치 피드백</a><a href="ai-coach.html">✨ AI 코치</a></div></div>
+    <div class="nav-dropdown"><a href="#resources">Resources</a><div class="nav-dropdown-menu wide"><a href="interview-guide.html">📋 면접 완벽 가이드</a><a href="english-interview.html">💬 한국어 & 영어 면접</a><a href="grooming-guide.html">👗 이미지 메이킹 & 그루밍</a><a href="resume-guide.html">📄 자기소개서 & CV</a><a href="customer-service.html">🎯 고객 응대 스킬</a></div></div>
     <a href="daily-english.html">English Practice</a>
     <a href="jobs.html">Careers</a>
+    <a href="community.html">Community</a>
+    <a href="token-rewards.html">Tokens</a>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <a href="leveltest.html" class="nav-cta">Start Practice</a>
-    <button onclick="alert('Coming soon')" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:24px;background:#fff;border:1px solid rgba(26,35,64,0.15);color:#1A2340;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.04em;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9A84C';" onmouseout="this.style.borderColor='rgba(26,35,64,0.15)';">
-      <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-      Sign In
-    </button>
+    <a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;transition:all 0.2s;">Sign In</a>
   </div>
 </nav>
 
@@ -476,7 +488,7 @@ footer{
       Turn Your Dream
       <em>Into Reality</em>
     </h1>
-    <p class="hero-sub">Practice real airline interviews with AI interviewers.<br>Get personalized feedback and land your dream role.</p>
+    <p class="hero-sub">Practice real airline interviews with AI interviewers.<br>Get personalized feedback and land your dream cabin crew role.</p>
     <div class="hero-btns">
       <a href="leveltest.html" class="btn-gold">Free Mock Interview →</a>
       <a href="#about" class="btn-outline-white">Learn More</a>
@@ -484,25 +496,78 @@ footer{
   </div>
 </section>
 
+<!-- SEARCH BAR -->
+<div style="padding:0 5%;margin-top:-40px;position:relative;z-index:10;">
+  <div style="max-width:680px;margin:0 auto;position:relative;">
+    <div style="display:flex;align-items:center;background:#fff;border:2px solid var(--gold);border-radius:32px;padding:4px 6px 4px 20px;box-shadow:0 8px 32px rgba(0,0,0,0.08);">
+      <span style="color:var(--gold);font-size:1.1rem;margin-right:12px;">🔍</span>
+      <input type="text" id="site-search" placeholder="What are you looking for? e.g. Emirates interview, roleplay, community" oninput="doSearch(this.value)" onkeydown="if(event.key==='Enter')goFirst()" style="flex:1;border:none;outline:none;font-family:inherit;font-size:0.92rem;color:var(--navy);padding:14px 0;background:transparent;">
+    </div>
+    <div id="search-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--gold-pale);border-radius:16px;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.1);overflow:hidden;z-index:20;"></div>
+  </div>
+</div>
+<script>
+var SEARCH_DATA=[
+  {keywords:'롤플레이 면접 연습 roleplay',title:'롤플레이 면접 연습',url:'roleplay-practice.html'},
+  {keywords:'파이널 인터뷰 final',title:'파이널 인터뷰 연습',url:'final.html'},
+  {keywords:'영어 쉐도잉 english shadowing 연습',title:'영어 쉐도잉',url:'daily-english.html'},
+  {keywords:'채용 항공사 채용정보 jobs',title:'항공사 채용 정보',url:'jobs.html'},
+  {keywords:'커뮤니티 스터디 community',title:'커뮤니티 (스터디/후기)',url:'community.html'},
+  {keywords:'가격 결제 토큰 pricing 플랜',title:'토큰 충전 & 가격',url:'token-rewards.html'},
+  {keywords:'코치 피드백 1:1 coach',title:'1:1 코치 피드백',url:'coach-feedback.html'},
+  {keywords:'AI 코치 ai',title:'AI 코치',url:'ai-coach.html'},
+  {keywords:'에미레이트 emirates 프로세스',title:'에미레이트 면접 프로세스',url:'emirates-process.html'},
+  {keywords:'카타르 qatar',title:'카타르항공 커리큘럼',url:'curriculum-qatar.html'},
+  {keywords:'면접 가이드 interview guide',title:'면접 완벽 가이드',url:'interview-guide.html'},
+  {keywords:'한국어 영어 면접 표현',title:'한국어 & 영어 면접 표현',url:'english-interview.html'},
+  {keywords:'그루밍 이미지 메이킹 grooming',title:'이미지 메이킹 & 그루밍',url:'grooming-guide.html'},
+  {keywords:'자기소개서 이력서 cv resume',title:'자기소개서 & CV',url:'resume-guide.html'},
+  {keywords:'워킹 자세 walking posture',title:'워킹 & 자세 분석',url:'walking-analysis.html'},
+  {keywords:'호텔 럭셔리 hotel',title:'호텔 면접 준비',url:'hotel.html'},
+  {keywords:'크루즈 cruise',title:'크루즈 면접 준비',url:'cruise.html'},
+  {keywords:'레벨테스트 level test',title:'레벨 테스트',url:'leveltest.html'},
+  {keywords:'성장 기록 progress',title:'내 성장 기록',url:'my-progress.html'},
+  {keywords:'고객 응대 서비스 customer service leap 4d',title:'고객 응대 스킬',url:'customer-service.html'}
+];
+function doSearch(q){
+  var r=document.getElementById('search-results');
+  if(!q.trim()){r.style.display='none';return;}
+  var ql=q.toLowerCase();
+  var matches=SEARCH_DATA.filter(function(d){return d.keywords.toLowerCase().includes(ql)||d.title.toLowerCase().includes(ql);});
+  if(!matches.length){r.style.display='none';return;}
+  r.style.display='block';
+  r.innerHTML=matches.slice(0,6).map(function(m){
+    return '<a href="'+m.url+'" style="display:block;padding:12px 20px;font-size:0.88rem;color:var(--navy);text-decoration:none;border-bottom:1px solid var(--gold-pale);transition:background 0.15s;" onmouseover="this.style.background=\'rgba(201,168,76,0.06)\'" onmouseout="this.style.background=\'#fff\'">'+m.title+'</a>';
+  }).join('');
+}
+function goFirst(){
+  var r=document.getElementById('search-results');
+  var first=r.querySelector('a');
+  if(first)location.href=first.href;
+}
+document.addEventListener('click',function(e){if(!e.target.closest('#site-search')&&!e.target.closest('#search-results'))document.getElementById('search-results').style.display='none';});
+</script>
+
 <!-- ABOUT -->
 <section id="about">
   <div class="about-inner">
     <div class="about-text reveal">
       <div class="sec-label">About Us</div>
-      <h2 class="sec-title">AI-Powered<br><em>Premium Crew Coaching</em></h2>
+      <h2 class="sec-title">First Class Service Philosophy<br>Embedded Into<br>Your Career</h2>
+      <h3 style="font-size:1.1rem;color:var(--gold);font-weight:600;margin-bottom:8px;">AI-Powered Premium Cabin Crew Coaching</h3>
       <div class="gold-line"></div>
-      <p class="about-body">WonderfulCrew leverages cutting-edge AI to replicate real airline interview environments. Led by our CEO, a former Emirates First Class crew member with 20 years of coaching expertise, our advisory board includes active crew from Korean Air, Asiana, T'way, Qatar, Cathay Pacific, and Singapore Airlines.</p>
-      <p class="about-body">We go beyond rote memorization, building real skills through hands-on practice. We analyze interview trends across major airlines worldwide and deliver a curriculum that maximizes each candidate's strengths with personalized feedback.</p>
-      <p class="about-body">With a proven track record of over 1,000 successful placements, we are committed to turning your dream into reality.</p>
-      <a href="leveltest.html" class="btn-text-gold">Try It Free →</a>
-      <a href="#ai-demo" class="btn-text-outline">Learn More →</a>
+      <p class="about-body">7 years of first-class cabin crew experience, serving the top 1% of global travelers. Anticipating needs before being asked, turning complaints into opportunities, working as one team. This philosophy has been proven by 1,000+ successful placements across 22 countries over 13 years.</p>
+      <p class="about-body">Our advisory board includes active crew from Emirates, Qatar, Cathay Pacific, Korean Air, Asiana, Singapore Airlines and more. Our proprietary AI coaches you 24/7 based on this real-world expertise.</p>
+      <p class="about-body">Beyond interview techniques — learn the essence of world-class service.</p>
+      <a href="leveltest.html" class="btn-text-gold">Try Free →</a>
+      <a href="about.html" class="btn-text-outline">Learn More →</a>
     </div>
     <div class="about-img-wrap reveal reveal-delay-1">
-      <img id="about-img" class="about-img" src="images/img2.jpg" alt="WonderfulCrew Coach">
+      <img id="about-img" class="about-img" src="images/img2.jpg" alt="원더풀크루 코치">
       <div class="about-stats">
         <div class="stat-item"><div class="num">1,000<span>+</span></div><div class="lbl">Successful Hires</div></div>
         <div class="stat-item"><div class="num">22<span>+</span></div><div class="lbl">Countries</div></div>
-        <div class="stat-item"><div class="num">13<span>yr</span></div><div class="lbl">Coaching Career</div></div>
+        <div class="stat-item"><div class="num">13<span>년</span></div><div class="lbl">Coaching Career</div></div>
         <div class="stat-item"><div class="num">10,000<span>+</span></div><div class="lbl">Success Data</div></div>
       </div>
     </div>
@@ -512,6 +577,8 @@ footer{
 <!-- AI DEMO -->
 <section id="ai-demo">
   <div class="demo-inner">
+
+    <!-- 왼쪽: 세로형 영상 (9:16) -->
     <div class="demo-video-col">
       <div class="demo-video-frame" id="demo-video-frame" onclick="playDemo()">
         <div class="ai-pulse-badge"><div class="ai-pulse-dot"></div>AI LIVE</div>
@@ -527,22 +594,24 @@ footer{
         </div>
       </div>
     </div>
+
+    <!-- 오른쪽: 텍스트 + 체험하기 -->
     <div class="demo-text-col">
-      <div class="sec-label">AI Simulation · Live Practice</div>
+      <div class="sec-label">AI Simulation · Live Interview Practice</div>
       <h2 class="sec-title">As If the Interviewer<br><em>Were Right in Front of You</em></h2>
       <div class="gold-line"></div>
       <p class="demo-body">Our AI interviewer asks the exact questions used by real airlines.<br>Answer on camera and receive instant, actionable feedback.</p>
-      <p class="demo-body">From Korean self-introductions to English interviews   prepare for both domestic and international airlines.</p>
+      <p class="demo-body">한국어 자기소개부터 영어 면접까지   국내 항공사, 외항사 모두 준비할 수 있어요.</p>
       <div class="demo-tags">
-        <span class="demo-tag">Emirates · Qatar</span>
-        <span class="demo-tag">Korean Air · Asiana</span>
-        <span class="demo-tag">22 Countries</span>
-        <span class="demo-tag">Korean + English</span>
+        <span class="demo-tag">✈ Emirates · Qatar</span>
+        <span class="demo-tag">✈ Korean Air · Asiana</span>
+        <span class="demo-tag">🌏 22 Countries</span>
+        <span class="demo-tag">🇰🇷 Korean + English</span>
         <span class="demo-tag">Real-time AI Analysis</span>
-        <span class="demo-tag">10 Advisory Airlines</span>
+        <span class="demo-tag">✈ 10 Advisory Airlines</span>
       </div>
       <div class="demo-cta-row">
-        <a href="leveltest.html" class="btn-gold" style="display:inline-flex;justify-content:center;">Free Mock Interview →</a>
+        <a href="roleplay-practice.html" class="btn-gold" style="display:inline-flex;justify-content:center;">Try Roleplay →</a>
       </div>
       <div class="demo-badge-row">
         <div class="demo-badge">
@@ -554,30 +623,32 @@ footer{
           <div class="demo-badge-lbl">Countries</div>
         </div>
         <div class="demo-badge">
-          <div class="demo-badge-num">20yr</div>
+          <div class="demo-badge-num">20년</div>
           <div class="demo-badge-lbl">Coaching Career</div>
         </div>
       </div>
     </div>
+
   </div>
 </section>
 
 <!-- RECRUITMENT -->
 <style>
 #recruitment{background:var(--cream);}
-.recruit-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
-.recruit-card{background:#fff;border:1px solid var(--gold-pale);padding:36px;box-shadow:0 8px 40px rgba(0,0,0,0.04);}
+.recruit-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch;}
+.recruit-card{background:#fff;border:1px solid var(--gold-pale);padding:24px;box-shadow:0 8px 40px rgba(0,0,0,0.04);}
 .recruit-card h3{font-family:'Noto Serif KR',serif;font-size:1.3rem;color:var(--navy);font-weight:600;margin-bottom:6px;}
 .recruit-card .sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:24px;letter-spacing:0.03em;}
 .dday-badge{display:inline-block;padding:6px 14px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;border-radius:14px;margin-bottom:18px;}
 .cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
 .cal-month{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--navy);}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;font-size:0.78rem;}
-.cal-dow{text-align:center;padding:8px 0;color:var(--text-muted);font-weight:600;font-size:0.7rem;letter-spacing:0.05em;}
-.cal-day{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:var(--text-dark);border:1px solid transparent;border-radius:4px;cursor:default;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-size:12px;}
+.cal-dow{text-align:center;padding:6px 0;color:var(--text-muted);font-weight:700;font-size:11px;}
+.cal-day{position:relative;width:100%;height:32px;display:flex;align-items:center;justify-content:center;color:var(--text-dark);cursor:pointer;transition:background 0.15s;font-size:12px;}
+.cal-day:hover:not(.muted){background:rgba(201,168,76,0.12);border-radius:50%;}
 .cal-day.muted{color:#ccc;}
-.cal-day.today{background:var(--navy);color:#fff;font-weight:600;}
-.cal-day.event::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--gold);}
+.cal-day.today{background:var(--gold);color:#fff;font-weight:700;width:28px;height:28px;border-radius:50%;margin:0 auto;}
+.cal-day.event::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--gold);}
 .cal-day.event{font-weight:600;color:var(--gold);}
 .cal-day.event.today{color:#fff;}
 .cal-legend{margin-top:18px;padding-top:18px;border-top:1px solid var(--gold-pale);}
@@ -600,59 +671,119 @@ footer{
   <div class="gold-line"></div>
   <div class="recruit-inner">
     <div class="recruit-card">
-      <div class="dday-badge" id="dday-badge">Emirates Open Day D-14</div>
+      <div class="dday-badge" id="dday-badge">에미레이트 오픈데이 D-14</div>
       <h3>Recruitment Calendar</h3>
       <div class="sub">This Month's Open Days & Schedules</div>
       <div class="cal-head">
+        <button onclick="changeMonth(-1)" style="background:none;border:1px solid var(--gold-pale);border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8rem;color:var(--text-mid);">&lt;</button>
         <div class="cal-month" id="cal-month">2026 April</div>
+        <button onclick="changeMonth(1)" style="background:none;border:1px solid var(--gold-pale);border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8rem;color:var(--text-mid);">&gt;</button>
       </div>
       <div class="cal-grid" id="cal-grid"></div>
       <ul class="cal-legend" id="cal-legend"></ul>
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--gold-pale);">
+        <div style="font-size:0.82rem;color:var(--navy);font-weight:600;margin-bottom:10px;">내 일정 추가</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <input type="number" id="my-event-day" min="1" max="31" placeholder="일" style="width:50px;padding:7px 8px;border:1px solid var(--gold-pale);border-radius:6px;font-size:0.82rem;font-family:inherit;">
+          <input type="text" id="my-event-text" placeholder="일정 메모 (예: 에미레이트 서류 마감)" style="flex:1;min-width:140px;padding:7px 10px;border:1px solid var(--gold-pale);border-radius:6px;font-size:0.82rem;font-family:inherit;">
+          <button onclick="addMyEvent()" style="padding:7px 16px;background:var(--navy);color:#fff;border:none;border-radius:6px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;">추가</button>
+        </div>
+        <ul id="my-events" style="list-style:none;margin-top:10px;"></ul>
+      </div>
+      <!-- 라이브 강의 -->
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--gold-pale);">
+        <div style="font-size:0.82rem;color:var(--navy);font-weight:600;margin-bottom:10px;">Live Class</div>
+        <div style="background:var(--cream);padding:12px 14px;border-left:3px solid var(--gold);font-size:0.82rem;color:var(--text-mid);line-height:1.6;margin-bottom:12px;">
+          <b style="color:var(--gold);">4월 30일 (수)</b> Live Interview Practice<br>
+          <span style="font-size:0.76rem;color:var(--text-muted);">First 10 spots · Premium Package Only</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="if(localStorage.getItem('wc_paid')==='true'){alert('라이브 강의 예약이 완료되었습니다! (선착순 10명)');}else{alert('프리미엄 패키지(199만원) 구매 후 이용 가능합니다.');}" style="padding:8px 16px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:18px;font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer;">Book Live Class</button>
+          <a href="live-booking.html" style="display:inline-flex;align-items:center;padding:8px 16px;background:#fff;color:var(--navy);border:1px solid var(--gold-pale);border-radius:18px;font-size:0.78rem;font-weight:600;">Learn More</a>
+        </div>
+      </div>
     </div>
     <div class="recruit-card">
       <h3>Latest Recruitment News</h3>
       <div class="sub">Airline Openings & Updates</div>
       <ul class="news-list">
-        <li><a class="news-item" href="jobs.html"><span class="news-tag">EMIRATES</span><div class="news-title">Emirates Seoul Open Day Announced</div><div class="news-date">2026.04.24</div></a></li>
-        <li><a class="news-item" href="jobs.html"><span class="news-tag">QATAR</span><div class="news-title">Qatar Airways Open Recruitment for Korean Crew</div><div class="news-date">2026.04.18</div></a></li>
-        <li><a class="news-item" href="jobs.html"><span class="news-tag">KOREAN AIR</span><div class="news-title">Korean Air New Cabin Crew Hiring Expected</div><div class="news-date">2026.04.15</div></a></li>
-        <li><a class="news-item" href="jobs.html"><span class="news-tag">SINGAPORE</span><div class="news-title">Singapore Airlines Recruitment Info Session</div><div class="news-date">2026.04.10</div></a></li>
-        <li><a class="news-item" href="jobs.html"><span class="news-tag">CATHAY</span><div class="news-title">Cathay Pacific 2026 Cabin Crew Recruitment</div><div class="news-date">2026.04.05</div></a></li>
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">EMIRATES</span><div class="news-title">에미레이트항공 서울 오픈데이 개최</div><div class="news-date">2026.04.24</div></a></li>
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">QATAR</span><div class="news-title">카타르항공 한국인 승무원 상시채용</div><div class="news-date">2026.04.18</div></a></li>
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">KOREAN AIR</span><div class="news-title">대한항공 신입 객실승무원 공개채용 예정</div><div class="news-date">2026.04.15</div></a></li>
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">SINGAPORE</span><div class="news-title">싱가포르항공 채용설명회 안내</div><div class="news-date">2026.04.10</div></a></li>
+        <li><a class="news-item" href="jobs.html"><span class="news-tag">CATHAY</span><div class="news-title">캐세이퍼시픽 2026 Cabin Crew 모집</div><div class="news-date">2026.04.05</div></a></li>
       </ul>
       <a href="jobs.html" class="recruit-more">View All Openings →</a>
     </div>
   </div>
 </section>
 <script>
+var calEvents=[
+  {day:24,month:3,label:'Emirates Open Day'},
+  {day:18,month:3,label:'Qatar Airways Interview'},
+  {day:29,month:3,label:'Singapore Airlines Info Session'},
+  {day:30,month:3,label:'Live Class (First 10)'}
+];
+var calY,calM;
 (function(){
-  var events=[
-    {day:24,label:'Emirates Open Day'},
-    {day:18,label:'Qatar Airways Interview'},
-    {day:29,label:'Singapore Airlines Info Session'}
-  ];
   var today=new Date();
-  var y=today.getFullYear(),m=today.getMonth();
-  var first=new Date(y,m,1).getDay();
-  var last=new Date(y,m+1,0).getDate();
+  calY=today.getFullYear();calM=today.getMonth();
+  renderCalendar();
+  // D-day
+  var upcoming=calEvents.filter(function(x){return x.month===calM&&x.day>=today.getDate();}).sort(function(a,b){return a.day-b.day;})[0]||calEvents[0];
+  if(upcoming){var diff=upcoming.day-today.getDate();document.getElementById('dday-badge').textContent=upcoming.label+' D-'+(diff>=0?diff:0);}
+}());
+function changeMonth(dir){calM+=dir;if(calM>11){calM=0;calY++;}if(calM<0){calM=11;calY--;}renderCalendar();}
+function renderCalendar(){
+  var today=new Date();
   var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('cal-month').textContent=y+' '+months[m];
-  var grid=document.getElementById('cal-grid');
-  var dows=['S','M','T','W','T','F','S'];
-  dows.forEach(function(d){var el=document.createElement('div');el.className='cal-dow';el.textContent=d;grid.appendChild(el);});
+  document.getElementById('cal-month').textContent=calY+' '+months[calM];
+  var grid=document.getElementById('cal-grid');grid.innerHTML='';
+  var first=new Date(calY,calM,1).getDay();
+  var last=new Date(calY,calM+1,0).getDate();
+  ['S','M','T','W','T','F','S'].forEach(function(d){var el=document.createElement('div');el.className='cal-dow';el.textContent=d;grid.appendChild(el);});
   for(var i=0;i<first;i++){var e=document.createElement('div');e.className='cal-day muted';grid.appendChild(e);}
-  var eventDays=events.map(function(x){return x.day;});
+  var eventDays=calEvents.filter(function(x){return x.month===calM;}).map(function(x){return x.day;});
+  var myEvts=getMyEvents().map(function(x){return x.day;});
   for(var d=1;d<=last;d++){
     var el=document.createElement('div');el.className='cal-day';el.textContent=d;
-    if(d===today.getDate())el.classList.add('today');
-    if(eventDays.indexOf(d)>-1)el.classList.add('event');
+    if(calY===today.getFullYear()&&calM===today.getMonth()&&d===today.getDate())el.classList.add('today');
+    if(eventDays.indexOf(d)>-1||myEvts.indexOf(d)>-1)el.classList.add('event');
+    el.onclick=(function(day){return function(){document.getElementById('my-event-day').value=day;document.getElementById('my-event-text').focus();};})(d);
     grid.appendChild(el);
   }
-  var legend=document.getElementById('cal-legend');
-  events.forEach(function(x){var li=document.createElement('li');li.textContent=x.label+' · '+months[m]+' '+x.day;legend.appendChild(li);});
-  var upcoming=events.filter(function(x){return x.day>=today.getDate();}).sort(function(a,b){return a.day-b.day;})[0]||events[0];
-  var diff=upcoming.day-today.getDate();
-  document.getElementById('dday-badge').textContent=upcoming.label+' D-'+(diff>=0?diff:0);
-})();
+  var legend=document.getElementById('cal-legend');legend.innerHTML='';
+  calEvents.filter(function(x){return x.month===calM;}).forEach(function(x){var li=document.createElement('li');li.textContent=x.label+' · '+(calM+1)+'월 '+x.day+'일';legend.appendChild(li);});
+  // 내 일정 로드
+  renderMyEvents();
+}
+function getMyEvents(){return JSON.parse(localStorage.getItem('wc_my_events')||'[]');}
+function saveMyEvents(arr){localStorage.setItem('wc_my_events',JSON.stringify(arr));}
+function addMyEvent(){
+  var day=parseInt(document.getElementById('my-event-day').value);
+  var text=document.getElementById('my-event-text').value.trim();
+  if(!day||!text){alert('날짜와 메모를 입력해주세요.');return;}
+  var arr=getMyEvents();arr.push({day:day,text:text});saveMyEvents(arr);
+  document.getElementById('my-event-day').value='';document.getElementById('my-event-text').value='';
+  renderMyEvents();
+  // 캘린더에 점 표시
+  var cells=document.querySelectorAll('#cal-grid .cal-day');
+  cells.forEach(function(c){if(parseInt(c.textContent)===day)c.classList.add('event');});
+}
+function removeMyEvent(idx){var arr=getMyEvents();arr.splice(idx,1);saveMyEvents(arr);renderMyEvents();}
+function renderMyEvents(){
+  var arr=getMyEvents();var el=document.getElementById('my-events');el.innerHTML='';
+  arr.forEach(function(e,idx){
+    var li=document.createElement('li');
+    li.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(201,168,76,0.15);font-size:0.82rem;color:var(--text-mid);';
+    li.innerHTML='<span>'+e.day+'일 · '+e.text+'</span><button onclick="removeMyEvent('+idx+')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.78rem;">삭제</button>';
+    el.appendChild(li);
+  });
+  // 캘린더에 내 이벤트 점 표시
+  var cells=document.querySelectorAll('#cal-grid .cal-day');
+  var myDays=arr.map(function(e){return e.day;});
+  cells.forEach(function(c){if(myDays.indexOf(parseInt(c.textContent))>-1)c.classList.add('event');});
+}
 </script>
 
 <script>
@@ -672,6 +803,7 @@ document.addEventListener('DOMContentLoaded',function(){
   video.muted=true;
   video.defaultMuted=true;
   video.setAttribute('muted','');
+  // 루프 전환 시 하얀 화면 방지   끝나기 0.3초 전에 다시 시작
   video.addEventListener('timeupdate',function(){
     if(video.duration&&video.currentTime>video.duration-0.3){
       video.currentTime=0;
@@ -689,13 +821,13 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- EXPERTISE -->
 <section id="expertise">
   <div class="sec-label reveal">Our Expertise</div>
-  <h2 class="sec-title reveal" style="font-weight:700;">A Cut Above   <em>Career Solutions</em></h2>
+  <h2 class="sec-title reveal" style="font-weight:700;">A Cut Above — <em>Career Solutions</em></h2>
   <div class="gold-line reveal"></div>
   <div class="cards-row">
     <div class="exp-card reveal">
       <div class="exp-icon">🎙️</div>
       <div class="exp-card-title">AI Mock Interviews</div>
-      <p class="exp-card-body">Sophisticated AI analyzes your mock interview in real time   from vocal tone and eye contact to delivery and confidence.</p>
+      <p class="exp-card-body">Sophisticated AI analyzes your mock interview in real time — from vocal tone and eye contact to delivery and confidence.</p>
     </div>
     <div class="exp-card reveal reveal-delay-1">
       <div class="exp-icon">✨</div>
@@ -705,7 +837,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <div class="exp-card reveal reveal-delay-2">
       <div class="exp-icon">💎</div>
       <div class="exp-card-title">Signature Image Making</div>
-      <p class="exp-card-body">Craft your signature presence. From physique and color to attitude   discover the most radiant version of yourself.</p>
+      <p class="exp-card-body">Craft your signature presence. From physique and color to attitude — discover the most radiant version of yourself.</p>
     </div>
   </div>
 </section>
@@ -719,13 +851,13 @@ document.addEventListener('DOMContentLoaded',function(){
     </div>
     <div class="reveal reveal-delay-1">
       <div class="num-right-title">Proven Excellence</div>
-      <p class="num-right-body">WonderfulCrew's precision AI analysis meets 20 years of expert insight, delivering tangible results. We don't just educate   we redefine your career trajectory.</p>
+      <p class="num-right-body">원더풀크루의 정교한 AI 분석과 20년 전문가의 깊은 통찰이 만나 실질적인 결과로 이어집니다. 우리는 단순히 교육하는 것을 넘어, 당신의 커리어를 재정의합니다.</p>
       <div class="num-stats">
         <div class="nstat"><div class="nval">1,000<span style="font-size:0.6em">+</span></div><div class="nlbl">Global Alumni</div></div>
         <div class="nstat"><div class="nval">22<span style="font-size:0.6em">+</span></div><div class="nlbl">Countries</div></div>
-        <div class="nstat"><div class="nval">10</div><div class="nlbl">Advisory Airlines</div></div>
-        <div class="nstat"><div class="nval">20<span style="font-size:0.6em">yr</span></div><div class="nlbl">Coaching Career</div></div>
-        <div class="nstat"><div class="nval">10,000<span style="font-size:0.6em">+</span></div><div class="nlbl">Success Data</div></div>
+        <div class="nstat"><div class="nval">10</div><div class="nlbl" style="white-space:nowrap;">Advisory Airlines</div></div>
+        <div class="nstat"><div class="nval" style="white-space:nowrap;">20년</div><div class="nlbl">Coaching Career</div></div>
+        <div class="nstat"><div class="nval">10,000<span style="font-size:0.6em">+</span></div><div class="nlbl">합격 데이터</div></div>
       </div>
     </div>
   </div>
@@ -738,69 +870,83 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="sec-label" style="text-align:left;font-size:0.75rem;">Resources</div>
       <h2 class="sec-title" style="text-align:left">Study Materials</h2>
     </div>
-    <div class="res-header-right">Expert-written guides to help you prepare.</div>
+    <div class="res-header-right">전문가가 직접 작성한 최신 가이드를 확인하세요.</div>
   </div>
   <div class="res-cards">
-    <div class="res-card reveal">
+    <div class="res-card reveal" onclick="location.href='interview-guide.html'" style="cursor:pointer;">
       <div class="res-card-img-wrap">
-        <img src="images/img3.jpg" alt="Interview Guide">
-        <span class="res-tag">Interview Guide</span>
+        <img src="images/img3.jpg" alt="면접 가이드">
+        <span class="res-tag">면접 가이드</span>
       </div>
       <div class="res-card-body">
-        <div class="res-card-title">Complete Cabin Crew Interview Guide</div>
-        <div class="res-card-desc">Step-by-step prep strategies from resume screening to final interview, with real success stories.</div>
+        <div class="res-card-title">승무원 면접 완벽 가이드</div>
+        <div class="res-card-desc">1차 서류부터 최종 면접까지 단계별 준비 전략과 실제 합격자 후기를 담았습니다.</div>
         <div class="res-card-foot">
-
-          <a href="#" class="res-more">Read More →</a>
+          
+          <a href="interview-guide.html" class="res-more">자세히 보기 →</a>
         </div>
       </div>
     </div>
-    <div class="res-card reveal reveal-delay-1">
+    <div class="res-card reveal reveal-delay-1" onclick="location.href='english-interview.html'" style="cursor:pointer;">
       <div class="res-card-img-wrap">
-        <img src="images/img4.jpg" alt="English Interview">
-        <span class="res-tag">English Interview</span>
+        <img src="images/img4.jpg" alt="한국어 & 영어 면접">
+        <span class="res-tag">한국어 & 영어</span>
       </div>
       <div class="res-card-body">
-        <div class="res-card-title">Top 100 Airline English Interview Phrases</div>
-        <div class="res-card-desc">Frequently asked questions and model answers for international and domestic airline English interviews.</div>
+        <div class="res-card-title">한국어 & 영어 면접 핵심 표현</div>
+        <div class="res-card-desc">한국어·영어·항공영어 빈출 질문과 모범 답변 예시를 한번에 정리했습니다.</div>
         <div class="res-card-foot">
 
-          <a href="#" class="res-more">Read More →</a>
+          <a href="english-interview.html" class="res-more">자세히 보기 →</a>
         </div>
       </div>
     </div>
-    <div class="res-card reveal reveal-delay-2">
+    <div class="res-card reveal reveal-delay-2" onclick="location.href='grooming-guide.html'" style="cursor:pointer;">
       <div class="res-card-img-wrap">
-        <img src="images/img5.jpg" alt="Image Making">
-        <span class="res-tag">Image Making</span>
+        <img src="images/img5.jpg" alt="이미지 메이킹">
+        <span class="res-tag">이미지 메이킹</span>
       </div>
       <div class="res-card-body">
-        <div class="res-card-title">Cabin Crew Image & Grooming Mastery</div>
-        <div class="res-card-desc">Learn the look airlines want   first impressions, makeup tips, and hairstyle guides all in one place.</div>
+        <div class="res-card-title">승무원 이미지 메이킹 & 그루밍 정복</div>
+        <div class="res-card-desc">항공사가 원하는 이미지와 첫인상 관리법, 메이크업과 헤어스타일 가이드를 소개합니다.</div>
         <div class="res-card-foot">
-
-          <a href="#" class="res-more">Read More →</a>
+          
+          <a href="grooming-guide.html" class="res-more">자세히 보기 →</a>
         </div>
       </div>
     </div>
-    <div class="res-card reveal reveal-delay-3">
+    <div class="res-card reveal reveal-delay-3" onclick="location.href='resume-guide.html'" style="cursor:pointer;">
       <div class="res-card-img-wrap">
-        <img src="images/img6.jpg" alt="Cover Letter">
-        <span class="res-tag">Cover Letter</span>
+        <img src="images/img6.jpg" alt="증명사진 & 이력서">
+        <span class="res-tag">증명사진 & 이력서</span>
       </div>
       <div class="res-card-body">
-        <div class="res-card-title">Writing a Winning Cabin Crew Cover Letter</div>
-        <div class="res-card-desc">Structure and differentiation strategies to make your application stand out to hiring managers.</div>
+        <div class="res-card-title">합격하는 증명사진과 이력서</div>
+        <div class="res-card-desc">인사담당자의 눈길을 사로잡는 증명사진과 이력서 작성의 차별화 전략을 알려드립니다.</div>
         <div class="res-card-foot">
 
-          <a href="#" class="res-more">Read More →</a>
+          <a href="resume-guide.html" class="res-more">자세히 보기 →</a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Floating chatbot button -->
+<!-- 플로팅 사이드 버튼 3개 -->
+<style>
+.side-btns{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:998;display:flex;flex-direction:column;gap:8px;}
+.side-btn{display:block;padding:10px 14px;background:var(--navy);color:#fff;border-radius:20px;font-family:'Noto Sans KR',sans-serif;font-size:0.74rem;font-weight:600;text-decoration:none;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,0.15);transition:all 0.2s;letter-spacing:0.02em;}
+.side-btn:hover{background:var(--gold);color:#1A2340;transform:translateX(-4px);}
+@media(max-width:900px){.side-btns{display:none;}}
+</style>
+<div class="side-btns">
+  <a href="community.html" class="side-btn">Find Study<br>Partners</a>
+  <a href="jobs.html" class="side-btn">Airline<br>Careers</a>
+  <a href="roleplay-practice.html" class="side-btn">Try<br>Roleplay</a>
+  <a href="feedback.html" class="side-btn">Leave<br>Feedback</a>
+</div>
+
+<!-- 플로팅 챗봇 버튼 -->
 <style>
 .chat-float{
   position:fixed;bottom:28px;right:28px;z-index:999;
@@ -817,7 +963,7 @@ document.addEventListener('DOMContentLoaded',function(){
 .chat-float-icon{font-size:1.1rem;flex-shrink:0;}
 </style>
 <a href="chatbot.html" class="chat-float">
-  Chat with AI Coach
+  AI 면접 코치와 대화하기
 </a>
 
 <!-- FOOTER -->
@@ -870,7 +1016,7 @@ document.addEventListener('DOMContentLoaded',function(){
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2026 WonderfulCrew Co., Ltd. All rights reserved.</p>
+    <p>© 2026 WonderfulCrew Co., Ltd. (주식회사 원더풀크루). All rights reserved.</p>
     <p>AI Interview Coaching for Aspiring Cabin Crew</p>
   </div>
 </footer>

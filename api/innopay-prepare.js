@@ -1,8 +1,8 @@
 // 이노페이 결제 준비 API (Vercel Serverless)
 // 환경변수: INNOPAY_MID, INNOPAY_API_KEY
-import crypto from 'crypto';
+const crypto = require('crypto');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');

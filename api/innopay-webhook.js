@@ -4,7 +4,7 @@
 //
 // 환경변수: INNOPAY_MID, INNOPAY_API_KEY, KAKAO_ALIMTALK_KEY (선택)
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
 
   const { resultCode, resultMsg, tid, mid, moid, amt, payMethod } = req.body || {};

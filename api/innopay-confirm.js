@@ -1,8 +1,8 @@
 // 이노페이 결제 승인 API (Vercel Serverless)
 // 결제창에서 인증 완료 후 호출됨 → 서버에서 최종 승인 요청
-import crypto from 'crypto';
+const crypto = require('crypto');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // 이노페이는 POST로 인증 결과를 전달함
   const { resultCode, resultMsg, tid, mid, moid, amt, authToken, authUrl } =
     req.method === 'POST' ? (req.body || {}) : (req.query || {});

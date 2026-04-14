@@ -29,12 +29,12 @@ async function payWithInnopay(plan, buyerInfo) {
     }
 
     // 2. 이노페이 결제창 호출
-    if (typeof INNOPAY === 'undefined') {
+    if (typeof innopay === 'undefined') {
       alert('이노페이 SDK가 로드되지 않았습니다. 페이지를 새로고침해주세요.');
       return;
     }
 
-    INNOPAY.goPay({
+    innopay.goPay({
       PayMethod: 'CARD',           // 신용카드
       MID: data.mid,               // 상점 ID
       MerchantKey: '',             // 서버에서 서명 처리하므로 빈값

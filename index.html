@@ -943,7 +943,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
 <!-- 플로팅 사이드 버튼 3개 -->
 <style>
-.side-btns{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:998;display:flex;flex-direction:column;gap:8px;}
+.side-btns{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:998;display:flex;flex-direction:column;gap:8px;transition:opacity 0.3s;}
 .side-btn{display:block;padding:10px 14px;background:rgba(255,255,255,0.25);color:#1a2744;backdrop-filter:blur(8px);border-radius:20px;font-family:'Noto Sans KR',sans-serif;font-size:0.74rem;font-weight:600;text-decoration:none;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,0.1);transition:all 0.3s;letter-spacing:0.02em;border:1px solid rgba(201,168,76,0.2);}
 .side-btn:hover{background:var(--gold);color:#fff;transform:translateX(-4px);}
 .side-btns.hero-mode .side-btn{background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.25);backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(0,0,0,0.15);}
@@ -1040,13 +1040,17 @@ const observer = new IntersectionObserver((entries) => {
 reveals.forEach(el => observer.observe(el));
 
 // 플로팅 버튼: 히어로 섹션에서는 반투명 크림, 스크롤 내리면 흰색
+// 플로팅 버튼: 히어로 섹션에만 표시, 스크롤 내리면 사라짐
 var sideBtns=document.getElementById('side-btns');
 var heroSection=document.getElementById('hero');
 if(sideBtns&&heroSection){
   window.addEventListener('scroll',function(){
     var heroBottom=heroSection.getBoundingClientRect().bottom;
-    if(heroBottom>0){sideBtns.classList.add('hero-mode');}
-    else{sideBtns.classList.remove('hero-mode');}
+    if(heroBottom>0){
+      sideBtns.style.opacity='1';sideBtns.style.pointerEvents='auto';
+    } else {
+      sideBtns.style.opacity='0';sideBtns.style.pointerEvents='none';
+    }
   });
 }
 </script>

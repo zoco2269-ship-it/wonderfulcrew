@@ -28,7 +28,7 @@ module.exports = async function handler(req, res) {
 
     const selected = plans[plan] || plans.basic;
     const timestamp = Date.now().toString();
-    const moid = (process.env.INNOPAY_MOID_PREFIX || 'WC') + '_' + timestamp;
+    const moid = 'WC' + timestamp;
 
     // 서명 생성: SHA256(MID + moid + amount + API_KEY)
     const signData = MID + moid + selected.amount + API_KEY;

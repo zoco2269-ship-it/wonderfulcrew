@@ -101,8 +101,22 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
 <nav>
   <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
-  <a href="curriculum.html" class="nav-back">← 커리큘럼</a>
+  <a href="#" class="nav-back" onclick="goBack();return false;">← 돌아가기</a>
 </nav>
+<script>
+function goBack(){
+  var interview=document.getElementById('interview');
+  if(interview&&interview.classList.contains('active')){
+    // 롤플레이 중이면 setup으로
+    if('speechSynthesis' in window)window.speechSynthesis.cancel();
+    if(typeof recognition!=='undefined'&&recognition)try{recognition.stop();}catch(e){}
+    interview.classList.remove('active');
+    document.getElementById('setup').style.display='block';
+  } else {
+    history.back();
+  }
+}
+</script>
 
 <!-- SETUP SCREEN -->
 <div class="setup" id="setup">
@@ -122,8 +136,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
       <select class="setup-select" id="s-accent">
         <option value="en-GB">British English</option>
         <option value="en-US">American English</option>
-        <option value="fr-FR">French English</option>
-        <option value="es-ES">Spanish English</option>
       </select>
     </div>
     <div>
@@ -210,6 +222,24 @@ var SCENARIOS=[
   "A passenger demands to be upgraded to business class for free.",
   "A passenger discovers their passport is missing after boarding."
 ];
+
+// 고객 첫 대사 (API 호출 없이 즉시 시작)
+var OPENERS={
+  0:"Excuse me, I specifically requested a window seat when I booked. Is there really nothing you can do?",
+  1:"I ordered the steak but you're telling me it's not available? I'm in business class, this is unacceptable.",
+  2:"I'm freezing here. Can you please turn up the temperature? I've been cold for the last hour.",
+  3:"Excuse me, that baby has been crying non-stop for 30 minutes. I can't sleep at all. Can you do something?",
+  4:"Hi, can I get another glass of wine please? Actually, make it two.",
+  5:"My bag won't fit up there. I don't want to check it in, I have valuables inside.",
+  6:"I ordered a Hindu vegetarian meal but apparently it wasn't registered. I can't eat any of the options you have.",
+  7:"This person keeps taking my armrest! Can you please tell them to stay on their side?",
+  8:"I'm fine, I don't need a seatbelt. We're barely moving anyway.",
+  9:"My screen has been broken since takeoff. I've been sitting here with nothing to do for two hours.",
+  10:"You just spilled a drink all over my shirt! This is a brand new shirt!",
+  11:"I'm not feeling well... I think something in the meal is making me sick. My throat feels tight.",
+  12:"I think I deserve an upgrade to business class. My seat is broken and I paid a lot for this ticket.",
+  13:"Oh no, I can't find my passport! I had it in my bag but it's gone. What am I going to do?"
+};
 
 var MODELS={
   0:"I'm really sorry about that. Let me check all sections for any window seat. Unfortunately they're all taken. May I recommend this aisle seat near the front? It has extra legroom. And I'll bring you a complimentary drink once we're airborne.",
@@ -323,42 +353,30 @@ function showQuestion(){
   document.getElementById('waveform').classList.remove('active');
   fullText='';
 
-  // AI(고객)가 먼저 불만/요청을 말함
-  customerFirstSpeak(q.q);
+  // 고객 첫 대사 — 미리 작성된 대사로 즉시 시작 (API 호출 없음)
+  var origIdx=q.origIdx!==undefined?q.origIdx:qIdx;
+  var opener=OPENERS[origIdx]||'Excuse me, I have a problem I need help with.';
+  customerFirstSpeak(opener);
 }
 
-async function customerFirstSpeak(scenario){
+function customerFirstSpeak(openerText){
   var fb=document.getElementById('feedback');
-  fb.innerHTML='<span style="color:var(--gold);">고객이 말하고 있어요...</span>';
+
+  chatHistory.push({role:'assistant',content:openerText});
+  fb.innerHTML='<b style="color:var(--gold);">Passenger:</b> '+openerText;
   fb.classList.add('active');
 
-  try{
-    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:150,
-      system:'You are a passenger on an airplane. The situation is: "'+scenario+'"\n\nYou must speak FIRST as the upset/confused passenger. Say 1-2 sentences expressing your complaint or request naturally, as if talking to the cabin crew member standing in front of you. Be realistic. Speak in ENGLISH only. Do NOT say anything from the crew perspective.',
-      messages:[{role:'user',content:'Start the conversation as the passenger.'}]
-    })});
-    var data=await res.json();
-    var aiText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Excuse me, I have a problem.';
-    aiText=aiText.replace(/\*\*/g,'');
+  // TTS 즉시 시작
+  var accent=document.getElementById('s-accent').value;
+  speakQuestion(openerText,accent);
 
-    chatHistory.push({role:'assistant',content:aiText});
-    fb.innerHTML='<b style="color:var(--gold);">Passenger:</b> '+aiText;
-
-    // TTS
-    var accent=document.getElementById('s-accent').value;
-    speakQuestion(aiText,accent);
-
-    // TTS 끝나면 자동으로 학생 음성 인식 시작
-    var checkTTS=setInterval(function(){
-      if(!window.speechSynthesis.speaking){
-        clearInterval(checkTTS);
-        startListening();
-      }
-    },300);
-  }catch(e){
-    fb.innerHTML='<span style="color:#E74C3C;">오류 발생. 다시 시도해주세요.</span>';
-  }
+  // TTS 끝나면 자동으로 학생 음성 인식 시작
+  var checkTTS=setInterval(function(){
+    if(!window.speechSynthesis.speaking){
+      clearInterval(checkTTS);
+      startListening();
+    }
+  },300);
 }
 
 function startListening(){
@@ -502,7 +520,7 @@ async function processAnswer(){
 
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:150,
+      model:'claude-sonnet-4-20250514',max_tokens:80,
       system:'You are a passenger on an airplane having a conversation with a cabin crew member. The situation is: "'+scenario+'"\n\nYou MUST follow these rules:\n\n1. ALWAYS respond to exactly what the crew member said. Read their message carefully.\n2. If they ASKED you a question like "Which would you prefer?" or "Would you like X or Y?" — you MUST ANSWER the question. Say something like "I think I\'d prefer the seat change" or "Yes, earplugs would be great."\n3. If they offered solutions, react to the specific solutions they mentioned.\n4. Keep your response to 1-2 sentences.\n5. Be a realistic passenger — not too angry, not too easy.\n6. Speak natural English.\n\nYou are having a REAL conversation. The crew member is talking TO YOU. Respond TO THEM.',
       messages:chatHistory
     })});

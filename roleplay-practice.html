@@ -186,7 +186,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   <div class="feedback-panel" id="feedback"></div>
 
   <div class="controls">
-    <button class="ctrl-btn danger" id="btn-stop" onclick="stopAnswer()" style="display:none;">⏹ 답변 완료</button>
+    <button class="ctrl-btn danger" id="btn-stop" onclick="endAndFeedback()" style="display:none;">⏹ 답변 종료</button>
     <button class="ctrl-btn primary" id="btn-model" onclick="showSuggestedResponse()" style="display:none;">모범답변 보기</button>
     <button class="ctrl-btn secondary" id="btn-next" onclick="nextQuestion()" style="display:none;">다음 질문 →</button>
   </div>
@@ -305,7 +305,7 @@ function startInterview(){
 }
 
 function showQuestion(){
-  chatHistory=[];
+  chatHistory=[];endingRoleplay=false;
   var q=questions[qIdx];
   document.getElementById('q-idx').textContent=qIdx+1;
   document.getElementById('q-text').textContent=q.q;
@@ -386,9 +386,9 @@ function startListening(){
     document.getElementById('transcript').textContent=fullText+interim;
   };
   recognition.onend=function(){
+    if(endingRoleplay) return; // 종료 중이면 무시
     if(fullText.trim()){
       document.getElementById('transcript').textContent=fullText.trim();
-      // 자동으로 AI 응답 처리
       processAnswer();
     }
   };
@@ -450,12 +450,31 @@ function showSuggestedResponse(){
   speakQuestion(lastSuggestedResponse, accent);
 }
 
+var endingRoleplay=false;
+
 function stopAnswer(){
   if(recognition)try{recognition.stop();}catch(e){}
   document.getElementById('btn-stop').style.display='none';
   document.getElementById('rec-dot').classList.remove('on');
   document.getElementById('rec-label').textContent='처리 중';
   document.getElementById('waveform').classList.remove('active');
+}
+
+function endAndFeedback(){
+  endingRoleplay=true;
+  if('speechSynthesis' in window)window.speechSynthesis.cancel();
+  if(recognition)try{recognition.stop();}catch(e){}
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('rec-dot').classList.remove('on');
+  document.getElementById('waveform').classList.remove('active');
+  // 마지막 답변이 있으면 추가
+  var lastAns=fullText.trim();
+  if(lastAns&&lastAns!=='지금 답변하세요...'){
+    chatHistory.push({role:'user',content:lastAns});
+  }
+  var q=questions[qIdx];
+  var scenario=typeof q==='string'?q:q.q;
+  generateFeedback(scenario);
 }
 
 async function processAnswer(){
@@ -478,39 +497,26 @@ async function processAnswer(){
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-sonnet-4-20250514',max_tokens:150,
-      system:'You are a passenger on an airplane. The situation is: "'+scenario+'"\n\nThe cabin crew member just responded to you. React naturally IN ENGLISH as the passenger. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the passenger\n- React to what the crew member actually said. If they asked you a question, ANSWER it. If they offered a solution, react to it.\n- If the crew member handled it well and you are satisfied, say thank you naturally and add [DONE] at the very end of your response\n- If the solution is weak or you have more concerns, express them (do NOT add [DONE])\n- If the crew member asked you a question, answer it naturally (do NOT add [DONE])\n- Only add [DONE] when the conversation has reached a natural conclusion and you as the passenger feel the issue is resolved\n- Be realistic, not aggressive\n- This is exchange '+turnCount,
+      system:'You are a passenger on an airplane. The situation is: "'+scenario+'"\n\nThe cabin crew member just responded to you. React naturally IN ENGLISH as the passenger. Keep responses 1-2 sentences max.\n\nCRITICAL RULES:\n- Stay in character as the passenger at all times\n- If the crew member ASKED YOU A QUESTION, you MUST answer it directly\n- If they offered a solution, react honestly — accept if good, push back if not enough\n- If satisfied, say something like "Oh okay, that sounds good" or "Thank you, I appreciate that"\n- If not satisfied, express what you still need\n- Be realistic and natural, not aggressive\n- NEVER ignore what the crew member said. Always respond to their actual words.',
       messages:chatHistory
     })});
     var data=await res.json();
     var aiText=(data&&data.content&&data.content[0]&&data.content[0].text)||'I see.';
-    aiText=aiText.replace(/\*\*/g,'');
+    aiText=aiText.replace(/\*\*/g,'').replace(/\[DONE\]/g,'').replace(/\[END\]/g,'').trim();
 
-    var isDone=aiText.includes('[DONE]');
-    var displayText=aiText.replace('[DONE]','').trim();
-
-    chatHistory.push({role:'assistant',content:displayText});
-    fb.innerHTML='<b style="color:var(--gold);">Passenger:</b> '+displayText;
+    chatHistory.push({role:'assistant',content:aiText});
+    fb.innerHTML='<b style="color:var(--gold);">Passenger:</b> '+aiText;
 
     var accent=document.getElementById('s-accent').value;
-    speakQuestion(displayText,accent);
+    speakQuestion(aiText,accent);
 
-    if(isDone){
-      // 대화 자연 종료 → TTS 끝난 후 피드백 생성
-      var checkTTS=setInterval(function(){
-        if(!window.speechSynthesis.speaking){
-          clearInterval(checkTTS);
-          generateFeedback(scenario);
-        }
-      },300);
-    } else {
-      // 대화 계속 → TTS 끝나면 자동 음성 인식
-      var checkTTS2=setInterval(function(){
-        if(!window.speechSynthesis.speaking){
-          clearInterval(checkTTS2);
-          startListening();
-        }
-      },300);
-    }
+    // TTS 끝나면 자동으로 학생 음성 인식 — 학생이 "답변 완료" 누르면 피드백
+    var checkTTS2=setInterval(function(){
+      if(!window.speechSynthesis.speaking){
+        clearInterval(checkTTS2);
+        startListening();
+      }
+    },300);
   }catch(e){
     fb.innerHTML='<span style="color:#E74C3C;">오류 발생. 다시 시도해주세요.</span>';
   }

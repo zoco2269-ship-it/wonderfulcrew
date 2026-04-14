@@ -107,15 +107,22 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 function goBack(){
   var interview=document.getElementById('interview');
   if(interview&&interview.classList.contains('active')){
-    // 롤플레이 중이면 setup으로
     if('speechSynthesis' in window)window.speechSynthesis.cancel();
     if(typeof recognition!=='undefined'&&recognition)try{recognition.stop();}catch(e){}
+    if(typeof stream!=='undefined'&&stream)stream.getTracks().forEach(function(t){t.stop();});
     interview.classList.remove('active');
     document.getElementById('setup').style.display='block';
   } else {
     history.back();
   }
 }
+// 브라우저 뒤로가기 버튼도 잡기
+window.addEventListener('popstate',function(){
+  var interview=document.getElementById('interview');
+  if(interview&&interview.classList.contains('active')){
+    goBack();
+  }
+});
 </script>
 
 <!-- SETUP SCREEN -->
@@ -292,6 +299,7 @@ function startInterview(){
   qIdx=0;
   document.getElementById('setup').style.display='none';
   document.getElementById('interview').classList.add('active');
+  history.pushState({roleplay:true},'','');
   // 아바타 이미지 또는 이모지 표시
   var avatarImg=document.getElementById('avatar-img');
   var avatarFallback=document.getElementById('avatar-face-fallback');
@@ -441,23 +449,41 @@ function speakQuestion(text,lang){
   iCard.classList.add('speaking');
   mouth.classList.add('talking');
   var u=new SpeechSynthesisUtterance(text);
-  u.lang=lang;
   var isMale=(chosenAvatar==='👨🏻');
   u.rate=0.85;
   u.pitch=isMale?0.75:1.2;
-  // 성별 음성 선택
+
+  // 악센트별 음성 선택
   var voices=window.speechSynthesis.getVoices();
-  var langPrefix=lang.split('-')[0];
-  var filtered=voices.filter(function(v){return v.lang.startsWith(langPrefix);});
-  if(filtered.length>0){
-    // 남성: 이름에 male/daniel/james/david/thomas/mark 포함 또는 pitch가 낮은 것
-    // 여성: female/samantha/karen/victoria/fiona/zira/google 포함
-    var maleNames=/male|daniel|james|david|thomas|mark|richard|google uk english male/i;
-    var femaleNames=/female|samantha|karen|victoria|fiona|zira|susan|google uk english female/i;
-    var match=filtered.find(function(v){return isMale?maleNames.test(v.name):femaleNames.test(v.name);});
-    if(match)u.voice=match;
-    else if(filtered.length>=2)u.voice=filtered[isMale?0:1]; // fallback: 첫번째=남, 두번째=여
+  var selectedVoice=null;
+
+  if(lang==='en-GB'){
+    // British: 정확히 en-GB 음성만
+    var gb=voices.filter(function(v){return v.lang==='en-GB';});
+    if(gb.length>0){
+      var match=gb.find(function(v){return isMale?/male|daniel|james|thomas/i.test(v.name):/female|kate|fiona|karen/i.test(v.name);});
+      selectedVoice=match||gb[isMale?0:Math.min(1,gb.length-1)];
+    }
+  } else if(lang==='en-US'){
+    // American: 정확히 en-US 음성만
+    var us=voices.filter(function(v){return v.lang==='en-US';});
+    if(us.length>0){
+      var match=us.find(function(v){return isMale?/male|david|mark|alex/i.test(v.name):/female|samantha|zira|susan/i.test(v.name);});
+      selectedVoice=match||us[isMale?0:Math.min(1,us.length-1)];
+    }
+  } else if(lang==='fr-FR'){
+    // French accent: fr-FR 음성으로 영어 텍스트 읽기 → 프랑스 악센트
+    var fr=voices.filter(function(v){return v.lang==='fr-FR'||v.lang.startsWith('fr');});
+    if(fr.length>0) selectedVoice=fr[isMale?0:Math.min(1,fr.length-1)];
+  } else if(lang==='es-ES'){
+    // Spanish accent: es-ES 음성으로 영어 텍스트 읽기 → 스페인 악센트
+    var es=voices.filter(function(v){return v.lang==='es-ES'||v.lang.startsWith('es');});
+    if(es.length>0) selectedVoice=es[isMale?0:Math.min(1,es.length-1)];
   }
+
+  if(selectedVoice) u.voice=selectedVoice;
+  // French/Spanish은 영어 텍스트를 해당 악센트로 읽으므로 lang은 항상 영어로
+  u.lang=(lang==='fr-FR'||lang==='es-ES')?lang:'en-US';
   u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(u);

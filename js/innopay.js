@@ -49,7 +49,7 @@ async function payWithInnopay(plan, buyerInfo) {
       Timestamp: data.timestamp,
     });
   } catch (e) {
-    alert('결제 연결에 실패했습니다. 다시 시도해주세요.');
+    alert('결제 연결 실패: ' + e.message);
     console.error('Innopay error:', e);
   }
 }

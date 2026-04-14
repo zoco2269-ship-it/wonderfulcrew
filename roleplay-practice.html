@@ -188,7 +188,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
     <button class="ctrl-btn danger" id="btn-stop" onclick="stopAnswer()" style="display:none;">⏹ 답변 완료</button>
     <button class="ctrl-btn secondary" id="btn-model" onclick="showModel()" style="display:none;">모범 답변</button>
     <button class="ctrl-btn secondary" id="btn-next" onclick="nextQuestion()" style="display:none;">다음 질문 →</button>
-    <button class="ctrl-btn danger" id="btn-end" onclick="endRoleplay()" style="background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);">롤플레이 종료</button>
   </div>
 </div>
 
@@ -274,19 +273,30 @@ function startInterview(){
 
   // Start camera
   // 카메라: 정면(셀카) 우선, 실패 시 기본 카메라
-  var camOpts=[
-    {video:{facingMode:'user'},audio:true},
-    {video:true,audio:true}
-  ];
+  // 카메라: 모든 비디오 장치를 확인해서 전면(내장) 카메라를 우선 선택
   (async function(){
-    for(var i=0;i<camOpts.length;i++){
-      try{
-        stream=await navigator.mediaDevices.getUserMedia(camOpts[i]);
-        var v=document.getElementById('cam-video');
-        v.srcObject=stream;v.style.display='block';
-        document.getElementById('cam-ph').style.display='none';
-        break;
-      }catch(e){if(i===camOpts.length-1)document.getElementById('cam-ph').innerHTML='<div>카메라 연결 실패</div>';}
+    try{
+      // 먼저 권한 요청
+      var tempStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+      tempStream.getTracks().forEach(function(t){t.stop();});
+      // 장치 목록 확인
+      var devices=await navigator.mediaDevices.enumerateDevices();
+      var videoDevices=devices.filter(function(d){return d.kind==='videoinput';});
+      var selectedId=null;
+      // 내장/전면 카메라 찾기 (이름에 front, 전면, integrated, webcam, facetime 포함)
+      var frontKeywords=/front|전면|내장|integrated|webcam|facetime|camera hd|built-in/i;
+      for(var i=0;i<videoDevices.length;i++){
+        if(frontKeywords.test(videoDevices[i].label)){selectedId=videoDevices[i].deviceId;break;}
+      }
+      // 못 찾으면 첫 번째 카메라
+      if(!selectedId&&videoDevices.length>0)selectedId=videoDevices[0].deviceId;
+      var constraints=selectedId?{video:{deviceId:{exact:selectedId}},audio:true}:{video:true,audio:true};
+      stream=await navigator.mediaDevices.getUserMedia(constraints);
+      var v=document.getElementById('cam-video');
+      v.srcObject=stream;v.style.display='block';
+      document.getElementById('cam-ph').style.display='none';
+    }catch(e){
+      document.getElementById('cam-ph').innerHTML='<div>Camera connection failed</div>';
     }
   })();
 
@@ -304,7 +314,6 @@ function showQuestion(){
   document.getElementById('btn-stop').style.display='none';
   document.getElementById('btn-model').style.display='none';
   document.getElementById('btn-next').style.display='none';
-  document.getElementById('btn-end').style.display='inline-flex';
   document.getElementById('waveform').classList.remove('active');
   fullText='';
 
@@ -452,92 +461,36 @@ async function processAnswer(){
 
   chatHistory.push({role:'user',content:ans});
 
-  var fb=document.getElementById('feedback');
-  fb.innerHTML='<span style="color:var(--gold);">고객이 답변을 듣고 있어요...</span>';
-  fb.classList.add('active');
-
-  try{
-    var q=questions[qIdx];
-    var scenario=typeof q==='string'?q:q.q;
-    var turnCount=chatHistory.filter(function(m){return m.role==='user';}).length;
-
-    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:200,
-      system:'You are a passenger on an airplane. The situation is: "'+scenario+'"\n\nYou are the upset/confused passenger. The cabin crew member just responded to you. React naturally IN ENGLISH. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the passenger at ALL times\n- If the crew member apologized well and offered a good solution, accept it but you can bring up a related concern or ask a follow-up question\n- If the solution is weak, push back gently (e.g. "But I specifically requested..." or "That doesn\'t really help...")\n- NEVER end the conversation yourself. NEVER say goodbye or wrap up. Always keep the conversation going with a follow-up question, concern, or reaction that requires the crew to respond.\n- Do NOT add [END] ever.\n- Be realistic, not overly aggressive\n- This is turn '+turnCount+' of the conversation',
-      messages:chatHistory
-    })});
-    var data=await res.json();
-    var aiText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Thank you.';
-    aiText=aiText.replace(/\*\*/g,'');
-
-    chatHistory.push({role:'assistant',content:aiText});
-
-    var displayText=aiText.replace('[END]','').trim();
-
-    fb.innerHTML='<b style="color:var(--gold);">Passenger:</b> '+displayText;
-
-    var accent=document.getElementById('s-accent').value;
-    speakQuestion(displayText,accent);
-
-    // TTS 끝나면 자동으로 다시 학생 음성 인식 — 종료 버튼 눌러야만 끝남
-    var checkTTS=setInterval(function(){
-      if(!window.speechSynthesis.speaking){
-        clearInterval(checkTTS);
-        startListening();
-      }
-    },300);
-  }catch(e){
-    fb.innerHTML='<span style="color:#E74C3C;">오류 발생. 다시 시도해주세요.</span>';
-  }
-}
-
-async function endRoleplay(){
-  // 음성 인식 + TTS 중지
-  if(recognition)try{recognition.stop();}catch(e){}
-  if('speechSynthesis' in window)window.speechSynthesis.cancel();
-  document.getElementById('btn-stop').style.display='none';
-  document.getElementById('btn-end').style.display='none';
-  document.getElementById('rec-dot').classList.remove('on');
-  document.getElementById('waveform').classList.remove('active');
-
   // 녹화 중지
   if(mediaRecorder&&mediaRecorder.state==='recording')try{mediaRecorder.stop();}catch(e){}
-  var duration=Math.round((Date.now()-recordStartTime)/1000);
-  if(duration>=20&&recordChunks.length>0&&typeof saveRoleplayFirstVideo==='function'){
-    var blob=new Blob(recordChunks,{type:'video/webm'});
-    saveRoleplayFirstVideo(blob,'Emirates').then(function(p){if(p)console.log('Roleplay first video saved:',p);});
-  }
 
   var fb=document.getElementById('feedback');
   fb.innerHTML='<span style="color:var(--gold);">AI가 피드백을 작성하고 있어요...</span>';
   fb.classList.add('active');
 
-  // 대화 내용이 있으면 AI 피드백 요청
-  if(chatHistory.length>0){
-    try{
-      var q=questions[qIdx];
-      var scenario=typeof q==='string'?q:q.q;
-      var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Crew':'Passenger')+': '+m.content;}).join('\n');
+  try{
+    var q=questions[qIdx];
+    var scenario=typeof q==='string'?q:q.q;
+    var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Crew':'Passenger')+': '+m.content;}).join('\n');
 
-      var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:500,
-        system:'You are a cabin crew interview coach. Evaluate the following roleplay conversation. The scenario was: "'+scenario+'"\n\nProvide feedback in this format:\n1. Overall Score: X/100\n2. Strengths (2-3 points)\n3. Areas to Improve (2-3 points)\n4. Key Phrases to Remember\n\nBe encouraging but honest. Write in English. Keep it concise.',
-        messages:[{role:'user',content:'Here is the roleplay conversation:\n\n'+convoSummary+'\n\nPlease give me feedback.'}]
-      })});
-      var data=await res.json();
-      var feedbackText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Good effort! Keep practicing.';
-      feedbackText=feedbackText.replace(/\*\*/g,'');
-      fb.innerHTML='<b style="color:var(--gold);">AI Feedback</b><br><br><div style="white-space:pre-line;">'+feedbackText+'</div>';
-    }catch(e){
-      fb.innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br>대화가 종료되었습니다.';
-    }
-  } else {
-    fb.innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br>대화 내용이 없습니다.';
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:500,
+      system:'You are a cabin crew interview coach. The student just completed a roleplay scenario. The scenario was: "'+scenario+'"\n\nEvaluate the crew member\'s response. Provide feedback in this format:\n\nOverall Score: X/100\n\nStrengths:\n- (2-3 bullet points)\n\nAreas to Improve:\n- (2-3 bullet points)\n\nSuggested Response:\n(Write a short ideal response the crew member could have given)\n\nBe encouraging but honest. Write in English. Keep it concise.',
+      messages:[{role:'user',content:'Here is the roleplay conversation:\n\n'+convoSummary+'\n\nPlease give feedback on the crew member\'s response.'}]
+    })});
+    var data=await res.json();
+    var feedbackText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Good effort! Keep practicing.';
+    feedbackText=feedbackText.replace(/\*\*/g,'');
+    fb.innerHTML='<b style="color:var(--gold);">AI Feedback</b><br><br><div style="white-space:pre-line;">'+feedbackText+'</div>';
+
+    // 모범 답변 + 다음 질문 버튼 표시
+    document.getElementById('btn-model').style.display='inline-flex';
+    document.getElementById('btn-next').style.display='inline-flex';
+    document.getElementById('rec-label').textContent='완료';
+  }catch(e){
+    fb.innerHTML='<span style="color:#E74C3C;">오류 발생. 다시 시도해주세요.</span>';
+    document.getElementById('btn-next').style.display='inline-flex';
   }
-
-  document.getElementById('btn-model').style.display='inline-flex';
-  document.getElementById('btn-next').style.display='inline-flex';
-  document.getElementById('rec-label').textContent='완료';
 }
 
 function showModel(){

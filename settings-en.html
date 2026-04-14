@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notification Settings — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:28px;align-items:center;}.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}.nav-links a{font-size:0.82rem;color:var(--text-mid);}.nav-links a:hover{color:var(--gold);}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
+.nav-dropdown{position:relative;}.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid var(--gold-pale);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:180px;z-index:1001;}.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}.nav-dropdown-menu a{display:block;padding:6px 14px;font-size:0.82rem;white-space:nowrap;}.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:var(--gold);}
+.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:500px;margin:0 auto;line-height:1.8;}
+section{padding:60px 5%;}.wrap{max-width:700px;margin:0 auto;}
+.card{background:#fff;border:1px solid var(--gold-pale);padding:24px 28px;margin-bottom:16px;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--gold-pale);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-info{flex:1;}
+.toggle-info .name{font-size:0.92rem;color:var(--navy);font-weight:600;margin-bottom:2px;}
+.toggle-info .desc{font-size:0.78rem;color:var(--text-muted);line-height:1.5;}
+.toggle{position:relative;width:48px;height:26px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle .slider{position:absolute;inset:0;background:#ddd;border-radius:26px;cursor:pointer;transition:0.3s;}
+.toggle .slider::before{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;left:3px;top:3px;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+.toggle input:checked+.slider{background:var(--gold);}
+.toggle input:checked+.slider::before{transform:translateX(22px);}
+.permission-box{background:var(--cream);border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:20px;margin-bottom:24px;}
+.permission-box p{font-size:0.86rem;color:var(--text-mid);line-height:1.7;}
+.permission-box button{margin-top:12px;padding:10px 24px;background:var(--navy);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.84rem;font-weight:600;cursor:pointer;}
+.status{display:inline-block;padding:3px 10px;border-radius:10px;font-size:0.72rem;font-weight:700;margin-left:8px;}
+.status.on{background:#E8F5E9;color:#2E7D32;}
+.status.off{background:#FFEBEE;color:#C62828;}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}}
+
+.nav-dd-grid{min-width:260px;display:none;grid-template-columns:1fr 1fr;gap:0;padding:4px 0;}
+.nav-dropdown:hover .nav-dd-grid{display:grid!important;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <a href="index.html#about">About</a>
+    <div class="nav-dropdown"><a href="index.html#expertise">Programs</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest-en.html">✈️ Cabin Crew</a><a href="hotel-en.html">🏨 Hotel & Luxury</a><a href="walking-analysis-en.html">🚶 Walking & Posture</a><a href="cruise-en.html">🚢 Cruise</a><a href="coach-feedback-en.html">💬 1:1 Coach Feedback</a><a href="ai-coach-en.html">✨ AI Coach</a></div></div>
+    <div class="nav-dropdown"><a href="index.html#resources">Resources</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide-en.html">📋 Interview Guide</a><a href="english-interview-en.html">💬 Interview Q&A</a><a href="grooming-guide-en.html">👗 Image & Grooming</a><a href="resume-guide-en.html">📄 Resume & CV</a><a href="customer-service-en.html">🎯 Customer Service Skills</a></div></div>
+    <a href="daily-english-en.html">English Practice</a>
+    <a href="jobs-en.html">Careers</a>
+    <a href="community-en.html">Community</a>
+    <a href="token-rewards-en.html">Tokens</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="leveltest-en.html" class="nav-cta">Start Practice</a>
+    <a href="login-en.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;">Sign In</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="label">Notifications</div>
+  <h1>Notification <em>Settings</em></h1>
+  <p>Choose which notifications you want to receive.</p>
+</div>
+
+<section><div class="wrap">
+
+<div class="permission-box">
+  <p>Browser push notification status: <span class="status" id="perm-status">Checking</span></p>
+  <p>Please allow browser notification permission to receive alerts.</p>
+  <button onclick="requestPermission()">Allow Notifications</button>
+</div>
+
+<div class="card">
+  <div class="toggle-row">
+    <div class="toggle-info">
+      <div class="name">💎 항공사 Job Posting Alerts</div>
+      <div class="desc">새 Job Postings가 등록되면 알려드립니다</div>
+    </div>
+    <label class="toggle"><input type="checkbox" data-key="noti_recruit" onchange="saveNoti(this)"><span class="slider"></span></label>
+  </div>
+  <div class="toggle-row">
+    <div class="toggle-info">
+      <div class="name">💎 항공 뉴스 알림</div>
+      <div class="desc">주요 항공사 소식을 알려드립니다</div>
+    </div>
+    <label class="toggle"><input type="checkbox" data-key="noti_news" onchange="saveNoti(this)"><span class="slider"></span></label>
+  </div>
+  <div class="toggle-row">
+    <div class="toggle-info">
+      <div class="name">💎 매일 영어 연습 알림</div>
+      <div class="desc">매일 오전 10시 "오늘 영어 연습 하셨나요?"</div>
+    </div>
+    <label class="toggle"><input type="checkbox" data-key="noti_english" onchange="saveNoti(this)"><span class="slider"></span></label>
+  </div>
+  <div class="toggle-row">
+    <div class="toggle-info">
+      <div class="name">💎 라이브 수업 리마인드</div>
+      <div class="desc">수업 전날 + 당일 오전 알림</div>
+    </div>
+    <label class="toggle"><input type="checkbox" data-key="noti_live" onchange="saveNoti(this)"><span class="slider"></span></label>
+  </div>
+  <div class="toggle-row">
+    <div class="toggle-info">
+      <div class="name">💎 Attendance 알림</div>
+      <div class="desc">매일 오후 8시 "오늘 출석 안 하면 streak 끊겨요!"</div>
+    </div>
+    <label class="toggle"><input type="checkbox" data-key="noti_attend" onchange="saveNoti(this)"><span class="slider"></span></label>
+  </div>
+</div>
+
+</div></section>
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+<script>
+// Load saved settings
+function loadNoti(){return JSON.parse(localStorage.getItem('wc_noti')||'{}');}
+function saveNoti(el){var s=loadNoti();s[el.dataset.key]=el.checked;localStorage.setItem('wc_noti',JSON.stringify(s));}
+var saved=loadNoti();
+document.querySelectorAll('[data-key]').forEach(function(el){if(saved[el.dataset.key])el.checked=true;});
+
+// Permission status
+function updatePermStatus(){
+  var el=document.getElementById('perm-status');
+  if(!('Notification' in window)){el.textContent='미지원';el.className='status off';return;}
+  if(Notification.permission==='granted'){el.textContent='Allowed';el.className='status on';}
+  else if(Notification.permission==='denied'){el.textContent='Blocked';el.className='status off';}
+  else{el.textContent='Not set';el.className='status off';}
+}
+updatePermStatus();
+
+function requestPermission(){
+  if(!('Notification' in window)){alert('이 브라우저는 알림을 지원하지 않습니다.');return;}
+  Notification.requestPermission().then(function(perm){
+    updatePermStatus();
+    if(perm==='granted'){
+      new Notification('WonderfulCrew',{body:'알림이 활성화되었습니다! 이제 중요한 소식을 놓치지 마세요.',icon:'images/logo.png'});
+    }
+  });
+}
+</script>
+</body>
+</html>

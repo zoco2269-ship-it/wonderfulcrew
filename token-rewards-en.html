@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>토큰받기   WonderfulCrew</title>
+<title>Tokens & Rewards — WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-<script src="https://pg.innopay.co.kr/ipay/js/innopay-2.0.js"></script>
-<script src="js/innopay.js"></script>
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
 *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
@@ -62,127 +60,127 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a>
   <div class="nav-links">
-    <a href="index.html#about">소개</a>
-    <div class="nav-dropdown"><a href="index.html#expertise">준비 과정</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest.html">✈️ 항공사 승무원</a><a href="hotel.html">🏨 호텔·럭셔리</a><a href="walking-analysis.html">🚶 워킹 & 자세 분석</a><a href="cruise.html">🚢 크루즈</a><a href="coach-feedback.html">💬 1:1 코치 피드백</a><a href="ai-coach.html">✨ AI 코치</a></div></div>
-    <div class="nav-dropdown"><a href="index.html#resources">학습 자료</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide.html">📋 면접 완벽 가이드</a><a href="english-interview.html">💬 한국어 & 영어 면접</a><a href="grooming-guide.html">👗 이미지 메이킹 & 그루밍</a><a href="resume-guide.html">📄 자기소개서 & CV</a><a href="customer-service.html">🎯 고객 응대 스킬</a></div></div>
-    <a href="daily-english.html">영어쉐도잉</a>
-    <a href="jobs.html">항공사 채용</a>
-    <a href="community.html">커뮤니티</a>
-    <a href="token-rewards.html">토큰받기</a>
+    <a href="index.html#about">About</a>
+    <div class="nav-dropdown"><a href="index.html#expertise">Programs</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest-en.html">✈️ Cabin Crew</a><a href="hotel-en.html">🏨 Hotel & Luxury</a><a href="walking-analysis-en.html">🚶 Walking & Posture</a><a href="cruise-en.html">🚢 Cruise</a><a href="coach-feedback-en.html">💬 1:1 Coach Feedback</a><a href="ai-coach-en.html">✨ AI Coach</a></div></div>
+    <div class="nav-dropdown"><a href="index.html#resources">Resources</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide-en.html">📋 Interview Guide</a><a href="english-interview-en.html">💬 Interview Q&A</a><a href="grooming-guide-en.html">👗 Image & Grooming</a><a href="resume-guide-en.html">📄 Resume & CV</a><a href="customer-service-en.html">🎯 Customer Service Skills</a></div></div>
+    <a href="daily-english-en.html">English Practice</a>
+    <a href="jobs-en.html">Careers</a>
+    <a href="community-en.html">Community</a>
+    <a href="token-rewards-en.html">Tokens</a>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
-    <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
-    <a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;">로그인</a>
+    <a href="leveltest-en.html" class="nav-cta">Start Practice</a>
+    <a href="login-en.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;">Sign In</a>
   </div>
 </nav>
 
 <div class="hero">
   <div class="label">Token & Rewards</div>
-  <h1>토큰을 모아<br><em>더 많이 연습하세요</em></h1>
-  <p>출석, 친구 초대, 합격 후기로 무료 토큰을 받을 수 있어요.</p>
+  <h1>Collect Tokens,<br><em>Practice More</em></h1>
+  <p>Earn free tokens through attendance, inviting friends, and sharing success stories.</p>
   <div class="token-badge">
     <div class="num" id="my-tokens">0</div>
-    <div class="lbl">내 토큰</div>
+    <div class="lbl">My Tokens</div>
   </div>
   <div id="token-expiry" style="margin-top:10px;font-size:0.8rem;color:rgba(255,255,255,0.6);"></div>
 </div>
 
-<!-- ① 출석 체크 -->
+<!-- ① Attendance -->
 <section>
 <div class="wrap">
   <div class="sec-num">01</div>
-  <div class="sec-title">출석 <em>체크</em></div>
+  <div class="sec-title">Daily <em>Attendance</em></div>
   <div class="gold-line"></div>
 
   <div class="card">
     <h3>연속 출석 보상</h3>
     <table class="reward-table">
       <tr><th>연속 출석</th><th>보상</th></tr>
-      <tr><td>7일 연속</td><td class="token">토큰 1개</td></tr>
-      <tr><td>14일 연속</td><td class="token">토큰 2개</td></tr>
-      <tr><td>30일 연속</td><td class="token">토큰 5개</td></tr>
+      <tr><td>7Sun 연속</td><td class="token">Sat큰 1개</td></tr>
+      <tr><td>14Sun 연속</td><td class="token">Sat큰 2개</td></tr>
+      <tr><td>30Sun 연속</td><td class="token">Sat큰 5개</td></tr>
     </table>
-    <div class="tip"><b>출석 기준:</b> "오늘 출석하기" 버튼을 눌러주세요. 하루라도 빠지면 streak 리셋!</div>
+    <div class="tip"><b>출석 기준:</b> "Check In Today" 버튼을 눌러주세요. 하루라도 빠지면 streak 리셋!</div>
   </div>
 
   <div class="card">
     <h3>이번 달 출석 현황</h3>
     <div class="cal-mini" id="att-cal"></div>
-    <p style="font-size:0.82rem;color:var(--text-muted);margin-top:8px;">연속 출석: <b id="att-streak">0</b>일 · 총 출석: <b id="att-total">0</b>일</p>
-    <button class="btn-gold" onclick="checkIn()">오늘 출석하기</button>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-top:8px;">연속 출석: <b id="att-streak">0</b>Sun · 총 출석: <b id="att-total">0</b>Sun</p>
+    <button class="btn-gold" onclick="checkIn()">Check In Today</button>
   </div>
 </div>
 </section>
 
-<!-- ② 친구 초대 -->
+<!-- ② Invite Friends -->
 <section style="background:#fff;">
 <div class="wrap">
   <div class="sec-num">02</div>
-  <div class="sec-title">친구 <em>초대</em></div>
+  <div class="sec-title">Invite <em>Friends</em></div>
   <div class="gold-line"></div>
 
   <div class="card">
     <h3>초대 보상</h3>
     <table class="reward-table">
       <tr><th>조건</th><th>나</th><th>친구</th></tr>
-      <tr><td>친구가 링크로 가입</td><td class="token">토큰 2개</td><td class="token">토큰 2개</td></tr>
-      <tr><td>친구가 첫 결제</td><td class="token">추가 토큰 3개</td><td> </td></tr>
+      <tr><td>친구가 링크로 가입</td><td class="token">Sat큰 2개</td><td class="token">Sat큰 2개</td></tr>
+      <tr><td>친구가 첫 결제</td><td class="token">추가 Sat큰 3개</td><td> </td></tr>
     </table>
   </div>
 
   <div class="card">
-    <h3>내 초대 링크</h3>
+    <h3>내 Invite Link</h3>
     <div class="invite-link">
       <input type="text" id="invite-url" readonly value="" placeholder="로그인 후 생성됩니다">
     </div>
     <div class="share-btns">
-      <button class="share-btn kakao" onclick="shareKakao()">카카오톡 공유</button>
-      <button class="share-btn copy" onclick="copyLink()">링크 복사</button>
+      <button class="share-btn kakao" onclick="shareKakao()">Share via KakaoTalk</button>
+      <button class="share-btn copy" onclick="copyLink()">Copy Link</button>
     </div>
     <div id="toast" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:14px 28px;border-radius:28px;font-size:0.88rem;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.2);"></div>
-    <div class="tip" style="margin-top:16px;"><b>카톡 공유 문구:</b><br>"나 원더풀크루로 에미레이트 면접 준비 중인데 진짜 좋아. 좋은 기능 너무 많고 같이 하자! 이 링크로 가입하면 토큰도 2개 무료로 더 줘 ✈️"</div>
+    <div class="tip" style="margin-top:16px;"><b>카톡 공유 문구:</b><br>"나 원더풀크루로 에미레이트 면접 준비 중인데 진짜 좋아. 좋은 기능 너무 많고 같이 하자! 이 링크로 가입하면 Sat큰도 2개 무료로 더 줘 ✈️"</div>
   </div>
 </div>
 </section>
 
-<!-- ③ 합격 후기 보상 -->
+<!-- ③ Success Stories 보상 -->
 <section>
 <div class="wrap">
   <div class="sec-num">03</div>
-  <div class="sec-title">합격 후기 <em>보상</em></div>
+  <div class="sec-title">Success Stories <em>보상</em></div>
   <div class="gold-line"></div>
 
   <div class="card">
-    <h3>합격 후기 작성 보상</h3>
+    <h3>Success Stories 작성 보상</h3>
     <table class="reward-table">
       <tr><th>유형</th><th>보상</th></tr>
-      <tr><td>텍스트 합격 후기 작성<br><span style="font-size:0.78rem;color:var(--text-muted);">합격 페이지 인증 + 관리자 승인 필요</span></td><td><b style="color:var(--navy);">스타벅스 기프티콘</b></td></tr>
-      <tr><td>합격 후기 영상 제출 (얼굴 공개)<br><span style="font-size:0.78rem;color:var(--text-muted);">영상 검수 후 지급</span></td><td><b style="color:var(--navy);">수강료 50% 환급</b></td></tr>
+      <tr><td>텍스트 Success Stories 작성<br><span style="font-size:0.78rem;color:var(--text-muted);">합격 페이지 인증 + 관리자 승인 필요</span></td><td><b style="color:var(--navy);">스타벅스 기프티콘</b></td></tr>
+      <tr><td>Success Stories 영상 제출 (얼굴 공개)<br><span style="font-size:0.78rem;color:var(--text-muted);">영상 검Wed 후 지급</span></td><td><b style="color:var(--navy);">Wed강료 50% 환급</b></td></tr>
     </table>
-    <div class="tip"><b>참고:</b> 합격 인증은 관리자 수동 승인으로 진행됩니다. 합격 통보 캡처 또는 입사 서류 일부를 제출해주세요.</div>
+    <div class="tip"><b>참고:</b> 합격 인증은 관리자 Wed동 승인으로 진행됩니다. 합격 통보 캡처 또는 입사 서류 Sun부를 제출해주세요.</div>
     <button class="btn-outline" onclick="alert('합격 인증은 관리자에게 문의해주세요.\n카카오톡: @wonderfulcrew')">합격 인증 신청</button>
   </div>
 </div>
 </section>
 
-<!-- 토큰 충전 -->
+<!-- Sat큰 충전 -->
 <section style="background:#fff;">
 <div class="wrap">
   <div style="background:linear-gradient(135deg,#1A2340,#2A3455);padding:20px 24px;border-radius:8px;margin-bottom:28px;text-align:center;color:#fff;">
     <div style="font-size:0.72rem;letter-spacing:0.15em;color:var(--gold-light);margin-bottom:6px;">LIMITED EVENT</div>
     <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:6px;">이벤트 기간 <span style="color:var(--gold-light);">특별가</span></div>
-    <div style="font-size:0.84rem;color:rgba(255,255,255,0.7);">지금 가입하면 무료 토큰 10개 지급 + 충전 할인</div>
+    <div style="font-size:0.84rem;color:rgba(255,255,255,0.7);">지Fri 가입하면 무료 Sat큰 10개 지급 + 충전 할인</div>
   </div>
   <div class="sec-num">04</div>
-  <div class="sec-title">토큰 <em>충전하기</em></div>
+  <div class="sec-title">Sat큰 <em>Recharge</em></div>
   <div class="gold-line"></div>
 
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;">
-    <div class="card" style="text-align:center;"><h3>무료 체험</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">0원</p><p style="font-size:0.82rem;color:var(--text-mid);">토큰 5개</p><p style="font-size:0.74rem;color:var(--text-muted);">가입 시 자동 지급</p></div>
-    <div class="card" style="text-align:center;border:2px solid var(--gold);"><h3>베이직</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">19.9만원<span style="font-size:0.7rem;color:var(--text-muted);">/월</span></p><p style="font-size:0.82rem;color:var(--text-mid);">토큰 50개 (유효 30일)</p><button class="btn-gold" style="width:100%;" onclick="payWithInnopay('basic')">구독하기</button></div>
-    <div class="card" style="text-align:center;border:2px solid var(--gold);position:relative;overflow:hidden;"><div style="position:absolute;top:8px;right:-28px;background:var(--gold);color:#fff;font-size:0.62rem;font-weight:800;padding:4px 32px;transform:rotate(45deg);">인기</div><h3>엘리트</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">29.9만원<span style="font-size:0.7rem;color:var(--text-muted);">/월</span></p><p style="font-size:0.82rem;color:var(--text-mid);">토큰 무제한 + AI 코치 무제한</p><button class="btn-gold" style="width:100%;" onclick="payWithInnopay('elite')">구독하기</button></div>
+    <div class="card" style="text-align:center;"><h3>무료 체험</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">0원</p><p style="font-size:0.82rem;color:var(--text-mid);">Sat큰 5개</p><p style="font-size:0.74rem;color:var(--text-muted);">가입 시 자동 지급</p></div>
+    <div class="card" style="text-align:center;border:2px solid var(--gold);"><h3>Basic</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">19.9만원<span style="font-size:0.7rem;color:var(--text-muted);">/Mon</span></p><p style="font-size:0.82rem;color:var(--text-mid);">Sat큰 50개 (유효 30Sun)</p><button class="btn-gold" style="width:100%;" onclick="startSubscription('basic')">Subscribe</button></div>
+    <div class="card" style="text-align:center;border:2px solid var(--gold);position:relative;overflow:hidden;"><div style="position:absolute;top:8px;right:-28px;background:var(--gold);color:#fff;font-size:0.62rem;font-weight:800;padding:4px 32px;transform:rotate(45deg);">인기</div><h3>Elite</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">29.9만원<span style="font-size:0.7rem;color:var(--text-muted);">/Mon</span></p><p style="font-size:0.82rem;color:var(--text-mid);">Sat큰 Unlimited + AI 코치 Unlimited</p><button class="btn-gold" style="width:100%;" onclick="startSubscription('elite')">Subscribe</button></div>
   </div>
 
   </div>
@@ -192,8 +190,8 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <div style="font-size:2.4rem;margin-bottom:8px;">🏆</div>
     <div style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--gold-light);margin-bottom:6px;">프리미엄 합격 완성 패키지</div>
     <div style="font-family:'DM Serif Display',serif;font-size:2.8rem;color:#fff;margin-bottom:8px;">250<span style="font-size:1rem;">만원</span><span style="font-size:0.8rem;color:rgba(255,255,255,0.5);"> (2년)</span></div>
-    <p style="font-size:0.84rem;color:rgba(255,255,255,0.7);margin-bottom:20px;line-height:1.7;">토큰 무제한 + AI 코치 + 사람 코치 1:1 피드백<br>라이브 직강 + 전 강의 영상 + 합격 비밀노트 + 프리미엄 단톡방</p>
-    <a href="pricing.html" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.92rem;font-weight:700;text-decoration:none;">자세히 보기 →</a>
+    <p style="font-size:0.84rem;color:rgba(255,255,255,0.7);margin-bottom:20px;line-height:1.7;">Sat큰 Unlimited + AI 코치 + 사람 코치 1:1 피드백<br>라이브 직강 + 전 강의 영상 + 합격 비밀노트 + 프리미엄 단톡방</p>
+    <a href="pricing-en.html" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.92rem;font-weight:700;text-decoration:none;">자세히 보기 →</a>
   </div>
 </div>
 </section>
@@ -201,10 +199,10 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
 
 <script>
-// 토큰 표시 + 유효기간
+// Sat큰 표시 + 유효기간
 function loadTokenData(){return JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');}
 var td=loadTokenData();
-// 초기 가입 토큰 10개 (이벤트)
+// 초기 가입 Sat큰 10개 (이벤트)
 if(!td.initialized){td.tokens=5;td.initialized=true;td.firstFree=true;td.purchaseDate=new Date().toISOString();localStorage.setItem('wc_eng_tokens',JSON.stringify(td));}
 document.getElementById('my-tokens').textContent=td.tokens||0;
 // 유효기간 표시
@@ -212,8 +210,8 @@ if(td.purchaseDate){
   var exp=new Date(td.purchaseDate);exp.setDate(exp.getDate()+30);
   var now=new Date();var diff=Math.ceil((exp-now)/(1000*60*60*24));
   var el=document.getElementById('token-expiry');
-  if(td.unlimited){el.textContent='무제한 이용권';}
-  else if(diff<=0){el.textContent='토큰 유효기간 만료';el.style.color='#FF6B6B';}
+  if(td.unlimited){el.textContent='Unlimited 이용권';}
+  else if(diff<=0){el.textContent='Sat큰 유효기간 만료';el.style.color='#FF6B6B';}
   else if(diff<=7){el.textContent='유효기간 D-'+diff+' (만료 임박!)';el.style.color='#FF6B6B';}
   else{el.textContent='유효기간 D-'+diff;}
 }
@@ -224,7 +222,7 @@ async function startSubscription(plan){
     var res=await fetch('/api/create-subscription',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:plan})});
     var data=await res.json();
     if(data.url){window.location.href=data.url;}
-    else{alert('구독 세션 생성 실패: '+(data.error||'알 수 없는 오류'));}
+    else{alert('구독 세션 생성 실패: '+(data.error||'알 Wed 없는 오류'));}
   }catch(e){
     alert('결제 연결 실패. 카카오톡으로 문의해주세요.');
   }
@@ -240,7 +238,7 @@ var attDays=JSON.parse(localStorage.getItem('wc_att_days')||'[]');
 
 function renderCal(){
   var cal=document.getElementById('att-cal');cal.innerHTML='';
-  ['일','월','화','수','목','금','토'].forEach(function(w){var e=document.createElement('div');e.className='dow';e.textContent=w;cal.appendChild(e);});
+  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(function(w){var e=document.createElement('div');e.className='dow';e.textContent=w;cal.appendChild(e);});
   for(var i=0;i<first;i++){var e=document.createElement('div');e.className='day future';cal.appendChild(e);}
   for(var dd=1;dd<=last;dd++){
     var e=document.createElement('div');e.className='day';e.textContent=dd;
@@ -259,11 +257,11 @@ function checkIn(){
   if(attDays.indexOf(key)>-1){alert('이미 오늘 출석했어요!');return;}
   attDays.push(key);
   localStorage.setItem('wc_att_days',JSON.stringify(attDays));
-  alert('출석 완료! (테스트 모드   토큰 지급은 정식 오픈 후 활성화됩니다)');
+  alert('출석 Complete! (테스트 모드   Sat큰 지급은 정식 오픈 후 활성Tue됩니다)');
   renderCal();
 }
 
-// 초대 링크 (더미)
+// Invite Link (더미)
 var uid=Math.random().toString(36).substring(2,8);
 document.getElementById('invite-url').value='https://wonderfulcrew.vercel.app/?ref='+uid;
 
@@ -277,7 +275,7 @@ function copyLink(){
   showToast('링크가 복사되었습니다!');
 }
 function shareKakao(){
-  var msg='나 원더풀크루로 에미레이트 면접 준비 중인데 진짜 좋아. 좋은 기능 너무 많고 같이 하자! 이 링크로 가입하면 토큰도 2개 무료로 더 줘 ✈️\n\n'+document.getElementById('invite-url').value;
+  var msg='나 원더풀크루로 에미레이트 면접 준비 중인데 진짜 좋아. 좋은 기능 너무 많고 같이 하자! 이 링크로 가입하면 Sat큰도 2개 무료로 더 줘 ✈️\n\n'+document.getElementById('invite-url').value;
   // 클립보드에 자동 복사
   navigator.clipboard.writeText(msg).catch(function(){
     var ta=document.createElement('textarea');ta.value=msg;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);

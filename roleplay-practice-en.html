@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>롤플레이 면접 연습 WonderfulCrew</title>
+<title>Roleplay Interview Practice WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--navy-dark:#111B2E;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
@@ -100,25 +100,25 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
-  <a href="curriculum.html" class="nav-back">← 커리큘럼</a>
+  <a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="curriculum-en.html" class="nav-back">← Curriculum</a>
 </nav>
 
 <!-- SETUP SCREEN -->
 <div class="setup" id="setup">
-  <h1>롤플레이 <em>면접 연습</em></h1>
-  <p>면접관 아바타가 기내 상황 질문을 읽어드립니다.<br>카메라 앞에서 실전처럼 답변하세요.</p>
+  <h1>Roleplay <em>Interview Practice</em></h1>
+  <p>The AI interviewer will present in-flight scenarios.<br>Answer as if you were in a real interview.</p>
 
-  <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.06em;">면접관 아바타</div>
+  <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.06em;">Interviewer Avatar</div>
   <div class="avatar-grid" style="grid-template-columns:1fr 1fr;max-width:300px;margin:0 auto 20px;" id="avatar-grid">
-    <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/avatar-male.png" onclick="selAvatar(this)"><span class="emoji">👨🏻</span>남성 면접관</div>
-    <div class="avatar-opt" data-avatar="👩🏻" data-img="images/avatar-female.png" onclick="selAvatar(this)"><span class="emoji">👩🏻</span>여성 면접관</div>
+    <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/avatar-male.png" onclick="selAvatar(this)"><span class="emoji">👨🏻</span>Male</div>
+    <div class="avatar-opt" data-avatar="👩🏻" data-img="images/avatar-female.png" onclick="selAvatar(this)"><span class="emoji">👩🏻</span>Female</div>
   </div>
-  <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:16px;">아바타 이미지는 images/avatar-male.png, avatar-female.png에 넣으면 자동 적용됩니다.</div>
+  <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:16px;">Place avatar images at images/avatar-male.png and avatar-female.png.</div>
 
   <div class="setup-grid">
     <div>
-      <div class="setup-label">영어 악센트</div>
+      <div class="setup-label">English Accent</div>
       <select class="setup-select" id="s-accent">
         <option value="en-GB">British English</option>
         <option value="en-US">American English</option>
@@ -126,16 +126,16 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
       </select>
     </div>
     <div>
-      <div class="setup-label">시나리오</div>
+      <div class="setup-label">Scenarios</div>
       <select class="setup-select" id="s-count">
-        <option value="3">랜덤 3개</option>
-        <option value="5">랜덤 5개</option>
-        <option value="all">전체</option>
+        <option value="3">Random 3</option>
+        <option value="5">Random 5</option>
+        <option value="all">All</option>
       </select>
     </div>
   </div>
 
-  <button class="btn-start" onclick="startInterview()">면접 시작하기</button>
+  <button class="btn-start" onclick="startInterview()">Start Interview</button>
 </div>
 
 <!-- INTERVIEW SCREEN -->
@@ -146,7 +146,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   </div>
 
   <div class="video-area">
-    <!-- 면접관 아바타 -->
+    <!-- Interviewer Avatar -->
     <div class="card-frame" id="interviewer-card">
       <div class="avatar-display">
         <img id="avatar-img" src="" alt="Interviewer" style="width:100%;height:100%;object-fit:cover;display:none;">
@@ -166,11 +166,11 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
       <video id="cam-video" autoplay muted playsinline style="display:none;transform:scaleX(-1);"></video>
       <div class="cam-placeholder" id="cam-ph">
         <div>📷</div>
-        <div>카메라 준비 중</div>
+        <div>Preparing camera</div>
       </div>
       <div class="card-label">
         <div class="name">You</div>
-        <div class="role"><span class="rec-dot" id="rec-dot"></span> <span id="rec-label">대기</span></div>
+        <div class="role"><span class="rec-dot" id="rec-dot"></span> <span id="rec-label">Standby</span></div>
       </div>
     </div>
   </div>
@@ -181,14 +181,14 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
     <div class="bar" style="animation-delay:0.05s;"></div><div class="bar" style="animation-delay:0.35s;"></div><div class="bar" style="animation-delay:0.12s;"></div>
   </div>
 
-  <div class="transcript-bar" id="transcript">고객이 먼저 말합니다...</div>
+  <div class="transcript-bar" id="transcript">The passenger speaks first...</div>
   <div class="feedback-panel" id="feedback"></div>
 
   <div class="controls">
-    <button class="ctrl-btn danger" id="btn-stop" onclick="stopAnswer()" style="display:none;">⏹ 답변 완료</button>
-    <button class="ctrl-btn secondary" id="btn-model" onclick="showModel()" style="display:none;">모범 답변</button>
-    <button class="ctrl-btn secondary" id="btn-next" onclick="nextQuestion()" style="display:none;">다음 질문 →</button>
-    <button class="ctrl-btn danger" id="btn-end" onclick="endRoleplay()" style="background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);">롤플레이 종료</button>
+    <button class="ctrl-btn danger" id="btn-stop" onclick="stopAnswer()" style="display:none;">⏹ 답변 Complete</button>
+    <button class="ctrl-btn secondary" id="btn-model" onclick="showModel()" style="display:none;">Model Answer</button>
+    <button class="ctrl-btn secondary" id="btn-next" onclick="nextQuestion()" style="display:none;">Next Question →</button>
+    <button class="ctrl-btn danger" id="btn-end" onclick="endRoleplay()" style="background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);">End Roleplay</button>
   </div>
 </div>
 
@@ -286,7 +286,7 @@ function startInterview(){
         v.srcObject=stream;v.style.display='block';
         document.getElementById('cam-ph').style.display='none';
         break;
-      }catch(e){if(i===camOpts.length-1)document.getElementById('cam-ph').innerHTML='<div>카메라 연결 실패</div>';}
+      }catch(e){if(i===camOpts.length-1)document.getElementById('cam-ph').innerHTML='<div>Camera connection failed</div>';}
     }
   })();
 
@@ -298,7 +298,7 @@ function showQuestion(){
   var q=questions[qIdx];
   document.getElementById('q-idx').textContent=qIdx+1;
   document.getElementById('q-text').textContent=q.q;
-  document.getElementById('transcript').textContent='고객이 먼저 말합니다...';
+  document.getElementById('transcript').textContent='The passenger speaks first...';
   document.getElementById('feedback').classList.remove('active');
   document.getElementById('feedback').innerHTML='';
   document.getElementById('btn-stop').style.display='none';
@@ -314,7 +314,7 @@ function showQuestion(){
 
 async function customerFirstSpeak(scenario){
   var fb=document.getElementById('feedback');
-  fb.innerHTML='<span style="color:var(--gold);">고객이 말하고 있어요...</span>';
+  fb.innerHTML='<span style="color:var(--gold);">The passenger is speaking...</span>';
   fb.classList.add('active');
 
   try{
@@ -342,20 +342,20 @@ async function customerFirstSpeak(scenario){
       }
     },300);
   }catch(e){
-    fb.innerHTML='<span style="color:#E74C3C;">오류 발생. 다시 시도해주세요.</span>';
+    fb.innerHTML='<span style="color:#E74C3C;">An error occurred. Please try again.</span>';
   }
 }
 
 function startListening(){
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){document.getElementById('transcript').textContent='Chrome에서 사용해 주세요.';return;}
+  if(!SR){document.getElementById('transcript').textContent='Please use Chrome browser.';return;}
   recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
   fullText='';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('rec-dot').classList.add('on');
-  document.getElementById('rec-label').textContent='녹음 중';
+  document.getElementById('rec-label').textContent='Recording';
   document.getElementById('waveform').classList.add('active');
-  document.getElementById('transcript').textContent='지금 답변하세요...';
+  document.getElementById('transcript').textContent='Your turn to respond...';
 
   // 백그라운드 영상 녹화
   if(!mediaRecorder&&stream){
@@ -427,7 +427,7 @@ function speakQuestion(text,lang){
     var femaleNames=/female|samantha|karen|victoria|fiona|zira|susan|google uk english female/i;
     var match=filtered.find(function(v){return isMale?maleNames.test(v.name):femaleNames.test(v.name);});
     if(match)u.voice=match;
-    else if(filtered.length>=2)u.voice=filtered[isMale?0:1]; // fallback: 첫번째=남, 두번째=여
+    else if(filtered.length>=2)u.voice=filtered[isMale?0:1]; // fallback: first=male, second=female
   }
   u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
   window.speechSynthesis.cancel();
@@ -440,7 +440,7 @@ function stopAnswer(){
   if(recognition)try{recognition.stop();}catch(e){}
   document.getElementById('btn-stop').style.display='none';
   document.getElementById('rec-dot').classList.remove('on');
-  document.getElementById('rec-label').textContent='처리 중';
+  document.getElementById('rec-label').textContent='Processing';
   document.getElementById('waveform').classList.remove('active');
 }
 
@@ -448,12 +448,12 @@ async function processAnswer(){
   stopAnswer();
 
   var ans=fullText.trim()||document.getElementById('transcript').textContent.trim();
-  if(!ans||ans==='지금 답변하세요...'){startListening();return;}
+  if(!ans||ans==='Your turn to respond...'){startListening();return;}
 
   chatHistory.push({role:'user',content:ans});
 
   var fb=document.getElementById('feedback');
-  fb.innerHTML='<span style="color:var(--gold);">고객이 답변을 듣고 있어요...</span>';
+  fb.innerHTML='<span style="color:var(--gold);">The passenger is listening...</span>';
   fb.classList.add('active');
 
   try{
@@ -463,7 +463,7 @@ async function processAnswer(){
 
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-sonnet-4-20250514',max_tokens:200,
-      system:'You are a passenger on an airplane. The situation is: "'+scenario+'"\n\nYou are the upset/confused passenger. The cabin crew member just responded to you. React naturally IN ENGLISH. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the passenger at ALL times\n- If the crew member apologized well and offered a good solution, accept it but you can bring up a related concern or ask a follow-up question\n- If the solution is weak, push back gently (e.g. "But I specifically requested..." or "That doesn\'t really help...")\n- NEVER end the conversation yourself. NEVER say goodbye or wrap up. Always keep the conversation going with a follow-up question, concern, or reaction that requires the crew to respond.\n- Do NOT add [END] ever.\n- Be realistic, not overly aggressive\n- This is turn '+turnCount+' of the conversation',
+      system:'You are a passenger on an airplane. The situation is: "'+scenario+'"\n\nYou are the upset/confused passenger. The cabin crew member just responded to you. React naturally IN ENGLISH. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the passenger\n- If the crew member apologized well and offered a good solution, accept it gratefully (e.g. "Oh that sounds nice, thank you.")\n- If the solution is weak, push back gently (e.g. "But I specifically requested..." or "That doesn\'t really help...")\n- After 3-4 exchanges, wrap up naturally (e.g. "Alright, thank you for your help.") and add [END] at the very end\n- Be realistic, not overly aggressive\n- This is turn '+turnCount+' of the conversation',
       messages:chatHistory
     })});
     var data=await res.json();
@@ -472,6 +472,7 @@ async function processAnswer(){
 
     chatHistory.push({role:'assistant',content:aiText});
 
+    var isEnd=aiText.includes('[END]')||turnCount>=4;
     var displayText=aiText.replace('[END]','').trim();
 
     fb.innerHTML='<b style="color:var(--gold);">Passenger:</b> '+displayText;
@@ -479,15 +480,29 @@ async function processAnswer(){
     var accent=document.getElementById('s-accent').value;
     speakQuestion(displayText,accent);
 
-    // TTS 끝나면 자동으로 다시 학생 음성 인식 — 종료 버튼 눌러야만 끝남
-    var checkTTS=setInterval(function(){
-      if(!window.speechSynthesis.speaking){
-        clearInterval(checkTTS);
-        startListening();
-      }
-    },300);
+    if(isEnd){
+      // 대화 자연 종료 — 점수 + 다음 버튼
+      setTimeout(function(){
+        var s=[r(),r(),r(),r()];
+        var avg=Math.round((s[0]+s[1]+s[2]+s[3])/4);
+        fb.innerHTML+='<br><br><b>Roleplay Score: '+avg+'/100</b><br>'+
+          'Apology: '+s[0]+' | Solution: '+s[1]+' | Alternative: '+s[2]+' | Recovery: '+s[3]+'<br>'+
+          '<span style="color:rgba(255,255,255,0.4);font-size:0.76rem;">dummy score</span>';
+        document.getElementById('btn-model').style.display='inline-flex';
+        document.getElementById('btn-next').style.display='inline-flex';
+        document.getElementById('rec-label').textContent='Complete';
+      },2000);
+    } else {
+      // TTS 끝나면 자동으로 다시 학생 음성 인식
+      var checkTTS=setInterval(function(){
+        if(!window.speechSynthesis.speaking){
+          clearInterval(checkTTS);
+          startListening();
+        }
+      },300);
+    }
   }catch(e){
-    fb.innerHTML='<span style="color:#E74C3C;">오류 발생. 다시 시도해주세요.</span>';
+    fb.innerHTML='<span style="color:#E74C3C;">An error occurred. Please try again.</span>';
   }
 }
 
@@ -509,7 +524,7 @@ async function endRoleplay(){
   }
 
   var fb=document.getElementById('feedback');
-  fb.innerHTML='<span style="color:var(--gold);">AI가 피드백을 작성하고 있어요...</span>';
+  fb.innerHTML='<span style="color:var(--gold);">AI is generating feedback...</span>';
   fb.classList.add('active');
 
   // 대화 내용이 있으면 AI 피드백 요청
@@ -529,15 +544,15 @@ async function endRoleplay(){
       feedbackText=feedbackText.replace(/\*\*/g,'');
       fb.innerHTML='<b style="color:var(--gold);">AI Feedback</b><br><br><div style="white-space:pre-line;">'+feedbackText+'</div>';
     }catch(e){
-      fb.innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br>대화가 종료되었습니다.';
+      fb.innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br>The conversation has ended..';
     }
   } else {
-    fb.innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br>대화 내용이 없습니다.';
+    fb.innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br>No conversation recorded..';
   }
 
   document.getElementById('btn-model').style.display='inline-flex';
   document.getElementById('btn-next').style.display='inline-flex';
-  document.getElementById('rec-label').textContent='완료';
+  document.getElementById('rec-label').textContent='Complete';
 }
 
 function showModel(){
@@ -559,7 +574,7 @@ function nextQuestion(){
   qIdx++;
   if(qIdx>=questions.length){
     document.getElementById('q-banner').innerHTML='<div class="label">COMPLETE</div><div class="question">All scenarios completed!</div>';
-    document.getElementById('feedback').innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br><br><a href="curriculum.html" style="color:var(--gold);">← Back to Curriculum</a>';
+    document.getElementById('feedback').innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br><br><a href="curriculum-en.html" style="color:var(--gold);">← Back to Curriculum</a>';
     document.getElementById('feedback').classList.add('active');
     document.querySelectorAll('.ctrl-btn').forEach(function(b){b.style.display='none';});
     return;

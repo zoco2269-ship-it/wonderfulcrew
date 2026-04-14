@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily English — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}
+a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:36px;}
+.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;}
+
+.hero{padding:130px 5% 60px;text-align:center;background:var(--navy);color:#fff;}
+.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:clamp(1.9rem,3.6vw,2.8rem);font-weight:300;margin-bottom:10px;}
+.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.streak-row{display:inline-flex;gap:30px;margin-top:22px;padding:16px 32px;background:rgba(255,255,255,0.06);border:1px solid rgba(232,201,106,0.3);border-radius:40px;}
+.streak-item .n{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--gold-light);}
+.streak-item .l{font-size:0.72rem;color:rgba(255,255,255,0.7);letter-spacing:0.05em;}
+
+section{padding:80px 5%;}
+.sec-label{font-family:'DM Serif Display',serif;font-size:0.75rem;letter-spacing:0.35em;color:var(--gold);text-align:center;margin-bottom:14px;text-transform:uppercase;font-weight:700;}
+.sec-title{font-size:clamp(1.6rem,3vw,2.3rem);font-weight:400;color:var(--navy);text-align:center;margin-bottom:14px;}
+.sec-title em{font-style:normal;color:var(--gold);}
+.gold-line{width:40px;height:1px;background:var(--gold);margin:0 auto 48px;}
+
+.q-wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:26px;}
+.q-card{background:#fff;border:1px solid var(--gold-pale);border-left:3px solid var(--gold);padding:30px 32px;}
+.q-num{font-family:'DM Serif Display',serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:10px;text-transform:uppercase;}
+.q-text{font-size:1.1rem;color:var(--navy);font-weight:600;line-height:1.5;margin-bottom:18px;}
+.q-voice-area{margin-bottom:14px;}
+.q-record-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--navy);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.85rem;font-weight:600;letter-spacing:0.05em;cursor:pointer;transition:all 0.2s;}
+.q-record-btn.recording{background:#C0392B;animation:pulse-rec 1s infinite;}
+@keyframes pulse-rec{0%,100%{opacity:1;}50%{opacity:0.7;}}
+.q-record-btn:hover{opacity:0.9;}
+.q-transcript{margin-top:12px;padding:14px 16px;border:1px solid var(--gold-pale);border-radius:8px;background:var(--cream);font-size:0.95rem;color:var(--text-dark);line-height:1.7;min-height:50px;}
+.q-transcript:empty::before{content:'Voice input standby...';color:var(--text-muted);font-size:0.88rem;}
+.q-btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.q-btn{padding:10px 22px;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:all 0.2s;}
+.q-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.q-btn.feedback{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}
+.q-btn.sample{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}
+.q-btn.sample:hover{background:var(--navy);color:#fff;}
+.q-feedback{margin-top:18px;padding:18px 20px;background:var(--cream);border-left:3px solid var(--gold);font-size:0.92rem;line-height:1.75;color:var(--text-mid);white-space:pre-wrap;display:none;}
+.q-feedback.visible{display:block;}
+.q-feedback b{color:var(--navy);}
+
+#shadow{background:#fff;}
+.shadow-wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:22px;}
+.shadow-card{padding:26px 30px;border:1px solid var(--gold-pale);background:var(--cream);}
+.shadow-text{font-size:1.05rem;color:var(--navy);font-weight:500;line-height:1.55;margin-bottom:16px;font-family:'DM Serif Display',serif;}
+.shadow-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.shadow-btn{padding:9px 20px;border:1px solid var(--gold);background:#fff;color:var(--gold);font-family:inherit;font-size:0.8rem;font-weight:600;letter-spacing:0.04em;border-radius:20px;cursor:pointer;}
+.shadow-btn.primary{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-color:transparent;}
+.shadow-btn:hover{opacity:0.85;}
+.shadow-result{margin-top:12px;font-size:0.88rem;color:var(--text-mid);font-style:italic;}
+
+.done-banner{max-width:860px;margin:30px auto 0;padding:18px 24px;background:var(--gold-pale);border-left:3px solid var(--gold);color:var(--navy);font-size:0.92rem;display:none;text-align:center;}
+.done-banner.visible{display:block;}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}}
+
+.nav-dropdown{position:relative;}
+.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
+.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid rgba(245,233,200,1);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:200px;z-index:1001;}
+.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}
+.nav-dropdown-menu a{display:block;padding:6px 14px;font-size:0.82rem;color:#4A4438;white-space:nowrap;}
+.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:#C9A84C;}
+
+.nav-dd-grid{min-width:260px;display:none;grid-template-columns:1fr 1fr;gap:0;padding:4px 0;}
+.nav-dropdown:hover .nav-dd-grid{display:grid!important;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+</head>
+<body>
+
+<nav>
+  <a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <a href="index.html#about">About</a>
+    <div class="nav-dropdown"><a href="index.html#expertise">Programs</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest-en.html">✈️ Cabin Crew</a><a href="hotel-en.html">🏨 Hotel & Luxury</a><a href="walking-analysis-en.html">🚶 Walking & Posture</a><a href="cruise-en.html">🚢 Cruise</a><a href="coach-feedback-en.html">💬 1:1 Coach Feedback</a><a href="ai-coach-en.html">✨ AI Coach</a></div></div>
+    <div class="nav-dropdown"><a href="index.html#resources">Resources</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide-en.html">📋 Interview Guide</a><a href="english-interview-en.html">💬 Interview Q&A</a><a href="grooming-guide-en.html">👗 Image & Grooming</a><a href="resume-guide-en.html">📄 Resume & CV</a><a href="customer-service-en.html">🎯 Customer Service Skills</a></div></div>
+    <a href="daily-english-en.html">English Practice</a>
+    <a href="jobs-en.html">Careers</a>
+    <a href="community-en.html">Community</a>
+    <a href="token-rewards-en.html">Tokens</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="leveltest-en.html" class="nav-cta">Start Practice</a>
+    <a href="login-en.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;">Sign In</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="label">Daily English Practice</div>
+  <h1>One step at a time —<br><em>Consistency is the Secret</em></h1>
+  <div id="today-date" style="margin-top:18px;color:rgba(255,255,255,0.72);font-size:0.95rem;"></div>
+  <div class="streak-row">
+    <div class="streak-item"><div class="n" id="streak-count">0</div><div class="l">Streak 출석일</div></div>
+    <div class="streak-item"><div class="n" id="total-count">0</div><div class="l">Total Days</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-label">100 Q&amp;A · Random 3</div>
+  <h2 class="sec-title">English <em>Practice</em></h2>
+  <div class="gold-line"></div>
+  <!-- 설정 패널 -->
+  <div style="max-width:860px;margin:0 auto 28px;display:flex;gap:16px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:180px;background:#fff;border:1px solid var(--gold-pale);padding:16px 18px;">
+      <div style="font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:8px;">English Accent</div>
+      <select id="accent-choice" onchange="localStorage.setItem('wc_accent',this.value)" style="width:100%;padding:8px 10px;border:1px solid var(--gold-pale);border-radius:6px;font-family:inherit;font-size:0.85rem;">
+        <option value="en-GB">British English</option>
+        <option value="en-US">American English</option>
+        
+        <option value="fr-FR"></option>
+                <option value="en-IN">Indian English</option>
+      </select>
+    </div>
+    <div style="flex:1;min-width:180px;background:#fff;border:1px solid var(--gold-pale);padding:16px 18px;">
+      <div style="font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:8px;">Answer Level</div>
+      <select id="level-choice" onchange="localStorage.setItem('wc_level',this.value)" style="width:100%;padding:8px 10px;border:1px solid var(--gold-pale);border-radius:6px;font-family:inherit;font-size:0.85rem;">
+        <option value="easy">Easy (Beginner)</option>
+        <option value="advanced">Advanced (Upper-Intermediate)</option>
+      </select>
+    </div>
+  </div>
+  <script>
+  // 저장된 설정 복원
+  var savedAccent=localStorage.getItem('wc_accent');
+  var savedLevel=localStorage.getItem('wc_level');
+  if(savedAccent)document.getElementById('accent-choice').value=savedAccent;
+  if(savedLevel)document.getElementById('level-choice').value=savedLevel;
+  </script>
+  <div class="q-wrap" id="q-wrap"></div>
+  <div class="done-banner" id="done-banner">오늘의 영어 연습 Complete! Streak 출석이 기록되었습니다.</div>
+  <div style="max-width:860px;margin:30px auto 0;text-align:center;">
+    <button id="more-practice-btn" class="q-btn feedback" style="display:none;padding:14px 32px;font-size:0.9rem;" onclick="addMoreQuestions()">More Practice</button>
+    <div id="token-info" style="display:none;margin-top:10px;font-size:0.8rem;color:var(--text-muted);"></div>
+  </div>
+</section>
+
+<section id="shadow">
+  <div class="sec-label">In-flight Announcement</div>
+  <h2 class="sec-title">기내방송 <em>쉐도잉</em></h2>
+  <div class="gold-line"></div>
+  <div class="shadow-wrap" id="shadow-wrap"></div>
+  <div style="max-width:860px;margin:24px auto 0;text-align:center;">
+    <button class="q-btn feedback" style="padding:14px 32px;font-size:0.9rem;" onclick="refreshShadowing()">More Practice</button>
+  </div>
+</section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+
+<script>
+// ============ DATE & STREAK ============
+var today=new Date();
+var todayKey=today.toISOString().slice(0,10);
+document.getElementById('today-date').textContent=todayKey+' ('+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][today.getDay()]+')';
+
+function loadStreak(){
+  var data=JSON.parse(localStorage.getItem('wc_english_streak')||'{}');
+  return {last:data.last||'',streak:data.streak||0,total:data.total||0,doneToday:data.last===todayKey};
+}
+function saveStreak(){
+  var s=loadStreak();
+  if(s.doneToday)return;
+  var y=new Date(today);y.setDate(y.getDate()-1);
+  var yKey=y.toISOString().slice(0,10);
+  var newStreak=(s.last===yKey)?s.streak+1:1;
+  localStorage.setItem('wc_english_streak',JSON.stringify({last:todayKey,streak:newStreak,total:s.total+1}));
+  renderStreak();
+  document.getElementById('done-banner').classList.add('visible');
+}
+function renderStreak(){
+  var s=loadStreak();
+  document.getElementById('streak-count').textContent=s.streak;
+  document.getElementById('total-count').textContent=s.total;
+  if(s.doneToday)document.getElementById('done-banner').classList.add('visible');
+}
+renderStreak();
+
+// ============ Q&A ============
+var QUESTIONS=[
+  "Please introduce yourself.",
+  "Why do you want to be a cabin crew member?",
+  "What is your greatest strength?",
+  "Tell me about a time you handled a difficult situation.",
+  "Why do you want to work for our airline?",
+  "What does excellent service mean to you?",
+  "Describe your ideal team member.",
+  "How do you handle stress?",
+  "Tell me about your customer service experience.",
+  "What would you do if a passenger refused to follow safety instructions?",
+  "How do you build rapport with people from different cultures?",
+  "Tell me about a time you went above and beyond for someone.",
+  "What is your favourite travel destination and why?",
+  "How do you stay calm under pressure?",
+  "What makes you different from other candidates?",
+  "Tell me about a time you worked as part of a team.",
+  "How would you handle a language barrier with a passenger?",
+  "What do you know about our airline?",
+  "Describe a time you showed leadership.",
+  "Why should we choose you?"
+];
+function pickN(n){
+  var arr=QUESTIONS.slice(),out=[];
+  for(var i=0;i<n&&arr.length>0;i++){var idx=Math.floor(Math.random()*arr.length);out.push(arr.splice(idx,1)[0]);}
+  return out;
+}
+
+// ===== 토큰 시스템 =====
+function loadTokens(){
+  var d=JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');
+  return {firstFree:d.firstFree!==false,tokens:d.tokens||0};
+}
+function saveTokens(t){localStorage.setItem('wc_eng_tokens',JSON.stringify(t));}
+function useToken(){
+  // 테스트 모드   토큰 체크 비활성화 (모든 기능 활성화)
+  return true;
+  /*
+  var t=loadTokens();
+  if(t.firstFree){return true;}
+  if(t.tokens>0){t.tokens--;saveTokens(t);return true;}
+  return false;
+  */
+}
+function markFirstUsed(){
+  var t=loadTokens();
+  if(t.firstFree){t.firstFree=false;saveTokens(t);}
+}
+function renderTokenInfo(){
+  var t=loadTokens();
+  var el=document.getElementById('token-info');
+  if(t.firstFree)el.textContent='첫 이용 무료';
+  else el.textContent='남은 토큰: '+t.tokens+'개';
+  el.style.display='block';
+}
+
+var qWrap=document.getElementById('q-wrap');
+var completedCount=0;
+var totalQuestionIdx=0;
+
+function buildCards(questions,startIdx){
+  questions.forEach(function(q,offset){
+    var i=startIdx+offset;
+    totalQuestionIdx=i+1;
+    var card=document.createElement('div');
+  card.className='q-card';
+  card.innerHTML=
+    '<div class="q-num">Question '+(i+1)+'</div>'+
+    '<div class="q-text">'+q+'</div>'+
+    // ① Listen to Question
+    '<button class="q-btn feedback" data-act="listen-q" style="margin-bottom:16px;">Listen to Question</button>'+
+    // ② Record Answer
+    '<div class="q-voice-area">'+
+      '<button class="q-record-btn" data-state="idle">Record Answer 시작</button>'+
+      '<div class="q-transcript" id="transcript-'+i+'"></div>'+
+    '</div>'+
+    // ③ 제출 (피드백 + 모범답변 1회 호출)
+    '<div class="q-btn-row" id="step3-'+i+'">'+
+      '<button class="q-btn feedback" data-act="submit-answer" disabled>Submit Answer</button>'+
+    '</div>'+
+    '<div class="q-feedback" id="fb-'+i+'"></div>'+
+    '<div class="q-feedback" id="sample-'+i+'" style="display:none;"></div>'+
+    // ④⑤ 모범답변 + 쉐도잉 (피드백 확인 후)
+    '<div id="step45-'+i+'" style="display:none;">'+
+      '<div class="q-btn-row">'+
+        '<button class="q-btn sample" data-act="show-sample">Model Answer 보기</button>'+
+      '</div>'+
+    '</div>'+
+    '<div class="q-btn-row" id="shadow-btns-'+i+'" style="display:none;">'+
+      '<button class="q-btn feedback" data-act="tts-sample">예시 Listen</button>'+
+      '<button class="q-btn sample" data-act="shadow-rec">Repeat After</button>'+
+    '</div>'+
+    '<div class="shadow-result" id="shadow-result-'+i+'"></div>'+
+    // ⑥ Complete
+    '<div id="done-'+i+'" style="display:none;margin-top:14px;padding:12px 18px;background:var(--gold-pale);border-left:3px solid var(--gold);color:var(--navy);font-size:0.88rem;">이 문제 연습 Complete!</div>';
+  qWrap.appendChild(card);
+
+  var recBtn=card.querySelector('.q-record-btn');
+  var transcript=card.querySelector('.q-transcript');
+  var submitBtn=card.querySelector('[data-act="submit-answer"]');
+  var fbArea=document.getElementById('fb-'+i);
+  var sampleArea=document.getElementById('sample-'+i);
+  var step45=document.getElementById('step45-'+i);
+  var showSampleBtn=card.querySelector('[data-act="show-sample"]');
+  var shadowBtns=document.getElementById('shadow-btns-'+i);
+  var shadowResult=document.getElementById('shadow-result-'+i);
+  var doneEl=document.getElementById('done-'+i);
+  var recognition=null;
+  var sampleText='';
+  var activeShRec=null;
+  var cachedSampleHtml='';
+
+  // ① Listen to Question TTS
+  card.querySelector('[data-act="listen-q"]').addEventListener('click',function(){
+    if(!('speechSynthesis' in window))return;
+    var u=new SpeechSynthesisUtterance(q);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.85;u.pitch=1.05;
+    window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+  });
+
+  // ② Record Answer
+  recBtn.addEventListener('click',function(){
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){transcript.textContent='Chrome 브라우저에서 사용해 주세요.';return;}
+    if(recBtn.dataset.state==='recording'){
+      if(recognition)recognition.stop();
+      return;
+    }
+    recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
+    var finalText='';
+    recBtn.dataset.state='recording';recBtn.classList.add('recording');recBtn.textContent='Recording... (클릭하여 중지)';
+    transcript.textContent='';
+    recognition.onresult=function(ev){
+      var interim='';finalText='';
+      for(var r=0;r<ev.results.length;r++){
+        if(ev.results[r].isFinal)finalText+=ev.results[r][0].transcript+' ';
+        else interim+=ev.results[r][0].transcript;
+      }
+      transcript.textContent=finalText+interim;
+    };
+    recognition.onend=function(){
+      recBtn.dataset.state='idle';recBtn.classList.remove('recording');recBtn.textContent='다시 녹음';
+      if(finalText.trim()||transcript.textContent.trim()){
+        transcript.textContent=finalText.trim()||transcript.textContent.trim();
+        submitBtn.disabled=false;
+      }
+    };
+    recognition.onerror=function(e){
+      recBtn.dataset.state='idle';recBtn.classList.remove('recording');recBtn.textContent='다시 녹음';
+      if(e.error!=='aborted')transcript.textContent='인식 실패   다시 시도해 주세요.';
+    };
+    recognition.start();
+  });
+
+  // ③ Submit Answer → 피드백 + 모범답변 1회 API 호출
+  submitBtn.addEventListener('click',async function(){
+    var ans=transcript.textContent.trim();
+    if(!ans)return;
+    // 토큰 체크 (최초 3문제 무료, 이후 토큰 차감)
+    if(!useToken()){
+      alert('토큰이 부족합니다. 토큰을 구매해주세요.');
+      return;
+    }
+    submitBtn.disabled=true;submitBtn.textContent='분석 중...';
+    fbArea.classList.add('visible');fbArea.innerHTML='피드백과 Model Answer을 생성하고 있어요...';
+    try{
+      var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:900,
+        system:'You are an English interview coach for cabin crew candidates. The input is speech-to-text. Respond in plain text only (no markdown, no **, no asterisks). Use this exact format:\n\n[피드백]\n1) 잘한 점 - 구체적으로 어떤 내용/표현이 좋았는지\n2) 개선할 점 - 내용 깊이/구성만. 대소문자, 구두점은 음성인식이므로 절대 지적 금지. 말하기 속도에 대한 지적도 하지 마세요(천천히 하세요 같은 피드백 금지)\n3) 표현 교정 - 확실히 틀린 문법만. 대소문자/구두점 무시\n4) 목소리 & 톤 - 반드시 포함: 친절하고 밝은 목소리로 말하세요! 승무원은 고객이 환영받는 느낌을 받아야 합니다. 구체적 팁: 문장 끝을 살짝 올려서 부드럽게, 핵심 단어에 자연스러운 강세, 미소 띤 목소리가 면접에서 가장 중요합니다\n\n[나은 답변]\nIMPORTANT: 학생의 원래 답변을 기반으로 내용을 살리되 더 좋은 표현으로 다듬은 개선 버전을 제시하세요. 학생이 하고 싶은 말을 그대로 유지하면서 문법, 표현, 구조만 개선합니다. 완전히 새로운 답변을 만들지 마세요.\nAnswer Level: '+(document.getElementById('level-choice').value==='easy'?'Easy level - 쉬운 단어, 짧은 문장 3-4개 (초급자용)':'Advanced level - 자연스럽고 풍부한 표현, 5-6 sentences (중상급)')+'.\nWarm, friendly cabin crew tone. Then one blank line and brief Korean translation.\n\nKeep feedback under 350 Korean characters. Keep improved answer under 120 English words. IMPORTANT: 한국어 피드백에 오타 절대 금지. 특히 느낌/느림, 받다/밭다 등 흔한 오타 주의.',
+        messages:[{role:'user',content:'Interview question: "'+q+'"\n\nCandidate spoken answer (speech-to-text, ignore capitalization/punctuation):\n'+ans}]
+      })});
+      var data=await res.json();
+      var raw=(data&&data.content&&data.content[0]&&data.content[0].text)||data.text||JSON.stringify(data);
+      raw=raw.replace(/\*\*/g,'');
+      // 분리: [피드백] ... [모범답변] ...
+      var parts=raw.split(/\[나은 답변\]|\[모범답변\]/i);
+      var fbText=(parts[0]||'').replace(/\[피드백\]/i,'').trim();
+      var sampleRaw=(parts[1]||'').trim();
+      // 피드백 표시
+      fbArea.innerHTML=fbText.replace(/\n/g,'<br>');
+      // 모범답변 캐시 (아직 숨김)
+      var lines=sampleRaw.split('\n');
+      var engLines=[];
+      for(var li=0;li<lines.length;li++){if(/[a-zA-Z]{3,}/.test(lines[li])&&!/[가-힣]/.test(lines[li]))engLines.push(lines[li]);else if(engLines.length>0)break;}
+      sampleText=engLines.join(' ').trim()||lines[0]||sampleRaw;
+      cachedSampleHtml=sampleRaw.replace(/\n/g,'<br>');
+      // ④ 모범답변 보기 버튼 잠금해제
+      step45.style.display='block';
+    }catch(e){
+      fbArea.innerHTML='오류: 잠시 후 다시 시도해 주세요.';
+    }
+    submitBtn.disabled=false;submitBtn.textContent='Submit Answer';
+  });
+
+  // ④ Model Answer 보기 (캐시에서 표시   추가 API 호출 없음)
+  showSampleBtn.addEventListener('click',function(){
+    if(!cachedSampleHtml){return;}
+    sampleArea.style.display='block';
+    sampleArea.classList.add('visible');
+    sampleArea.innerHTML=cachedSampleHtml;
+    // 자동 TTS Play (따뜻한 톤, 영국식)
+    if(sampleText&&'speechSynthesis' in window){
+      var u=new SpeechSynthesisUtterance(sampleText);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.82;u.pitch=1.1;
+      window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+    }
+    // ⑤ 쉐도잉 버튼 표시
+    shadowBtns.style.display='flex';
+    // ⑥ Complete 체크
+    completedCount++;
+    doneEl.style.display='block';
+    if(completedCount>=3){saveStreak();markFirstUsed();checkShowMore();}
+    showSampleBtn.style.display='none';
+  });
+
+  // ⑤ 예시 Listen TTS
+  card.querySelector('[data-act="tts-sample"]').addEventListener('click',function(){
+    if(!sampleText||!('speechSynthesis' in window))return;
+    var u=new SpeechSynthesisUtterance(sampleText);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.82;u.pitch=1.1;
+    window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+  });
+
+  // ⑤ Repeat After (continuous + 수동 중지)
+  card.querySelector('[data-act="shadow-rec"]').addEventListener('click',function(){
+    var btn=card.querySelector('[data-act="shadow-rec"]');
+    if(!sampleText){shadowResult.textContent='먼저 Model Answer을 받아주세요.';return;}
+    // 이미 Recording이면 중지
+    if(activeShRec){activeShRec.stop();activeShRec=null;btn.textContent='Repeat After';return;}
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){shadowResult.textContent='Chrome 브라우저에서 사용해 주세요.';return;}
+    var rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;
+    activeShRec=rec;
+    var fullText='';
+    btn.textContent='Recording... (클릭하여 중지)';
+    shadowResult.textContent='듣고 있어요... 다 읽은 후 버튼을 눌러주세요.';
+    rec.onresult=function(ev){
+      fullText='';
+      for(var r=0;r<ev.results.length;r++){
+        if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';
+        else fullText+=ev.results[r][0].transcript;
+      }
+      shadowResult.textContent='듣고 있어요: '+fullText.trim();
+    };
+    rec.onend=function(){
+      activeShRec=null;btn.textContent='Repeat After';
+      if(!fullText.trim()){shadowResult.textContent='인식된 내용이 없어요. 다시 시도해 주세요.';return;}
+      var norm=function(x){return x.toLowerCase().replace(/[^a-z ]/g,'').trim();};
+      var a=norm(fullText),b=norm(sampleText);
+      var aw=a.split(/\s+/),bw=b.split(/\s+/);
+      var match=aw.filter(function(w){return bw.indexOf(w)>-1;}).length;
+      var pct=Math.round((match/Math.max(bw.length,1))*100);
+      shadowResult.innerHTML='내 발음: '+fullText.trim()+'<br>정확도: '+pct+'%';
+    };
+    rec.onerror=function(){activeShRec=null;btn.textContent='Repeat After';shadowResult.textContent='인식 실패. 다시 시도해 주세요.';};
+    rec.start();
+  });
+  });
+}
+
+// 초기 3문제 생성
+var initialPicked=pickN(3);
+buildCards(initialPicked,0);
+
+// 3문제 Complete 후 "More Practice" 버튼 표시
+function checkShowMore(){
+  if(completedCount>=3){
+    document.getElementById('more-practice-btn').style.display='inline-block';
+    renderTokenInfo();
+  }
+}
+
+function addMoreQuestions(){
+  var t=loadTokens();
+  if(!t.firstFree&&t.tokens<=0){
+    alert('토큰이 부족합니다. 토큰을 구매해주세요.');
+    return;
+  }
+  var newQs=pickN(3);
+  buildCards(newQs,totalQuestionIdx);
+  document.getElementById('more-practice-btn').style.display='none';
+  document.getElementById('token-info').style.display='none';
+  completedCount=0;
+}
+
+// ============ SHADOWING ============
+var ALL_SHADOW=[
+  "Ladies and gentlemen, welcome aboard. Please fasten your seatbelts.",
+  "We will be landing shortly. Please return your seat to the upright position.",
+  "In the event of a water landing, your seat cushion may be used as a flotation device.",
+  "Please make sure your tray table is folded and your seat is in the upright position.",
+  "On behalf of the entire crew, we would like to thank you for flying with us today.",
+  "We ask that you please remain seated with your seatbelt fastened until the sign is turned off.",
+  "If you need any assistance during the flight, please do not hesitate to call one of our crew members.",
+  "We will now begin our in-flight service. Please sit back, relax, and enjoy your flight.",
+  "For your safety, please keep your seatbelt fastened at all times while you are seated.",
+  "Ladies and gentlemen, we have begun our descent. Please turn off all electronic devices.",
+  "Welcome aboard. My name is Sarah and I will be taking care of you in the cabin today.",
+  "Excuse me, may I offer you something to drink before we take off?",
+  "I am sorry for the inconvenience. Let me see what I can do for you right away.",
+  "Please let me know if there is anything else I can help you with.",
+  "We hope you had a pleasant flight. We look forward to seeing you again soon."
+];
+function pickShadow3(){
+  var arr=ALL_SHADOW.slice(),out=[];
+  for(var j=0;j<3&&arr.length>0;j++){var idx=Math.floor(Math.random()*arr.length);out.push(arr.splice(idx,1)[0]);}
+  return out;
+}
+function buildShadowCards(sentences){
+  var sWrap=document.getElementById('shadow-wrap');
+  sWrap.innerHTML='';
+  sentences.forEach(function(s){
+    var card=document.createElement('div');
+    card.className='shadow-card';
+    card.innerHTML='<div class="shadow-text">"'+s+'"</div>'+
+      '<div class="shadow-btns"><button class="shadow-btn primary" data-act="tts">Listen</button>'+
+      '<button class="shadow-btn" data-act="rec">Start Read-Along</button></div>'+
+      '<div class="shadow-result"></div>';
+    sWrap.appendChild(card);
+    var result=card.querySelector('.shadow-result');
+    card.querySelector('[data-act="tts"]').addEventListener('click',function(){
+      if(!('speechSynthesis' in window)){result.textContent='이 브라우저는 음성 합성을 지원하지 않아요.';return;}
+      var u=new SpeechSynthesisUtterance(s);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.85;u.pitch=1.1;
+      window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+    });
+    var recBtn2=card.querySelector('[data-act="rec"]');
+    var activeRec=null;
+    recBtn2.addEventListener('click',function(){
+      var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+      if(!SR){result.textContent='Chrome 브라우저에서 사용해 주세요.';return;}
+      if(activeRec){activeRec.stop();activeRec=null;return;}
+      var rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;
+      activeRec=rec;
+      var fullText='';
+      recBtn2.textContent='Recording... (클릭하여 중지)';
+      result.textContent='듣고 있어요... 다 읽은 후 버튼을 클릭하세요.';
+      rec.onresult=function(ev){
+        fullText='';
+        for(var r=0;r<ev.results.length;r++){fullText+=ev.results[r][0].transcript+' ';}
+        result.textContent='듣고 있어요: '+fullText.trim();
+      };
+      rec.onend=function(){
+        activeRec=null;recBtn2.textContent='Start Read-Along';
+        if(!fullText.trim()){result.textContent='인식된 내용이 없어요. 다시 시도해 주세요.';return;}
+        var norm=function(x){return x.toLowerCase().replace(/[^a-z ]/g,'').trim();};
+        var a=norm(fullText),b=norm(s);
+        var aw=a.split(/\s+/),bw=b.split(/\s+/);
+        var match=aw.filter(function(w){return bw.indexOf(w)>-1;}).length;
+        var pct=Math.round((match/Math.max(bw.length,1))*100);
+        result.innerHTML='들은 내용: '+fullText.trim()+'<br>정확도: '+pct+'%';
+      };
+      rec.onerror=function(){activeRec=null;recBtn2.textContent='Start Read-Along';result.textContent='인식 실패. 다시 시도해 주세요.';};
+      rec.start();
+    });
+  });
+}
+buildShadowCards(pickShadow3());
+function refreshShadowing(){buildShadowCards(pickShadow3());}
+
+// 페이지 나갈 때 TTS 중지
+window.addEventListener('beforeunload',function(){if('speechSynthesis' in window)window.speechSynthesis.cancel();});
+window.addEventListener('pagehide',function(){if('speechSynthesis' in window)window.speechSynthesis.cancel();});
+</script>
+</body>
+</html>

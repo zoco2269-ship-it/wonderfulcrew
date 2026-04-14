@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>커뮤니티   WonderfulCrew</title>
+<title>Community — WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
@@ -46,7 +46,7 @@ section{padding:60px 5%;}.wrap{max-width:1000px;margin:0 auto;}
 .post-item .preview{font-size:0.84rem;color:var(--text-mid);margin-top:6px;line-height:1.5;}
 .post-item .tags{display:flex;gap:6px;margin-bottom:6px;}
 
-/* 합격 후기 배지 */
+/* Success Stories 배지 */
 .verified{display:inline-block;padding:2px 8px;background:#E8F5E9;color:#2E7D32;font-size:0.66rem;font-weight:700;border-radius:8px;}
 
 /* 폼 */
@@ -84,91 +84,91 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a>
   <div class="nav-links">
-    <a href="index.html#about">소개</a>
-    <div class="nav-dropdown"><a href="index.html#expertise">준비 과정</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest.html">✈️ 항공사 승무원</a><a href="hotel.html">🏨 호텔·럭셔리</a><a href="walking-analysis.html">🚶 워킹 & 자세 분석</a><a href="cruise.html">🚢 크루즈</a><a href="coach-feedback.html">💬 1:1 코치 피드백</a><a href="ai-coach.html">✨ AI 코치</a></div></div>
-    <div class="nav-dropdown"><a href="index.html#resources">학습 자료</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide.html">📋 면접 완벽 가이드</a><a href="english-interview.html">💬 한국어 & 영어 면접</a><a href="grooming-guide.html">👗 이미지 메이킹 & 그루밍</a><a href="resume-guide.html">📄 자기소개서 & CV</a><a href="customer-service.html">🎯 고객 응대 스킬</a></div></div>
-    <a href="daily-english.html">영어쉐도잉</a>
-    <a href="jobs.html">항공사 채용</a>
-    <a href="community.html">커뮤니티</a>
-    <a href="token-rewards.html">토큰받기</a>
+    <a href="index.html#about">About</a>
+    <div class="nav-dropdown"><a href="index.html#expertise">Programs</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest-en.html">✈️ Cabin Crew</a><a href="hotel-en.html">🏨 Hotel & Luxury</a><a href="walking-analysis-en.html">🚶 Walking & Posture</a><a href="cruise-en.html">🚢 Cruise</a><a href="coach-feedback-en.html">💬 1:1 Coach Feedback</a><a href="ai-coach-en.html">✨ AI Coach</a></div></div>
+    <div class="nav-dropdown"><a href="index.html#resources">Resources</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide-en.html">📋 Interview Guide</a><a href="english-interview-en.html">💬 Interview Q&A</a><a href="grooming-guide-en.html">👗 Image & Grooming</a><a href="resume-guide-en.html">📄 Resume & CV</a><a href="customer-service-en.html">🎯 Customer Service Skills</a></div></div>
+    <a href="daily-english-en.html">English Practice</a>
+    <a href="jobs-en.html">Careers</a>
+    <a href="community-en.html">Community</a>
+    <a href="token-rewards-en.html">Tokens</a>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
-    <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
-    <a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;">로그인</a>
+    <a href="leveltest-en.html" class="nav-cta">Start Practice</a>
+    <a href="login-en.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;">Sign In</a>
   </div>
 </nav>
 
 <div class="hero">
   <div class="label">Community</div>
-  <h1>함께 준비하면<br><em>합격이 가까워져요</em></h1>
-  <p>스터디를 구하고, 고민을 나누고, 면접 후기와 합격 후기를 공유하세요.</p>
+  <h1>Prepare Together,<br><em>Get Closer to Success</em></h1>
+  <p>Find study partners, share concerns, and post interview reviews and success stories.</p>
 </div>
 
 <section>
 <div class="wrap">
 
-<!-- 4개 게시판 선택 -->
+<!-- 4 items 게시판 선택 -->
 <div class="board-grid">
   <div class="board-card" id="bc-study" onclick="openPanel('study')">
     <div class="board-icon">📚</div>
-    <div class="board-title">내 주변 스터디 구해요</div>
-    <div class="board-desc">내 주변 / 같은 항공사 스터디 찾기</div>
-    <div class="board-count" id="cnt-study">0개</div>
+    <div class="board-title">Find Study Partners</div>
+    <div class="board-desc">Find nearby study groups for the same airline</div>
+    <div class="board-count" id="cnt-study">0</div>
   </div>
   <div class="board-card" id="bc-talk" onclick="openPanel('talk')">
     <div class="board-icon">💬</div>
     <div class="board-title">이야기 나눠요</div>
     <div class="board-desc">고민, 질문, 자유 토크</div>
-    <div class="board-count" id="cnt-talk">0개</div>
+    <div class="board-count" id="cnt-talk">0</div>
   </div>
   <div class="board-card" id="bc-review" onclick="openPanel('review')">
     <div class="board-icon">📝</div>
-    <div class="board-title">면접 후기</div>
-    <div class="board-desc">항공사별 면접 질문 & 경험 공유</div>
-    <div class="board-count" id="cnt-review">0개</div>
+    <div class="board-title">Interview Reviews</div>
+    <div class="board-desc">Airline별 면접 질문 & 경험 공유</div>
+    <div class="board-count" id="cnt-review">0</div>
   </div>
   <div class="board-card" id="bc-pass" onclick="openPanel('pass')">
     <div class="board-icon">🏆</div>
-    <div class="board-title">합격 후기</div>
+    <div class="board-title">Success Stories</div>
     <div class="board-desc">합격 인증 회원만 작성 가능</div>
-    <div class="board-count" id="cnt-pass">0개</div>
+    <div class="board-count" id="cnt-pass">0</div>
   </div>
 </div>
 
 <!-- ===== 스터디 패널 ===== -->
 <div class="panel" id="panel-study">
-  <div class="panel-header"><h2>📚 내 주변 스터디 구해요</h2><button class="write-btn" onclick="openForm('study')">스터디 올리기</button></div>
+  <div class="panel-header"><h2>📚 Find Study Partners</h2><button class="write-btn" onclick="openForm('study')">스터디 올리기</button></div>
   <div id="gps-bar" style="display:none;margin-bottom:16px;padding:12px 16px;background:#fff;border:1px solid var(--gold-pale);border-left:3px solid var(--gold);font-size:0.84rem;color:var(--text-mid);display:flex;align-items:center;gap:8px;">
-    <span id="gps-loc">📍 위치 확인 중...</span>
-    <button onclick="sortByLocation()" style="padding:4px 12px;background:var(--navy);color:#fff;border:none;border-radius:12px;font-size:0.76rem;cursor:pointer;">내 주변 먼저</button>
+    <span id="gps-loc">📍 Checking location...</span>
+    <button onclick="sortByLocation()" style="padding:4px 12px;background:var(--navy);color:#fff;border:none;border-radius:12px;font-size:0.76rem;cursor:pointer;">Nearby First</button>
   </div>
-  <button onclick="enableGPS()" style="margin-bottom:16px;padding:8px 18px;background:#fff;border:1px solid var(--gold-pale);border-radius:20px;font-size:0.82rem;color:var(--text-mid);cursor:pointer;font-family:inherit;">📍 내 주변 스터디 보기</button>
+  <button onclick="enableGPS()" style="margin-bottom:16px;padding:8px 18px;background:#fff;border:1px solid var(--gold-pale);border-radius:20px;font-size:0.82rem;color:var(--text-mid);cursor:pointer;font-family:inherit;">📍 Show Nearby Study Groups</button>
   <div id="list-study"></div>
-  <div class="empty" id="empty-study">아직 스터디 모집글이 없어요. 첫 글을 올려보세요!</div>
+  <div class="empty" id="empty-study">아직 Study Groups글이 없어요. 첫 글을 올려보세요!</div>
 </div>
 
 <!-- ===== 이야기 패널 ===== -->
 <div class="panel" id="panel-talk">
-  <div class="panel-header"><h2>💬 이야기 나눠요</h2><button class="write-btn" onclick="openForm('talk')">글쓰기</button></div>
+  <div class="panel-header"><h2>💬 이야기 나눠요</h2><button class="write-btn" onclick="openForm('talk')">Write</button></div>
   <div id="list-talk"></div>
   <div class="empty" id="empty-talk">아직 글이 없어요. 첫 이야기를 나눠보세요!</div>
 </div>
 
-<!-- ===== 면접 후기 패널 ===== -->
+<!-- ===== Interview Reviews 패널 ===== -->
 <div class="panel" id="panel-review">
-  <div class="panel-header"><h2>📝 면접 후기</h2><button class="write-btn" onclick="openForm('review')">후기 작성</button></div>
+  <div class="panel-header"><h2>📝 Interview Reviews</h2><button class="write-btn" onclick="openForm('review')">후기 작성</button></div>
   <div id="list-review"></div>
-  <div class="empty" id="empty-review">아직 면접 후기가 없어요. 경험을 공유해주세요!</div>
+  <div class="empty" id="empty-review">아직 Interview Reviews가 없어요. 경험을 공유해주세요!</div>
 </div>
 
-<!-- ===== 합격 후기 패널 ===== -->
+<!-- ===== Success Stories 패널 ===== -->
 <div class="panel" id="panel-pass">
-  <div class="panel-header"><h2>🏆 합격 후기</h2><button class="write-btn" onclick="alert('합격 인증 후 작성 가능합니다. 관리자에게 문의해주세요.')">합격 후기 작성 (인증 필요)</button></div>
-  <div class="reward-box"><b>합격 후기 보상 안내</b><br>텍스트 후기 작성 → 스타벅스 기프티콘 지급<br>얼굴 공개 후기 영상 제출 → 수강료 50% 환급</div>
+  <div class="panel-header"><h2>🏆 Success Stories</h2><button class="write-btn" onclick="alert('Available after verification. 관리자에게 문의해주세요.')">Success Stories 작성 (인증 필요)</button></div>
+  <div class="reward-box"><b>Success Stories 보상 안내</b><br>텍스트 후기 작성 → 스타벅스 기프티콘 지급<br>얼굴 공 items 후기 영상 제출 → 수강료 50% 환급</div>
   <div id="list-pass"></div>
-  <div class="empty" id="empty-pass">아직 합격 후기가 없어요.</div>
+  <div class="empty" id="empty-pass">아직 Success Stories가 없어요.</div>
 </div>
 
 </div>
@@ -179,15 +179,15 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <!-- 스터디 폼 -->
   <div class="form-box" id="form-study" style="display:none;">
     <h3>📚 스터디 올리기</h3>
-    <label>항공사</label>
+    <label>Airline</label>
     <div class="chip-group" id="chips-airline">
       <div class="chip" onclick="selChip(this)">에미레이트</div><div class="chip" onclick="selChip(this)">카타르</div><div class="chip" onclick="selChip(this)">에티하드</div><div class="chip" onclick="selChip(this)">싱가포르항공</div><div class="chip" onclick="selChip(this)">캐세이퍼시픽</div><div class="chip" onclick="selChip(this)">핀에어</div><div class="chip" onclick="selChip(this)">KLM</div><div class="chip" onclick="selChip(this)">대한항공</div><div class="chip" onclick="selChip(this)">아시아나</div><div class="chip" onclick="selChip(this)">기타</div>
     </div>
-    <label>지역</label>
+    <label>Region</label>
     <div class="chip-group" id="chips-loc">
       <div class="chip" onclick="selChip(this)">서울</div><div class="chip" onclick="selChip(this)">부산</div><div class="chip" onclick="selChip(this)">대구</div><div class="chip" onclick="selChip(this)">인천</div><div class="chip" onclick="selChip(this)">광주</div><div class="chip" onclick="selChip(this)">대전</div><div class="chip" onclick="selChip(this)">제주</div><div class="chip" onclick="selChip(this)">온라인</div>
     </div>
-    <label>인원</label>
+    <label>Members</label>
     <div class="chip-group" id="chips-ppl">
       <div class="chip" onclick="selChip(this)">2명</div><div class="chip" onclick="selChip(this)">3명</div><div class="chip" onclick="selChip(this)">4명 이상</div>
     </div>
@@ -196,43 +196,43 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
       <div class="chip" onclick="selChip(this)">주말</div><div class="chip" onclick="selChip(this)">평일</div><div class="chip" onclick="selChip(this)">온라인 가능</div>
     </div>
     <label>닉네임</label><input type="text" id="s-author" placeholder="닉네임" maxlength="20">
-    <label>제목</label><input type="text" id="s-title" placeholder="예: 에미레이트 준비 내 주변 스터디 구해요" maxlength="80">
-    <label>상세 내용</label><textarea id="s-body" placeholder="자기소개, 현재 준비 단계, 원하는 스터디 방식, 연락처(카카오 오픈채팅 등)"></textarea>
+    <label>제목</label><input type="text" id="s-title" placeholder="예: 에미레이트 준비 Find Study Partners" maxlength="80">
+    <label>상세 내용</label><textarea id="s-body" placeholder="자기소 items, 현재 준비 단계, 원하는 스터디 방식, 연락처(카카오 오픈채팅 등)"></textarea>
     <div class="error-msg" id="err-study"></div>
-    <div class="form-btns"><button class="submit" onclick="submitStudy()">올리기</button><button class="cancel" onclick="closeForm()">취소</button></div>
+    <div class="form-btns"><button class="submit" onclick="submitStudy()">올리기</button><button class="cancel" onclick="closeForm()">Cancel</button></div>
   </div>
   <!-- 일반글 폼 -->
   <div class="form-box" id="form-talk" style="display:none;">
-    <h3>💬 글쓰기</h3>
+    <h3>💬 Write</h3>
     <label>닉네임</label><input type="text" id="t-author" placeholder="닉네임" maxlength="20">
     <label>제목</label><input type="text" id="t-title" placeholder="제목" maxlength="100">
     <label>내용</label><textarea id="t-body" placeholder="자유롭게 이야기하세요."></textarea>
     <div class="error-msg" id="err-talk"></div>
-    <div class="form-btns"><button class="submit" onclick="submitGeneral('talk')">등록하기</button><button class="cancel" onclick="closeForm()">취소</button></div>
+    <div class="form-btns"><button class="submit" onclick="submitGeneral('talk')">Submit</button><button class="cancel" onclick="closeForm()">Cancel</button></div>
   </div>
-  <!-- 면접 후기 폼 -->
+  <!-- Interview Reviews 폼 -->
   <div class="form-box" id="form-review" style="display:none;">
-    <h3>📝 면접 후기</h3>
-    <label>항공사</label>
+    <h3>📝 Interview Reviews</h3>
+    <label>Airline</label>
     <div class="chip-group" id="chips-rv-air">
       <div class="chip" onclick="selChip(this)">에미레이트</div><div class="chip" onclick="selChip(this)">카타르</div><div class="chip" onclick="selChip(this)">싱가포르항공</div><div class="chip" onclick="selChip(this)">캐세이퍼시픽</div><div class="chip" onclick="selChip(this)">대한항공</div><div class="chip" onclick="selChip(this)">아시아나</div><div class="chip" onclick="selChip(this)">기타</div>
     </div>
-    <label>면접 단계</label>
+    <label>Interview Stage</label>
     <div class="chip-group" id="chips-rv-stage">
-      <div class="chip" onclick="selChip(this)">서류</div><div class="chip" onclick="selChip(this)">비디오면접</div><div class="chip" onclick="selChip(this)">1차 면접</div><div class="chip" onclick="selChip(this)">2차 면접</div><div class="chip" onclick="selChip(this)">파이널</div>
+      <div class="chip" onclick="selChip(this)">Application</div><div class="chip" onclick="selChip(this)">Video Interview</div><div class="chip" onclick="selChip(this)">1차 면접</div><div class="chip" onclick="selChip(this)">2차 면접</div><div class="chip" onclick="selChip(this)">Final</div>
     </div>
     <label>닉네임</label><input type="text" id="rv-author" placeholder="닉네임" maxlength="20">
     <label>면접 날짜</label><input type="date" id="rv-date">
     <label>후기 내용</label><textarea id="rv-body" placeholder="면접 분위기, 질문 내용, 팁 등을 공유해주세요."></textarea>
     <div class="error-msg" id="err-review"></div>
-    <div class="form-btns"><button class="submit" onclick="submitReview()">후기 등록</button><button class="cancel" onclick="closeForm()">취소</button></div>
+    <div class="form-btns"><button class="submit" onclick="submitReview()">Submit Review</button><button class="cancel" onclick="closeForm()">Cancel</button></div>
   </div>
 </div>
 
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
 
 <script>
-var BANNED=/과외|레슨|수업료|가르쳐|튜터|tutor|lesson|coaching|코칭비|수강료|1:1\s*수업|개인\s*지도|개인\s*레슨|과외비/i;
+var BANNED=/과외|레슨|수업료|가르쳐|튜터|tutor|lesson|coaching|코칭비|수강료|1:1\s*수업| items인\s*지도| items인\s*레슨|과외비/i;
 function getB(n){return JSON.parse(localStorage.getItem('wc_cm_'+n)||'[]');}
 function setB(n,a){localStorage.setItem('wc_cm_'+n,JSON.stringify(a));}
 function selChip(el){el.classList.toggle('sel');}
@@ -261,11 +261,11 @@ function closeForm(){
 // 스터디 제출
 function submitStudy(){
   var airline=getSelChips('chips-airline'),loc=getSelChips('chips-loc'),ppl=getSelChips('chips-ppl'),sched=getSelChips('chips-sched');
-  var author=document.getElementById('s-author').value.trim()||'익명';
+  var author=document.getElementById('s-author').value.trim()||'Anonymous';
   var title=document.getElementById('s-title').value.trim();
   var body=document.getElementById('s-body').value.trim();
   var err=document.getElementById('err-study');err.style.display='none';
-  if(!title||!body){err.textContent='제목과 내용을 입력해주세요.';err.style.display='block';return;}
+  if(!title||!body){err.textContent='Please enter title and content.';err.style.display='block';return;}
   if(banned(title+body)){err.textContent='커뮤니티 정책에 의해 등록할 수 없는 내용입니다.';err.style.display='block';return;}
   var arr=getB('study');
   arr.unshift({airline:airline[0]||'',loc:loc[0]||'',ppl:ppl[0]||'',sched:sched[0]||'',author:author,title:title,body:body,date:new Date().toISOString().slice(0,10)});
@@ -275,21 +275,21 @@ function submitStudy(){
 
 // 일반글 제출
 function submitGeneral(type){
-  var author=document.getElementById('t-author').value.trim()||'익명';
+  var author=document.getElementById('t-author').value.trim()||'Anonymous';
   var title=document.getElementById('t-title').value.trim();
   var body=document.getElementById('t-body').value.trim();
   var err=document.getElementById('err-talk');err.style.display='none';
-  if(!title||!body){err.textContent='제목과 내용을 입력해주세요.';err.style.display='block';return;}
+  if(!title||!body){err.textContent='Please enter title and content.';err.style.display='block';return;}
   if(banned(title+body)){err.textContent='커뮤니티 정책에 의해 등록할 수 없는 내용입니다.';err.style.display='block';return;}
   var arr=getB('talk');arr.unshift({author:author,title:title,body:body,date:new Date().toISOString().slice(0,10)});
   setB('talk',arr);closeForm();render('talk');
   document.getElementById('t-title').value='';document.getElementById('t-body').value='';
 }
 
-// 면접 후기 제출
+// Interview Reviews 제출
 function submitReview(){
   var airline=getSelChips('chips-rv-air'),stage=getSelChips('chips-rv-stage');
-  var author=document.getElementById('rv-author').value.trim()||'익명';
+  var author=document.getElementById('rv-author').value.trim()||'Anonymous';
   var idate=document.getElementById('rv-date').value;
   var body=document.getElementById('rv-body').value.trim();
   var err=document.getElementById('err-review');err.style.display='none';
@@ -301,11 +301,11 @@ function submitReview(){
   document.getElementById('rv-body').value='';
 }
 
-// 더미 합격 후기
+// 더미 Success Stories
 var DUMMY_PASS=[
-  {author:'김서연',airline:'에미레이트',body:'3번 탈락 후 원더풀크루와 함께 4번째 도전에서 합격했습니다. 롤플레이 연습이 정말 큰 도움이 됐어요. 포기하지 마세요!',date:'2026-03-28',verified:true},
-  {author:'이하늘',airline:'카타르항공',body:'영어가 부족했지만 쉬운 단어로 자신감 있게 말하는 연습을 반복했더니 파이널까지 통과했습니다. 감사합니다 코치님!',date:'2026-03-15',verified:true},
-  {author:'박지민',airline:'싱가포르항공',body:'그루밍 가이드 보고 메이크업 확 바꿨더니 1차에서 바로 통과! 이미지가 정말 중요하다는 걸 체감했어요.',date:'2026-02-20',verified:true}
+  {author:'김서연',airline:'Emirates',body:'3번 탈락 후 원더풀크루와 함께 4번째 도전에서 합격했습니다. Roleplay 연습이 정말 큰 도움이 됐어요. 포기하지 마세요!',date:'2026-03-28',verified:true},
+  {author:'이하늘',airline:'카타르항공',body:'My English was lacking, but I practiced speaking confidently with simple words and passed through to the final. Thank you, coach!',date:'2026-03-15',verified:true},
+  {author:'박지민',airline:'싱가포르항공',body:'I changed my makeup after reading the grooming guide and passed the 1st round immediately! Image really matters.',date:'2026-02-20',verified:true}
 ];
 
 function render(name){
@@ -315,12 +315,12 @@ function render(name){
   list.innerHTML='';
 
   if(name==='pass'){
-    // 합격 후기는 더미 데이터
+    // Success Stories는 더미 데이터
     empty.style.display=DUMMY_PASS.length?'none':'block';
     DUMMY_PASS.forEach(function(p){
       var d=document.createElement('div');d.className='post-item';
       d.innerHTML='<div class="tags"><span class="study-tag air">'+p.airline+'</span><span class="verified">합격 인증</span></div>'+
-        '<div class="title">'+p.author+'님의 합격 후기</div>'+
+        '<div class="title">'+p.author+'님의 Success Stories</div>'+
         '<div class="preview">'+p.body+'</div>'+
         '<div class="meta">'+p.date+'</div>';
       list.appendChild(d);
@@ -352,7 +352,7 @@ function render(name){
         (p.airline?'<span class="study-tag air">'+p.airline+'</span>':'')+
         (p.stage?'<span class="study-tag loc">'+p.stage+'</span>':'')+
       '</div>'+
-      '<div class="title">'+p.author+'의 면접 후기'+(p.idate?' ('+p.idate+')':'')+'</div>'+
+      '<div class="title">'+p.author+'의 Interview Reviews'+(p.idate?' ('+p.idate+')':'')+'</div>'+
       '<div class="preview">'+p.body.substring(0,150)+(p.body.length>150?'...':'')+'</div>'+
       '<div class="meta">'+p.date+'</div>';
       d.onclick=function(){alert(p.body+'\n\n  '+p.author);};
@@ -379,7 +379,7 @@ function enableGPS(){
   navigator.geolocation.getCurrentPosition(function(pos){
     userLoc={lat:pos.coords.latitude,lng:pos.coords.longitude};
     // 가장 가까운 도시 찾기
-    var closest='온라인',minDist=Infinity;
+    var closest='Online',minDist=Infinity;
     Object.keys(LOC_MAP).forEach(function(city){
       var d=Math.sqrt(Math.pow(LOC_MAP[city][0]-userLoc.lat,2)+Math.pow(LOC_MAP[city][1]-userLoc.lng,2));
       if(d<minDist){minDist=d;closest=city;}
@@ -395,8 +395,8 @@ function sortByLocation(){
   if(!city){enableGPS();return;}
   var arr=getB('study');
   arr.sort(function(a,b){
-    var aMatch=(a.loc===city||a.loc==='온라인')?0:1;
-    var bMatch=(b.loc===city||b.loc==='온라인')?0:1;
+    var aMatch=(a.loc===city||a.loc==='Online')?0:1;
+    var bMatch=(b.loc===city||b.loc==='Online')?0:1;
     return aMatch-bMatch;
   });
   // Re-render with sorted
@@ -414,9 +414,9 @@ function sortByLocation(){
 
 function updateCounts(){
   ['study','talk','review'].forEach(function(n){
-    document.getElementById('cnt-'+n).textContent=getB(n).length+'개';
+    document.getElementById('cnt-'+n).textContent=getB(n).length+' items';
   });
-  document.getElementById('cnt-pass').textContent=DUMMY_PASS.length+'개';
+  document.getElementById('cnt-pass').textContent=DUMMY_PASS.length+' items';
 }
 updateCounts();
 </script>

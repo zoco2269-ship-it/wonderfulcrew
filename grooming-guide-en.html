@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Making & Grooming — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}
+a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:36px;}
+.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;}
+.hero{background:var(--navy);color:#fff;padding:140px 5% 80px;text-align:center;}
+.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:clamp(1.9rem,3.8vw,3rem);font-weight:300;margin-bottom:12px;line-height:1.25;}
+.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.hero p{color:rgba(255,255,255,0.7);font-size:0.95rem;max-width:600px;margin:0 auto;line-height:1.8;}
+.tab-bar{max-width:1000px;margin:0 auto;padding:40px 5% 0;display:flex;gap:0;}
+.tab-btn{flex:1;padding:16px 0;text-align:center;font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text-muted);background:#fff;border:1px solid var(--gold-pale);cursor:pointer;transition:all 0.2s;}
+.tab-btn:first-child{border-radius:8px 0 0 0;}
+.tab-btn:last-child{border-radius:0 8px 0 0;}
+.tab-btn.active{background:var(--navy);color:var(--gold-light);border-color:var(--navy);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+section{padding:50px 5% 80px;}
+.wrap{max-width:1000px;margin:0 auto;}
+.sec-label{font-family:'DM Serif Display',serif;font-size:0.72rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;font-weight:700;}
+.sec-title{font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:400;color:var(--navy);margin-bottom:10px;}
+.sec-title em{font-style:normal;color:var(--gold);}
+.gold-line{width:36px;height:1.5px;background:var(--gold);margin:16px 0 40px;}
+.card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:28px;margin-bottom:20px;transition:transform 0.2s,box-shadow 0.2s;}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(201,168,76,0.1);}
+.card h3{font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--navy);margin-bottom:14px;}
+.card p,.card li{font-family:'Noto Sans KR',sans-serif;font-size:0.9rem;color:var(--text-mid);line-height:1.85;}
+.card ul,.card ol{padding-left:20px;margin:10px 0;}
+.card li{margin-bottom:6px;}
+.card li strong{color:var(--navy);}
+.tip{margin:16px 0;padding:16px 18px;background:rgba(201,168,76,0.06);border-left:3px solid var(--gold);font-size:0.86rem;color:var(--text-mid);line-height:1.75;}
+.tip b{color:var(--navy);}
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:10px 0 10px 28px;position:relative;font-size:0.88rem;color:var(--text-mid);line-height:1.7;border-bottom:1px solid var(--gold-pale);}
+.checklist li::before{content:'✓';position:absolute;left:0;color:var(--gold);font-weight:700;}
+.checklist li:last-child{border-bottom:none;}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0;}
+.compare-col{padding:20px;background:var(--cream);border:1px solid var(--gold-pale);}
+.compare-col h4{font-size:0.88rem;color:var(--navy);margin-bottom:12px;font-weight:700;}
+.compare-col ul{list-style:none;padding:0;}
+.compare-col ul li{padding:5px 0;font-size:0.85rem;color:var(--text-mid);line-height:1.7;}
+.compare-col ul li::before{content:'·';margin-right:8px;color:var(--gold);font-weight:700;}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.compare{grid-template-columns:1fr;}}
+
+.nav-dropdown{position:relative;}
+.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
+.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid rgba(245,233,200,1);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:200px;z-index:1001;}
+.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}
+.nav-dropdown-menu a{display:block;padding:6px 14px;font-size:0.82rem;color:#4A4438;white-space:nowrap;}
+.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:#C9A84C;}
+
+.nav-dd-grid{min-width:260px;display:none;grid-template-columns:1fr 1fr;gap:0;padding:4px 0;}
+.nav-dropdown:hover .nav-dd-grid{display:grid!important;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <a href="index.html#about">About</a>
+    <div class="nav-dropdown"><a href="index.html#expertise">Programs</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest-en.html">✈️ Cabin Crew</a><a href="hotel-en.html">🏨 Hotel & Luxury</a><a href="walking-analysis-en.html">🚶 Walking & Posture</a><a href="cruise-en.html">🚢 Cruise</a><a href="coach-feedback-en.html">💬 1:1 Coach Feedback</a><a href="ai-coach-en.html">✨ AI Coach</a></div></div>
+    <div class="nav-dropdown"><a href="index.html#resources">Resources</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide-en.html">📋 Interview Guide</a><a href="english-interview-en.html">💬 Interview Q&A</a><a href="grooming-guide-en.html">👗 Image & Grooming</a><a href="resume-guide-en.html">📄 Resume & CV</a><a href="customer-service-en.html">🎯 Customer Service Skills</a></div></div>
+    <a href="daily-english-en.html">English Practice</a>
+    <a href="jobs-en.html">Careers</a>
+    <a href="community-en.html">Community</a>
+    <a href="token-rewards-en.html">Tokens</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="leveltest-en.html" class="nav-cta">Start Practice</a>
+    <a href="login-en.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;">Sign In</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="label">Image Making & Grooming</div>
+  <h1>승무원 이미지 메이킹<br><em>& 그루밍 정복</em></h1>
+  <p>항공사 면접에서 첫인상은 합격의 절반입니다. 국내 항공사와 외국 항공사의 그루밍 기준 차이를 파악하고 완벽하게 준비하세요.</p>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('domestic')">국내 항공사</button>
+  <button class="tab-btn" onclick="showTab('international')">외국 항공사</button>
+</div>
+
+<section>
+<div class="wrap">
+
+<!-- ===== 국내 항공사 ===== -->
+<div class="tab-content active" id="tab-domestic">
+  <div class="sec-label">Korean Airlines</div>
+  <h2 class="sec-title">국내 항공사 <em>그루밍 가이드</em></h2>
+  <div class="gold-line"></div>
+
+  <div class="card">
+    <h3>💄 메이크업</h3>
+    <p>국내 항공사는 깨끗하고 자연스러운 메이크업을 선호합니다. 너무 진하지 않으면서도 '화장을 안 한 것'처럼 보이면 안 됩니다. 깔끔하게 정돈된 느낌이 핵심입니다.</p>
+    <ul>
+      <li><strong>🎨 베이스:</strong> 피부 톤에 맞는 파운데이션으로 균일한 피부 표현. 광택보다는 세미 매트 추천</li>
+      <li><strong>👁 눈:</strong> 브라운 계열 아이섀도 + 깔끔한 아이라인. 속눈썹은 자연스러운 C컬</li>
+      <li><strong>💋 입술:</strong> MLBB(My Lips But Better) 톤. 코랄 핑크 또는 로즈 계열</li>
+      <li><strong>✏️ 눈썹:</strong> 자연스러운 아치형. 너무 각지거나 일자 눈썹은 피할 것</li>
+      <li><strong>🌸 블러셔:</strong> 볼 사과 부분에 은은한 핑크/코랄</li>
+    </ul>
+    <div class="tip"><b>핵심:</b> 한국식 '생얼 메이크업'이 아니라, 면접관 거리(약 2~3m)에서도 또렷하게 보이는 단정한 메이크업입니다.</div>
+  </div>
+
+  <div class="card">
+    <h3>💇 헤어스타일</h3>
+    <ul>
+      <li><strong>💆 기본:</strong> 하나로 깔끔하게 묶어 올리기. 시니언(올림머리)이 가장 무난</li>
+      <li><strong>잔머리:</strong> 스프레이 + 왁스로 완벽 정리. 날리는 머리카락 없도록</li>
+      <li><strong>앞머리:</strong> 이마를 드러내는 것이 기본. 앞머리가 있다면 옆으로 정리</li>
+      <li><strong>헤어 색상:</strong> 자연스러운 다크 브라운~블랙. 밝은 염색은 피할 것</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>👔 복장</h3>
+    <ul>
+      <li><strong>👗 스타일:</strong> 비즈니스 정장. 원피스 또는 투피스(자켓 + 스커트) 자유</li>
+      <li><strong>색상:</strong> 네이비, 블랙, 차콜, 베이지 등 무난한 색. 본인에게 어울리는 색 선택</li>
+      <li><strong>스커트 길이:</strong> 무릎 라인. 미니스커트 절대 금지</li>
+      <li><strong>👠 구두:</strong> 검정 또는 네이비 펌프스. 5~7cm 굽 추천. 깨끗하게 관��</li>
+      <li><strong>🧦 스타킹:</strong> 살색 스타킹 필수. 여분 1켤레 반드시 준비</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>💅 네일 & 악세사리</h3>
+    <ul>
+      <li><strong>💅 네일:</strong> 투명 또는 연한 핑크/누드. 단정하게 정돈. 네일아트 금지</li>
+      <li><strong>악세사리:</strong> 작은 진주 또는 큐빅 귀걸이. 과한 장식 금지</li>
+      <li><strong>⌚ 시계:</strong> 착용 권장   시간 관념(Punctuality)의 상징</li>
+      <li><strong>🌺 향수:</strong> 은은한 향만. 강한 향수는 감점 요인</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>📋 면접 당일 준비물</h3>
+    <ul class="checklist">
+      <li>이력서 + 자기소개서 출력본 (여분 포함)</li>
+      <li>증명사진 여분</li>
+      <li>신분증</li>
+      <li>여분 스타킹</li>
+      <li>메이크업 수정 키트 (파우더, 립스틱, 거울)</li>
+      <li>헤어 스프레이 + 헤어핀</li>
+      <li>손거울</li>
+      <li>물 + 민트 (구취 제거)</li>
+      <li>구두 광택 티슈</li>
+      <li>면접 노트 (마지막 복습용)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== 외국 항공사 ===== -->
+<div class="tab-content" id="tab-international">
+  <div class="sec-label">International Airlines</div>
+  <h2 class="sec-title">외국 항공사 <em>그루밍 가이드</em></h2>
+  <div class="gold-line"></div>
+
+  <div class="tip" style="margin-bottom:32px;"><b>중요:</b> 외국 항공사(특히 중동 항공사)는 한국 기준으로는 '진하다' 싶을 정도의 메이크업을 선호합니다. 한국식 연한 화장은 외국인 면접관에게 '안 한 것'으로 보일 수 있으므로, 평소보다 확실히 진하게 하세요.</div>
+
+  <div class="card">
+    <h3>💄 메이크업</h3>
+    <p>외국 항공사, 특히 에미레이트/카타르/에티하드 같은 중동 항공사는 선명하고 또렷한 메이크업을 기��합니다. '너무 진한가?' 싶을 정도가 딱 맞습니다.</p>
+    <ul>
+      <li><strong>🎨 베이스:</strong> 풀 커버리지 파운데이션. 결점 없는 매끈한 피부 표현</li>
+      <li><strong>👁 눈:</strong> 아이섀도를 확실하게! 브라운/골드/버건디 계열. 아이라인 굵고 또렷하게</li>
+      <li><strong>✨ 속눈썹:</strong> 인조 속눈썹 착용 적극 추천. 풍성하고 길게</li>
+      <li><strong>💋 입술:</strong> 레드 또는 딥 코랄. 선명한 립 컬러가 기본</li>
+      <li><strong>🖌️ 컨투어링:</strong> 콧대 + 턱선 음영 넣기. 입체감 있는 얼굴 필수</li>
+      <li><strong>✨ 하이라이터:</strong> 광대뼈, 콧대에 은은하게</li>
+    </ul>
+    <div class="compare">
+      <div class="compare-col">
+        <h4>국내 항공사 메이크업</h4>
+        <ul>
+          <li>자연스러운 세미 매트</li>
+          <li>브라운 아이섀도 은은하게</li>
+          <li>MLBB 립 컬러</li>
+          <li>인조 속눈썹 선택사항</li>
+          <li>컨투어링 최소</li>
+        </ul>
+      </div>
+      <div class="compare-col">
+        <h4>외국 항공사 메이크업</h4>
+        <ul>
+          <li>풀 커버리지, 매끈한 피부</li>
+          <li>아이섀도 + 아이라인 또렷하게</li>
+          <li>레드/딥코랄 선명한 립</li>
+          <li>인조 속눈썹 적극 추천</li>
+          <li>컨투어링 + 하이라이터 필수</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>💇 헤어스타일</h3>
+    <ul>
+      <li><strong>무조건 올림머리:</strong> 잔머리 하나 없이 깔끔하게. 스프레이 필수</li>
+      <li><strong>헤어넷:</strong> 시니언 위에 헤어넷 사용하면 더 깔끔</li>
+      <li><strong>색상:</strong> 자연스러운 색이 안전. 지나치게 밝은 금발은 피할 것</li>
+      <li><strong>베이비 헤어:</strong> 이마 주변 잔머리를 헤어 스프레이 + 빗으로 완벽하게 눌러 정리</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>👔 복장</h3>
+    <ul>
+      <li><strong>👗 스타일:</strong> 비즈니스 정장. 원피스/투피스/자켓 자유</li>
+      <li><strong>색상:</strong> 본인에게 잘 어울리는 색. 꼭 에미레이트 빨간색/카타르 보라색 안 입어도 됨</li>
+      <li><strong>주의:</strong> 미니스커트, 몸에 붙는 옷 지양. 암리치 테스트 시 스트레칭 잘 되는 옷</li>
+      <li><strong>👠 구두:</strong> 어두운 색 기본 펌프스. 5~7cm 굽</li>
+      <li><strong>🧦 스타킹:</strong> 살색. 올 나간 스타킹 절대 안 됨 → 여분 필수</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>💅 네일 & 악세사리</h3>
+    <ul>
+      <li><strong>💅 네일:</strong> 반드시 바르기! 투명이라도 OK. 서비스 준비가 된 사람임을 보여줌</li>
+      <li><strong>악세사리:</strong> 작은 진주/큐빅 귀걸이. 과하지 않게</li>
+      <li><strong>⌚ 시계:</strong> 꼭 착용. Punctuality(시간 관념)의 상징</li>
+      <li><strong>🌺 향수:</strong> 은은하게. 중동 항공사는 향에 민감한 승객이 있으므로 주의</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>📏 스카 / 문신 / 키 / 암리치</h3>
+    <ul>
+      <li><strong>스카:</strong> 에미레이트가 카타르보다 관대. 작은 흉터는 컨실러로 커버. 큰 흉터는 declare 필요</li>
+      <li><strong>문신:</strong> 유니폼 착용 시 보이는 위치(팔/손목/손등/발목)에 있으면 지원 불가. 안 보이는 위치는 신고하면 OK</li>
+      <li><strong>키:</strong> 에미레이트 160cm 기준. 요가/스트레칭으로 1cm라도 늘리기</li>
+      <li><strong>암리치:</strong> 212cm (해트랙 닫기). 까치발 OK. 어깨 스트레칭 꾸준히</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>📋 면접 당일 준비물</h3>
+    <ul class="checklist">
+      <li>CV (이력서) 출력본 여러 장</li>
+      <li>여권 원본</li>
+      <li>여권 사이즈 사진 여분</li>
+      <li>전신 사진 (요구하는 항공사)</li>
+      <li>여분 스타킹 (2켤레 이상)</li>
+      <li>풀 메이크업 수정 키트</li>
+      <li>인조 속눈썹 여분 + 접착제</li>
+      <li>헤어 스프레이 + 핀 + 헤어넷</li>
+      <li>컨실러 (스카 커버용)</li>
+      <li>투명 네일 (혹시 벗겨졌을 때)</li>
+      <li>물 + 민트</li>
+      <li>편한 신발 (이동용) + 면접 구두</li>
+    </ul>
+  </div>
+</div>
+
+</div>
+</section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+
+<script>
+function showTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
+  document.getElementById('tab-'+tab).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

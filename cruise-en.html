@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cruise Interview — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:28px;align-items:center;}.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}.nav-links a{font-size:0.82rem;color:var(--text-mid);}.nav-links a:hover{color:var(--gold);}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
+.nav-dropdown{position:relative;}.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid var(--gold-pale);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:200px;z-index:1001;}.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}.nav-dropdown-menu a{display:block;padding:6px 14px;font-size:0.82rem;white-space:nowrap;}.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:var(--gold);}
+.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:560px;margin:0 auto;line-height:1.8;}
+section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
+.brand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:36px;}
+.brand-card{background:#fff;border:2px solid var(--gold-pale);padding:20px 16px;text-align:center;cursor:pointer;transition:all 0.2s;}.brand-card:hover,.brand-card.active{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 20px rgba(201,168,76,0.1);}
+.brand-name{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);margin-bottom:2px;}.brand-sub{font-size:0.74rem;color:var(--text-muted);}
+.card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:28px;margin-bottom:20px;}.card h3{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:12px;}.card li{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-bottom:4px;}.card ul{padding-left:18px;margin:8px 0;}.card li strong{color:var(--navy);}
+.step-btn{display:inline-block;margin-top:14px;padding:10px 22px;background:var(--navy);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}.step-btn:hover{background:var(--gold);}
+.tip{padding:14px 18px;background:rgba(201,168,76,0.06);border-left:3px solid var(--gold);font-size:0.84rem;color:var(--text-mid);line-height:1.7;margin-bottom:28px;}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.brand-grid{grid-template-columns:1fr 1fr;}}
+
+.nav-dd-grid{min-width:260px;display:none;grid-template-columns:1fr 1fr;gap:0;padding:4px 0;}
+.nav-dropdown:hover .nav-dd-grid{display:grid!important;}
+</style>
+</head>
+<body>
+<nav><a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a><div class="nav-links"><a href="index.html#about">About</a><div class="nav-dropdown"><a href="index.html#expertise">Programs</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest-en.html">✈️ Cabin Crew</a><a href="hotel-en.html">🏨 Hotel & Luxury</a><a href="walking-analysis-en.html">🚶 Walking & Posture</a><a href="cruise-en.html">🚢 Cruise</a><a href="coach-feedback-en.html">💬 1:1 Coach Feedback</a><a href="ai-coach-en.html">✨ AI Coach</a></div></div><div class="nav-dropdown"><a href="index.html#resources">Resources</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide-en.html">📋 Interview Guide</a><a href="english-interview-en.html">💬 Interview Q&A</a><a href="grooming-guide-en.html">👗 Image & Grooming</a><a href="resume-guide-en.html">📄 Resume & CV</a><a href="customer-service-en.html">🎯 Customer Service Skills</a></div></div><a href="daily-english-en.html">English Practice</a><a href="jobs-en.html">Careers</a><a href="community-en.html">Community</a><a href="token-rewards-en.html">Tokens</a></div><div style="display:flex;align-items:center;gap:12px;"><a href="leveltest-en.html" class="nav-cta">Start Practice</a><a href="login-en.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;text-decoration:none;">Sign In</a></div></nav>
+
+<div class="hero">
+  <div class="label">Cruise Line</div>
+  <h1>Cruise Line<br><em>면접 준비</em></h1>
+  <p>글로벌 Cruise Line 면접은 전 과정 영어로 진행됩니다. 실전 영어 면접을 연습하세요.</p>
+</div>
+
+<section><div class="wrap">
+<div class="tip"><b>Note:</b> Cruise interviews are entirely in English. Long-term assignments of 6+ months are standard, so coping with homesickness is also evaluated.</div>
+<div class="brand-grid" id="brands"></div>
+<div id="process-area"></div>
+</div></section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+<script>
+var LINES=[
+  {name:'Royal Caribbean',en:'Royal Caribbean'},{name:'MSC Cruises',en:'MSC Cruises'},{name:'Costa Cruises',en:'Costa Cruises'},
+  {name:'Princess Cruises',en:'Princess Cruises'},{name:'Norwegian',en:'Norwegian Cruise Line'}
+];
+var STEPS=[
+  {title:'Agency Interview (English)',items:['English self-introduction','Why do you want to work on a cruise ship?','Tell me about your service experience','How do you handle difficult guests?','What languages do you speak?','Image Feedback (Camera ON)']},
+  {title:'Headquarters Interview (English)',items:['Why this cruise line?','Describe a time you worked as a team','How do you handle working away from home for months?','What would you do if a guest complained?','Roleplay: Complaint Scenario (English)']}
+];
+var bg=document.getElementById('brands'),pa=document.getElementById('process-area');
+LINES.forEach(function(h){
+  var d=document.createElement('div');d.className='brand-card';
+  d.innerHTML='<div class="brand-name">'+h.en+'</div><div class="brand-sub">'+h.name+'</div>';
+  d.onclick=function(){
+    document.querySelectorAll('.brand-card').forEach(function(c){c.classList.remove('active');});d.classList.add('active');
+    pa.innerHTML='<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;">Cruise Interview Process</h2><p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:24px;">CV Submission → Agency Interview → HQ Interview → Document Prep → Safety Training → Boarding</p>';
+    STEPS.forEach(function(s){
+      var c=document.createElement('div');c.className='card';
+      c.innerHTML='<h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul><button class="step-btn" onclick="alert(\'Demo score — activated after AI integration\')">Start</button>';
+      pa.appendChild(c);
+    });
+  };
+  bg.appendChild(d);
+});
+</script>
+</body>
+</html>

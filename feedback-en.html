@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>피드백 남기기 WonderfulCrew</title>
+<title>Leave Feedback — WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
@@ -24,50 +24,50 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 </style>
 </head>
 <body>
-<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a></nav>
+<nav><a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a></nav>
 
 <div class="hero">
-  <h1>피드백 <em>남기기</em></h1>
-  <p>원더풀크루를 더 좋게 만들어주세요. 모든 피드백을 소중히 읽겠습니다.</p>
+  <h1>Leave <em>Feedback</em></h1>
+  <p>Help us improve WonderfulCrew. We carefully read every piece of feedback.</p>
 </div>
 
 <section><div class="wrap">
 <div class="card" id="form">
-  <label>이름</label>
-  <input type="text" id="fb-name" placeholder="이름">
-  <label>이메일</label>
-  <input type="email" id="fb-email" placeholder="이메일">
-  <label>전화번호</label>
-  <input type="tel" id="fb-phone" placeholder="전화번호">
-  <label>카테고리</label>
+  <label>Name</label>
+  <input type="text" id="fb-name" placeholder="Your name">
+  <label>Email</label>
+  <input type="email" id="fb-email" placeholder="Your email">
+  <label>Phone</label>
+  <input type="tel" id="fb-phone" placeholder="Your phone number">
+  <label>Category</label>
   <select id="fb-cat">
-    <option>기능 개선 요청</option>
-    <option>버그 신고</option>
-    <option>콘텐츠 제안</option>
-    <option>칭찬/감사</option>
-    <option>기타</option>
+    <option>Feature request</option>
+    <option>Bug report</option>
+    <option>Content suggestion</option>
+    <option>Praise / Thanks</option>
+    <option>Other</option>
   </select>
-  <label>피드백 내용</label>
-  <textarea id="fb-body" placeholder="자유롭게 작성해주세요."></textarea>
-  <button class="btn-gold" onclick="submitFB()">피드백 제출</button>
+  <label>Feedback</label>
+  <textarea id="fb-body" placeholder="Write freely here."></textarea>
+  <button class="btn-gold" onclick="submitFB()">Submit Feedback</button>
 </div>
 <div class="success" id="success">
   <div class="icon">✓</div>
-  <h2>감사합니다!</h2>
-  <p>소중한 피드백이 제출되었습니다.<br>더 나은 원더풀크루를 만들겠습니다.</p>
-  <a href="index.html" style="display:inline-block;margin-top:20px;padding:10px 24px;background:var(--navy);color:#fff;border-radius:22px;font-size:0.84rem;font-weight:600;">홈으로</a>
+  <h2>Thank you!</h2>
+  <p>Your feedback has been submitted.<br>We will keep improving WonderfulCrew.</p>
+  <a href="index-en.html" style="display:inline-block;margin-top:20px;padding:10px 24px;background:var(--navy);color:#fff;border-radius:22px;font-size:0.84rem;font-weight:600;">Home</a>
 </div>
 </div></section>
 
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
 <script>
 function submitFB(){
-  var name=document.getElementById('fb-name').value.trim()||'익명';
+  var name=document.getElementById('fb-name').value.trim()||'Anonymous';
   var email=document.getElementById('fb-email').value.trim();
   var phone=document.getElementById('fb-phone').value.trim();
   var cat=document.getElementById('fb-cat').value;
   var body=document.getElementById('fb-body').value.trim();
-  if(!body){alert('피드백 내용을 입력해주세요.');return;}
+  if(!body){alert('Please enter your feedback.');return;}
   // localStorage에 저장 (관리자 페이지에서 확인)
   var list=JSON.parse(localStorage.getItem('wc_feedback_list')||'[]');
   list.unshift({name:name,email:email,phone:phone,cat:cat,body:body,date:new Date().toISOString().slice(0,10)});

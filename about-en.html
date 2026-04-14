@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us   WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:36px;}.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}.nav-links a:hover{color:var(--gold);}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}
+.hero{background:var(--navy);color:#fff;padding:140px 5% 80px;text-align:center;}
+.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:600px;margin:0 auto;line-height:1.8;}
+section{padding:80px 5%;}.wrap{max-width:900px;margin:0 auto;}
+.person-card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:36px;margin-bottom:36px;display:flex;gap:32px;align-items:flex-start;}
+.person-photo{width:160px;height:200px;background:var(--cream);border:2px dashed var(--gold-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);font-size:0.82rem;text-align:center;}
+.person-info{flex:1;}
+.person-name{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:4px;}
+.person-role{font-size:0.82rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;margin-bottom:14px;}
+.person-bio{font-family:'Noto Sans KR',sans-serif;font-size:0.9rem;color:var(--text-mid);line-height:1.85;}
+.sec-title{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--navy);margin-bottom:12px;}.sec-title em{font-style:normal;color:var(--gold);}
+.gold-line{width:36px;height:1.5px;background:var(--gold);margin:16px 0 40px;}
+.advisor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.advisor-card{background:#fff;border:1px solid var(--gold-pale);padding:24px;text-align:center;}
+.advisor-photo{width:80px;height:80px;border-radius:50%;background:var(--cream);border:2px dashed var(--gold-pale);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.7rem;}
+.advisor-name{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);margin-bottom:4px;}
+.advisor-role{font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:8px;}
+.advisor-desc{font-family:'Noto Sans KR',sans-serif;font-size:0.82rem;color:var(--text-muted);line-height:1.6;}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.nav-links{display:none;}.person-card{flex-direction:column;}.advisor-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.advisor-grid{grid-template-columns:1fr;}}
+
+.nav-dropdown{position:relative;}
+.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
+.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid rgba(245,233,200,1);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:200px;z-index:1001;}
+.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}
+.nav-dropdown-menu a{display:block;padding:6px 14px;font-size:0.82rem;color:#4A4438;white-space:nowrap;}
+.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:#C9A84C;}
+
+.nav-dd-grid{min-width:260px;display:none;grid-template-columns:1fr 1fr;gap:0;padding:4px 0;}
+.nav-dropdown:hover .nav-dd-grid{display:grid!important;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <a href="index.html#about">About</a>
+    <div class="nav-dropdown"><a href="index.html#expertise">Programs</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest-en.html">✈️ Cabin Crew</a><a href="hotel-en.html">🏨 Hotel & Luxury</a><a href="walking-analysis-en.html">🚶 Walking & Posture</a><a href="cruise-en.html">🚢 Cruise</a><a href="coach-feedback-en.html">💬 1:1 Coach Feedback</a><a href="ai-coach-en.html">✨ AI Coach</a></div></div>
+    <div class="nav-dropdown"><a href="index.html#resources">Resources</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide-en.html">📋 Interview Guide</a><a href="english-interview-en.html">💬 Interview Q&A</a><a href="grooming-guide-en.html">👗 Image & Grooming</a><a href="resume-guide-en.html">📄 Resume & CV</a><a href="customer-service-en.html">🎯 Customer Service Skills</a></div></div>
+    <a href="daily-english-en.html">English Practice</a>
+    <a href="jobs-en.html">Careers</a>
+    <a href="community-en.html">Community</a>
+    <a href="token-rewards-en.html">Tokens</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="leveltest-en.html" class="nav-cta">Start Practice</a>
+    <a href="login-en.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;">Sign In</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="label">About Us</div>
+  <h1>WonderfulCrew<br><em>Introduction</em></h1>
+  <p>Created by a former Emirates first-class crew founder and active crew Advisory Board —<br>A premium cabin crew education platform</p>
+</div>
+
+<section>
+<div class="wrap">
+  <h2 class="sec-title" style="font-size:clamp(1.3rem,2.5vw,1.8rem);line-height:1.5;">항공사 일등석의<br>Service Philosophy을<br>transplanted into your career.</h2>
+  <h3 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--gold);font-weight:600;margin-bottom:8px;">Premium Cabin Crew Training Powered by AI</h3>
+  <div class="gold-line"></div>
+
+  <div class="person-card">
+    <div class="person-photo">Photo<br>(Coming Soon)</div>
+    <div class="person-info">
+      <div class="person-name">WonderfulCrew Founder</div>
+      <div class="person-role">WonderfulCrew Founder & Head Coach</div>
+      <div class="person-bio">
+        전 세계 1%만 경험하는 에미레이트항공 일등석 서비스를 7yr간 몸으로 배웠습니다. 고객이 말하기 전에 먼저 움직이는 것, 컴플레인을 선물로 받아들이는 것. 이 철학을 13yr간, 22countries에서 1,000명 이상이 합격으로 증명했습니다.<br><br>
+        에미레이트·카타르·캐세이퍼시픽·대한항공·아시아나·티웨이·싱가포르항공 등 현직 승무원 드림 Advisory Board이 함께하며, 원더풀크루가 학습시킨 자체 AI가 그 경험을 24시간 당신 곁에서 코칭합니다.<br><br>
+        면접에서 합격하는 방법을 넘어, 고객을 대하는 서비스의 본질을 배웁니다.
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Service Philosophy 10가지 -->
+<style>
+.phil-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:32px;}
+.phil-card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:24px 24px 20px;}
+.phil-num{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--gold);line-height:1;margin-bottom:6px;}
+.phil-title{font-size:0.95rem;color:var(--navy);font-weight:700;margin-bottom:8px;line-height:1.4;}
+.phil-desc{font-family:'Noto Sans KR',sans-serif;font-size:0.86rem;color:var(--text-mid);line-height:1.75;}
+@media(max-width:900px){.phil-grid{grid-template-columns:1fr;}}
+</style>
+
+<section>
+<div class="wrap">
+  <h2 class="sec-title">원더풀크루 <em>Service Philosophy</em></h2>
+  <div class="gold-line"></div>
+
+  <div class="phil-grid">
+    <div class="phil-card">
+      <div class="phil-num">01</div>
+      <div class="phil-title">Fly Better : 고객의 기대를 뛰어넘는 경험 설계</div>
+      <div class="phil-desc">고객이 기대하는 것을 충족하는 것으로는 부족합니다.<br>기대하지 못했던 감동을 먼저 설계하는 것이 진짜 서비스입니다.</div>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">02</div>
+      <div class="phil-title">공감 : 고객이 되어 볼 것</div>
+      <div class="phil-desc">상대를 이해하는 건 그 사람이 되어 보는 것입니다.<br>고객의 입장에서 느끼고 생각하는 순간, 서비스의 깊이가 달라집니다.</div>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">03</div>
+      <div class="phil-title">콜벨이 울리면 이미 늦었다 : 프리미엄 서비스의 본질</div>
+      <div class="phil-desc">고객이 콜벨을 누른다는 건 이미 불편함을 느꼈다는 뜻입니다.<br>진짜 프리미엄 서비스는 요청 전에 먼저 파악하고 먼저 움직이는 것입니다.</div>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">04</div>
+      <div class="phil-title">VIP 인지 서비스 : 단골 고객을 알아봐 주는 것의 힘</div>
+      <div class="phil-desc">고객을 기억할 것. 이름으로 불리고, 취향이 기억되는 경험.<br>그 한 마디가 평생 단골을 만듭니다.</div>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">05</div>
+      <div class="phil-title">고객이 다시 돌아올 이유를 우리가 만들어야 한다</div>
+      <div class="phil-desc">다음 방문의 이유는 고객이 만드는 게 아니라 우리가 만드는 것입니다. 지금 이 순간 눈앞의 고객에게 최고를 드리는 것이 재방문의 이유가 됩니다.</div>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">06</div>
+      <div class="phil-title">Attention to Detail : 작은 것을 절대 놓치지 않는 힘</div>
+      <div class="phil-desc">고객의 작은 시그널 하나를 먼저 캐치하고 먼저 움직이는 것.<br>이 디테일들이 쌓여 '여기는 뭔가 다르다'는 브랜드 인식을 만듭니다.</div>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">07</div>
+      <div class="phil-title">Go the Extra Mile : WHY를 떠올리는 순간 서비스가 달라진다</div>
+      <div class="phil-desc">고객의 요구에 WHY를 떠올리면 차원이 다른 서비스가 시작됩니다.<br>하나의 요청이 여러 개의 프리미엄 서비스로 확장됩니다.</div>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">08</div>
+      <div class="phil-title">고객의 컴플레인은 선물</div>
+      <div class="phil-desc">고객의 화는 나를 향한 것이 아닐 수 있습니다. 여전히 우리에게 애정이 있으니 고쳐달라는 말입니다. Don't take it personally. 컴플레인은 더 나은 서비스로 가는 가장 값진 기회입니다.</div>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">09</div>
+      <div class="phil-title">자아분열적 성찰 : 진짜 서비스 마스터의 기준</div>
+      <div class="phil-desc">내가 직원도 되고 고객도 되는 2인극.<br>내가 나에게 서비스받는다면 만족할 것인가, 이 질문이 진짜 서비스의 시작입니다.</div>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">10</div>
+      <div class="phil-title">We Work Together : 하나의 팀, 하나의 서비스</div>
+      <div class="phil-desc">내 존, 네 존이 없습니다. 오직 우리의 서비스만 있습니다.<br>"We work together, we finish together, we go home together."</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section style="background:#fff;">
+<div class="wrap">
+  <h2 class="sec-title">현직 승무원 <em>Advisory Board</em></h2>
+  <div class="gold-line"></div>
+  <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.8;margin-bottom:36px;">대한항공, 아시아나, 에미레이트, 카타르, 캐세이퍼시픽, 싱가포르항공 등 현직 승무원이 Advisory Board으로 참여하여 최신 면접 트렌드와 실전 노하우를 공유합니다.</p>
+
+  <div class="advisor-grid">
+    <div class="advisor-card">
+      <div class="advisor-photo">사진</div>
+      <div class="advisor-name">Advisor 1</div>
+      <div class="advisor-role">항공사명 · 직급</div>
+      <div class="advisor-desc">(Coming Soon)</div>
+    </div>
+    <div class="advisor-card">
+      <div class="advisor-photo">사진</div>
+      <div class="advisor-name">Advisor 2</div>
+      <div class="advisor-role">항공사명 · 직급</div>
+      <div class="advisor-desc">(Coming Soon)</div>
+    </div>
+    <div class="advisor-card">
+      <div class="advisor-photo">사진</div>
+      <div class="advisor-name">Advisor 3</div>
+      <div class="advisor-role">항공사명 · 직급</div>
+      <div class="advisor-desc">(Coming Soon)</div>
+    </div>
+    <div class="advisor-card">
+      <div class="advisor-photo">사진</div>
+      <div class="advisor-name">Advisor 4</div>
+      <div class="advisor-role">항공사명 · 직급</div>
+      <div class="advisor-desc">(Coming Soon)</div>
+    </div>
+    <div class="advisor-card">
+      <div class="advisor-photo">사진</div>
+      <div class="advisor-name">Advisor 5</div>
+      <div class="advisor-role">항공사명 · 직급</div>
+      <div class="advisor-desc">(Coming Soon)</div>
+    </div>
+    <div class="advisor-card">
+      <div class="advisor-photo">사진</div>
+      <div class="advisor-name">Advisor 6</div>
+      <div class="advisor-role">항공사명 · 직급</div>
+      <div class="advisor-desc">(Coming Soon)</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+</body>
+</html>

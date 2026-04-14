@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Airline Careers — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}
+a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:36px;}
+.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}.nav-links a{font-size:0.85rem;color:var(--text-mid);letter-spacing:0.05em;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;}
+
+.hero{background:var(--navy);color:#fff;padding:160px 5% 100px;text-align:center;}
+.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:300;line-height:1.25;margin-bottom:14px;}
+.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.hero p{color:rgba(255,255,255,0.72);font-size:1rem;max-width:600px;margin:0 auto;font-weight:300;line-height:1.8;}
+
+section{padding:90px 5%;}
+.sec-label{font-family:'DM Serif Display',serif;font-size:0.75rem;letter-spacing:0.35em;color:var(--gold);text-align:center;margin-bottom:14px;text-transform:uppercase;font-weight:700;}
+.sec-title{font-size:clamp(1.7rem,3vw,2.4rem);font-weight:400;color:var(--navy);text-align:center;margin-bottom:14px;}
+.sec-title em{font-style:normal;color:var(--gold);}
+.gold-line{width:40px;height:1px;background:var(--gold);margin:0 auto 54px;}
+
+.airline-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.airline-card{background:#fff;border:1px solid var(--gold-pale);padding:32px;border-left:3px solid var(--gold);transition:transform 0.3s,box-shadow 0.3s;}
+.airline-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(201,168,76,0.12);}
+.airline-name{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:8px;}
+.airline-meta{display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap;}
+.status{padding:4px 12px;border-radius:12px;font-size:0.72rem;font-weight:700;letter-spacing:0.04em;}
+.status.open{background:#E6F4EA;color:#1E7E34;}
+.status.soon{background:#FFF3DC;color:#8A6D1A;}
+.dday{font-size:0.78rem;color:var(--gold);font-weight:700;}
+.airline-desc{font-size:0.88rem;color:var(--text-mid);line-height:1.7;margin-bottom:22px;min-height:60px;}
+.apply-btn{display:inline-block;padding:10px 22px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.8rem;font-weight:600;letter-spacing:0.06em;border-radius:20px;}
+.apply-btn.disabled{background:#ddd;color:#888;cursor:not-allowed;}
+
+#news{background:#fff;}
+.news-wrap{max-width:900px;margin:0 auto;}
+.news-item{display:block;padding:22px 0;border-bottom:1px solid var(--gold-pale);transition:padding 0.2s;}
+.news-item:hover{padding-left:8px;}
+.news-tag{display:inline-block;padding:3px 10px;background:var(--gold-pale);color:var(--gold);font-size:0.68rem;font-weight:700;border-radius:10px;margin-bottom:8px;letter-spacing:0.04em;}
+.news-title{font-size:1.02rem;color:var(--navy);font-weight:600;margin-bottom:4px;}
+.news-date{font-size:0.76rem;color:var(--text-muted);}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+@media(max-width:900px){.airline-grid{grid-template-columns:1fr;}.nav-links{display:none;}}
+
+.nav-dropdown{position:relative;}
+.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
+.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid rgba(245,233,200,1);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:200px;z-index:1001;}
+.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}
+.nav-dropdown-menu a{display:block;padding:6px 14px;font-size:0.82rem;color:#4A4438;white-space:nowrap;}
+.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:#C9A84C;}
+
+.nav-dd-grid{min-width:260px;display:none;grid-template-columns:1fr 1fr;gap:0;padding:4px 0;}
+.nav-dropdown:hover .nav-dd-grid{display:grid!important;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <a href="index.html#about">About</a>
+    <div class="nav-dropdown"><a href="index.html#expertise">Programs</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest-en.html">✈️ Cabin Crew</a><a href="hotel-en.html">🏨 Hotel & Luxury</a><a href="walking-analysis-en.html">🚶 Walking & Posture</a><a href="cruise-en.html">🚢 Cruise</a><a href="coach-feedback-en.html">💬 1:1 Coach Feedback</a><a href="ai-coach-en.html">✨ AI Coach</a></div></div>
+    <div class="nav-dropdown"><a href="index.html#resources">Resources</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide-en.html">📋 Interview Guide</a><a href="english-interview-en.html">💬 Interview Q&A</a><a href="grooming-guide-en.html">👗 Image & Grooming</a><a href="resume-guide-en.html">📄 Resume & CV</a><a href="customer-service-en.html">🎯 Customer Service Skills</a></div></div>
+    <a href="daily-english-en.html">English Practice</a>
+    <a href="jobs-en.html">Careers</a>
+    <a href="community-en.html">Community</a>
+    <a href="token-rewards-en.html">Tokens</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="leveltest-en.html" class="nav-cta">Start Practice</a>
+    <a href="login-en.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;">Sign In</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="label">Cabin Crew Recruitment</div>
+  <h1>Currently Open<br><em>Global Airline Careers</em></h1>
+  <p>Emirates, Qatar, Singapore, Cathay, Korean Air, Asiana — all major airline recruitment news in one place.</p>
+</section>
+
+<section>
+  <div class="sec-label">Airlines</div>
+  <h2 class="sec-title">Airline <em>Recruitment Status</em></h2>
+  <div class="gold-line"></div>
+  <div class="airline-grid">
+    <div class="airline-card">
+      <div class="airline-name">Emirates</div>
+      <div class="airline-meta"><span class="status open">Hiring</span><span class="dday">D-14</span></div>
+      <p class="airline-desc">Dubai base · 서울 Open Day 진행. 영어 인터뷰 + 암아즈 테스트 포함.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;"><a href="https://www.emiratesgroupcareers.com/cabin-crew" target="_blank" class="apply-btn">Apply →</a><a href="emirates-process.html" class="apply-btn" style="background:var(--navy);">Interview Process</a></div>
+    </div>
+    <div class="airline-card">
+      <div class="airline-name">Qatar Airways</div>
+      <div class="airline-meta"><span class="status open">Hiring</span><span class="dday">Rolling</span></div>
+      <p class="airline-desc">Doha base · 한국인 승무원 Rolling Recruitment. Starts with online CV screening.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;"><a href="https://careers.qatarairways.com/global/en/cabin-crew" target="_blank" class="apply-btn">Apply →</a><a href="qatar-process.html" class="apply-btn" style="background:var(--navy);">Interview Process</a></div>
+    </div>
+    <div class="airline-card">
+      <div class="airline-name">Singapore Airlines</div>
+      <div class="airline-meta"><span class="status open">Hiring</span><span class="dday">D-19</span></div>
+      <p class="airline-desc">Singapore base · Seoul recruitment info session & interview. 스몰토크 & 그룹 인터뷰.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;"><a href="https://www.singaporeair.com/en_UK/us/about-us/careers/" target="_blank" class="apply-btn">Apply →</a><a href="singapore-process.html" class="apply-btn" style="background:var(--navy);">Interview Process</a></div>
+    </div>
+    <div class="airline-card">
+      <div class="airline-name">Cathay Pacific</div>
+      <div class="airline-meta"><span class="status open">Hiring</span><span class="dday">D-28</span></div>
+      <p class="airline-desc">Hong Kong base · 2026 Cabin Crew 모집. 영어 인터뷰 및 Safety Demo.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;"><a href="https://www.cathaypacific.com/cx/en_KR/about-us/careers.html" target="_blank" class="apply-btn">Apply →</a><a href="cathay-process.html" class="apply-btn" style="background:var(--navy);">Interview Process</a></div>
+    </div>
+    <div class="airline-card">
+      <div class="airline-name">Korean Air</div>
+      <div class="airline-meta"><span class="status soon">Upcoming</span><span class="dday">TBA</span></div>
+      <p class="airline-desc">Korea's largest FSC · 신입 객실승무원 공개채용 하반기 예정.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;"><a href="#" class="apply-btn disabled">Upcoming</a><a href="koreanair-process.html" class="apply-btn" style="background:var(--navy);">Interview Process</a></div>
+    </div>
+    <div class="airline-card">
+      <div class="airline-name">Asiana Airlines</div>
+      <div class="airline-meta"><span class="status soon">Upcoming</span><span class="dday">TBA</span></div>
+      <p class="airline-desc">스타얼라이언스 · Incheon base. 공채 일정 공지 Standby중.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;"><a href="#" class="apply-btn disabled">Upcoming</a><a href="asiana-process.html" class="apply-btn" style="background:var(--navy);">Interview Process</a></div>
+    </div>
+  </div>
+</section>
+
+<section id="news">
+  <div class="sec-label">Latest News</div>
+  <h2 class="sec-title">All <em>Recruitment News</em></h2>
+  <div class="gold-line"></div>
+  <div class="news-wrap">
+    <a href="https://www.emiratesgroupcareers.com" target="_blank" class="news-item"><span class="news-tag">EMIRATES</span><div class="news-title">에미레이트항공 서울 Open Day 개최 (4월 24일) →</div><div class="news-date">2026.04.24</div></a>
+    <a href="https://careers.qatarairways.com" target="_blank" class="news-item"><span class="news-tag">QATAR</span><div class="news-title">카타르항공 한국인 승무원 Rolling 안내 →</div><div class="news-date">2026.04.18</div></a>
+    <a href="https://recruit.koreanair.com" target="_blank" class="news-item"><span class="news-tag">KOREAN AIR</span><div class="news-title">Korean Air New Cabin Crew Open Recruitment →</div><div class="news-date">2026.04.15</div></a>
+    <a href="https://www.singaporeair.com/en_UK/us/about-us/careers/" target="_blank" class="news-item"><span class="news-tag">SINGAPORE</span><div class="news-title">Singapore Airlines Recruitment Info Session (4월 29일) →</div><div class="news-date">2026.04.10</div></a>
+    <a href="https://www.cathaypacific.com/cx/en_KR/about-us/careers.html" target="_blank" class="news-item"><span class="news-tag">CATHAY</span><div class="news-title">Cathay Pacific 2026 Cabin Crew Recruitment 개시 →</div><div class="news-date">2026.04.05</div></a>
+    <a href="asiana-process.html" class="news-item"><span class="news-tag">ASIANA</span><div class="news-title">아시아나항공 하반기 공채 일정 발표 예정</div><div class="news-date">2026.04.02</div></a>
+    <a href="grooming-guide-en.html" class="news-item"><span class="news-tag">EMIRATES</span><div class="news-title">에미레이트 Grooming Tip: 면접 복장 가이드</div><div class="news-date">2026.03.28</div></a>
+    <a href="community-en.html" class="news-item"><span class="news-tag">QATAR</span><div class="news-title">카타르항공 Final Interview Success Stories 모음</div><div class="news-date">2026.03.22</div></a>
+    <a href="interview-guide-en.html" class="news-item"><span class="news-tag">INDUSTRY</span><div class="news-title">2026 글로벌 항공사 채용 트렌드 리포트</div><div class="news-date">2026.03.15</div></a>
+    <a href="english-interview-en.html" class="news-item"><span class="news-tag">TIPS</span><div class="news-title">영어 인터뷰 합격률을 높이는 5가지 습관</div><div class="news-date">2026.03.10</div></a>
+  </div>
+</section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+<script>
+// RSS 뉴스 자동 로딩 (fallback: 기존 하드코딩 유지)
+(async function(){
+  try{
+    var queries=[
+      {tag:'EMIRATES',q:'Emirates cabin crew recruitment'},
+      {tag:'QATAR',q:'Qatar Airways cabin crew'},
+      {tag:'KOREAN AIR',q:'대한항공 승무원 채용'},
+      {tag:'SINGAPORE',q:'Singapore Airlines cabin crew'},
+      {tag:'ASIANA',q:'아시아나항공 승무원 채용'}
+    ];
+    var newsWrap=document.querySelector('.news-wrap');
+    var allNews=[];
+    for(var i=0;i<queries.length;i++){
+      var res=await fetch('/api/news?query='+encodeURIComponent(queries[i].q));
+      if(!res.ok)continue;
+      var xml=await res.text();
+      var parser=new DOMParser();
+      var doc=parser.parseFromString(xml,'text/xml');
+      var items=doc.querySelectorAll('item');
+      for(var j=0;j<Math.min(2,items.length);j++){
+        var title=items[j].querySelector('title');
+        var link=items[j].querySelector('link');
+        var pubDate=items[j].querySelector('pubDate');
+        if(title&&link){
+          allNews.push({tag:queries[i].tag,title:title.textContent,link:link.textContent,date:pubDate?new Date(pubDate.textContent).toISOString().slice(0,10):''});
+        }
+      }
+    }
+    if(allNews.length>0){
+      newsWrap.innerHTML='';
+      allNews.sort(function(a,b){return b.date.localeCompare(a.date);}).slice(0,10).forEach(function(n){
+        newsWrap.innerHTML+='<a href="'+n.link+'" target="_blank" class="news-item"><span class="news-tag">'+n.tag+'</span><div class="news-title">'+n.title+' →</div><div class="news-date">'+n.date+'</div></a>';
+      });
+    }
+  }catch(e){/* fallback: 기존 하드코딩 뉴스 유지 */}
+})();
+</script>
+</body>
+</html>

@@ -79,17 +79,25 @@ nav{display:flex;align-items:center;justify-content:center;padding:0 5%;height:7
 <script>
 var supabase = null;
 
-// 서버에서 Supabase 설정 로드 후 초기화
-(async function(){
+// Supabase SDK 로드 대기 후 초기화
+async function initSupabase(){
+  // SDK 로드 대기 (최대 5초)
+  for(var i=0;i<50;i++){
+    if(typeof window.supabase!=='undefined' && window.supabase.createClient) break;
+    await new Promise(function(r){setTimeout(r,100);});
+  }
+  if(typeof window.supabase==='undefined'){console.log('Supabase SDK not loaded');return;}
   try {
     var res = await fetch('/api/supabase-config');
     var cfg = await res.json();
-    if (cfg.url && cfg.anonKey && typeof window.supabase !== 'undefined') {
+    if (cfg.url && cfg.anonKey) {
       supabase = window.supabase.createClient(cfg.url, cfg.anonKey);
+      console.log('Supabase connected');
       checkUser();
     }
-  } catch(e) { console.log('Supabase config not available'); }
-})();
+  } catch(e) { console.log('Supabase config error:', e); }
+}
+initSupabase();
 
 async function checkUser() {
   if (!supabase) return;

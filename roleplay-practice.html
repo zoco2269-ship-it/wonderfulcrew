@@ -548,7 +548,7 @@ async function processAnswer(){
 
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:80,
+      model:'claude-haiku-4-5-20251001',max_tokens:80,
       system:'You are a passenger on an airplane having a conversation with a cabin crew member. The situation is: "'+scenario+'"\n\nYou MUST follow these rules:\n\n1. ALWAYS respond to exactly what the crew member said. Read their message carefully.\n2. If they ASKED you a question like "Which would you prefer?" or "Would you like X or Y?" — you MUST ANSWER the question. Say something like "I think I\'d prefer the seat change" or "Yes, earplugs would be great."\n3. If they offered solutions, react to the specific solutions they mentioned.\n4. Keep your response to 1-2 sentences.\n5. Be a realistic passenger — not too angry, not too easy.\n6. Speak natural English.\n\nYou are having a REAL conversation. The crew member is talking TO YOU. Respond TO THEM.',
       messages:chatHistory
     })});
@@ -586,7 +586,7 @@ async function generateFeedback(scenario){
   try{
     var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Crew':'Passenger')+': '+m.content;}).join('\n');
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:500,
+      model:'claude-haiku-4-5-20251001',max_tokens:500,
       system:'You are a cabin crew interview coach. Evaluate the following roleplay conversation. The scenario was: "'+scenario+'"\n\nIMPORTANT SCORING GUIDELINES:\n- The student\'s answers come from SPEECH RECOGNITION, so ignore grammar mistakes, broken sentences, capitalization issues. Focus on the CONTENT and INTENT.\n- If the student apologized, offered solutions, showed empathy, or asked good questions → that deserves 70+ points\n- If the student covered most key points (apology + solution + alternative + service recovery) → 80+ points\n- Only give below 50 if the student said almost nothing useful\n- Be ENCOURAGING. These are students practicing. Highlight what they did RIGHT.\n\nProvide feedback in EXACTLY this format:\n\nOverall Score: X/100\n\nStrengths:\n- (2-3 bullet points about what they did well)\n\nAreas to Improve:\n- (1-2 gentle suggestions)\n\n---SUGGESTED---\n(Write a short ideal response for this scenario. 3-4 sentences. This helps the student learn.)\n\nWrite in English. Keep it concise and encouraging.',
       messages:[{role:'user',content:'Here is the full roleplay conversation:\n\n'+convoSummary+'\n\nPlease give feedback.'}]
     })});

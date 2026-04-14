@@ -119,48 +119,48 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </div>
   <div class="board-card" id="bc-talk" onclick="openPanel('talk')">
     <div class="board-icon">💬</div>
-    <div class="board-title">이야기 나눠요</div>
-    <div class="board-desc">고민, 질문, 자유 토크</div>
+    <div class="board-title">Free Discussion</div>
+    <div class="board-desc">Questions, concerns, free talk</div>
     <div class="board-count" id="cnt-talk">0</div>
   </div>
   <div class="board-card" id="bc-review" onclick="openPanel('review')">
     <div class="board-icon">📝</div>
     <div class="board-title">Interview Reviews</div>
-    <div class="board-desc">Airline별 면접 질문 & 경험 공유</div>
+    <div class="board-desc">Share interview questions & experiences by airline</div>
     <div class="board-count" id="cnt-review">0</div>
   </div>
   <div class="board-card" id="bc-pass" onclick="openPanel('pass')">
     <div class="board-icon">🏆</div>
     <div class="board-title">Success Stories</div>
-    <div class="board-desc">합격 인증 회원만 작성 가능</div>
+    <div class="board-desc">Verified members only</div>
     <div class="board-count" id="cnt-pass">0</div>
   </div>
 </div>
 
 <!-- ===== 스터디 패널 ===== -->
 <div class="panel" id="panel-study">
-  <div class="panel-header"><h2>📚 Find Study Partners</h2><button class="write-btn" onclick="openForm('study')">스터디 올리기</button></div>
+  <div class="panel-header"><h2>📚 Find Study Partners</h2><button class="write-btn" onclick="openForm('study')">Create Study Group</button></div>
   <div id="gps-bar" style="display:none;margin-bottom:16px;padding:12px 16px;background:#fff;border:1px solid var(--gold-pale);border-left:3px solid var(--gold);font-size:0.84rem;color:var(--text-mid);display:flex;align-items:center;gap:8px;">
     <span id="gps-loc">📍 Checking location...</span>
     <button onclick="sortByLocation()" style="padding:4px 12px;background:var(--navy);color:#fff;border:none;border-radius:12px;font-size:0.76rem;cursor:pointer;">Nearby First</button>
   </div>
   <button onclick="enableGPS()" style="margin-bottom:16px;padding:8px 18px;background:#fff;border:1px solid var(--gold-pale);border-radius:20px;font-size:0.82rem;color:var(--text-mid);cursor:pointer;font-family:inherit;">📍 Show Nearby Study Groups</button>
   <div id="list-study"></div>
-  <div class="empty" id="empty-study">아직 Study Groups글이 없어요. 첫 글을 올려보세요!</div>
+  <div class="empty" id="empty-study">No study groups yet. Be the first to post!</div>
 </div>
 
 <!-- ===== 이야기 패널 ===== -->
 <div class="panel" id="panel-talk">
-  <div class="panel-header"><h2>💬 이야기 나눠요</h2><button class="write-btn" onclick="openForm('talk')">Write</button></div>
+  <div class="panel-header"><h2>💬 Free Discussion</h2><button class="write-btn" onclick="openForm('talk')">Write</button></div>
   <div id="list-talk"></div>
-  <div class="empty" id="empty-talk">아직 글이 없어요. 첫 이야기를 나눠보세요!</div>
+  <div class="empty" id="empty-talk">No posts yet. Start the first conversation!</div>
 </div>
 
 <!-- ===== Interview Reviews 패널 ===== -->
 <div class="panel" id="panel-review">
   <div class="panel-header"><h2>📝 Interview Reviews</h2><button class="write-btn" onclick="openForm('review')">후기 작성</button></div>
   <div id="list-review"></div>
-  <div class="empty" id="empty-review">아직 Interview Reviews가 없어요. 경험을 공유해주세요!</div>
+  <div class="empty" id="empty-review">No interview reviews yet. 경험을 공유해주세요!</div>
 </div>
 
 <!-- ===== Success Stories 패널 ===== -->
@@ -168,7 +168,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="panel-header"><h2>🏆 Success Stories</h2><button class="write-btn" onclick="alert('Available after verification. 관리자에게 문의해주세요.')">Success Stories 작성 (인증 필요)</button></div>
   <div class="reward-box"><b>Success Stories 보상 안내</b><br>텍스트 후기 작성 → 스타벅스 기프티콘 지급<br>얼굴 공 items 후기 영상 제출 → 수강료 50% 환급</div>
   <div id="list-pass"></div>
-  <div class="empty" id="empty-pass">아직 Success Stories가 없어요.</div>
+  <div class="empty" id="empty-pass">No success stories yet.</div>
 </div>
 
 </div>
@@ -178,7 +178,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <div class="form-overlay" id="form-overlay" onclick="if(event.target===this)closeForm();">
   <!-- 스터디 폼 -->
   <div class="form-box" id="form-study" style="display:none;">
-    <h3>📚 스터디 올리기</h3>
+    <h3>📚 Create Study Group</h3>
     <label>Airline</label>
     <div class="chip-group" id="chips-airline">
       <div class="chip" onclick="selChip(this)">에미레이트</div><div class="chip" onclick="selChip(this)">카타르</div><div class="chip" onclick="selChip(this)">에티하드</div><div class="chip" onclick="selChip(this)">싱가포르항공</div><div class="chip" onclick="selChip(this)">캐세이퍼시픽</div><div class="chip" onclick="selChip(this)">핀에어</div><div class="chip" onclick="selChip(this)">KLM</div><div class="chip" onclick="selChip(this)">대한항공</div><div class="chip" onclick="selChip(this)">아시아나</div><div class="chip" onclick="selChip(this)">기타</div>

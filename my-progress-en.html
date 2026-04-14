@@ -118,9 +118,9 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="card">
     <h3>Target Airline</h3>
     <select id="target-airline" onchange="localStorage.setItem('wc_target',this.value);updateTarget();" style="width:100%;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;margin-bottom:10px;">
-      <option value="">Target Airline 선택</option>
-      <option value="Emirates">Emirates</option><option value="Qatar">Qatar</option><option value="싱가포르">Singapore</option><option value="캐세이">Cathay Pacific</option>
-      <option value="대한항공">Korean Air</option><option value="아시아나">Asiana</option><option value="제주항공">Jeju Air</option><option value="진에어">Jin Air</option>
+      <option value="">Select Target Airline</option>
+      <option value="Emirates">Emirates</option><option value="Qatar">Qatar</option><option value="Singapore">Singapore</option><option value="캐세이">Cathay Pacific</option>
+      <option value="Korean Air">Korean Air</option><option value="Asiana">Asiana</option><option value="Jeju Air">Jeju Air</option><option value="Jin Air">Jin Air</option>
     </select>
     <div id="target-text" style="font-size:0.84rem;color:var(--text-mid);margin-bottom:6px;">Target Airline를 선택해주세요</div>
     <div class="progress-bar"><div class="fill" id="target-fill" style="width:0%;"></div></div>
@@ -133,12 +133,12 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <div class="card">
   <h3>Earned Badges</h3>
   <div class="badge-row">
-    <div class="badge earned">🔥 3일 Streak</div>
+    <div class="badge earned">🔥 3-Day Streak</div>
     <div class="badge earned">📝 First Shadowing</div>
     <div class="badge earned">🎙️ First Roleplay</div>
-    <div class="badge">🏆 7일 Streak</div>
-    <div class="badge">⭐ 10문제 Complete</div>
-    <div class="badge">💎 30일 Streak</div>
+    <div class="badge">🏆 7-Day Streak</div>
+    <div class="badge">⭐ 10 Questions Done</div>
+    <div class="badge">💎 30-Day Streak</div>
     <div class="badge">🎯 Final Interview Pass</div>
     <div class="badge">👑 올 커리큘럼 ���료</div>
   </div>
@@ -275,7 +275,7 @@ updateTarget();
 // ��더풀크루 한마디 (랜덤)
 var comments=[
   '<b>지난주보다 유창���이 15% 올랐어요!</b> 계속 이 페이스로 가세요.',
-  '<b>3일 Streak 중!</b> 꾸준함이 합격의 비밀입니다.',
+  '<b>3-Day Streak 중!</b> 꾸준함이 합격의 비밀입니다.',
   '<b>Roleplay 점수가 올라가고 있어요.</b> Service Recovery를 좀 더 연습해볼까요?',
   '<b>Shadowing을 매일 하고 계시네요!</b> 발음이 확실히 좋아지고 있어요.',
   '<b>Target Airline까지 2단계 남았어요.</b> 조금만 더 힘내세요!',

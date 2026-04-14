@@ -105,7 +105,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <h1>One step at a time —<br><em>Consistency is the Secret</em></h1>
   <div id="today-date" style="margin-top:18px;color:rgba(255,255,255,0.72);font-size:0.95rem;"></div>
   <div class="streak-row">
-    <div class="streak-item"><div class="n" id="streak-count">0</div><div class="l">Streak 출석일</div></div>
+    <div class="streak-item"><div class="n" id="streak-count">0</div><div class="l">Day Streak</div></div>
     <div class="streak-item"><div class="n" id="total-count">0</div><div class="l">Total Days</div></div>
   </div>
 </section>
@@ -142,7 +142,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   if(savedLevel)document.getElementById('level-choice').value=savedLevel;
   </script>
   <div class="q-wrap" id="q-wrap"></div>
-  <div class="done-banner" id="done-banner">오늘의 영어 연습 Complete! Streak 출석이 기록되었습니다.</div>
+  <div class="done-banner" id="done-banner">Today's English practice complete! Streak recorded.</div>
   <div style="max-width:860px;margin:30px auto 0;text-align:center;">
     <button id="more-practice-btn" class="q-btn feedback" style="display:none;padding:14px 32px;font-size:0.9rem;" onclick="addMoreQuestions()">More Practice</button>
     <div id="token-info" style="display:none;margin-top:10px;font-size:0.8rem;color:var(--text-muted);"></div>
@@ -151,7 +151,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <section id="shadow">
   <div class="sec-label">In-flight Announcement</div>
-  <h2 class="sec-title">기내방송 <em>쉐도잉</em></h2>
+  <h2 class="sec-title">In-flight Announcement <em>Shadowing</em></h2>
   <div class="gold-line"></div>
   <div class="shadow-wrap" id="shadow-wrap"></div>
   <div style="max-width:860px;margin:24px auto 0;text-align:center;">
@@ -241,8 +241,8 @@ function markFirstUsed(){
 function renderTokenInfo(){
   var t=loadTokens();
   var el=document.getElementById('token-info');
-  if(t.firstFree)el.textContent='첫 이용 무료';
-  else el.textContent='남은 토큰: '+t.tokens+'개';
+  if(t.firstFree)el.textContent='Free trial';
+  else el.textContent='Free trial: '+getFreeTrialLeft()+' left';
   el.style.display='block';
 }
 
@@ -263,7 +263,7 @@ function buildCards(questions,startIdx){
     '<button class="q-btn feedback" data-act="listen-q" style="margin-bottom:16px;">Listen to Question</button>'+
     // ② Record Answer
     '<div class="q-voice-area">'+
-      '<button class="q-record-btn" data-state="idle">Record Answer 시작</button>'+
+      '<button class="q-record-btn" data-state="idle">Start Recording</button>'+
       '<div class="q-transcript" id="transcript-'+i+'"></div>'+
     '</div>'+
     // ③ 제출 (피드백 + 모범답변 1회 호출)
@@ -275,11 +275,11 @@ function buildCards(questions,startIdx){
     // ④⑤ 모범답변 + 쉐도잉 (피드백 확인 후)
     '<div id="step45-'+i+'" style="display:none;">'+
       '<div class="q-btn-row">'+
-        '<button class="q-btn sample" data-act="show-sample">Model Answer 보기</button>'+
+        '<button class="q-btn sample" data-act="show-sample">View Model Answer</button>'+
       '</div>'+
     '</div>'+
     '<div class="q-btn-row" id="shadow-btns-'+i+'" style="display:none;">'+
-      '<button class="q-btn feedback" data-act="tts-sample">예시 Listen</button>'+
+      '<button class="q-btn feedback" data-act="tts-sample">Listen to Example</button>'+
       '<button class="q-btn sample" data-act="shadow-rec">Repeat After</button>'+
     '</div>'+
     '<div class="shadow-result" id="shadow-result-'+i+'"></div>'+
@@ -383,7 +383,7 @@ function buildCards(questions,startIdx){
     submitBtn.disabled=false;submitBtn.textContent='Submit Answer';
   });
 
-  // ④ Model Answer 보기 (캐시에서 표시   추가 API 호출 없음)
+  // ④ View Model Answer (캐시에서 표시   추가 API 호출 없음)
   showSampleBtn.addEventListener('click',function(){
     if(!cachedSampleHtml){return;}
     sampleArea.style.display='block';
@@ -403,7 +403,7 @@ function buildCards(questions,startIdx){
     showSampleBtn.style.display='none';
   });
 
-  // ⑤ 예시 Listen TTS
+  // ⑤ Listen to Example TTS
   card.querySelector('[data-act="tts-sample"]').addEventListener('click',function(){
     if(!sampleText||!('speechSynthesis' in window))return;
     var u=new SpeechSynthesisUtterance(sampleText);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.82;u.pitch=1.1;

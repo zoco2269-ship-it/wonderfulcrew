@@ -472,13 +472,17 @@ function speakQuestion(text,lang){
       selectedVoice=match||us[isMale?0:Math.min(1,us.length-1)];
     }
   } else if(lang==='fr-FR'){
-    // French accent: fr-FR 음성으로 영어 텍스트 읽기 → 프랑스 악센트
     var fr=voices.filter(function(v){return v.lang==='fr-FR'||v.lang.startsWith('fr');});
-    if(fr.length>0) selectedVoice=fr[isMale?0:Math.min(1,fr.length-1)];
+    if(fr.length>0){
+      var fmatch=fr.find(function(v){return isMale?!/female|monica|paulina|lucia/i.test(v.name):/female|monica|paulina|lucia|amelie/i.test(v.name);});
+      selectedVoice=fmatch||fr[0];
+    }
   } else if(lang==='es-ES'){
-    // Spanish accent: es-ES 음성으로 영어 텍스트 읽기 → 스페인 악센트
-    var es=voices.filter(function(v){return v.lang==='es-ES'||v.lang.startsWith('es');});
-    if(es.length>0) selectedVoice=es[isMale?0:Math.min(1,es.length-1)];
+    var es=voices.filter(function(v){return v.lang.startsWith('es');});
+    if(es.length>0){
+      var ematch=es.find(function(v){return isMale?!/female|monica|paulina|lucia/i.test(v.name):/female|monica|paulina|lucia/i.test(v.name);});
+      selectedVoice=ematch||es[0];
+    }
   }
 
   if(selectedVoice) u.voice=selectedVoice;

@@ -96,7 +96,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
     <div class="nav-dropdown"><a href="index.html#expertise">준비 과정</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest.html">✈️ 항공사 승무원</a><a href="hotel.html">🏨 호텔·럭셔리</a><a href="walking-analysis.html">🚶 워킹 & 자세 분석</a><a href="cruise.html">🚢 크루즈</a><a href="coach-feedback.html">💬 1:1 코치 피드백</a><a href="ai-coach.html">✨ AI 코치</a></div></div>
     <div class="nav-dropdown"><a href="index.html#resources">학습 자료</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide.html">📋 면접 완벽 가이드</a><a href="english-interview.html">💬 한국어 & 영어 면접</a><a href="grooming-guide.html">👗 이미지 메이킹 & 그루밍</a><a href="resume-guide.html">📄 자기소개서 & CV</a><a href="customer-service.html">🎯 고객 응대 스킬</a></div></div>
     <a href="daily-english.html">영어쉐도잉</a>
-    <a href="jobs.html">채용정보</a>
+    <a href="jobs.html">항공사 채용</a>
     <a href="community.html">커뮤니티</a>
     <a href="token-rewards.html">토큰받기</a>
   </div>
@@ -254,8 +254,7 @@ function showCurriculum(a){
         '<div class="step-title">'+s.title+'</div>'+
         '<div class="step-desc">'+s.desc+'</div>'+
       '</div>'+
-      '<div class="step-badge ready">시작하기</div>'+'<div class="step-badge" style="background:var(--gold-pale);color:var(--gold);margin-top:4px;cursor:pointer;" onclick="event.preventDefault();alert(\'강의 영상 준비 중\')">강의영상</div>'+
-      '<div class="step-arrow">→</div>';
+      '<div class="step-badge ready">시작하기</div>'+      '<div class="step-arrow">→</div>';
     sg.appendChild(el);
   });
 }
@@ -328,8 +327,7 @@ if(_urlAirline && savedAirline){
           '<div class="step-desc">'+s.sub+'</div>'+
           listHtml+
         '</div>'+
-        '<div class="step-badge ready" style="margin-top:4px;">시작하기</div>'+'<div class="step-badge" style="background:var(--gold-pale);color:var(--gold);margin-top:4px;cursor:pointer;" onclick="event.preventDefault();alert(\'강의 영상 준비 중\')">강의영상</div>'+
-        '<div class="step-arrow" style="margin-top:4px;">→</div>';
+        '<div class="step-badge ready" style="margin-top:4px;">시작하기</div>'+        '<div class="step-arrow" style="margin-top:4px;">→</div>';
       sg.appendChild(el);
     });
   }

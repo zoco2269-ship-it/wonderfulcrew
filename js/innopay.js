@@ -38,7 +38,8 @@ async function payWithInnopay(plan, buyerInfo) {
       return;
     }
 
-    console.log('innopay.goPay calling with:', data);
+    // 팝업 높이 강제 오버라이드
+    try{ih=800;}catch(e){}
     innopay.goPay({
       PayMethod: 'CARD',
       MID: data.mid,

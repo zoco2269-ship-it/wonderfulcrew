@@ -416,14 +416,8 @@ function startInterview(){
   showQuestion();
 }
 
-var timeExpired=false;
-var roleplayTimer=null;
-
 function showQuestion(){
-  chatHistory=[];endingRoleplay=false;timeExpired=false;
-  if(roleplayTimer)clearTimeout(roleplayTimer);
-  // 3분 후 플래그 세팅 (즉시 끊지 않음, 현재 대화 마무리 후 종료)
-  roleplayTimer=setTimeout(function(){timeExpired=true;},180000);
+  chatHistory=[];endingRoleplay=false;
   var q=questions[qIdx];
   document.getElementById('q-idx').textContent=qIdx+1;
   document.getElementById('q-text').textContent=q.q;
@@ -492,10 +486,13 @@ function startListening(){
     document.getElementById('transcript').textContent=fullText+interim;
   };
   recognition.onend=function(){
-    if(endingRoleplay) return; // 종료 중이면 무시
+    if(endingRoleplay) return;
     if(fullText.trim()){
       document.getElementById('transcript').textContent=fullText.trim();
       processAnswer();
+    } else {
+      // 아무 말 안 했으면 다시 듣기 시작
+      try{recognition.start();}catch(e){}
     }
   };
   recognition.start();
@@ -613,13 +610,40 @@ async function processAnswer(){
 
   chatHistory.push({role:'user',content:ans});
 
-  // 녹화 중지
-  if(mediaRecorder&&mediaRecorder.state==='recording')try{mediaRecorder.stop();}catch(e){}
-
-  // 학생 답변 후 바로 피드백
+  var fb=document.getElementById('feedback');
   var q=questions[qIdx];
   var scenario=typeof q==='string'?q:q.q;
-  generateFeedback(scenario);
+
+  // 고객이 학생 답변에 반응
+  fb.innerHTML='<span style="color:var(--gold);">고객이 반응하고 있어요...</span>';
+  fb.classList.add('active');
+
+  try{
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:80,
+      system:'You are a passenger on an airplane. Situation: "'+scenario+'"\n\nRules:\n- Reply to what the crew member ACTUALLY said\n- If they asked a question, ANSWER it\n- If they offered a solution, react to it\n- 1-2 sentences only\n- Natural English',
+      messages:chatHistory
+    })});
+    var data=await res.json();
+    var aiText=(data&&data.content&&data.content[0]&&data.content[0].text)||'I see.';
+    aiText=aiText.replace(/\*\*/g,'').trim();
+
+    chatHistory.push({role:'assistant',content:aiText});
+    fb.innerHTML='<b style="color:var(--gold);">Passenger:</b> '+aiText;
+
+    var accent=document.getElementById('s-accent').value;
+    speakQuestion(aiText,accent);
+
+    // TTS 끝나면 다시 학생 음성 인식
+    var checkTTS=setInterval(function(){
+      if(!window.speechSynthesis.speaking){
+        clearInterval(checkTTS);
+        startListening();
+      }
+    },300);
+  }catch(e){
+    fb.innerHTML='<span style="color:#E74C3C;">오류 발생.</span>';
+  }
 }
 
 async function generateFeedback(scenario){
@@ -653,7 +677,6 @@ async function generateFeedback(scenario){
 }
 
 function nextQuestion(){
-  if(roleplayTimer)clearTimeout(roleplayTimer);
   if(recognition)try{recognition.stop();}catch(e){}
   if('speechSynthesis' in window)window.speechSynthesis.cancel();
   mediaRecorder=null;

@@ -304,8 +304,14 @@ function startInterview(){
   showQuestion();
 }
 
+var timeExpired=false;
+var roleplayTimer=null;
+
 function showQuestion(){
-  chatHistory=[];endingRoleplay=false;
+  chatHistory=[];endingRoleplay=false;timeExpired=false;
+  if(roleplayTimer)clearTimeout(roleplayTimer);
+  // 3분 후 플래그 세팅 (즉시 끊지 않음, 현재 대화 마무리 후 종료)
+  roleplayTimer=setTimeout(function(){timeExpired=true;},180000);
   var q=questions[qIdx];
   document.getElementById('q-idx').textContent=qIdx+1;
   document.getElementById('q-text').textContent=q.q;
@@ -510,11 +516,15 @@ async function processAnswer(){
     var accent=document.getElementById('s-accent').value;
     speakQuestion(aiText,accent);
 
-    // TTS 끝나면 자동으로 학생 음성 인식 — 학생이 "답변 완료" 누르면 피드백
+    // TTS 끝나면 → 시간 초과면 피드백, 아니면 대화 계속
     var checkTTS2=setInterval(function(){
       if(!window.speechSynthesis.speaking){
         clearInterval(checkTTS2);
-        startListening();
+        if(timeExpired){
+          generateFeedback(scenario);
+        } else {
+          startListening();
+        }
       }
     },300);
   }catch(e){
@@ -553,7 +563,7 @@ async function generateFeedback(scenario){
 }
 
 function nextQuestion(){
-  // 녹화/음성 정리
+  if(roleplayTimer)clearTimeout(roleplayTimer);
   if(recognition)try{recognition.stop();}catch(e){}
   if('speechSynthesis' in window)window.speechSynthesis.cancel();
   mediaRecorder=null;

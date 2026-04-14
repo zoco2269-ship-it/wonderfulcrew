@@ -80,6 +80,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/free-trial.js"></script>
 </head>
 <body>
 
@@ -92,7 +93,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <a href="daily-english.html">영어쉐도잉</a>
     <a href="jobs.html">항공사 채용</a>
     <a href="community.html">커뮤니티</a>
-    <a href="token-rewards.html">토큰받기</a>
+    <a href="token-rewards.html">요금제</a>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
@@ -219,31 +220,14 @@ function pickN(n){
   return out;
 }
 
-// ===== 토큰 시스템 =====
-function loadTokens(){
-  var d=JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');
-  return {firstFree:d.firstFree!==false,tokens:d.tokens||0};
-}
-function saveTokens(t){localStorage.setItem('wc_eng_tokens',JSON.stringify(t));}
-function useToken(){
-  // 테스트 모드   토큰 체크 비활성화 (모든 기능 활성화)
-  return true;
-  /*
-  var t=loadTokens();
-  if(t.firstFree){return true;}
-  if(t.tokens>0){t.tokens--;saveTokens(t);return true;}
-  return false;
-  */
-}
-function markFirstUsed(){
-  var t=loadTokens();
-  if(t.firstFree){t.firstFree=false;saveTokens(t);}
-}
+// ===== 무료체험 시스템 (free-trial.js 사용) =====
+function useToken(){ return useFreeTrialOrCheck(); }
+function markFirstUsed(){}
 function renderTokenInfo(){
-  var t=loadTokens();
   var el=document.getElementById('token-info');
-  if(t.firstFree)el.textContent='첫 이용 무료';
-  else el.textContent='남은 토큰: '+t.tokens+'개';
+  if(!el)return;
+  if(isSubscribed()) el.textContent='구독 중';
+  else { var left=getFreeTrialLeft(); el.textContent='무료체험 '+left+'회 남음'; }
   el.style.display='block';
 }
 

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>한국어 & 영어 면접 핵심 표현   WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="js/free-trial.js"></script>
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
 *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
@@ -49,7 +50,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 </style>
 </head>
 <body>
-<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a><div class="nav-links"><a href="index.html#about">소개</a><div class="nav-dropdown"><a href="index.html#expertise">준비 과정</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest.html">✈️ 항공사 승무원</a><a href="hotel.html">🏨 호텔·럭셔리</a><a href="walking-analysis.html">🚶 워킹 & 자세 분석</a><a href="cruise.html">🚢 크루즈</a><a href="coach-feedback.html">💬 1:1 코치 피드백</a><a href="ai-coach.html">✨ AI 코치</a></div></div><div class="nav-dropdown"><a href="index.html#resources">학습 자료</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide.html">📋 면접 완벽 가이드</a><a href="english-interview.html">💬 한국어 & 영어 면접</a><a href="grooming-guide.html">👗 이미지 메이킹 & 그루밍</a><a href="resume-guide.html">📄 자기소개서 & CV</a><a href="customer-service.html">🎯 고객 응대 스킬</a></div></div><a href="daily-english.html">영어쉐도잉</a><a href="jobs.html">항공사 채용</a><a href="community.html">커뮤니티</a><a href="token-rewards.html">토큰받기</a></div><div style="display:flex;align-items:center;gap:12px;"><a href="leveltest.html" class="nav-cta">면접 연습 시작</a><a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;text-decoration:none;">로그인</a></div></nav>
+<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a><div class="nav-links"><a href="index.html#about">소개</a><div class="nav-dropdown"><a href="index.html#expertise">준비 과정</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest.html">✈️ 항공사 승무원</a><a href="hotel.html">🏨 호텔·럭셔리</a><a href="walking-analysis.html">🚶 워킹 & 자세 분석</a><a href="cruise.html">🚢 크루즈</a><a href="coach-feedback.html">💬 1:1 코치 피드백</a><a href="ai-coach.html">✨ AI 코치</a></div></div><div class="nav-dropdown"><a href="index.html#resources">학습 자료</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide.html">📋 면접 완벽 가이드</a><a href="english-interview.html">💬 한국어 & 영어 면접</a><a href="grooming-guide.html">👗 이미지 메이킹 & 그루밍</a><a href="resume-guide.html">📄 자기소개서 & CV</a><a href="customer-service.html">🎯 고객 응대 스킬</a></div></div><a href="daily-english.html">영어쉐도잉</a><a href="jobs.html">항공사 채용</a><a href="community.html">커뮤니티</a><a href="token-rewards.html">요금제</a></div><div style="display:flex;align-items:center;gap:12px;"><a href="leveltest.html" class="nav-cta">면접 연습 시작</a><a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;text-decoration:none;">로그인</a></div></nav>
 
 <div class="hero">
   <div class="label">Interview Essentials</div>
@@ -223,9 +224,8 @@ var VOCAB={
 // Render Korean
 var koC=document.getElementById('ko-container');
 KO.forEach(function(item,idx){
-  var locked=idx>0;
   var card=document.createElement('div');card.className='qa-card';
-  card.innerHTML='<div class="qa-header" onclick="toggleQA(this,'+idx+',\'ko\')"><div class="qa-num">'+(idx+1)+'</div><div class="qa-q">'+item.q+'</div>'+(locked?'<div class="qa-lock">🔒</div>':'')+'<div class="qa-arrow">→</div></div>'+
+  card.innerHTML='<div class="qa-header" onclick="toggleQA(this,'+idx+',\'ko\')"><div class="qa-num">'+(idx+1)+'</div><div class="qa-q">'+item.q+'</div><div class="qa-arrow">→</div></div>'+
     '<div class="qa-body"><div class="key">'+item.key+'</div><div class="ans">'+item.ans+'</div><div class="tip"><b>코칭 TIP:</b> '+item.tip+'</div></div>';
   koC.appendChild(card);
 });
@@ -233,10 +233,9 @@ KO.forEach(function(item,idx){
 // Render English
 var enC=document.getElementById('en-container');
 EN.forEach(function(item,idx){
-  var locked=idx>0;
   var exprHtml=item.expressions?'<div style="margin-top:10px;">'+item.expressions.map(function(e){return '<span class="expr">'+e+'</span>';}).join(' ')+'</div>':'';
   var card=document.createElement('div');card.className='qa-card';
-  card.innerHTML='<div class="qa-header" onclick="toggleQA(this,'+idx+',\'en\')"><div class="qa-num">'+(idx+1)+'</div><div class="qa-q">'+item.q+'</div>'+(locked?'<div class="qa-lock">🔒</div>':'')+'<div class="qa-arrow">→</div></div>'+
+  card.innerHTML='<div class="qa-header" onclick="toggleQA(this,'+idx+',\'en\')"><div class="qa-num">'+(idx+1)+'</div><div class="qa-q">'+item.q+'</div><div class="qa-arrow">→</div></div>'+
     '<div class="qa-body"><div class="key">'+item.key+'</div><div class="ans">'+item.ans+exprHtml+'</div><div class="ko">'+item.ko+'</div></div>';
   enC.appendChild(card);
 });
@@ -252,33 +251,13 @@ function rv(id,data){
 }
 rv('v-safety',VOCAB.safety);rv('v-service',VOCAB.service);rv('v-announce',VOCAB.announce);rv('v-crew',VOCAB.crew);rv('v-aircraft',VOCAB.aircraft);
 
-// 토큰 1개당 3개 질문 열기
-var unlocked={};
-function applyLockUI(id){
-  unlocked[id]=2;
-  var cards=document.getElementById(id).querySelectorAll('.qa-card');
-  if(cards.length<=2)return;
-  for(var i=2;i<cards.length;i++){cards[i].style.filter='blur(4px)';cards[i].style.pointerEvents='none';}
-  var b=document.createElement('div');
-  b.id='lock-'+id;
-  b.style.cssText='text-align:center;padding:28px;margin:16px 0;background:linear-gradient(135deg,rgba(232,201,106,0.15),rgba(201,168,76,0.08));border:2px solid #C9A84C;border-radius:8px;';
-  b.innerHTML='<div style="font-size:0.95rem;color:#1A2340;font-weight:600;margin-bottom:12px;">토큰 1개로 질문 3개를 열어볼 수 있습니다</div><button onclick="unlock3(\''+id+'\')" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">토큰 1개로 3개 열기</button>';
-  cards[2].parentElement.insertBefore(b,cards[2]);
-}
-function unlock3(id){
-  var cards=document.getElementById(id).querySelectorAll('.qa-card');
-  var start=unlocked[id];
-  var end=Math.min(start+3,cards.length);
-  for(var i=start;i<end;i++){cards[i].style.filter='none';cards[i].style.pointerEvents='auto';}
-  unlocked[id]=end;
-  if(end>=cards.length){var lock=document.getElementById('lock-'+id);if(lock)lock.remove();}
-  else{var lock=document.getElementById('lock-'+id);if(lock&&cards[end])cards[end].parentElement.insertBefore(lock,cards[end]);}
-}
-applyLockUI('ko-container');
-applyLockUI('en-container');
-
+// 무료체험 시스템 — 질문 클릭 시 체험 횟수 차감
 function toggleQA(header,idx,type){
   var card=header.parentElement;
+  if(!card.classList.contains('open')){
+    // 열려있지 않은 카드 열 때 무료체험 체크
+    if(!useFreeTrialOrCheck()) return;
+  }
   card.classList.toggle('open');
 }
 
@@ -305,7 +284,7 @@ function loadMoreKo(){
   // 잠금해제 배너
   var b=document.createElement('div');
   b.style.cssText='text-align:center;padding:20px;margin:16px 0;background:linear-gradient(135deg,rgba(232,201,106,0.15),rgba(201,168,76,0.08));border:2px solid #C9A84C;border-radius:8px;';
-  b.innerHTML='<button onclick="unlockExtra(this)" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">토큰 1개로 3개 열기</button>';
+  b.innerHTML='<button onclick="unlockExtra(this)" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">더 보기</button>';
   c.appendChild(b);
 }
 function loadMoreEn(){
@@ -320,7 +299,7 @@ function loadMoreEn(){
   });
   var b=document.createElement('div');
   b.style.cssText='text-align:center;padding:20px;margin:16px 0;background:linear-gradient(135deg,rgba(232,201,106,0.15),rgba(201,168,76,0.08));border:2px solid #C9A84C;border-radius:8px;';
-  b.innerHTML='<button onclick="unlockExtra(this)" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">토큰 1개로 3개 열기</button>';
+  b.innerHTML='<button onclick="unlockExtra(this)" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">더 보기</button>';
   c.appendChild(b);
 }
 function unlockExtra(btn){

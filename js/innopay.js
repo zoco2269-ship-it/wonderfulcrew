@@ -35,9 +35,9 @@ async function payWithInnopay(plan, buyerInfo) {
     }
 
     innopay.goPay({
-      PayMethod: 'CARD',           // 신용카드
-      MID: data.mid,               // 상점 ID
-      MerchantKey: '',             // 서버에서 서명 처리하므로 빈값
+      PayMethod: 'CARD',
+      MID: data.mid,
+      MerchantKey: data.merchantKey,
       GoodsName: data.goodsName,   // 상품명
       Amt: data.amount.toString(),  // 결제금액
       Moid: data.moid,             // 주문번호

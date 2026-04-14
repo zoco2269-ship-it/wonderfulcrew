@@ -36,6 +36,7 @@ module.exports = async function handler(req, res) {
 
     res.status(200).json({
       mid: MID,
+      merchantKey: API_KEY,
       moid: moid,
       goodsName: selected.name,
       amount: selected.amount,
@@ -45,7 +46,7 @@ module.exports = async function handler(req, res) {
       timestamp: timestamp,
       signature: signature,
       returnUrl: `${req.headers.origin || 'https://wonderfulcrew.vercel.app'}/api/innopay-confirm`,
-      closeUrl: `${req.headers.origin || 'https://wonderfulcrew.vercel.app'}/token-rewards.html`,
+      closeUrl: `${req.headers.origin || 'https://wonderfulcrew.vercel.app'}/plans.html`,
     });
   } catch (e) {
     res.status(500).json({ error: e.message });

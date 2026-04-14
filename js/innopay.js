@@ -34,6 +34,7 @@ async function payWithInnopay(plan, buyerInfo) {
       return;
     }
 
+    ih=850;
     innopay.goPay({
       PayMethod: 'CARD',
       MID: data.mid,

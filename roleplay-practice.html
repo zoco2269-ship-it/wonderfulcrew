@@ -416,8 +416,13 @@ function startInterview(){
   showQuestion();
 }
 
+var timeExpired=false;
+var roleplayTimer=null;
+
 function showQuestion(){
-  chatHistory=[];endingRoleplay=false;
+  chatHistory=[];endingRoleplay=false;timeExpired=false;
+  if(roleplayTimer)clearTimeout(roleplayTimer);
+  roleplayTimer=setTimeout(function(){timeExpired=true;},180000);
   var q=questions[qIdx];
   document.getElementById('q-idx').textContent=qIdx+1;
   document.getElementById('q-text').textContent=q.q;
@@ -634,11 +639,15 @@ async function processAnswer(){
     var accent=document.getElementById('s-accent').value;
     speakQuestion(aiText,accent);
 
-    // TTS 끝나면 다시 학생 음성 인식
+    // TTS 끝나면 → 3분 지났으면 피드백, 아니면 대화 계속
     var checkTTS=setInterval(function(){
       if(!window.speechSynthesis.speaking){
         clearInterval(checkTTS);
-        startListening();
+        if(timeExpired){
+          generateFeedback(scenario);
+        } else {
+          startListening();
+        }
       }
     },300);
   }catch(e){

@@ -186,7 +186,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
   <div class="controls">
     <button class="ctrl-btn danger" id="btn-stop" onclick="stopAnswer()" style="display:none;">⏹ 답변 완료</button>
-    <button class="ctrl-btn secondary" id="btn-model" onclick="showModel()" style="display:none;">모범 답변</button>
     <button class="ctrl-btn secondary" id="btn-next" onclick="nextQuestion()" style="display:none;">다음 질문 →</button>
   </div>
 </div>
@@ -312,7 +311,6 @@ function showQuestion(){
   document.getElementById('feedback').classList.remove('active');
   document.getElementById('feedback').innerHTML='';
   document.getElementById('btn-stop').style.display='none';
-  document.getElementById('btn-model').style.display='none';
   document.getElementById('btn-next').style.display='none';
   document.getElementById('waveform').classList.remove('active');
   fullText='';
@@ -484,24 +482,12 @@ async function processAnswer(){
     fb.innerHTML='<b style="color:var(--gold);">AI Feedback</b><br><br><div style="white-space:pre-line;">'+feedbackText+'</div>';
 
     // 모범 답변 + 다음 질문 버튼 표시
-    document.getElementById('btn-model').style.display='inline-flex';
     document.getElementById('btn-next').style.display='inline-flex';
     document.getElementById('rec-label').textContent='완료';
   }catch(e){
     fb.innerHTML='<span style="color:#E74C3C;">오류 발생. 다시 시도해주세요.</span>';
     document.getElementById('btn-next').style.display='inline-flex';
   }
-}
-
-function showModel(){
-  var q=questions[qIdx];
-  var idx=q.origIdx!==undefined?q.origIdx:SCENARIOS.indexOf(q.q);
-  var model=MODELS[idx]||"I sincerely apologize for the inconvenience. Let me see what I can do to help. I'll find the best solution for you right away, and as a small gesture, I'd like to offer you a complimentary drink.";
-  var fb=document.getElementById('feedback');
-  fb.innerHTML+=('<br><br><b style="color:var(--gold);">Model Answer:</b><br>'+model);
-  // TTS model answer
-  var accent=document.getElementById('s-accent').value;
-  speakQuestion(model,accent);
 }
 
 function nextQuestion(){

@@ -5,6 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>올인원 패키지   WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script>
+const _open = window.open;
+window.open = function(url, name, features) {
+  if (name === 'payWindow') {
+    features = features
+      .replace(/height=\d+/, 'height=850')
+      .replace(/scrollbars=no/, 'scrollbars=yes');
+  }
+  return _open.call(this, url, name, features);
+};
+</script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://pg.innopay.co.kr/ipay/js/innopay-2.0.js"></script>
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
 *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
@@ -96,7 +109,6 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://pg.innopay.co.kr/ipay/js/innopay-2.0.js"></script>
 <script src="js/innopay.js"></script>
 <script>
 function startCheckout(){

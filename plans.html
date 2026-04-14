@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>요금제   WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script>
+const _open = window.open;
+window.open = function(url, name, features) {
+  if (name === 'payWindow') {
+    features = features
+      .replace(/height=\d+/, 'height=850')
+      .replace(/scrollbars=no/, 'scrollbars=yes');
+  }
+  return _open.call(this, url, name, features);
+};
+</script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://pg.innopay.co.kr/ipay/js/innopay-2.0.js"></script>
 <script src="js/innopay.js"></script>

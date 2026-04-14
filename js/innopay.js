@@ -1,15 +1,17 @@
-// 이노페이 팝업 높이 오버라이드: window.open 가로채기
+// 이노페이 팝업: 높이 확대 + 스크롤 허용 + 리사이즈 허용
 (function(){
   var origOpen=window.open;
   window.open=function(url,name,features){
-    if(features&&features.indexOf('height=680')>-1){
-      features=features.replace('height=680','height=850');
+    if(name==='payWindow'||( features&&(features.indexOf('680px')>-1||features.indexOf('innopay')>-1))){
+      features=features.replace(/height=\d+px/,'height=900px');
+      features=features.replace('scrollbars=no','scrollbars=yes');
+      features=features.replace('resizable=no','resizable=yes');
     }
     return origOpen.call(window,url,name,features);
   };
 })();
-if(typeof ih!=='undefined') ih=850;
-window.addEventListener('load',function(){if(typeof ih!=='undefined') ih=850;});
+try{ih=900;}catch(e){}
+window.addEventListener('load',function(){try{ih=900;}catch(e){}});
 
 /**
  * WonderfulCrew 이노페이 결제 호출

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>피드백 남기기 WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}
+.hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:500px;margin:0 auto;line-height:1.8;}
+section{padding:60px 5%;}.wrap{max-width:600px;margin:0 auto;}
+.card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:28px;}
+.card label{display:block;font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:4px;margin-top:16px;}
+.card select,.card input,.card textarea{width:100%;padding:10px 12px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;}
+.card textarea{min-height:140px;resize:vertical;}
+.btn-gold{display:inline-flex;padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.9rem;font-weight:600;cursor:pointer;margin-top:20px;}
+.success{display:none;text-align:center;padding:40px;background:#fff;border:1px solid var(--gold-pale);}
+.success .icon{font-size:3rem;margin-bottom:16px;}
+.success h2{font-family:'DM Serif Display',serif;color:var(--navy);margin-bottom:8px;}
+.success p{color:var(--text-muted);font-size:0.88rem;}
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+</style>
+</head>
+<body>
+<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a></nav>
+
+<div class="hero">
+  <h1>피드백 <em>남기기</em></h1>
+  <p>원더풀크루를 더 좋게 만들어주세요. 모든 피드백을 소중히 읽겠습니다.</p>
+</div>
+
+<section><div class="wrap">
+<div class="card" id="form">
+  <label>닉네임</label>
+  <input type="text" id="fb-name" placeholder="닉네임 또는 이름">
+  <label>이메일 (선택)</label>
+  <input type="email" id="fb-email" placeholder="답변 받으실 이메일">
+  <label>카테고리</label>
+  <select id="fb-cat">
+    <option>기능 개선 요청</option>
+    <option>버그 신고</option>
+    <option>콘텐츠 제안</option>
+    <option>칭찬/감사</option>
+    <option>기타</option>
+  </select>
+  <label>피드백 내용</label>
+  <textarea id="fb-body" placeholder="자유롭게 작성해주세요."></textarea>
+  <button class="btn-gold" onclick="submitFB()">피드백 제출</button>
+</div>
+<div class="success" id="success">
+  <div class="icon">✓</div>
+  <h2>감사합니다!</h2>
+  <p>소중한 피드백이 제출되었습니다.<br>더 나은 원더풀크루를 만들겠습니다.</p>
+  <a href="index.html" style="display:inline-block;margin-top:20px;padding:10px 24px;background:var(--navy);color:#fff;border-radius:22px;font-size:0.84rem;font-weight:600;">홈으로</a>
+</div>
+</div></section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+<script>
+function submitFB(){
+  var name=document.getElementById('fb-name').value.trim()||'익명';
+  var email=document.getElementById('fb-email').value.trim();
+  var cat=document.getElementById('fb-cat').value;
+  var body=document.getElementById('fb-body').value.trim();
+  if(!body){alert('피드백 내용을 입력해주세요.');return;}
+  // localStorage에 저장 (관리자 페이지에서 확인)
+  var list=JSON.parse(localStorage.getItem('wc_feedback_list')||'[]');
+  list.unshift({name:name,email:email,cat:cat,body:body,date:new Date().toISOString().slice(0,10)});
+  localStorage.setItem('wc_feedback_list',JSON.stringify(list));
+  document.getElementById('form').style.display='none';
+  document.getElementById('success').style.display='block';
+}
+</script>
+</body>
+</html>

@@ -178,24 +178,19 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="gold-line"></div>
 
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;">
-    <div class="card" style="text-align:center;"><h3>토큰 5개</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">2만원</p><button class="btn-gold" style="width:100%;" onclick="alert('결제 기능 준비 중입니다.')">충전하기</button></div>
-    <div class="card" style="text-align:center;"><h3>토큰 10개</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">3.5만원</p><p style="font-size:0.78rem;color:var(--text-muted);">개당 3,500원</p><button class="btn-gold" style="width:100%;" onclick="alert('결제 기능 준비 중입니다.')">충전하기</button></div>
-    <div class="card" style="text-align:center;"><h3>토큰 30개</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">8만원</p><p style="font-size:0.78rem;color:var(--text-muted);">개당 2,667원 · 가장 인기</p><button class="btn-gold" style="width:100%;" onclick="alert('결제 기능 준비 중입니다.')">충전하기</button></div>
+    <div class="card" style="text-align:center;"><h3>무료 체험</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">0원</p><p style="font-size:0.82rem;color:var(--text-mid);">토큰 5개</p><p style="font-size:0.74rem;color:var(--text-muted);">가입 시 자동 지급</p></div>
+    <div class="card" style="text-align:center;border:2px solid var(--gold);"><h3>베이직</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">19.9만원<span style="font-size:0.7rem;color:var(--text-muted);">/월</span></p><p style="font-size:0.82rem;color:var(--text-mid);">토큰 50개 (유효 30일)</p><button class="btn-gold" style="width:100%;" onclick="startSubscription('basic')">구독하기</button></div>
+    <div class="card" style="text-align:center;border:2px solid var(--gold);position:relative;overflow:hidden;"><div style="position:absolute;top:8px;right:-28px;background:var(--gold);color:#fff;font-size:0.62rem;font-weight:800;padding:4px 32px;transform:rotate(45deg);">인기</div><h3>엘리트</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">29.9만원<span style="font-size:0.7rem;color:var(--text-muted);">/월</span></p><p style="font-size:0.82rem;color:var(--text-mid);">토큰 무제한 + AI 코치 무제한</p><button class="btn-gold" style="width:100%;" onclick="startSubscription('elite')">구독하기</button></div>
   </div>
 
-  <h3 style="font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);margin-bottom:18px;">월정액</h3>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;">
-    <div class="card" style="text-align:center;"><h3>월 무제한</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">50만원<span style="font-size:0.7rem;color:var(--text-muted);">/월</span></p><p style="font-size:0.74rem;color:var(--text-muted);">매월 자동 결제 · 언제든 해지 가능</p><button class="btn-gold" style="width:100%;" onclick="startSubscription('monthly')">정기 구독하기</button></div>
-    <div class="card" style="text-align:center;"><h3>3개월 무제한</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">130만원</p><p style="font-size:0.78rem;color:var(--text-muted);">월 43만원 · 14% 할인</p><p style="font-size:0.74rem;color:var(--text-muted);">3개월마다 자동 결제 · 언제든 해지 가능</p><button class="btn-gold" style="width:100%;" onclick="startSubscription('quarter')">정기 구독하기</button></div>
-    <div class="card" style="text-align:center;"><h3>6개월 무제한</h3><p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">230만원</p><p style="font-size:0.78rem;color:var(--text-muted);">월 38만원 · 24% 할인</p><p style="font-size:0.74rem;color:var(--text-muted);">6개월마다 자동 결제 · 언제든 해지 가능</p><button class="btn-gold" style="width:100%;" onclick="startSubscription('half')">정기 구독하기</button></div>
   </div>
 
   <div style="background:var(--navy);padding:36px;text-align:center;position:relative;overflow:hidden;">
     <div style="position:absolute;top:12px;right:-28px;background:var(--gold);color:#fff;font-size:0.65rem;font-weight:800;padding:5px 36px;transform:rotate(45deg);letter-spacing:0.1em;">BEST</div>
     <div style="font-size:2.4rem;margin-bottom:8px;">🏆</div>
-    <div style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--gold-light);margin-bottom:6px;">올인원 평생 패키지</div>
-    <div style="font-family:'DM Serif Display',serif;font-size:2.8rem;color:#fff;margin-bottom:8px;">250<span style="font-size:1rem;">만원</span></div>
-    <p style="font-size:0.88rem;color:rgba(255,255,255,0.7);margin-bottom:20px;">플랫폼 무제한 + 강의 + 라이브 + 1:1 코치 피드백 모두 포함</p>
+    <div style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--gold-light);margin-bottom:6px;">프리미엄 합격 완성 패키지</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:2.8rem;color:#fff;margin-bottom:8px;">250<span style="font-size:1rem;">만원</span><span style="font-size:0.8rem;color:rgba(255,255,255,0.5);"> (2년)</span></div>
+    <p style="font-size:0.84rem;color:rgba(255,255,255,0.7);margin-bottom:20px;line-height:1.7;">토큰 무제한 + AI 코치 + 사람 코치 1:1 피드백<br>라이브 직강 + 전 강의 영상 + 합격 비밀노트 + 프리미엄 단톡방</p>
     <a href="pricing.html" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.92rem;font-weight:700;text-decoration:none;">자세히 보기 →</a>
   </div>
 </div>
@@ -208,7 +203,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 function loadTokenData(){return JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');}
 var td=loadTokenData();
 // 초기 가입 토큰 10개 (이벤트)
-if(!td.initialized){td.tokens=10;td.initialized=true;td.firstFree=true;td.purchaseDate=new Date().toISOString();localStorage.setItem('wc_eng_tokens',JSON.stringify(td));}
+if(!td.initialized){td.tokens=5;td.initialized=true;td.firstFree=true;td.purchaseDate=new Date().toISOString();localStorage.setItem('wc_eng_tokens',JSON.stringify(td));}
 document.getElementById('my-tokens').textContent=td.tokens||0;
 // 유효기간 표시
 if(td.purchaseDate){

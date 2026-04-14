@@ -70,6 +70,7 @@ textarea{min-height:80px;resize:vertical;}
   <a onclick="showPage('live')">📅 라이브 수업</a>
   <a onclick="showPage('stats')">📈 사용 통계</a>
   <a onclick="showPage('marketing')">📧 마케팅 자동화</a>
+  <a onclick="showPage('feedback')">💬 피드백 확인</a>
   <a onclick="showPage('videos')">🎬 영상 관리</a>
   <a onclick="showPage('noti')">🔔 알림 발송</a>
   <a href="index.html" style="margin-top:24px;color:var(--text-muted);font-size:0.8rem;">← 홈으로</a>
@@ -260,6 +261,16 @@ WonderfulCrew 드림</textarea></div></div>
 </div>
 
 <!-- 알림 발송 -->
+<!-- 피드백 확인 -->
+<div class="page" id="page-feedback">
+  <h2>피드백 확인</h2>
+  <div class="sub">유저가 제출한 피드백 (유저에게는 비공개)</div>
+  <div class="card">
+    <button class="btn-sm navy" onclick="loadFeedback()">피드백 불러오기</button>
+    <div id="feedback-list" style="margin-top:16px;"></div>
+  </div>
+</div>
+
 <!-- 영상 관리 -->
 <div class="page" id="page-videos">
   <h2>영상 관리</h2>
@@ -316,6 +327,16 @@ WonderfulCrew 드림</textarea></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 <script>
+// 피드백 로딩
+function loadFeedback(){
+  var list=JSON.parse(localStorage.getItem('wc_feedback_list')||'[]');
+  var el=document.getElementById('feedback-list');
+  if(!list.length){el.innerHTML='<p style="color:var(--text-muted);">피드백이 없습니다.</p>';return;}
+  el.innerHTML=list.map(function(f){
+    return '<div style="padding:14px;border-bottom:1px solid var(--gold-pale);"><div style="font-size:0.78rem;color:var(--text-muted);">'+f.date+' · '+f.cat+' · '+f.name+(f.email?' · '+f.email:'')+'</div><div style="font-size:0.88rem;color:var(--text-dark);margin-top:6px;line-height:1.6;">'+f.body+'</div></div>';
+  }).join('');
+}
+
 // Supabase 영상 로딩
 async function loadVideos(){
   if(typeof getVideoRecords!=='function'){alert('Supabase 미설정');return;}

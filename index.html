@@ -496,6 +496,58 @@ footer{
   </div>
 </section>
 
+<!-- SEARCH BAR -->
+<div style="padding:0 5%;margin-top:-40px;position:relative;z-index:10;">
+  <div style="max-width:680px;margin:0 auto;position:relative;">
+    <div style="display:flex;align-items:center;background:#fff;border:2px solid var(--gold);border-radius:32px;padding:4px 6px 4px 20px;box-shadow:0 8px 32px rgba(0,0,0,0.08);">
+      <span style="color:var(--gold);font-size:1.1rem;margin-right:12px;">🔍</span>
+      <input type="text" id="site-search" placeholder="무엇이 궁금하신가요? 예) 에미레이트 면접, 롤플레이, 커뮤니티" oninput="doSearch(this.value)" onkeydown="if(event.key==='Enter')goFirst()" style="flex:1;border:none;outline:none;font-family:inherit;font-size:0.92rem;color:var(--navy);padding:14px 0;background:transparent;">
+    </div>
+    <div id="search-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--gold-pale);border-radius:16px;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.1);overflow:hidden;z-index:20;"></div>
+  </div>
+</div>
+<script>
+var SEARCH_DATA=[
+  {keywords:'롤플레이 면접 연습 roleplay',title:'롤플레이 면접 연습',url:'roleplay-practice.html'},
+  {keywords:'파이널 인터뷰 final',title:'파이널 인터뷰 연습',url:'final.html'},
+  {keywords:'영어 쉐도잉 english shadowing 연습',title:'영어 쉐도잉',url:'daily-english.html'},
+  {keywords:'채용 항공사 채용정보 jobs',title:'항공사 채용 정보',url:'jobs.html'},
+  {keywords:'커뮤니티 스터디 community',title:'커뮤니티 (스터디/후기)',url:'community.html'},
+  {keywords:'가격 결제 토큰 pricing 플랜',title:'토큰 충전 & 가격',url:'token-rewards.html'},
+  {keywords:'코치 피드백 1:1 coach',title:'1:1 코치 피드백',url:'coach-feedback.html'},
+  {keywords:'AI 코치 ai',title:'AI 코치',url:'ai-coach.html'},
+  {keywords:'에미레이트 emirates 프로세스',title:'에미레이트 면접 프로세스',url:'emirates-process.html'},
+  {keywords:'카타르 qatar',title:'카타르항공 커리큘럼',url:'curriculum-qatar.html'},
+  {keywords:'면접 가이드 interview guide',title:'면접 완벽 가이드',url:'interview-guide.html'},
+  {keywords:'한국어 영어 면접 표현',title:'한국어 & 영어 면접 표현',url:'english-interview.html'},
+  {keywords:'그루밍 이미지 메이킹 grooming',title:'이미지 메이킹 & 그루밍',url:'grooming-guide.html'},
+  {keywords:'자기소개서 이력서 cv resume',title:'자기소개서 & CV',url:'resume-guide.html'},
+  {keywords:'워킹 자세 walking posture',title:'워킹 & 자세 분석',url:'walking-analysis.html'},
+  {keywords:'호텔 럭셔리 hotel',title:'호텔 면접 준비',url:'hotel.html'},
+  {keywords:'크루즈 cruise',title:'크루즈 면접 준비',url:'cruise.html'},
+  {keywords:'레벨테스트 level test',title:'레벨 테스트',url:'leveltest.html'},
+  {keywords:'성장 기록 progress',title:'내 성장 기록',url:'my-progress.html'},
+  {keywords:'고객 응대 서비스 customer service leap 4d',title:'고객 응대 스킬',url:'customer-service.html'}
+];
+function doSearch(q){
+  var r=document.getElementById('search-results');
+  if(!q.trim()){r.style.display='none';return;}
+  var ql=q.toLowerCase();
+  var matches=SEARCH_DATA.filter(function(d){return d.keywords.toLowerCase().includes(ql)||d.title.toLowerCase().includes(ql);});
+  if(!matches.length){r.style.display='none';return;}
+  r.style.display='block';
+  r.innerHTML=matches.slice(0,6).map(function(m){
+    return '<a href="'+m.url+'" style="display:block;padding:12px 20px;font-size:0.88rem;color:var(--navy);text-decoration:none;border-bottom:1px solid var(--gold-pale);transition:background 0.15s;" onmouseover="this.style.background=\'rgba(201,168,76,0.06)\'" onmouseout="this.style.background=\'#fff\'">'+m.title+'</a>';
+  }).join('');
+}
+function goFirst(){
+  var r=document.getElementById('search-results');
+  var first=r.querySelector('a');
+  if(first)location.href=first.href;
+}
+document.addEventListener('click',function(e){if(!e.target.closest('#site-search')&&!e.target.closest('#search-results'))document.getElementById('search-results').style.display='none';});
+</script>
+
 <!-- ABOUT -->
 <section id="about">
   <div class="about-inner">

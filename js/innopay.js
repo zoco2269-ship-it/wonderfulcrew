@@ -1,6 +1,15 @@
-// 이노페이 팝업 높이 오버라이드 (680→800)
-if(typeof ih!=='undefined') ih=800;
-window.addEventListener('load',function(){if(typeof ih!=='undefined') ih=800;});
+// 이노페이 팝업 높이 오버라이드: window.open 가로채기
+(function(){
+  var origOpen=window.open;
+  window.open=function(url,name,features){
+    if(features&&features.indexOf('height=680')>-1){
+      features=features.replace('height=680','height=850');
+    }
+    return origOpen.call(window,url,name,features);
+  };
+})();
+if(typeof ih!=='undefined') ih=850;
+window.addEventListener('load',function(){if(typeof ih!=='undefined') ih=850;});
 
 /**
  * WonderfulCrew 이노페이 결제 호출

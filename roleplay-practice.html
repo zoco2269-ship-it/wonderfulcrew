@@ -465,42 +465,74 @@ async function processAnswer(){
   if(!ans||ans==='지금 답변하세요...'){startListening();return;}
 
   chatHistory.push({role:'user',content:ans});
-
-  // 녹화 중지
-  if(mediaRecorder&&mediaRecorder.state==='recording')try{mediaRecorder.stop();}catch(e){}
+  var turnCount=chatHistory.filter(function(m){return m.role==='user';}).length;
 
   var fb=document.getElementById('feedback');
-  fb.innerHTML='<span style="color:var(--gold);">AI가 피드백을 작성하고 있어요...</span>';
+  var q=questions[qIdx];
+  var scenario=typeof q==='string'?q:q.q;
+
+  // 3번 주고받으면 → 피드백 모드로 전환
+  if(turnCount>=3){
+    // 녹화 중지
+    if(mediaRecorder&&mediaRecorder.state==='recording')try{mediaRecorder.stop();}catch(e){}
+
+    fb.innerHTML='<span style="color:var(--gold);">AI가 피드백을 작성하고 있어요...</span>';
+    fb.classList.add('active');
+
+    try{
+      var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Crew':'Passenger')+': '+m.content;}).join('\n');
+      var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:500,
+        system:'You are a cabin crew interview coach. Evaluate the following roleplay conversation. The scenario was: "'+scenario+'"\n\nProvide feedback in EXACTLY this format:\n\nOverall Score: X/100\n\nStrengths:\n- (2-3 bullet points)\n\nAreas to Improve:\n- (2-3 bullet points)\n\n---SUGGESTED---\n(Write a short ideal response the crew member could have given in this scenario. 3-4 sentences.)\n\nBe encouraging but honest. Write in English. Keep it concise.',
+        messages:[{role:'user',content:'Here is the full roleplay conversation:\n\n'+convoSummary+'\n\nPlease give feedback.'}]
+      })});
+      var data=await res.json();
+      var feedbackText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Good effort!';
+      feedbackText=feedbackText.replace(/\*\*/g,'');
+
+      var parts=feedbackText.split('---SUGGESTED---');
+      var mainFeedback=parts[0].trim();
+      lastSuggestedResponse=(parts[1]||'').trim();
+
+      fb.innerHTML='<b style="color:var(--gold);">AI Feedback</b><br><br><div style="white-space:pre-line;">'+mainFeedback+'</div>';
+      if(lastSuggestedResponse) document.getElementById('btn-model').style.display='inline-flex';
+      document.getElementById('btn-next').style.display='inline-flex';
+      document.getElementById('rec-label').textContent='완료';
+    }catch(e){
+      fb.innerHTML='<span style="color:#E74C3C;">오류 발생. 다시 시도해주세요.</span>';
+      document.getElementById('btn-next').style.display='inline-flex';
+    }
+    return;
+  }
+
+  // 아직 3턴 미만 → 고객이 반응하고 대화 계속
+  fb.innerHTML='<span style="color:var(--gold);">고객이 반응하고 있어요...</span>';
   fb.classList.add('active');
 
   try{
-    var q=questions[qIdx];
-    var scenario=typeof q==='string'?q:q.q;
-    var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Crew':'Passenger')+': '+m.content;}).join('\n');
-
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:500,
-      system:'You are a cabin crew interview coach. The student just completed a roleplay scenario. The scenario was: "'+scenario+'"\n\nEvaluate the crew member\'s response. Provide feedback in EXACTLY this format (use these exact headers):\n\nOverall Score: X/100\n\nStrengths:\n- (2-3 bullet points)\n\nAreas to Improve:\n- (2-3 bullet points)\n\n---SUGGESTED---\n(Write a short ideal response the crew member could have given to the passenger. 3-4 sentences. This will be shown separately as a model answer.)\n\nBe encouraging but honest. Write in English. Keep it concise.',
-      messages:[{role:'user',content:'Here is the roleplay conversation:\n\n'+convoSummary+'\n\nPlease give feedback on the crew member\'s response.'}]
+      model:'claude-sonnet-4-20250514',max_tokens:150,
+      system:'You are a passenger on an airplane. The situation is: "'+scenario+'"\n\nThe cabin crew member just responded to you. React naturally IN ENGLISH as the passenger. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the passenger\n- React to what the crew member said — acknowledge, ask follow-up, or push back\n- If the solution is good, accept but bring up a related concern\n- If weak, express mild dissatisfaction\n- Be realistic, not aggressive\n- This is exchange '+turnCount,
+      messages:chatHistory
     })});
     var data=await res.json();
-    var feedbackText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Good effort! Keep practicing.';
-    feedbackText=feedbackText.replace(/\*\*/g,'');
+    var aiText=(data&&data.content&&data.content[0]&&data.content[0].text)||'I see.';
+    aiText=aiText.replace(/\*\*/g,'').replace('[END]','').trim();
 
-    // Suggested Response 분리
-    var parts=feedbackText.split('---SUGGESTED---');
-    var mainFeedback=parts[0].trim();
-    lastSuggestedResponse=(parts[1]||'').trim();
+    chatHistory.push({role:'assistant',content:aiText});
+    fb.innerHTML='<b style="color:var(--gold);">Passenger:</b> '+aiText;
 
-    fb.innerHTML='<b style="color:var(--gold);">AI Feedback</b><br><br><div style="white-space:pre-line;">'+mainFeedback+'</div>';
-
-    // 모범답변 보기 + 다음 질문 버튼 표시
-    if(lastSuggestedResponse) document.getElementById('btn-model').style.display='inline-flex';
-    document.getElementById('btn-next').style.display='inline-flex';
-    document.getElementById('rec-label').textContent='완료';
+    // TTS로 읽고, 끝나면 자동으로 학생 음성 인식
+    var accent=document.getElementById('s-accent').value;
+    speakQuestion(aiText,accent);
+    var checkTTS=setInterval(function(){
+      if(!window.speechSynthesis.speaking){
+        clearInterval(checkTTS);
+        startListening();
+      }
+    },300);
   }catch(e){
     fb.innerHTML='<span style="color:#E74C3C;">오류 발생. 다시 시도해주세요.</span>';
-    document.getElementById('btn-next').style.display='inline-flex';
   }
 }
 

@@ -122,7 +122,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
       <select class="setup-select" id="s-accent">
         <option value="en-GB">British English</option>
         <option value="en-US">American English</option>
-        <option value="en-IN">Indian English</option>
+        <option value="fr-FR">French English</option>
+        <option value="es-ES">Spanish English</option>
       </select>
     </div>
     <div>
@@ -414,12 +415,6 @@ function speakQuestion(text,lang){
   iCard.classList.add('speaking');
   mouth.classList.add('talking');
   var u=new SpeechSynthesisUtterance(text);
-  // Indian English: en-IN 지원 안 되면 en-US로 폴백
-  var voices=window.speechSynthesis.getVoices();
-  if(lang==='en-IN'){
-    var hasIndian=voices.some(function(v){return v.lang==='en-IN'||v.lang.startsWith('en-IN');});
-    if(!hasIndian)lang='en-US';
-  }
   u.lang=lang;
   var isMale=(chosenAvatar==='👨🏻');
   u.rate=0.85;

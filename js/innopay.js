@@ -1,3 +1,7 @@
+// 이노페이 팝업 높이 오버라이드 (680→800)
+if(typeof ih!=='undefined') ih=800;
+window.addEventListener('load',function(){if(typeof ih!=='undefined') ih=800;});
+
 /**
  * WonderfulCrew 이노페이 결제 호출
  *

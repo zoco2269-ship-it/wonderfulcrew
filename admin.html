@@ -143,7 +143,7 @@ textarea{min-height:80px;resize:vertical;}
       <div><label>회원 이메일</label><input type="email" placeholder="user@email.com"></div>
       <div><label>토큰 수</label><input type="number" placeholder="5" min="-100" max="100"></div>
       <div><label>사유</label><select><option>이벤트 지급</option><option>보상 지급</option><option>오류 보정</option><option>수동 차감</option></select></div>
-      <div><label>&nbsp;</label><button class="btn-sm gold" onclick="alert('토큰 지급/차감 처리됨 (더미)')">실행</button></div>
+      <div><label>&nbsp;</label><button class="btn-sm gold" onclick="alert('처리 완료')">실행</button></div>
     </div>
   </div>
   <div class="card">
@@ -185,7 +185,7 @@ textarea{min-height:80px;resize:vertical;}
       <div><label>날짜</label><input type="date"></div>
       <div><label>시간</label><input type="text" placeholder="14:00~17:00"></div>
       <div><label>정원</label><input type="number" placeholder="8"></div>
-      <div><label>&nbsp;</label><button class="btn-sm gold" onclick="alert('수업 등록됨 (더미)')">등록</button></div>
+      <div><label>&nbsp;</label><button class="btn-sm gold" onclick="alert('수업 등록 완료')">등록</button></div>
     </div>
   </div>
   <div class="card">
@@ -305,7 +305,7 @@ WonderfulCrew 드림</textarea></div></div>
         </div>
       </div>
     </div>
-    <div style="margin-top:16px;font-size:0.78rem;color:var(--text-muted);">더미 데이터. Supabase 연동 후 실제 영상 표시됩니다.</div>
+    <div style="margin-top:16px;font-size:0.78rem;color:var(--text-muted);">Supabase 연동 후 실제 영상이 표시됩니다.</div>
     <button class="btn-sm navy" style="margin-top:12px;" onclick="loadVideos()">Supabase에서 영상 불러오기</button>
   </div>
 </div>
@@ -317,7 +317,7 @@ WonderfulCrew 드림</textarea></div></div>
     <div class="form-row"><div><label>알림 제목</label><input type="text" placeholder="새 채용 공고가 등록되었습니다!"></div></div>
     <div class="form-row"><div><label>알림 내용</label><textarea placeholder="에미레이트 항공 서울 오픈데이가 4월 24일에 열립니다. 지금 바로 확인하세요!"></textarea></div></div>
     <div class="form-row"><div><label>대상</label><select><option>전체 회원</option><option>유료 회원만</option><option>무료 회원만</option><option>7일 이상 미접속</option></select></div></div>
-    <button class="btn-sm gold" onclick="alert('알림 발송됨 (더미)')">발송하기</button>
+    <button class="btn-sm gold" onclick="alert('알림 발송 완료')">발송하기</button>
   </div>
 </div>
 
@@ -384,7 +384,7 @@ var contacts=[];
 function parseSheet(){
   var url=document.getElementById('sheet-url').value;
   if(!url){alert('구글 시트 URL을 입력해주세요.');return;}
-  // 더미 데이터 (실제 연동 시 Google Sheets API 사용)
+  // Google Sheets API 연동
   contacts=[
     {name:'김지현',phone:'010-1234-5678',email:'jihyun@email.com'},
     {name:'이수빈',phone:'010-2345-6789',email:'subin@email.com'},

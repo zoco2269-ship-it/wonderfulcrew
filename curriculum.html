@@ -139,7 +139,19 @@ var AIRLINES=[
   {key:'singapore',en:'Singapore Airlines',ko:'싱가포르 항공',region:'Singapore'},
   {key:'etihad',en:'Etihad Airways',ko:'에티하드 항공',region:'UAE · Abu Dhabi'},
   {key:'koreanair',en:'Korean Air',ko:'대한항공',region:'Korea'},
-  {key:'asiana',en:'Asiana Airlines',ko:'아시아나 항공',region:'Korea'}
+  {key:'asiana',en:'Asiana Airlines',ko:'아시아나 항공',region:'Korea'},
+  {key:'jeju',en:'Jeju Air',ko:'제주항공',region:'Korea'},
+  {key:'jinair',en:'Jin Air',ko:'진에어',region:'Korea'},
+  {key:'tway',en:"T'way Air",ko:'티웨이항공',region:'Korea'},
+  {key:'airpremia',en:'Air Premia',ko:'에어프레미아',region:'Korea'},
+  {key:'airseoul',en:'Air Seoul',ko:'에어서울',region:'Korea'},
+  {key:'airbusan',en:'Air Busan',ko:'에어부산',region:'Korea'},
+  {key:'eastar',en:'Eastar Jet',ko:'이스타항공',region:'Korea'},
+  {key:'aerok',en:'Aero K',ko:'에어로케이',region:'Korea'},
+  {key:'klm',en:'KLM Royal Dutch Airlines',ko:'KLM',region:'Netherlands · Amsterdam'},
+  {key:'airasia',en:'AirAsia',ko:'에어아시아',region:'Malaysia'},
+  {key:'finnair',en:'Finnair',ko:'핀에어',region:'Finland · Helsinki'},
+  {key:'cathay',en:'Cathay Pacific',ko:'캐세이퍼시픽',region:'Hong Kong'}
 ];
 
 var STEPS=[
@@ -164,6 +176,18 @@ function matchAirlineKey(name){
   if(n.indexOf('에티하드')>=0||n.indexOf('etihad')>=0)return 'etihad';
   if(n.indexOf('대한항공')>=0||n.indexOf('korean')>=0)return 'koreanair';
   if(n.indexOf('아시아나')>=0||n.indexOf('asiana')>=0)return 'asiana';
+  if(n.indexOf('제주')>=0||n.indexOf('jeju')>=0)return 'jeju';
+  if(n.indexOf('진에어')>=0||n.indexOf('jin')>=0)return 'jinair';
+  if(n.indexOf('티웨이')>=0||n.indexOf('tway')>=0)return 'tway';
+  if(n.indexOf('에어프레미아')>=0||n.indexOf('premia')>=0)return 'airpremia';
+  if(n.indexOf('에어서울')>=0||n.indexOf('airseoul')>=0)return 'airseoul';
+  if(n.indexOf('에어부산')>=0||n.indexOf('airbusan')>=0)return 'airbusan';
+  if(n.indexOf('이스타')>=0||n.indexOf('eastar')>=0)return 'eastar';
+  if(n.indexOf('에어로케이')>=0||n.indexOf('aerok')>=0)return 'aerok';
+  if(n.indexOf('klm')>=0)return 'klm';
+  if(n.indexOf('에어아시아')>=0||n.indexOf('airasia')>=0)return 'airasia';
+  if(n.indexOf('핀에어')>=0||n.indexOf('finnair')>=0)return 'finnair';
+  if(n.indexOf('캐세이')>=0||n.indexOf('cathay')>=0)return 'cathay';
   return null;
 }
 
@@ -223,7 +247,20 @@ var CURRICULUM_PAGES={
   qatar:'curriculum-qatar.html',
   singapore:'curriculum-singapore.html',
   koreanair:'curriculum-koreanair.html',
-  asiana:'curriculum-asiana.html'
+  asiana:'curriculum-asiana.html',
+  jeju:'curriculum-jeju.html',
+  jinair:'curriculum-jinair.html',
+  tway:'curriculum-tway.html',
+  airpremia:'curriculum-airpremia.html',
+  airseoul:'curriculum-airseoul.html',
+  airbusan:'curriculum-airbusan.html',
+  eastar:'curriculum-eastar.html',
+  aerok:'curriculum-aerok.html',
+  klm:'curriculum-klm.html',
+  airasia:'curriculum-airasia.html',
+  finnair:'curriculum-finnair.html',
+  cathay:'curriculum-cathay.html',
+  etihad:'curriculum-etihad.html'
 };
 function selectAirline(a){
   try{localStorage.setItem('wc_airline',a.key);localStorage.setItem('wc_airline_name',a.ko);}catch(e){}

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>한국어 그룹 디스커션 연습 · WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--navy-dark:#111B2E;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--navy-dark);color:#fff;min-height:100vh;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:rgba(17,27,46,0.95);border-bottom:1px solid rgba(201,168,76,0.15);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.8rem;color:rgba(255,255,255,0.5);transition:color 0.2s;}.nav-back:hover{color:var(--gold);}
+
+.setup{padding:50px 20px;text-align:center;max-width:720px;margin:0 auto;}
+.setup h1{font-family:'DM Serif Display',serif;font-size:1.9rem;color:#fff;margin-bottom:8px;}
+.setup h1 em{font-style:normal;color:var(--gold);}
+.setup .tag{display:inline-block;padding:4px 14px;background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold-light);font-size:0.7rem;letter-spacing:0.2em;border-radius:14px;margin-bottom:14px;font-family:'DM Serif Display',serif;font-weight:700;}
+.setup p{color:rgba(255,255,255,0.65);font-size:0.9rem;line-height:1.8;margin-bottom:28px;}
+.format-info{background:rgba(255,255,255,0.04);border-left:2px solid var(--gold);padding:16px 20px;margin-bottom:28px;text-align:left;font-size:0.82rem;color:rgba(255,255,255,0.7);line-height:1.75;}
+.format-info b{color:var(--gold-light);}
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;text-align:left;}
+.setup-label{font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:6px;letter-spacing:0.06em;}
+.setup-select{width:100%;padding:10px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.3);border-radius:8px;color:#fff;font-family:inherit;font-size:0.85rem;}
+.setup-select option{background:var(--navy);color:#fff;}
+.btn-start{padding:16px 40px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:28px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.04em;}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,168,76,0.4);}
+
+.interview{display:none;flex:1;flex-direction:column;}
+.interview.active{display:flex;}
+.topic-banner{text-align:center;padding:14px 20px;background:rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.15);}
+.topic-banner .label{font-size:0.7rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px;}
+.topic-banner .topic{font-family:'Noto Serif KR',serif;font-size:1.05rem;color:#fff;font-weight:500;line-height:1.5;}
+
+.panel-area{flex:1;display:flex;align-items:center;justify-content:center;gap:14px;padding:14px 20px;min-height:0;overflow:hidden;flex-wrap:wrap;}
+.panel{width:130px;height:min(200px,calc(100vh - 360px));border-radius:10px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:0;}
+.panel.speaking{border-color:var(--gold);animation:goldGlow 1.5s infinite;}
+@keyframes goldGlow{0%,100%{border-color:rgba(201,168,76,0.4);}50%{border-color:rgba(201,168,76,1);}}
+.panel-body{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#1A2340 0%,#2A3455 100%);flex-direction:column;gap:6px;}
+.panel-emoji{font-size:2.8rem;line-height:1;}
+.panel-role{font-size:0.7rem;color:rgba(255,255,255,0.65);padding:0 8px;text-align:center;line-height:1.3;}
+.panel-label{position:absolute;bottom:0;left:0;right:0;padding:8px;background:linear-gradient(transparent,rgba(0,0,0,0.85));text-align:center;}
+.panel-label .name{font-family:'DM Serif Display',serif;font-size:0.78rem;color:#fff;}
+.panel-label .sub{font-size:0.62rem;color:var(--gold);letter-spacing:0.05em;margin-top:2px;}
+
+.panel.me{border:2px solid var(--gold-light);}
+.panel.me video{width:100%;height:100%;object-fit:cover;display:none;transform:scaleX(-1);}
+.panel.me .panel-body{background:linear-gradient(180deg,#2a3560 0%,#3a4575 100%);}
+.rec-dot{width:6px;height:6px;border-radius:50%;background:#E74C3C;display:none;}
+.rec-dot.on{display:inline-block;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+.waveform{height:26px;display:flex;align-items:center;justify-content:center;gap:3px;padding:0 20px;}
+.waveform .bar{width:3px;background:var(--gold);border-radius:2px;animation:wave 0.5s ease-in-out infinite alternate;opacity:0.4;}
+.waveform.active .bar{opacity:1;}
+@keyframes wave{0%{height:4px;}100%{height:18px;}}
+
+.controls{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 20px;background:rgba(17,27,46,0.95);border-top:1px solid rgba(201,168,76,0.15);flex-wrap:wrap;}
+.ctrl-btn{padding:11px 20px;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;}
+.ctrl-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.ctrl-btn.primary{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;}
+.ctrl-btn.secondary{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);}
+.ctrl-btn.secondary:hover:not(:disabled){background:rgba(255,255,255,0.12);}
+.ctrl-btn.danger{background:#E74C3C;color:#fff;}
+
+.log-panel{padding:14px 22px;background:rgba(0,0,0,0.3);max-height:240px;overflow-y:auto;font-size:0.86rem;color:rgba(255,255,255,0.8);line-height:1.7;}
+.log-panel .turn{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.log-panel .turn:last-child{border-bottom:none;}
+.log-panel .speaker{color:var(--gold);font-weight:700;font-size:0.78rem;margin-bottom:4px;letter-spacing:0.04em;}
+.log-panel .speaker.user{color:var(--gold-light);}
+
+.transcript-bar{padding:10px 20px;background:rgba(255,255,255,0.04);font-size:0.84rem;color:rgba(255,255,255,0.6);min-height:34px;}
+
+.feedback-panel{display:none;padding:20px 24px;background:rgba(201,168,76,0.1);border-top:1px solid rgba(201,168,76,0.2);font-size:0.88rem;color:rgba(255,255,255,0.85);line-height:1.75;max-height:280px;overflow-y:auto;}
+.feedback-panel.active{display:block;}
+.feedback-panel b{color:var(--gold);}
+
+@media(max-width:600px){
+  .panel{width:100px;height:150px;}
+  .panel-emoji{font-size:2rem;}
+  .panel-area{gap:8px;padding:10px;}
+  .controls{gap:8px;}
+  .setup-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="#" class="nav-back" onclick="goBack();return false;">← 돌아가기</a>
+</nav>
+<script>
+function goBack(){
+  var interview=document.getElementById('interview');
+  if(interview&&interview.classList.contains('active')){
+    if('speechSynthesis' in window)window.speechSynthesis.cancel();
+    if(typeof recognition!=='undefined'&&recognition)try{recognition.stop();}catch(e){}
+    if(typeof stream!=='undefined'&&stream)stream.getTracks().forEach(function(t){t.stop();});
+    interview.classList.remove('active');
+    document.getElementById('setup').style.display='block';
+  } else {
+    history.back();
+  }
+}
+window.addEventListener('popstate',function(){
+  var interview=document.getElementById('interview');
+  if(interview&&interview.classList.contains('active')){goBack();}
+});
+</script>
+
+<!-- SETUP -->
+<div class="setup" id="setup">
+  <div class="tag">GROUP DISCUSSION · KOREAN</div>
+  <h1>한국어 <em>그룹 디스커션</em> 연습</h1>
+  <p>국내 항공사 1차/2차 토론면접 실전 포맷. 가상의 동료 지원자 2명과 함께 주제를 놓고 의견을 주고받으며 연습합니다.</p>
+
+  <div class="format-info">
+    <b>실전 포맷 기준</b><br>
+    · 대한항공/진에어 기준 8인 1조 · 토론 20~30분 · 면접관은 관찰·평가<br>
+    · 평가 요소 <b>태도(경청) · 논리성 · 커뮤니케이션</b><br>
+    · 핵심: 상대 의견 경청 후 연결해서 말하기 ("좋은 의견입니다. 더해서…")
+  </div>
+
+  <div class="setup-grid">
+    <div>
+      <div class="setup-label">주제 유형</div>
+      <select class="setup-select" id="s-type">
+        <option value="all">혼합 (찬반 + 주제토론)</option>
+        <option value="debate">찬반 토론만</option>
+        <option value="topic">자유 주제토론만</option>
+      </select>
+    </div>
+    <div>
+      <div class="setup-label">총 발언 라운드</div>
+      <select class="setup-select" id="s-rounds">
+        <option value="3">3라운드 (연습용)</option>
+        <option value="5" selected>5라운드 (실전급)</option>
+        <option value="7">7라운드 (장시간)</option>
+      </select>
+    </div>
+  </div>
+
+  <button class="btn-start" onclick="startDiscussion()">디스커션 시작하기</button>
+</div>
+
+<!-- DISCUSSION -->
+<div class="interview" id="interview">
+  <div class="topic-banner">
+    <div class="label">오늘의 주제 · 라운드 <span id="round-idx">1</span>/<span id="round-total">5</span></div>
+    <div class="topic" id="topic-text"></div>
+  </div>
+
+  <div class="panel-area">
+    <div class="panel" id="panel-b">
+      <div class="panel-body">
+        <div class="panel-emoji">👩🏻</div>
+        <div class="panel-role">지원자 B</div>
+      </div>
+      <div class="panel-label"><div class="name">지원자 B</div><div class="sub">동료 지원자</div></div>
+    </div>
+
+    <div class="panel me" id="panel-me">
+      <video id="cam-video" autoplay muted playsinline></video>
+      <div class="panel-body" id="me-placeholder">
+        <div class="panel-emoji">🙋🏻</div>
+        <div class="panel-role">You</div>
+      </div>
+      <div class="panel-label"><div class="name">You</div><div class="sub"><span class="rec-dot" id="rec-dot"></span> <span id="rec-label">대기</span></div></div>
+    </div>
+
+    <div class="panel" id="panel-c">
+      <div class="panel-body">
+        <div class="panel-emoji">👨🏻</div>
+        <div class="panel-role">지원자 C</div>
+      </div>
+      <div class="panel-label"><div class="name">지원자 C</div><div class="sub">동료 지원자</div></div>
+    </div>
+  </div>
+
+  <div class="waveform" id="waveform">
+    <div class="bar" style="animation-delay:0s;"></div><div class="bar" style="animation-delay:0.1s;"></div><div class="bar" style="animation-delay:0.2s;"></div>
+    <div class="bar" style="animation-delay:0.3s;"></div><div class="bar" style="animation-delay:0.15s;"></div><div class="bar" style="animation-delay:0.25s;"></div>
+    <div class="bar" style="animation-delay:0.05s;"></div><div class="bar" style="animation-delay:0.35s;"></div>
+  </div>
+
+  <div class="transcript-bar" id="transcript">진행자가 주제를 안내합니다...</div>
+
+  <div class="log-panel" id="log"></div>
+
+  <div class="feedback-panel" id="feedback"></div>
+
+  <div class="controls">
+    <button class="ctrl-btn danger" id="btn-stop" onclick="stopMyTurn()" style="display:none;">⏹ 발언 종료</button>
+    <button class="ctrl-btn secondary" id="btn-next" onclick="nextRound()" style="display:none;">다음 라운드 →</button>
+    <button class="ctrl-btn primary" id="btn-feedback" onclick="generateFeedback()" style="display:none;">토론 종료 · 피드백 받기</button>
+  </div>
+</div>
+
+<script>
+// 국내 항공사 토론면접 실제 주제 (찬반형 + 자유토론)
+var TOPICS_DEBATE=[
+  {t:"기내 수하물 유료화 — 찬성 vs 반대",a:"찬성: 추가 수익 확보, 탑승 시간 단축",b:"반대: 고객 만족도 하락, 경쟁사 대비 불리"},
+  {t:"AI/로봇의 기내 서비스 도입 — 찬성 vs 반대",a:"찬성: 비용 절감, 정확성 향상, 야간 대체",b:"반대: 인간적 서비스 가치 훼손, 비상 상황 대응 한계"},
+  {t:"기내 판매(면세) 전면 축소 — 찬성 vs 반대",a:"찬성: 서비스 집중, 공간 활용, 고객 피로도 감소",b:"반대: 매출 감소, 해외 여행 특별함 감소"},
+  {t:"진상 승객 실명·영상 공개 — 찬성 vs 반대",a:"찬성: 예방 효과, 승무원 보호",b:"반대: 인권 침해, 법적 분쟁 위험"},
+  {t:"유니폼 개인 선택권 — 찬성 vs 반대",a:"찬성: 자율성 존중, 활동성 개선",b:"반대: 통일감 저하, 브랜드 이미지 약화"},
+  {t:"기내 Wi-Fi 전면 유료화 — 찬성 vs 반대",a:"찬성: 운영 비용 회수, 품질 유지",b:"반대: 기본 서비스 기대, 경쟁사 우위 상실"},
+  {t:"LCC의 서비스 FSC화(기내식·담요 확대) — 찬성 vs 반대",a:"찬성: 차별화, 고객 충성도",b:"반대: 저가 경쟁력 훼손, 본질 약화"},
+  {t:"승무원 신입 공채 vs 수시채용 — 어느 쪽이 더 좋은가",a:"공채 찬성: 표준화, 공정성, 동기 부여",b:"수시 찬성: 즉시 투입, 실무 적합성, 유연성"}
+];
+
+var TOPICS_FREE=[
+  "승무원에게 가장 중요한 자질 한 가지를 꼽는다면 무엇이고, 그 이유는?",
+  "지연된 항공편으로 승객 불만이 폭주하는 상황. 승무원으로서 어떻게 대처할 것인가?",
+  "팀원 간 의견이 첨예하게 갈릴 때, 어떻게 조율할 것인가?",
+  "MZ세대 고객이 가장 민감하게 여기는 서비스 포인트는 무엇이라고 생각하는가?",
+  "LCC의 가성비 전략과 FSC의 프리미엄 전략 중 한국 시장에 더 적합한 방향은?",
+  "탄소중립 시대, 항공사가 가장 우선해야 할 변화는 무엇인가?",
+  "외국 관광객 재유치를 위해 국내 항공사가 할 수 있는 가장 효과적인 방안은?",
+  "기내 안전과 고객 편의가 충돌할 때, 어떻게 균형을 잡을 것인가?",
+  "우리 회사(항공사)가 5년 뒤에도 살아남기 위해 가장 필요한 변화는 무엇인가?",
+  "동료 승무원이 잘못된 서비스를 하고 있을 때, 어떻게 행동할 것인가?"
+];
+
+// 가상 동료 지원자 페르소나
+var PERSONA_B={name:'지원자 B',pitch:1.35,style:'신중하고 데이터 중심. 상대 의견을 인용하며 논리적으로 연결. 경청 태도 모범.'};
+var PERSONA_C={name:'지원자 C',pitch:0.8,style:'적극적이고 창의적. 새로운 각도의 의견 제시. 때로 반대 입장도 언급하되 예의 있게.'};
+
+var topics=[];
+var roundIdx=0;
+var totalRounds=5;
+var stream=null;
+var recognition=null;
+var fullText='';
+var chatHistory=[];
+var roundEnding=false;
+
+function startDiscussion(){
+  var type=document.getElementById('s-type').value;
+  totalRounds=parseInt(document.getElementById('s-rounds').value);
+  var pool=[];
+  if(type==='debate'||type==='all')TOPICS_DEBATE.forEach(function(t){pool.push({kind:'debate',text:t.t,a:t.a,b:t.b});});
+  if(type==='topic'||type==='all')TOPICS_FREE.forEach(function(t){pool.push({kind:'topic',text:t});});
+  pool.sort(function(){return Math.random()-0.5;});
+  topics=pool.slice(0,totalRounds);
+  roundIdx=0;
+  document.getElementById('round-total').textContent=totalRounds;
+  document.getElementById('setup').style.display='none';
+  document.getElementById('interview').classList.add('active');
+  history.pushState({discussion:true},'','');
+  startCamera();
+  showRound();
+}
+
+function startCamera(){
+  (async function(){
+    try{
+      var tempStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+      tempStream.getTracks().forEach(function(t){t.stop();});
+      var devices=await navigator.mediaDevices.enumerateDevices();
+      var videoDevices=devices.filter(function(d){return d.kind==='videoinput';});
+      var selectedId=null;
+      var frontKeywords=/front|전면|내장|integrated|webcam|facetime|camera hd|built-in/i;
+      for(var i=0;i<videoDevices.length;i++){
+        if(frontKeywords.test(videoDevices[i].label)){selectedId=videoDevices[i].deviceId;break;}
+      }
+      if(!selectedId&&videoDevices.length>0)selectedId=videoDevices[0].deviceId;
+      var constraints=selectedId?{video:{deviceId:{exact:selectedId}},audio:true}:{video:true,audio:true};
+      stream=await navigator.mediaDevices.getUserMedia(constraints);
+      var v=document.getElementById('cam-video');
+      v.srcObject=stream;v.style.display='block';
+      document.getElementById('me-placeholder').style.display='none';
+    }catch(e){}
+  })();
+}
+
+function showRound(){
+  roundEnding=false;
+  var t=topics[roundIdx];
+  document.getElementById('round-idx').textContent=roundIdx+1;
+  document.getElementById('topic-text').textContent=t.text;
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('btn-next').style.display='none';
+  document.getElementById('btn-feedback').style.display='none';
+  document.getElementById('feedback').classList.remove('active');
+  document.getElementById('waveform').classList.remove('active');
+  var log=document.getElementById('log');
+  log.innerHTML='<div class="turn"><div class="speaker">진행자</div>이번 라운드 주제입니다. <b style="color:var(--gold-light);">"'+t.text+'"</b>'+(t.kind==='debate'?'<br>찬성 포지션: '+t.a+'<br>반대 포지션: '+t.b:'')+'<br><br>먼저 본인 의견을 1분 이내로 말씀해주세요.</div>';
+  fullText='';
+  document.getElementById('transcript').textContent='지금 본인 의견을 말하세요...';
+  chatHistory=[];
+  startMyTurn();
+}
+
+function startMyTurn(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){document.getElementById('transcript').textContent='Chrome에서 사용해 주세요.';return;}
+  recognition=new SR();recognition.lang='ko-KR';recognition.interimResults=true;recognition.continuous=true;
+  fullText='';
+  document.getElementById('btn-stop').style.display='inline-flex';
+  document.getElementById('rec-dot').classList.add('on');
+  document.getElementById('rec-label').textContent='녹음 중';
+  document.getElementById('waveform').classList.add('active');
+  document.getElementById('panel-me').classList.add('speaking');
+
+  recognition.onresult=function(ev){
+    var interim='';fullText='';
+    for(var r=0;r<ev.results.length;r++){
+      if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';
+      else interim+=ev.results[r][0].transcript;
+    }
+    document.getElementById('transcript').textContent=fullText+interim;
+  };
+  recognition.onend=function(){
+    if(roundEnding)return;
+    if(fullText.trim()){
+      document.getElementById('transcript').textContent=fullText.trim();
+      processMyTurn();
+    } else {
+      try{recognition.start();}catch(e){}
+    }
+  };
+  recognition.start();
+}
+
+function stopMyTurn(){
+  if(recognition)try{recognition.stop();}catch(e){}
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('rec-dot').classList.remove('on');
+  document.getElementById('rec-label').textContent='대기';
+  document.getElementById('waveform').classList.remove('active');
+  document.getElementById('panel-me').classList.remove('speaking');
+}
+
+async function processMyTurn(){
+  stopMyTurn();
+  var ans=fullText.trim();
+  if(!ans){startMyTurn();return;}
+  appendLog('user','You (지원자 A)',ans);
+  chatHistory.push({role:'user',content:ans});
+  // 지원자 B 응답 → 지원자 C 응답 → 다음 라운드 버튼
+  await aiPeerSpeak(PERSONA_B,'panel-b');
+  await aiPeerSpeak(PERSONA_C,'panel-c');
+  if(roundIdx+1<topics.length){
+    document.getElementById('btn-next').style.display='inline-flex';
+  }
+  document.getElementById('btn-feedback').style.display='inline-flex';
+}
+
+async function aiPeerSpeak(persona,panelId){
+  var topic=topics[roundIdx];
+  var panel=document.getElementById(panelId);
+  panel.classList.add('speaking');
+  document.getElementById('transcript').textContent=persona.name+'이(가) 말하고 있어요...';
+  try{
+    var sys='당신은 한국 국내 항공사 그룹 디스커션의 동료 지원자입니다.\n'+
+      '이름: '+persona.name+'\n'+
+      '스타일: '+persona.style+'\n'+
+      '주제: "'+topic.text+'"'+(topic.kind==='debate'?' (찬반 토론: '+topic.a+' / '+topic.b+')':'')+'\n\n'+
+      '규칙:\n'+
+      '- 다른 지원자 의견을 먼저 한 줄로 인정/요약한 뒤 본인 관점을 제시 ("말씀 잘 들었습니다. 거기에 더해 저는…")\n'+
+      '- 2~3문장 이내, 한국어 존댓말\n'+
+      '- 새로운 데이터/사례/관점 한 가지 반드시 포함\n'+
+      '- 다른 지원자를 부정하지 말고 연결하되, 본인 입장은 선명하게\n'+
+      '- 영어 금지';
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:200,
+      system:sys,messages:chatHistory
+    })});
+    var data=await res.json();
+    var txt=(data&&data.content&&data.content[0]&&data.content[0].text)||(persona.name+': 좋은 의견이네요. 저도 같은 맥락에서 덧붙이자면…');
+    txt=txt.replace(/\*\*/g,'').trim();
+    chatHistory.push({role:'assistant',content:'['+persona.name+'] '+txt});
+    appendLog('peer',persona.name,txt);
+    await speakText(txt,persona);
+  }catch(e){}
+  panel.classList.remove('speaking');
+}
+
+function appendLog(who,name,text){
+  var log=document.getElementById('log');
+  var cls=who==='user'?'speaker user':'speaker';
+  log.innerHTML+='<div class="turn"><div class="'+cls+'">'+name+'</div>'+text+'</div>';
+  log.scrollTop=log.scrollHeight;
+}
+
+function speakText(text,persona){
+  return new Promise(function(resolve){
+    if(!('speechSynthesis' in window)){resolve();return;}
+    var u=new SpeechSynthesisUtterance(text);
+    u.rate=0.98;u.pitch=persona.pitch;u.lang='ko-KR';
+    var voices=window.speechSynthesis.getVoices();
+    var ko=voices.filter(function(v){return v.lang==='ko-KR'||v.lang.startsWith('ko');});
+    if(ko.length>0){
+      var isFemale=persona.pitch>1;
+      var match=ko.find(function(v){return isFemale?/female|유나|선|heami|yuna/i.test(v.name):/male|인호|준|min/i.test(v.name);});
+      u.voice=match||ko[isFemale?0:Math.min(1,ko.length-1)];
+    }
+    u.onend=function(){resolve();};
+    u.onerror=function(){resolve();};
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+    setTimeout(resolve,15000);
+  });
+}
+
+if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}
+
+function nextRound(){
+  roundIdx++;
+  if(roundIdx>=topics.length){generateFeedback();return;}
+  showRound();
+}
+
+async function generateFeedback(){
+  roundEnding=true;
+  if(recognition)try{recognition.stop();}catch(e){}
+  if('speechSynthesis' in window)window.speechSynthesis.cancel();
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('btn-next').style.display='none';
+  document.getElementById('btn-feedback').style.display='none';
+  var fb=document.getElementById('feedback');
+  fb.classList.add('active');
+  fb.innerHTML='<b>AI가 피드백을 작성하고 있어요...</b>';
+  var convo=chatHistory.map(function(m){return (m.role==='user'?'[You] ':'')+m.content;}).join('\n');
+  try{
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:700,
+      system:'당신은 국내 항공사 승무원 토론면접 전문 코치입니다. 평가 기준은 한국 항공사(대한항공·진에어·제주·에어부산 등)의 실제 토론면접 평가 요소에 근거합니다.\n\n평가 3대 요소:\n1) 태도 (경청·존중·비언어적 표현)\n2) 논리성 (근거·구조·설득력)\n3) 커뮤니케이션 (명료함·연결·팀 기여)\n\n음성인식 결과이므로 띄어쓰기/오타는 무시하고 내용 중심으로 평가. 격려 톤. 반드시 한국어 존댓말.\n\n출력 형식:\n\n종합 점수: X/100\n\n[태도] 점수 및 한 줄 코멘트\n[논리성] 점수 및 한 줄 코멘트\n[커뮤니케이션] 점수 및 한 줄 코멘트\n\n잘한 점:\n- (2~3개)\n\n개선할 점:\n- (2개)\n\n실전 팁 한 가지:\n- (구체적 다음 연습 방향 1가지)',
+      messages:[{role:'user',content:'전체 디스커션 기록:\n\n'+convo+'\n\n피드백 부탁드립니다.'}]
+    })});
+    var data=await res.json();
+    var txt=(data&&data.content&&data.content[0]&&data.content[0].text)||'수고하셨습니다.';
+    txt=txt.replace(/\*\*/g,'');
+    fb.innerHTML='<b>디스커션 피드백</b><br><br><div style="white-space:pre-line;">'+txt+'</div><br><a href="curriculum.html" style="color:var(--gold);">← 커리큘럼으로</a>';
+  }catch(e){
+    fb.innerHTML='<b style="color:#E74C3C;">피드백 생성 실패.</b>';
+  }
+}
+
+window.addEventListener('beforeunload',function(){
+  if('speechSynthesis' in window)window.speechSynthesis.cancel();
+  if(stream)stream.getTracks().forEach(function(t){t.stop();});
+  if(recognition)try{recognition.stop();}catch(e){}
+});
+</script>
+</body>
+</html>

@@ -134,11 +134,33 @@ var ROLEPLAY_QS=[
 ];
 var randRP=ROLEPLAY_QS[Math.floor(Math.random()*ROLEPLAY_QS.length)];
 
-var QUESTIONS=[
+// URL 파라미터로 언어 결정 (?lang=ko)
+var urlParams=new URLSearchParams(window.location.search);
+var lang=urlParams.get('lang')||'en';
+
+var QUESTIONS_EN=[
   {num:'Question 1',q:'Please introduce yourself.',hint:'자기소개   이름, 경험, 강점을 30~60초로 말하세요.'},
   {num:'Question 2',q:'Why do you want to be a cabin crew member?',hint:'지원동기   여행이 아닌, 본인의 자질이 승무원과 어떻게 부합하는지 강조하세요.'},
   {num:'Question 3',q:randRP,hint:'롤플레이   사과, 해결책, 대안(장점 설명), Service Recovery 내용을 포함해서 답변하세요.'}
 ];
+
+var KO_RP=[
+  "승객이 창가 좌석을 원하지만 만석인 상황",
+  "비즈니스 클래스 승객의 선호 식사가 소진된 상황",
+  "승객이 기내가 춥다고 불만이지만 옆 승객은 괜찮다고 하는 상황",
+  "아이가 30분째 울어서 다른 승객이 불만인 상황",
+  "승객이 술을 더 달라고 하지만 이미 취한 상황"
+];
+var randKoRP=KO_RP[Math.floor(Math.random()*KO_RP.length)];
+
+var QUESTIONS_KO=[
+  {num:'질문 1',q:'1분 자기소개를 해주세요.',hint:'이름, 경험, 강점, 지원동기를 30~60초로 말하세요.'},
+  {num:'질문 2',q:'지원 동기를 말씀해주세요.',hint:'회사 나열이 아닌, 내 경험과 항공사 가치의 연결을 강조하세요.'},
+  {num:'질문 3',q:'서비스란 무엇이라고 생각하나요?',hint:'뻔한 답변 금지. 구체적 경험으로 정의하세요.'},
+  {num:'질문 4',q:randKoRP,hint:'롤플레이   사과, 해결책, 대안 제시, Service Recovery를 포함해서 답변하세요.'}
+];
+
+var QUESTIONS=lang==='ko'?QUESTIONS_KO:QUESTIONS_EN;
 
 var container=document.getElementById('questions');
 QUESTIONS.forEach(function(item,i){

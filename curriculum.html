@@ -31,17 +31,19 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 .level-banner b{color:var(--gold-light);font-weight:700;}
 
 /* 항공사 카드 */
+.airline-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px;}
+.airline-group{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start;}
 .airline-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
-.airline-card{background:#fff;border:1.5px solid rgba(201,168,76,0.25);padding:22px 20px;cursor:pointer;transition:all 0.2s;position:relative;text-align:left;font-family:inherit;}
+.airline-card{background:#fff;border:1.5px solid rgba(201,168,76,0.25);padding:13px 12px;cursor:pointer;transition:all 0.2s;position:relative;text-align:left;font-family:inherit;}
 .airline-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,0.12);}
 .airline-card.recommended{border-color:var(--gold);background:linear-gradient(180deg,#fff 0%,rgba(201,168,76,0.05) 100%);}
 .airline-card.selected{border-color:var(--gold);background:var(--gold);color:#fff;}
 .airline-card.selected .airline-name-en,.airline-card.selected .airline-name-ko{color:#fff;}
 .airline-card.selected .airline-tier{background:#fff;color:var(--gold);}
-.airline-tier{position:absolute;top:10px;right:10px;background:var(--gold);color:#fff;font-size:0.62rem;font-weight:800;padding:3px 9px;letter-spacing:0.12em;}
-.airline-name-en{font-family:"Cormorant Garamond",serif;font-size:1.15rem;font-weight:600;color:var(--navy);margin-bottom:4px;line-height:1.2;}
-.airline-name-ko{font-size:0.84rem;color:var(--text-mid);font-weight:500;}
-.airline-region{font-size:0.7rem;color:var(--text-muted);margin-top:8px;letter-spacing:0.05em;text-transform:uppercase;}
+.airline-tier{position:absolute;top:7px;right:7px;background:var(--gold);color:#fff;font-size:0.56rem;font-weight:800;padding:2px 6px;letter-spacing:0.1em;}
+.airline-name-en{font-family:"Cormorant Garamond",serif;font-size:0.92rem;font-weight:600;color:var(--navy);margin-bottom:2px;line-height:1.2;}
+.airline-name-ko{font-size:0.74rem;color:var(--text-mid);font-weight:500;}
+.airline-region{font-size:0.62rem;color:var(--text-muted);margin-top:5px;letter-spacing:0.04em;text-transform:uppercase;}
 .airline-card.selected .airline-region{color:rgba(255,255,255,0.85);}
 
 /* 단계 카드 */
@@ -65,6 +67,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 #section-curriculum{display:none;}
 
 @media(max-width:760px){
+  .airline-wrap{grid-template-columns:1fr;gap:18px;}
   .airline-grid{grid-template-columns:repeat(2,1fr);}
   .step-card{padding:18px 18px;gap:14px;}
   .step-num{font-size:1.8rem;width:38px;}
@@ -72,6 +75,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   .step-desc{font-size:0.78rem;}
 }
 @media(max-width:480px){
+  .airline-group{grid-template-columns:1fr;}
   .airline-grid{grid-template-columns:1fr;}
   .wrap{padding:40px 18px;}
 }
@@ -115,7 +119,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
     <div class="gold-bar"></div>
     <div id="level-banner-wrap"></div>
     <p class="sub">레벨 결과를 바탕으로 매칭률이 높은 항공사가 강조 표시되어 있어요.<br>지원하고 싶은 항공사를 선택하면 맞춤 커리큘럼이 시작됩니다.</p>
-    <div class="airline-grid" id="airline-grid"></div>
+    <div class="airline-wrap" id="airline-wrap">
+      <div class="airline-group" id="airline-grid-foreign"></div>
+      <div class="airline-group" id="airline-grid-domestic"></div>
+    </div>
     <div id="airline-empty">레벨테스트 결과가 없어요. <a href="leveltest.html" style="color:var(--gold);font-weight:700;">레벨테스트 먼저 받기 →</a></div>
   </div>
 
@@ -210,7 +217,9 @@ if(LEVEL){
 }
 
 // ─── 항공사 카드 렌더 ───
-var grid=document.getElementById('airline-grid');
+var gridForeign=document.getElementById('airline-grid-foreign');
+var gridDomestic=document.getElementById('airline-grid-domestic');
+var DOMESTIC_KEYS=['koreanair','asiana','jeju','jinair','tway','airpremia','airseoul','airbusan','eastar','aerok'];
 var savedAirline=null;
 try{savedAirline=localStorage.getItem('wc_airline');}catch(e){}
 
@@ -228,7 +237,7 @@ AIRLINES.forEach(function(a){
     '<div class="airline-name-ko">'+a.ko+'</div>'+
     '<div class="airline-region">'+a.region+'</div>';
   btn.onclick=function(){selectAirline(a);};
-  grid.appendChild(btn);
+  (DOMESTIC_KEYS.indexOf(a.key)>=0?gridDomestic:gridForeign).appendChild(btn);
 });
 
 // ─── 항공사 선택 ───

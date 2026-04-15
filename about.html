@@ -32,7 +32,7 @@ section{padding:80px 5%;}.wrap{max-width:900px;margin:0 auto;}
 .advisor-role{font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:8px;}
 .advisor-desc{font-family:'Noto Sans KR',sans-serif;font-size:0.82rem;color:var(--text-muted);line-height:1.6;}
 footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
-@media(max-width:900px){.nav-links{display:none;}.person-card{flex-direction:column;}.advisor-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:900px){.nav-links{display:none;}.person-card{flex-direction:column;}.advisor-grid{grid-template-columns:1fr 1fr;}.advisor-featured{grid-template-columns:1fr!important;gap:20px!important;}.advisor-featured-video{max-width:320px;margin:0 auto;}}
 @media(max-width:600px){.advisor-grid{grid-template-columns:1fr;}}
 
 .nav-dropdown{position:relative;}
@@ -167,42 +167,83 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="gold-line"></div>
   <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.8;margin-bottom:36px;">대한항공, 아시아나, 에미레이트, 카타르, 캐세이퍼시픽, 싱가포르항공 등 현직 승무원이 자문단으로 참여하여 최신 면접 트렌드와 실전 노하우를 공유합니다.</p>
 
+  <div class="advisor-featured" style="background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:32px;margin-bottom:28px;display:grid;grid-template-columns:200px 1fr 240px;gap:28px;align-items:center;">
+    <div>
+      <img src="images/advisor-cathay.jpg" alt="캐세이퍼시픽 현직 승무원" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--cream);" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div style="display:none;width:100%;aspect-ratio:1;background:var(--cream);border:2px dashed var(--gold-pale);border-radius:8px;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.76rem;text-align:center;padding:16px;line-height:1.5;">캐세이퍼시픽<br>현직 승무원<br>(사진 업로드 예정)</div>
+    </div>
+    <div>
+      <div style="display:inline-block;padding:3px 10px;background:var(--gold-pale);color:var(--gold);font-size:0.68rem;font-weight:700;letter-spacing:0.1em;border-radius:10px;margin-bottom:10px;">FEATURED ADVISOR</div>
+      <div class="advisor-name" style="font-size:1.2rem;margin-bottom:6px;">캐세이퍼시픽 현직 승무원</div>
+      <div class="advisor-role">Cabin Crew · Hong Kong Base</div>
+      <div class="advisor-desc" style="margin-top:12px;line-height:1.75;">홍콩 베이스 현직 승무원이 직접 보내온 응원 영상과 함께, 캐세이퍼시픽 면접 경험과 실전 노하우를 공유합니다. 다른 자문위원은 소속 항공사 규정상 신원을 공개하지 않습니다.</div>
+    </div>
+    <div class="advisor-featured-video" style="background:#000;border-radius:8px;overflow:hidden;aspect-ratio:9/16;position:relative;width:100%;">
+      <video controls playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <source src="videos/advisor-cathay-cheer.mp4" type="video/mp4">
+      </video>
+      <div style="display:flex;position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(160deg,#1A2340,#2a3560);color:rgba(255,255,255,0.7);font-size:0.82rem;align-items:center;justify-content:center;flex-direction:column;gap:8px;text-align:center;padding:20px;">
+        <div style="font-size:1.8rem;">▶</div>
+        <div style="font-weight:600;">응원 영상</div>
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.45);line-height:1.5;">세로형 영상 업로드 예정<br>videos/advisor-cathay-cheer.mp4</div>
+      </div>
+    </div>
+  </div>
+
   <div class="advisor-grid">
     <div class="advisor-card">
-      <div class="advisor-photo">사진</div>
-      <div class="advisor-name">자문위원 1</div>
-      <div class="advisor-role">항공사명 · 직급</div>
-      <div class="advisor-desc">(추후 업데이트 예정)</div>
+      <div class="advisor-photo" style="background:linear-gradient(135deg,#c8102e,#9e0c24);color:#fff;border:none;font-family:'DM Serif Display',serif;font-size:0.72rem;letter-spacing:0.08em;">EMIRATES</div>
+      <div class="advisor-name">Emirates 자문위원</div>
+      <div class="advisor-role">Cabin Crew · Dubai Base</div>
+      <div class="advisor-desc">신원 비공개 · 최신 면접 경험 공유</div>
     </div>
     <div class="advisor-card">
-      <div class="advisor-photo">사진</div>
-      <div class="advisor-name">자문위원 2</div>
-      <div class="advisor-role">항공사명 · 직급</div>
-      <div class="advisor-desc">(추후 업데이트 예정)</div>
+      <div class="advisor-photo" style="background:linear-gradient(135deg,#5c0632,#8a1a4a);color:#fff;border:none;font-family:'DM Serif Display',serif;font-size:0.68rem;letter-spacing:0.08em;">QATAR AIRWAYS</div>
+      <div class="advisor-name">Qatar Airways 자문위원</div>
+      <div class="advisor-role">Cabin Crew · Doha Base</div>
+      <div class="advisor-desc">신원 비공개 · 최신 면접 경험 공유</div>
     </div>
     <div class="advisor-card">
-      <div class="advisor-photo">사진</div>
-      <div class="advisor-name">자문위원 3</div>
-      <div class="advisor-role">항공사명 · 직급</div>
-      <div class="advisor-desc">(추후 업데이트 예정)</div>
+      <div class="advisor-photo" style="background:linear-gradient(135deg,#f99f1c,#003a70);color:#fff;border:none;font-family:'DM Serif Display',serif;font-size:0.64rem;letter-spacing:0.08em;text-align:center;line-height:1.2;">SINGAPORE<br>AIRLINES</div>
+      <div class="advisor-name">싱가포르항공 자문위원</div>
+      <div class="advisor-role">Cabin Crew · Singapore Base</div>
+      <div class="advisor-desc">신원 비공개 · 최신 면접 경험 공유</div>
     </div>
     <div class="advisor-card">
-      <div class="advisor-photo">사진</div>
-      <div class="advisor-name">자문위원 4</div>
-      <div class="advisor-role">항공사명 · 직급</div>
-      <div class="advisor-desc">(추후 업데이트 예정)</div>
+      <div class="advisor-photo" style="background:linear-gradient(135deg,#bd8b13,#d4a017);color:#fff;border:none;font-family:'DM Serif Display',serif;font-size:0.74rem;letter-spacing:0.08em;">ETIHAD</div>
+      <div class="advisor-name">Etihad Airways 자문위원</div>
+      <div class="advisor-role">Cabin Crew · Abu Dhabi Base</div>
+      <div class="advisor-desc">신원 비공개 · 최신 면접 경험 공유</div>
     </div>
     <div class="advisor-card">
-      <div class="advisor-photo">사진</div>
-      <div class="advisor-name">자문위원 5</div>
-      <div class="advisor-role">항공사명 · 직급</div>
-      <div class="advisor-desc">(추후 업데이트 예정)</div>
+      <div class="advisor-photo" style="background:linear-gradient(135deg,#e30613,#a50510);color:#fff;border:none;font-family:'DM Serif Display',serif;font-size:0.66rem;letter-spacing:0.08em;text-align:center;line-height:1.2;">TURKISH<br>AIRLINES</div>
+      <div class="advisor-name">Turkish Airlines 자문위원</div>
+      <div class="advisor-role">Cabin Crew · Istanbul Base</div>
+      <div class="advisor-desc">신원 비공개 · 최신 면접 경험 공유</div>
     </div>
     <div class="advisor-card">
-      <div class="advisor-photo">사진</div>
-      <div class="advisor-name">자문위원 6</div>
-      <div class="advisor-role">항공사명 · 직급</div>
-      <div class="advisor-desc">(추후 업데이트 예정)</div>
+      <div class="advisor-photo" style="background:linear-gradient(135deg,#0d2e5c,#1a4480);color:#fff;border:none;font-family:'DM Serif Display',serif;font-size:0.7rem;letter-spacing:0.08em;">KOREAN AIR</div>
+      <div class="advisor-name">대한항공 자문위원</div>
+      <div class="advisor-role">객실승무원 · 인천 베이스</div>
+      <div class="advisor-desc">신원 비공개 · 최신 면접 경험 공유</div>
+    </div>
+    <div class="advisor-card">
+      <div class="advisor-photo" style="background:linear-gradient(135deg,#d4062c,#f2304a);color:#fff;border:none;font-family:'DM Serif Display',serif;font-size:0.74rem;letter-spacing:0.08em;">ASIANA</div>
+      <div class="advisor-name">아시아나항공 자문위원</div>
+      <div class="advisor-role">객실승무원 · 인천 베이스</div>
+      <div class="advisor-desc">신원 비공개 · 최신 면접 경험 공유</div>
+    </div>
+    <div class="advisor-card">
+      <div class="advisor-photo" style="background:linear-gradient(135deg,#e60012,#b8000e);color:#fff;border:none;font-family:'DM Serif Display',serif;font-size:0.76rem;letter-spacing:0.08em;">TWAY</div>
+      <div class="advisor-name">티웨이항공 자문위원</div>
+      <div class="advisor-role">객실승무원 · 인천 베이스</div>
+      <div class="advisor-desc">신원 비공개 · 최신 면접 경험 공유</div>
+    </div>
+    <div class="advisor-card">
+      <div class="advisor-photo" style="background:linear-gradient(135deg,#ff6600,#cc5200);color:#fff;border:none;font-family:'DM Serif Display',serif;font-size:0.72rem;letter-spacing:0.08em;">JEJU AIR</div>
+      <div class="advisor-name">제주항공 자문위원</div>
+      <div class="advisor-role">객실승무원 · 인천 베이스</div>
+      <div class="advisor-desc">신원 비공개 · 최신 면접 경험 공유</div>
     </div>
   </div>
 </div>

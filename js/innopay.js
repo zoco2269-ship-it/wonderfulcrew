@@ -42,8 +42,8 @@ async function payWithInnopay(plan, buyerInfo) {
       GoodsName: data.goodsName,   // 상품명
       Amt: data.amount.toString(),  // 결제금액
       Moid: data.moid,             // 주문번호
-      BuyerName: data.buyerName || 'WonderfulCrew',
-      BuyerEmail: data.buyerEmail || 'wonderfulcrew1@gmail.com',
+      BuyerName: data.buyerName || (function(){try{var u=JSON.parse(localStorage.getItem('wc_user')||'{}');return u.name||u.email||'Guest';}catch(e){return 'Guest';}})(),
+      BuyerEmail: data.buyerEmail || (function(){try{return JSON.parse(localStorage.getItem('wc_user')||'{}').email||'guest@wonderfulcrew.com';}catch(e){return 'guest@wonderfulcrew.com';}})(),
       BuyerTel: data.buyerTel || '01000000000',
       ReturnURL: data.returnUrl,   // 인증 완료 후 서버 콜백
       Signature: data.signature,

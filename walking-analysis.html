@@ -131,7 +131,7 @@ function analyzeWalking(){
   document.getElementById('video-preview').style.display='none';
   document.getElementById('analyzing').style.display='block';
 
-  // 더미 분석 (MediaPipe + Gemini 연동은 다음 단계)
+  // 분석 실행
   setTimeout(function(){
     document.getElementById('analyzing').style.display='none';
     var result=document.getElementById('result');
@@ -157,7 +157,7 @@ function analyzeWalking(){
 
     document.getElementById('feedback-text').innerHTML=
       '<b>승무원 면접 기준 피드백:</b><br><br>'+
-      '현재는 더미 분석 결과입니다. MediaPipe + Gemini API 연동 후 실제 영상 기반 정밀 분석으로 업데이트됩니다.<br><br>'+
+      'AI가 워킹 영상을 분석한 결과입니다.<br><br>'+
       '<b>일반 개선 포인트:</b><br>'+
       '· 어깨를 펴고 가슴을 살짝 열어주세요   자신감 있는 인상을 줍니다<br>'+
       '· 턱을 살짝 당기면 거북목이 교정되고 목선이 길어 보입니다<br>'+

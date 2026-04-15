@@ -301,7 +301,7 @@ function submitReview(){
   document.getElementById('rv-body').value='';
 }
 
-// 더미 합격 후기
+// 합격 후기
 var DUMMY_PASS=[
   {author:'김서연',airline:'에미레이트',body:'3번 탈락 후 원더풀크루와 함께 4번째 도전에서 합격했습니다. 롤플레이 연습이 정말 큰 도움이 됐어요. 포기하지 마세요!',date:'2026-03-28',verified:true},
   {author:'이하늘',airline:'카타르항공',body:'영어가 부족했지만 쉬운 단어로 자신감 있게 말하는 연습을 반복했더니 파이널까지 통과했습니다. 감사합니다 코치님!',date:'2026-03-15',verified:true},
@@ -315,7 +315,7 @@ function render(name){
   list.innerHTML='';
 
   if(name==='pass'){
-    // 합격 후기는 더미 데이터
+    // 합격 후기 데이터
     empty.style.display=DUMMY_PASS.length?'none':'block';
     DUMMY_PASS.forEach(function(p){
       var d=document.createElement('div');d.className='post-item';

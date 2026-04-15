@@ -472,7 +472,7 @@ function renderResult(r){
   if(r.coaching_priority){
     var cpEl=document.createElement('div');
     cpEl.style.cssText='background:var(--navy);padding:16px 20px;margin-bottom:14px;border-left:4px solid var(--gold);';
-    cpEl.innerHTML='<div style="font-size:0.7rem;font-weight:700;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;">🎯 지금 당장 해야 할 것</div><div style="font-size:0.9rem;color:rgba(255,255,255,0.9);line-height:1.7;">'+r.coaching_priority+'</div>';
+    cpEl.innerHTML='<div style="font-size:0.7rem;font-weight:700;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;">지금 당장 해야 할 것</div><div style="font-size:0.9rem;color:rgba(255,255,255,0.9);line-height:1.7;">'+r.coaching_priority+'</div>';
     document.getElementById('r-strengths').closest('.res-section').before(cpEl);
   }
   document.getElementById('r-strengths').innerHTML=r.strengths.map(function(s){return '<div class="res-item"><div class="res-dot"></div><div class="res-text">'+s+'</div></div>';}).join('');

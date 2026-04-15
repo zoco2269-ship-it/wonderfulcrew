@@ -75,10 +75,10 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 .nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
 .nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:10px 0;background:#fff;border:1px solid rgba(245,233,200,1);box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:200px;z-index:1001;}
 .nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}
-.nav-dropdown-menu a{display:block;padding:6px 14px;font-size:0.82rem;color:#4A4438;white-space:nowrap;}
-.nav-dropdown-menu a:hover{background:rgba(201,168,76,0.06);color:#C9A84C;}
+.nav-dropdown-menu a{display:block;padding:0px 8px!important;font-size:13px;line-height:36px!important;color:#1a2744;white-space:nowrap;}
+.nav-dropdown-menu a:hover{background:rgba(212,175,55,0.3)!important;color:#1a2744!important;border-left:5px solid #C9A84C;}
 
-.nav-dd-grid{min-width:260px;display:none;grid-template-columns:1fr 1fr;gap:0;padding:4px 0;}
+.nav-dd-grid{min-width:auto;width:max-content;display:none;grid-template-columns:1fr;gap:0!important;padding:0!important;background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);border-radius:20px;}
 .nav-dropdown:hover .nav-dd-grid{display:grid!important;}
 </style>
 </head>
@@ -87,8 +87,8 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a>
   <div class="nav-links">
     <a href="index.html#about">About</a>
-    <div class="nav-dropdown"><a href="index.html#expertise">Programs</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest-en.html">✈️ Cabin Crew</a><a href="hotel-en.html">🏨 Hotel & Luxury</a><a href="walking-analysis-en.html">🚶 Walking & Posture</a><a href="cruise-en.html">🚢 Cruise</a><a href="coach-feedback-en.html">💬 1:1 Coach Feedback</a><a href="ai-coach-en.html">✨ AI Coach</a></div></div>
-    <div class="nav-dropdown"><a href="index.html#resources">Resources</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide-en.html">📋 Interview Guide</a><a href="english-interview-en.html">💬 Interview Q&A</a><a href="grooming-guide-en.html">👗 Image & Grooming</a><a href="resume-guide-en.html">📄 Resume & CV</a><a href="customer-service-en.html">🎯 Customer Service Skills</a></div></div>
+    <div class="nav-dropdown"><a href="index.html#expertise">Programs</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest-en.html">Cabin Crew</a><a href="hotel-en.html">Hotel & Luxury</a><a href="walking-analysis-en.html">Walking & Posture</a><a href="cruise-en.html">Cruise</a><a href="coach-feedback-en.html">1:1 Coach Feedback</a><a href="ai-coach-en.html">AI Coach</a></div></div>
+    <div class="nav-dropdown"><a href="index.html#resources">Resources</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide-en.html">Interview Guide</a><a href="english-interview-en.html">Interview Q&A</a><a href="grooming-guide-en.html">Image & Grooming</a><a href="resume-guide-en.html">Resume & CV</a><a href="customer-service-en.html">Customer Service Skills</a></div></div>
     <a href="daily-english-en.html">English Practice</a>
     <a href="jobs-en.html">Careers</a>
     <a href="community-en.html">Community</a>
@@ -151,7 +151,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <!-- ===== 이야기 패널 ===== -->
 <div class="panel" id="panel-talk">
-  <div class="panel-header"><h2>💬 Free Discussion</h2><button class="write-btn" onclick="openForm('talk')">Write</button></div>
+  <div class="panel-header"><h2>Free Discussion</h2><button class="write-btn" onclick="openForm('talk')">Write</button></div>
   <div id="list-talk"></div>
   <div class="empty" id="empty-talk">No posts yet. Start the first conversation!</div>
 </div>
@@ -203,7 +203,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </div>
   <!-- 일반글 폼 -->
   <div class="form-box" id="form-talk" style="display:none;">
-    <h3>💬 Write</h3>
+    <h3>Write</h3>
     <label>닉네임</label><input type="text" id="t-author" placeholder="닉네임" maxlength="20">
     <label>제목</label><input type="text" id="t-title" placeholder="제목" maxlength="100">
     <label>내용</label><textarea id="t-body" placeholder="자유롭게 이야기하세요."></textarea>
@@ -336,7 +336,7 @@ function render(name){
       d.innerHTML='<div style="flex:1;">'+
         '<div class="study-tags">'+
           (p.loc?'<span class="study-tag loc">📍 '+p.loc+'</span>':'')+
-          (p.airline?'<span class="study-tag air">✈️ '+p.airline+'</span>':'')+
+          (p.airline?'<span class="study-tag air">'+p.airline+'</span>':'')+
           (p.ppl?'<span class="study-tag ppl">👥 '+p.ppl+'</span>':'')+
         '</div>'+
         '<div class="study-title">'+p.title+'</div>'+
@@ -406,7 +406,7 @@ function sortByLocation(){
   empty.style.display='none';
   arr.forEach(function(p){
     var d=document.createElement('div');d.className='study-card';
-    d.innerHTML='<div style="flex:1;"><div class="study-tags">'+(p.loc?'<span class="study-tag loc">📍 '+p.loc+'</span>':'')+(p.airline?'<span class="study-tag air">✈️ '+p.airline+'</span>':'')+(p.ppl?'<span class="study-tag ppl">👥 '+p.ppl+'</span>':'')+'</div><div class="study-title">'+p.title+'</div><div class="study-meta">'+(p.sched||'')+' · '+p.date+' · '+p.author+'</div></div>';
+    d.innerHTML='<div style="flex:1;"><div class="study-tags">'+(p.loc?'<span class="study-tag loc">📍 '+p.loc+'</span>':'')+(p.airline?'<span class="study-tag air">'+p.airline+'</span>':'')+(p.ppl?'<span class="study-tag ppl">👥 '+p.ppl+'</span>':'')+'</div><div class="study-title">'+p.title+'</div><div class="study-meta">'+(p.sched||'')+' · '+p.date+' · '+p.author+'</div></div>';
     d.onclick=function(){alert(p.title+'\n\n'+p.body+'\n\n'+p.author+' · '+p.date);};
     list.appendChild(d);
   });

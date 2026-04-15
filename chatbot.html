@@ -517,7 +517,7 @@ function addMsg(role,text){
 function showTyping(){
   const d=document.createElement('div');d.id='wc-typing';d.style.cssText='display:flex;gap:10px;';
   d.innerHTML=`<div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#C5A55A,#D4B96E);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:#fff;">W</div><div style="background:#fff;border:1px solid rgba(197,165,90,0.2);border-radius:14px;border-top-left-radius:4px;padding:13px 16px;display:flex;gap:4px;align-items:center;"><span style="width:7px;height:7px;border-radius:50%;background:#8A7E6E;animation:wcd 1.2s infinite;display:inline-block;"></span><span style="width:7px;height:7px;border-radius:50%;background:#8A7E6E;animation:wcd 1.2s 0.2s infinite;display:inline-block;"></span><span style="width:7px;height:7px;border-radius:50%;background:#8A7E6E;animation:wcd 1.2s 0.4s infinite;display:inline-block;"></span></div>`;
-  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+  chat.appendChild(d);setTimeout(function(){chat.scrollTop=chat.scrollHeight;},100);
 }
 
 function fmt(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong style="color:#C5A55A;">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');}
@@ -533,7 +533,7 @@ async function send(text){
   loading=true;btn.disabled=true;
   addMsg('user',msg);history.push({role:'user',content:msg});showTyping();
   try{
-    const res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:history})});
+    const res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:SYS+'\n\n중요: 답변은 반드시 완결된 문장으로 마무리해야 합니다. 말하다 끊기면 안 됩니다. 짧고 핵심적으로 답변하되 반드시 마침표로 끝내세요.',messages:history})});
     const data=await res.json();
     const reply=data.content?.[0]?.text||'죄송해요, 다시 시도해 주세요.';
     history.push({role:'assistant',content:reply});

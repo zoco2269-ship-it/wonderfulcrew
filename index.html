@@ -179,7 +179,7 @@ section{padding:100px 5%;}
   position:absolute;bottom:-20px;left:-20px;
   background:#fff;border:1px solid var(--gold-pale);
   padding:24px 28px;
-  display:grid;grid-template-columns:1fr;gap:20px;
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;
   box-shadow:0 8px 40px rgba(0,0,0,0.08);
 }
 .stat-item .num {
@@ -227,7 +227,7 @@ section{padding:100px 5%;}
 }
 .numbers-inner {
   max-width:1100px;margin:0 auto;
-  display:grid;grid-template-columns:1fr;gap:80px;align-items:center;
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
 }
 .num-big {
   font-family:'DM Serif Display',serif;
@@ -344,8 +344,8 @@ footer{
 @media(max-width:900px){
   .about-inner,.numbers-inner{grid-template-columns:1fr;}
   .cards-row{grid-template-columns:1fr;}
-  .res-cards{grid-template-columns:1fr;}
-  .footer-inner{grid-template-columns:1fr;}
+  .res-cards{grid-template-columns:1fr 1fr;}
+  .footer-inner{grid-template-columns:1fr 1fr;}
   .res-header{flex-direction:column;gap:12px;}
 }
 @media(max-width:600px){
@@ -641,7 +641,7 @@ document.addEventListener('click',function(e){if(!e.target.closest('#site-search
 <!-- RECRUITMENT -->
 <style>
 #recruitment{background:var(--cream);}
-.recruit-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:24px;align-items:stretch;}
+.recruit-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch;}
 .recruit-card{background:#fff;border:1px solid var(--gold-pale);padding:24px;box-shadow:0 8px 40px rgba(0,0,0,0.04);}
 .recruit-card h3{font-family:'Noto Serif KR',serif;font-size:1.3rem;color:var(--navy);font-weight:600;margin-bottom:6px;}
 .recruit-card .sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:24px;letter-spacing:0.03em;}

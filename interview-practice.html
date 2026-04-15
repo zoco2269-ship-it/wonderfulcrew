@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>면접 연습   WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--navy);color:#fff;min-height:100vh;}
+a{color:inherit;text-decoration:none;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:rgba(17,27,46,0.95);border-bottom:1px solid rgba(201,168,76,0.15);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.8rem;color:rgba(255,255,255,0.5);}.nav-back:hover{color:var(--gold);}
+.main{max-width:700px;margin:0 auto;padding:30px 20px;}
+.q-card{background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:32px;text-align:center;margin-bottom:24px;}
+.q-label{font-size:0.72rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:12px;}
+.q-text{font-family:'Noto Serif KR',serif;font-size:1.3rem;color:#fff;line-height:1.6;margin-bottom:20px;font-weight:400;}
+.cam-box{width:100%;max-width:480px;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;position:relative;margin:0 auto 16px;}
+.cam-box video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);}
+.cam-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:0.85rem;}
+.rec-badge{position:absolute;top:10px;left:10px;display:none;align-items:center;gap:5px;background:rgba(192,57,43,0.9);color:#fff;padding:3px 8px;font-size:0.68rem;font-weight:700;border-radius:10px;}
+.rec-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px;}
+.btn{padding:12px 24px;border:none;border-radius:24px;font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;}
+.btn-gold{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;}
+.btn-navy{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);}
+.btn-navy:hover{background:rgba(255,255,255,0.15);}
+.btn-red{background:#E74C3C;color:#fff;}
+.transcript{padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-size:0.88rem;color:rgba(255,255,255,0.7);min-height:40px;margin-top:12px;text-align:left;}
+.feedback{display:none;margin-top:16px;padding:20px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:8px;text-align:left;font-size:0.88rem;color:rgba(255,255,255,0.8);line-height:1.7;white-space:pre-line;}
+.feedback.visible{display:block;}
+.feedback b{color:var(--gold);}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="#" class="nav-back" onclick="history.back();return false;">← 돌아가기</a>
+</nav>
+
+<div class="main">
+  <div class="q-card">
+    <div class="q-label" id="q-label">면접 질문</div>
+    <div class="q-text" id="q-text">로딩 중...</div>
+    <div class="cam-box">
+      <video id="cam" autoplay muted playsinline></video>
+      <div class="cam-ph" id="cam-ph">카메라를 시작하세요</div>
+      <div class="rec-badge" id="rec-badge"><div class="rec-dot"></div>REC</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-gold" id="btn-start" onclick="startCam()">카메라 시작</button>
+      <button class="btn btn-red" id="btn-rec" style="display:none;" onclick="toggleRec()">녹화 시작</button>
+      <button class="btn btn-navy" id="btn-next" onclick="nextQ()">다음 질문 →</button>
+    </div>
+    <div class="transcript" id="transcript"></div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+</div>
+
+<script>
+var urlParams=new URLSearchParams(window.location.search);
+var type=urlParams.get('type')||'interview';
+
+var Q_INTERVIEW=[
+  'Tell me about a time you handled a difficult customer.',
+  'How would you deal with a passenger complaint?',
+  'What does excellent service mean to you?',
+  'Describe a situation where you worked as part of a team.',
+  '승무원으로서 본인의 강점은 무엇인가요?',
+  '스트레스 해소 방법은 무엇인가요?',
+  '서비스업에서 가장 중요한 것은 무엇이라고 생각하나요?',
+  '비행 중 승객이 쓰러지면 어떻게 하시겠습니까?',
+  '기내에서 승객끼리 다투면 어떻게 하시겠습니까?',
+  '왜 다른 항공사가 아닌 우리 항공사인가요?',
+  'What would you do if a passenger refused to follow safety instructions?',
+  'How do you handle working in a multicultural environment?',
+  '어려운 고객을 대응한 경험이 있나요?',
+  '팀워크 경험을 말해주세요.',
+  '본인의 장단점은 무엇인가요?'
+];
+
+var Q_EXECUTIVE=[
+  '왜 대한항공이어야 하나요? 구체적으로 말씀해주세요.',
+  '5년 후, 10년 후 본인의 모습을 그려주세요.',
+  '가장 힘들었던 경험과 어떻게 극복했는지 말씀해주세요.',
+  '리더십을 발휘한 경험을 구체적으로 말씀해주세요.',
+  '본인이 생각하는 프로의식이란 무엇인가요?',
+  '고객에게 NO라고 말해야 할 때 어떻게 하시겠습니까?',
+  '동료와 의견이 다를 때 어떻게 해결하시나요?',
+  '대한항공의 서비스 철학에 대해 어떻게 생각하시나요?',
+  '비행 중 예상치 못한 상황이 발생하면 어떻게 대처하시겠습니까?',
+  '마지막으로 하고 싶은 말씀이 있으신가요?',
+  '최근 뉴스 중 인상 깊었던 것이 있다면 말씀해주세요.',
+  '승무원이라는 직업의 장단점은 무엇이라고 생각하나요?',
+  '본인의 가치관을 한 문장으로 표현한다면?',
+  '팀에서 갈등이 생겼을 때 본인의 역할은 무엇인가요?',
+  '입사 후 포부를 말씀해주세요.',
+  '존경하는 사람이 있다면 누구이고 왜인가요?',
+  '본인이 불합리한 대우를 받았을 때 어떻게 대처하시나요?'
+];
+
+var questions=type==='executive'?Q_EXECUTIVE:Q_INTERVIEW;
+var label=type==='executive'?'임원면접 질문':'면접 질문';
+document.getElementById('q-label').textContent=label;
+
+function pickQ(){
+  return questions[Math.floor(Math.random()*questions.length)];
+}
+document.getElementById('q-text').textContent=pickQ();
+
+function nextQ(){
+  document.getElementById('q-text').textContent=pickQ();
+  document.getElementById('transcript').textContent='';
+  document.getElementById('feedback').classList.remove('visible');
+  document.getElementById('feedback').innerHTML='';
+}
+
+// 카메라
+var stream=null;
+var mediaRecorder=null;
+var chunks=[];
+var recognition=null;
+var fullText='';
+
+async function startCam(){
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});
+    var v=document.getElementById('cam');
+    v.srcObject=stream;v.style.display='block';
+    document.getElementById('cam-ph').style.display='none';
+    document.getElementById('btn-start').style.display='none';
+    document.getElementById('btn-rec').style.display='inline-block';
+  }catch(e){
+    document.getElementById('cam-ph').textContent='카메라 연결 실패';
+  }
+}
+
+function toggleRec(){
+  var btn=document.getElementById('btn-rec');
+  if(!mediaRecorder||mediaRecorder.state==='inactive'){
+    // 녹화 시작
+    chunks=[];fullText='';
+    mediaRecorder=new MediaRecorder(stream,{mimeType:'video/webm'});
+    mediaRecorder.ondataavailable=function(e){if(e.data.size>0)chunks.push(e.data);};
+    mediaRecorder.start();
+    document.getElementById('rec-badge').style.display='flex';
+    btn.textContent='녹화 중지';
+    btn.style.background='#E74C3C';
+    // 음성 인식
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(SR){
+      recognition=new SR();recognition.lang='ko-KR';recognition.interimResults=true;recognition.continuous=true;
+      recognition.onresult=function(ev){
+        var interim='';fullText='';
+        for(var r=0;r<ev.results.length;r++){
+          if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';
+          else interim+=ev.results[r][0].transcript;
+        }
+        document.getElementById('transcript').textContent=fullText+interim;
+      };
+      recognition.start();
+    }
+  } else {
+    // 녹화 중지
+    mediaRecorder.stop();
+    if(recognition)try{recognition.stop();}catch(e){}
+    document.getElementById('rec-badge').style.display='none';
+    btn.textContent='녹화 시작';
+    btn.style.background='';
+    // AI 피드백
+    if(fullText.trim()) generateFeedback();
+  }
+}
+
+async function generateFeedback(){
+  var fb=document.getElementById('feedback');
+  fb.innerHTML='<span style="color:var(--gold);">AI가 피드백을 작성하고 있어요...</span>';
+  fb.classList.add('visible');
+  var question=document.getElementById('q-text').textContent;
+  try{
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:400,
+      system:'You are a cabin crew interview coach. The student answered an interview question on camera. Evaluate their answer. The input is from speech recognition so ignore grammar/punctuation errors. Focus on CONTENT and INTENT.\n\nFormat:\nScore: X/100\nStrengths: (2 points)\nAreas to Improve: (2 points)\nSuggested Answer: (3-4 sentences)\n\nBe encouraging. Write in Korean.',
+      messages:[{role:'user',content:'질문: '+question+'\n\n학생 답변: '+fullText.trim()+'\n\n피드백을 주세요.'}]
+    })});
+    var data=await res.json();
+    var text=(data&&data.content&&data.content[0]&&data.content[0].text)||'피드백을 생성하지 못했습니다.';
+    fb.innerHTML='<b>AI 피드백</b><br><br>'+text.replace(/\*\*/g,'');
+  }catch(e){
+    fb.innerHTML='피드백 생성 실패. 다시 시도해주세요.';
+  }
+}
+</script>
+</body>
+</html>

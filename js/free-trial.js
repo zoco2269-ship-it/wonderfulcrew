@@ -1,6 +1,6 @@
 /**
  * WonderfulCrew 무료체험 시스템
- * - 총 5회 무료 콘텐츠 열람
+ * - 총 10회 무료 콘텐츠 열람
  * - 소진 후 월정액 구독 유도
  *
  * 사용법:
@@ -13,7 +13,7 @@
  */
 
 var FREE_TRIAL_KEY = 'wc_free_trial';
-var FREE_TRIAL_MAX = 5;
+var FREE_TRIAL_MAX = 10;
 
 function getTrialData() {
   try { return JSON.parse(localStorage.getItem(FREE_TRIAL_KEY) || '{}'); } catch(e) { return {}; }

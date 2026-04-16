@@ -158,7 +158,8 @@ var AIRLINES=[
   {key:'klm',en:'KLM Royal Dutch Airlines',ko:'KLM',region:'Netherlands · Amsterdam'},
   {key:'airasia',en:'AirAsia',ko:'에어아시아',region:'Malaysia'},
   {key:'finnair',en:'Finnair',ko:'핀에어',region:'Finland · Helsinki'},
-  {key:'cathay',en:'Cathay Pacific',ko:'캐세이퍼시픽',region:'Hong Kong'}
+  {key:'cathay',en:'Cathay Pacific',ko:'캐세이퍼시픽',region:'Hong Kong'},
+  {key:'lufthansa',en:'Lufthansa',ko:'루프트한자',region:'Germany · Frankfurt'}
 ];
 
 var STEPS=[
@@ -195,6 +196,7 @@ function matchAirlineKey(name){
   if(n.indexOf('에어아시아')>=0||n.indexOf('airasia')>=0)return 'airasia';
   if(n.indexOf('핀에어')>=0||n.indexOf('finnair')>=0)return 'finnair';
   if(n.indexOf('캐세이')>=0||n.indexOf('cathay')>=0)return 'cathay';
+  if(n.indexOf('루프트한자')>=0||n.indexOf('lufthansa')>=0)return 'lufthansa';
   return null;
 }
 
@@ -269,7 +271,8 @@ var CURRICULUM_PAGES={
   airasia:'curriculum-airasia.html',
   finnair:'curriculum-finnair.html',
   cathay:'curriculum-cathay.html',
-  etihad:'curriculum-etihad.html'
+  etihad:'curriculum-etihad.html',
+  lufthansa:'curriculum-lufthansa.html'
 };
 function selectAirline(a){
   try{localStorage.setItem('wc_airline',a.key);localStorage.setItem('wc_airline_name',a.ko);}catch(e){}

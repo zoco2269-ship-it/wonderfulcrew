@@ -107,7 +107,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <!-- SETUP SCREEN -->
 <div class="setup" id="setup">
   <h1>Roleplay <em>Interview Practice</em></h1>
-  <p>The AI interviewer will present in-flight scenarios.<br>Answer as if you were in a real interview.</p>
+  <p>The AI will present hospitality scenarios — in-flight, hotel, restaurant, café &amp; more.<br>Answer as if you were in a real interview.</p>
 
   <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.06em;">Interviewer Avatar</div>
   <div class="avatar-grid" style="grid-template-columns:1fr 1fr;max-width:300px;margin:0 auto 20px;" id="avatar-grid">
@@ -208,7 +208,58 @@ var SCENARIOS=[
   "A drink was accidentally spilled on a passenger's clothes.",
   "A passenger is having an allergic reaction after eating the meal.",
   "A passenger demands to be upgraded to business class for free.",
-  "A passenger discovers their passport is missing after boarding."
+  "A passenger discovers their passport is missing after boarding.",
+  // ── Additional In-flight scenarios ──
+  "A passenger is experiencing severe anxiety during takeoff and is hyperventilating.",
+  "A first-class passenger is being rude and condescending to you in front of other passengers.",
+  "A passenger insists on standing in the galley area during the entire flight because they are claustrophobic.",
+  "An elderly passenger is confused about their medication schedule and asks you for medical advice.",
+  "A passenger's emotional support animal is barking and disturbing nearby passengers.",
+  "A passenger in economy asks to use the business class lavatory because the economy ones are all occupied.",
+  "Two unaccompanied minors are scared and crying because of heavy turbulence.",
+  "A passenger accuses another passenger of stealing their belongings from the overhead bin.",
+  "A passenger demands a full refund mid-flight because the Wi-Fi is not working.",
+  "A passenger is found smoking in the lavatory and denies it despite the smoke detector going off.",
+  // ── Hotel scenarios ──
+  "A hotel guest complains that their room has not been cleaned despite requesting housekeeping twice.",
+  "A guest at check-in insists they booked an ocean-view room, but the reservation shows a city-view room.",
+  "A VIP guest demands a late checkout at 4 PM, but the hotel is fully booked for incoming guests.",
+  "A guest reports that the air conditioning in their room is broken on an extremely hot day.",
+  "A guest finds hair in the bathroom and demands to be moved to another room immediately.",
+  "A hotel guest's luggage was mistakenly delivered to the wrong room and some items appear to be missing.",
+  "A guest complains about loud construction noise next to the hotel that started early in the morning.",
+  "A guest at the hotel restaurant is upset because they waited 40 minutes for their room service order.",
+  // ── Restaurant scenarios ──
+  "A restaurant guest finds a foreign object in their soup and is extremely upset.",
+  "A couple celebrating their anniversary was seated next to a loud group and wants to be moved.",
+  "A guest with a severe nut allergy discovers their dish may contain traces of peanuts after tasting it.",
+  "A guest complains that their steak is overcooked after specifically requesting medium-rare.",
+  "A large party's reservation was lost and there are no tables available for the next two hours.",
+  "A guest is unhappy because the waiter charged them for items they did not order.",
+  "A regular guest is disappointed that their favorite dish has been removed from the menu.",
+  "A guest spills red wine on their expensive outfit and blames the narrow table arrangement.",
+  // ── Café / Lounge scenarios ──
+  "A café customer received the wrong order for the third time and is losing patience.",
+  "A guest at the airline lounge is told their membership has expired and they cannot enter.",
+  "A café customer's laptop was damaged when another customer accidentally spilled coffee on it.",
+  "A lounge guest complains that the Wi-Fi has been down for an hour and they have an urgent meeting.",
+  "A customer in the café is upset because they were charged twice for the same drink.",
+  "A guest at the VIP lounge is unhappy with the food selection and says it is not up to premium standards.",
+  // ── Cruise / Resort scenarios ──
+  "A cruise passenger's cabin has a water leak and their personal belongings are getting wet.",
+  "A resort guest booked a spa treatment but was told upon arrival that it was cancelled without notice.",
+  "A cruise guest missed the shore excursion because they received the wrong departure time.",
+  "A resort guest's pool cabana was given to another guest despite their advance reservation.",
+  // ── Airport Ground Service scenarios ──
+  "A passenger at the check-in counter discovers their flight has been overbooked and they may be bumped.",
+  "A passenger with a connecting flight is told their luggage did not make the transfer.",
+  "A wheelchair-assistance passenger was left waiting at the gate for 30 minutes with no staff in sight.",
+  "A family at the boarding gate is told their infant's bassinet seat has been reassigned.",
+  // ── Retail / Duty-Free scenarios ──
+  "A duty-free customer wants to return a perfume they bought yesterday, but the store policy says no returns.",
+  "A customer at the luxury boutique feels they are being followed and watched by staff, and finds it offensive.",
+  "A duty-free shopper's tax refund was processed incorrectly and they received less than expected.",
+  "A customer purchased a designer bag but noticed a scratch on it after leaving the store."
 ];
 
 var MODELS={
@@ -225,7 +276,58 @@ var MODELS={
   10:"I am so sorry. Let me get club soda and napkins right away. We have a spare shirt, and I'll arrange dry cleaning at no cost.",
   11:"Please stay calm. I'll call for medical professionals and get our first aid kit. I'll inform the captain for priority landing if needed.",
   12:"I understand. Unfortunately upgrades are managed by ground team. Let me bring extra pillows, blanket, and our premium amenity kit instead.",
-  13:"I understand how stressful this is. Let me help you look carefully. I'll also check with the gate team. If we can't find it, I'll connect you with emergency documentation."
+  13:"I understand how stressful this is. Let me help you look carefully. I'll also check with the gate team. If we can't find it, I'll connect you with emergency documentation.",
+  // Additional In-flight
+  14:"I can see you're very anxious right now. Let me sit with you for a moment. Try breathing slowly with me. I'll bring you some water and a warm towel. You're safe, and we're here for you.",
+  15:"I'm sorry you feel that way. I'm here to ensure every passenger has the best experience. Is there something specific I can help you with? I'd love to make your flight more comfortable.",
+  16:"I understand you feel more comfortable standing. For your safety, I need to ask you to remain seated when the seatbelt sign is on. During other times, I'll arrange a seat near the exit with extra space.",
+  17:"I understand your concern about your medication. While I'm not able to give medical advice, I can help you contact our on-ground medical team via radio. Let me also bring you some water.",
+  18:"I understand this can be stressful for nearby passengers. Let me bring some treats for the animal to help it settle. I'll also check if there's a quieter area where you both might be more comfortable.",
+  19:"I understand the wait is frustrating. The economy lavatories should be free shortly. In the meantime, let me check and I'll personally let you know the moment one becomes available.",
+  20:"I know this turbulence is scary. I'm going to sit right here with you both. Let me bring some coloring books and juice. Your parents asked us to take very good care of you, and that's exactly what we'll do.",
+  21:"That's a serious concern. Let me help you check your belongings and I'll review the overhead bin area. I'll also inform the senior crew member so we can resolve this properly.",
+  22:"I understand your frustration with the Wi-Fi. Unfortunately, refunds are handled by our ground team. Let me note your details and provide you with a complaint form. I'll also bring complimentary snacks and entertainment options.",
+  23:"This is a very serious safety violation. I need to inform you that smoking is strictly prohibited. I'll need to document this incident as required by aviation regulations. Please remain in your seat.",
+  // Hotel
+  24:"I sincerely apologize for the oversight. Let me personally contact housekeeping right now and have your room cleaned within 15 minutes. I'll also place complimentary amenities and fresh towels for you.",
+  25:"I'm very sorry for the confusion. Let me pull up your booking confirmation. In the meantime, let me check if an ocean-view room is available as an upgrade at no extra charge.",
+  26:"I completely understand your request. Let me check our schedule. While a 4 PM checkout is difficult today, I can arrange 2 PM and offer our executive lounge so you can freshen up afterwards.",
+  27:"I'm so sorry for the discomfort. Let me move you to an upgraded room immediately while we repair the AC. I'll also bring a portable fan and chilled water right away.",
+  28:"That is absolutely unacceptable and I sincerely apologize. Let me move you to a freshly inspected room on a higher floor right now, and I'll ensure a complimentary fruit basket is waiting.",
+  29:"I'm deeply sorry this happened. Let me track your luggage immediately and file a report. I'll personally follow up and we'll cover any replacement costs for missing items.",
+  30:"I understand how frustrating that must be. Let me offer you a quieter room on the opposite side of the building, and I'll apply a discount to your stay as a gesture of goodwill.",
+  31:"I sincerely apologize for the wait. Let me rush your order with priority. I'll also remove the service charge and add a complimentary dessert for the inconvenience.",
+  // Restaurant
+  32:"I am so sorry. Please don't eat any more. Let me take this away immediately and bring you a fresh dish on the house. I'll also speak with our kitchen manager right away.",
+  33:"Happy anniversary! I completely understand. Let me move you to our best private table by the window. I'll also bring a complimentary bottle of wine to celebrate your special evening.",
+  34:"This is very serious and I want to help immediately. Are you feeling alright? Let me call our emergency contact and get our allergy kit. Your safety is the absolute priority.",
+  35:"I'm very sorry about that. Let me send it back to the kitchen and have a new one prepared exactly to your preference. While you wait, may I offer a complimentary appetizer?",
+  36:"I'm truly sorry for this mistake. Let me check nearby partner restaurants for availability. If you'd prefer to wait, I'll set up our best table and offer complimentary drinks for your group.",
+  37:"I sincerely apologize. Let me review the bill right now and remove any incorrect items. I'll also offer a dessert on the house for the trouble.",
+  38:"I understand your disappointment. Our chef created a new dish with similar flavors that I think you'll love. May I bring a complimentary tasting portion so you can try it?",
+  39:"I'm so sorry about that. Let me get club soda and napkins right away. We have a partnership with a dry cleaner nearby, and I'll arrange for the cleaning at our expense.",
+  // Café / Lounge
+  40:"I'm very sorry for getting your order wrong again. Let me make it fresh myself and ensure it's exactly right. This one and your next visit are on us.",
+  41:"I understand this is frustrating. Let me verify your membership details. If there's a system error, I'll grant you access while we resolve it and contact the membership team.",
+  42:"I'm so sorry this happened. Let me get paper towels immediately and help you. I'll file an incident report and connect you with our manager about compensation for the damage.",
+  43:"I apologize for the inconvenience. Let me check with our IT team right away. In the meantime, I can offer you a mobile hotspot device and a quiet area near the business center.",
+  44:"I'm sorry about the billing error. Let me process the refund right now and give you a loyalty card with a free drink credit as our apology.",
+  45:"I appreciate your feedback. Let me speak with our lounge chef about expanding the selection. For now, may I prepare a custom plate from our premium options, or order something special for you?",
+  // Cruise / Resort
+  46:"I'm so sorry about this emergency. Let me move you to a dry cabin immediately and we'll have your belongings professionally cleaned and dried. I'll also upgrade your cabin class.",
+  47:"That is unacceptable and I deeply apologize. Let me rebook your treatment right now with our best therapist, and I'll offer a complimentary upgrade to our premium package.",
+  48:"I'm very sorry for the miscommunication. Let me arrange a private tour to the same destination. I'll cover the cost and ensure you have the best experience possible.",
+  49:"I sincerely apologize for the mix-up. Let me find you an equally premium cabana right away. I'll also provide complimentary drinks and towels for your group.",
+  // Airport Ground
+  50:"I understand how frustrating this is. Let me check the next available flight for you right away. I'll also arrange lounge access, a meal voucher, and priority boarding on your new flight.",
+  51:"I'm very sorry about your luggage. Let me file a trace immediately and give you a toiletry kit. I'll have the bag delivered to your hotel as soon as it arrives, and here's my direct line.",
+  52:"I sincerely apologize for this oversight. Let me personally assist you right now and ensure we get you to your gate comfortably. I'll also file a report to prevent this from happening again.",
+  53:"I understand how important this is for your family. Let me check all available options to restore your bassinet seat. If not, I'll arrange bulkhead seating with extra amenities for your infant.",
+  // Retail / Duty-Free
+  54:"I understand your concern. While our policy is no returns, let me speak with my manager. We may be able to offer an exchange or store credit so you can find something you love.",
+  55:"I sincerely apologize if we made you feel uncomfortable. That was never our intention. I'll speak with my team about this. Please enjoy your shopping, and let me know if I can assist you personally.",
+  56:"I'm sorry about the error. Let me recalculate your refund right now and process the correct amount. I'll also give you my contact information in case of any further issues.",
+  57:"I'm sorry you discovered that. Let me examine it right away. We'll replace it with a perfect one immediately, or if you prefer, I can process a full refund. I'll also gift-wrap it for you."
 };
 
 var chosenAvatar='👨🏻';
@@ -312,23 +414,35 @@ function showQuestion(){
   customerFirstSpeak(q.q);
 }
 
+function detectSetting(scenario){
+  var s=scenario.toLowerCase();
+  if(/hotel|check-in|housekeeping|checkout|room service|lobby/.test(s))return{role:'hotel guest',staff:'hotel staff member',place:'a hotel'};
+  if(/restaurant|steak|soup|waiter|chef|table|menu|reservation.*table|anniversary/.test(s))return{role:'restaurant guest',staff:'restaurant staff member',place:'a restaurant'};
+  if(/caf[eé]|coffee|lounge|wi-fi|wifi|membership.*lounge/.test(s))return{role:'customer',staff:'staff member',place:'a café or lounge'};
+  if(/cruise|cabin.*leak|shore excursion|resort|spa treatment|pool cabana/.test(s))return{role:'guest',staff:'service staff member',place:'a cruise ship or resort'};
+  if(/check-in counter|boarding gate|connecting flight|wheelchair|luggage.*transfer|overbooked/.test(s))return{role:'passenger',staff:'ground service agent',place:'an airport'};
+  if(/duty-free|boutique|tax refund|designer bag|perfume.*return/.test(s))return{role:'customer',staff:'sales associate',place:'a retail store'};
+  return{role:'passenger',staff:'cabin crew member',place:'an airplane'};
+}
+
 async function customerFirstSpeak(scenario){
   var fb=document.getElementById('feedback');
-  fb.innerHTML='<span style="color:var(--gold);">The passenger is speaking...</span>';
+  var setting=detectSetting(scenario);
+  fb.innerHTML='<span style="color:var(--gold);">The '+setting.role+' is speaking...</span>';
   fb.classList.add('active');
 
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-sonnet-4-20250514',max_tokens:150,
-      system:'You are a passenger on an airplane. The situation is: "'+scenario+'"\n\nYou must speak FIRST as the upset/confused passenger. Say 1-2 sentences expressing your complaint or request naturally, as if talking to the cabin crew member standing in front of you. Be realistic. Speak in ENGLISH only. Do NOT say anything from the crew perspective.',
-      messages:[{role:'user',content:'Start the conversation as the passenger.'}]
+      system:'You are a '+setting.role+' at '+setting.place+'. The situation is: "'+scenario+'"\n\nYou must speak FIRST as the upset/confused '+setting.role+'. Say 1-2 sentences expressing your complaint or request naturally, as if talking to the '+setting.staff+' standing in front of you. Be realistic. Speak in ENGLISH only. Do NOT say anything from the staff perspective.',
+      messages:[{role:'user',content:'Start the conversation as the '+setting.role+'.'}]
     })});
     var data=await res.json();
     var aiText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Excuse me, I have a problem.';
     aiText=aiText.replace(/\*\*/g,'');
 
     chatHistory.push({role:'assistant',content:aiText});
-    fb.innerHTML='<b style="color:var(--gold);">Passenger:</b> '+aiText;
+    fb.innerHTML='<b style="color:var(--gold);">'+setting.role.charAt(0).toUpperCase()+setting.role.slice(1)+':</b> '+aiText;
 
     // TTS
     var accent=document.getElementById('s-accent').value;
@@ -460,10 +574,11 @@ async function processAnswer(){
     var q=questions[qIdx];
     var scenario=typeof q==='string'?q:q.q;
     var turnCount=chatHistory.filter(function(m){return m.role==='user';}).length;
+    var setting=detectSetting(scenario);
 
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-sonnet-4-20250514',max_tokens:200,
-      system:'You are a passenger on an airplane. The situation is: "'+scenario+'"\n\nYou are the upset/confused passenger. The cabin crew member just responded to you. React naturally IN ENGLISH. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the passenger\n- If the crew member apologized well and offered a good solution, accept it gratefully (e.g. "Oh that sounds nice, thank you.")\n- If the solution is weak, push back gently (e.g. "But I specifically requested..." or "That doesn\'t really help...")\n- After 3-4 exchanges, wrap up naturally (e.g. "Alright, thank you for your help.") and add [END] at the very end\n- Be realistic, not overly aggressive\n- This is turn '+turnCount+' of the conversation',
+      system:'You are a '+setting.role+' at '+setting.place+'. The situation is: "'+scenario+'"\n\nYou are the upset/confused '+setting.role+'. The '+setting.staff+' just responded to you. React naturally IN ENGLISH. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the '+setting.role+'\n- If the staff apologized well and offered a good solution, accept it gratefully (e.g. "Oh that sounds nice, thank you.")\n- If the solution is weak, push back gently (e.g. "But I specifically requested..." or "That doesn\'t really help...")\n- After 3-4 exchanges, wrap up naturally (e.g. "Alright, thank you for your help.") and add [END] at the very end\n- Be realistic, not overly aggressive\n- This is turn '+turnCount+' of the conversation',
       messages:chatHistory
     })});
     var data=await res.json();
@@ -475,7 +590,7 @@ async function processAnswer(){
     var isEnd=aiText.includes('[END]')||turnCount>=4;
     var displayText=aiText.replace('[END]','').trim();
 
-    fb.innerHTML='<b style="color:var(--gold);">Passenger:</b> '+displayText;
+    fb.innerHTML='<b style="color:var(--gold);">'+setting.role.charAt(0).toUpperCase()+setting.role.slice(1)+':</b> '+displayText;
 
     var accent=document.getElementById('s-accent').value;
     speakQuestion(displayText,accent);
@@ -532,11 +647,12 @@ async function endRoleplay(){
     try{
       var q=questions[qIdx];
       var scenario=typeof q==='string'?q:q.q;
-      var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Crew':'Passenger')+': '+m.content;}).join('\n');
+      var setting=detectSetting(scenario);
+      var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Staff':setting.role.charAt(0).toUpperCase()+setting.role.slice(1))+': '+m.content;}).join('\n');
 
       var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
         model:'claude-sonnet-4-20250514',max_tokens:500,
-        system:'You are a cabin crew interview coach. Evaluate the following roleplay conversation. The scenario was: "'+scenario+'"\n\nProvide feedback in this format:\n1. Overall Score: X/100\n2. Strengths (2-3 points)\n3. Areas to Improve (2-3 points)\n4. Key Phrases to Remember\n\nBe encouraging but honest. Write in English. Keep it concise.',
+        system:'You are a hospitality service interview coach. Evaluate the following roleplay conversation. The setting was '+setting.place+' and the scenario was: "'+scenario+'"\n\nProvide feedback in this format:\n1. Overall Score: X/100\n2. Strengths (2-3 points)\n3. Areas to Improve (2-3 points)\n4. Key Phrases to Remember\n\nBe encouraging but honest. Write in English. Keep it concise.',
         messages:[{role:'user',content:'Here is the roleplay conversation:\n\n'+convoSummary+'\n\nPlease give me feedback.'}]
       })});
       var data=await res.json();

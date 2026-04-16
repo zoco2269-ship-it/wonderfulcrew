@@ -34,7 +34,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 .airline-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px;}
 .airline-group{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start;}
 .airline-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
-.airline-card{background:#fff;border:1.5px solid rgba(201,168,76,0.25);padding:13px 12px;cursor:pointer;transition:all 0.2s;position:relative;text-align:left;font-family:inherit;}
+.airline-card{background:#fff;border:1.5px solid rgba(201,168,76,0.25);padding:13px 12px;cursor:pointer;transition:all 0.2s;position:relative;text-align:left;font-family:inherit;min-height:82px;display:flex;flex-direction:column;justify-content:space-between;}
+.airline-name-en{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .airline-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,0.12);}
 .airline-card.recommended{border-color:var(--gold);background:linear-gradient(180deg,#fff 0%,rgba(201,168,76,0.05) 100%);}
 .airline-card.selected{border-color:var(--gold);background:var(--gold);color:#fff;}
@@ -155,7 +156,7 @@ var AIRLINES=[
   {key:'airbusan',en:'Air Busan',ko:'에어부산',region:'Korea'},
   {key:'eastar',en:'Eastar Jet',ko:'이스타항공',region:'Korea'},
   {key:'aerok',en:'Aero K',ko:'에어로케이',region:'Korea'},
-  {key:'klm',en:'KLM Royal Dutch Airlines',ko:'KLM',region:'Netherlands · Amsterdam'},
+  {key:'klm',en:'KLM Royal Dutch',ko:'KLM',region:'Netherlands · Amsterdam'},
   {key:'airasia',en:'AirAsia',ko:'에어아시아',region:'Malaysia'},
   {key:'finnair',en:'Finnair',ko:'핀에어',region:'Finland · Helsinki'},
   {key:'cathay',en:'Cathay Pacific',ko:'캐세이퍼시픽',region:'Hong Kong'},

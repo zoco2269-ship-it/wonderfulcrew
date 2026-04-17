@@ -227,8 +227,8 @@ var TOPICS_FREE=[
 ];
 
 // 가상 동료 지원자 페르소나
-var PERSONA_B={name:'지원자 B',pitch:1.35,style:'신중하고 데이터 중심. 상대 의견을 인용하며 논리적으로 연결. 경청 태도 모범.'};
-var PERSONA_C={name:'지원자 C',pitch:0.8,style:'적극적이고 창의적. 새로운 각도의 의견 제시. 때로 반대 입장도 언급하되 예의 있게.'};
+var PERSONA_B={name:'지원자 B',pitch:0.8,style:'신중하고 데이터 중심. 상대 의견을 인용하며 논리적으로 연결. 경청 태도 모범.',noVoice:true};
+var PERSONA_C={name:'지원자 C',pitch:0.8,style:'적극적이고 창의적. 새로운 각도의 의견 제시. 때로 반대 입장도 언급하되 예의 있게.',noVoice:false};
 
 var topics=[];
 var roundIdx=0;
@@ -390,21 +390,22 @@ function appendLog(who,name,text){
 
 function speakText(text,persona){
   return new Promise(function(resolve){
+    if(persona.noVoice){setTimeout(resolve,800);return;}
     if(!('speechSynthesis' in window)){resolve();return;}
+    window.speechSynthesis.cancel();
     var u=new SpeechSynthesisUtterance(text);
     u.rate=0.98;u.pitch=persona.pitch;u.lang='ko-KR';
     var voices=window.speechSynthesis.getVoices();
     var ko=voices.filter(function(v){return v.lang==='ko-KR'||v.lang.startsWith('ko');});
     if(ko.length>0){
-      var isFemale=persona.pitch>1;
-      var match=ko.find(function(v){return isFemale?/female|유나|선|heami|yuna/i.test(v.name):/male|인호|준|min/i.test(v.name);});
-      u.voice=match||ko[isFemale?0:Math.min(1,ko.length-1)];
+      var match=ko.find(function(v){return /male|인호|준|min/i.test(v.name);});
+      u.voice=match||ko[0];
     }
-    u.onend=function(){resolve();};
-    u.onerror=function(){resolve();};
-    window.speechSynthesis.cancel();
+    var resolved=false;
+    u.onend=function(){if(!resolved){resolved=true;resolve();}};
+    u.onerror=function(){if(!resolved){resolved=true;resolve();}};
     window.speechSynthesis.speak(u);
-    setTimeout(resolve,15000);
+    setTimeout(function(){if(!resolved){resolved=true;resolve();}},20000);
   });
 }
 

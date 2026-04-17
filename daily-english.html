@@ -161,6 +161,18 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </div>
 </section>
 
+<!-- FORMAL ENGLISH EXPRESSIONS -->
+<section id="formal" style="background:var(--cream);">
+  <div class="sec-label">Premium Service English</div>
+  <h2 class="sec-title">포멀 영어 <em>표현 익히기</em></h2>
+  <div class="gold-line"></div>
+  <p style="max-width:700px;margin:0 auto 36px;text-align:center;font-size:0.92rem;color:var(--text-mid);line-height:1.8;font-weight:300;">하이엔드 서비스 현장에서 실제로 사용하는 격조 있는 표현을 익힙니다.<br>일반적인 영어와 프리미엄 서비스 영어의 차이를 이해하세요.</p>
+  <div class="q-wrap" id="formal-wrap"></div>
+  <div style="max-width:860px;margin:30px auto 0;text-align:center;">
+    <a href="roleplay-practice.html" class="q-btn feedback" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;font-size:0.9rem;text-decoration:none;">롤플레이에서 직접 연습하기 →</a>
+  </div>
+</section>
+
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>
 
 <script>
@@ -530,6 +542,81 @@ function buildShadowCards(sentences){
 }
 buildShadowCards(pickShadow3());
 function refreshShadowing(){buildShadowCards(pickShadow3());}
+
+// ============ FORMAL EXPRESSIONS ============
+var formalData = [
+  {
+    casual: "Show me your passport, please.",
+    formal: "May I have your passport, please?",
+    context: "탑승객 여권 확인 시",
+    tip: "'Show me'는 명령형입니다. 프리미엄 서비스에서는 'May I have~'로 요청 형태를 사용합니다."
+  },
+  {
+    casual: "Of course.",
+    formal: "Certainly, Sir. / Certainly, Madam.",
+    context: "고객 요청에 대한 응답",
+    tip: "'Of course'는 일상에서는 자연스럽지만, 하이엔드 서비스에서는 'Certainly'가 품격 있는 표현입니다. 반드시 Sir/Madam 호칭을 붙입니다."
+  },
+  {
+    casual: "Wait a moment, please.",
+    formal: "Allow me a moment, please. I'll be right back.",
+    context: "잠시 자리를 비울 때",
+    tip: "'Wait'은 고객에게 기다리라는 지시입니다. 'Allow me'는 허락을 구하는 표현으로 훨씬 정중합니다."
+  },
+  {
+    casual: "What do you want to drink?",
+    formal: "What may I offer you to drink this evening?",
+    context: "기내 음료 서비스 시",
+    tip: "'What do you want'은 직접적이고 캐주얼합니다. 'What may I offer you'는 서비스를 제공하는 자세를 담은 표현입니다."
+  },
+  {
+    casual: "Sorry, we don't have that.",
+    formal: "I'm afraid that's not available at the moment. May I suggest an alternative?",
+    context: "요청한 메뉴/물품이 없을 때",
+    tip: "단순히 없다고 말하지 않고, 대안을 먼저 제시하는 것이 프리미엄 서비스의 본질입니다."
+  },
+  {
+    casual: "Do you need anything else?",
+    formal: "Is there anything further I may assist you with?",
+    context: "추가 요청 확인 시",
+    tip: "'Need'보다 'assist'가 서비스 맥락에서 더 격조 있습니다. 'further'는 'else'의 포멀 버전입니다."
+  },
+  {
+    casual: "Please sit down.",
+    formal: "Please, make yourself comfortable.",
+    context: "고객 착석 안내 시",
+    tip: "'Sit down'은 지시입니다. 'Make yourself comfortable'은 고객의 편안함을 우선하는 표현입니다."
+  },
+  {
+    casual: "Your food is here.",
+    formal: "Your meal is served. Please enjoy.",
+    context: "기내식/코스 서빙 시",
+    tip: "'Food is here'는 단순 전달입니다. 'Your meal is served'는 정식 서비스 영어이며, 'Please enjoy'로 마무리합니다."
+  }
+];
+
+var formalWrap = document.getElementById('formal-wrap');
+formalData.forEach(function(item, i) {
+  var card = document.createElement('div');
+  card.className = 'q-card';
+  card.innerHTML =
+    '<div class="q-num">Expression ' + (i + 1) + '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">' +
+      '<div style="padding:14px 16px;background:rgba(192,57,43,0.06);border-radius:8px;">' +
+        '<div style="font-size:0.72rem;color:#C0392B;font-weight:700;letter-spacing:0.1em;margin-bottom:6px;">CASUAL</div>' +
+        '<div style="font-size:0.95rem;color:var(--text-dark);line-height:1.5;">' + item.casual + '</div>' +
+      '</div>' +
+      '<div style="padding:14px 16px;background:rgba(201,168,76,0.1);border-radius:8px;">' +
+        '<div style="font-size:0.72rem;color:var(--gold);font-weight:700;letter-spacing:0.1em;margin-bottom:6px;">FORMAL · PREMIUM</div>' +
+        '<div style="font-size:0.95rem;color:var(--navy);font-weight:600;line-height:1.5;">' + item.formal + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="q-feedback visible" style="display:block;">' +
+      '<b>상황:</b> ' + item.context + '<br>' +
+      '<b>포인트:</b> ' + item.tip +
+    '</div>';
+  formalWrap.appendChild(card);
+});
 
 // 페이지 나갈 때 TTS 중지
 window.addEventListener('beforeunload',function(){if('speechSynthesis' in window)window.speechSynthesis.cancel();});

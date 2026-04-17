@@ -159,6 +159,18 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </div>
 </section>
 
+<!-- FORMAL ENGLISH EXPRESSIONS -->
+<section id="formal" style="background:var(--cream);">
+  <div class="sec-label">Premium Service English</div>
+  <h2 class="sec-title">Formal English <em>Expressions</em></h2>
+  <div class="gold-line"></div>
+  <p style="max-width:700px;margin:0 auto 36px;text-align:center;font-size:0.92rem;color:var(--text-mid);line-height:1.8;font-weight:300;">Learn the premium service language actually used in high-end aviation.<br>Understand the difference between casual English and formal service English.</p>
+  <div class="q-wrap" id="formal-wrap"></div>
+  <div style="max-width:860px;margin:30px auto 0;text-align:center;">
+    <a href="roleplay-practice-en.html" class="q-btn feedback" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;font-size:0.9rem;text-decoration:none;">Practice in Roleplay →</a>
+  </div>
+</section>
+
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>
 
 <script>
@@ -545,6 +557,81 @@ function buildShadowCards(sentences){
 }
 buildShadowCards(pickShadow3());
 function refreshShadowing(){buildShadowCards(pickShadow3());}
+
+// ============ FORMAL EXPRESSIONS ============
+var formalData = [
+  {
+    casual: "Show me your passport, please.",
+    formal: "May I have your passport, please?",
+    context: "Checking passenger documents",
+    tip: "'Show me' is a command. In premium service, use 'May I have~' to frame it as a polite request."
+  },
+  {
+    casual: "Of course.",
+    formal: "Certainly, Sir. / Certainly, Madam.",
+    context: "Responding to a guest request",
+    tip: "'Of course' is fine in everyday conversation, but 'Certainly' carries more elegance. Always add Sir or Madam."
+  },
+  {
+    casual: "Wait a moment, please.",
+    formal: "Allow me a moment, please. I'll be right back.",
+    context: "Stepping away briefly",
+    tip: "'Wait' instructs the guest. 'Allow me' asks permission — much more refined."
+  },
+  {
+    casual: "What do you want to drink?",
+    formal: "What may I offer you to drink this evening?",
+    context: "In-flight beverage service",
+    tip: "'What do you want' is direct and casual. 'What may I offer you' conveys a service-first posture."
+  },
+  {
+    casual: "Sorry, we don't have that.",
+    formal: "I'm afraid that's not available at the moment. May I suggest an alternative?",
+    context: "Unavailable item request",
+    tip: "Never just say it's unavailable. Offer an alternative first — that's the essence of premium service."
+  },
+  {
+    casual: "Do you need anything else?",
+    formal: "Is there anything further I may assist you with?",
+    context: "Checking for additional requests",
+    tip: "'Assist' is more refined than 'need' in service contexts. 'Further' is the formal equivalent of 'else'."
+  },
+  {
+    casual: "Please sit down.",
+    formal: "Please, make yourself comfortable.",
+    context: "Guiding a guest to their seat",
+    tip: "'Sit down' is an instruction. 'Make yourself comfortable' prioritizes the guest's comfort."
+  },
+  {
+    casual: "Your food is here.",
+    formal: "Your meal is served. Please enjoy.",
+    context: "Serving a meal",
+    tip: "'Food is here' is a plain statement. 'Your meal is served' is proper service English, finished with 'Please enjoy'."
+  }
+];
+
+var formalWrap = document.getElementById('formal-wrap');
+formalData.forEach(function(item, i) {
+  var card = document.createElement('div');
+  card.className = 'q-card';
+  card.innerHTML =
+    '<div class="q-num">Expression ' + (i + 1) + '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">' +
+      '<div style="padding:14px 16px;background:rgba(192,57,43,0.06);border-radius:8px;">' +
+        '<div style="font-size:0.72rem;color:#C0392B;font-weight:700;letter-spacing:0.1em;margin-bottom:6px;">CASUAL</div>' +
+        '<div style="font-size:0.95rem;color:var(--text-dark);line-height:1.5;">' + item.casual + '</div>' +
+      '</div>' +
+      '<div style="padding:14px 16px;background:rgba(201,168,76,0.1);border-radius:8px;">' +
+        '<div style="font-size:0.72rem;color:var(--gold);font-weight:700;letter-spacing:0.1em;margin-bottom:6px;">FORMAL · PREMIUM</div>' +
+        '<div style="font-size:0.95rem;color:var(--navy);font-weight:600;line-height:1.5;">' + item.formal + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="q-feedback visible" style="display:block;">' +
+      '<b>Context:</b> ' + item.context + '<br>' +
+      '<b>Key Point:</b> ' + item.tip +
+    '</div>';
+  formalWrap.appendChild(card);
+});
 
 // 페이지 나갈 때 TTS 중지
 window.addEventListener('beforeunload',function(){if('speechSynthesis' in window)window.speechSynthesis.cancel();});

@@ -32,7 +32,7 @@ section{padding:80px 5%;}.wrap{max-width:900px;margin:0 auto;}
 .advisor-role{font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:8px;}
 .advisor-desc{font-family:'Noto Sans KR',sans-serif;font-size:0.82rem;color:var(--text-muted);line-height:1.6;}
 footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
-@media(max-width:900px){.nav-links{display:none;}.person-card{flex-direction:column;}.advisor-grid{grid-template-columns:1fr 1fr;}.advisor-featured{grid-template-columns:1fr!important;gap:20px!important;}.advisor-featured-video{max-width:320px;margin:0 auto;}}
+@media(max-width:900px){.nav-links{display:none;}.person-card{grid-template-columns:1fr!important;}.advisor-grid{grid-template-columns:1fr 1fr;}.advisor-featured{grid-template-columns:1fr!important;gap:20px!important;}.person-card img{max-width:220px;margin:0 auto;}}
 @media(max-width:600px){.advisor-grid{grid-template-columns:1fr;}}
 
 .nav-dropdown{position:relative;}
@@ -76,13 +76,16 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <h3 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--gold);font-weight:600;margin-bottom:8px;">Premium Cabin Crew Training Powered by AI</h3>
   <div class="gold-line"></div>
 
-  <div class="person-card">
+  <div class="person-card" style="display:grid;grid-template-columns:220px 1fr;gap:36px;align-items:start;">
+    <div>
+      <img src="images/ceo-profile.jpg" alt="WonderfulCrew Founder" style="width:100%;object-fit:cover;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+    </div>
     <div class="person-info">
       <div class="person-name">WonderfulCrew Founder</div>
       <div class="person-role">WonderfulCrew Founder & Head Coach</div>
       <div class="person-bio">
-        Learned Emirates first-class service — experienced by only 1% worldwide — through 7 years of hands-on work. Moving before the customer speaks, treating complaints as gifts. Over 13 years, 22countries에서 1,000명 이상이 합격으로 증명했습니다.<br><br>
-        Active crew from Emirates, Qatar, Cathay Pacific, Korean Air, Asiana, T'way, Singapore Airlines form our Advisory Board, and our proprietary AI delivers that experience 24/7.간 당신 곁에서 코칭합니다.<br><br>
+        Learned Emirates first-class service — experienced by only 1% worldwide — through 7 years of hands-on work. Moving before the customer speaks, treating complaints as gifts. Over 13 years, more than 1,000 candidates across 22 countries proved this philosophy through their success.<br><br>
+        Active crew from Emirates, Qatar, Cathay Pacific, Korean Air, Asiana, T'way, Singapore Airlines form our Advisory Board, and our proprietary AI delivers that experience 24/7.<br><br>
         Beyond passing interviews — learn the essence of serving customers.
       </div>
     </div>
@@ -166,26 +169,16 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="gold-line"></div>
   <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.8;margin-bottom:36px;">대한항공, 아시아나, 에미레이트, 카타르, 캐세이퍼시픽, 싱가포르항공 등 현직 승무원이 Advisory Board으로 참여하여 최신 면접 트렌드와 실전 노하우를 공유합니다.</p>
 
-  <div class="advisor-featured" style="background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:32px;margin-bottom:28px;display:grid;grid-template-columns:200px 1fr 240px;gap:28px;align-items:center;">
-    <div>
-      <img src="images/advisor-cathay.jpg" alt="Cathay Pacific Current Cabin Crew" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--cream);" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-      <div style="display:none;width:100%;aspect-ratio:1;background:var(--cream);border:2px dashed var(--gold-pale);border-radius:8px;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.76rem;text-align:center;padding:16px;line-height:1.5;">Cathay Pacific<br>Current Cabin Crew<br>(Photo Coming Soon)</div>
+  <div class="advisor-featured" style="background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:32px;margin-bottom:28px;display:grid;grid-template-columns:220px 1fr;gap:32px;align-items:start;">
+    <div style="position:relative;">
+      <img src="images/advisor-cathay.jpg" alt="Cathay Pacific Cabin Crew" style="width:100%;object-fit:cover;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.08);">
+      <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,78,65,0.85);backdrop-filter:blur(4px);color:#fff;font-family:'DM Serif Display',serif;font-size:0.68rem;letter-spacing:0.1em;padding:5px 14px;border-radius:12px;white-space:nowrap;">CATHAY PACIFIC</div>
     </div>
     <div>
       <div style="display:inline-block;padding:3px 10px;background:var(--gold-pale);color:var(--gold);font-size:0.68rem;font-weight:700;letter-spacing:0.1em;border-radius:10px;margin-bottom:10px;">FEATURED ADVISOR</div>
       <div class="advisor-name" style="font-size:1.2rem;margin-bottom:6px;">Cathay Pacific Cabin Crew</div>
       <div class="advisor-role">Cabin Crew · Hong Kong Base</div>
-      <div class="advisor-desc" style="margin-top:12px;line-height:1.75;">A message from a current Cathay Pacific cabin crew based in Hong Kong. Other advisors remain anonymous due to airline privacy policies.</div>
-    </div>
-    <div class="advisor-featured-video" style="background:#000;border-radius:8px;overflow:hidden;aspect-ratio:9/16;position:relative;width:100%;">
-      <video controls playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-        <source src="videos/advisor-cathay-cheer.mp4" type="video/mp4">
-      </video>
-      <div style="display:flex;position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(160deg,#1A2340,#2a3560);color:rgba(255,255,255,0.7);font-size:0.82rem;align-items:center;justify-content:center;flex-direction:column;gap:8px;text-align:center;padding:20px;">
-        <div style="font-size:1.8rem;">▶</div>
-        <div style="font-weight:600;">Cheer Message</div>
-        <div style="font-size:0.72rem;color:rgba(255,255,255,0.45);line-height:1.5;">Vertical video coming soon<br>videos/advisor-cathay-cheer.mp4</div>
-      </div>
+      <div class="advisor-desc" style="margin-top:12px;line-height:1.75;">A current Cathay Pacific cabin crew based in Hong Kong shares interview experience and real know-how. Other advisors remain anonymous due to airline privacy policies.</div>
     </div>
   </div>
 

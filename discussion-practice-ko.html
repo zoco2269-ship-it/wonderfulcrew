@@ -342,13 +342,11 @@ async function processMyTurn(){
   if(!ans){startMyTurn();return;}
   appendLog('user','You (지원자 A)',ans);
   chatHistory.push({role:'user',content:ans});
-  // 지원자 B 응답 → 지원자 C 응답 → 다음 라운드 버튼
   await aiPeerSpeak(PERSONA_B,'panel-b');
   await aiPeerSpeak(PERSONA_C,'panel-c');
-  if(roundIdx+1<topics.length){
-    document.getElementById('btn-next').style.display='inline-flex';
-  }
+  document.getElementById('transcript').textContent='지원자 A (나)의 차례입니다. 이어서 발언하세요.';
   document.getElementById('btn-feedback').style.display='inline-flex';
+  startMyTurn();
 }
 
 async function aiPeerSpeak(persona,panelId){
@@ -366,14 +364,18 @@ async function aiPeerSpeak(persona,panelId){
       '- 2~3문장 이내, 한국어 존댓말\n'+
       '- 새로운 데이터/사례/관점 한 가지 반드시 포함\n'+
       '- 다른 지원자를 부정하지 말고 연결하되, 본인 입장은 선명하게\n'+
-      '- 영어 금지';
+      '- 영어 금지\n'+
+      '- IATA, 국제항공운송협회 등 특정 기관명을 반복 인용하지 마세요. 매번 다른 근거를 사용하세요\n'+
+      '- 구분선(---), 줄바꿈 기호, 마크다운 서식 사용 금지\n'+
+      '- "당신은 응답할 차례입니다" 같은 메타 지시문 절대 포함하지 마세요. 오직 토론 발언만 출력하세요\n'+
+      '- 본인 이름(지원자 B, 지원자 C)을 답변 앞에 붙이지 마세요';
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:200,
       system:sys,messages:chatHistory
     })});
     var data=await res.json();
     var txt=(data&&data.content&&data.content[0]&&data.content[0].text)||(persona.name+': 좋은 의견이네요. 저도 같은 맥락에서 덧붙이자면…');
-    txt=txt.replace(/\*\*/g,'').trim();
+    txt=txt.replace(/\*\*/g,'').replace(/---+/g,'').replace(/\n{2,}/g,'\n').replace(/^\[?지원자\s*[A-C]\]?\s*[:：]?\s*/i,'').replace(/당신은.*차례입니다\.?/g,'').trim();
     chatHistory.push({role:'assistant',content:'['+persona.name+'] '+txt});
     appendLog('peer',persona.name,txt);
     await speakText(txt,persona);

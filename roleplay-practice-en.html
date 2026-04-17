@@ -547,19 +547,23 @@ function speakQuestion(text,lang){
   u.lang=lang;
   var isMale=(chosenAvatar==='👨🏻');
   u.rate=0.85;
-  u.pitch=isMale?0.75:1.2;
+  u.pitch=isMale?0.85:1.1;
   // 성별 음성 선택
   var voices=window.speechSynthesis.getVoices();
   var langPrefix=lang.split('-')[0];
   var filtered=voices.filter(function(v){return v.lang.startsWith(langPrefix);});
   if(filtered.length>0){
-    // 남성: 이름에 male/daniel/james/david/thomas/mark 포함 또는 pitch가 낮은 것
-    // 여성: female/samantha/karen/victoria/fiona/zira/google 포함
-    var maleNames=/male|daniel|james|david|thomas|mark|richard|google uk english male/i;
-    var femaleNames=/female|samantha|karen|victoria|fiona|zira|susan|google uk english female/i;
+    var maleNames=/male|daniel|james|david|thomas|mark|richard|guy|google uk english male/i;
+    var femaleNames=/female|samantha|karen|victoria|fiona|zira|susan|jenny|aria|kate|martha|libby|sonia|google uk english female/i;
     var match=filtered.find(function(v){return isMale?maleNames.test(v.name):femaleNames.test(v.name);});
     if(match)u.voice=match;
-    else if(filtered.length>=2)u.voice=filtered[isMale?0:1]; // fallback: first=male, second=female
+    else if(!isMale){
+      var femaleGuess=filtered.find(function(v){return /female|woman/i.test(v.name);});
+      if(femaleGuess)u.voice=femaleGuess;
+      else if(filtered.length>=2)u.voice=filtered[1];
+    } else {
+      u.voice=filtered[0];
+    }
   }
   u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
   window.speechSynthesis.cancel();

@@ -525,43 +525,40 @@ function speakQuestion(text,lang){
   var u=new SpeechSynthesisUtterance(text);
   var isMale=(chosenAvatar==='👨🏻');
   u.rate=0.85;
-  u.pitch=isMale?0.7:1.5;
+  u.pitch=isMale?0.85:1.1;
 
-  // 악센트별 음성 선택
   var voices=window.speechSynthesis.getVoices();
   var selectedVoice=null;
 
+  function findVoice(langCode, genderNames) {
+    var pool=voices.filter(function(v){return v.lang===langCode||v.lang.startsWith(langCode.split('-')[0]);});
+    if(pool.length===0) return null;
+    var match=pool.find(function(v){return genderNames.test(v.name);});
+    if(match) return match;
+    if(!isMale){
+      var femaleGuess=pool.find(function(v){return /female|woman/i.test(v.name);});
+      if(femaleGuess) return femaleGuess;
+      if(pool.length>=2) return pool[1];
+    }
+    return pool[0];
+  }
+
   if(lang==='en-GB'){
-    // British: 정확히 en-GB 음성만
-    var gb=voices.filter(function(v){return v.lang==='en-GB';});
-    if(gb.length>0){
-      var match=gb.find(function(v){return isMale?/male|daniel|james|thomas/i.test(v.name):/female|kate|fiona|karen/i.test(v.name);});
-      selectedVoice=match||gb[isMale?0:Math.min(1,gb.length-1)];
-    }
+    selectedVoice=findVoice('en-GB', isMale?/daniel|james|thomas|george|male/i:/kate|fiona|karen|martha|female|libby|sonia/i);
   } else if(lang==='en-US'){
-    // American: 정확히 en-US 음성만
-    var us=voices.filter(function(v){return v.lang==='en-US';});
-    if(us.length>0){
-      var match=us.find(function(v){return isMale?/male|david|mark|alex/i.test(v.name):/female|samantha|zira|susan/i.test(v.name);});
-      selectedVoice=match||us[isMale?0:Math.min(1,us.length-1)];
-    }
+    selectedVoice=findVoice('en-US', isMale?/david|mark|alex|guy|male/i:/samantha|zira|susan|jenny|aria|female/i);
   } else if(lang==='fr-FR'){
-    var fr=voices.filter(function(v){return v.lang==='fr-FR'||v.lang.startsWith('fr');});
-    if(fr.length>0){
-      var fmatch=fr.find(function(v){return isMale?!/female|monica|paulina|lucia/i.test(v.name):/female|monica|paulina|lucia|amelie/i.test(v.name);});
-      selectedVoice=fmatch||fr[0];
-    }
+    selectedVoice=findVoice('en-GB', isMale?/daniel|james|thomas|male/i:/kate|fiona|karen|martha|female|libby|sonia/i);
+    if(!selectedVoice) selectedVoice=findVoice('en-US', isMale?/david|male/i:/samantha|zira|jenny|female/i);
+    u.rate=0.8;
   } else if(lang==='es-ES'){
-    var es=voices.filter(function(v){return v.lang.startsWith('es');});
-    if(es.length>0){
-      var ematch=es.find(function(v){return isMale?!/female|monica|paulina|lucia/i.test(v.name):/female|monica|paulina|lucia/i.test(v.name);});
-      selectedVoice=ematch||es[0];
-    }
+    selectedVoice=findVoice('en-US', isMale?/david|mark|alex|male/i:/samantha|zira|susan|jenny|aria|female/i);
+    if(!selectedVoice) selectedVoice=findVoice('en-GB', isMale?/daniel|male/i:/kate|fiona|female/i);
+    u.rate=0.82;
   }
 
   if(selectedVoice) u.voice=selectedVoice;
-  // French/Spanish은 영어 텍스트를 해당 악센트로 읽으므로 lang은 항상 영어로
-  u.lang=(lang==='fr-FR'||lang==='es-ES')?lang:'en-US';
+  u.lang='en-US';
   u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(u);

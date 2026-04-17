@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>면접관은 뒤통수에도 눈이 있다 — WonderfulCrew 합격 칼럼</title>
+<meta name="description" content="오픈데이에서 평가는 문이 열리는 순간부터 시작된다. 면접관이 당신을 보는 방식과 합격의 비밀을 공개합니다.">
+<meta property="og:title" content="면접관은 뒤통수에도 눈이 있다">
+<meta property="og:description" content="오픈데이에서 평가는 문이 열리는 순간부터 시작된다. 22개국 1,000명 합격 코치의 인사이트.">
+<meta property="og:type" content="article">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--navy-light:#2A3455;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.5rem;font-weight:400;color:var(--navy);letter-spacing:0.02em;text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links>a,.nav-links>.nav-dropdown{line-height:36px;}
+.nav-links a{font-size:0.85rem;color:var(--text-mid);text-decoration:none;letter-spacing:0.05em;transition:color 0.2s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-dropdown{position:relative;}
+.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
+.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:0px 16px;background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);border:1px solid rgba(201,168,76,0.2);box-shadow:0 4px 16px rgba(0,0,0,0.06);min-width:160px;z-index:1001;border-radius:20px;}
+.nav-dropdown-menu.nav-dd-grid{display:none;position:absolute;top:100%;left:-12px;grid-template-columns:1fr;padding:0;background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);border:1px solid rgba(201,168,76,0.2);border-radius:20px;min-width:160px;z-index:1001;}
+.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}
+.nav-dropdown:hover .nav-dd-grid{display:grid!important;}
+.nav-dropdown-menu a{display:block;padding:0px 8px!important;font-size:13px;line-height:36px!important;color:#1a2744;white-space:nowrap;}
+.nav-dropdown-menu a:hover{background:rgba(212,175,55,0.3)!important;color:#1a2744!important;border-left:5px solid #C9A84C;}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;text-decoration:none;transition:all 0.2s;}
+@media(max-width:600px){.nav-links{display:none;}}
+
+.article-hero{padding:140px 5% 60px;background:var(--navy);text-align:center;}
+.article-hero .label{font-family:'DM Serif Display',serif;font-size:0.75rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:16px;}
+.article-hero h1{font-family:'Noto Serif KR',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:300;color:#fff;line-height:1.4;margin-bottom:16px;}
+.article-hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.article-hero .meta{font-size:0.82rem;color:rgba(255,255,255,0.5);}
+
+.article-body{max-width:740px;margin:0 auto;padding:60px 5% 80px;}
+.article-body p{font-family:'Noto Sans KR',sans-serif;font-size:0.95rem;color:var(--text-mid);line-height:2;margin-bottom:28px;font-weight:300;}
+.article-body h2{font-family:'Noto Serif KR',serif;font-size:1.3rem;font-weight:600;color:var(--navy);margin:48px 0 20px;padding-left:16px;border-left:3px solid var(--gold);}
+.article-body blockquote{background:#fff;border-left:4px solid var(--gold);padding:24px 28px;margin:32px 0;font-size:0.95rem;color:var(--navy);line-height:1.85;font-weight:400;border-radius:0 12px 12px 0;}
+.article-body .highlight{background:rgba(201,168,76,0.1);padding:24px 28px;border-radius:12px;margin:32px 0;font-size:0.92rem;line-height:1.85;}
+.article-body .img-placeholder{width:100%;aspect-ratio:16/9;background:var(--cream);border:1px solid var(--gold-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.82rem;margin:32px 0;}
+
+.article-nav{max-width:740px;margin:0 auto;padding:0 5% 60px;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+.article-nav a{font-size:0.85rem;color:var(--gold);text-decoration:none;font-weight:600;transition:color 0.2s;}
+.article-nav a:hover{color:var(--navy);}
+
+footer{background:var(--navy);color:rgba(255,255,255,0.6);padding:50px 5%;text-align:center;font-size:0.82rem;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <div class="nav-dropdown"><a href="../index.html#about">소개</a><div class="nav-dropdown-menu nav-dd-grid"><a href="../about.html">원더풀크루 소개</a><a href="../column.html">합격 칼럼</a></div></div>
+    <div class="nav-dropdown"><a href="../index.html#expertise">준비 과정</a><div class="nav-dropdown-menu nav-dd-grid"><a href="../leveltest.html">항공사 승무원</a><a href="../hotel.html">호텔 · 럭셔리</a><a href="../cruise.html">크루즈</a><a href="../walking-analysis.html">워킹 · 자세분석</a><a href="../coach-feedback.html">1:1 코치 피드백</a><a href="../ai-coach.html">AI 코치</a></div></div>
+    <div class="nav-dropdown"><a href="../index.html#resources">학습 자료</a><div class="nav-dropdown-menu nav-dd-grid"><a href="../interview-guide.html">면접 완벽 가이드</a><a href="../english-interview.html">한국어 · 영어 면접</a><a href="../grooming-guide.html">이미지 메이킹 · 그루밍</a><a href="../resume-guide.html">자기소개서 · CV</a><a href="../customer-service.html">고객 응대 스킬</a><a href="../culture-difference.html">문화 차이 이해하기</a></div></div>
+    <a href="../daily-english.html">영어쉐도잉</a>
+    <a href="../jobs.html">항공사 채용</a>
+    <a href="../community.html">커뮤니티</a>
+    <a href="../plans.html">요금제</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="../leveltest.html" class="nav-cta">면접 연습 시작</a>
+  </div>
+</nav>
+
+<section class="article-hero">
+  <div class="label">합격 칼럼 #1</div>
+  <h1>면접관은<br><em>뒤통수에도 눈이 있다</em></h1>
+  <div class="meta">WonderfulCrew · 합격 인사이트</div>
+</section>
+
+<article class="article-body">
+
+<p>항공사 오픈데이에 참가해본 지원자라면 이런 경험이 있을 겁니다. 대기실에서 긴장을 풀고 편하게 앉아 있다가, 문득 면접관이 이미 들어와 있었다는 사실을 깨닫는 순간. 그 순간, 평가는 이미 시작된 것입니다.</p>
+
+<h2>평가는 문이 열리는 순간부터 시작된다</h2>
+
+<p>많은 지원자들이 "면접은 질문을 받는 순간부터 시작된다"고 생각합니다. 하지만 실제로 면접관의 평가는 당신이 건물에 들어서는 순간, 대기실에서 다른 지원자들과 대화하는 순간, 복도를 걸어가는 순간부터 이미 진행되고 있습니다.</p>
+
+<p>에미레이트항공, 카타르항공, 캐세이퍼시픽 등 글로벌 항공사의 오픈데이에서 면접관들은 의도적으로 대기실을 관찰합니다. 누가 다른 지원자에게 먼저 말을 거는지, 누가 긴장한 사람을 편하게 해주는지, 누가 혼자 핸드폰만 보고 있는지. 이 모든 것이 평가의 일부입니다.</p>
+
+<blockquote>
+"면접관은 당신이 모른다고 생각할 때도 보고 있습니다. 대기실에서의 당신이 곧 비행기 안에서의 당신입니다."
+</blockquote>
+
+<h2>입만 웃지 말고, 눈으로 웃어라</h2>
+
+<p>수백 명의 지원자를 하루에 보는 면접관에게 작위적인 미소는 3초면 구별됩니다. 입꼬리만 올라가 있고 눈은 웃지 않는 미소, 누군가에게 보여주기 위해 만들어낸 표정. 이것은 오히려 역효과를 냅니다.</p>
+
+<p>진짜 미소는 눈에서 시작됩니다. 눈가에 자연스러운 주름이 잡히고, 눈동자에 생기가 도는 미소. 이 미소는 연습으로 만들어지는 것이 아니라, 내가 정말로 이 자리에 있고 싶다는 진심에서 나옵니다.</p>
+
+<h2>비행기 안에서도 마찬가지다</h2>
+
+<p>이것은 면접장에서만의 이야기가 아닙니다. 실제 기내에서도 승무원은 항상 관찰되고 있습니다. 승객이 잠든 것 같아도 눈을 살짝 뜨고 보고 있을 수 있고, 갤리에서 동료와 나누는 대화도 들릴 수 있습니다.</p>
+
+<p>프리미엄 항공사의 승무원은 "보이는 곳에서만 프로페셔널한 사람"이 아니라, "보이지 않는 곳에서도 같은 사람"이어야 합니다. 면접관이 오픈데이에서 대기실을 관찰하는 이유가 바로 이것입니다.</p>
+
+<div class="highlight">
+<b>핵심 정리</b><br><br>
+• 평가는 면접장이 아니라 건물에 들어서는 순간부터 시작된다<br>
+• 대기실에서의 태도가 기내에서의 태도를 보여준다<br>
+• 작위적인 미소는 역효과 — 눈으로 웃는 진심이 필요하다<br>
+• "보이지 않는 곳에서도 같은 사람"이 면접관이 찾는 인재상이다
+</div>
+
+</article>
+
+<div class="article-nav">
+  <a href="../column.html">← 칼럼 목록</a>
+  <a href="02.html">다음 칼럼 →</a>
+</div>
+
+<footer>© 2026 WonderfulCrew Inc. All rights reserved.<br>승무원 지망생을 위한 AI 면접 코칭 플랫폼<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>
+</body>
+</html>

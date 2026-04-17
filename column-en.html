@@ -101,7 +101,9 @@ nav {
   border:1px solid rgba(201,168,76,0.15);
   box-shadow:0 2px 12px rgba(0,0,0,0.04);
   transition:all 0.3s;
-  cursor:default;
+  cursor:pointer;
+  text-decoration:none;
+  display:block;
 }
 .column-card:hover {
   transform:translateY(-4px);
@@ -292,12 +294,14 @@ const columns = [
 
 const grid = document.getElementById('columns-grid');
 columns.forEach((col, i) => {
-  const card = document.createElement('div');
+  const card = document.createElement('a');
   card.className = 'column-card';
+  card.href = 'column/' + String(i + 1).padStart(2, '0') + '.html';
   card.innerHTML = `
     <div class="column-card-num">${i + 1}</div>
     <h3>${col.title}</h3>
     <p>${col.body}</p>
+    <div style="margin-top:18px;font-size:0.82rem;color:var(--gold);font-weight:600;letter-spacing:0.05em;">Read More →</div>
   `;
   grid.appendChild(card);
 });

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interview Insights — WonderfulCrew</title>
+<meta name="description" content="AI-powered cabin crew interview coaching. Placed 1,000+ candidates in 22 countries. Practice Emirates, Qatar Airways interview anytime.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8C96A;
+  --gold-pale: #F5E9C8;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EAD8;
+  --navy: #1A2340;
+  --navy-light: #2A3455;
+  --text-dark: #1A1A1A;
+  --text-mid: #4A4438;
+  --text-muted: #5A5048;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;}
+
+/* ── NAV ── */
+nav {
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;height:72px;
+  background:rgba(250,247,240,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(201,168,76,0.2);
+  transition:all 0.3s;
+}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.5rem;font-weight:400;color:var(--navy);letter-spacing:0.02em;text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}
+.nav-links a{font-size:0.85rem;color:var(--text-mid);text-decoration:none;letter-spacing:0.05em;transition:color 0.2s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-dropdown{position:relative;}
+.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
+.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:12px 16px!important;background:rgba(255,255,255,0.25);backdrop-filter:blur(8px);border:1px solid rgba(201,168,76,0.2);box-shadow:0 4px 16px rgba(0,0,0,0.06);min-width:160px;z-index:1001;border-radius:20px;}
+.nav-dropdown-menu.wide{min-width:260px;display:none;grid-template-columns:1fr 1fr;gap:0;padding:4px 0;}
+.nav-dropdown-menu.wide a{padding:5px 12px;font-size:0.76rem;}
+.nav-dropdown:hover .nav-dropdown-menu.wide{display:grid;}
+.nav-dropdown-menu.nav-dd-grid{display:none;position:absolute;top:100%;left:-12px;grid-template-columns:1fr;padding:0;background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);border:1px solid rgba(201,168,76,0.2);border-radius:20px;min-width:160px;z-index:1001;}
+.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}
+.nav-dropdown:hover .nav-dd-grid{display:grid!important;}
+.nav-dropdown-menu a{display:block;padding:0px 8px!important;font-size:13px;line-height:36px!important;color:#1a2744;white-space:nowrap;}
+.nav-dropdown-menu a:hover{background:rgba(212,175,55,0.3)!important;color:#1a2744!important;border-left:5px solid #C9A84C;}
+.nav-cta{
+  padding:10px 24px;border-radius:24px;
+  background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;
+  font-size:0.82rem;font-weight:600;letter-spacing:0.08em;
+  text-decoration:none;transition:all 0.2s;
+}
+.nav-cta:hover{background:linear-gradient(135deg,#F0D578,#D4B358);transform:translateY(-1px);box-shadow:0 4px 14px rgba(201,168,76,0.3);}
+@media(max-width:600px){.nav-links{display:none;}}
+
+/* ── HERO ── */
+.column-hero {
+  padding:140px 5% 80px;
+  background:var(--navy);
+  text-align:center;
+}
+.column-hero .sec-label {
+  font-family:'DM Serif Display',serif;
+  font-size:0.8rem;letter-spacing:0.3em;
+  color:var(--gold-light);text-transform:uppercase;
+  margin-bottom:16px;
+}
+.column-hero h1 {
+  font-family:'Noto Serif KR',serif;
+  font-size:clamp(2rem,4vw,3rem);font-weight:300;
+  color:#fff;margin-bottom:12px;line-height:1.3;
+}
+.column-hero h1 em {
+  font-style:normal;color:var(--gold-light);font-weight:600;
+}
+.column-hero p {
+  font-size:1rem;color:rgba(255,255,255,0.7);
+  font-weight:300;max-width:500px;margin:0 auto;
+}
+
+/* ── COLUMNS GRID ── */
+.columns-section {
+  padding:80px 5%;
+  max-width:1100px;margin:0 auto;
+}
+.columns-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:32px;
+}
+.column-card {
+  background:#fff;
+  border-radius:20px;
+  padding:36px 32px;
+  border:1px solid rgba(201,168,76,0.15);
+  box-shadow:0 2px 12px rgba(0,0,0,0.04);
+  transition:all 0.3s;
+  cursor:default;
+}
+.column-card:hover {
+  transform:translateY(-4px);
+  box-shadow:0 8px 28px rgba(201,168,76,0.15);
+  border-color:rgba(201,168,76,0.4);
+}
+.column-card-num {
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;
+  background:var(--gold-pale);
+  color:var(--gold);
+  font-family:'DM Serif Display',serif;
+  font-size:0.9rem;font-weight:600;
+  border-radius:50%;margin-bottom:20px;
+}
+.column-card h3 {
+  font-family:'Noto Serif KR',serif;
+  font-size:1.15rem;font-weight:600;
+  color:var(--navy);margin-bottom:16px;
+  line-height:1.5;
+}
+.column-card p {
+  font-size:0.92rem;
+  color:var(--text-mid);
+  line-height:1.85;
+  font-weight:300;
+}
+
+/* ── CTA ── */
+.column-cta-section {
+  padding:60px 5% 80px;
+  text-align:center;
+}
+.column-cta-section p {
+  font-size:0.95rem;color:var(--text-muted);
+  margin-bottom:24px;font-weight:300;
+}
+.btn-gold {
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);
+  color:#fff;font-size:0.88rem;font-weight:600;
+  letter-spacing:0.08em;text-decoration:none;
+  border-radius:28px;transition:all 0.2s;font-family:inherit;
+}
+.btn-gold:hover{background:linear-gradient(135deg,#F0D578,#D4B358);transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,168,76,0.35);}
+
+/* ── FOOTER ── */
+footer{background:var(--navy);color:#fff;padding:60px 5% 30px;}
+.footer-inner{display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:32px;max-width:1200px;margin:0 auto;}
+.footer-brand .logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:#fff;margin-bottom:12px;}
+.footer-brand .logo span{color:var(--gold);}
+.footer-brand p{font-size:0.82rem;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:16px;}
+.footer-socials{display:flex;gap:8px;}
+.social-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);font-size:0.7rem;text-decoration:none;transition:all 0.2s;}
+.social-btn:hover{border-color:var(--gold);color:var(--gold);}
+.footer-col h4{font-size:0.82rem;font-weight:600;color:var(--gold-light);margin-bottom:14px;letter-spacing:0.05em;}
+.footer-col ul{list-style:none;}
+.footer-col li{margin-bottom:8px;}
+.footer-col a{font-size:0.78rem;color:rgba(255,255,255,0.55);text-decoration:none;transition:color 0.2s;}
+.footer-col a:hover{color:#fff;}
+.footer-bottom{text-align:center;padding-top:32px;margin-top:40px;border-top:1px solid rgba(255,255,255,0.08);font-size:0.75rem;color:rgba(255,255,255,0.4);}
+.footer-bottom p{margin-bottom:4px;}
+@media(max-width:900px){.footer-inner{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.footer-inner{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <div class="nav-dropdown"><a href="index-en.html#about">About</a><div class="nav-dropdown-menu nav-dd-grid"><a href="about-en.html">About WonderfulCrew</a><a href="column-en.html">Interview Insights</a></div></div>
+    <div class="nav-dropdown"><a href="index-en.html#expertise">Programs</a><div class="nav-dropdown-menu wide"><a href="leveltest-en.html">Cabin Crew</a><a href="hotel-en.html">Hotel & Luxury</a><a href="walking-analysis-en.html">Walking & Posture</a><a href="cruise-en.html">Cruise</a><a href="coach-feedback-en.html">1:1 Coach Feedback</a><a href="ai-coach-en.html">AI Coach</a></div></div>
+    <div class="nav-dropdown"><a href="index-en.html#resources">Resources</a><div class="nav-dropdown-menu wide"><a href="interview-guide-en.html">Interview Guide</a><a href="english-interview-en.html">Interview Q&A</a><a href="grooming-guide-en.html">Image & Grooming</a><a href="resume-guide-en.html">Resume & CV</a><a href="customer-service-en.html">Customer Service Skills</a></div></div>
+    <a href="daily-english-en.html">English Practice</a>
+    <a href="jobs-en.html">Careers</a>
+    <a href="community-en.html">Community</a>
+    <a href="plans-en.html">Plans</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="leveltest-en.html" class="nav-cta">Start Practice</a>
+    <a href="login-en.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;transition:all 0.2s;">Sign In</a>
+    <a href="column.html" style="display:inline-flex;align-items:center;padding:7px 14px;border-radius:20px;border:1px solid var(--gold-pale);color:var(--text-mid);font-size:0.78rem;font-weight:600;text-decoration:none;">KO</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="column-hero">
+  <div class="sec-label">Interview Insights</div>
+  <h1>Interview <em>Insights</em></h1>
+  <p>Coaching insights from placing 1,000+ candidates in 22 countries</p>
+</section>
+
+<!-- COLUMNS -->
+<section class="columns-section">
+  <div class="columns-grid" id="columns-grid"></div>
+</section>
+
+<!-- CTA -->
+<section class="column-cta-section">
+  <p>Understand the real intention behind every question — and your answers will follow.</p>
+  <a href="leveltest-en.html" class="btn-gold">Start Practice Now →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Wonderful<span>Crew</span></div>
+      <p>Achieve your dream with AI.<br>The premier prep platform for aspiring cabin crew.</p>
+      <div class="footer-socials">
+        <a href="https://instagram.com/crew_wonderful" target="_blank" class="social-btn">IG</a>
+        <a href="#" class="social-btn">YT</a>
+        <a href="#" class="social-btn">N</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="roleplay-practice-en.html">AI Mock Interview</a></li>
+        <li><a href="interview-guide-en.html">Study Materials</a></li>
+        <li><a href="curriculum.html">Curriculum</a></li>
+        <li><a href="plans-en.html">Membership</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about-en.html">About Us</a></li>
+        <li><a href="about-en.html">Our Team</a></li>
+        <li><a href="jobs-en.html">Careers</a></li>
+        <li><a href="contact.html">Partnerships</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="contact.html">FAQ</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="contact.html">User Guide</a></li>
+        <li><a href="contact.html">Announcements</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="terms.html">Terms of Service</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="copyright.html">Copyright</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 WonderfulCrew Inc. All rights reserved.</p>
+    <p>AI Interview Coaching for Aspiring Cabin Crew</p>
+    <p style="font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:6px;">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</p>
+  </div>
+</footer>
+
+<script>
+const columns = [
+  {
+    title: 'Assessors Have Eyes in the Back of Their Head',
+    body: 'Recruiters are watching even when you think they\'re not. Don\'t just smile with your mouth — smile with your eyes. At an open day, the assessment begins the moment the door opens.'
+  },
+  {
+    title: 'Every Question Has an Intention',
+    body: 'Interviewers never ask random questions. Every question has a purpose. If you don\'t understand that purpose, even the most fluent answer misses the mark. To read the intention, you must first understand the role of a cabin crew member.'
+  },
+  {
+    title: 'Understand the Working Environment First',
+    body: 'The moment the aircraft door closes, that space is cut off from the rest of the world. No backup, no manager to call. Just your team and the passengers. Once you understand this unique environment, the intention behind every question becomes clear.'
+  },
+  {
+    title: 'The Customer List in Group Activity is Never Random',
+    body: 'Every character on the customer list in a group activity is there for a reason. Think deeply about who is on the list and why. That\'s exactly what the assessors want to see.'
+  },
+  {
+    title: 'Stop Memorizing Answers — Understand the Intention',
+    body: 'Successful candidates don\'t memorize answers. They understand why each question is asked. Once you understand the cabin crew role and working environment, you can answer any question without hesitation.'
+  },
+  {
+    title: 'Smile With Your Eyes, Not Just Your Mouth',
+    body: 'A smile that doesn\'t reach your eyes tells the assessor everything. Recruiters see hundreds of candidates. They know the difference in three seconds. Your assessment begins the moment you walk in — and they\'re watching even when you think they\'re not.'
+  }
+];
+
+const grid = document.getElementById('columns-grid');
+columns.forEach((col, i) => {
+  const card = document.createElement('div');
+  card.className = 'column-card';
+  card.innerHTML = `
+    <div class="column-card-num">${i + 1}</div>
+    <h3>${col.title}</h3>
+    <p>${col.body}</p>
+  `;
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>

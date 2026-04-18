@@ -130,10 +130,10 @@ LECTURES.forEach(function(ch){
   var grid=document.createElement('div');
   grid.className='lec-grid';
   ch.subs.forEach(function(s){
-    var card=document.createElement('a');
+    var card=document.createElement('div');
     card.className='lec-card sub-link';
-    card.href=s.url;
-    card.target='_blank';
+    card.setAttribute('data-url',s.url);
+    card.style.cursor='pointer';
     card.innerHTML=
       '<div class="lec-thumb">'+
         '<div class="num">'+s.num+'</div>'+
@@ -156,17 +156,30 @@ LECTURES.forEach(function(ch){
 // URL에 ?admin=1이면 관리자 세팅
 try{if(new URLSearchParams(location.search).get('admin')==='1'){localStorage.setItem('wc_user','{"id":"admin","email":"zoco2269@gmail.com","name":"Admin"}');localStorage.setItem('wc_paid','true');}}catch(e){}
 
+// 프리미엄 안내 모달
+var _modal=document.createElement('div');
+_modal.id='premium-modal';
+_modal.style.cssText='display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);align-items:center;justify-content:center;';
+_modal.innerHTML='<div style="background:#fff;border-radius:16px;padding:36px 28px;max-width:380px;width:90%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,0.15);">'+
+  '<div style="font-size:2.4rem;margin-bottom:12px;">🔒</div>'+
+  '<h3 style="font-family:DM Serif Display,serif;font-size:1.2rem;color:#1A2340;margin-bottom:10px;">프리미엄 전용 콘텐츠</h3>'+
+  '<p style="font-size:0.88rem;color:#5A5048;line-height:1.7;margin-bottom:24px;">프리미엄 패키지 구매 후<br>모든 강의 영상을 시청하실 수 있습니다.</p>'+
+  '<a href="plans.html" style="display:inline-block;padding:13px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:24px;font-size:0.88rem;font-weight:600;text-decoration:none;margin-bottom:10px;">요금제 보기</a><br>'+
+  '<button onclick="document.getElementById(\'premium-modal\').style.display=\'none\'" style="margin-top:8px;background:none;border:none;color:#999;font-size:0.82rem;cursor:pointer;font-family:inherit;">닫기</button>'+
+  '</div>';
+document.body.appendChild(_modal);
+
 document.addEventListener('click',function(e){
-  if(e.target.classList.contains('sub-link')){
-    var paid=false;
-    if(localStorage.getItem('wc_paid')==='true') paid=true;
-    if(typeof isAdmin==='function'&&isAdmin()) paid=true;
-    try{var u=JSON.parse(localStorage.getItem('wc_user')||'{}');if(u.email==='zoco2269@gmail.com') paid=true;}catch(ex){}
-    if(!paid){
-      e.preventDefault();
-      alert('프리미엄 수강생 전용 콘텐츠입니다.\n요금제 페이지에서 수강 신청해주세요.');
-      location.href='pricing.html';
-    }
+  var card=e.target.closest('.sub-link');
+  if(!card) return;
+  var paid=false;
+  if(localStorage.getItem('wc_paid')==='true') paid=true;
+  if(typeof isAdmin==='function'&&isAdmin()) paid=true;
+  try{var u=JSON.parse(localStorage.getItem('wc_user')||'{}');if(u.email==='zoco2269@gmail.com') paid=true;}catch(ex){}
+  if(paid){
+    window.open(card.getAttribute('data-url'),'_blank');
+  } else {
+    document.getElementById('premium-modal').style.display='flex';
   }
 });
 </script>

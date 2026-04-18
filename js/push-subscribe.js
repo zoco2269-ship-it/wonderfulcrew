@@ -30,7 +30,7 @@
     overlay.innerHTML = '<div style="background:#fff;border-radius:16px;padding:36px 28px;max-width:380px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">' +
       '<div style="font-size:1.8rem;margin-bottom:12px;">🔔</div>' +
       '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.3rem;color:#1A2340;margin-bottom:8px;">항공사 채용 알림</h2>' +
-      '<p style="font-size:0.86rem;color:#5A5048;line-height:1.7;margin-bottom:20px;">채용 오픈, 새 기출문제, 합격 비밀노트 등<br>중요한 소식을 푸시 알림으로 받으시겠습니까?</p>' +
+      '<p style="font-size:0.86rem;color:#5A5048;line-height:1.7;margin-bottom:20px;">채용 오픈, 기출문제, 채용 정보 등<br>중요한 소식을 푸시 알림으로 받으시겠습니까?</p>' +
       '<div style="display:flex;flex-direction:column;gap:10px;">' +
         '<button id="wc-push-yes" style="padding:13px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">알림 받기</button>' +
         '<button id="wc-push-no" style="padding:10px;background:none;border:1px solid #e8e0d0;border-radius:28px;font-size:0.84rem;color:#5A5048;cursor:pointer;font-family:inherit;">다음에</button>' +

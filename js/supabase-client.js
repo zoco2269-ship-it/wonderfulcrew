@@ -256,19 +256,23 @@ function getPublicUrl(path) {
 }
 
 // 로그인 상태에 따라 nav 버튼 변경
+function updateNavLoginBtn() {
+  var user = JSON.parse(localStorage.getItem('wc_user') || 'null');
+  if (!user) return;
+  var loginBtns = document.querySelectorAll('a[href="login.html"], a[href="login-en.html"]');
+  loginBtns.forEach(function(btn) {
+    var txt = btn.textContent.trim();
+    if (txt === '로그인' || txt === 'Sign In') {
+      btn.textContent = user.name || user.email?.split('@')[0] || '내 계정';
+      btn.href = 'my-progress.html';
+    }
+  });
+}
+// 즉시 + 지연 + Supabase 세션 복원 후 세 번 시도
 document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(function() {
-    var user = JSON.parse(localStorage.getItem('wc_user') || 'null');
-    if (!user) return;
-    // 로그인 버튼을 사용자 이름으로 변경
-    var loginBtns = document.querySelectorAll('a[href="login.html"], a[href="login-en.html"]');
-    loginBtns.forEach(function(btn) {
-      if (btn.textContent.trim() === '로그인' || btn.textContent.trim() === 'Sign In') {
-        btn.textContent = user.name || user.email?.split('@')[0] || '내 계정';
-        btn.href = 'my-progress.html';
-      }
-    });
-  }, 800);
+  updateNavLoginBtn();
+  setTimeout(updateNavLoginBtn, 1500);
+  setTimeout(updateNavLoginBtn, 3000);
 });
 
 console.log('WonderfulCrew Supabase Client v4 loaded');

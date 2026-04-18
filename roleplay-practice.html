@@ -626,7 +626,7 @@ async function generateFeedback(scenario){
   try{
     var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Crew':'Passenger')+': '+m.content;}).join('\n');
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-6-20250514',max_tokens:500,
+      model:'claude-sonnet-4-5-20251022',max_tokens:500,
       system:'You are a cabin crew interview coach. Evaluate the following roleplay conversation. The scenario was: "'+scenario+'"\n\nIMPORTANT SCORING GUIDELINES:\n- The student\'s answers come from SPEECH RECOGNITION, so ignore grammar mistakes, broken sentences, capitalization issues. Focus on the CONTENT and INTENT.\n- If the student apologized, offered solutions, showed empathy, or asked good questions → that deserves 70+ points\n- If the student covered most key points (apology + solution + alternative + service recovery) → 80+ points\n- Only give below 50 if the student said almost nothing useful\n- Be ENCOURAGING. These are students practicing. Highlight what they did RIGHT.\n\nProvide feedback in EXACTLY this format:\n\nOverall Score: X/100\n\nStrengths:\n- (2-3 bullet points about what they did well)\n\nAreas to Improve:\n- (1-2 gentle suggestions)\n\n---SUGGESTED---\n(Write a short ideal response for this scenario. 3-4 sentences. This helps the student learn.)\n\nWrite in English. Keep it concise and encouraging.',
       messages:[{role:'user',content:'Here is the full roleplay conversation:\n\n'+convoSummary+'\n\nPlease give feedback.'}]
     })});

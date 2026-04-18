@@ -383,7 +383,7 @@ async function stopAnswer(){
   try{
     var turnCount=chatHistory.filter(function(m){return m.role==='user';}).length;
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-6-20250514',max_tokens:300,
+      model:'claude-sonnet-4-5-20251022',max_tokens:300,
       system:'You are a senior cabin crew interviewer conducting a FINAL INTERVIEW for Emirates. Question: "'+QS[qIdx].q+'"\n\nRules:\n- Reply in ENGLISH only\n- Keep responses VERY SHORT: 1 sentence max. Just a brief follow-up question or acknowledgment.\n- Examples of good responses: "Can you give me a specific example?" / "How did that make you feel?" / "What did you learn from that?" / "Interesting. And what happened next?"\n- Do NOT give long responses. Real interviewers are concise.\n- After 2-3 exchanges, just say "Thank you." and add [END]\n- Turn '+turnCount,
       messages:chatHistory
     })});

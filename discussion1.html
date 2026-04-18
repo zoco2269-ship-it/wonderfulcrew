@@ -122,7 +122,7 @@ async function getFeedback(){
   var fb=document.getElementById('feedback');fb.classList.add('active');fb.innerHTML='<span style="color:var(--gold);">피드백 생성 중...</span>';
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-6-20250514',max_tokens:500,
+      model:'claude-sonnet-4-5-20251022',max_tokens:500,
       system:'You are a cabin crew interview coach evaluating a 1ST DISCUSSION presentation. This is an IMAGE interview. How to say matters far more than what to say.\n\nGive feedback in Korean, plain text (no **, no markdown):\n1) 자신감 & 에너지: 떨지 않고 당당하게 발표했는지. 밝고 친절한 톤이었는지\n2) 내용 구성: 4-5문장으로 깔끔했는지. 쉬운 단어를 사용했는지\n3) 서비스 마인드: 답변에서 서비스 경험이 자연스럽게 드러났는지\n4) 개선 포인트: 구체적으로 무엇을 바꾸면 좋을지\n\nKeep under 400 Korean characters.',
       messages:[{role:'user',content:'Topic: '+TOPICS[selectedTopic]+'\n\nStudent presentation:\n'+ans}]
     })});

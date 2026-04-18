@@ -1,0 +1,163 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>기타 외항사   WonderfulCrew</title><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet"><style>:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}*{box-sizing:border-box;margin:0;padding:0;}body{font-family:"Noto Serif KR",serif;background:var(--cream);color:var(--text-dark);}a{color:inherit;text-decoration:none;}nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}.nav-links{display:flex;gap:28px;align-items:center;}.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}.nav-links a{font-size:0.82rem;color:var(--text-mid);}.nav-links a:hover{color:var(--gold);}.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;}.nav-dropdown{position:relative;}.nav-dropdown>a::after{content:" ▾";font-size:0.7em;}.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:6px 16px;background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);border:1px solid rgba(201,168,76,0.2);box-shadow:0 4px 16px rgba(0,0,0,0.06);min-width:160px;z-index:1001;border-radius:20px;}.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}.nav-dropdown-menu a{display:block;padding:0px 8px!important;font-size:13px;line-height:36px!important;color:#1a2744;white-space:nowrap;}.nav-dropdown-menu a:hover{background:rgba(212,175,55,0.3)!important;color:#1a2744!important;border-left:5px solid #C9A84C;}
+.nav-dropdown-menu a:first-child:hover{border-radius:16px 16px 0 0;}
+.nav-dropdown-menu a:last-child:hover{border-radius:0 0 16px 16px;}
+.nav-dropdown-menu a:first-child:last-child:hover{border-radius:16px;}.nav-dd-grid{min-width:auto;width:max-content;display:none;grid-template-columns:1fr;gap:0!important;padding:0!important;background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);border-radius:20px;}.nav-dropdown:hover .nav-dd-grid{display:grid!important;}.hero{background:var(--navy);color:#fff;padding:140px 5% 80px;text-align:center;}.hero .label{font-family:"DM Serif Display",serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:600px;margin:0 auto;line-height:1.8;}section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}.region{font-family:"DM Serif Display",serif;font-size:1.2rem;color:var(--navy);margin:32px 0 16px;padding-bottom:10px;border-bottom:2px solid var(--gold);}.region:first-child{margin-top:0;}.card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:28px;margin-bottom:16px;}.card h3{font-family:"DM Serif Display",serif;font-size:1.05rem;color:var(--navy);margin-bottom:4px;}.card .sub{font-size:0.82rem;color:var(--gold);margin-bottom:10px;}.card li{font-family:"Noto Sans KR",sans-serif;font-size:0.86rem;color:var(--text-mid);line-height:1.75;margin-bottom:3px;}.card ul{padding-left:18px;margin:6px 0;}.tip{background:var(--gold-pale);border-left:4px solid var(--gold);padding:12px 16px;font-size:0.82rem;color:var(--text-mid);line-height:1.7;margin-top:10px;}.tip b{color:var(--navy);}.step-btn{display:inline-block;margin-top:14px;padding:10px 22px;background:var(--navy);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;text-decoration:none;margin-right:8px;}.step-btn:hover{background:var(--gold);}footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}@media(max-width:900px){.nav-links{display:none;}.nav-cta{font-size:0.7rem!important;padding:8px 14px!important;}nav a[href*="login"]{font-size:0.7rem!important;padding:6px 12px!important;}}</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+</head><body>
+<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a><div class="nav-links"><div class="nav-dropdown"><a href="index.html#about">소개</a><div class="nav-dropdown-menu nav-dd-grid"><a href="about.html">원더풀크루 소개</a><a href="column.html">합격 칼럼</a></div></div><div class="nav-dropdown"><a href="index.html#expertise">준비 과정</a><div class="nav-dropdown-menu nav-dd-grid"><a href="leveltest.html">항공사 승무원</a><a href="hotel.html">호텔 · 럭셔리</a><a href="cruise.html">크루즈</a><a href="walking-analysis.html">워킹 · 자세분석</a><a href="coach-feedback.html">1:1 코치 피드백</a><a href="ai-coach.html">AI 코치</a></div></div><div class="nav-dropdown"><a href="index.html#resources">학습 자료</a><div class="nav-dropdown-menu nav-dd-grid"><a href="interview-guide.html">면접 완벽 가이드</a><a href="english-interview.html">한국어 · 영어 면접</a><a href="grooming-guide.html">이미지 메이킹 · 그루밍</a><a href="resume-guide.html">자기소개서 · CV</a><a href="customer-service.html">고객 응대 스킬</a><a href="culture-difference.html">문화 차이 이해하기</a><a href="lecture.html">강의 영상</a></div></div><a href="daily-english.html">영어쉐도잉</a><a href="jobs.html">항공사 채용</a><a href="community.html">커뮤니티</a><a href="plans.html">요금제</a></div><div style="display:flex;align-items:center;gap:12px;"><a href="leveltest.html" class="nav-cta">면접 연습 시작</a><a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;text-decoration:none;">로그인</a></div></nav>
+
+<div class="hero">
+  <div class="label">Other International Airlines</div>
+  <h1>기타 외항사<br><em>면접 준비</em></h1>
+  <p>아래 항공사의 면접 특징을 확인하고, 에미레이트 커리큘럼 기반으로 면접을 준비하세요.</p>
+</div>
+
+<section><div class="wrap">
+
+<div class="region">Middle East</div>
+
+<div class="card">
+  <h3>리야드에어 (Riyadh Air)</h3>
+  <div class="sub">Saudi Arabia · 리야드 베이스</div>
+  <ul>
+    <li>2026년 운항 개시 예정, 사우디 신생 프리미엄 항공사</li>
+    <li>글로벌 대규모 채용 진행 중 — 전 세계 오픈데이</li>
+    <li>면접: 온라인 지원 → Assessment Day → 파이널 인터뷰</li>
+  </ul>
+  <div class="tip"><b>TIP:</b> 새로운 항공사와 역사를 함께 만들겠다는 비전을 보여주세요. 사우디 비전 2030을 이해하면 플러스.</div>
+</div>
+
+<div class="card">
+  <h3>쿠웨이트항공 (Kuwait Airways)</h3>
+  <div class="sub">Kuwait · 쿠웨이트 베이스</div>
+  <ul>
+    <li>한국에서 직접 채용 진행 이력 (CrewKorea 통해)</li>
+    <li>면접: CV 제출 → Assessment Day → 파이널 인터뷰</li>
+    <li>한국인 승무원 적극 채용</li>
+  </ul>
+  <div class="tip"><b>TIP:</b> 쿠웨이트항공은 한국인 승무원을 별도로 채용하는 몇 안 되는 중동 항공사입니다.</div>
+</div>
+
+<div class="card">
+  <h3>걸프에어 (Gulf Air)</h3>
+  <div class="sub">Bahrain · 바레인 베이스</div>
+  <ul>
+    <li>글로벌 채용, 갱신형 계약</li>
+    <li>바레인 국적 항공사</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>오만에어 (Oman Air)</h3>
+  <div class="sub">Oman · 무스카트 베이스</div>
+  <ul>
+    <li>국제 채용 활발</li>
+    <li>여성 지원 나이 21~31세</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>사우디아 (Saudia)</h3>
+  <div class="sub">Saudi Arabia · 제다/리야드 베이스</div>
+  <ul>
+    <li>사우디 국적 항공사, 국제 채용 활발</li>
+    <li>중동 네트워크 + 하지/움라 특별 노선</li>
+  </ul>
+</div>
+
+<div class="region">Asia</div>
+
+<div class="card">
+  <h3>스쿠트 (Scoot)</h3>
+  <div class="sub">Singapore · 싱가포르 베이스 · 싱가포르항공 자회사</div>
+  <ul>
+    <li>싱가포르항공 그룹 LCC, 국제 채용 활발</li>
+    <li>아시아-호주 중장거리 노선 중심</li>
+  </ul>
+  <div class="tip"><b>TIP:</b> 싱가포르항공 커리큘럼과 면접 스타일이 유사합니다. SIA 면접 준비가 도움됩니다.</div>
+</div>
+
+<div class="card">
+  <h3>베트남항공 (Vietnam Airlines)</h3>
+  <div class="sub">Vietnam · 하노이/호치민 베이스</div>
+  <ul>
+    <li>한국인 승무원 직접 채용 이력 (CrewKorea 통해)</li>
+    <li>베트남 국적 항공사, 스카이팀 회원</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>타이항공 (Thai Airways)</h3>
+  <div class="sub">Thailand · 방콕 베이스</div>
+  <ul>
+    <li>태국 국적 항공사, 스타얼라이언스 회원</li>
+    <li>국제 채용 진행</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>스타럭스항공 (Starlux Airlines)</h3>
+  <div class="sub">Taiwan · 타이베이 베이스</div>
+  <ul>
+    <li>2020년 출범 프리미엄 신생 항공사</li>
+    <li>빠르게 성장 중, 북미 노선 확대</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>에어아시아X (AirAsia X)</h3>
+  <div class="sub">Malaysia · 쿠알라룸푸르 베이스</div>
+  <ul>
+    <li>에어아시아 중장거리 자회사</li>
+    <li>한국/일본 국적자 별도 채용</li>
+  </ul>
+</div>
+
+<div class="region">Europe</div>
+
+<div class="card">
+  <h3>터키항공 (Turkish Airlines)</h3>
+  <div class="sub">Turkey · 이스탄불 베이스</div>
+  <ul>
+    <li>세계 최다 취항국 항공사 (120개국+)</li>
+    <li>대규모 국제 채용 프로그램 운영</li>
+    <li>면접: 온라인 지원 → CV Drop → Assessment Day → 파이널 인터뷰</li>
+  </ul>
+  <div class="tip"><b>TIP:</b> 터키항공은 글로벌 네트워크가 최대 강점입니다. 다문화 소통 능력과 적응력을 강조하세요.</div>
+</div>
+
+<div class="card">
+  <h3>영국항공 (British Airways)</h3>
+  <div class="sub">United Kingdom · 히드로 베이스</div>
+  <ul>
+    <li>Talent Pool 방식 국제 채용</li>
+    <li>영국 취업 비자 필요</li>
+  </ul>
+</div>
+
+<div class="region">Americas</div>
+
+<div class="card">
+  <h3>델타항공 (Delta Air Lines)</h3>
+  <div class="sub">USA · 애틀랜타 베이스</div>
+  <ul>
+    <li>한국어 구사 승무원 적극 채용 (LOD 프로그램)</li>
+    <li>한국어 가능한 승무원 별도 채용 공고</li>
+  </ul>
+  <div class="tip"><b>TIP:</b> 델타항공은 한국어 가능한 승무원을 별도로 채용합니다. 한국 노선 경험과 이중언어 능력을 강조하세요.</div>
+</div>
+
+<div style="background:var(--navy);color:#fff;padding:28px;margin-top:32px;text-align:center;line-height:1.8;">
+  <p style="font-size:0.92rem;color:rgba(255,255,255,0.8);margin-bottom:8px;">위 항공사의 면접은 대부분 <b style="color:var(--gold-light);">Assessment Day + 파이널 인터뷰</b> 구조입니다.</p>
+  <p style="font-size:0.84rem;color:rgba(255,255,255,0.6);margin-bottom:16px;">에미레이트 커리큘럼을 기반으로 준비하실 수 있습니다.</p>
+  <a href="curriculum.html?airline=emirates" class="step-btn" style="background:var(--gold);color:var(--navy);">에미레이트 커리큘럼으로 →</a>
+  <a href="interview-practice.html" class="step-btn">면접 연습 시작 →</a>
+</div>
+
+<div style="text-align:center;margin-top:32px;">
+  <a href="curriculum.html" class="step-btn" style="background:var(--navy);">← 항공사 선택으로</a>
+</div>
+
+</div></section>
+<footer>© 2026 WonderfulCrew Inc. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>
+</body></html>

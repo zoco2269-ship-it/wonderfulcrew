@@ -158,7 +158,7 @@ function startInterview(){
 
   // 카메라
   if(document.getElementById('cam-toggle').checked){
-    var opts=[{video:true,audio:true},{video:{facingMode:'user'},audio:true}];
+    var opts=[{video:{facingMode:{exact:'user'}},audio:true},{video:{facingMode:'user'},audio:true},{video:true,audio:true}];
     (async function(){for(var i=0;i<opts.length;i++){try{stream=await navigator.mediaDevices.getUserMedia(opts[i]);var v=document.getElementById('cam-video');v.srcObject=stream;v.style.display='block';document.getElementById('cam-ph').style.display='none';break;}catch(e){}}})();
   }
   qIdx=0;showQuestion();

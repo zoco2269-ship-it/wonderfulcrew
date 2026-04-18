@@ -99,7 +99,7 @@ function startPresentation(){
   document.getElementById('interview').classList.add('active');
   document.getElementById('q-text').textContent=TOPICS[selectedTopic];
   if(document.getElementById('cam-toggle').checked){
-    (async function(){try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});var v=document.getElementById('cam-video');v.srcObject=stream;v.style.display='block';document.getElementById('cam-ph').style.display='none';}catch(e){document.getElementById('cam-ph').textContent='카메라 연결 실패';}})();
+    (async function(){var camOpts=[{video:{facingMode:{exact:'user'}},audio:true},{video:{facingMode:'user'},audio:true},{video:true,audio:true}];for(var i=0;i<camOpts.length;i++){try{stream=await navigator.mediaDevices.getUserMedia(camOpts[i]);var v=document.getElementById('cam-video');v.srcObject=stream;v.style.display='block';document.getElementById('cam-ph').style.display='none';break;}catch(e){if(i===camOpts.length-1)document.getElementById('cam-ph').textContent='카메라 연결 실패';}}})();
   }
 }
 function startRec(){

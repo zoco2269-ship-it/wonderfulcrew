@@ -372,11 +372,19 @@ function setLang(lang){
 function goToCamera(){
   var name=document.getElementById('f-name').value.trim();
   var phone=document.getElementById('f-phone').value.trim();
-  if(!name){alert('이름을 입력해주세요.');return;}
-  U.name=name;U.phone=phone;U.email=document.getElementById('f-email').value.trim();
-  U.edu=document.querySelector('input[name=edu]:checked')?.value||'미입력';
-  U.apply=document.querySelector('input[name=apply]:checked')?.value||'미입력';
-  U.eng=document.querySelector('input[name=eng]:checked')?.value||'미입력';
+  var email=document.getElementById('f-email').value.trim();
+  var edu=document.querySelector('input[name=edu]:checked');
+  var apply=document.querySelector('input[name=apply]:checked');
+  var eng=document.querySelector('input[name=eng]:checked');
+  // 필수 입력 검증
+  if(!name){alert('이름을 입력해주세요.');document.getElementById('f-name').focus();return;}
+  if(!phone||phone.length<10){alert('전화번호를 정확히 입력해주세요.');document.getElementById('f-phone').focus();return;}
+  if(!email||!email.includes('@')){alert('이메일을 정확히 입력해주세요.');document.getElementById('f-email').focus();return;}
+  if(!edu){alert('승무원 교육 경험을 선택해주세요.');return;}
+  if(!apply){alert('승무원 지원 경험을 선택해주세요.');return;}
+  if(!eng){alert('영어 수준을 선택해주세요.');return;}
+  U.name=name;U.phone=phone;U.email=email;
+  U.edu=edu.value;U.apply=apply.value;U.eng=eng.value;
   console.log('[WC LEAD]',JSON.stringify(U));
 
   // 프로필 저장

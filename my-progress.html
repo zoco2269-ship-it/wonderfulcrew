@@ -43,7 +43,7 @@ section{padding:50px 5%;}.wrap{max-width:900px;margin:0 auto;}
 /* 출석 캘린더 */
 .cal-mini{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
 .cal-mini .dow{text-align:center;font-size:0.66rem;color:var(--text-muted);padding:4px 0;}
-.cal-mini .day{width:100%;height:28px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;border-radius:50%;color:var(--text-dark);}
+.cal-mini .day{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;border-radius:50%;color:var(--text-dark);margin:0 auto;}
 .cal-mini .day.done{background:var(--gold);color:#fff;font-weight:600;}
 .cal-mini .day.today{border:2px solid var(--navy);}
 
@@ -145,7 +145,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <div class="badge">⭐ 10문제 완료</div>
     <div class="badge">💎 30일 연속 출석</div>
     <div class="badge">파이널 면접 통과</div>
-    <div class="badge">👑 올 커리큘럼 ���료</div>
+    <div class="badge">👑 올 커리큘럼 완료</div>
   </div>
 </div>
 
@@ -154,7 +154,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <h3>최근 연습 기록</h3>
   <table>
     <tr><th>날짜</th><th>항공사</th><th>단계</th><th>점수</th><th>피드백 요약</th></tr>
-    <tr><td>2026-04-13</td><td>에미레이트</td><td>파이널</td><td style="color:var(--gold);font-weight:700;">78</td><td>서비스 ���험 구체적���로 잘 표현</td></tr>
+    <tr><td>2026-04-13</td><td>에미레이트</td><td>파이널</td><td style="color:var(--gold);font-weight:700;">78</td><td>서비스 경험 구체적으로 잘 표현</td></tr>
     <tr><td>2026-04-12</td><td>에미레이트</td><td>롤플레이</td><td style="color:var(--gold);font-weight:700;">72</td><td>사과 표현 양호. Recovery 보완</td></tr>
     <tr><td>2026-04-12</td><td>영어쉐도잉</td><td>Q&A 3문제</td><td style="color:var(--gold);font-weight:700;">-</td><td>출석 완료</td></tr>
     <tr><td>2026-04-11</td><td>에미레이트</td><td>디스커션</td><td style="color:var(--gold);font-weight:700;">65</td><td>우선순위 판단 양호</td></tr>
@@ -277,16 +277,16 @@ function updateTarget(){
 }
 updateTarget();
 
-// ��더풀크루 한마디 (랜덤)
+// 원더풀크루 한마디 (랜덤)
 var comments=[
-  '<b>지난주보다 유창���이 15% 올랐어요!</b> 계속 이 페이스로 가세요.',
+  '<b>지난주보다 유창함이 15% 올랐어요!</b> 계속 이 페이스로 가세요.',
   '<b>3일 연속 출석 중!</b> 꾸준함이 합격의 비밀입니다.',
   '<b>롤플레이 점수가 올라가고 있어요.</b> Service Recovery를 좀 더 연습해볼까요?',
   '<b>영어 쉐도잉을 매일 하고 계시네요!</b> 발음이 확실히 좋아지고 있어요.',
   '<b>목표 항공사까지 2단계 남았어요.</b> 조금만 더 힘내세요!',
-  '<b>오늘도 접속해주셨네요!</b> 하루 한 문제라도 연습하면 큰 차��가 납니다.',
+  '<b>오늘도 접속해주셨네요!</b> 하루 한 문제라도 연습하면 큰 차이가 납니다.',
   '<b>파이널 면접 답변이 점점 깊어지고 있어요.</b> 서비스 마인드가 느껴집니다.',
-  '<b>이번 주 5일 ���습했어요!</b> 이 습관이면 면접장에서 자신감이 넘칠 거예요.'
+  '<b>이번 주 5일 연습했어요!</b> 이 습관이면 면접장에서 자신감이 넘칠 거예요.'
 ];
 document.getElementById('daily-comment').innerHTML=comments[Math.floor(Math.random()*comments.length)]+' ✈️';
 </script>

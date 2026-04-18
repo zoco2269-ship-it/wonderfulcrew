@@ -119,6 +119,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
 <nav>
   <a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="#" class="nav-back" onclick="backToSetup();return false;" style="position:absolute;right:24px;">← Back</a>
   <div class="nav-links">
     <div class="nav-dropdown"><a href="index-en.html#about">About</a><div class="nav-dropdown-menu nav-dd-grid"><a href="about-en.html">About WonderfulCrew</a><a href="column-en.html">Interview Insights</a></div></div>
     <div class="nav-dropdown"><a href="index-en.html#expertise">Programs</a><div class="nav-dropdown-menu wide"><a href="leveltest-en.html">Cabin Crew</a><a href="hotel-en.html">Hotel &amp; Luxury</a><a href="walking-analysis-en.html">Walking &amp; Posture</a><a href="cruise-en.html">Cruise</a><a href="coach-feedback-en.html">1:1 Coach Feedback</a><a href="ai-coach-en.html">AI Coach</a></div></div>
@@ -469,12 +470,12 @@ async function customerFirstSpeak(scenario){
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:150,
-      system:'You are a '+setting.role+' at '+setting.place+'. The situation is: "'+scenario+'"\n\nYou must speak FIRST as the upset/confused '+setting.role+'. Say 1-2 sentences expressing your complaint or request naturally, as if talking to the '+setting.staff+' standing in front of you. Be realistic. Speak in ENGLISH only. Do NOT say anything from the staff perspective.',
+      system:'You are a '+setting.role+' at '+setting.place+'. The situation is: "'+scenario+'"\n\nYou must speak FIRST as the upset/confused '+setting.role+'. Say 1-2 sentences expressing your complaint or request naturally, as if talking to the '+setting.staff+' standing in front of you. Be realistic. Speak in ENGLISH only. Do NOT say anything from the staff perspective. Do NOT use asterisks or stage directions like *coughing* or *sighing*. Only speak dialogue.',
       messages:[{role:'user',content:'Start the conversation as the '+setting.role+'.'}]
     })});
     var data=await res.json();
     var aiText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Excuse me, I have a problem.';
-    aiText=aiText.replace(/\*\*/g,'');
+    aiText=aiText.replace(/\*\*/g,'').replace(/\*[^*]+\*/g,'').trim();
 
     chatHistory.push({role:'assistant',content:aiText});
     fb.innerHTML='<b style="color:var(--gold);">'+setting.role.charAt(0).toUpperCase()+setting.role.slice(1)+':</b> '+aiText;
@@ -631,12 +632,12 @@ async function processAnswer(){
     }
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:200,
-      system:'You are a '+setting.role+' at '+setting.place+'. The situation is: "'+scenario+'"\n\nYou are the upset/confused '+setting.role+'. The '+setting.staff+' just responded to you. React naturally IN ENGLISH. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the '+setting.role+'\n- If the staff apologized well and offered a good solution, accept it gratefully (e.g. "Oh that sounds nice, thank you.")\n- If the solution is weak, push back gently (e.g. "But I specifically requested..." or "That doesn\'t really help...")\n- Do NOT ask how the staff felt. Instead ask WHY they chose that approach.\n- Be realistic, not overly aggressive\n- This is turn '+turnCount+' of the conversation'+finalTurnInstruction,
+      system:'You are a '+setting.role+' at '+setting.place+'. The situation is: "'+scenario+'"\n\nYou are the upset/confused '+setting.role+'. The '+setting.staff+' just responded to you. React naturally IN ENGLISH. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the '+setting.role+'\n- If the staff apologized well and offered a good solution, accept it gratefully (e.g. "Oh that sounds nice, thank you.")\n- If the solution is weak, push back gently (e.g. "But I specifically requested..." or "That doesn\'t really help...")\n- Do NOT ask how the staff felt. Instead ask WHY they chose that approach.\n- Be realistic, not overly aggressive\n- Do NOT use asterisks or stage directions like *coughing* or *looking angry*. Only speak dialogue\n- This is turn '+turnCount+' of the conversation'+finalTurnInstruction,
       messages:chatHistory
     })});
     var data=await res.json();
     var aiText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Thank you.';
-    aiText=aiText.replace(/\*\*/g,'');
+    aiText=aiText.replace(/\*\*/g,'').replace(/\*[^*]+\*/g,'').trim();
 
     chatHistory.push({role:'assistant',content:aiText});
 

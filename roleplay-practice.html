@@ -109,12 +109,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 function goBack(){
   var interview=document.getElementById('interview');
   if(interview&&interview.classList.contains('active')){
-    if('speechSynthesis' in window)window.speechSynthesis.cancel();
+    gcStop();
     if(typeof recognition!=='undefined'&&recognition)try{recognition.stop();}catch(e){}
-    if(typeof stream!=='undefined'&&stream)stream.getTracks().forEach(function(t){t.stop();});
+    if(typeof stream!=='undefined'&&stream){stream.getTracks().forEach(function(t){t.stop();});stream=null;}
     interview.classList.remove('active');
     document.getElementById('setup').style.display='block';
   } else {
+    // setup 화면이 보이는 상태에서 뒤로가기 → 이전 페이지
     history.back();
   }
 }
@@ -588,7 +589,7 @@ async function processAnswer(){
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:80,
-      system:'You are a passenger on an airplane. Situation: "'+scenario+'"\n\nRules:\n- Reply to what the crew member ACTUALLY said\n- If they asked a question, ANSWER it\n- If they offered a solution, react to it\n- 1-2 sentences only\n- Natural English',
+      system:'You are a passenger on an airplane. Situation: "'+scenario+'"\n\nRules:\n- Reply to what the crew member ACTUALLY said\n- If they asked a question, ANSWER it\n- If they offered a solution, react to it\n- 1-2 sentences only\n- Natural English\n- Do NOT use asterisks or stage directions. Only speak dialogue',
       messages:chatHistory
     })});
     var data=await res.json();

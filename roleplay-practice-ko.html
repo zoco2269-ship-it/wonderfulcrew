@@ -553,7 +553,7 @@ async function processAnswer(){
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:120,
-      system:'당신은 대한민국 국내선 비행기 승객입니다. 상황: "'+scenario+'"\n\n톤: '+tonePersona+'\n\n규칙:\n- 승무원이 실제로 한 말에 반응하세요\n- 질문하면 답하고, 해결책을 제시하면 그에 대해 반응하세요\n- 1~2문장으로 짧게\n- 반드시 자연스러운 한국어 존댓말 또는 상황에 맞는 반말\n- 영어 절대 금지',
+      system:'당신은 대한민국 국내선 비행기 승객입니다. 상황: "'+scenario+'"\n\n톤: '+tonePersona+'\n\n규칙:\n- 승무원이 실제로 한 말에 반응하세요\n- 질문하면 답하고, 해결책을 제시하면 그에 대해 반응하세요\n- 1~2문장으로 짧게\n- 반드시 자연스러운 한국어 존댓말 또는 상황에 맞는 반말\n- 영어 절대 금지\n- 별표(*)나 행동 묘사 사용 금지. 대사만 말하세요',
       messages:chatHistory
     })});
     var data=await res.json();

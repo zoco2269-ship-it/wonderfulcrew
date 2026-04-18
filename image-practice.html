@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이미지 연습 — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--navy);color:#fff;min-height:100vh;}
+a{color:inherit;text-decoration:none;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:rgba(17,27,46,0.95);border-bottom:1px solid rgba(201,168,76,0.15);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.8rem;color:rgba(255,255,255,0.5);}.nav-back:hover{color:var(--gold);}
+.main{max-width:640px;margin:0 auto;padding:48px 20px;text-align:center;}
+.q-label{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--gold);letter-spacing:0.08em;margin-bottom:20px;}
+.q-text{font-family:'Noto Serif KR',serif;font-size:1.1rem;color:#fff;line-height:1.7;margin-bottom:28px;font-weight:300;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:20px 24px;text-align:left;}
+.cam-box{width:100%;max-width:480px;aspect-ratio:16/9;background:#111;border-radius:16px;overflow:hidden;position:relative;margin:0 auto 20px;border:2px solid rgba(201,168,76,0.25);}
+.cam-box video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);}
+.cam-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.35);font-size:0.88rem;flex-direction:column;gap:8px;}
+.rec-badge{position:absolute;top:12px;left:12px;display:none;align-items:center;gap:5px;background:rgba(192,57,43,0.9);color:#fff;padding:4px 10px;font-size:0.7rem;font-weight:700;border-radius:12px;}
+.rec-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+.btn{padding:13px 28px;border:none;border-radius:28px;font-family:inherit;font-size:0.86rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-gold{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(201,168,76,0.3);}
+.btn-navy{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.2);}
+.btn-navy:hover{background:rgba(255,255,255,0.14);}
+.btn-red{background:#E74C3C;color:#fff;}
+.transcript{display:none;padding:14px 18px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;font-size:0.88rem;color:rgba(255,255,255,0.7);min-height:40px;margin-top:16px;text-align:left;}
+.transcript.visible{display:block;}
+.feedback{display:none;margin-top:16px;padding:22px 24px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:16px;text-align:left;font-size:0.88rem;color:rgba(255,255,255,0.85);line-height:1.8;white-space:pre-line;}
+.feedback.visible{display:block;}
+.feedback b{color:var(--gold);}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth-gate.js"></script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="#" class="nav-back" onclick="history.back();return false;">← 돌아가기</a>
+</nav>
+
+<div class="main">
+  <div class="q-label" id="q-label">이미지 연습</div>
+  <div class="q-text" id="q-text">로딩 중...</div>
+  <div class="cam-box">
+    <video id="cam" autoplay muted playsinline></video>
+    <div class="cam-ph" id="cam-ph"><div style="font-size:1.6rem;opacity:0.5;">📷</div><div>카메라를 시작하세요</div></div>
+    <div class="rec-badge" id="rec-badge"><div class="rec-dot"></div>REC</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-gold" id="btn-start" onclick="startCam()">카메라 시작</button>
+    <button class="btn btn-red" id="btn-rec" style="display:none;" onclick="toggleRec()">🔴 녹화 시작</button>
+    <button class="btn btn-navy" id="btn-next" onclick="nextQ()">다음 질문 →</button>
+  </div>
+  <div class="transcript" id="transcript"></div>
+  <div class="feedback" id="feedback"></div>
+</div>
+
+<script>
+var QUESTIONS=[
+  '간단하게 자기소개 해주세요.',
+  'Tell me about yourself.',
+  '왜 승무원이 되고 싶나요?',
+  'Why do you want to be cabin crew?',
+  '본인의 강점은 무엇인가요?',
+  'What is your greatest strength?',
+  '좋아하는 여행지와 이유를 말해주세요.',
+  'What is your favourite destination and why?',
+  '서비스 경험을 말씀해주세요.',
+  'Tell me about a time you provided great service.',
+  '팀워크 경험을 말씀해주세요.',
+  'Describe a time you worked well in a team.'
+];
+
+var qIdx=0;
+document.getElementById('q-text').textContent=QUESTIONS[qIdx];
+
+function nextQ(){
+  qIdx=(qIdx+1)%QUESTIONS.length;
+  document.getElementById('q-text').textContent=QUESTIONS[qIdx];
+  document.getElementById('transcript').textContent='';
+  document.getElementById('transcript').classList.remove('visible');
+  document.getElementById('feedback').classList.remove('visible');
+  document.getElementById('feedback').innerHTML='';
+}
+
+var stream=null,mediaRecorder=null,chunks=[],recognition=null,fullText='';
+
+async function startCam(){
+  var opts=[{video:{facingMode:{exact:'user'}},audio:true},{video:{facingMode:'user'},audio:true},{video:true,audio:true}];
+  for(var i=0;i<opts.length;i++){
+    try{
+      stream=await navigator.mediaDevices.getUserMedia(opts[i]);
+      var v=document.getElementById('cam');
+      v.srcObject=stream;v.style.display='block';
+      document.getElementById('cam-ph').style.display='none';
+      document.getElementById('btn-start').style.display='none';
+      document.getElementById('btn-rec').style.display='inline-block';
+      break;
+    }catch(e){if(i===opts.length-1)document.getElementById('cam-ph').textContent='카메라 연결 실패';}
+  }
+}
+
+function toggleRec(){
+  var btn=document.getElementById('btn-rec');
+  if(!mediaRecorder||mediaRecorder.state==='inactive'){
+    chunks=[];fullText='';
+    document.getElementById('transcript').classList.add('visible');
+    mediaRecorder=new MediaRecorder(stream,{mimeType:'video/webm'});
+    mediaRecorder.ondataavailable=function(e){if(e.data.size>0)chunks.push(e.data);};
+    mediaRecorder.start();
+    document.getElementById('rec-badge').style.display='flex';
+    btn.textContent='⏹ 답변 완료 · 피드백 받기';
+    btn.style.background='#E74C3C';
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(SR){
+      recognition=new SR();recognition.lang='ko-KR';recognition.interimResults=true;recognition.continuous=true;
+      recognition.onresult=function(ev){
+        var interim='';fullText='';
+        for(var r=0;r<ev.results.length;r++){
+          if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';
+          else interim+=ev.results[r][0].transcript;
+        }
+        document.getElementById('transcript').textContent=fullText+interim;
+      };
+      recognition.start();
+    }
+  } else {
+    mediaRecorder.stop();
+    if(recognition)try{recognition.stop();}catch(e){}
+    document.getElementById('rec-badge').style.display='none';
+    btn.textContent='🔴 녹화 시작';
+    btn.style.background='';
+    btn.disabled=true;
+    setTimeout(function(){
+      if(!fullText.trim()) fullText='(음성 인식 없음)';
+      generateFeedback();
+      btn.disabled=false;
+    }, 500);
+  }
+}
+
+async function generateFeedback(){
+  var fb=document.getElementById('feedback');
+  fb.innerHTML='<span style="color:var(--gold);">피드백을 작성하고 있어요...</span>';
+  fb.classList.add('visible');
+  var question=document.getElementById('q-text').textContent;
+  try{
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:700,
+      system:'You are a cabin crew interview coach evaluating an image/video interview. Focus on both CONTENT and IMAGE (expression, posture, confidence, smile). The input is from speech recognition so ignore grammar errors.\n\nFormat (use # not ## for headings):\n# 점수: X/100\n# 잘한 점\n- (2-3 points)\n# 개선할 점\n- (2-3 points)\n# 제안 답변\n(4-5 sentences)\n\nBe encouraging. Write in Korean.',
+      messages:[{role:'user',content:'질문: '+question+'\n\n학생 답변: '+fullText.trim()+'\n\n피드백을 주세요.'}]
+    })});
+    var data=await res.json();
+    var text=(data&&data.content&&data.content[0]&&data.content[0].text)||'피드백을 생성하지 못했습니다.';
+    fb.innerHTML='<b>피드백</b><br><br>'+text.replace(/\*\*/g,'');
+  }catch(e){
+    fb.innerHTML='피드백 생성 실패. 다시 시도해주세요.';
+  }
+}
+</script>
+</body>
+</html>

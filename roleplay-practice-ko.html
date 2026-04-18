@@ -494,13 +494,20 @@ function speakQuestion(text){
   var u=new SpeechSynthesisUtterance(text);
   var isMale=(chosenAvatar==='👨🏻');
   u.rate=0.95;
-  u.pitch=isMale?0.75:1.35;
+  u.pitch=isMale?0.85:1.05;
   u.lang='ko-KR';
   var voices=window.speechSynthesis.getVoices();
   var ko=voices.filter(function(v){return v.lang==='ko-KR'||v.lang.startsWith('ko');});
   if(ko.length>0){
-    var match=ko.find(function(v){return isMale?/male|인호|준|min/i.test(v.name):/female|유나|선|heami|yuna/i.test(v.name);});
-    u.voice=match||ko[isMale?0:Math.min(1,ko.length-1)];
+    if(!isMale){
+      var femaleMatch=ko.find(function(v){return /female|유나|선히|heami|yuna|sunhi|woman/i.test(v.name);});
+      if(femaleMatch) u.voice=femaleMatch;
+      else if(ko.length>=2) u.voice=ko[1];
+      else u.voice=ko[0];
+    } else {
+      var maleMatch=ko.find(function(v){return /male|인호|준서|min|junsu/i.test(v.name);});
+      u.voice=maleMatch||ko[0];
+    }
   }
   u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
   window.speechSynthesis.cancel();

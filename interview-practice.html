@@ -271,8 +271,16 @@ async function generateFeedback(){
       messages:[{role:'user',content:'질문: '+question+'\n\n학생 답변: '+fullText.trim()+'\n\n피드백을 주세요.'}]
     })});
     var data=await res.json();
-    var text=(data&&data.content&&data.content[0]&&data.content[0].text)||'피드백을 생성하지 못했습니다.';
-    fb.innerHTML='<b>피드백</b><br><br>'+text.replace(/\*\*/g,'');
+    if(data&&data.error){
+      fb.innerHTML='API 오류: '+(data.error.message||JSON.stringify(data.error));
+      return;
+    }
+    var text=(data&&data.content&&data.content[0]&&data.content[0].text)||'';
+    if(!text){
+      fb.innerHTML='피드백 생성 실패. 응답: '+JSON.stringify(data).substring(0,200);
+      return;
+    }
+    fb.innerHTML='<b>피드백</b><br><br>'+text.replace(/\*\*/g,'').replace(/\*[^*]+\*/g,'');
   }catch(e){
     fb.innerHTML='피드백 생성 실패: '+e.message+'<br>다시 시도해주세요.';
   }

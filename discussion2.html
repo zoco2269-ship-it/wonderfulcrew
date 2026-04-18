@@ -82,14 +82,18 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <div class="interview" id="interview">
   <div class="q-banner"><div class="label">2nd Discussion</div><div class="question" id="q-text"></div><div class="question" id="q-desc" style="font-size:0.78rem;color:rgba(255,255,255,0.55);margin-top:8px;line-height:1.6;"></div></div>
   <div class="video-area">
-    <div class="card-frame" id="other-card">
-      <div class="avatar-display"><div class="avatar-face"><div class="face">👩🏻</div><div class="mouth" id="other-mouth"></div></div></div>
-      <div class="card-label"><div class="name">다른 지원자 (AI)</div><div class="role">Discussion Partner</div></div>
+    <div class="card-frame" id="card-b">
+      <div class="avatar-display"><div class="avatar-face"><div class="face">👩🏻</div><div class="mouth" id="mouth-b"></div></div></div>
+      <div class="card-label"><div class="name">Candidate B</div><div class="role">Discussion Partner</div></div>
     </div>
     <div class="card-frame" id="my-card">
       <video id="cam-video" autoplay muted playsinline style="display:none;transform:scaleX(-1);"></video>
       <div class="cam-placeholder" id="cam-ph"><div>📷</div><div>카메라</div></div>
       <div class="card-label"><div class="name">You</div><div class="role"><span id="rec-label">대기</span></div></div>
+    </div>
+    <div class="card-frame" id="card-c">
+      <div class="avatar-display"><div class="avatar-face"><div class="face">👨🏻</div><div class="mouth" id="mouth-c"></div></div></div>
+      <div class="card-label"><div class="name">Candidate C</div><div class="role">Discussion Partner</div></div>
     </div>
   </div>
   <div class="waveform" id="waveform"><div class="bar" style="animation-delay:0s;"></div><div class="bar" style="animation-delay:0.1s;"></div><div class="bar" style="animation-delay:0.15s;"></div><div class="bar" style="animation-delay:0.2s;"></div><div class="bar" style="animation-delay:0.25s;"></div><div class="bar" style="animation-delay:0.3s;"></div></div>
@@ -138,16 +142,22 @@ function startDiscussion(){
     1:"We have 10 guests but only 2 rooms available. As hotel managers, who should we prioritize? What do you think?",
     2:"We have 6 issues happening at the same time in our restaurant. Which one should we handle first?"
   };
-  aiTurn(openers[selectedTopic]||"So, what do you think we should do first?");
+  aiTurnB(openers[selectedTopic]||"So, what do you think we should do first?");
 }
 
-function aiTurn(text){
-  var card=document.getElementById('other-card');
-  var mouth=document.getElementById('other-mouth');
-  card.classList.add('speaking');mouth.classList.add('talking');
+function aiTurnB(text){
+  var card=document.getElementById('card-b');
+  card.classList.add('speaking');
   var fb=document.getElementById('feedback');
-  fb.innerHTML='<b style="color:var(--gold);">다른 지원자:</b> '+text;fb.classList.add('active');
-  gcSpeak(text,'en-GB','female',function(){card.classList.remove('speaking');mouth.classList.remove('talking');});
+  fb.innerHTML='<b style="color:var(--gold);">Candidate B:</b> '+text;fb.classList.add('active');
+  gcSpeak(text,'en-GB','female',function(){card.classList.remove('speaking');});
+}
+function aiTurnC(text){
+  var card=document.getElementById('card-c');
+  card.classList.add('speaking');
+  var fb=document.getElementById('feedback');
+  fb.innerHTML+='<br><br><b style="color:var(--gold);">Candidate C:</b> '+text;
+  gcSpeak(text,'en-GB','male',function(){card.classList.remove('speaking');});
 }
 
 function startAnswer(){
@@ -181,10 +191,21 @@ async function stopAnswer(){
     })});
     var data=await res.json();
     var aiText=((data&&data.content&&data.content[0]&&data.content[0].text)||'I agree with that approach.').replace(/\*\*/g,'');
-    chatHistory.push({role:'assistant',content:aiText});
+    chatHistory.push({role:'assistant',content:'[B] '+aiText});
     var isEnd=aiText.includes('[END]')||turnCount>=4;
     var displayText=aiText.replace('[END]','').trim();
-    aiTurn(displayText);
+    aiTurnB(displayText);
+    // Candidate C도 응답
+    try{
+      var resC=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',max_tokens:150,
+        system:'You are Candidate C in a cabin crew group discussion. Scenario: '+TOPICS[selectedTopic].scenario+'\n\nRules:\n- Respond IN ENGLISH, 1-2 sentences\n- Add a different perspective from Candidate B\n- Be collaborative, use "We" language\n- Do NOT use asterisks or stage directions',
+        messages:chatHistory
+      })});
+      var dataC=await resC.json();
+      var aiC=((dataC&&dataC.content&&dataC.content[0]&&dataC.content[0].text)||'').replace(/\*\*/g,'').replace(/\*[^*]+\*/g,'').trim();
+      if(aiC){chatHistory.push({role:'assistant',content:'[C] '+aiC});aiTurnC(aiC);}
+    }catch(e){}
     if(isEnd){
       setTimeout(async function(){
         var fb=document.getElementById('feedback');

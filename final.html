@@ -73,23 +73,36 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   <h1>파이널 인터뷰 <em>연습</em></h1>
   <p>면접관과 실시간으로 대화하며 파이널 면접을 연습하세요.<br>내 이야기, 내 경험으로 자연스럽게 답변하는 것이 핵심입니다.</p>
 
-  <div class="setup-grid">
+  <div class="setup-grid" style="grid-template-columns:1fr 1fr 1fr;">
+    <div>
+      <div class="setup-label">항공사</div>
+      <select class="setup-select" id="s-airline">
+        <option value="emirates">Emirates</option>
+        <option value="qatar">Qatar Airways</option>
+        <option value="singapore">Singapore Airlines</option>
+        <option value="cathay">Cathay Pacific</option>
+        <option value="etihad">Etihad Airways</option>
+        <option value="klm">KLM</option>
+        <option value="lufthansa">Lufthansa</option>
+        <option value="airasia">AirAsia</option>
+        <option value="koreanair">대한항공</option>
+        <option value="asiana">아시아나항공</option>
+        <option value="general">일반 면접</option>
+      </select>
+    </div>
     <div>
       <div class="setup-label">영어 악센트</div>
       <select class="setup-select" id="s-accent">
         <option value="en-GB">British English</option>
         <option value="en-US">American English</option>
-        <option value="en-SG">Southeast Asian English</option>
-        <option value="fr-FR">French English</option>
-        <option value="es-ES">Spanish English</option>
         <option value="en-IN">Indian English</option>
       </select>
     </div>
     <div>
       <div class="setup-label">면접관</div>
       <select class="setup-select" id="s-avatar">
-        <option value="male">👨🏻 남성 면접관</option>
-        <option value="female">👩🏻 여성 면접관</option>
+        <option value="male">👨🏻 남성</option>
+        <option value="female">👩🏻 여성</option>
       </select>
     </div>
   </div>
@@ -133,23 +146,148 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 </div>
 
 <script>
-var QS=[
-  {q:"Tell me about your best service experience.",ko:"최고의 서비스 경험"},
-  {q:"Describe a time you dealt with a demanding customer.",ko:"까다로운 고객 대응"},
-  {q:"Tell me about a time you helped a colleague.",ko:"동료를 도운 경험"},
-  {q:"Describe a conflict with a colleague and how you resolved it.",ko:"동료와의 갈등 해결"},
-  {q:"How do you show respect for Muslim culture?",ko:"이슬람 문화 존중"},
-  {q:"Why do you want to work for Emirates?",ko:"에미레이트 지원 동기"}
-];
+var AIRLINE_QS={
+  emirates:[
+    {q:"Tell me about your best service experience."},
+    {q:"Describe a time you dealt with a demanding customer."},
+    {q:"Tell me about a time you helped a colleague."},
+    {q:"Describe a conflict with a colleague and how you resolved it."},
+    {q:"How do you show respect for different cultures?"},
+    {q:"Why do you want to work for Emirates?"},
+    {q:"What do you know about Dubai and the UAE?"},
+    {q:"Are you comfortable living away from your family?"},
+    {q:"Tell me about a time you went above and beyond for someone."},
+    {q:"What does luxury service mean to you?"}
+  ],
+  qatar:[
+    {q:"Why Qatar Airways?"},
+    {q:"Tell me about your best service experience."},
+    {q:"What do you know about Doha and Qatar?"},
+    {q:"How would you handle a difficult passenger?"},
+    {q:"Describe a time you worked in a team."},
+    {q:"Are you ready to relocate to Doha?"},
+    {q:"What challenges do you expect living abroad?"},
+    {q:"Tell me about a time you showed leadership."},
+    {q:"How do you handle stress and long working hours?"},
+    {q:"What makes you the ideal cabin crew candidate?"}
+  ],
+  singapore:[
+    {q:"Why Singapore Airlines?"},
+    {q:"What does the Singapore Girl image mean to you?"},
+    {q:"Tell me about a time you provided exceptional service."},
+    {q:"How would you handle a cultural misunderstanding?"},
+    {q:"Describe a situation where you had to adapt quickly."},
+    {q:"What do you know about Singapore?"},
+    {q:"How do you maintain high standards under pressure?"},
+    {q:"Tell me about your teamwork experience."},
+    {q:"What is your biggest weakness and how do you manage it?"},
+    {q:"Where do you see yourself in 5 years?"}
+  ],
+  cathay:[
+    {q:"Why Cathay Pacific?"},
+    {q:"What do you know about Hong Kong?"},
+    {q:"Describe your best customer service experience."},
+    {q:"How would you deal with a passenger complaint?"},
+    {q:"Tell me about a time you showed initiative."},
+    {q:"How do you handle working with people from different backgrounds?"},
+    {q:"What does Move Beyond mean to you?"},
+    {q:"Describe a challenging situation and how you overcame it."}
+  ],
+  etihad:[
+    {q:"Why Etihad Airways?"},
+    {q:"What do you know about Abu Dhabi?"},
+    {q:"Tell me about a time you exceeded expectations."},
+    {q:"How would you handle a medical emergency on board?"},
+    {q:"Describe your teamwork experience."},
+    {q:"What does hospitality mean to you?"},
+    {q:"Are you comfortable with the lifestyle of a cabin crew?"},
+    {q:"Tell me about a difficult decision you had to make."}
+  ],
+  klm:[
+    {q:"Why KLM Royal Dutch Airlines?"},
+    {q:"What do you know about Dutch culture?"},
+    {q:"Describe a time you resolved a conflict."},
+    {q:"How do you handle working in a multicultural team?"},
+    {q:"Tell me about a service experience you are proud of."},
+    {q:"What does reliability mean in aviation?"},
+    {q:"How do you stay motivated during long flights?"},
+    {q:"Describe a situation where you had to be flexible."}
+  ],
+  lufthansa:[
+    {q:"Why Lufthansa?"},
+    {q:"What do you know about German work culture?"},
+    {q:"Describe a time you handled a stressful situation."},
+    {q:"How do you ensure passenger safety?"},
+    {q:"Tell me about your experience working in teams."},
+    {q:"What does quality mean to you?"},
+    {q:"How would you handle a language barrier?"},
+    {q:"Are you prepared to live in Frankfurt or Munich?"}
+  ],
+  airasia:[
+    {q:"Why AirAsia?"},
+    {q:"What does 'Now Everyone Can Fly' mean to you?"},
+    {q:"Describe your best customer service moment."},
+    {q:"How do you bring energy to your work?"},
+    {q:"Tell me about a time you solved a problem creatively."},
+    {q:"How do you handle rude customers?"},
+    {q:"What makes you different from other candidates?"},
+    {q:"Describe a time you worked under pressure."}
+  ],
+  koreanair:[
+    {q:"왜 대한항공인가요?"},
+    {q:"본인의 강점은 무엇인가요?"},
+    {q:"서비스 경험 중 가장 기억에 남는 것은?"},
+    {q:"팀워크를 발휘한 경험을 말씀해주세요."},
+    {q:"스트레스를 받을 때 어떻게 해소하나요?"},
+    {q:"기내에서 승객 불만이 발생하면 어떻게 하시겠습니까?"},
+    {q:"마지막으로 하고 싶은 말씀이 있으신가요?"},
+    {q:"5년 후 본인의 모습을 그려주세요."}
+  ],
+  asiana:[
+    {q:"왜 아시아나항공인가요?"},
+    {q:"본인의 장단점을 말씀해주세요."},
+    {q:"어려운 고객을 대응한 경험이 있나요?"},
+    {q:"좋은 서비스란 무엇이라고 생각하나요?"},
+    {q:"동료와 의견이 다를 때 어떻게 해결하나요?"},
+    {q:"승무원에게 가장 중요한 자질은 무엇인가요?"},
+    {q:"입사 후 포부를 말씀해주세요."},
+    {q:"본인이 불합리한 대우를 받았을 때 어떻게 하나요?"}
+  ],
+  general:[
+    {q:"Tell me about yourself."},
+    {q:"Why do you want to be cabin crew?"},
+    {q:"Describe your best service experience."},
+    {q:"How do you handle stress?"},
+    {q:"Tell me about a time you worked in a team."},
+    {q:"What is your greatest strength?"},
+    {q:"How would you deal with a difficult passenger?"},
+    {q:"Where do you see yourself in 5 years?"},
+    {q:"What makes you unique?"},
+    {q:"Do you have any questions for us?"}
+  ]
+};
+var QS=AIRLINE_QS.emirates;
 
 var stream=null,recognition=null,fullText='',qIdx=0,chatHistory=[];
 var chosenAvatar='male';
+
+// URL 파라미터로 항공사 자동 선택
+(function(){
+  var p=new URLSearchParams(location.search);
+  var a=p.get('airline');
+  if(a&&document.getElementById('s-airline')){
+    var sel=document.getElementById('s-airline');
+    for(var i=0;i<sel.options.length;i++){if(sel.options[i].value===a){sel.selectedIndex=i;break;}}
+  }
+})();
 
 // 음성 미리 로드
 if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}
 window.addEventListener('beforeunload',function(){if('speechSynthesis' in window)window.speechSynthesis.cancel();if(stream)stream.getTracks().forEach(function(t){t.stop();});});
 
 function startInterview(){
+  var airline=document.getElementById('s-airline').value;
+  QS=AIRLINE_QS[airline]||AIRLINE_QS.general;
   chosenAvatar=document.getElementById('s-avatar').value;
   document.getElementById('avatar-emoji').textContent=chosenAvatar==='male'?'👨🏻':'👩🏻';
   document.getElementById('q-total').textContent=QS.length;

@@ -28,7 +28,10 @@ var ADMIN_EMAILS = ['zoco2269@gmail.com'];
       }
       console.log('Supabase connected:', cfg.url);
     }
-  } catch(e) { console.log('Supabase config not available, using localStorage fallback'); }
+  } catch(e) {
+    console.log('Supabase config not available, using localStorage fallback');
+    _supabaseReady = true;
+  }
 })();
 
 function getSupabase() {

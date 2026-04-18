@@ -79,7 +79,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
 <!-- INTERVIEW -->
 <div class="interview" id="interview">
-  <div class="q-banner"><div class="label">2nd Discussion</div><div class="question" id="q-text"></div></div>
+  <div class="q-banner"><div class="label">2nd Discussion</div><div class="question" id="q-text"></div><div class="question" id="q-desc" style="font-size:0.78rem;color:rgba(255,255,255,0.55);margin-top:8px;line-height:1.6;"></div></div>
   <div class="video-area">
     <div class="card-frame" id="other-card">
       <div class="avatar-display"><div class="avatar-face"><div class="face">👩🏻</div><div class="mouth" id="other-mouth"></div></div></div>
@@ -125,6 +125,7 @@ function startDiscussion(){
   document.getElementById('setup').style.display='none';
   document.getElementById('interview').classList.add('active');
   document.getElementById('q-text').textContent=TOPICS[selectedTopic].title;
+  document.getElementById('q-desc').textContent=TOPICS[selectedTopic].desc;
   chatHistory=[];turnCount=0;
 
   if(document.getElementById('cam-toggle').checked){
@@ -188,14 +189,24 @@ async function stopAnswer(){
     var displayText=aiText.replace('[END]','').trim();
     aiTurn(displayText);
     if(isEnd){
-      setTimeout(function(){
+      setTimeout(async function(){
         var fb=document.getElementById('feedback');
-        var s=[r(),r(),r(),r()];
-        fb.innerHTML+='<br><br><b>Discussion Score: '+Math.round((s[0]+s[1]+s[2]+s[3])/4)+'/100</b><br>서비스 마인드: '+s[0]+' | 우선순위: '+s[1]+' | 팀워크: '+s[2]+' | 문제해결: '+s[3];
+        fb.innerHTML+='<br><br><b style="color:var(--gold);">AI가 피드백을 작성하고 있어요...</b>';
+        try{
+          var convo=chatHistory.map(function(m){return (m.role==='user'?'You':'Partner')+': '+m.content;}).join('\n');
+          var fbRes=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+            model:'claude-sonnet-4-20250514',max_tokens:500,
+            system:'You are a cabin crew group discussion coach. The scenario was: "'+TOPICS[selectedTopic].scenario+'"\n\nEvaluate the candidate\'s performance. Format:\n\nOverall Score: X/100\n\nStrengths (2-3 points):\n- ...\n\nAreas to Improve (2-3 points):\n- ...\n\nKey Tip:\n- One specific actionable tip\n\nBe encouraging but honest. Write in Korean.',
+            messages:[{role:'user',content:'디스커션 대화:\n\n'+convo+'\n\n피드백을 주세요.'}]
+          })});
+          var fbData=await fbRes.json();
+          var fbText=((fbData&&fbData.content&&fbData.content[0]&&fbData.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
+          fb.innerHTML='<b style="color:var(--gold);">AI 피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>';
+        }catch(e){fb.innerHTML+='<br>피드백 생성 실패. 다시 시도해주세요.';}
         document.getElementById('btn-next').disabled=false;
         document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=true;
         document.getElementById('rec-label').textContent='완료';
-      },3000);
+      },2000);
     } else {
       document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=false;
       document.getElementById('rec-label').textContent='대기';

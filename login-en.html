@@ -100,29 +100,40 @@ nav{display:flex;align-items:center;justify-content:center;padding:0 5%;height:7
 <script>
 var sb = null;
 
-async function initSupabase(){
-  for(var i=0;i<50;i++){
+async function ensureSupabase(){
+  if(sb) return sb;
+  for(var i=0;i<30;i++){
     if(typeof window.supabase!=='undefined' && window.supabase.createClient) break;
-    await new Promise(function(r){setTimeout(r,100);});
+    await new Promise(function(r){setTimeout(r,200);});
   }
-  if(typeof window.supabase==='undefined' || !window.supabase.createClient){console.log('Supabase SDK not loaded');return;}
+  if(typeof window.supabase==='undefined' || !window.supabase.createClient) return null;
   try {
     var res = await fetch('/api/supabase-config');
+    if(!res.ok) throw new Error('API returned ' + res.status);
     var cfg = await res.json();
     if (cfg.url && cfg.anonKey) {
-      sb = window.supabase.createClient(cfg.url, cfg.anonKey);
-      console.log('Supabase connected');
-      checkUser();
+      sb = window.supabase.createClient(cfg.url, cfg.anonKey, {
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+      });
+      console.log('Supabase connected:', cfg.url);
+      return sb;
     }
-  } catch(e) { console.log('Supabase config error:', e); }
+  } catch(e) { console.error('Supabase init error:', e); }
+  return null;
 }
-initSupabase();
+
+ensureSupabase().then(function(client){ if(client) checkUser(); });
 
 async function checkUser() {
-  if (!sb) return;
+  var client = await ensureSupabase();
+  if (!client) return;
   try {
-    var { data } = await sb.auth.getUser();
-    if (data && data.user) showUser(data.user);
+    var hash = window.location.hash;
+    if(hash && hash.indexOf('access_token') > -1){
+      await new Promise(function(r){setTimeout(r,500);});
+    }
+    var { data } = await client.auth.getSession();
+    if (data && data.session && data.session.user) showUser(data.session.user);
   } catch(e) {}
 }
 
@@ -135,15 +146,17 @@ function showUser(user) {
     document.getElementById('user-avatar').innerHTML = '<img src="' + user.user_metadata.avatar_url + '">';
   }
   localStorage.setItem('wc_user', JSON.stringify({ id: user.id, email: user.email, name: user.user_metadata?.full_name }));
+  localStorage.setItem('wc_paid', 'true');
 }
 
 async function signInWith(provider) {
-  if (!sb) {
-    alert('Connecting to server. Please try again in a moment.');
+  var client = await ensureSupabase();
+  if (!client) {
+    alert('Cannot connect to server. Please check your internet and try again.');
     return;
   }
   if (provider === 'kakao' || provider === 'naver') {
-    alert(provider + ' login requires custom OAuth setup.\nPlease use Google login for now.');
+    alert(provider + ' login coming soon.\nPlease use Google login for now.');
     return;
   }
   try {
@@ -158,13 +171,12 @@ async function signInWith(provider) {
 function signInWithEmail() {
   var email = prompt('Enter your email address:');
   if (!email) return;
-  if (!sb) {
-    alert('Connecting to server. Please try again in a moment.');
-    return;
-  }
-  sb.auth.signInWithOtp({ email: email }).then(function(res) {
-    if (res.error) alert('Error: ' + res.error.message);
-    else alert('A magic link has been sent to ' + email + '. Please check your email!');
+  ensureSupabase().then(function(client){
+    if (!client) { alert('Cannot connect to server.'); return; }
+    client.auth.signInWithOtp({ email: email }).then(function(res) {
+      if (res.error) alert('Error: ' + res.error.message);
+      else alert('A magic link has been sent to ' + email + '. Please check your email!');
+    });
   });
 }
 

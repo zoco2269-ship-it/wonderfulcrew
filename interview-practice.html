@@ -13,24 +13,27 @@ a{color:inherit;text-decoration:none;}
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:rgba(17,27,46,0.95);border-bottom:1px solid rgba(201,168,76,0.15);}
 .nav-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}.nav-logo span{color:var(--gold);}
 .nav-back{font-size:0.8rem;color:rgba(255,255,255,0.5);}.nav-back:hover{color:var(--gold);}
-.main{max-width:700px;margin:0 auto;padding:40px 20px;text-align:center;}
+.main{max-width:640px;margin:0 auto;padding:48px 20px;text-align:center;}
 .q-card{margin-bottom:24px;}
-.q-label{font-family:'DM Serif Display','Noto Serif KR',serif;font-size:1.7rem;color:var(--gold);letter-spacing:0.12em;margin-bottom:18px;font-weight:400;line-height:1.2;}
-.q-text{font-family:'Noto Serif KR',serif;font-size:1.15rem;color:rgba(255,255,255,0.9);line-height:1.7;margin-bottom:24px;font-weight:300;background:rgba(255,255,255,0.05);border-left:2px solid var(--gold);padding:18px 22px;text-align:left;max-width:560px;margin-left:auto;margin-right:auto;}
-.cam-box{width:100%;max-width:480px;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;position:relative;margin:0 auto 16px;}
+.q-label{font-family:'DM Serif Display','Noto Serif KR',serif;font-size:1.5rem;color:var(--gold);letter-spacing:0.08em;margin-bottom:20px;font-weight:400;line-height:1.2;}
+.q-text{font-family:'Noto Serif KR',serif;font-size:1.1rem;color:#fff;line-height:1.7;margin-bottom:28px;font-weight:300;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:20px 24px;text-align:left;max-width:560px;margin-left:auto;margin-right:auto;}
+.cam-box{width:100%;max-width:480px;aspect-ratio:16/9;background:#111;border-radius:16px;overflow:hidden;position:relative;margin:0 auto 20px;border:2px solid rgba(201,168,76,0.25);}
 .cam-box video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);}
-.cam-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:0.85rem;}
-.rec-badge{position:absolute;top:10px;left:10px;display:none;align-items:center;gap:5px;background:rgba(192,57,43,0.9);color:#fff;padding:3px 8px;font-size:0.68rem;font-weight:700;border-radius:10px;}
+.cam-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.35);font-size:0.88rem;flex-direction:column;gap:8px;}
+.rec-badge{position:absolute;top:12px;left:12px;display:none;align-items:center;gap:5px;background:rgba(192,57,43,0.9);color:#fff;padding:4px 10px;font-size:0.7rem;font-weight:700;border-radius:12px;}
 .rec-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px;}
-.btn{padding:12px 24px;border:none;border-radius:24px;font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;}
+.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+.btn{padding:13px 28px;border:none;border-radius:28px;font-family:inherit;font-size:0.86rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
 .btn-gold{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;}
-.btn-navy{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);}
-.btn-navy:hover{background:rgba(255,255,255,0.15);}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(201,168,76,0.3);}
+.btn-navy{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.2);}
+.btn-navy:hover{background:rgba(255,255,255,0.14);}
 .btn-red{background:#E74C3C;color:#fff;}
-.transcript{padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-size:0.88rem;color:rgba(255,255,255,0.7);min-height:40px;margin-top:12px;text-align:left;}
-.feedback{display:none;margin-top:16px;padding:20px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:8px;text-align:left;font-size:0.88rem;color:rgba(255,255,255,0.8);line-height:1.7;white-space:pre-line;}
+.btn-red:hover{background:#c0392b;}
+.transcript{display:none;padding:14px 18px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;font-size:0.88rem;color:rgba(255,255,255,0.7);min-height:40px;margin-top:16px;text-align:left;}
+.transcript.visible{display:block;}
+.feedback{display:none;margin-top:16px;padding:22px 24px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:16px;text-align:left;font-size:0.88rem;color:rgba(255,255,255,0.85);line-height:1.8;white-space:pre-line;}
 .feedback.visible{display:block;}
 .feedback b{color:var(--gold);}
 </style>
@@ -47,7 +50,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
     <div class="q-text" id="q-text">로딩 중...</div>
     <div class="cam-box">
       <video id="cam" autoplay muted playsinline></video>
-      <div class="cam-ph" id="cam-ph">카메라를 시작하세요</div>
+      <div class="cam-ph" id="cam-ph"><div style="font-size:1.6rem;opacity:0.5;">📷</div><div>카메라를 시작하세요</div></div>
       <div class="rec-badge" id="rec-badge"><div class="rec-dot"></div>REC</div>
     </div>
     <div class="btn-row">
@@ -163,6 +166,7 @@ function toggleRec(){
   if(!mediaRecorder||mediaRecorder.state==='inactive'){
     // 녹화 시작
     chunks=[];fullText='';
+    document.getElementById('transcript').classList.add('visible');
     mediaRecorder=new MediaRecorder(stream,{mimeType:'video/webm'});
     mediaRecorder.ondataavailable=function(e){if(e.data.size>0)chunks.push(e.data);};
     mediaRecorder.start();

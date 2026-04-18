@@ -717,7 +717,7 @@ async function endRoleplay(){
       var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Staff':setting.role.charAt(0).toUpperCase()+setting.role.slice(1))+': '+m.content;}).join('\n');
 
       var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        model:'claude-sonnet-4-5-20251022',max_tokens:500,
+        model:'claude-haiku-4-5-20251001',max_tokens:500,
         system:'You are a hospitality service interview coach. Evaluate the following roleplay conversation. The setting was '+setting.place+' and the scenario was: "'+scenario+'"\n\nProvide feedback in this format:\n1. Overall Score: X/100\n2. Strengths (2-3 points)\n3. Areas to Improve (2-3 points)\n4. Key Phrases to Remember\n\nBe encouraging but honest. Write in English. Keep it concise.',
         messages:[{role:'user',content:'Here is the roleplay conversation:\n\n'+convoSummary+'\n\nPlease give me feedback.'}]
       })});

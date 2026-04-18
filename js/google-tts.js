@@ -7,13 +7,17 @@ async function gcSpeak(text, lang, gender, onEnd) {
   if (_gcTtsAudio) { try { _gcTtsAudio.pause(); } catch(e) {} _gcTtsAudio = null; }
   if ('speechSynthesis' in window) window.speechSynthesis.cancel();
 
-  // Google Cloud TTS 시도
+  // Google Cloud TTS 시도 (3초 타임아웃)
   try {
+    var controller = new AbortController();
+    var timeout = setTimeout(function() { controller.abort(); }, 3000);
     var res = await fetch('/api/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: text.substring(0, 1000), lang: lang || 'en-GB', gender: gender || 'female' })
+      body: JSON.stringify({ text: text.substring(0, 500), lang: lang || 'en-GB', gender: gender || 'female' }),
+      signal: controller.signal
     });
+    clearTimeout(timeout);
     if (res.ok) {
       var data = await res.json();
       if (data.audioContent) {

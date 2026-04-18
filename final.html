@@ -66,7 +66,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <body>
 <nav>
   <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
-  <a href="curriculum.html" class="nav-back">← 커리큘럼</a>
+  <a href="#" class="nav-back" onclick="goBack();return false;">← 돌아가기</a>
 </nav>
 
 <!-- SETUP -->
@@ -97,6 +97,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
         <option value="en-GB">British English</option>
         <option value="en-US">American English</option>
         <option value="en-IN">Indian English</option>
+        <option value="en-PH">Filipino English</option>
+        <option value="en-SG">Singapore English</option>
+        <option value="es-ES">Spanish Accent</option>
       </select>
     </div>
     <div>
@@ -272,6 +275,19 @@ var QS=AIRLINE_QS.emirates;
 var stream=null,recognition=null,fullText='',qIdx=0,chatHistory=[];
 var chosenAvatar='male';
 
+function goBack(){
+  var interview=document.getElementById('interview');
+  if(interview&&interview.classList.contains('active')){
+    gcStop();
+    if(recognition)try{recognition.stop();}catch(e){}
+    if(stream){stream.getTracks().forEach(function(t){t.stop();});stream=null;}
+    interview.classList.remove('active');
+    document.getElementById('setup').style.display='block';
+  } else {
+    history.back();
+  }
+}
+
 // URL 파라미터로 항공사 자동 선택
 (function(){
   var p=new URLSearchParams(location.search);
@@ -306,7 +322,7 @@ function startInterview(){
 function showQuestion(){
   chatHistory=[];fullText='';
   document.getElementById('q-idx').textContent=qIdx+1;
-  document.getElementById('q-text').textContent=QS[qIdx].q+' ('+QS[qIdx].ko+')';
+  document.getElementById('q-text').textContent=QS[qIdx].q;
   document.getElementById('transcript').textContent='음성 답변 대기 중...';
   document.getElementById('feedback').classList.remove('active');
   document.getElementById('feedback').innerHTML='';
@@ -319,20 +335,13 @@ function showQuestion(){
 }
 
 function speakQ(text,lang){
-  if(!('speechSynthesis' in window))return;
   var iCard=document.getElementById('interviewer-card');
   var mouth=document.getElementById('avatar-mouth');
   iCard.classList.add('speaking');mouth.classList.add('talking');
-  var u=new SpeechSynthesisUtterance(text);u.lang=lang;
-  var isMale=(chosenAvatar==='male');u.rate=0.85;u.pitch=isMale?0.75:1.2;
-  var voices=window.speechSynthesis.getVoices();
-  var filtered=voices.filter(function(v){return v.lang.startsWith(lang.split('-')[0]);});
-  if(filtered.length>=2){
-    var match=filtered.find(function(v){return isMale?/male|daniel|james|david/i.test(v.name):/female|samantha|karen|victoria/i.test(v.name);});
-    if(match)u.voice=match;else u.voice=filtered[isMale?0:1];
-  }
-  u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
-  window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+  var isMale=(chosenAvatar==='male');
+  gcSpeak(text,lang||'en-GB',isMale?'male':'female',function(){
+    iCard.classList.remove('speaking');mouth.classList.remove('talking');
+  });
 }
 
 function startAnswer(){

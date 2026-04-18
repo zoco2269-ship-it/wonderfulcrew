@@ -34,8 +34,10 @@ section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
 .lecture-item.open .lecture-video{display:block;}
 .video-placeholder{width:100%;aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:0.88rem;border-radius:4px;}
 .sub-list{list-style:none;padding:0;}
-.sub-item{border-top:1px solid var(--gold-pale);padding:14px 24px;cursor:pointer;transition:background 0.15s;}
+.sub-item{border-top:1px solid var(--gold-pale);padding:14px 24px;cursor:pointer;transition:background 0.15s;display:flex;align-items:flex-start;gap:14px;}
 .sub-item:hover{background:rgba(201,168,76,0.04);}
+.sub-thumb{width:120px;height:68px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--cream);border:1px solid var(--gold-pale);}
+.sub-body{flex:1;min-width:0;}
 .sub-item .sub-title{font-size:0.9rem;color:var(--navy);font-weight:600;display:flex;align-items:center;gap:8px;}
 .sub-item .sub-title .sub-num{color:var(--gold);font-family:'DM Serif Display',serif;font-size:0.85rem;min-width:30px;}
 .sub-item .sub-desc{display:none;margin-top:10px;font-size:0.84rem;color:var(--text-mid);line-height:1.75;padding:14px 16px;background:var(--cream);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;}
@@ -137,9 +139,13 @@ LECTURES.forEach(function(ch){
     '<div class="lecture-arrow">→</div></div>';
   var subs='<div class="lecture-video"><ul class="sub-list">';
   ch.subs.forEach(function(s){
+    var vPath=s.url.replace('https://vimeo.com/','');
     subs+='<li class="sub-item" onclick="this.classList.toggle(\'open\')">'+
-      '<div class="sub-title"><span class="sub-num">'+s.num+'</span>'+s.title+'</div>'+
-      '<div class="sub-desc">'+s.desc+'<br><a href="'+s.url+'" target="_blank" class="sub-link">영상 보기 →</a></div>'+
+      '<img class="sub-thumb" src="https://vumbnail.com/'+vPath+'.jpg" alt="" loading="lazy" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 68%22><rect fill=%22%23F5E9C8%22 width=%22120%22 height=%2268%22/><text x=%2260%22 y=%2238%22 text-anchor=%22middle%22 fill=%22%23C9A84C%22 font-size=%2214%22>▶</text></svg>\'">'+
+      '<div class="sub-body">'+
+        '<div class="sub-title"><span class="sub-num">'+s.num+'</span>'+s.title+'</div>'+
+        '<div class="sub-desc">'+s.desc+'<br><a href="'+s.url+'" target="_blank" class="sub-link">영상 보기 →</a></div>'+
+      '</div>'+
     '</li>';
   });
   subs+='</ul></div>';

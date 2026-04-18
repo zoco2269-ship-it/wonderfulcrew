@@ -152,9 +152,15 @@ LECTURES.forEach(function(ch){
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>
 <script>
 // 영상 보기 클릭 시 결제 체크
+// URL에 ?admin=1이면 관리자 세팅
+try{if(new URLSearchParams(location.search).get('admin')==='1'){localStorage.setItem('wc_user','{"id":"admin","email":"zoco2269@gmail.com","name":"Admin"}');localStorage.setItem('wc_paid','true');}}catch(e){}
+
 document.addEventListener('click',function(e){
   if(e.target.classList.contains('sub-link')){
-    var paid=localStorage.getItem('wc_paid')==='true'||(typeof isAdmin==='function'&&isAdmin());
+    var paid=false;
+    if(localStorage.getItem('wc_paid')==='true') paid=true;
+    if(typeof isAdmin==='function'&&isAdmin()) paid=true;
+    try{var u=JSON.parse(localStorage.getItem('wc_user')||'{}');if(u.email==='zoco2269@gmail.com') paid=true;}catch(ex){}
     if(!paid){
       e.preventDefault();
       alert('프리미엄 수강생 전용 콘텐츠입니다.\n요금제 페이지에서 수강 신청해주세요.');

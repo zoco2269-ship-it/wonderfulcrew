@@ -13,24 +13,21 @@ module.exports = async function(req, res) {
 
   // 액센트별 최적 음성 매핑
   const voiceMap = {
-    'en-GB': { male: 'en-GB-Neural2-B', female: 'en-GB-Neural2-A' },
-    'en-US': { male: 'en-US-Neural2-J', female: 'en-US-Neural2-F' },
-    'en-IN': { male: 'en-IN-Neural2-B', female: 'en-IN-Neural2-A' },
-    'en-PH': { male: 'fil-PH-Neural2-D', female: 'fil-PH-Neural2-A' },
-    'en-SG': { male: 'en-US-Neural2-J', female: 'en-US-Neural2-F' },
-    'es-ES': { male: 'es-ES-Neural2-B', female: 'es-ES-Neural2-A' },
-    'ko-KR': { male: 'ko-KR-Neural2-C', female: 'ko-KR-Neural2-A' }
+    'en-GB': { male: 'en-GB-Neural2-D', female: 'en-GB-Neural2-C', lang: 'en-GB' },
+    'en-US': { male: 'en-US-Neural2-J', female: 'en-US-Neural2-F', lang: 'en-US' },
+    'en-IN': { male: 'en-IN-Neural2-B', female: 'en-IN-Neural2-A', lang: 'en-IN' },
+    'en-PH': { male: 'fil-PH-Neural2-D', female: 'fil-PH-Neural2-A', lang: 'fil-PH' },
+    'en-SG': { male: 'cmn-CN-Neural2-B', female: 'cmn-CN-Neural2-A', lang: 'cmn-CN' },
+    'es-ES': { male: 'es-ES-Neural2-B', female: 'es-ES-Neural2-C', lang: 'es-ES' },
+    'fr-FR': { male: 'fr-FR-Neural2-B', female: 'fr-FR-Neural2-A', lang: 'fr-FR' },
+    'ko-KR': { male: 'ko-KR-Neural2-C', female: 'ko-KR-Neural2-A', lang: 'ko-KR' }
   };
 
   const selectedLang = lang || 'en-GB';
   const selectedGender = gender || 'female';
   const voiceConfig = voiceMap[selectedLang] || voiceMap['en-GB'];
   const voiceName = selectedGender === 'male' ? voiceConfig.male : voiceConfig.female;
-
-  // 언어 코드 매핑 (TTS API용)
-  const langCode = selectedLang === 'en-SG' ? 'en-US'
-    : selectedLang === 'en-PH' ? 'fil-PH'
-    : selectedLang;
+  const langCode = voiceConfig.lang || selectedLang;
 
   try {
     const response = await fetch(

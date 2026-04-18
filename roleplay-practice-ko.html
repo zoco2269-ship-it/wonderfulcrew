@@ -522,8 +522,10 @@ async function processAnswer(){
   var scenario=typeof q==='string'?q:q.q;
   var tonePersona='일반적인 승객 톤';
 
-  fb.innerHTML='<span style="color:var(--gold);">승객이 반응하고 있어요...</span>';
+  document.getElementById('transcript').textContent='';
+  fb.innerHTML='<span style="color:var(--gold);font-size:0.9rem;">승객이 반응하고 있어요...</span>';
   fb.classList.add('active');
+  document.getElementById('interviewer-card').classList.add('speaking');
 
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
@@ -537,16 +539,13 @@ async function processAnswer(){
     chatHistory.push({role:'assistant',content:aiText});
     fb.innerHTML='<b style="color:var(--gold);">승객:</b> '+aiText;
     speakQuestion(aiText);
-    var checkTTS=setInterval(function(){
-      if(!window.speechSynthesis.speaking){
-        clearInterval(checkTTS);
-        if(timeExpired){
-          generateFeedback(scenario);
-        } else {
-          startListening();
-        }
-      }
-    },300);
+    // 텍스트 표시 후 바로 음성 인식 시작 (TTS와 동시 진행)
+    document.getElementById('interviewer-card').classList.remove('speaking');
+    if(timeExpired){
+      generateFeedback(scenario);
+    } else {
+      setTimeout(function(){startListening();},500);
+    }
   }catch(e){
     fb.innerHTML='<span style="color:#E74C3C;">오류 발생.</span>';
   }

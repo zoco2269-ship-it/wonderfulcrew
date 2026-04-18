@@ -43,7 +43,7 @@ module.exports = async function(req, res) {
           },
           audioConfig: {
             audioEncoding: 'MP3',
-            speakingRate: 0.92,
+            speakingRate: 1.08,
             pitch: 0
           }
         })

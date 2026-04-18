@@ -375,8 +375,11 @@ function appendLog(who,name,text){
 function speakText(text,persona){
   return new Promise(function(resolve){
     if(persona.noVoice){setTimeout(resolve,800);return;}
-    gcSpeak(text,'ko-KR',persona.gender||'male',function(){resolve();});
-    setTimeout(function(){resolve();},20000);
+    var resolved=false;
+    gcSpeak(text,'ko-KR',persona.gender||'male',function(){
+      if(!resolved){resolved=true;resolve();}
+    });
+    setTimeout(function(){if(!resolved){resolved=true;resolve();}},15000);
   });
 }
 

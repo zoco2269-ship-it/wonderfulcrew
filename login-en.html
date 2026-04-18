@@ -98,23 +98,30 @@ nav{display:flex;align-items:center;justify-content:center;padding:0 5%;height:7
 </div>
 
 <script>
-// Initialize Supabase
-// ⚠️ 아래 URL과 Key를 본인 Supabase 프로젝트 값으로 교체하세요
-var SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
-var SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+var sb = null;
 
-var supabase = null;
-try {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-} catch(e) {
-  console.log('Supabase not configured yet');
-}
-
-// Check login status
-async function checkUser() {
-  if (!supabase) return;
+async function initSupabase(){
+  for(var i=0;i<50;i++){
+    if(typeof window.supabase!=='undefined' && window.supabase.createClient) break;
+    await new Promise(function(r){setTimeout(r,100);});
+  }
+  if(typeof window.supabase==='undefined' || !window.supabase.createClient){console.log('Supabase SDK not loaded');return;}
   try {
-    var { data } = await supabase.auth.getUser();
+    var res = await fetch('/api/supabase-config');
+    var cfg = await res.json();
+    if (cfg.url && cfg.anonKey) {
+      sb = window.supabase.createClient(cfg.url, cfg.anonKey);
+      console.log('Supabase connected');
+      checkUser();
+    }
+  } catch(e) { console.log('Supabase config error:', e); }
+}
+initSupabase();
+
+async function checkUser() {
+  if (!sb) return;
+  try {
+    var { data } = await sb.auth.getUser();
     if (data && data.user) showUser(data.user);
   } catch(e) {}
 }
@@ -131,38 +138,38 @@ function showUser(user) {
 }
 
 async function signInWith(provider) {
-  if (!supabase || SUPABASE_URL.includes('YOUR_PROJECT')) {
-    alert('Supabase is not configured yet.\n\nHow to set up Supabase:\n1. Create a project at supabase.com\n2. Enable Google under Authentication > Providers\n3. login.html에서 SUPABASE_URL과 SUPABASE_ANON_KEY 교체\n4. Set Site URL to your domain in Supabase dashboard');
+  if (!sb) {
+    alert('Connecting to server. Please try again in a moment.');
     return;
   }
   if (provider === 'kakao' || provider === 'naver') {
-    alert(provider + ' login requires custom OAuth setup in Supabase.\nPlease use Google login for now.');
+    alert(provider + ' login requires custom OAuth setup.\nPlease use Google login for now.');
     return;
   }
   try {
-    var { error } = await supabase.auth.signInWithOAuth({
+    var { error } = await sb.auth.signInWithOAuth({
       provider: provider,
-      options: { redirectTo: window.location.origin + '/login.html' }
+      options: { redirectTo: window.location.origin + '/login-en.html' }
     });
     if (error) alert('Login failed: ' + error.message);
   } catch(e) { alert('Login error: ' + e.message); }
 }
 
 function signInWithEmail() {
-  var email = prompt('Email address를 입력하세요:');
+  var email = prompt('Enter your email address:');
   if (!email) return;
-  if (!supabase || SUPABASE_URL.includes('YOUR_PROJECT')) {
-    alert('Supabase is not configured yet.');
+  if (!sb) {
+    alert('Connecting to server. Please try again in a moment.');
     return;
   }
-  supabase.auth.signInWithOtp({ email: email }).then(function(res) {
+  sb.auth.signInWithOtp({ email: email }).then(function(res) {
     if (res.error) alert('Error: ' + res.error.message);
     else alert('A magic link has been sent to ' + email + '. Please check your email!');
   });
 }
 
 async function signOut() {
-  if (supabase) await supabase.auth.signOut();
+  if (sb) await sb.auth.signOut();
   localStorage.removeItem('wc_user');
   document.getElementById('login-form').style.display = 'block';
   document.getElementById('user-info').style.display = 'none';

@@ -33,6 +33,15 @@ section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
 .lecture-video{display:none;padding:0 24px 24px;}
 .lecture-item.open .lecture-video{display:block;}
 .video-placeholder{width:100%;aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:0.88rem;border-radius:4px;}
+.sub-list{list-style:none;padding:0;}
+.sub-item{border-top:1px solid var(--gold-pale);padding:14px 24px;cursor:pointer;transition:background 0.15s;}
+.sub-item:hover{background:rgba(201,168,76,0.04);}
+.sub-item .sub-title{font-size:0.9rem;color:var(--navy);font-weight:600;display:flex;align-items:center;gap:8px;}
+.sub-item .sub-title .sub-num{color:var(--gold);font-family:'DM Serif Display',serif;font-size:0.85rem;min-width:30px;}
+.sub-item .sub-desc{display:none;margin-top:10px;font-size:0.84rem;color:var(--text-mid);line-height:1.75;padding:14px 16px;background:var(--cream);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;}
+.sub-item.open .sub-desc{display:block;}
+.sub-item .sub-link{display:inline-block;margin-top:10px;padding:8px 18px;background:var(--navy);color:#fff;border-radius:20px;font-size:0.78rem;font-weight:600;text-decoration:none;}
+.sub-item .sub-link:hover{background:var(--gold);}
 footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
 @media(max-width:900px){.nav-links{display:none;}}
 
@@ -61,7 +70,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <div class="hero">
   <div class="label">Video Lectures</div>
   <h1>전문 코치의<br><em>합격 강의</em></h1>
-  <p>에미레이트 일등석 7년 경력 · 20년 코칭 내공을 강의 영상으로 만나보세요.</p>
+  <p>일등석 승무원 출신 · 13년 코칭 내공을 강의 영상으로 만나보세요.</p>
 </div>
 
 <section><div class="wrap">
@@ -76,49 +85,74 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <!-- 강의 목록 (결제 유저) -->
 <div id="lecture-list" style="display:none;">
-  <ul class="lecture-list">
-    <li class="lecture-item">
-      <div class="lecture-header" onclick="this.parentElement.classList.toggle('open')">
-        <div class="lecture-num">1</div>
-        <div class="lecture-info"><div class="title">오픈데이, 스몰톡</div><div class="desc">오픈데이의 모든 것 · CV Drop · 스몰톡 실전 연습</div></div>
-        <div class="lecture-arrow">→</div>
-      </div>
-      <div class="lecture-video"><div class="video-placeholder">강의 영상 준비 중입니다</div></div>
-    </li>
-    <li class="lecture-item">
-      <div class="lecture-header" onclick="this.parentElement.classList.toggle('open')">
-        <div class="lecture-num">2</div>
-        <div class="lecture-info"><div class="title">서비스 마인드 키우기</div><div class="desc">승무원의 진짜 역할 · 서비스 철학 · 면접관이 보는 것</div></div>
-        <div class="lecture-arrow">→</div>
-      </div>
-      <div class="lecture-video"><div class="video-placeholder">강의 영상 준비 중입니다</div></div>
-    </li>
-    <li class="lecture-item">
-      <div class="lecture-header" onclick="this.parentElement.classList.toggle('open')">
-        <div class="lecture-num">3</div>
-        <div class="lecture-info"><div class="title">1차 디스커션</div><div class="desc">How to say가 전부 · 자신감 있는 발표법 · 그룹 발표 전략</div></div>
-        <div class="lecture-arrow">→</div>
-      </div>
-      <div class="lecture-video"><div class="video-placeholder">강의 영상 준비 중입니다</div></div>
-    </li>
-    <li class="lecture-item">
-      <div class="lecture-header" onclick="this.parentElement.classList.toggle('open')">
-        <div class="lecture-num">4</div>
-        <div class="lecture-info"><div class="title">롤플레이, 2차 디스커션</div><div class="desc">롤플레이 정석 · 서비스 리커버리 · 우선순위 판단</div></div>
-        <div class="lecture-arrow">→</div>
-      </div>
-      <div class="lecture-video"><div class="video-placeholder">강의 영상 준비 중입니다</div></div>
-    </li>
-    <li class="lecture-item">
-      <div class="lecture-header" onclick="this.parentElement.classList.toggle('open')">
-        <div class="lecture-num">5</div>
-        <div class="lecture-info"><div class="title">파이널 인터뷰</div><div class="desc">최종 관문 · 심층 질문 대비 · 합격의 마지막 퍼즐</div></div>
-        <div class="lecture-arrow">→</div>
-      </div>
-      <div class="lecture-video"><div class="video-placeholder">강의 영상 준비 중입니다</div></div>
-    </li>
-  </ul>
+  <ul class="lecture-list" id="lec-list"></ul>
 </div>
+
+<script>
+var LECTURES=[
+  {ch:'1강',title:'오픈데이, 스몰톡',subs:[
+    {num:'1-1',title:'오픈데이, 어쎄스먼트, 비디오면접',url:'https://vimeo.com/user230127533/1-1',desc:'외항사 면접 시작!! 외국 항공사 승무원 면접 과정의 주요 단계인 오픈데이, 애세스먼트, 비디오면접의 차이점과 특징을 설명합니다. 면접 준비에 필요한 팁과 정보를 함께 제공합니다.'},
+    {num:'1-2',title:'CV 작성법',url:'https://vimeo.com/user230127533/1-2',desc:'합격생의 CV가 궁금하시죠? 효과적인 영문 이력서 작성 방법과 구조를 이해하고, 면접관에게 주목받을 수 있는 CV를 작성하는 팁'},
+    {num:'1-3',title:'씨비드롭, 스몰톡 하는 방법',url:'https://vimeo.com/user230127533/1-3',desc:'항공사 면접에서 성공적인 첫인상을 남기기 위한 씨비드롭 및 스몰톡 전략을 소개합니다. 준비해야 할 내용, 대화 시작 팁, 그리고 자연스럽게 자신을 어필하는 방법까지 배워보세요.'},
+    {num:'1-4',title:'그루밍 준비',url:'https://vimeo.com/user230127533/1-4',desc:'승무원 면접 준비에서 빠질 수 없는 그루밍! 이 영상에서는 헤어, 메이크업, 복장 스타일링까지 면접관에게 좋은 인상을 남길 수 있는 팁을 소개합니다.'},
+    {num:'1-5',title:'스카, 문신, 암리치, 키',url:'https://vimeo.com/user230127533/1-5',desc:'어느 정도 흉터가 면접 합격선일까요? 스카(흉터)나 문신이 승무원 면접에 영향을 미칠까 걱정되시나요? 암리치와 키 기준은 어떻게 될까요? 이 영상에서 모든 궁금증을 해결해드립니다.'},
+    {num:'1-6',title:'외항사 가기 위한 영어 정도',url:'https://vimeo.com/user230127533/1-6',desc:'외항사 가려면 영어 어느 정도 해야하나요? 모든 영어 다 공부하지 마세요! 외항사를 합격하는데 필요한 영어의 실질적 범위를 알려드립니다.'}
+  ]},
+  {ch:'2강',title:'서비스 마인드 키우기',subs:[
+    {num:'2-1',title:'서비스란?',url:'https://vimeo.com/user230127533/2-1',desc:'서비스란? 이라는 질문에 답하는거 힘드시죠? 원더풀크루의 경험을 모두 담아 서비스란 무엇이며 어떤 서비스를 제공해야 감동을 전달하는 서비스인으로 거듭날까요? 서비스의 개념과 승무원에게 필요한 서비스 철학과 마인드에 대해 심층적으로 설명합니다.'},
+    {num:'2-2',title:'술 취한 손님 대응법 4D\'s',url:'https://vimeo.com/user230127533/2-2',desc:'술에 취한 손님과 마주했을 때 어떻게 해야 할지 막막한가요? 이 영상을 통해 전문적으로 대처하는 방법을 익히고 승무원으로서의 자신감을 키워보세요!'},
+    {num:'2-3',title:'화난 손님 응대법 LEAP 스킬',url:'https://vimeo.com/user230127533/2-3',desc:'화난 손님을 만났을 때 당황하지 않고 차분히 대처하는 법을 알고 싶으신가요? LEAP 스킬로 승무원다운 대응법을 완성하세요!'}
+  ]},
+  {ch:'3강',title:'1차 디스커션',subs:[
+    {num:'3-1',title:'승무원의 역할',url:'https://vimeo.com/user230127533/3-1',desc:'누구나 말하는 뻔한 승무원의 역할을 면접에서 답변으로 하실껀가요? 면접관이 끄덕일만한 승무원의 역할에 대해 제대로 설명해 드립니다. 어디에서도 못 들어봤을 진짜 역할!'},
+    {num:'3-2',title:'1차 디스커션 혼자 발표',url:'https://vimeo.com/user230127533/3-2',desc:'에미레이트 1차 디스커션은 소그룹 또는 혼자서 주어진 주제로 발표를 합니다. 왜 발표를 할까요? 승무원의 어떤 자질이 필요하기에 많은 사람들 앞에서 발표 과정이 있는지를 알면 이 과정을 성공적으로 해낼 수 있습니다!'}
+  ]},
+  {ch:'4강',title:'2차 디스커션',subs:[
+    {num:'4-1',title:'호텔 오버부킹',url:'https://vimeo.com/user230127533/4-1',desc:'호텔 시스템 에러로 오버부킹이 된 상황, 이 중 2명만 선택해서 호텔에 머무를 수 있다. 누구를 선택할거고 그 이유? 1차와 달리 2차 디스커션에서는 고객의 리스트가 나옵니다. 왜 고객의 리스트가 나올까를 알아서 이 단계를 통과할 수 있습니다.'},
+    {num:'4-2',title:'워터파크',url:'https://vimeo.com/user230127533/4-2',desc:'오늘이 시즌 마지막 날이다. 그리고 이 워터파크는 이 도시에 있는 유일한 것이다. 당신은 이 워터파크의 매니저다. 다양한 고객 상황을 우선순위를 정해 해결하세요.'},
+    {num:'4-3',title:'비행기 딜레이 순서 정하기',url:'https://vimeo.com/user230127533/4-3',desc:'비행기가 딜레이된 상황에서 기내에서 동시에 6가지 상황이 발생합니다. 우선순위를 정해야 한다면 어떻게 해야 할까요? 승무원의 제1업무부터 차례대로 무엇을 어떻게 해야하는지 모두 설명합니다.'}
+  ]},
+  {ch:'5강',title:'롤플레이',subs:[
+    {num:'5-1',title:'롤플레이 완전 정복',url:'https://vimeo.com/user230127533/5-1',desc:'롤플레이 이제 어렵지 않아요! 이 영상 하나로 완전정복!!'},
+    {num:'5-2',title:'롤플레이 — 좋은 사과',url:'https://vimeo.com/user230127533/5-2',desc:'롤플레이에서 좋은 사과는 고객의 신뢰를 회복하는 핵심입니다. 효과적인 사과 방법과 실전 롤플레이 팁을 알려드립니다.'},
+    {num:'5-3',title:'롤플레이 — 기내에 신문이 없다?',url:'https://vimeo.com/user230127533/5-3',desc:'기내 일등석에서 고객이 아라빅 신문을 달라고 하는데 아라빅 신문이 떨어졌다. 어떻게 대응할까요?'}
+  ]},
+  {ch:'6강',title:'파이널 인터뷰',subs:[
+    {num:'6-1',title:'최종면접 분석',url:'https://vimeo.com/user230127533/6-1',desc:'외항사 최종면접에 대한 분석과 준비 전략'},
+    {num:'6-2',title:'파이널 — 베스트 서비스',url:'https://vimeo.com/user230127533/6-2',desc:'고객에게 베스트 서비스를 제공한 적이 있냐는 질문은 외국항공사 면접에서 무조건 나오는 최고로 중요한 질문입니다. 합격 에피소드를 같이 보면서 나만의 최고의 답변을 준비해 보세요!'},
+    {num:'6-3',title:'파이널 — 룰을 깬 적',url:'https://vimeo.com/user230127533/6-3',desc:'룰을 깬 적이 있나? 따르고 싶지 않은 룰? 룰 관련 질문에 대한 대처와 답변 방향에 대해 모든 걸 알려드립니다.'},
+    {num:'6-4',title:'파이널 — 디맨딩 커스터머',url:'https://vimeo.com/user230127533/6-4',desc:'파이널 면접에서 꼭 나오는 질문인 까다로운 고객을 어떻게 대응했냐는 질문. 반드시 치밀하게 준비해야 하는 질문입니다.'},
+    {num:'6-5',title:'파이널 — 바빴던 날',url:'https://vimeo.com/user230127533/6-5',desc:'정말 때려치우고 싶은 날도 어떻게 잘 극복해냈을까요? 바쁜 날의 고객 응대 팁, 시간 관리, 서비스 마인드를 유지하는 방법을 구체적으로 설명합니다.'},
+    {num:'6-6',title:'파이널 — 고객에게 친근하게 다가가는 방법',url:'https://vimeo.com/user230127533/6-6',desc:'파이널 질문 — 고객에게 친근하게 다가가는 방법'},
+    {num:'6-7',title:'파이널 — 크리에이티브, 정리, 좌절, 디테일',url:'https://vimeo.com/user230127533/6-7',desc:'크리에이티브 아이디어, well-organized로 일한 적, 좌절한 적(setback), 디테일에 신경쓴 적 등 기타 관련 질문들'},
+    {num:'6-8',title:'파이널 — 동료 관련',url:'https://vimeo.com/user230127533/6-8',desc:'동료를 도운 적, 동료와 Conflict, 동료의 잘못을 지적한 적, 보스에게 혼난 적 등'},
+    {num:'6-9',title:'파이널 — 해외 경험 질문들',url:'https://vimeo.com/user230127533/6-9',desc:'해외 경험에서 힘들었던 점, 외로움을 느꼈던 적, 해외생활 적응, 무슬림 컬처를 Respect 한 적 등'},
+    {num:'6-10',title:'파이널 — 승무원, 두바이 관련',url:'https://vimeo.com/user230127533/6-10',desc:'왜 에미레이트인지(모든 지원자 공통 질문), 왜 캐빈크루 하고 싶어, 두바이에 왜 가고 싶어, 마지막 질문 있니?'}
+  ]},
+  {ch:'7강',title:'특강',subs:[
+    {num:'특강',title:'현직 에미레이트 승무원 특강',url:'https://vimeo.com/user230127533/7',desc:'전직 홍콩 캐세이퍼시픽 항공 승무원이자 현직 두바이 아랍 에미레이트항공 현직 승무원이 두 항공사를 합격한 노하우를 전부 공개합니다! 현직만이 줄 수 있는 놓칠 수 없는 팁을 절대로 놓치지 마세요!'}
+  ]}
+];
+
+var list=document.getElementById('lec-list');
+LECTURES.forEach(function(ch){
+  var li=document.createElement('li');li.className='lecture-item';
+  var hdr='<div class="lecture-header" onclick="this.parentElement.classList.toggle(\'open\')">'+
+    '<div class="lecture-num">'+ch.ch.replace('강','')+'</div>'+
+    '<div class="lecture-info"><div class="title">'+ch.ch+'. '+ch.title+'</div><div class="desc">'+ch.subs.length+'개 영상</div></div>'+
+    '<div class="lecture-arrow">→</div></div>';
+  var subs='<div class="lecture-video"><ul class="sub-list">';
+  ch.subs.forEach(function(s){
+    subs+='<li class="sub-item" onclick="this.classList.toggle(\'open\')">'+
+      '<div class="sub-title"><span class="sub-num">'+s.num+'</span>'+s.title+'</div>'+
+      '<div class="sub-desc">'+s.desc+'<br><a href="'+s.url+'" target="_blank" class="sub-link">영상 보기 →</a></div>'+
+    '</li>';
+  });
+  subs+='</ul></div>';
+  li.innerHTML=hdr+subs;
+  list.appendChild(li);
+});
+</script>
 
 </div></section>
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>

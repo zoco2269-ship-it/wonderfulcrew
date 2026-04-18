@@ -1,9 +1,11 @@
-// WonderfulCrew Supabase Client v3
+// WonderfulCrew Supabase Client v4
 // Vercel 환경변수에서 자동으로 설정 로드
 
 let _supabase = null;
 let _currentUser = null;
 let _supabaseReady = false;
+
+var ADMIN_EMAILS = ['zoco2269@gmail.com'];
 
 // 서버에서 Supabase 설정 로드
 (async function initSupabase(){
@@ -84,6 +86,11 @@ function isLoggedIn() {
   return !!localStorage.getItem('wc_user');
 }
 
+function isAdmin() {
+  var user = JSON.parse(localStorage.getItem('wc_user') || '{}');
+  return ADMIN_EMAILS.indexOf(user.email) !== -1;
+}
+
 function requireLogin(msg) {
   if (!isLoggedIn()) {
     alert(msg || '로그인이 필요합니다.');
@@ -91,6 +98,15 @@ function requireLogin(msg) {
     return false;
   }
   return true;
+}
+
+function requireAuth() {
+  if (isLoggedIn()) return;
+  var page = location.pathname.split('/').pop() || '';
+  var publicPages = ['index.html','index-en.html','login.html','login-en.html','about.html','about-en.html','column.html','column-en.html','plans.html','plans-en.html','contact.html','terms.html','privacy.html','copyright.html','','jobs.html','jobs-en.html','community.html','community-en.html'];
+  if (page.indexOf('column/') === 0) return;
+  if (publicPages.indexOf(page) !== -1) return;
+  location.href = 'login.html';
 }
 
 // ===== DATABASE =====

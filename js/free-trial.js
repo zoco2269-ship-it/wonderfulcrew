@@ -40,6 +40,8 @@ function isSubscribed() {
 // 무료체험 사용 또는 구독 체크
 // true 반환 = 콘텐츠 접근 가능, false = 불가
 function useFreeTrialOrCheck() {
+  if (typeof isAdmin === 'function' && isAdmin()) return true;
+
   var data = getTrialData();
 
   // 구독자는 항상 통과

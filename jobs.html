@@ -86,6 +86,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 .nav-dd-grid{min-width:auto;width:max-content;display:none;grid-template-columns:1fr;gap:0!important;padding:0!important;background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);border-radius:20px;}
 .nav-dropdown:hover .nav-dd-grid{display:grid!important;}
 </style>
+<script src="js/push-subscribe.js"></script>
 </head>
 <body>
 
@@ -115,8 +116,8 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <section class="premium-alert">
   <div class="wrap">
     <div class="premium-badge">PREMIUM ONLY</div>
-    <h2>매일 쏟아지는 면접 정보,<br><em>카카오톡으로 정기적으로 받아보세요</em></h2>
-    <p class="lead">카카오톡 채널에서 채용 오픈 실시간 알림과 합격 콘텐츠를 발송합니다. 원더풀크루가 현직 승무원·코치와 함께 쌓아온 합격 데이터가 도착합니다.</p>
+    <h2>매일 쏟아지는 면접 정보,<br><em>푸시 알림으로 받아보세요</em></h2>
+    <p class="lead">채용 오픈 실시간 알림과 합격 콘텐츠를 푸시 알림으로 발송합니다. 원더풀크루가 현직 승무원·코치와 함께 쌓아온 합격 데이터가 도착합니다.</p>
     <div style="display:inline-flex;gap:18px;flex-wrap:wrap;justify-content:center;margin-bottom:32px;font-size:0.82rem;color:rgba(255,255,255,0.75);">
       <span>⚡ 채용 오픈 시 실시간 알림</span>
       <span>📈 기출 DB 업데이트</span>
@@ -127,9 +128,8 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
       <div class="f-item"><div class="f-num">03</div><div class="f-text">면접관 성향 분석 · 합격자 인터뷰</div></div>
       <div class="f-item"><div class="f-num">04</div><div class="f-text">복장 · 동선 · 주의사항 체크리스트</div></div>
     </div>
-    <button class="kakao-btn" onclick="wcSubscribeAlert()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="#3C1E1E"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.85 1.86 5.35 4.68 6.77l-1.2 4.4c-.1.38.3.69.63.49L11.4 19.6c.2.02.4.03.6.03 5.52 0 10-3.58 10-8s-4.48-8-10-8z"/></svg>
-      카카오톡 채널 알림 받기
+    <button class="kakao-btn" onclick="if(typeof wcPromptPush==='function')wcPromptPush();else alert('브라우저가 푸시 알림을 지원하지 않습니다.');">
+      🔔 푸시 알림 받기
     </button>
     <p class="premium-note"><a href="plans.html">요금제 보기</a></p>
   </div>
@@ -204,11 +204,10 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 </section>
 
 <section class="alert-cta">
-  <h3>합격 콘텐츠와 채용 알림,<br>카카오톡으로 받아보세요</h3>
+  <h3>합격 콘텐츠와 채용 알림,<br>푸시 알림으로 받아보세요</h3>
   <p>합격 비밀노트 + 채용 오픈 실시간 알림 + 기출 업데이트 + 체크리스트</p>
-  <button class="kakao-btn" onclick="wcSubscribeAlert()">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="#3C1E1E"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.85 1.86 5.35 4.68 6.77l-1.2 4.4c-.1.38.3.69.63.49L11.4 19.6c.2.02.4.03.6.03 5.52 0 10-3.58 10-8s-4.48-8-10-8z"/></svg>
-    카카오톡 채널 알림 받기
+  <button class="kakao-btn" onclick="if(typeof wcPromptPush==='function')wcPromptPush();else alert('브라우저가 푸시 알림을 지원하지 않습니다.');">
+    🔔 푸시 알림 받기
   </button>
 </section>
 
@@ -228,6 +227,12 @@ function wcSubscribeAlert(airline){
 }
 </script>
 <script>
+// 카카오톡 레거시 함수 (제거 예정)
+function wcSubscribeAlert(airline) {
+  if (typeof wcPromptPush === 'function') { wcPromptPush(); return; }
+  alert('브라우저가 푸시 알림을 지원하지 않습니다.');
+}
+
 // RSS 뉴스 자동 로딩 (fallback: 기존 하드코딩 유지)
 (async function(){
   try{

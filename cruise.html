@@ -54,7 +54,7 @@ var LINES=[
 ];
 var STEPS=[
   {title:'에이전시 면접 (영어)',items:['English self-introduction','Why do you want to work on a cruise ship?','Tell me about your service experience','How do you handle difficult guests?','What languages do you speak?','이미지 피드백 (카메라 ON)']},
-  {title:'본사 면접 (영어)',items:['Why this cruise line?','Describe a time you worked as a team','How do you handle working away from home for months?','What would you do if a guest complained?','롤플레이: 기내 컴플레인 상황 (영어)']}
+  {title:'본사 면접 (영어)',items:['Why this cruise line?','Describe a time you worked as a team','How do you handle working away from home for months?','What would you do if a guest complained?','롤플레이: 고객 컴플레인 상황 (영어)']}
 ];
 var bg=document.getElementById('brands'),pa=document.getElementById('process-area');
 LINES.forEach(function(h){
@@ -63,9 +63,13 @@ LINES.forEach(function(h){
   d.onclick=function(){
     document.querySelectorAll('.brand-card').forEach(function(c){c.classList.remove('active');});d.classList.add('active');
     pa.innerHTML='<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;">크루즈 면접 프로세스</h2><p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:24px;">서류/CV 제출 → 에이전시 면접 → 본사 면접 → 서류 준비 → 안전교육 → 승선</p>';
-    STEPS.forEach(function(s){
+    var btnMap = {
+      0: '<a class="step-btn" href="interview-practice.html?type=cruise">면접 연습 →</a><a class="step-btn" href="daily-english-en.html">영어 쉐도잉 →</a>',
+      1: '<a class="step-btn" href="interview-practice.html?type=cruise">면접 연습 →</a><a class="step-btn" href="roleplay-practice-en.html">롤플레이 연습 →</a>'
+    };
+    STEPS.forEach(function(s,i){
       var c=document.createElement('div');c.className='card';
-      c.innerHTML='<h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul><a class="step-btn" href="interview-practice.html?type=interview">연습 시작</a>';
+      c.innerHTML='<h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>'+(btnMap[i]||'');
       pa.appendChild(c);
     });
   };

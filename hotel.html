@@ -62,9 +62,14 @@ HOTELS.forEach(function(h){
   d.onclick=function(){
     document.querySelectorAll('.brand-card').forEach(function(c){c.classList.remove('active');});d.classList.add('active');
     pa.innerHTML='<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;">호텔 면접 프로세스</h2><p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:24px;">서류전형 → 1차 면접 → 2차 면접 (부서장) → 임원면접 → 건강검진</p>';
-    STEPS.forEach(function(s){
+    var btnMap = {
+      0: '<a class="step-btn" href="interview-practice.html?type=hotel">면접 연습 →</a><a class="step-btn" href="grooming-guide.html">그루밍 가이드 →</a>',
+      1: '<a class="step-btn" href="interview-practice.html?type=hotel2">면접 연습 →</a><a class="step-btn" href="roleplay-practice-ko.html">롤플레이 연습 →</a>',
+      2: '<a class="step-btn" href="interview-practice.html?type=executive">임원면접 연습 →</a>'
+    };
+    STEPS.forEach(function(s,i){
       var c=document.createElement('div');c.className='card';
-      c.innerHTML='<h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul><a class="step-btn" href="interview-practice.html?type=interview">연습 시작</a>';
+      c.innerHTML='<h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>'+(btnMap[i]||'');
       pa.appendChild(c);
     });
   };

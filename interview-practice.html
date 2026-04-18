@@ -125,8 +125,63 @@ var Q_EXECUTIVE=[
   '본인이 불합리한 대우를 받았을 때 어떻게 대처하시나요?'
 ];
 
-var questions=type==='executive'?Q_EXECUTIVE:Q_INTERVIEW;
-var label=type==='executive'?'임원면접 질문':'면접 질문';
+var Q_HOTEL=[
+  '간단하게 자기소개 해주세요.',
+  '왜 호텔리어가 되고 싶나요?',
+  '왜 이 호텔에 지원하셨나요?',
+  '좋은 서비스란 무엇이라고 생각하나요?',
+  '서비스 경험 중 가장 기억에 남는 것은?',
+  '어려운 고객을 대응한 경험이 있나요?',
+  '팀워크를 발휘한 경험을 말씀해주세요.',
+  '스트레스를 받을 때 어떻게 해소하나요?',
+  '야간 근무나 교대 근무에 대해 어떻게 생각하나요?',
+  '호텔리어에게 가장 중요한 자질은 무엇인가요?',
+  'VIP 고객 응대 경험이 있나요?',
+  '고객 컴플레인을 어떻게 처리하시겠습니까?',
+  '입사 후 어떤 부서에서 일하고 싶으신가요?',
+  '본인의 강점은 무엇인가요?',
+  '마지막으로 하고 싶은 말씀이 있으신가요?'
+];
+
+var Q_HOTEL2=[
+  '어려운 고객 상황에서 어떻게 대처하셨나요?',
+  '팀에서 갈등이 생겼을 때 어떻게 해결하나요?',
+  '입사 후 어떤 계획이 있나요?',
+  '호텔리어로서 본인의 자질은?',
+  '리더십을 발휘한 경험을 말씀해주세요.',
+  '고객에게 NO라고 말해야 할 때 어떻게 하나요?',
+  '본인이 생각하는 프리미엄 서비스란?',
+  '5년 후 본인의 모습을 그려주세요.'
+];
+
+var Q_CRUISE=[
+  'Tell me about yourself.',
+  'Why do you want to work on a cruise ship?',
+  'Why this cruise line?',
+  'How do you handle being away from home for months?',
+  'Describe a time you provided excellent service.',
+  'How would you handle a guest complaint?',
+  'Tell me about a time you worked as part of a team.',
+  'How do you handle stress in a fast-paced environment?',
+  'What do you know about our cruise line?',
+  'How would you handle a medical emergency on board?',
+  'Are you comfortable working with people from different cultures?',
+  'What would you do if a guest was unhappy with their cabin?',
+  'Describe your ideal work environment.',
+  'What makes you different from other candidates?',
+  'Do you have any questions for us?'
+];
+
+var typeMap = {
+  'interview': { q: Q_INTERVIEW, label: '면접 질문' },
+  'executive': { q: Q_EXECUTIVE, label: '임원면접 질문' },
+  'hotel': { q: Q_HOTEL, label: '호텔 1차 면접' },
+  'hotel2': { q: Q_HOTEL2, label: '호텔 2차 면접' },
+  'cruise': { q: Q_CRUISE, label: '크루즈 면접' }
+};
+var selected = typeMap[type] || typeMap['interview'];
+var questions = selected.q;
+var label = selected.label;
 document.getElementById('q-label').textContent=label;
 
 function pickQ(){

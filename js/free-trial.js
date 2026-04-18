@@ -114,3 +114,23 @@ function renderTrialBadge(containerId) {
     el.innerHTML = '<span style="font-size:0.82rem;color:#5A5048;">무료체험 <b style="color:#C9A84C;">' + left + '회</b> 남음</span>';
   }
 }
+
+// 연습 페이지 진입 시 자동 1회 소진
+(function(){
+  var page = location.pathname.split('/').pop() || '';
+  var practicePages = [
+    'interview-practice.html','roleplay-practice-ko.html','roleplay-practice-en.html',
+    'roleplay-practice.html','discussion-practice-ko.html','discussion-practice.html',
+    'discussion1.html','discussion2.html','video-practice.html','final.html',
+    'chatbot.html','chatbot-en.html','word-shooting.html','ai-coach.html','ai-coach-en.html'
+  ];
+  if (practicePages.indexOf(page) === -1) return;
+  // 페이지 로드 시 무료체험 체크
+  document.addEventListener('DOMContentLoaded', function(){
+    if (!useFreeTrialOrCheck()) {
+      // 무료체험 소진 → 구독 팝업 이미 떴으므로 콘텐츠 숨기기
+      var main = document.querySelector('.main, .wrap, #app, main, .content');
+      if (main) main.style.opacity = '0.3';
+    }
+  });
+})();

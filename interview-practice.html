@@ -266,7 +266,7 @@ async function generateFeedback(){
   var question=document.getElementById('q-text').textContent;
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:700,
+      model:'claude-haiku-4-5-20251001',max_tokens:1200,
       system:'You are a cabin crew interview coach. The student answered an interview question on camera. Evaluate ONLY what they actually said. The input is from speech recognition so ignore grammar/punctuation errors.\n\nCRITICAL RULES:\n- Only comment on what the student ACTUALLY said. Do NOT mention topics they did not bring up.\n- Do NOT use a fixed checklist. Respond naturally to their specific answer.\n- If they did not mention travel, do NOT comment about travel.\n- If they did not mention a specific topic, do NOT evaluate them on it.\n\nFormat (use # not ## for headings):\n# 점수: X/100\n# 잘한 점\n- (2-3 points based on what they actually said)\n# 개선할 점\n- (2-3 points based on what they actually said)\n# 제안 답변\n(4-5 sentences, a complete well-structured model answer for this question)\n\nBe encouraging. Write in Korean.',
       messages:[{role:'user',content:'질문: '+question+'\n\n학생 답변: '+fullText.trim()+'\n\n피드백을 주세요.'}]
     })});

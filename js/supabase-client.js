@@ -13,9 +13,28 @@ var ADMIN_EMAILS = ['zoco2269@gmail.com'];
     var res = await fetch('/api/supabase-config');
     var cfg = await res.json();
     if (cfg.url && cfg.anonKey && typeof window.supabase !== 'undefined') {
-      _supabase = window.supabase.createClient(cfg.url, cfg.anonKey);
+      _supabase = window.supabase.createClient(cfg.url, cfg.anonKey, {
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+      });
       _supabaseReady = true;
-      // 세션 체크
+
+      // 세션 변경 감지
+      _supabase.auth.onAuthStateChange(function(event, session) {
+        if (session && session.user) {
+          _currentUser = session.user;
+          localStorage.setItem('wc_user', JSON.stringify({
+            id: session.user.id,
+            email: session.user.email,
+            name: session.user.user_metadata?.full_name || '',
+            avatar: session.user.user_metadata?.avatar_url || ''
+          }));
+        } else if (event === 'SIGNED_OUT') {
+          _currentUser = null;
+          localStorage.removeItem('wc_user');
+        }
+      });
+
+      // 초기 세션 체크
       var { data } = await _supabase.auth.getSession();
       if (data && data.session && data.session.user) {
         _currentUser = data.session.user;

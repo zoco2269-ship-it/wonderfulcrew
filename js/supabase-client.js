@@ -236,4 +236,20 @@ function getPublicUrl(path) {
   return data?.publicUrl || '#';
 }
 
-console.log('WonderfulCrew Supabase Client v3 loaded');
+// 로그인 상태에 따라 nav 버튼 변경
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    var user = JSON.parse(localStorage.getItem('wc_user') || 'null');
+    if (!user) return;
+    // 로그인 버튼을 사용자 이름으로 변경
+    var loginBtns = document.querySelectorAll('a[href="login.html"], a[href="login-en.html"]');
+    loginBtns.forEach(function(btn) {
+      if (btn.textContent.trim() === '로그인' || btn.textContent.trim() === 'Sign In') {
+        btn.textContent = user.name || user.email?.split('@')[0] || '내 계정';
+        btn.href = 'my-progress.html';
+      }
+    });
+  }, 800);
+});
+
+console.log('WonderfulCrew Supabase Client v4 loaded');

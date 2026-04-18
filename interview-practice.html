@@ -274,7 +274,7 @@ async function generateFeedback(){
     var text=(data&&data.content&&data.content[0]&&data.content[0].text)||'피드백을 생성하지 못했습니다.';
     fb.innerHTML='<b>피드백</b><br><br>'+text.replace(/\*\*/g,'');
   }catch(e){
-    fb.innerHTML='피드백 생성 실패. 다시 시도해주세요.';
+    fb.innerHTML='피드백 생성 실패: '+e.message+'<br>다시 시도해주세요.';
   }
 }
 </script>

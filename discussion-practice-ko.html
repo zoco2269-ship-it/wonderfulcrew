@@ -214,7 +214,7 @@ var TOPICS_FREE=[
 ];
 
 // 가상 동료 지원자 페르소나
-var PERSONA_B={name:'지원자 B',pitch:0.8,style:'신중하고 데이터 중심. 상대 의견을 인용하며 논리적으로 연결. 경청 태도 모범.',noVoice:true};
+var PERSONA_B={name:'지원자 B',pitch:1.0,style:'신중하고 데이터 중심. 상대 의견을 인용하며 논리적으로 연결. 경청 태도 모범.',noVoice:false,gender:'female'};
 var PERSONA_C={name:'지원자 C',pitch:0.8,style:'적극적이고 창의적. 새로운 각도의 의견 제시. 때로 반대 입장도 언급하되 예의 있게.',noVoice:false};
 
 var topics=[];
@@ -375,7 +375,7 @@ function appendLog(who,name,text){
 function speakText(text,persona){
   return new Promise(function(resolve){
     if(persona.noVoice){setTimeout(resolve,800);return;}
-    gcSpeak(text,'ko-KR','male',function(){resolve();});
+    gcSpeak(text,'ko-KR',persona.gender||'male',function(){resolve();});
     setTimeout(function(){resolve();},20000);
   });
 }

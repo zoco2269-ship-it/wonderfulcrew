@@ -87,6 +87,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/auth-gate.js"></script>
+<script src="js/google-tts.js"></script>
 </head>
 <body>
 
@@ -486,32 +487,14 @@ window.addEventListener('pagehide',function(){
 });
 
 function speakQuestion(text){
-  if(!('speechSynthesis' in window))return;
   var iCard=document.getElementById('interviewer-card');
   var mouth=document.getElementById('avatar-mouth');
   iCard.classList.add('speaking');
   mouth.classList.add('talking');
-  var u=new SpeechSynthesisUtterance(text);
   var isMale=(chosenAvatar==='👨🏻');
-  u.rate=0.95;
-  u.pitch=isMale?0.85:1.05;
-  u.lang='ko-KR';
-  var voices=window.speechSynthesis.getVoices();
-  var ko=voices.filter(function(v){return v.lang==='ko-KR'||v.lang.startsWith('ko');});
-  if(ko.length>0){
-    if(!isMale){
-      var femaleMatch=ko.find(function(v){return /female|유나|선히|heami|yuna|sunhi|woman/i.test(v.name);});
-      if(femaleMatch) u.voice=femaleMatch;
-      else if(ko.length>=2) u.voice=ko[1];
-      else u.voice=ko[0];
-    } else {
-      var maleMatch=ko.find(function(v){return /male|인호|준서|min|junsu/i.test(v.name);});
-      u.voice=maleMatch||ko[0];
-    }
-  }
-  u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
+  gcSpeak(text,'ko-KR',isMale?'male':'female',function(){
+    iCard.classList.remove('speaking');mouth.classList.remove('talking');
+  });
 }
 
 var chatHistory=[];

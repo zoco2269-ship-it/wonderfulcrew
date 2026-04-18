@@ -97,6 +97,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/auth-gate.js"></script>
+<script src="js/google-tts.js"></script>
 </head>
 <body>
 
@@ -518,50 +519,14 @@ window.addEventListener('pagehide',function(){
 });
 
 function speakQuestion(text,lang){
-  if(!('speechSynthesis' in window))return;
   var iCard=document.getElementById('interviewer-card');
   var mouth=document.getElementById('avatar-mouth');
   iCard.classList.add('speaking');
   mouth.classList.add('talking');
-  var u=new SpeechSynthesisUtterance(text);
   var isMale=(chosenAvatar==='👨🏻');
-  u.rate=0.85;
-  u.pitch=isMale?0.85:1.1;
-
-  var voices=window.speechSynthesis.getVoices();
-  var selectedVoice=null;
-
-  function findVoice(langCode, genderNames) {
-    var pool=voices.filter(function(v){return v.lang===langCode||v.lang.startsWith(langCode.split('-')[0]);});
-    if(pool.length===0) return null;
-    var match=pool.find(function(v){return genderNames.test(v.name);});
-    if(match) return match;
-    if(!isMale){
-      var femaleGuess=pool.find(function(v){return /female|woman/i.test(v.name);});
-      if(femaleGuess) return femaleGuess;
-      if(pool.length>=2) return pool[1];
-    }
-    return pool[0];
-  }
-
-  if(lang==='en-GB'){
-    selectedVoice=findVoice('en-GB', isMale?/daniel|james|thomas|george|male/i:/kate|fiona|karen|martha|female|libby|sonia/i);
-  } else if(lang==='en-US'){
-    selectedVoice=findVoice('en-US', isMale?/david|mark|alex|guy|male/i:/samantha|zira|susan|jenny|aria|female/i);
-  } else if(lang==='fr-FR'){
-    selectedVoice=findVoice('fr-FR', isMale?/thomas|male|henri/i:/female|amelie|virginie/i);
-    u.rate=0.82;
-  } else if(lang==='es-ES'){
-    selectedVoice=findVoice('es-ES', isMale?/male|jorge|pablo|juan/i:/female|monica|paulina|lucia/i);
-    if(!selectedVoice) selectedVoice=findVoice('es-MX', isMale?/male|juan/i:/female|paulina/i);
-    u.rate=0.82;
-  }
-
-  if(selectedVoice) u.voice=selectedVoice;
-  u.lang=(lang==='fr-FR'||lang==='es-ES')?lang:'en-US';
-  u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
+  gcSpeak(text,lang||'en-GB',isMale?'male':'female',function(){
+    iCard.classList.remove('speaking');mouth.classList.remove('talking');
+  });
 }
 
 var chatHistory=[];

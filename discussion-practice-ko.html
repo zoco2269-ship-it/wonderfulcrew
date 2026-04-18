@@ -89,6 +89,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/auth-gate.js"></script>
+<script src="js/google-tts.js"></script>
 </head>
 <body>
 
@@ -396,21 +397,8 @@ function appendLog(who,name,text){
 function speakText(text,persona){
   return new Promise(function(resolve){
     if(persona.noVoice){setTimeout(resolve,800);return;}
-    if(!('speechSynthesis' in window)){resolve();return;}
-    window.speechSynthesis.cancel();
-    var u=new SpeechSynthesisUtterance(text);
-    u.rate=0.98;u.pitch=persona.pitch;u.lang='ko-KR';
-    var voices=window.speechSynthesis.getVoices();
-    var ko=voices.filter(function(v){return v.lang==='ko-KR'||v.lang.startsWith('ko');});
-    if(ko.length>0){
-      var match=ko.find(function(v){return /male|인호|준|min/i.test(v.name);});
-      u.voice=match||ko[0];
-    }
-    var resolved=false;
-    u.onend=function(){if(!resolved){resolved=true;resolve();}};
-    u.onerror=function(){if(!resolved){resolved=true;resolve();}};
-    window.speechSynthesis.speak(u);
-    setTimeout(function(){if(!resolved){resolved=true;resolve();}},20000);
+    gcSpeak(text,'ko-KR','male',function(){resolve();});
+    setTimeout(function(){resolve();},20000);
   });
 }
 

@@ -58,6 +58,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/auth-gate.js"></script>
+<script src="js/google-tts.js"></script>
 </head>
 <body>
 <nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a><a href="curriculum.html" class="nav-back">← 커리큘럼</a></nav>
@@ -146,11 +147,7 @@ function aiTurn(text){
   card.classList.add('speaking');mouth.classList.add('talking');
   var fb=document.getElementById('feedback');
   fb.innerHTML='<b style="color:var(--gold);">다른 지원자:</b> '+text;fb.classList.add('active');
-  if('speechSynthesis' in window){
-    var u=new SpeechSynthesisUtterance(text);u.lang='en-GB';u.rate=0.85;u.pitch=1.15;
-    u.onend=function(){card.classList.remove('speaking');mouth.classList.remove('talking');};
-    window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
-  } else {setTimeout(function(){card.classList.remove('speaking');mouth.classList.remove('talking');},3000);}
+  gcSpeak(text,'en-GB','female',function(){card.classList.remove('speaking');mouth.classList.remove('talking');});
 }
 
 function startAnswer(){

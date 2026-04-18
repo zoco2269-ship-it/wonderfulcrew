@@ -102,6 +102,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/auth-gate.js"></script>
+<script src="js/google-tts.js"></script>
 </head>
 <body>
 
@@ -142,6 +143,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
         <option value="en-GB">British English</option>
         <option value="en-US">American English</option>
         <option value="en-IN">Indian English</option>
+        <option value="en-PH">Filipino English</option>
+        <option value="en-SG">Singapore English</option>
+        <option value="es-ES">Spanish Accent</option>
       </select>
     </div>
     <div>
@@ -533,46 +537,48 @@ window.addEventListener('pagehide',function(){
   if('speechSynthesis' in window)window.speechSynthesis.cancel();
 });
 
-function speakQuestion(text,lang){
-  if(!('speechSynthesis' in window))return;
+var _ttsAudio=null;
+
+async function speakQuestion(text,lang){
   var iCard=document.getElementById('interviewer-card');
   var mouth=document.getElementById('avatar-mouth');
   iCard.classList.add('speaking');
   mouth.classList.add('talking');
-  var u=new SpeechSynthesisUtterance(text);
-  // Indian English: en-IN 지원 안 되면 en-US로 폴백
-  var voices=window.speechSynthesis.getVoices();
-  if(lang==='en-IN'){
-    var hasIndian=voices.some(function(v){return v.lang==='en-IN'||v.lang.startsWith('en-IN');});
-    if(!hasIndian)lang='en-US';
-  }
-  u.lang=lang;
+
+  // 이전 오디오 중지
+  if(_ttsAudio){try{_ttsAudio.pause();_ttsAudio=null;}catch(e){}}
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+
   var isMale=(chosenAvatar==='👨🏻');
-  u.rate=0.85;
-  u.pitch=isMale?0.85:1.1;
 
+  // Google Cloud TTS API 시도
+  try{
+    var res=await fetch('/api/tts',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text:text,lang:lang||'en-GB',gender:isMale?'male':'female'})
+    });
+    if(res.ok){
+      var data=await res.json();
+      if(data.audioContent){
+        var audio=new Audio('data:audio/mp3;base64,'+data.audioContent);
+        _ttsAudio=audio;
+        audio.onended=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');_ttsAudio=null;};
+        audio.onerror=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');_ttsAudio=null;};
+        audio.play();
+        return;
+      }
+    }
+  }catch(e){console.log('Google TTS failed, falling back to browser TTS');}
+
+  // 폴백: 브라우저 TTS
+  if(!('speechSynthesis' in window)){iCard.classList.remove('speaking');mouth.classList.remove('talking');return;}
+  var u=new SpeechSynthesisUtterance(text);
+  u.lang=lang||'en-US';u.rate=0.85;u.pitch=isMale?0.85:1.1;
   var voices=window.speechSynthesis.getVoices();
-  var exact=voices.filter(function(v){return v.lang===lang;});
-  if(exact.length===0) exact=voices.filter(function(v){return v.lang.startsWith(lang.split('-')[0]);});
-
-  var selectedVoice=null;
-  if(exact.length>0){
-    if(lang==='en-GB'){
-      selectedVoice=exact.find(function(v){return isMale?/daniel|james|thomas|george|male/i.test(v.name):/kate|fiona|karen|martha|libby|sonia|female/i.test(v.name);});
-    } else if(lang==='en-US'){
-      selectedVoice=exact.find(function(v){return isMale?/david|mark|alex|guy|male/i.test(v.name):/samantha|zira|susan|jenny|aria|female/i.test(v.name);});
-    } else if(lang==='en-IN'){
-      selectedVoice=exact.find(function(v){return isMale?/male|ravi/i.test(v.name):/female|neerja/i.test(v.name);});
-    }
-    if(!selectedVoice && !isMale){
-      selectedVoice=exact.find(function(v){return /female|woman/i.test(v.name);});
-      if(!selectedVoice && exact.length>=2) selectedVoice=exact[1];
-    }
-    if(!selectedVoice) selectedVoice=exact[0];
-  }
-  if(selectedVoice) u.voice=selectedVoice;
+  var exact=voices.filter(function(v){return v.lang===(lang||'en-US');});
+  if(exact.length>0) u.voice=exact[0];
   u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
-  window.speechSynthesis.cancel();
   window.speechSynthesis.speak(u);
 }
 

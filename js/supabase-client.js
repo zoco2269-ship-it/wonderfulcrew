@@ -103,9 +103,8 @@ function requireLogin(msg) {
 function requireAuth() {
   if (isLoggedIn()) return;
   var page = location.pathname.split('/').pop() || '';
-  var publicPages = ['index.html','index-en.html','login.html','login-en.html','about.html','about-en.html','column.html','column-en.html','plans.html','plans-en.html','contact.html','terms.html','privacy.html','copyright.html','','jobs.html','jobs-en.html','community.html','community-en.html'];
-  if (page.indexOf('column/') === 0) return;
-  if (publicPages.indexOf(page) !== -1) return;
+  var protectedPages = ['roleplay-practice.html','roleplay-practice-en.html','roleplay-practice-ko.html','roleplay.html','discussion-practice-ko.html','discussion-practice.html','discussion1.html','discussion2.html','final.html','video-practice.html','leveltest.html','leveltest-en.html','interview-practice.html','ai-coach.html','ai-coach-en.html','chatbot.html','chatbot-en.html','coach-feedback.html','coach-feedback-en.html','my-progress.html','my-progress-en.html','settings.html','settings-en.html','admin.html'];
+  if (protectedPages.indexOf(page) === -1) return;
   location.href = 'login.html';
 }
 

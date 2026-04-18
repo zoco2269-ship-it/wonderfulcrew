@@ -288,32 +288,39 @@ async function saveVideo(i){
     }
   }
 }
-function showScore(i){
+async function showScore(i){
   var tr=document.getElementById('tr-'+i).textContent.trim();
-  if(!tr)return;
+  if(!tr) tr='(음성 인식 없음)';
   var sc=document.getElementById('sc-'+i);
-  // Dummy scores   추후 AI 엔진 학습 후 교체
-  var scores=[
-    Math.floor(Math.random()*20)+65,
-    Math.floor(Math.random()*20)+60,
-    Math.floor(Math.random()*20)+55,
-    Math.floor(Math.random()*25)+50
-  ];
-  var vals=sc.querySelectorAll('.score-item .value');
-  vals[0].innerHTML=scores[0]+'<span>/100</span>';
-  vals[1].innerHTML=scores[1]+'<span>/100</span>';
-  vals[2].innerHTML=scores[2]+'<span>/100</span>';
-  vals[3].innerHTML=scores[3]+'<span>/100</span>';
-  var avg=Math.round((scores[0]+scores[1]+scores[2]+scores[3])/4);
-  sc.querySelector('.score-msg').innerHTML=
-    '종합 점수: <b>'+avg+'/100</b><br><br>'+
-    'AI가 답변 내용을 분석한 결과입니다.<br><br>'+
-    '<b>핵심 체크포인트:</b><br>'+
-    '· 미소가 자연스럽게 유지되었나요?<br>'+
-    '· 목소리가 밝고 따뜻했나요?<br>'+
-    '· 카메라를 보며 자신감 있게 말했나요?<br>'+
-    '· 지원동기에서 "여행" 대신 "자질과 부합"을 강조했나요?';
+  var question=QUESTIONS[i].q;
+
+  // 로딩 표시
+  sc.querySelector('.score-msg').innerHTML='<span style="color:var(--gold);">피드백을 작성하고 있어요...</span>';
   sc.classList.add('visible');
+
+  // 점수 영역 숨기기 (AI가 직접 점수 제공)
+  sc.querySelectorAll('.score-grid').forEach(function(g){g.style.display='none';});
+
+  try{
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-sonnet-4-6-20250514',max_tokens:700,
+      system:'You are a cabin crew video interview coach. The student answered a question on camera. Evaluate ONLY what they actually said. The input is from speech recognition so ignore grammar errors.\n\nCRITICAL: Only comment on what the student ACTUALLY said. Do NOT use a fixed checklist. Respond naturally to their specific answer.\n\nFormat:\n# 점수: X/100\n# 잘한 점\n- (2-3 points based on what they said)\n# 개선할 점\n- (2-3 points based on what they said)\n# 제안 답변\n(4-5 sentences model answer)\n\nWrite in Korean.',
+      messages:[{role:'user',content:'질문: '+question+'\n\n학생 답변: '+tr+'\n\n피드백을 주세요.'}]
+    })});
+    var data=await res.json();
+    if(data&&data.error){
+      sc.querySelector('.score-msg').innerHTML='API 오류: '+(data.error.message||JSON.stringify(data.error));
+      return;
+    }
+    var text=(data&&data.content&&data.content[0]&&data.content[0].text)||'';
+    if(!text){
+      sc.querySelector('.score-msg').innerHTML='피드백 생성 실패. 응답: '+JSON.stringify(data).substring(0,200);
+      return;
+    }
+    sc.querySelector('.score-msg').innerHTML='<b>피드백</b><br><br>'+text.replace(/\*\*/g,'').replace(/\*[^*]+\*/g,'');
+  }catch(e){
+    sc.querySelector('.score-msg').innerHTML='피드백 생성 실패: '+e.message;
+  }
 }
 </script>
 </body>

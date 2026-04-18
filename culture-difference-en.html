@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cultural Awareness — WonderfulCrew</title>
+<meta name="description" content="Understanding cultural differences is the foundation of exceptional cabin crew service. Insights from coaching candidates across 22+ nationalities.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--cream-dark:#F0EAD8;--navy:#1A2340;--navy-light:#2A3455;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Serif Display','Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.5rem;font-weight:400;color:var(--navy);text-decoration:none;}.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links>a,.nav-links>.nav-dropdown{line-height:72px;}
+.nav-links a{font-size:0.82rem;color:var(--text-mid);text-decoration:none;}.nav-links a:hover{color:var(--gold);}
+.nav-dropdown{position:relative;}.nav-dropdown>a::after{content:' ▾';font-size:0.7em;}
+.nav-dropdown-menu{display:none;position:absolute;top:100%;left:-12px;padding:0px 16px;background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);border:1px solid rgba(201,168,76,0.2);box-shadow:0 4px 16px rgba(0,0,0,0.06);min-width:160px;z-index:1001;border-radius:20px;}
+.nav-dd-grid{min-width:auto;width:max-content;display:none;grid-template-columns:1fr;gap:0!important;padding:0!important;background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);border-radius:20px;}
+.nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}
+.nav-dropdown:hover .nav-dd-grid{display:grid!important;}
+.nav-dropdown-menu a{display:block;padding:0px 8px!important;font-size:13px;line-height:36px!important;color:#1a2744;white-space:nowrap;}
+.nav-dropdown-menu a:hover{background:rgba(212,175,55,0.3)!important;color:#1a2744!important;border-left:5px solid #C9A84C;}
+.nav-dropdown-menu a:first-child:hover{border-radius:16px 16px 0 0;}
+.nav-dropdown-menu a:last-child:hover{border-radius:0 0 16px 16px;}
+.nav-dropdown-menu a:first-child:last-child:hover{border-radius:16px;}
+.nav-dropdown-menu.wide{min-width:260px;display:none;grid-template-columns:1fr 1fr;gap:0;padding:4px 0;}
+.nav-dropdown-menu.wide a{padding:5px 12px;font-size:0.76rem;}
+.nav-dropdown:hover .nav-dropdown-menu.wide{display:grid;}
+.nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;text-decoration:none;}
+@media(max-width:900px){.nav-links{display:none;}}
+
+.hero{padding:140px 5% 80px;background:var(--navy);text-align:center;}
+.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:clamp(2rem,4vw,3rem);font-weight:300;color:#fff;margin-bottom:12px;line-height:1.3;}
+.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.hero p{font-size:1rem;color:rgba(255,255,255,0.7);font-weight:300;max-width:560px;margin:0 auto;line-height:1.8;}
+
+.content-section{padding:80px 5%;max-width:900px;margin:0 auto;}
+.content-section h2{font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:600;color:var(--navy);margin-bottom:12px;line-height:1.4;}
+.content-section h2 em{font-style:normal;color:var(--gold);}
+.gold-line-left{width:40px;height:1px;background:var(--gold);margin:0 0 32px;}
+
+.culture-card{background:#fff;border:1px solid rgba(201,168,76,0.15);border-left:4px solid var(--gold);padding:28px 30px;margin-bottom:24px;border-radius:0 12px 12px 0;transition:all 0.3s;}
+.culture-card:hover{box-shadow:0 4px 20px rgba(201,168,76,0.12);}
+.culture-card-title{font-family:'DM Serif Display',serif;font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:12px;line-height:1.5;}
+.culture-card-body{font-family:'Noto Sans KR',sans-serif;font-size:0.9rem;color:var(--text-mid);line-height:1.85;font-weight:300;}
+.culture-card-body b{color:var(--navy);font-weight:600;}
+
+.example-box{background:var(--cream);border-radius:10px;padding:18px 20px;margin-top:14px;font-size:0.88rem;line-height:1.75;}
+.example-box .tag{display:inline-block;padding:2px 10px;border-radius:8px;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;margin-bottom:8px;}
+.tag-wrong{background:rgba(192,57,43,0.08);color:#C0392B;}
+.tag-right{background:rgba(201,168,76,0.15);color:var(--gold);}
+
+.insight-box{background:var(--navy);color:#fff;border-radius:12px;padding:28px 30px;margin:32px 0;}
+.insight-box h3{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--gold-light);margin-bottom:12px;letter-spacing:0.08em;}
+.insight-box p{font-size:0.9rem;line-height:1.85;color:rgba(255,255,255,0.8);font-weight:300;}
+
+.cta-section{padding:60px 5% 80px;text-align:center;}
+.cta-section p{font-size:0.95rem;color:var(--text-muted);margin-bottom:24px;font-weight:300;}
+.btn-gold{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.88rem;font-weight:600;letter-spacing:0.08em;text-decoration:none;border-radius:28px;transition:all 0.2s;}
+.btn-gold:hover{background:linear-gradient(135deg,#F0D578,#D4B358);transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,168,76,0.35);}
+
+footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <div class="nav-dropdown"><a href="index-en.html#about">About</a><div class="nav-dropdown-menu nav-dd-grid"><a href="about-en.html">About WonderfulCrew</a><a href="column-en.html">Interview Insights</a></div></div>
+    <div class="nav-dropdown"><a href="index-en.html#expertise">Programs</a><div class="nav-dropdown-menu wide"><a href="leveltest-en.html">Cabin Crew</a><a href="hotel-en.html">Hotel &amp; Luxury</a><a href="walking-analysis-en.html">Walking &amp; Posture</a><a href="cruise-en.html">Cruise</a><a href="coach-feedback-en.html">1:1 Coach Feedback</a><a href="ai-coach-en.html">AI Coach</a></div></div>
+    <div class="nav-dropdown"><a href="index-en.html#resources">Resources</a><div class="nav-dropdown-menu wide"><a href="interview-guide-en.html">Interview Guide</a><a href="english-interview-en.html">Interview Q&amp;A</a><a href="grooming-guide-en.html">Image &amp; Grooming</a><a href="resume-guide-en.html">Resume &amp; CV</a><a href="customer-service-en.html">Customer Service Skills</a><a href="culture-difference-en.html">Cultural Awareness</a></div></div>
+    <a href="daily-english-en.html">Shadowing</a>
+    <a href="jobs-en.html">Recruitment</a>
+    <a href="community-en.html">Community</a>
+    <a href="plans-en.html">Pricing</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="leveltest-en.html" class="nav-cta">Start Practice</a>
+    <a href="login-en.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;text-decoration:none;">Sign In</a>
+    <a href="culture-difference.html" style="display:inline-flex;align-items:center;padding:6px 12px;border-radius:16px;background:rgba(26,35,64,0.06);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-size:0.72rem;font-weight:600;text-decoration:none;">KO</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="label">Cultural Awareness</div>
+  <h1>Understanding<br><em>Cultural Differences</em></h1>
+  <p>In aviation service with multinational passengers,<br>cultural sensitivity is not optional — it is essential.</p>
+</section>
+
+<div class="content-section">
+  <h2>Why Does <em>Cultural Awareness</em> Matter?</h2>
+  <div class="gold-line-left"></div>
+
+  <div class="insight-box">
+    <h3>CORE INSIGHT</h3>
+    <p>On any given flight, passengers from dozens of nationalities sit side by side. The same gesture that is polite in one culture can be deeply offensive in another. Understanding cultural differences is the first step toward truly exceptional service.</p>
+  </div>
+
+  <div class="culture-card">
+    <div class="culture-card-title">1. Gestures That Mean Different Things</div>
+    <div class="culture-card-body">
+      The same hand gesture can carry entirely different meanings across cultures.<br><br>
+      <b>The V-Sign</b> — In Korea or Japan, flashing a V-sign (with the back of the hand facing outward) is common in photos. However, in <b>the UK, Australia, and Ireland</b>, this gesture carries the same offensive meaning as raising the middle finger. Be mindful around multinational passengers.<br><br>
+      <b>Thumbs Up</b> — In Western cultures, it means "good" or "well done." But in parts of the <b>Middle East and West Africa</b>, it can be taken as an insult.<br><br>
+      As cabin crew, always be aware of how your natural gestures may be interpreted by passengers from different backgrounds.
+    </div>
+  </div>
+
+  <div class="culture-card">
+    <div class="culture-card-title">2. Personal Space</div>
+    <div class="culture-card-body">
+      In <b>Northern Europe and North America</b>, personal space is wide. Maintaining an arm's length during conversation is considered natural and respectful.<br><br>
+      In contrast, in <b>Middle Eastern, Southern European, and Latin American</b> cultures, standing close during conversation is a sign of warmth and trust. Stepping back may be perceived as rejection.<br><br>
+      When serving passengers onboard, adjust your physical proximity based on the cultural context of each interaction.
+    </div>
+  </div>
+
+  <div class="culture-card">
+    <div class="culture-card-title">3. Dietary &amp; Religious Restrictions</div>
+    <div class="culture-card-body">
+      In <b>Islamic culture</b>, only Halal-certified food is consumed. Pork and alcohol are strictly prohibited. During Ramadan, fasting occurs from sunrise to sunset.<br><br>
+      In <b>Hinduism</b>, cows are considered sacred, so beef is avoided. Many Hindus follow a vegetarian diet.<br><br>
+      In <b>Judaism</b>, Kosher rules apply. Dairy and meat products must never be served together.<br><br>
+      Crew members should check special meal requests in advance and offer considerate service even when passengers haven't explicitly asked.
+    </div>
+    <div class="example-box">
+      <div class="tag tag-wrong">AVOID</div>
+      <div>"It's pork — is that okay for you?" — A question that shows unawareness of religious restrictions.</div>
+      <div style="margin-top:10px;"><div class="tag tag-right">RECOMMENDED</div></div>
+      <div>"We've prepared your special meal in advance. Shall I bring it to you now?"</div>
+    </div>
+  </div>
+
+  <div class="culture-card">
+    <div class="culture-card-title">4. Greeting Customs</div>
+    <div class="culture-card-body">
+      In <b>Western cultures</b>, a handshake is the standard greeting, regardless of gender.<br><br>
+      In <b>Japan</b>, bowing is the default greeting, with minimal physical contact.<br><br>
+      In the <b>Middle East</b>, cheek-kissing between the same gender is common, but physical contact between different genders is often avoided. A conservative Muslim man may decline to shake hands with a woman.<br><br>
+      If a handshake is declined, don't take it personally. Simply smile warmly and give a slight nod — this shows respect and cultural understanding.
+    </div>
+  </div>
+
+  <div class="culture-card">
+    <div class="culture-card-title">5. The Concept of Time</div>
+    <div class="culture-card-body">
+      In <b>Germany, Japan, and Switzerland</b>, punctuality equals respect. Arriving 5 minutes early is the baseline expectation.<br><br>
+      In parts of <b>Latin America, the Middle East, and Africa</b>, time is more fluid. Relationships and conversation take priority over the clock.<br><br>
+      In an interview setting, always be punctual. But when serving diverse passengers, understand that different cultures have different relationships with time, and respond with flexibility.
+    </div>
+  </div>
+
+  <div class="culture-card">
+    <div class="culture-card-title">6. Emotional Expression</div>
+    <div class="culture-card-body">
+      In <b>Italy, Spain, and Brazil</b>, emotions are expressed openly. A loud voice and animated gestures are not signs of anger — they're simply the natural way of communicating.<br><br>
+      In <b>Japan, Korea, and Finland</b>, restraining emotions is considered a virtue. Silence doesn't mean satisfaction — it may hide unspoken needs.<br><br>
+      As crew, learn to read beyond the surface. Understand both expressive and reserved communication styles, and respond to the real needs beneath them.
+    </div>
+  </div>
+
+  <div class="culture-card">
+    <div class="culture-card-title">7. The Left Hand Taboo</div>
+    <div class="culture-card-body">
+      In many <b>Middle Eastern and South Asian</b> cultures, the left hand is considered unclean. Using the right hand — or both hands — when passing items or food is a sign of respect.<br><br>
+      When serving passengers onboard, make it a habit to offer items with your <b>right hand or both hands</b>. This small detail demonstrates cultural awareness that passengers will notice and appreciate.
+    </div>
+  </div>
+
+  <div class="culture-card">
+    <div class="culture-card-title">8. Why Interviewers Ask About Cultural Differences</div>
+    <div class="culture-card-body">
+      When an interviewer asks about cultural differences, they're not testing your textbook knowledge.<br><br>
+      <b>"Can this person work respectfully with passengers and colleagues from diverse backgrounds?"</b><br><br>
+      That is the real question behind every cultural awareness question. Cultural sensitivity cannot be memorized — it must be understood and embodied.
+    </div>
+    <div class="example-box">
+      <div class="tag tag-right">INTERVIEW TIP</div>
+      <div>Never frame cultural differences as "right vs. wrong."<br>The key message is: "It's not wrong — it's different. I understand and respect those differences."</div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h3>REMEMBER</h3>
+    <p>Knowing about cultures is just the beginning. True service means respecting those cultures and making every passenger feel comfortable through your actions. Cultural sensitivity isn't something you memorize — it's something you practice, internalize, and live.</p>
+  </div>
+</div>
+
+<section class="cta-section">
+  <p>Ready to practice culturally aware service in a real interview setting?</p>
+  <a href="leveltest-en.html" class="btn-gold">Start Interview Practice →</a>
+</section>
+
+<footer>© 2026 WonderfulCrew Inc. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">Business Registration: 441-87-03214</span></footer>
+</body>
+</html>

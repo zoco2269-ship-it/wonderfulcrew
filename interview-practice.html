@@ -66,6 +66,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script>
 var urlParams=new URLSearchParams(window.location.search);
 var type=urlParams.get('type')||'interview';
+var airlineName=urlParams.get('airline')||'대한항공';
 
 var Q_INTERVIEW=[
   '간단하게 자기소개 해주세요.',
@@ -185,7 +186,8 @@ var label = selected.label;
 document.getElementById('q-label').textContent=label;
 
 function pickQ(){
-  return questions[Math.floor(Math.random()*questions.length)];
+  var q=questions[Math.floor(Math.random()*questions.length)];
+  return q.replace(/대한항공/g,airlineName).replace(/Korean Air/g,airlineName);
 }
 document.getElementById('q-text').textContent=pickQ();
 

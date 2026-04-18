@@ -345,11 +345,51 @@ if(_urlAirline && savedAirline){
   function emiratesSteps(){
     var randQ=EMIRATES_RANDOM_Q[Math.floor(Math.random()*EMIRATES_RANDOM_Q.length)];
     return [
-      {num:'①',title:'비디오 면접',sub:'나를 1분으로 소개하세요',listHeader:'예상 질문',list:['간단한 자기소개를 해주세요','왜 승무원이 되고 싶나요?',randQ],href:'video-practice.html'},
-      {num:'②',title:'1차 발표',sub:'카메라 앞에서 발표하세요',listHeader:'답변 흐름',list:['자기소개 + Work Experience','What is your favourite destination and why?','If you could sit next to any celebrity, who would it be and why?'],href:'discussion1.html'},
-      {num:'③',title:'2차 디스커션',sub:'그룹 토론에서 리더십을 발휘하세요',href:'discussion2.html'},
-      {num:'④',title:'롤플레이',sub:'실전 AI 면접 연습',href:'roleplay-practice.html'},
-      {num:'⑤',title:'파이널 인터뷰',sub:'최종 관문을 통과하세요',listHeader:'예상 질문 (6개)',list:['Tell me about your best service experience.','Have you ever dealt with a demanding customer?','Tell me about a time you helped a colleague.','Have you ever had a conflict with a colleague?','Have you ever shown respect for Muslim culture?','Why do you want to work for Emirates?'],href:'final.html'}
+      {num:'①',title:'CV · 이력서 제출',sub:'첫인상은 이력서에서 시작됩니다',
+        listHeader:'준비 포인트',
+        list:[
+          '일 경험(Work Experience)이 핵심 — 서비스 관련 경험을 구체적으로 기술하세요',
+          '경력 사이에 2개월 이상 공백이 없도록 관리하세요',
+          '사진은 밝은 미소, 깔끔한 배경, 프로페셔널한 복장'
+        ]},
+      {num:'②',title:'비디오 면접',sub:'비디오 면접 = 이미지 면접입니다',
+        listHeader:'준비 포인트',
+        list:[
+          '좋은 이미지를 주는 것이 전부입니다 — 이 단계는 곧 이미지 면접',
+          '말을 길게 할 필요 없지만, 묻는 질문에 바로바로 대답할 수 있게 연습하세요',
+          '말하면서 동시에 웃는 연습이 필요합니다 — 스마일은 절대 잊지 마세요',
+          '스몰토크도 마찬가지, 자연스러운 미소와 함께'
+        ],href:'video-practice.html'},
+      {num:'③',title:'1차 발표',sub:'그룹 또는 개인 발표 형식으로 진행됩니다',
+        listHeader:'준비 포인트',
+        list:[
+          '요즘은 개인 발표 형식이 추세 — 주어진 주제를 많은 사람 앞에서 어떻게 발표하느냐가 핵심',
+          '많은 지원자가 발표하므로 말이 길어지면 안 됩니다 — 핵심만 깔끔하게',
+          '많은 사람 앞에서 발표한다는 것이 무엇을 의미하는지 깊이 생각해 보세요'
+        ],href:'discussion1.html'},
+      {num:'④',title:'2차 디스커션',sub:'구체적인 상황과 고객 리스트가 주어집니다',
+        listHeader:'준비 포인트',
+        list:[
+          '주제가 구체적으로 주어지고, 여러 명의 고객 리스트가 등장합니다',
+          '고객 리스트의 모든 인물은 이유가 있어서 거기 있습니다 — 면접관이 무엇을 보는지 생각하세요',
+          '한 명이 아닌 여러 고객이 동시에 나올 때, 어떤 것들을 고려해야 하는지가 핵심'
+        ],href:'discussion2.html'},
+      {num:'⑤',title:'영어 테스트',sub:'지문 기반 독해 + 어휘 문제',
+        listHeader:'준비 포인트',
+        list:[
+          '지문을 읽고 그 내용을 바탕으로 질문에 답하는 형식',
+          '유사 단어 찾기, 문맥 파악 등 TOEIC RC와 비슷한 느낌',
+          '일상적인 영어 독해 실력을 꾸준히 쌓아두세요'
+        ],href:'daily-english-en.html'},
+      {num:'⑥',title:'롤플레이',sub:'실전 서비스 상황 대응',href:'roleplay-practice-en.html'},
+      {num:'⑦',title:'파이널 인터뷰',sub:'1:1 최종 면접 — 마지막 관문입니다',
+        listHeader:'준비 포인트',
+        list:[
+          '내 경험을 바탕으로 나만의 답변으로 승무원의 자질을 어필해야 합니다',
+          '즉석에서 에피소드를 생각하려 하지 마세요 — 최고의 에피소드들을 미리 준비해 두세요',
+          '마지막 관문입니다 — 정말 잘 준비해야 합니다',
+          randQ
+        ],href:'final.html'}
     ];
   }
   function renderEmirates(a){

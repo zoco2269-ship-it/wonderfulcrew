@@ -435,7 +435,7 @@ async function generateFeedback(){
   var convo=chatHistory.map(function(m){return (m.role==='user'?'[You] ':'')+m.content;}).join('\n');
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:700,
+      model:'claude-sonnet-4-6-20250514',max_tokens:700,
       system:'당신은 항공사 승무원 토론면접 전문 코치입니다. 평가 기준은 실제 항공사 토론면접 평가 요소에 근거합니다.\n\n평가 3대 요소:\n1) 태도 (경청·존중·비언어적 표현)\n2) 논리성 (근거·구조·설득력)\n3) 커뮤니케이션 (명료함·연결·팀 기여)\n\n음성인식 결과이므로 띄어쓰기/오타는 무시하고 내용 중심으로 평가. 격려 톤. 반드시 한국어 존댓말.\n\n출력 형식:\n\n종합 점수: X/100\n\n[태도] 점수 및 한 줄 코멘트\n[논리성] 점수 및 한 줄 코멘트\n[커뮤니케이션] 점수 및 한 줄 코멘트\n\n잘한 점:\n- (2~3개)\n\n개선할 점:\n- (2개)\n\n실전 팁 한 가지:\n- (구체적 다음 연습 방향 1가지)',
       messages:[{role:'user',content:'전체 디스커션 기록:\n\n'+convo+'\n\n피드백 부탁드립니다.'}]
     })});

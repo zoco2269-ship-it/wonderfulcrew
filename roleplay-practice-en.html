@@ -453,7 +453,7 @@ async function customerFirstSpeak(scenario){
 
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:150,
+      model:'claude-haiku-4-5-20251001',max_tokens:150,
       system:'You are a '+setting.role+' at '+setting.place+'. The situation is: "'+scenario+'"\n\nYou must speak FIRST as the upset/confused '+setting.role+'. Say 1-2 sentences expressing your complaint or request naturally, as if talking to the '+setting.staff+' standing in front of you. Be realistic. Speak in ENGLISH only. Do NOT say anything from the staff perspective.',
       messages:[{role:'user',content:'Start the conversation as the '+setting.role+'.'}]
     })});
@@ -613,7 +613,7 @@ async function processAnswer(){
       }
     }
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:200,
+      model:'claude-haiku-4-5-20251001',max_tokens:200,
       system:'You are a '+setting.role+' at '+setting.place+'. The situation is: "'+scenario+'"\n\nYou are the upset/confused '+setting.role+'. The '+setting.staff+' just responded to you. React naturally IN ENGLISH. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the '+setting.role+'\n- If the staff apologized well and offered a good solution, accept it gratefully (e.g. "Oh that sounds nice, thank you.")\n- If the solution is weak, push back gently (e.g. "But I specifically requested..." or "That doesn\'t really help...")\n- Do NOT ask how the staff felt. Instead ask WHY they chose that approach.\n- Be realistic, not overly aggressive\n- This is turn '+turnCount+' of the conversation'+finalTurnInstruction,
       messages:chatHistory
     })});
@@ -687,7 +687,7 @@ async function endRoleplay(){
       var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Staff':setting.role.charAt(0).toUpperCase()+setting.role.slice(1))+': '+m.content;}).join('\n');
 
       var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:500,
+        model:'claude-sonnet-4-6-20250514',max_tokens:500,
         system:'You are a hospitality service interview coach. Evaluate the following roleplay conversation. The setting was '+setting.place+' and the scenario was: "'+scenario+'"\n\nProvide feedback in this format:\n1. Overall Score: X/100\n2. Strengths (2-3 points)\n3. Areas to Improve (2-3 points)\n4. Key Phrases to Remember\n\nBe encouraging but honest. Write in English. Keep it concise.',
         messages:[{role:'user',content:'Here is the roleplay conversation:\n\n'+convoSummary+'\n\nPlease give me feedback.'}]
       })});

@@ -601,7 +601,7 @@ async function generateFeedback(scenario){
   try{
     var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'승무원':'승객')+': '+m.content;}).join('\n');
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:600,
+      model:'claude-sonnet-4-6-20250514',max_tokens:600,
       system:'당신은 국내 항공사 승무원 면접 코치입니다. 다음 롤플레이 대화를 평가합니다. 상황: "'+scenario+'"\n\n중요 평가 기준:\n- 학생 답변은 음성인식 결과이므로 띄어쓰기, 오타, 문법은 무시하고 내용과 의도에 집중\n- 사과 + 공감 + 구체적 해결책/대안 제시 + 서비스 리커버리 + follow-up 을 얼마나 자연스럽게 녹였는지\n- 국내 항공사 승무원으로서 한국 고객 응대에 맞는 정중한 표현을 썼는지\n- 격려하는 톤으로. 학생이 잘한 점 먼저 짚기\n\n반드시 이 형식으로 답변:\n\n종합 점수: X/100\n\n잘한 점:\n- (2~3개)\n\n개선할 점:\n- (1~2개, 부드럽게)\n\n---SUGGESTED---\n(이 상황의 모범답변을 한국 국내 항공사 승무원 톤으로 3~4문장 작성. 존댓말 사용.)\n\n반드시 한국어로 작성.',
       messages:[{role:'user',content:'전체 롤플레이 대화:\n\n'+convoSummary+'\n\n피드백 부탁드립니다.'}]
     })});

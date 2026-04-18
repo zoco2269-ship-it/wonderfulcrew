@@ -178,7 +178,7 @@ async function stopAnswer(){
   turnCount++;
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:200,
+      model:'claude-sonnet-4-6-20250514',max_tokens:200,
       system:'You are another candidate in a cabin crew group discussion. Scenario: '+TOPICS[selectedTopic].scenario+'\n\nRules:\n- Respond IN ENGLISH, 1-2 sentences only\n- You are a fellow candidate, NOT the interviewer\n- Either agree and add your perspective, or politely disagree with a reason\n- Use "We" language for teamwork\n- After 4 exchanges total, say "I think we have a good plan. Shall we present our conclusion?" and add [END]\n- Turn '+turnCount,
       messages:chatHistory
     })});
@@ -195,7 +195,7 @@ async function stopAnswer(){
         try{
           var convo=chatHistory.map(function(m){return (m.role==='user'?'You':'Partner')+': '+m.content;}).join('\n');
           var fbRes=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-            model:'claude-sonnet-4-20250514',max_tokens:500,
+            model:'claude-sonnet-4-6-20250514',max_tokens:500,
             system:'You are a cabin crew group discussion coach. The scenario was: "'+TOPICS[selectedTopic].scenario+'"\n\nEvaluate the candidate\'s performance. Format:\n\nOverall Score: X/100\n\nStrengths (2-3 points):\n- ...\n\nAreas to Improve (2-3 points):\n- ...\n\nKey Tip:\n- One specific actionable tip\n\nBe encouraging but honest. Write in Korean.',
             messages:[{role:'user',content:'디스커션 대화:\n\n'+convo+'\n\n피드백을 주세요.'}]
           })});

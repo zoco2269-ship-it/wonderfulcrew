@@ -548,17 +548,16 @@ function speakQuestion(text,lang){
   } else if(lang==='en-US'){
     selectedVoice=findVoice('en-US', isMale?/david|mark|alex|guy|male/i:/samantha|zira|susan|jenny|aria|female/i);
   } else if(lang==='fr-FR'){
-    selectedVoice=findVoice('en-GB', isMale?/daniel|james|thomas|male/i:/kate|fiona|karen|martha|female|libby|sonia/i);
-    if(!selectedVoice) selectedVoice=findVoice('en-US', isMale?/david|male/i:/samantha|zira|jenny|female/i);
-    u.rate=0.8;
+    selectedVoice=findVoice('fr-FR', isMale?/thomas|male|henri/i:/female|amelie|virginie/i);
+    u.rate=0.82;
   } else if(lang==='es-ES'){
-    selectedVoice=findVoice('en-US', isMale?/david|mark|alex|male/i:/samantha|zira|susan|jenny|aria|female/i);
-    if(!selectedVoice) selectedVoice=findVoice('en-GB', isMale?/daniel|male/i:/kate|fiona|female/i);
+    selectedVoice=findVoice('es-ES', isMale?/male|jorge|pablo|juan/i:/female|monica|paulina|lucia/i);
+    if(!selectedVoice) selectedVoice=findVoice('es-MX', isMale?/male|juan/i:/female|paulina/i);
     u.rate=0.82;
   }
 
   if(selectedVoice) u.voice=selectedVoice;
-  u.lang='en-US';
+  u.lang=(lang==='fr-FR'||lang==='es-ES')?lang:'en-US';
   u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(u);

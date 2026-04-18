@@ -28,6 +28,7 @@ var ADMIN_EMAILS = ['zoco2269@gmail.com', 'guswn5164@gmail.com'];
             name: session.user.user_metadata?.full_name || '',
             avatar: session.user.user_metadata?.avatar_url || ''
           }));
+          if (typeof updateNavLoginBtn === 'function') updateNavLoginBtn();
         } else if (event === 'SIGNED_OUT') {
           _currentUser = null;
           localStorage.removeItem('wc_user');
@@ -44,6 +45,7 @@ var ADMIN_EMAILS = ['zoco2269@gmail.com', 'guswn5164@gmail.com'];
           name: data.session.user.user_metadata?.full_name || '',
           avatar: data.session.user.user_metadata?.avatar_url || ''
         }));
+        if (typeof updateNavLoginBtn === 'function') updateNavLoginBtn();
       }
       console.log('Supabase connected:', cfg.url);
     }

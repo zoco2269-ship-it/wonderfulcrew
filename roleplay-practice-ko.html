@@ -121,31 +121,9 @@ window.addEventListener('popstate',function(){
   <h1>한국어 롤플레이 <em>면접 연습</em></h1>
   <p>국내 항공사 기내 상황을 한국어로 연습합니다.<br>실제 면접처럼 카메라 앞에서 답변해보세요.</p>
 
-  <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.06em;">면접관 아바타</div>
   <div class="avatar-grid" style="grid-template-columns:1fr 1fr;max-width:300px;margin:0 auto 20px;" id="avatar-grid">
-    <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/avatar-male.png" onclick="selAvatar(this)"><span class="emoji">👨🏻</span>남성 면접관</div>
-    <div class="avatar-opt" data-avatar="👩🏻" data-img="images/avatar-female.png" onclick="selAvatar(this)"><span class="emoji">👩🏻</span>여성 면접관</div>
-  </div>
-  <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:16px;">아바타 이미지는 images/avatar-male.png, avatar-female.png에 넣으면 자동 적용됩니다.</div>
-
-  <div class="setup-grid">
-    <div>
-      <div class="setup-label">고객 톤</div>
-      <select class="setup-select" id="s-tone">
-        <option value="normal">일반 고객</option>
-        <option value="vip">VIP · 예의 있음</option>
-        <option value="upset">불만 고조 고객</option>
-        <option value="elderly">연령대 높은 어르신</option>
-      </select>
-    </div>
-    <div>
-      <div class="setup-label">시나리오</div>
-      <select class="setup-select" id="s-count">
-        <option value="3">랜덤 3개</option>
-        <option value="5">랜덤 5개</option>
-        <option value="all">전체</option>
-      </select>
-    </div>
+    <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/avatar-male.png" onclick="selAvatar(this)"><span class="emoji">👨🏻</span>남성</div>
+    <div class="avatar-opt" data-avatar="👩🏻" data-img="images/avatar-female.png" onclick="selAvatar(this)"><span class="emoji">👩🏻</span>여성</div>
   </div>
 
   <button class="btn-start" onclick="startInterview()">면접 시작하기</button>
@@ -348,14 +326,9 @@ function selAvatar(el){
 }
 
 function startInterview(){
-  var count=document.getElementById('s-count').value;
   var indexed=SCENARIOS.map(function(q,i){return {q:q,origIdx:i};});
-  if(count==='all'){questions=indexed;}
-  else{
-    var n=parseInt(count);questions=[];
-    var pool=indexed.slice();
-    for(var i=0;i<n&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
-  }
+  var pool=indexed.slice();questions=[];
+  for(var i=0;i<3&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
 
   qIdx=0;
   document.getElementById('setup').style.display='none';
@@ -543,9 +516,7 @@ async function processAnswer(){
   var fb=document.getElementById('feedback');
   var q=questions[qIdx];
   var scenario=typeof q==='string'?q:q.q;
-  var tone=document.getElementById('s-tone').value;
-  var toneMap={normal:'일반적인 승객 톤',vip:'예의 바르지만 기대치가 높은 VIP 승객 톤',upset:'불만이 쌓인 신경질적인 승객 톤',elderly:'연령대 높은 어르신 톤 (예: "~했으면 좋겠네요", "아이고 큰일이네")'};
-  var tonePersona=toneMap[tone]||toneMap.normal;
+  var tonePersona='일반적인 승객 톤';
 
   fb.innerHTML='<span style="color:var(--gold);">승객이 반응하고 있어요...</span>';
   fb.classList.add('active');

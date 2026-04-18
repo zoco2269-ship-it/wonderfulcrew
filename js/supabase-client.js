@@ -127,8 +127,31 @@ function requireLogin(msg) {
 function requireAuth() {
   if (isLoggedIn()) return;
   var page = location.pathname.split('/').pop() || '';
-  var protectedPages = ['roleplay-practice.html','roleplay-practice-en.html','roleplay-practice-ko.html','roleplay.html','discussion-practice-ko.html','discussion-practice.html','discussion1.html','discussion2.html','final.html','video-practice.html','leveltest.html','leveltest-en.html','interview-practice.html','ai-coach.html','ai-coach-en.html','chatbot.html','chatbot-en.html','coach-feedback.html','coach-feedback-en.html','my-progress.html','my-progress-en.html','settings.html','settings-en.html','admin.html'];
-  if (protectedPages.indexOf(page) === -1) return;
+  // 로그인 없이 볼 수 있는 공개 페이지
+  var publicPages = [
+    'index.html','index-en.html','','about.html','about-en.html',
+    'login.html','login-en.html','plans.html','plans-en.html',
+    'pricing.html','pricing-en.html','contact.html','terms.html',
+    'privacy.html','copyright.html',
+    'column.html','column-en.html',
+    'jobs.html','jobs-en.html',
+    'interview-guide.html','interview-guide-en.html',
+    'grooming-guide.html','grooming-guide-en.html',
+    'resume-guide.html','resume-guide-en.html',
+    'customer-service.html','customer-service-en.html',
+    'culture-difference.html','culture-difference-en.html',
+    'curriculum.html',
+    'curriculum-koreanair.html','curriculum-asiana.html','curriculum-jeju.html',
+    'curriculum-jinair.html','curriculum-tway.html','curriculum-airbusan.html',
+    'curriculum-airseoul.html','curriculum-eastar.html','curriculum-aerok.html',
+    'curriculum-airpremia.html','curriculum-cathay.html','curriculum-etihad.html',
+    'curriculum-qatar.html','curriculum-singapore.html','curriculum-klm.html',
+    'curriculum-lufthansa.html','curriculum-finnair.html','curriculum-airasia.html'
+  ];
+  // 칼럼 상세 페이지도 공개
+  if (page.indexOf('column/') === 0 || page.match(/^column\//)) return;
+  if (publicPages.indexOf(page) !== -1) return;
+  // 나머지는 전부 로그인 필요
   location.href = 'login.html';
 }
 

@@ -161,11 +161,15 @@ var AIRLINES=[
   {key:'airbusan',en:'Air Busan',ko:'에어부산',region:'Korea'},
   {key:'eastar',en:'Eastar Jet',ko:'이스타항공',region:'Korea'},
   {key:'aerok',en:'Aero K',ko:'에어로케이',region:'Korea'},
-  {key:'klm',en:'KLM Royal Dutch',ko:'KLM',region:'Netherlands · Amsterdam'},
-  {key:'airasia',en:'AirAsia',ko:'에어아시아',region:'Malaysia'},
-  {key:'finnair',en:'Finnair',ko:'핀에어',region:'Finland · Helsinki'},
   {key:'cathay',en:'Cathay Pacific',ko:'캐세이퍼시픽',region:'Hong Kong'},
-  {key:'lufthansa',en:'Lufthansa',ko:'루프트한자',region:'Germany · Frankfurt'}
+  {key:'riyadh',en:'Riyadh Air',ko:'리야드에어',region:'Saudi Arabia · Riyadh'},
+  {key:'klm',en:'KLM Royal Dutch',ko:'KLM',region:'Netherlands · Amsterdam'},
+  {key:'lufthansa',en:'Lufthansa',ko:'루프트한자',region:'Germany · Frankfurt'},
+  {key:'flydubai',en:'flydubai',ko:'flydubai',region:'UAE · Dubai'},
+  {key:'finnair',en:'Finnair',ko:'핀에어',region:'Finland · Helsinki'},
+  {key:'airasia',en:'AirAsia',ko:'에어아시아',region:'Malaysia'},
+  {key:'domestic-other',en:'Other Korean',ko:'기타 국내 항공사',region:'Korea'},
+  {key:'international-other',en:'Other International',ko:'기타 외항사',region:'Global'}
 ];
 
 var STEPS=[
@@ -203,6 +207,10 @@ function matchAirlineKey(name){
   if(n.indexOf('핀에어')>=0||n.indexOf('finnair')>=0)return 'finnair';
   if(n.indexOf('캐세이')>=0||n.indexOf('cathay')>=0)return 'cathay';
   if(n.indexOf('루프트한자')>=0||n.indexOf('lufthansa')>=0)return 'lufthansa';
+  if(n.indexOf('리야드')>=0||n.indexOf('riyadh')>=0)return 'riyadh';
+  if(n.indexOf('flydubai')>=0||n.indexOf('플라이두바이')>=0)return 'flydubai';
+  if(n.indexOf('플라이강원')>=0||n.indexOf('파라타')>=0||n.indexOf('하이에어')>=0)return 'domestic-other';
+  if(n.indexOf('터키')>=0||n.indexOf('turkish')>=0||n.indexOf('델타')>=0||n.indexOf('delta')>=0||n.indexOf('스쿠트')>=0||n.indexOf('scoot')>=0||n.indexOf('베트남')>=0||n.indexOf('vietnam')>=0)return 'international-other';
   return null;
 }
 
@@ -278,7 +286,11 @@ var CURRICULUM_PAGES={
   finnair:'curriculum-finnair.html',
   cathay:'curriculum-cathay.html',
   etihad:'curriculum-etihad.html',
-  lufthansa:'curriculum-lufthansa.html'
+  lufthansa:'curriculum-lufthansa.html',
+  riyadh:'curriculum-international-other.html',
+  flydubai:'curriculum-flydubai.html',
+  'domestic-other':'curriculum-domestic-other.html',
+  'international-other':'curriculum-international-other.html'
 };
 function selectAirline(a){
   try{localStorage.setItem('wc_airline',a.key);localStorage.setItem('wc_airline_name',a.ko);}catch(e){}

@@ -431,7 +431,7 @@ async function generateFeedback(){
   document.getElementById('btn-feedback').style.display='none';
   var fb=document.getElementById('feedback');
   fb.classList.add('active');
-  fb.innerHTML='<b>AI가 피드백을 작성하고 있어요...</b>';
+  fb.innerHTML='<b>피드백을 작성하고 있어요...</b>';
   var convo=chatHistory.map(function(m){return (m.role==='user'?'[You] ':'')+m.content;}).join('\n');
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({

@@ -675,10 +675,10 @@ async function endRoleplay(){
   }
 
   var fb=document.getElementById('feedback');
-  fb.innerHTML='<span style="color:var(--gold);">AI is generating feedback...</span>';
+  fb.innerHTML='<span style="color:var(--gold);">Generating feedback...</span>';
   fb.classList.add('active');
 
-  // 대화 내용이 있으면 AI 피드백 요청
+  // 대화 내용이 있으면 피드백 요청
   if(chatHistory.length>0){
     try{
       var q=questions[qIdx];
@@ -694,7 +694,7 @@ async function endRoleplay(){
       var data=await res.json();
       var feedbackText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Good effort! Keep practicing.';
       feedbackText=feedbackText.replace(/\*\*/g,'');
-      fb.innerHTML='<b style="color:var(--gold);">AI Feedback</b><br><br><div style="white-space:pre-line;">'+feedbackText+'</div>';
+      fb.innerHTML='<b style="color:var(--gold);">Feedback</b><br><br><div style="white-space:pre-line;">'+feedbackText+'</div>';
     }catch(e){
       fb.innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br>The conversation has ended..';
     }

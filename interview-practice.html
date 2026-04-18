@@ -191,7 +191,7 @@ function toggleRec(){
     btn.textContent='🔴 녹화 시작';
     btn.style.background='';
     btn.disabled=true;
-    // AI 피드백 (음성 인식 안 됐어도 시도)
+    // 피드백 (음성 인식 안 됐어도 시도)
     setTimeout(function(){
       if(!fullText.trim()) fullText='(음성 인식 없음 - 답변 내용을 텍스트로 확인할 수 없습니다)';
       generateFeedback();
@@ -202,18 +202,18 @@ function toggleRec(){
 
 async function generateFeedback(){
   var fb=document.getElementById('feedback');
-  fb.innerHTML='<span style="color:var(--gold);">AI가 피드백을 작성하고 있어요...</span>';
+  fb.innerHTML='<span style="color:var(--gold);">피드백을 작성하고 있어요...</span>';
   fb.classList.add('visible');
   var question=document.getElementById('q-text').textContent;
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:400,
-      system:'You are a cabin crew interview coach. The student answered an interview question on camera. Evaluate their answer. The input is from speech recognition so ignore grammar/punctuation errors. Focus on CONTENT and INTENT.\n\nFormat:\nScore: X/100\nStrengths: (2 points)\nAreas to Improve: (2 points)\nSuggested Answer: (3-4 sentences)\n\nBe encouraging. Write in Korean.',
+      model:'claude-haiku-4-5-20251001',max_tokens:700,
+      system:'You are a cabin crew interview coach. The student answered an interview question on camera. Evaluate their answer. The input is from speech recognition so ignore grammar/punctuation errors. Focus on CONTENT and INTENT.\n\nFormat (use # not ## for headings):\n# 점수: X/100\n# 잘한 점\n- (2-3 points)\n# 개선할 점\n- (2-3 points)\n# 제안 답변\n(4-5 sentences, a complete well-structured answer)\n\nThe suggested answer MUST be complete and detailed, not cut off. Be encouraging. Write in Korean.',
       messages:[{role:'user',content:'질문: '+question+'\n\n학생 답변: '+fullText.trim()+'\n\n피드백을 주세요.'}]
     })});
     var data=await res.json();
     var text=(data&&data.content&&data.content[0]&&data.content[0].text)||'피드백을 생성하지 못했습니다.';
-    fb.innerHTML='<b>AI 피드백</b><br><br>'+text.replace(/\*\*/g,'');
+    fb.innerHTML='<b>피드백</b><br><br>'+text.replace(/\*\*/g,'');
   }catch(e){
     fb.innerHTML='피드백 생성 실패. 다시 시도해주세요.';
   }

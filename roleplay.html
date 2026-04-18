@@ -822,7 +822,7 @@ async function submitAnswer(text){
   addMsg('user',text);
   SESSION.answers.push({q:CONFIGS[LANG].questions[SESSION.qIdx].q,a:text});
   SESSION.history.push({role:'user',content:text});
-  // AI 피드백
+  // 피드백
   showTyping();
   var isLast=SESSION.qIdx>=CONFIGS[LANG].questions.length-1;
   try{

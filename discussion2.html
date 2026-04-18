@@ -191,7 +191,7 @@ async function stopAnswer(){
     if(isEnd){
       setTimeout(async function(){
         var fb=document.getElementById('feedback');
-        fb.innerHTML+='<br><br><b style="color:var(--gold);">AI가 피드백을 작성하고 있어요...</b>';
+        fb.innerHTML+='<br><br><b style="color:var(--gold);">피드백을 작성하고 있어요...</b>';
         try{
           var convo=chatHistory.map(function(m){return (m.role==='user'?'You':'Partner')+': '+m.content;}).join('\n');
           var fbRes=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
@@ -201,7 +201,7 @@ async function stopAnswer(){
           })});
           var fbData=await fbRes.json();
           var fbText=((fbData&&fbData.content&&fbData.content[0]&&fbData.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
-          fb.innerHTML='<b style="color:var(--gold);">AI 피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>';
+          fb.innerHTML='<b style="color:var(--gold);">피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>';
         }catch(e){fb.innerHTML+='<br>피드백 생성 실패. 다시 시도해주세요.';}
         document.getElementById('btn-next').disabled=false;
         document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=true;

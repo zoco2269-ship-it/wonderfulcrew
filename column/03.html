@@ -21,6 +21,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 .nav-dropdown:hover .nav-dropdown-menu:not(.nav-dd-grid){display:block;}.nav-dropdown:hover .nav-dd-grid{display:grid!important;}
 .nav-dropdown-menu a{display:block;padding:0 8px!important;font-size:13px;line-height:36px!important;color:#1a2744;white-space:nowrap;}
 .nav-dropdown-menu a:hover{background:rgba(212,175,55,0.3)!important;color:#1a2744!important;border-left:5px solid #C9A84C;}
+.nav-dropdown-menu a:first-child:hover{border-radius:16px 16px 0 0;}
+.nav-dropdown-menu a:last-child:hover{border-radius:0 0 16px 16px;}
+.nav-dropdown-menu a:first-child:last-child:hover{border-radius:16px;}
 .nav-cta{padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;text-decoration:none;}
 @media(max-width:600px){.nav-links{display:none;}}
 .article-hero{padding:140px 5% 60px;background:var(--navy);text-align:center;}

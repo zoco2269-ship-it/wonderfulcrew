@@ -181,7 +181,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
     <!-- 학생 카메라 -->
     <div class="card-frame" id="student-card">
-      <video id="cam-video" autoplay muted playsinline style="display:none;transform:scaleX(-1);"></video>
+      <video id="cam-video" autoplay muted playsinline style="display:none;transform:scaleX(-1);" webkit-playsinline></video>
       <div class="cam-placeholder" id="cam-ph">
         <div>📷</div>
         <div>Preparing camera</div>
@@ -281,20 +281,20 @@ var SCENARIOS=[
 ];
 
 var MODELS={
-  0:"I'm really sorry about that. Let me check all sections for any window seat. Unfortunately they're all taken. May I recommend this aisle seat near the front? It has extra legroom. And I'll bring you a complimentary drink once we're airborne.",
-  1:"I sincerely apologize. Let me check other cabins. I'm afraid it's gone, but our chef's second option is excellent. I'll also bring champagne on the house as my apology.",
-  2:"I completely understand. Let me bring you a warm blanket right away and adjust the airflow above your seat. Would you like some hot tea as well?",
-  3:"Let me check on the family first. I'll bring warm milk and a coloring kit. For you, may I offer noise-cancelling headphones?",
-  4:"I want you to arrive feeling great. May I suggest a refreshing juice instead? We have amazing fresh orange juice. I'll bring some snacks too.",
-  5:"Let me help rearrange some items. If it still doesn't fit, I can gate-check it with a priority tag so it's first out.",
-  6:"I'm sorry we don't have that pre-ordered. We have a vegetarian pasta that's meat-free. I'll personally check ingredients and note it for your return flight.",
-  7:"I understand space can be tight. I have a spare cushion, and there's a seat with more space nearby. Can I bring you both a drink?",
-  8:"Your safety is our top priority. The captain turned on the sign because of rough air ahead. Can I help adjust the belt so it's comfortable?",
-  9:"So sorry about that. Let me try resetting it. If not, I have a spare tablet with our full movie library. Let me bring a complimentary drink too.",
-  10:"I am so sorry. Let me get club soda and napkins right away. We have a spare shirt, and I'll arrange dry cleaning at no cost.",
-  11:"Please stay calm. I'll call for medical professionals and get our first aid kit. I'll inform the captain for priority landing if needed.",
-  12:"I understand. Unfortunately upgrades are managed by ground team. Let me bring extra pillows, blanket, and our premium amenity kit instead.",
-  13:"I understand how stressful this is. Let me help you look carefully. I'll also check with the gate team. If we can't find it, I'll connect you with emergency documentation.",
+  0:"I completely understand your preference for a window seat, Sir. Let me check every section of the aircraft for you right now. I'm afraid all window seats are taken today, but I do have an excellent aisle seat near the front with extra legroom. It's actually one of our most requested seats. I'll also make sure to bring you a complimentary drink as soon as we're airborne, and if a window seat opens up, you'll be the first to know.",
+  1:"I sincerely apologize about that. Let me check if any other cabin has your choice available. I'm afraid it's completely gone, but I'd like to personally recommend our chef's second option — many of our frequent flyers actually prefer it. I'll also bring you a glass of champagne with my sincere apologies. And I'll make a note in your profile so your preferred meal is prioritized on your next flight with us.",
+  2:"I completely understand your discomfort. Let me bring you a warm blanket right away. I'll also adjust the individual airflow nozzle above your seat — sometimes that makes a big difference. Would you like a cup of hot tea or warm water? I want to make sure you're comfortable for the rest of the flight.",
+  3:"Thank you for letting me know. Let me check on the family first and see if I can help settle the little one. I'll bring some warm milk, a coloring kit, and a soft toy — that usually helps. For your comfort, may I offer you our noise-cancelling headphones? I'll also check if there's a quieter seat available nearby.",
+  4:"I appreciate your understanding, and I really want you to arrive feeling refreshed. For your safety and comfort, may I suggest our freshly squeezed orange juice instead? It's really lovely. I'll also bring you a selection of snacks and make sure you have everything you need for the rest of the flight.",
+  5:"Of course, let me take a look. I'll rearrange some items in the overhead bin to make space. If it still doesn't fit, I'll gate-check it with a priority tag — that means it'll be the very first bag out when we land. Your valuables can stay with you under the seat in front.",
+  6:"I'm sorry we don't have that specific meal pre-ordered today. Let me personally check our galley for alternatives. We have a vegetarian pasta that's completely meat-free, and I'll verify every ingredient with our crew to make sure it meets your dietary requirements. I'll also note this for your return flight so it's prepared in advance.",
+  7:"I understand how uncomfortable that can be, and I'm sorry about the situation. I have a spare armrest cushion that might help, and I've noticed there's a seat nearby with a bit more space. Can I bring you both a complimentary drink? Sometimes a small gesture helps ease the tension.",
+  8:"I completely understand it can feel restrictive, but your safety is my absolute priority. The captain has turned on the seatbelt sign because we're expecting some rough air ahead. Let me help you adjust the belt so it's more comfortable — you can keep it loose over your lap. I'll bring you a drink once we're through the turbulence.",
+  9:"I'm really sorry about that inconvenience. Let me try resetting the system first — sometimes that fixes it right away. If it doesn't work, I have a spare tablet loaded with our full entertainment library that I can bring you. And please, let me bring you a complimentary drink while I sort this out. I want to make sure you still enjoy your flight.",
+  10:"I am so sorry about that — please let me take care of this immediately. I'll get club soda and napkins right away to minimize any staining. We keep spare shirts on board, and I'll personally arrange complimentary dry cleaning when we land. Again, my sincere apologies.",
+  11:"Please try to stay calm — you're in safe hands. I'm going to call for any medical professionals on board right away and get our first aid kit. I'll inform the captain immediately. If needed, we can arrange priority landing at the nearest airport. You're going to be okay.",
+  12:"I understand your frustration completely. Unfortunately, complimentary upgrades are managed by our ground team before boarding. However, I'd love to make your experience as comfortable as possible. Let me bring you extra pillows, a warm blanket, and our premium amenity kit. I'll also make sure your meal service is prioritized.",
+  13:"I understand how stressful this must be. Let's not panic — let me help you check your seat area, your bag, and the overhead bin carefully. I'll also contact the gate team to check if anything was found during boarding. If we can't locate it, I'll connect you with our emergency documentation service on landing so you're taken care of.",
   // Additional In-flight
   14:"I can see you're very anxious right now. Let me sit with you for a moment. Try breathing slowly with me. I'll bring you some water and a warm towel. You're safe, and we're here for you.",
   15:"I'm sorry you feel that way. I'm here to ensure every passenger has the best experience. Is there something specific I can help you with? I'd love to make your flight more comfortable.",
@@ -395,6 +395,7 @@ function startInterview(){
   // Start camera
   // 카메라: 정면(셀카) 우선, 실패 시 기본 카메라
   var camOpts=[
+    {video:{facingMode:{exact:'user'}},audio:true},
     {video:{facingMode:'user'},audio:true},
     {video:true,audio:true}
   ];
@@ -602,9 +603,17 @@ async function processAnswer(){
     var turnCount=chatHistory.filter(function(m){return m.role==='user';}).length;
     var setting=detectSetting(scenario);
 
+    var finalTurnInstruction='';
+    if(turnCount>=3){
+      finalTurnInstruction='\n- This is the final turn. Ask the staff member ONE follow-up question: "Why did you decide to handle it that way?" or "What made you think of that solution?" Then add [END] at the very end.';
+      var alreadyExplainedWhy=chatHistory.some(function(m){return m.role==='user'&&/because|reason|that\'s why|I thought|I believed|I wanted to/i.test(m.content);});
+      if(alreadyExplainedWhy){
+        finalTurnInstruction='\n- The staff already explained their reasoning. Wrap up naturally with a grateful response (e.g. "That makes sense. Thank you for your help.") and add [END] at the very end.';
+      }
+    }
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-sonnet-4-20250514',max_tokens:200,
-      system:'You are a '+setting.role+' at '+setting.place+'. The situation is: "'+scenario+'"\n\nYou are the upset/confused '+setting.role+'. The '+setting.staff+' just responded to you. React naturally IN ENGLISH. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the '+setting.role+'\n- If the staff apologized well and offered a good solution, accept it gratefully (e.g. "Oh that sounds nice, thank you.")\n- If the solution is weak, push back gently (e.g. "But I specifically requested..." or "That doesn\'t really help...")\n- After 3-4 exchanges, wrap up naturally (e.g. "Alright, thank you for your help.") and add [END] at the very end\n- Be realistic, not overly aggressive\n- This is turn '+turnCount+' of the conversation',
+      system:'You are a '+setting.role+' at '+setting.place+'. The situation is: "'+scenario+'"\n\nYou are the upset/confused '+setting.role+'. The '+setting.staff+' just responded to you. React naturally IN ENGLISH. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the '+setting.role+'\n- If the staff apologized well and offered a good solution, accept it gratefully (e.g. "Oh that sounds nice, thank you.")\n- If the solution is weak, push back gently (e.g. "But I specifically requested..." or "That doesn\'t really help...")\n- Do NOT ask how the staff felt. Instead ask WHY they chose that approach.\n- Be realistic, not overly aggressive\n- This is turn '+turnCount+' of the conversation'+finalTurnInstruction,
       messages:chatHistory
     })});
     var data=await res.json();
@@ -702,8 +711,9 @@ function showModel(){
   var idx=q.origIdx!==undefined?q.origIdx:SCENARIOS.indexOf(q.q);
   var model=MODELS[idx]||"I sincerely apologize for the inconvenience. Let me see what I can do to help. I'll find the best solution for you right away, and as a small gesture, I'd like to offer you a complimentary drink.";
   var fb=document.getElementById('feedback');
+  var scrollPos=fb.scrollTop;
   fb.innerHTML+=('<br><br><b style="color:var(--gold);">Model Answer:</b><br>'+model);
-  // TTS model answer
+  fb.scrollTop=scrollPos;
   var accent=document.getElementById('s-accent').value;
   speakQuestion(model,accent);
 }
@@ -716,7 +726,7 @@ function nextQuestion(){
   qIdx++;
   if(qIdx>=questions.length){
     document.getElementById('q-banner').innerHTML='<div class="label">COMPLETE</div><div class="question">All scenarios completed!</div>';
-    document.getElementById('feedback').innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br><br><a href="curriculum-en.html" style="color:var(--gold);">← Back to Curriculum</a>';
+    document.getElementById('feedback').innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br><br><a href="javascript:backToSetup()" style="color:var(--gold);">← Back to Setup</a>';
     document.getElementById('feedback').classList.add('active');
     document.querySelectorAll('.ctrl-btn').forEach(function(b){b.style.display='none';});
     return;
@@ -725,6 +735,15 @@ function nextQuestion(){
 }
 
 function r(){return Math.floor(Math.random()*36)+50;}
+
+function backToSetup(){
+  if(recognition)try{recognition.stop();}catch(e){}
+  if('speechSynthesis' in window)window.speechSynthesis.cancel();
+  if(stream){stream.getTracks().forEach(function(t){t.stop();});stream=null;}
+  mediaRecorder=null;
+  document.getElementById('interview').classList.remove('active');
+  document.getElementById('setup').style.display='block';
+}
 </script>
 </body>
 </html>

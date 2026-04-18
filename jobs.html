@@ -116,7 +116,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="wrap">
     <div class="premium-badge">PREMIUM ONLY</div>
     <h2>매일 쏟아지는 면접 정보,<br><em>카카오톡으로 정기적으로 받아보세요</em></h2>
-    <p class="lead">유료멤버 전용 카카오톡 채널에서 채용 오픈 실시간 알림과 합격 콘텐츠를 발송합니다. 원더풀크루가 현직 승무원·코치와 함께 쌓아온 합격 데이터가 도착합니다.</p>
+    <p class="lead">카카오톡 채널에서 채용 오픈 실시간 알림과 합격 콘텐츠를 발송합니다. 원더풀크루가 현직 승무원·코치와 함께 쌓아온 합격 데이터가 도착합니다.</p>
     <div style="display:inline-flex;gap:18px;flex-wrap:wrap;justify-content:center;margin-bottom:32px;font-size:0.82rem;color:rgba(255,255,255,0.75);">
       <span>⚡ 채용 오픈 시 실시간 알림</span>
       <span>📈 기출 DB 업데이트</span>
@@ -131,7 +131,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
       <svg width="18" height="18" viewBox="0 0 24 24" fill="#3C1E1E"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.85 1.86 5.35 4.68 6.77l-1.2 4.4c-.1.38.3.69.63.49L11.4 19.6c.2.02.4.03.6.03 5.52 0 10-3.58 10-8s-4.48-8-10-8z"/></svg>
       카카오톡 채널 알림 받기
     </button>
-    <p class="premium-note">유료멤버 전용 · <a href="plans.html">요금제 보기</a></p>
+    <p class="premium-note"><a href="plans.html">요금제 보기</a></p>
   </div>
 </section>
 
@@ -204,8 +204,8 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 </section>
 
 <section class="alert-cta">
-  <h3>합격 콘텐츠와 채용 알림,<br>유료멤버는 카카오톡으로 받습니다</h3>
-  <p>채용 오픈 실시간 알림 + 기출 업데이트 + 면접관 분석 + 체크리스트</p>
+  <h3>합격 콘텐츠와 채용 알림,<br>카카오톡으로 받아보세요</h3>
+  <p>합격 비밀노트 + 채용 오픈 실시간 알림 + 기출 업데이트 + 체크리스트</p>
   <button class="kakao-btn" onclick="wcSubscribeAlert()">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="#3C1E1E"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.85 1.86 5.35 4.68 6.77l-1.2 4.4c-.1.38.3.69.63.49L11.4 19.6c.2.02.4.03.6.03 5.52 0 10-3.58 10-8s-4.48-8-10-8z"/></svg>
     카카오톡 채널 알림 받기
@@ -252,7 +252,9 @@ function wcSubscribeAlert(airline){
         var link=items[j].querySelector('link');
         var pubDate=items[j].querySelector('pubDate');
         if(title&&link){
-          allNews.push({tag:queries[i].tag,title:title.textContent,link:link.textContent,date:pubDate?new Date(pubDate.textContent).toISOString().slice(0,10):''});
+          var t=title.textContent;
+          if(/학원|과외|academy|스쿨|학교|학과|대학저널|인강|강남|홍대.*승무원/i.test(t)) continue;
+          allNews.push({tag:queries[i].tag,title:t,link:link.textContent,date:pubDate?new Date(pubDate.textContent).toISOString().slice(0,10):''});
         }
       }
     }

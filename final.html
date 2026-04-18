@@ -313,8 +313,18 @@ function startInterview(){
 
   // 카메라
   if(document.getElementById('cam-toggle').checked){
-    var opts=[{video:{facingMode:{exact:'user'}},audio:true},{video:{facingMode:'user'},audio:true},{video:true,audio:true}];
-    (async function(){for(var i=0;i<opts.length;i++){try{stream=await navigator.mediaDevices.getUserMedia(opts[i]);var v=document.getElementById('cam-video');v.srcObject=stream;v.style.display='block';document.getElementById('cam-ph').style.display='none';break;}catch(e){}}})();
+    (async function(){
+      var camOpts=[{video:{facingMode:'user'},audio:true},{video:true,audio:true}];
+      for(var i=0;i<camOpts.length;i++){
+        try{
+          stream=await navigator.mediaDevices.getUserMedia(camOpts[i]);
+          var v=document.getElementById('cam-video');
+          v.srcObject=stream;v.style.display='block';
+          document.getElementById('cam-ph').style.display='none';
+          break;
+        }catch(e){if(i===camOpts.length-1)document.getElementById('cam-ph').innerHTML='<div>카메라 연결 실패</div>';}
+      }
+    })();
   }
   qIdx=0;showQuestion();
 }

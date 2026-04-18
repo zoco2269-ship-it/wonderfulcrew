@@ -354,7 +354,7 @@ if(_urlAirline && savedAirline){
           '일 경험(Work Experience)이 핵심 — 서비스 관련 경험을 구체적으로 기술하세요',
           '경력 사이에 2개월 이상 공백이 없도록 관리하세요',
           '사진은 밝은 미소, 깔끔한 배경, 프로페셔널한 복장'
-        ]},
+        ],lecture:'lecture.html'},
       {num:'②',title:'비디오 면접',sub:'비디오 면접 = 이미지 면접입니다',
         listHeader:'준비 포인트',
         list:[
@@ -362,21 +362,21 @@ if(_urlAirline && savedAirline){
           '말을 길게 할 필요 없지만, 묻는 질문에 바로바로 대답할 수 있게 연습하세요',
           '말하면서 동시에 웃는 연습이 필요합니다 — 스마일은 절대 잊지 마세요',
           '스몰토크도 마찬가지, 자연스러운 미소와 함께'
-        ],href:'video-practice.html'},
+        ],href:'video-practice.html',lecture:'lecture.html'},
       {num:'③',title:'1차 발표',sub:'그룹 또는 개인 발표 형식으로 진행됩니다',
         listHeader:'준비 포인트',
         list:[
           '요즘은 개인 발표 형식이 추세 — 주어진 주제를 많은 사람 앞에서 어떻게 발표하느냐가 핵심',
           '많은 지원자가 발표하므로 말이 길어지면 안 됩니다 — 핵심만 깔끔하게',
           '많은 사람 앞에서 발표한다는 것이 무엇을 의미하는지 깊이 생각해 보세요'
-        ],href:'discussion1.html'},
+        ],href:'discussion1.html',lecture:'lecture.html'},
       {num:'④',title:'2차 디스커션',sub:'구체적인 상황과 고객 리스트가 주어집니다',
         listHeader:'준비 포인트',
         list:[
           '주제가 구체적으로 주어지고, 여러 명의 고객 리스트가 등장합니다',
           '고객 리스트의 모든 인물은 우리의 고객입니다 — 면접관이 무엇을 보는지 생각하세요',
           '1명 1명 고객의 특성을 잘 파악해서 어떤 것들을 고려해야 하는지가 핵심'
-        ],href:'discussion2.html'},
+        ],href:'discussion2.html',lecture:'lecture.html'},
       {num:'⑤',title:'영어 테스트',sub:'지문 기반 독해 + 어휘 문제',
         listHeader:'준비 포인트',
         list:[
@@ -390,7 +390,7 @@ if(_urlAirline && savedAirline){
           '실제 기내/호텔/레스토랑 서비스 상황이 주어집니다',
           '사과 → 공감 → 해결책 제시 → 대안 → 팔로업 순서로 자연스럽게',
           '고객의 감정을 먼저 인정하고, 해결책을 제시할 때는 구체적으로'
-        ],href:'roleplay-practice-en.html'},
+        ],href:'roleplay-practice-en.html',lecture:'lecture.html'},
       {num:'⑦',title:'파이널 인터뷰',sub:'1:1 최종 면접 — 마지막 관문입니다',
         listHeader:'준비 포인트',
         list:[
@@ -425,6 +425,8 @@ if(_urlAirline && savedAirline){
           '<div class="step-title">'+s.title+'</div>'+
           '<div class="step-desc">'+s.sub+'</div>'+
           listHtml+
+        '</div>'+
+        (s.lecture?'<div style="margin-top:8px;"><a href="'+s.lecture+'" style="display:inline-block;padding:6px 14px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:14px;color:var(--gold);font-size:0.72rem;font-weight:600;text-decoration:none;" onclick="event.stopPropagation();">강의 영상 보기</a></div>':'')+
         '</div>'+
         '<div class="step-badge ready" style="margin-top:4px;">시작하기</div>'+        '<div class="step-arrow" style="margin-top:4px;">→</div>';
       sg.appendChild(el);

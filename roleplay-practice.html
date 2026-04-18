@@ -654,7 +654,7 @@ function nextQuestion(){
   qIdx++;
   if(qIdx>=questions.length){
     document.getElementById('q-banner').innerHTML='<div class="label">COMPLETE</div><div class="question">All scenarios completed!</div>';
-    document.getElementById('feedback').innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br><br><a href="curriculum.html" style="color:var(--gold);">← Back to Curriculum</a>';
+    document.getElementById('feedback').innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br><br><a href="javascript:goBack()" style="color:var(--gold);">← 면접관 선택으로</a>';
     document.getElementById('feedback').classList.add('active');
     document.querySelectorAll('.ctrl-btn').forEach(function(b){b.style.display='none';});
     return;

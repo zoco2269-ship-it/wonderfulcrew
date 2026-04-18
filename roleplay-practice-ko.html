@@ -99,9 +99,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 function goBack(){
   var interview=document.getElementById('interview');
   if(interview&&interview.classList.contains('active')){
-    if('speechSynthesis' in window)window.speechSynthesis.cancel();
-    if(typeof recognition!=='undefined'&&recognition)try{recognition.stop();}catch(e){}
-    if(typeof stream!=='undefined'&&stream)stream.getTracks().forEach(function(t){t.stop();});
+    // 모든 오디오/음성 중지
+    if(typeof gcStop==='function') gcStop();
+    if('speechSynthesis' in window) window.speechSynthesis.cancel();
+    if(typeof recognition!=='undefined'&&recognition)try{recognition.stop();recognition=null;}catch(e){}
+    if(typeof stream!=='undefined'&&stream){stream.getTracks().forEach(function(t){t.stop();});stream=null;}
+    // 진행 중인 fetch 차단용
+    chatHistory=[];
     interview.classList.remove('active');
     document.getElementById('setup').style.display='block';
   } else {

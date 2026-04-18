@@ -227,7 +227,7 @@ function startRec(i){
 
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     if(SR){
-      var rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;
+      var rec=new SR();rec.lang=lang==='ko'?'ko-KR':'en-US';rec.interimResults=true;rec.continuous=true;
       recs[i]=rec;
       var finalText='';
       rec.onresult=function(ev){

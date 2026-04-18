@@ -275,7 +275,7 @@ function showRound(){
   document.getElementById('feedback').classList.remove('active');
   document.getElementById('waveform').classList.remove('active');
   var log=document.getElementById('log');
-  log.innerHTML='<div class="turn"><div class="speaker">진행자</div>이번 라운드 주제입니다. <b style="color:var(--gold-light);">"'+t.text+'"</b>'+(t.kind==='debate'?'<br>찬성 포지션: '+t.a+'<br>반대 포지션: '+t.b:'')+'<br><br>먼저 본인 의견을 1분 이내로 말씀해주세요.</div>';
+  log.innerHTML='<div class="turn"><div class="speaker">진행자</div>이번 라운드 주제입니다. <b style="color:var(--gold-light);">"'+t.text+'"</b>'+(t.kind==='debate'?'<br>찬성 포지션: '+t.a+'<br>반대 포지션: '+t.b:'')+'</div>';
   fullText='';
   document.getElementById('transcript').textContent='지금 본인 의견을 말하세요...';
   chatHistory=[];

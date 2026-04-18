@@ -52,7 +52,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
     </div>
     <div class="btn-row">
       <button class="btn btn-gold" id="btn-start" onclick="startCam()">카메라 시작</button>
-      <button class="btn btn-red" id="btn-rec" style="display:none;" onclick="toggleRec()">녹화 시작</button>
+      <button class="btn btn-red" id="btn-rec" style="display:none;" onclick="toggleRec()">🔴 녹화 시작</button>
       <button class="btn btn-navy" id="btn-next" onclick="nextQ()">다음 질문 →</button>
     </div>
     <div class="transcript" id="transcript"></div>
@@ -167,7 +167,7 @@ function toggleRec(){
     mediaRecorder.ondataavailable=function(e){if(e.data.size>0)chunks.push(e.data);};
     mediaRecorder.start();
     document.getElementById('rec-badge').style.display='flex';
-    btn.textContent='녹화 중지';
+    btn.textContent='⏹ 답변 완료 · 피드백 받기';
     btn.style.background='#E74C3C';
     // 음성 인식
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -188,10 +188,15 @@ function toggleRec(){
     mediaRecorder.stop();
     if(recognition)try{recognition.stop();}catch(e){}
     document.getElementById('rec-badge').style.display='none';
-    btn.textContent='녹화 시작';
+    btn.textContent='🔴 녹화 시작';
     btn.style.background='';
-    // AI 피드백
-    if(fullText.trim()) generateFeedback();
+    btn.disabled=true;
+    // AI 피드백 (음성 인식 안 됐어도 시도)
+    setTimeout(function(){
+      if(!fullText.trim()) fullText='(음성 인식 없음 - 답변 내용을 텍스트로 확인할 수 없습니다)';
+      generateFeedback();
+      btn.disabled=false;
+    }, 500);
   }
 }
 

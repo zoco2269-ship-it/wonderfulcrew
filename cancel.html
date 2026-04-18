@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>구독 관리   WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);min-height:100vh;display:flex;flex-direction:column;}a{color:inherit;text-decoration:none;}
+nav{display:flex;align-items:center;justify-content:center;padding:0 5%;height:72px;border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}
+.cancel-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.cancel-card{background:#fff;border:1px solid var(--gold-pale);padding:48px 40px;max-width:480px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.06);}
+.cancel-card h2{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:12px;}
+.cancel-card p{font-size:0.88rem;color:var(--text-muted);line-height:1.7;margin-bottom:20px;}
+.benefit-list{text-align:left;margin:20px 0;padding:0;list-style:none;}
+.benefit-list li{font-family:'Noto Sans KR',sans-serif;font-size:0.86rem;color:var(--text-mid);line-height:1.6;padding:8px 0;border-bottom:1px solid var(--gold-pale);display:flex;align-items:center;gap:10px;}
+.benefit-list li::before{content:'✗';color:#E74C3C;font-weight:700;font-size:1rem;}
+.btn-keep{display:block;width:100%;padding:16px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px;transition:all 0.2s;}
+.btn-keep:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(201,168,76,0.3);}
+.btn-cancel-next{display:block;width:100%;padding:12px;background:none;border:none;color:#ccc;font-size:0.78rem;cursor:pointer;font-family:inherit;}
+.btn-cancel-next:hover{color:var(--text-muted);}
+.btn-final-cancel{display:block;width:100%;padding:12px;background:none;border:1px solid #eee;border-radius:28px;color:#bbb;font-size:0.82rem;cursor:pointer;font-family:inherit;margin-top:8px;}
+.step{display:none;}.step.active{display:block;}
+.reason-list{text-align:left;margin:16px 0;}
+.reason-list label{display:block;padding:10px 14px;font-family:'Noto Sans KR',sans-serif;font-size:0.86rem;color:var(--text-mid);cursor:pointer;border:1px solid var(--gold-pale);margin-bottom:6px;border-radius:8px;transition:all 0.15s;}
+.reason-list label:hover{border-color:var(--gold);background:rgba(201,168,76,0.04);}
+.reason-list input{margin-right:8px;}
+.offer-box{background:var(--navy);color:#fff;padding:24px;border-radius:12px;margin:20px 0;text-align:center;}
+.offer-box h3{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--gold-light);margin-bottom:8px;}
+.offer-box p{font-size:0.86rem;color:rgba(255,255,255,0.8);line-height:1.7;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+</head>
+<body>
+<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a></nav>
+
+<div class="cancel-wrap">
+  <div class="cancel-card">
+
+    <!-- STEP 1: 정말 해지? -->
+    <div class="step active" id="step1">
+      <h2>구독을 해지하시겠어요?</h2>
+      <p>해지하시면 다음 결제일부터 아래 혜택을 더 이상 이용하실 수 없습니다.</p>
+      <ul class="benefit-list">
+        <li>AI 면접 연습 무제한 이용</li>
+        <li>롤플레이 · 디스커션 · 영상면접</li>
+        <li>200+ 기출문제 맞춤 피드백</li>
+        <li>영어 쉐도잉 · 워드 슈팅</li>
+        <li>항공사별 커리큘럼 전체 접근</li>
+        <li>커뮤니티 · 채용 알림</li>
+      </ul>
+      <button class="btn-keep" onclick="location.href='curriculum.html'">구독 이어가기</button>
+      <button class="btn-cancel-next" onclick="showStep(2)">그래도 해지하겠습니다</button>
+    </div>
+
+    <!-- STEP 2: 해지 사유 -->
+    <div class="step" id="step2">
+      <h2>어떤 이유로 떠나시나요?</h2>
+      <p>더 나은 서비스를 위해 솔직한 의견을 들려주세요.</p>
+      <div class="reason-list">
+        <label><input type="radio" name="reason" value="비용"> 비용이 부담됩니다</label>
+        <label><input type="radio" name="reason" value="콘텐츠부족"> 원하는 콘텐츠가 부족합니다</label>
+        <label><input type="radio" name="reason" value="합격"> 합격해서 더 이상 필요 없습니다</label>
+        <label><input type="radio" name="reason" value="다른서비스"> 다른 서비스를 이용 중입니다</label>
+        <label><input type="radio" name="reason" value="기타"> 기타</label>
+      </div>
+      <button class="btn-keep" onclick="location.href='curriculum.html'">다시 생각해볼게요</button>
+      <button class="btn-cancel-next" onclick="showStep(3)">다음</button>
+    </div>
+
+    <!-- STEP 3: 특별 제안 -->
+    <div class="step" id="step3">
+      <h2>잠깐, 특별 제안이 있어요</h2>
+      <div class="offer-box">
+        <h3>다음 달 50% 할인</h3>
+        <p>지금 이어가시면 다음 결제 시<br><b style="color:#E8C96A;font-size:1.1rem;">50% 할인</b>이 적용됩니다.</p>
+      </div>
+      <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:20px;">면접 시즌은 한 번 놓치면 다시 오기 어렵습니다.<br>지금 준비를 멈추면 다시 시작하기가 더 힘들어요.</p>
+      <button class="btn-keep" onclick="location.href='curriculum.html'">할인 받고 이어가기</button>
+      <button class="btn-cancel-next" onclick="showStep(4)">할인 없이 해지하겠습니다</button>
+    </div>
+
+    <!-- STEP 4: 최종 확인 -->
+    <div class="step" id="step4">
+      <h2>정말 해지하시겠어요?</h2>
+      <p style="font-size:0.92rem;color:var(--navy);font-weight:600;margin-bottom:8px;">현재 구독은 결제일 전날까지 이용 가능합니다.</p>
+      <p>해지 후에는 무료체험 10회로 돌아가며,<br>모든 프리미엄 혜택이 중단됩니다.</p>
+      <div style="background:var(--gold-pale);padding:16px;border-radius:10px;margin:20px 0;text-align:left;">
+        <div style="font-size:0.82rem;color:var(--text-mid);line-height:1.7;">
+          <b style="color:var(--navy);">해지 후 변경 사항:</b><br>
+          · AI 면접 연습 → 무료체험 한도로 제한<br>
+          · 강의 영상 → 시청 불가<br>
+          · 커뮤니티 · 알림 → 유지<br>
+          · 연습 기록 → 30일간 보관 후 삭제
+        </div>
+      </div>
+      <button class="btn-keep" onclick="location.href='curriculum.html'">역시 이어갈래요</button>
+      <button class="btn-final-cancel" onclick="doCancel()">해지 확정</button>
+    </div>
+
+    <!-- STEP 5: 해지 완료 -->
+    <div class="step" id="step5">
+      <div style="font-size:2rem;margin-bottom:16px;">😢</div>
+      <h2>해지가 완료되었습니다</h2>
+      <p>현재 결제 기간 종료일까지는 정상 이용 가능합니다.<br>언제든 다시 돌아오시면 환영합니다.</p>
+      <div style="margin-top:24px;">
+        <a href="index.html" style="color:var(--gold);font-size:0.88rem;font-weight:600;">홈으로 돌아가기 →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function showStep(n){
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('step'+n).classList.add('active');
+}
+function doCancel(){
+  // 구독 해지 처리
+  try{
+    var data=JSON.parse(localStorage.getItem('wc_free_trial')||'{}');
+    data.subscribed=false;
+    localStorage.setItem('wc_free_trial',JSON.stringify(data));
+    localStorage.removeItem('wc_paid');
+  }catch(e){}
+  // 해지 사유 기록
+  var reason=document.querySelector('input[name=reason]:checked');
+  console.log('[WC CANCEL]',reason?reason.value:'unknown');
+  showStep(5);
+}
+</script>
+</body>
+</html>

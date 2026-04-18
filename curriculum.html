@@ -398,7 +398,7 @@ if(_urlAirline && savedAirline){
           '즉석에서 에피소드를 생각하려 하지 마세요 — 최고의 에피소드들을 미리 준비해 두세요',
           '마지막 관문입니다 — 정말 잘 준비해야 합니다',
           randQ
-        ],href:'final.html'}
+        ],href:'final.html',lecture:'lecture.html'}
     ];
   }
   function renderEmirates(a){
@@ -426,9 +426,12 @@ if(_urlAirline && savedAirline){
           '<div class="step-desc">'+s.sub+'</div>'+
           listHtml+
         '</div>'+
-        (s.lecture?'<div style="margin-top:8px;"><a href="'+s.lecture+'" style="display:inline-block;padding:6px 14px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:14px;color:var(--gold);font-size:0.72rem;font-weight:600;text-decoration:none;" onclick="event.stopPropagation();">강의 영상 보기</a></div>':'')+
         '</div>'+
-        '<div class="step-badge ready" style="margin-top:4px;">시작하기</div>'+        '<div class="step-arrow" style="margin-top:4px;">→</div>';
+        '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;margin-top:4px;">'+
+          (s.href?'<div class="step-badge ready">시작하기</div>':'')+
+          (s.lecture?'<a href="'+s.lecture+'" class="step-badge ready" style="background:var(--navy);text-decoration:none;text-align:center;" onclick="event.stopPropagation();">강의 영상</a>':'')+
+        '</div>'+
+        '<div class="step-arrow" style="margin-top:4px;">→</div>';
       sg.appendChild(el);
     });
   }

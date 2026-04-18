@@ -75,16 +75,8 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <section><div class="wrap">
 
-<!-- 잠금 화면 (비결제 유저) -->
-<div class="lock-screen" id="lock-screen">
-  <div class="icon">🔒</div>
-  <h3>강의 영상은 수강생 전용입니다</h3>
-  <p>올패키지 또는 강의 수강권을 구매하시면<br>모든 강의 영상을 무제한으로 시청할 수 있습니다.</p>
-  <a href="pricing.html" class="btn">수강 신청하기 →</a>
-</div>
-
-<!-- 강의 목록 (결제 유저) -->
-<div id="lecture-list" style="display:none;">
+<!-- 강의 목록 (항상 표시) -->
+<div id="lecture-list">
   <ul class="lecture-list" id="lec-list"></ul>
 </div>
 
@@ -157,12 +149,17 @@ LECTURES.forEach(function(ch){
 </div></section>
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>
 <script>
-// 결제 여부 체크
-var paid=localStorage.getItem('wc_paid')==='true';
-if(paid){
-  document.getElementById('lock-screen').style.display='none';
-  document.getElementById('lecture-list').style.display='block';
-}
+// 영상 보기 클릭 시 결제 체크
+document.addEventListener('click',function(e){
+  if(e.target.classList.contains('sub-link')){
+    var paid=localStorage.getItem('wc_paid')==='true'||(typeof isAdmin==='function'&&isAdmin());
+    if(!paid){
+      e.preventDefault();
+      alert('프리미엄 수강생 전용 콘텐츠입니다.\n요금제 페이지에서 수강 신청해주세요.');
+      location.href='pricing.html';
+    }
+  }
+});
 </script>
 </body>
 </html>

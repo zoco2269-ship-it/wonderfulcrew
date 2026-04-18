@@ -412,19 +412,31 @@ function startInterview(){
 
   // Start camera
   // 카메라: 정면(셀카) 우선, 실패 시 기본 카메라
-  var camOpts=[
-    {video:{facingMode:'user'},audio:true},
-    {video:true,audio:true}
-  ];
   (async function(){
-    for(var i=0;i<camOpts.length;i++){
+    try{
+      // 정면 카메라 찾기
+      var devices=await navigator.mediaDevices.enumerateDevices();
+      var videoDevices=devices.filter(function(d){return d.kind==='videoinput';});
+      var frontId=null;
+      var frontKeywords=/front|전면|내장|integrated|webcam|facetime|camera hd|built-in|isight/i;
+      for(var d=0;d<videoDevices.length;d++){
+        if(frontKeywords.test(videoDevices[d].label)){frontId=videoDevices[d].deviceId;break;}
+      }
+      var constraints=frontId
+        ?{video:{deviceId:{exact:frontId}},audio:true}
+        :{video:{facingMode:'user'},audio:true};
+      stream=await navigator.mediaDevices.getUserMedia(constraints);
+      var v=document.getElementById('cam-video');
+      v.srcObject=stream;v.style.display='block';
+      document.getElementById('cam-ph').style.display='none';
+    }catch(e){
+      // 폴백: 아무 카메라
       try{
-        stream=await navigator.mediaDevices.getUserMedia(camOpts[i]);
-        var v=document.getElementById('cam-video');
-        v.srcObject=stream;v.style.display='block';
+        stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+        var v2=document.getElementById('cam-video');
+        v2.srcObject=stream;v2.style.display='block';
         document.getElementById('cam-ph').style.display='none';
-        break;
-      }catch(e){if(i===camOpts.length-1)document.getElementById('cam-ph').innerHTML='<div>Camera connection failed</div>';}
+      }catch(e2){document.getElementById('cam-ph').innerHTML='<div>Camera connection failed</div>';}
     }
   })();
 

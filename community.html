@@ -413,7 +413,7 @@ function render(name){
       '<div class="title">'+(p.airline||'')+' '+(p.stage||'면접')+' 후기'+(p.idate?' ('+p.idate+')':'')+'</div>'+
       '<div class="preview">'+p.body.substring(0,150)+(p.body.length>150?'...':'')+'</div>'+
       '<div class="meta">'+p.date+'</div>';
-      d.onclick=function(){alert(p.body+'\n\n  '+p.author);};
+      d.onclick=function(){showPostModal((p.airline||'')+' '+(p.stage||'면접')+' 후기',p.body,p.date);};
       list.appendChild(d);
     });
   } else {
@@ -422,7 +422,7 @@ function render(name){
       d.innerHTML='<div class="title">'+p.title+'</div>'+
         '<div class="preview">'+p.body.substring(0,120)+(p.body.length>120?'...':'')+'</div>'+
         '<div class="meta">'+p.author+' · '+p.date+'</div>';
-      d.onclick=function(){alert(p.title+'\n\n'+p.body+'\n\n  '+p.author);};
+      d.onclick=function(){showPostModal(p.title,p.body,p.date,p.author);};
       list.appendChild(d);
     });
   }
@@ -494,6 +494,22 @@ function showStudyDetail(p){
       '<button onclick="deleteStudy(\''+p.title.replace(/'/g,"\\'")+'\');this.closest(\'#study-modal\').remove();" style="padding:8px 18px;background:none;border:1px solid #E74C3C;color:#E74C3C;border-radius:16px;font-size:0.78rem;cursor:pointer;">삭제하기</button>'+
       '</div>':'')+
     '<button onclick="this.closest(\'#study-modal\').remove()" style="display:block;margin:16px auto 0;background:none;border:none;color:#999;font-size:0.82rem;cursor:pointer;">닫기</button>'+
+    '</div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){if(e.target===ov) ov.remove();});
+}
+
+function showPostModal(title,body,date,author){
+  var existing=document.getElementById('post-modal');
+  if(existing) existing.remove();
+  var ov=document.createElement('div');
+  ov.id='post-modal';
+  ov.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;';
+  ov.innerHTML='<div style="background:#fff;border-radius:16px;padding:32px 28px;max-width:520px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);">'+
+    '<h3 style="font-family:DM Serif Display,serif;font-size:1.15rem;color:#1A2340;margin-bottom:10px;">'+title+'</h3>'+
+    '<div style="font-size:0.78rem;color:#8A7E6E;margin-bottom:18px;">'+(date||'')+(author?' · '+author:'')+'</div>'+
+    '<div style="font-size:0.9rem;color:#4A4438;line-height:1.9;white-space:pre-line;">'+body+'</div>'+
+    '<button onclick="this.closest(\'#post-modal\').remove()" style="display:block;margin:24px auto 0;padding:10px 24px;background:var(--navy);color:#fff;border:none;border-radius:20px;font-size:0.84rem;cursor:pointer;">닫기</button>'+
     '</div>';
   document.body.appendChild(ov);
   ov.addEventListener('click',function(e){if(e.target===ov) ov.remove();});

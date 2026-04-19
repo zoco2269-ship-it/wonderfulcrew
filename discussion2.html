@@ -234,6 +234,12 @@ async function stopAnswer(){
         document.getElementById('btn-next').disabled=false;
         document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=true;
         document.getElementById('rec-label').textContent='완료';
+        // 롤플레이로 이어가기 버튼
+        var rpBtn=document.createElement('div');
+        rpBtn.style.cssText='text-align:center;margin-top:20px;padding:20px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:12px;';
+        rpBtn.innerHTML='<div style="font-size:0.82rem;color:var(--gold);font-weight:700;margin-bottom:8px;">디스커션 완료! 이어서 롤플레이도 연습해보세요</div>'+
+          '<a href="roleplay-practice-en.html" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border-radius:24px;font-size:0.88rem;font-weight:700;text-decoration:none;">롤플레이 연습하기 →</a>';
+        fb.after(rpBtn);
       },2000);
     } else {
       document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=false;

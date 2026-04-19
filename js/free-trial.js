@@ -1,19 +1,12 @@
 /**
  * WonderfulCrew 무료체험 시스템
- * - 총 10회 무료 콘텐츠 열람
- * - 소진 후 월정액 구독 유도
- *
- * 사용법:
- *   if (useFreeTrialOrCheck()) {
- *     // 콘텐츠 보여주기
- *   }
- *   // → 무료체험 남아있으면 1회 차감 후 true 반환
- *   // → 소진됐으면 구독 팝업 띄우고 false 반환
- *   // → 구독자면 항상 true
+ * - Supabase 기반: 로그인 사용자별 사용 횟수 서버 관리
+ * - localStorage는 캐시 용도 (오프라인/빠른 체크)
  */
 
 var FREE_TRIAL_KEY = 'wc_free_trial';
 var FREE_TRIAL_MAX = 10;
+var _trialSynced = false;
 
 function getTrialData() {
   try { return JSON.parse(localStorage.getItem(FREE_TRIAL_KEY) || '{}'); } catch(e) { return {}; }
@@ -23,52 +16,67 @@ function saveTrialData(data) {
   localStorage.setItem(FREE_TRIAL_KEY, JSON.stringify(data));
 }
 
-// 남은 무료체험 횟수
+// Supabase에서 사용 횟수 동기화
+async function syncTrialFromServer() {
+  if (_trialSynced) return;
+  try {
+    var user = JSON.parse(localStorage.getItem('wc_user') || '{}');
+    if (!user.id) return;
+    var res = await fetch('/api/supabase-config');
+    var cfg = await res.json();
+    if (!cfg.url || !cfg.anonKey || typeof window.supabase === 'undefined') return;
+    var sb = window.supabase.createClient(cfg.url, cfg.anonKey);
+    var { data } = await sb.from('practice_records').select('id').eq('user_id', user.id);
+    if (data) {
+      var localData = getTrialData();
+      localData.used = data.length;
+      saveTrialData(localData);
+      _trialSynced = true;
+    }
+  } catch(e) { /* fallback to localStorage */ }
+}
+
+// 페이지 로드 시 동기화 시도
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(syncTrialFromServer, 1500);
+});
+
 function getFreeTrialLeft() {
   var data = getTrialData();
-  if (data.subscribed) return -1; // 구독자는 무제한
+  if (data.subscribed) return -1;
   var used = data.used || 0;
   return Math.max(0, FREE_TRIAL_MAX - used);
 }
 
-// 구독자 여부
 function isSubscribed() {
   var data = getTrialData();
   return data.subscribed === true;
 }
 
-// 무료체험 사용 또는 구독 체크
-// true 반환 = 콘텐츠 접근 가능, false = 불가
 function useFreeTrialOrCheck() {
   if (typeof isAdmin === 'function' && isAdmin()) return true;
 
   var data = getTrialData();
-
-  // 구독자는 항상 통과
   if (data.subscribed) return true;
 
   var used = data.used || 0;
   var left = FREE_TRIAL_MAX - used;
 
   if (left > 0) {
-    // 무료체험 1회 차감
     data.used = used + 1;
     saveTrialData(data);
     var remaining = FREE_TRIAL_MAX - data.used;
     showTrialToast(remaining);
     return true;
   } else {
-    // 소진 → 구독 유도
     showSubscribePopup();
     return false;
   }
 }
 
-// 무료체험 N회 남음 토스트
 function showTrialToast(remaining) {
   var existing = document.getElementById('wc-trial-toast');
   if (existing) existing.remove();
-
   var toast = document.createElement('div');
   toast.id = 'wc-trial-toast';
   toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1A2340;color:#fff;padding:12px 24px;border-radius:28px;font-size:0.84rem;font-family:inherit;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.2);display:flex;align-items:center;gap:8px;';
@@ -82,11 +90,9 @@ function showTrialToast(remaining) {
   setTimeout(function() { if (toast.parentNode) toast.remove(); }, 3000);
 }
 
-// 월정액 구독 팝업
 function showSubscribePopup() {
   var existing = document.getElementById('wc-subscribe-popup');
   if (existing) existing.remove();
-
   var overlay = document.createElement('div');
   overlay.id = 'wc-subscribe-popup';
   overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;';
@@ -103,7 +109,6 @@ function showSubscribePopup() {
   overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
 }
 
-// 현재 상태 표시 배지 (선택적으로 페이지에 삽입)
 function renderTrialBadge(containerId) {
   var el = document.getElementById(containerId);
   if (!el) return;
@@ -125,12 +130,15 @@ function renderTrialBadge(containerId) {
     'chatbot.html','chatbot-en.html','word-shooting.html','ai-coach.html','ai-coach-en.html'
   ];
   if (practicePages.indexOf(page) === -1) return;
-  // 페이지 로드 시 무료체험 체크
   document.addEventListener('DOMContentLoaded', function(){
-    if (!useFreeTrialOrCheck()) {
-      // 무료체험 소진 → 구독 팝업 이미 떴으므로 콘텐츠 숨기기
-      var main = document.querySelector('.main, .wrap, #app, main, .content');
-      if (main) main.style.opacity = '0.3';
-    }
+    // 서버 동기화 후 체크
+    setTimeout(function(){
+      syncTrialFromServer().then(function(){
+        if (!useFreeTrialOrCheck()) {
+          var main = document.querySelector('.main, .wrap, #app, main, .content');
+          if (main) main.style.opacity = '0.3';
+        }
+      });
+    }, 2000);
   });
 })();

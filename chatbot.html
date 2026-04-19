@@ -379,12 +379,12 @@ CV드롭과 스몰톡 연습은 어떤 형태의 면접이든 필수야.
 **국내 항공사 디스커션은 찬반 토론이나 주제 토론 형식이야.**
 
 **핵심:**
-- 경청도 중요하지만, 듣기만 하면 안 돼 — 듣고 나서 거기에 연결해서 자기 의견을 말해야 해
+- 디스커션에서 중요한 포인트는 여러 가지야 — 참여도, 경청, 공감, 논리, 팀워크
+- 나만 말해서도 안 되고, 듣기만 해서도 안 돼 — 적극적으로 참여해야 해
+- 상대 의견을 듣고 거기에 연결해서 자기 의견을 말하기
 - "좋은 의견이네요, 거기에 더해서..." 이런 패턴이 좋아
-- 자기 의견만 강하게 주장하면 탈락
 - 팀 전체가 좋은 결론을 낼 수 있도록 이끌어가는 모습이 핵심
 - "나"보다 "우리"
-- 짧고 핵심적으로 말하기 — 길게 말하면 감점
 
 ## 7. 롤플레이
 **핵심:** 준비만 하면 무조건 통과할 수 있어. 준비 안 하면 "Sorry..." 밖에 못 해.
@@ -594,10 +594,13 @@ async function send(text){
     document.getElementById('wc-typing')?.remove();
     addMsg('ai',fmt(reply));
     st.used++;saveSt();renderDots();
-    const max=st.bonusUnlocked?7:(st.formDone?5:2);
-    const rem=max-st.used;
-    if(!st.unlimited&&rem===1){bottomLabel.textContent='무료 이용 마지막 1회예요';bottomLabel.style.color='#f87171';}
-    else{bottomLabel.textContent='WonderfulCrew · 승무원 면접 전용 코치';bottomLabel.style.color='#8A7E6E';}
+    // 챗봇에서 3회 대화 후 홈으로 이동 (무료체험 전체를 챗봇에서 다 쓰지 않도록)
+    if(!st.unlimited && st.used>=3){
+      setTimeout(function(){
+        addMsg('ai','다양한 면접 연습을 체험해보세요! 면접 연습 페이지로 이동합니다.');
+        setTimeout(function(){ location.href='curriculum.html'; },2000);
+      },1000);
+    }
   }catch(e){document.getElementById('wc-typing')?.remove();addMsg('ai','연결에 문제가 생겼어요. 잠시 후 다시 시도해 주세요.');}
   loading=false;btn.disabled=false;
 }

@@ -623,7 +623,7 @@ async function send(text){
       loading=false;btn.disabled=false;
       return;
     }
-    const res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,system:SYS+'\n\n중요 규칙:\n1. 답변은 반드시 완결된 문장으로 끝내세요. 절대 말하다 끊기면 안 됩니다.\n2. 반드시 4~5문장으로 답변하세요. 2문장은 너무 짧습니다. 5문장을 채우세요.\n3. 답변 마지막에 반드시 질문과 관련된 플랫폼 기능 페이지를 안내하세요. 예: 롤플레이 관련이면 "롤플레이 연습에서 직접 체험해보세요", 면접 질문이면 "면접 연습에서 기출문제를 연습해보세요"\n4. 마지막에 반드시 마침표로 끝내세요.',messages:history})});
+    const res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,system:SYS+'\n\n규칙:\n1. 답변은 완결된 문장으로 끝내세요. 말하다 끊기면 안 됩니다.\n2. 질문에 맞는 적절한 길이로 답변하세요. 짧은 질문이면 짧게, 설명이 필요하면 충분히 설명하세요.\n3. 답변 끝에 질문과 관련된 플랫폼 기능을 자연스럽게 안내하세요.',messages:history})});
     const data=await res.json();
     const reply=data.content?.[0]?.text||'죄송해요, 다시 시도해 주세요.';
     history.push({role:'assistant',content:reply});

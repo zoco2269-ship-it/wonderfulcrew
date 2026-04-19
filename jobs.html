@@ -234,7 +234,10 @@ function wcSubscribeAlert(airline) {
       {tag:'QATAR',q:'Qatar Airways cabin crew'},
       {tag:'KOREAN AIR',q:'대한항공 승무원 채용'},
       {tag:'SINGAPORE',q:'Singapore Airlines cabin crew'},
-      {tag:'ASIANA',q:'아시아나항공 승무원 채용'}
+      {tag:'ASIANA',q:'아시아나항공 승무원 채용'},
+      {tag:'EMIRATES',q:'Emirates cabin crew recruitment 2026',intl:true},
+      {tag:'QATAR',q:'Qatar Airways cabin crew hiring',intl:true},
+      {tag:'SINGAPORE',q:'Singapore Airlines cabin crew recruitment',intl:true}
     ];
     var newsWrap=document.querySelector('.news-wrap');
     var allNews=[];
@@ -251,20 +254,34 @@ function wcSubscribeAlert(airline) {
         var pubDate=items[j].querySelector('pubDate');
         if(title&&link){
           var t=title.textContent;
-          if(/학원|과외|academy|스쿨|학교|학과|대학저널|인강|강남|홍대.*승무원|후기|꿈|일기|에세이|essay|vlog/i.test(t)) continue;
+          if(/학원|과외|academy|스쿨|학교|학과|대학저널|인강|강남|홍대.*승무원|후기|꿈|일기|에세이|essay|vlog|프리미엄콘텐츠|premium.*content|서류항목|네이버.*프리미엄/i.test(t)) continue;
           // 공식 뉴스 매체만 허용 (화이트리스트)
           var source=items[j].querySelector('source');
           var srcName=source?source.textContent:'';
           var ALLOWED_SOURCES=/연합뉴스|조선일보|중앙일보|동아일보|한겨레|경향신문|매일경제|한국경제|서울경제|아시아경제|뉴시스|뉴스1|YTN|SBS|KBS|MBC|JTBC|채널A|TV조선|MBN|이데일리|머니투데이|파이낸셜뉴스|헤럴드경제|한국일보|세계일보|국민일보|데일리안|오마이뉴스|프레시안|여행신문|트래블바이크|aviation|reuters|bloomberg|CNN|BBC|Gulf News|The National|简单日报|Khaleej Times/i;
           if(srcName&&!ALLOWED_SOURCES.test(srcName)) continue;
           var linkUrl=link?link.textContent:'';
-          if(/brunch\.co|blog\.naver|tistory\.com|cafe\.naver|youtube\.com|velog\.io|medium\.com/i.test(linkUrl)) continue;
+          if(/brunch\.co|blog\.naver|tistory\.com|cafe\.naver|youtube\.com|velog\.io|medium\.com|contents\.premium\.naver/i.test(linkUrl)) continue;
           var articleDate=pubDate?new Date(pubDate.textContent).toISOString().slice(0,10):'';
           // 1년 이상 오래된 기사 제외
           if(articleDate){var oneYearAgo=new Date();oneYearAgo.setFullYear(oneYearAgo.getFullYear()-1);if(new Date(articleDate)<oneYearAgo) continue;}
-          allNews.push({tag:queries[i].tag,title:t,link:link.textContent,date:articleDate});
+          allNews.push({tag:queries[i].tag,title:t,link:link.textContent,date:articleDate,intl:!!queries[i].intl});
         }
       }
+    }
+    // 해외 뉴스 제목 번역
+    var intlNews=allNews.filter(function(n){return n.intl;});
+    if(intlNews.length>0){
+      try{
+        var titles=intlNews.map(function(n){return n.title;}).join('\n');
+        var trRes=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+          model:'claude-haiku-4-5-20251001',max_tokens:500,
+          messages:[{role:'user',content:'아래 영어 뉴스 제목들을 한국어로 간결하게 번역해주세요. 한 줄에 하나씩, 원래 순서대로:\n\n'+titles}]
+        })});
+        var trData=await trRes.json();
+        var translated=((trData&&trData.content&&trData.content[0]&&trData.content[0].text)||'').split('\n').filter(Boolean);
+        intlNews.forEach(function(n,idx){if(translated[idx])n.title=translated[idx];});
+      }catch(e){}
     }
     if(allNews.length>0){
       newsWrap.innerHTML='';

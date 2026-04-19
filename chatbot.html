@@ -574,6 +574,31 @@ function showTyping(){
 
 function fmt(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong style="color:#C5A55A;">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');}
 
+// 자주 묻는 질문 캐싱 (API 호출 없음)
+var CACHED_ANSWERS={
+  '자기소개서 작성 도와줘':'자기소개서는 서비스 경험 중심으로 작성하세요. 구체적인 에피소드가 핵심입니다. 자기소개서 가이드 페이지에서 항공사별 작성법을 확인해보세요.',
+  '면접 예상 질문 알려줘':'면접 연습 페이지에서 200개 이상의 기출문제를 항공사별로 연습하실 수 있어요. 카메라 앞에서 직접 답변하고 피드백도 받아보세요.',
+  '1차 디스커션 준비 방법':'1차 디스커션은 발표 형식이에요. 자신감 있는 태도가 가장 중요합니다. 디스커션 연습 페이지에서 직접 연습해보세요.',
+  '2차 디스커션 답변 예시':'2차 디스커션은 고객 리스트가 주어지고 우선순위를 정하는 형식이에요. 디스커션 연습 페이지에서 다양한 시나리오를 체험해보세요.',
+  '기내 서비스 상황 대처법':'기내 상황 대처는 LEAP(Listen-Empathise-Ask-Paraphrase)가 기본이에요. 고객 응대 스킬 페이지에서 LEAP와 4Ds를 학습해보세요.',
+  '영어 면접 표현 코칭':'영어 면접 표현은 면접 표현 페이지에서 상황별로 정리되어 있어요. 영어 쉐도잉으로 매일 연습하시면 빠르게 늘어요.',
+  '대한항공 자기소개서 작성 도와줘':'대한항공 자소서는 서비스 경험과 지원동기가 핵심이에요. "어릴 때부터 꿈이었다"는 수천 명이 쓰는 표현이니 피하세요. 자기소개서 가이드에서 자세히 확인해보세요.',
+  '2차 디스커션에서 주의할 점':'고객 리스트의 모든 인물은 우리의 고객이에요. 한 명도 버리면 안 됩니다. 면접관이 보는 건 결론이 아니라 과정이에요. 디스커션 연습에서 직접 체험해보세요.',
+  '기내 서비스 영어 표현 알려줘':'기내 서비스 영어는 면접 표현 페이지에 상황별로 정리되어 있어요. "May I~", "Would you like~" 같은 정중한 표현이 기본이에요.',
+  '항공사별 스펙 정보 알려줘':'항공사별 지원 자격은 커리큘럼 페이지에서 확인하실 수 있어요. 항공사를 선택하시면 면접 프로세스와 요건이 상세하게 나와 있어요.',
+  '파이널 면접 준비 방법 알려줘':'파이널 면접은 나만의 에피소드를 미리 준비하는 게 핵심이에요. 즉석에서 생각하려 하지 마세요. 파이널 면접 연습에서 항공사별로 연습해보세요.'
+};
+function getCachedAnswer(msg){
+  var m=msg.trim();
+  if(CACHED_ANSWERS[m]) return CACHED_ANSWERS[m];
+  // 키워드 매칭
+  var keys=Object.keys(CACHED_ANSWERS);
+  for(var i=0;i<keys.length;i++){
+    if(m.indexOf(keys[i])!==-1 || keys[i].indexOf(m)!==-1) return CACHED_ANSWERS[keys[i]];
+  }
+  return null;
+}
+
 async function send(text){
   const msg=text||inp.value.trim();
   if(!msg||loading)return;
@@ -587,7 +612,18 @@ async function send(text){
   loading=true;btn.disabled=true;
   addMsg('user',msg);history.push({role:'user',content:msg});showTyping();
   try{
-    const res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:SYS+'\n\n중요: 답변은 반드시 완결된 문장으로 마무리해야 합니다. 말하다 끊기면 안 됩니다. 짧고 핵심적으로 답변하되 반드시 마침표로 끝내세요.',messages:history})});
+    // 자주 묻는 질문 캐싱 (API 호출 없이 즉답)
+    var cached=getCachedAnswer(msg);
+    if(cached){
+      document.getElementById('wc-typing')?.remove();
+      addMsg('ai',cached);
+      history.push({role:'assistant',content:cached});
+      if(typeof savePracticeRecord==='function') savePracticeRecord({stage:'chatbot',question:msg,answer:'',feedback:cached});
+      st.used++;saveSt();renderDots();
+      loading=false;btn.disabled=false;
+      return;
+    }
+    const res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:SYS+'\n\n중요 규칙:\n1. 답변은 반드시 완결된 문장으로 끝내세요. 절대 말하다 끊기면 안 됩니다.\n2. 최대 5문장 이내로 핵심만 답변하세요.\n3. 구체적인 팁이나 답변 예시는 "면접 연습 페이지에서 직접 연습해보세요"로 안내하세요.\n4. 면접 기출, 롤플레이 팁, 디스커션 전략 등 상세한 내용은 플랫폼 기능을 안내하세요.',messages:history})});
     const data=await res.json();
     const reply=data.content?.[0]?.text||'죄송해요, 다시 시도해 주세요.';
     history.push({role:'assistant',content:reply});

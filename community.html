@@ -384,7 +384,7 @@ function render(name){
     DUMMY_PASS.forEach(function(p){
       var d=document.createElement('div');d.className='post-item';
       d.innerHTML='<div class="tags"><span class="study-tag air">'+p.airline+'</span><span class="verified">합격 인증</span></div>'+
-        '<div class="title">'+p.author+'님의 합격 후기</div>'+
+        '<div class="title">'+p.airline+' 합격 후기</div>'+
         '<div class="preview">'+p.body+'</div>'+
         '<div class="meta">'+p.date+'</div>';
       list.appendChild(d);

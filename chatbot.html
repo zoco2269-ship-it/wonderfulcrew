@@ -594,11 +594,19 @@ async function send(text){
     document.getElementById('wc-typing')?.remove();
     addMsg('ai',fmt(reply));
     st.used++;saveSt();renderDots();
-    // 챗봇에서 3회 대화 후 홈으로 이동 (무료체험 전체를 챗봇에서 다 쓰지 않도록)
+    // 챗봇에서 3회 대화 후 다른 연습 유도 (자동 이동 아닌 버튼)
     if(!st.unlimited && st.used>=3){
       setTimeout(function(){
-        addMsg('ai','다양한 면접 연습을 체험해보세요! 면접 연습 페이지로 이동합니다.');
-        setTimeout(function(){ location.href='curriculum.html'; },2000);
+        var guideDiv=document.createElement('div');
+        guideDiv.style.cssText='background:linear-gradient(135deg,#1A2340,#2A3455);border-radius:14px;padding:18px 20px;margin:12px 0;text-align:center;';
+        guideDiv.innerHTML='<div style="color:#E8C96A;font-size:0.86rem;font-weight:700;margin-bottom:8px;">다양한 면접 연습도 체험해보세요</div>'+
+          '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">'+
+          '<a href="curriculum.html" style="padding:8px 16px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:20px;font-size:0.78rem;font-weight:600;text-decoration:none;">면접 연습</a>'+
+          '<a href="roleplay-practice-en.html" style="padding:8px 16px;background:rgba(255,255,255,0.15);color:#fff;border-radius:20px;font-size:0.78rem;text-decoration:none;">롤플레이</a>'+
+          '<a href="discussion-practice-ko.html" style="padding:8px 16px;background:rgba(255,255,255,0.15);color:#fff;border-radius:20px;font-size:0.78rem;text-decoration:none;">디스커션</a>'+
+          '</div>';
+        chat.appendChild(guideDiv);
+        chat.scrollTop=chat.scrollHeight;
       },1000);
     }
   }catch(e){document.getElementById('wc-typing')?.remove();addMsg('ai','연결에 문제가 생겼어요. 잠시 후 다시 시도해 주세요.');}

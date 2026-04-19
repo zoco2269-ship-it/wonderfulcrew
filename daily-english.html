@@ -203,8 +203,10 @@ function saveStreak(){
 }
 function renderStreak(){
   var s=loadStreak();
-  document.getElementById('streak-count').textContent=s.streak;
-  document.getElementById('total-count').textContent=s.total;
+  var sc=document.getElementById('streak-count');
+  var tc=document.getElementById('total-count');
+  if(sc)sc.textContent=s.streak;
+  if(tc)tc.textContent=s.total;
   if(s.doneToday)document.getElementById('done-banner').classList.add('visible');
 }
 renderStreak();

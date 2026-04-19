@@ -95,7 +95,7 @@ function showSubscribePopup() {
     '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.4rem;color:#1A2340;margin-bottom:8px;">무료체험이 끝났습니다</h2>' +
     '<p style="font-size:0.88rem;color:#5A5048;line-height:1.7;margin-bottom:24px;">더 많은 콘텐츠와 AI 코칭을 이용하려면<br>월정액을 구독해주세요.</p>' +
     '<div style="display:flex;flex-direction:column;gap:10px;">' +
-      '<a href="token-rewards.html" style="display:block;padding:14px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.92rem;font-weight:700;text-decoration:none;">구독 플랜 보기</a>' +
+      '<a href="plans.html" style="display:block;padding:14px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.92rem;font-weight:700;text-decoration:none;">구독 플랜 보기</a>' +
       '<button onclick="this.closest(\'#wc-subscribe-popup\').remove();" style="padding:10px;background:none;border:1px solid #e8e0d0;border-radius:28px;font-size:0.84rem;color:#5A5048;cursor:pointer;font-family:inherit;">닫기</button>' +
     '</div>' +
   '</div>';

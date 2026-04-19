@@ -616,7 +616,7 @@ async function generateFeedback(scenario){
     var faceReport=typeof getFaceReport==='function'?getFaceReport():'';
     faceAnalysisActive=false;
     fb.innerHTML='<b style="color:var(--gold);">피드백</b><br><br><div style="white-space:pre-line;">'+mainFeedback+(faceReport?'\n'+faceReport:'')+'</div>';
-    if(typeof savePracticeRecord==='function') savePracticeRecord({airline:'',stage:'roleplay-ko',question:currentScenario||'',answer:fullText||'',feedback:mainFeedback});
+    if(typeof savePracticeRecord==='function') savePracticeRecord({airline:'',stage:'roleplay-ko',question:scenario||'',answer:fullText||'',feedback:mainFeedback});
     if(lastSuggestedResponse) document.getElementById('btn-model').style.display='inline-flex';
     document.getElementById('btn-next').style.display='inline-flex';
     document.getElementById('rec-label').textContent='완료';

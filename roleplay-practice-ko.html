@@ -555,7 +555,7 @@ async function processAnswer(){
 async function generateFeedback(scenario){
   if(mediaRecorder&&mediaRecorder.state==='recording')try{mediaRecorder.stop();}catch(e){}
   var fb=document.getElementById('feedback');
-  if(!chatHistory||chatHistory.length<2){fb.innerHTML='대화 내용이 부족합니다. 승객과 대화를 먼저 진행해주세요.';document.getElementById('btn-next').style.display='inline-flex';return;}
+  if(!chatHistory||chatHistory.length<1){fb.innerHTML='대화 내용이 부족합니다. 승객과 대화를 먼저 진행해주세요.';document.getElementById('btn-next').style.display='inline-flex';return;}
   fb.innerHTML='<span style="color:var(--gold);">피드백을 작성하고 있어요...</span>';
   try{
     var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'승무원':'승객')+': '+m.content;}).join('\n');

@@ -251,8 +251,14 @@ function wcSubscribeAlert(airline) {
         var pubDate=items[j].querySelector('pubDate');
         if(title&&link){
           var t=title.textContent;
-          if(/학원|과외|academy|스쿨|학교|학과|대학저널|인강|강남|홍대.*승무원|브런치|brunch|블로그|티스토리|tistory|네이버.*카페|cafe\.naver/i.test(t)) continue;
-          if(link&&link.textContent&&/brunch\.co|blog\.naver|tistory\.com|cafe\.naver/i.test(link.textContent)) continue;
+          if(/학원|과외|academy|스쿨|학교|학과|대학저널|인강|강남|홍대.*승무원|브런치|brunch|블로그|티스토리|tistory|네이버.*카페|cafe\.naver|후기|꿈|일기|에세이|essay|vlog/i.test(t)) continue;
+          var linkUrl=link?link.textContent:'';
+          // 개인 블로그/카페 URL 차단
+          if(/brunch\.co|blog\.naver|tistory\.com|cafe\.naver|youtube\.com|youtu\.be|instagram|velog\.io|medium\.com|notion\.so/i.test(linkUrl)) continue;
+          // 뉴스 매체 소스만 허용 (source 태그 확인)
+          var source=items[j].querySelector('source');
+          var srcName=source?source.textContent:'';
+          if(srcName&&/블로그|카페|브런치|유튜브|인스타/i.test(srcName)) continue;
           var articleDate=pubDate?new Date(pubDate.textContent).toISOString().slice(0,10):'';
           // 1년 이상 오래된 기사 제외
           if(articleDate){var oneYearAgo=new Date();oneYearAgo.setFullYear(oneYearAgo.getFullYear()-1);if(new Date(articleDate)<oneYearAgo) continue;}

@@ -118,9 +118,10 @@ async function submitFeedback(){
     var cfg=await res.json();
     if(cfg.url&&cfg.anonKey){
       var sb=window.supabase.createClient(cfg.url,cfg.anonKey);
-      await sb.from('feedback').insert(data);
+      var result=await sb.from('feedback').insert(data);
+      if(result.error){console.error('Feedback error:',result.error);alert('전송 실패: '+result.error.message);return;}
     }
-  }catch(e){console.log('Feedback save error:',e);}
+  }catch(e){console.error('Feedback save error:',e);alert('전송 실패. 다시 시도해주세요.');return;}
   document.getElementById('fb-body').value='';
   document.getElementById('fb-result').style.display='block';
 }

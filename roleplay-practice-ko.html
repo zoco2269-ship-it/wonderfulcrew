@@ -419,7 +419,7 @@ function startListening(){
   fullText='';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('rec-dot').classList.add('on');
-  document.getElementById('rec-label').textContent='녹음 중';
+  document.getElementById('rec-label').textContent='답변 중';
   document.getElementById('waveform').classList.add('active');
   document.getElementById('transcript').textContent='지금 답변하세요...';
 
@@ -578,7 +578,7 @@ async function generateFeedback(scenario){
     document.getElementById('btn-next').style.display='inline-flex';
     document.getElementById('rec-label').textContent='완료';
   }catch(e){
-    fb.innerHTML='<span style="color:#E74C3C;">피드백 생성 실패.</span>';
+    fb.innerHTML='<span style="color:#E74C3C;">피드백 생성 실패: '+e.message+'</span>';
     document.getElementById('btn-next').style.display='inline-flex';
   }
 }

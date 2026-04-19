@@ -202,7 +202,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     </div>
     <label>닉네임</label><input type="text" id="s-author" placeholder="닉네임" maxlength="20">
     <label>제목</label><input type="text" id="s-title" placeholder="예: 에미레이트 준비 내 주변 스터디 구해요" maxlength="80">
-    <label>카카오 오픈채팅 링크</label><input type="url" id="s-kakao" placeholder="https://open.kakao.com/o/..." maxlength="200">
+    <label>연락 방법 (이메일, 카카오톡 ID, 오픈채팅 링크 등)</label><input type="text" id="s-contact" placeholder="예: 카카오톡 ID crew_study / open.kakao.com/o/..." maxlength="200">
     <label>상세 내용</label><textarea id="s-body" placeholder="자기소개, 현재 준비 단계, 원하는 스터디 방식"></textarea>
     <div class="error-msg" id="err-study"></div>
     <div class="form-btns"><button class="submit" onclick="submitStudy()">올리기</button><button class="cancel" onclick="closeForm()">취소</button></div>
@@ -273,11 +273,12 @@ function submitStudy(){
   var err=document.getElementById('err-study');err.style.display='none';
   if(!title||!body){err.textContent='제목과 내용을 입력해주세요.';err.style.display='block';return;}
   if(banned(title+body)){err.textContent='커뮤니티 정책에 의해 등록할 수 없는 내용입니다.';err.style.display='block';return;}
-  var kakao=document.getElementById('s-kakao').value.trim();
+  var contact=document.getElementById('s-contact').value.trim();
+  if(!contact){err.textContent='연락 방법을 입력해주세요.';err.style.display='block';return;}
   var arr=getB('study');
-  arr.unshift({airline:airline[0]||'',loc:loc[0]||'',ppl:ppl[0]||'',sched:sched[0]||'',author:author,title:title,body:body,kakao:kakao,date:new Date().toISOString().slice(0,10),mine:true});
+  arr.unshift({airline:airline[0]||'',loc:loc[0]||'',ppl:ppl[0]||'',sched:sched[0]||'',author:author,title:title,body:body,contact:contact,date:new Date().toISOString().slice(0,10),mine:true});
   setB('study',arr);closeForm();render('study');clearChips('chips-airline');clearChips('chips-loc');clearChips('chips-ppl');clearChips('chips-sched');
-  document.getElementById('s-title').value='';document.getElementById('s-body').value='';document.getElementById('s-kakao').value='';
+  document.getElementById('s-title').value='';document.getElementById('s-body').value='';document.getElementById('s-contact').value='';
 }
 
 // 일반글 제출
@@ -319,12 +320,12 @@ var DUMMY_PASS=[
 
 // 시드 스터디 데이터
 var SEED_STUDY=[
-  {airline:'에미레이트',loc:'온라인',ppl:'4명',sched:'주 2회',author:'민지',title:'에미레이트 면접 스터디 4기 모집 (마감)',body:'에미레이트 오픈데이 대비 스터디입니다. 롤플레이+디스커션+파이널 위주로 진행합니다. 매주 화/목 저녁 9시 줌으로 합니다.\n\n카카오톡 ID: minji_crew',date:'2026-03-20',closed:true},
-  {airline:'카타르항공',loc:'온라인',ppl:'3명',sched:'주 3회',author:'수빈',title:'카타르 면접 준비 스터디 2기 (마감)',body:'카타르 AD 대비 영어 스피킹+롤플레이 집중. 월수금 저녁. 영어 intermediate 이상.\n\n카카오톡 ID: subin_fly',date:'2026-03-25',closed:true},
-  {airline:'국내항공사',loc:'서울',ppl:'5명',sched:'주 1회',author:'예린',title:'국내 항공사 디스커션 스터디 (잔여 2석)',body:'대한항공/아시아나/제주항공 준비하시는 분 함께해요. 매주 토요일 오후 홍대 근처에서 오프라인으로 디스커션 연습합니다.\n\n참여 희망하시면 카카오톡 yerin_crew 로 연락주세요!',date:'2026-04-08'},
-  {airline:'싱가포르항공',loc:'온라인',ppl:'4명',sched:'주 2회',author:'하연',title:'싱가포르항공 영어 면접 스터디 3기 모집중',body:'SIA 파이널 대비 영어 답변 연습. 매주 월/수 저녁 10시 줌. STAR 기법 기반으로 답변 만들고 서로 피드백합니다.\n\n카카오톡 ID: hayeon_sia',date:'2026-04-10'},
-  {airline:'에미레이트',loc:'온라인',ppl:'6명',sched:'주 3회',author:'서진',title:'5월 에미레이트 오픈데이 대비 집중 스터디',body:'5월 서울 오픈데이 확정! 함께 준비하실 분. CV+비디오면접+1차+2차+파이널 전 과정 커버합니다.\n\n참여 희망 → 카카오톡 seojin_ek 로 DM 주세요',date:'2026-04-15'},
-  {airline:'대한항공',loc:'부산',ppl:'4명',sched:'주 1회',author:'소희',title:'부산 거주 대한항공 스터디 (마감)',body:'부산/경남 거주하시는 분들 오프라인으로 만나서 면접 연습해요. 매주 일요일 오전.\n\n카카오톡 ID: sohee_busan',date:'2026-04-01',closed:true}
+  {airline:'에미레이트',loc:'온라인',ppl:'4명',sched:'주 2회',author:'민지',title:'에미레이트 면접 스터디 4기 모집 (마감)',body:'에미레이트 오픈데이 대비 스터디입니다. 롤플레이+디스커션+파이널 위주로 진행합니다. 매주 화/목 저녁 9시 줌으로 합니다.',contact:'카카오톡 ID: minji_crew',date:'2026-03-20',closed:true},
+  {airline:'카타르항공',loc:'온라인',ppl:'3명',sched:'주 3회',author:'수빈',title:'카타르 면접 준비 스터디 2기 (마감)',body:'카타르 AD 대비 영어 스피킹+롤플레이 집중. 월수금 저녁. 영어 intermediate 이상.',contact:'카카오톡 ID: subin_fly',date:'2026-03-25',closed:true},
+  {airline:'국내항공사',loc:'서울',ppl:'5명',sched:'주 1회',author:'예린',title:'국내 항공사 디스커션 스터디 (잔여 2석)',body:'대한항공/아시아나/제주항공 준비하시는 분 함께해요. 매주 토요일 오후 홍대 근처에서 오프라인으로 디스커션 연습합니다.',contact:'카카오톡 ID: yerin_crew',date:'2026-04-08'},
+  {airline:'싱가포르항공',loc:'온라인',ppl:'4명',sched:'주 2회',author:'하연',title:'싱가포르항공 영어 면접 스터디 3기 모집중',body:'SIA 파이널 대비 영어 답변 연습. 매주 월/수 저녁 10시 줌. STAR 기법 기반으로 답변 만들고 서로 피드백합니다.',contact:'hayeon_sia@gmail.com',date:'2026-04-10'},
+  {airline:'에미레이트',loc:'온라인',ppl:'6명',sched:'주 3회',author:'서진',title:'5월 에미레이트 오픈데이 대비 집중 스터디',body:'5월 서울 오픈데이 확정! 함께 준비하실 분. CV+비디오면접+1차+2차+파이널 전 과정 커버합니다.',contact:'카카오톡 ID: seojin_ek',date:'2026-04-15'},
+  {airline:'대한항공',loc:'부산',ppl:'4명',sched:'주 1회',author:'소희',title:'부산 거주 대한항공 스터디 (마감)',body:'부산/경남 거주하시는 분들 오프라인으로 만나서 면접 연습해요. 매주 일요일 오전.',contact:'카카오톡 ID: sohee_busan',date:'2026-04-01',closed:true}
 ];
 // 시드 일반글
 var SEED_TALK=[
@@ -465,15 +466,25 @@ function showStudyDetail(p){
     '</div>'+
     '<h3 style="font-family:DM Serif Display,serif;font-size:1.2rem;color:#1A2340;margin-bottom:8px;">'+p.title+'</h3>'+
     '<div style="font-size:0.82rem;color:#8A7E6E;margin-bottom:16px;">'+(p.sched||'')+' · '+p.date+' · '+p.author+'</div>'+
-    '<div style="font-size:0.9rem;color:#4A4438;line-height:1.8;margin-bottom:24px;white-space:pre-line;">'+p.body+'</div>'+
+    '<div style="font-size:0.9rem;color:#4A4438;line-height:1.8;margin-bottom:16px;white-space:pre-line;">'+p.body+'</div>'+
+    (p.contact||p.kakao?'<div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:10px;padding:14px 18px;margin-bottom:20px;"><div style="font-size:0.72rem;color:#C9A84C;font-weight:700;letter-spacing:0.08em;margin-bottom:6px;">연락 방법</div><div style="font-size:0.9rem;color:#1A2340;font-weight:600;">'+(p.contact||p.kakao)+'</div></div>':'')+
     (p.closed?
-      '<div style="text-align:center;padding:14px;background:#f5f5f5;border-radius:10px;color:#999;font-size:0.86rem;">이 스터디는 마감되었습니다.</div>':
-      (p.kakao?'<div style="text-align:center;"><a href="'+p.kakao+'" target="_blank" style="display:inline-block;padding:14px 32px;background:#FEE500;color:#3C1E1E;border-radius:28px;font-size:0.9rem;font-weight:700;text-decoration:none;font-family:inherit;">카카오 오픈채팅 참여하기</a></div>':''))+
-    (p.mine?'<button onclick="deleteStudy(\''+p.title.replace(/'/g,"\\'")+'\');this.closest(\'#study-modal\').remove();" style="display:block;margin:16px auto 0;background:none;border:none;color:#E74C3C;font-size:0.78rem;cursor:pointer;">이 글 삭제하기</button>':'')+
+      '<div style="text-align:center;padding:14px;background:#f5f5f5;border-radius:10px;color:#999;font-size:0.86rem;">이 스터디는 마감되었습니다.</div>':'')+
+    (p.mine?'<div style="display:flex;gap:10px;justify-content:center;margin-top:16px;">'+
+      '<button onclick="closeStudy(\''+p.title.replace(/'/g,"\\'")+'\');this.closest(\'#study-modal\').remove();" style="padding:8px 18px;background:var(--navy);color:#fff;border:none;border-radius:16px;font-size:0.78rem;cursor:pointer;">모집 마감하기</button>'+
+      '<button onclick="deleteStudy(\''+p.title.replace(/'/g,"\\'")+'\');this.closest(\'#study-modal\').remove();" style="padding:8px 18px;background:none;border:1px solid #E74C3C;color:#E74C3C;border-radius:16px;font-size:0.78rem;cursor:pointer;">삭제하기</button>'+
+      '</div>':'')+
     '<button onclick="this.closest(\'#study-modal\').remove()" style="display:block;margin:16px auto 0;background:none;border:none;color:#999;font-size:0.82rem;cursor:pointer;">닫기</button>'+
     '</div>';
   document.body.appendChild(ov);
   ov.addEventListener('click',function(e){if(e.target===ov) ov.remove();});
+}
+
+function closeStudy(title){
+  var arr=getB('study');
+  arr.forEach(function(p){if(p.title===title) p.closed=true;});
+  setB('study',arr);
+  render('study');
 }
 
 function deleteStudy(title){

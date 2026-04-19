@@ -290,6 +290,9 @@ var comments=[
 ];
 document.getElementById('daily-comment').innerHTML=comments[Math.floor(Math.random()*comments.length)]+' ✈️';
 </script>
-<div style="text-align:center;padding:40px 20px 20px;"><a href="cancel.html" style="font-size:0.7rem;color:#ccc;text-decoration:none;">구독 관리</a></div>
+<div style="text-align:center;padding:40px 20px 20px;">
+  <button onclick="if(confirm('로그아웃 하시겠습니까?')){localStorage.removeItem('wc_user');localStorage.removeItem('wc_paid');if(typeof signOut==='function')signOut();else location.href='index.html';}" style="padding:10px 24px;background:none;border:1px solid #ddd;border-radius:20px;color:#999;font-size:0.82rem;cursor:pointer;font-family:inherit;">로그아웃</button>
+  <div style="margin-top:12px;"><a href="cancel.html" style="font-size:0.7rem;color:#ccc;text-decoration:none;">구독 관리</a></div>
+</div>
 </body>
 </html>

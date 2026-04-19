@@ -7,13 +7,14 @@
   navigator.serviceWorker.register('/sw.js').catch(function() {});
 
   window.wcPromptPush = async function() {
-    if (localStorage.getItem(PROMPTED_KEY)) return;
-
+    // 이미 granted면 구독 정보 서버 전송 (매 로그인 시)
     if (Notification.permission === 'granted') {
       await subscribePush();
       localStorage.setItem(PROMPTED_KEY, '1');
       return;
     }
+
+    if (localStorage.getItem(PROMPTED_KEY)) return;
 
     if (Notification.permission === 'denied') {
       localStorage.setItem(PROMPTED_KEY, '1');

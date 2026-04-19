@@ -310,11 +310,42 @@ function submitReview(){
 var DUMMY_PASS=[
   {author:'김서연',airline:'에미레이트',body:'3번 탈락 후 원더풀크루와 함께 4번째 도전에서 합격했습니다. 롤플레이 연습이 정말 큰 도움이 됐어요. 포기하지 마세요!',date:'2026-03-28',verified:true},
   {author:'이하늘',airline:'카타르항공',body:'영어가 부족했지만 쉬운 단어로 자신감 있게 말하는 연습을 반복했더니 파이널까지 통과했습니다. 감사합니다 코치님!',date:'2026-03-15',verified:true},
-  {author:'박지민',airline:'싱가포르항공',body:'그루밍 가이드 보고 메이크업 확 바꿨더니 1차에서 바로 통과! 이미지가 정말 중요하다는 걸 체감했어요.',date:'2026-02-20',verified:true}
+  {author:'박지민',airline:'싱가포르항공',body:'그루밍 가이드 보고 메이크업 확 바꿨더니 1차에서 바로 통과! 이미지가 정말 중요하다는 걸 체감했어요.',date:'2026-02-20',verified:true},
+  {author:'최윤아',airline:'대한항공',body:'국내 항공사는 자소서가 반이에요. 자소서 가이드 보고 완전 새로 썼더니 서류 통과하고 면접까지 한 번에 갔어요. 2차에서 롤플레이 연습한 게 그대로 나왔어요!',date:'2026-04-05',verified:true},
+  {author:'정다은',airline:'캐세이퍼시픽',body:'Assessment Day에서 그룹 활동이 제일 걱정이었는데 디스커션 연습을 계속 하니까 오히려 제일 자신있는 파트가 됐어요. 홍콩에서 일하게 됐습니다!!',date:'2026-04-12',verified:true}
+];
+
+// 시드 스터디 데이터
+var SEED_STUDY=[
+  {airline:'에미레이트',loc:'온라인',ppl:'4명',sched:'주 2회',author:'민지',title:'에미레이트 면접 스터디 4기 모집 (마감)',body:'에미레이트 오픈데이 대비 스터디입니다. 롤플레이+디스커션+파이널 위주로 진행합니다. 매주 화/목 저녁 9시 줌으로 합니다.',date:'2026-03-20',closed:true},
+  {airline:'카타르항공',loc:'온라인',ppl:'3명',sched:'주 3회',author:'수빈',title:'카타르 면접 준비 스터디 2기 (마감)',body:'카타르 AD 대비 영어 스피킹+롤플레이 집중. 월수금 저녁. 영어 intermediate 이상.',date:'2026-03-25',closed:true},
+  {airline:'국내항공사',loc:'서울',ppl:'5명',sched:'주 1회',author:'예린',title:'국내 항공사 디스커션 스터디 (잔여 2석)',body:'대한항공/아시아나/제주항공 준비하시는 분 함께해요. 매주 토요일 오후 홍대 근처에서 오프라인으로 디스커션 연습합니다.',date:'2026-04-08'},
+  {airline:'싱가포르항공',loc:'온라인',ppl:'4명',sched:'주 2회',author:'하연',title:'싱가포르항공 영어 면접 스터디 3기 모집중',body:'SIA 파이널 대비 영어 답변 연습. 매주 월/수 저녁 10시 줌. STAR 기법 기반으로 답변 만들고 서로 피드백합니다.',date:'2026-04-10'},
+  {airline:'에미레이트',loc:'온라인',ppl:'6명',sched:'주 3회',author:'서진',title:'5월 에미레이트 오픈데이 대비 집중 스터디',body:'5월 서울 오픈데이 확정! 함께 준비하실 분. CV+비디오면접+1차+2차+파이널 전 과정 커버합니다.',date:'2026-04-15'},
+  {airline:'대한항공',loc:'부산',ppl:'4명',sched:'주 1회',author:'소희',title:'부산 거주 대한항공 스터디 (마감)',body:'부산/경남 거주하시는 분들 오프라인으로 만나서 면접 연습해요. 매주 일요일 오전.',date:'2026-04-01',closed:true}
+];
+// 시드 일반글
+var SEED_TALK=[
+  {author:'지유',title:'에미레이트 CV 사진 규격 질문이요',body:'CV에 넣는 사진이 전신 사진이랑 상반신 사진 둘 다 필요한 건가요? 배경색은 흰색이어야 하나요?',date:'2026-04-12'},
+  {author:'하영',title:'카타르 Assessment Day 복장 추천해주세요',body:'AD 갈 때 정장 입어야 하나요? 아니면 스마트 캐주얼? 신발은 굽 있는 게 나은가요?',date:'2026-04-11'},
+  {author:'은서',title:'국내 항공사 자소서 글자수 궁금해요',body:'대한항공 자소서 글자수 제한이 몇 자인가요? 아시아나는 다른가요?',date:'2026-04-09'},
+  {author:'나연',title:'영어 쉐도잉 어떤 악센트로 하는 게 좋을까요',body:'영국식이 좋을까요 미국식이 좋을까요? 에미레이트 준비 중인데 면접관이 영국식 영어를 쓴다고 해서요.',date:'2026-04-08'},
+  {author:'채원',title:'면접 전날 긴장 풀리는 방법 있나요?',body:'내일 제주항공 면접인데 너무 떨려요ㅠ 면접 전날 뭐 하시나요?',date:'2026-04-06'}
+];
+// 시드 면접 후기
+var SEED_REVIEW=[
+  {airline:'싱가포르항공',stage:'Assessment Day',author:'유나',idate:'2026-04-05',body:'싱가포르에서 AD 다녀왔어요. 아침부터 저녁까지 하루 종일이었고 그룹 디스커션이 제일 중요한 것 같아요. 쉬는 시간에도 평가한다는 느낌 받았어요. 결과 기다리는 중...',date:'2026-04-07'},
+  {airline:'에미레이트',stage:'오픈데이',author:'민서',idate:'2026-04-02',body:'서울 오픈데이 다녀왔습니다! 사람 진짜 많았어요. CV 드롭하고 스몰토크 하고 바로 1차 발표까지 갔어요. 영어 발표가 핵심인 것 같아요.',date:'2026-04-03'},
+  {airline:'대한항공',stage:'2차 면접',author:'서아',idate:'2026-03-28',body:'2차 면접에서 영어 구술이 생각보다 어려웠어요. 일상 회화보다는 서비스 상황 질문이 많이 나왔어요. 롤플레이 연습 많이 해두세요!',date:'2026-03-29'},
+  {airline:'캐세이퍼시픽',stage:'디지털 인터뷰',author:'지아',idate:'2026-04-10',body:'집에서 디지털 인터뷰 봤어요. 질문 3개에 각각 준비 1분 답변 2분. 생각보다 시간이 짧아서 핵심만 말해야 해요. 카메라 정면 보는 연습 필수!',date:'2026-04-11'}
 ];
 
 function render(name){
   var arr=getB(name);
+  // 시드 데이터 병합
+  if(name==='study') arr=arr.concat(SEED_STUDY||[]);
+  if(name==='talk') arr=arr.concat(SEED_TALK||[]);
+  if(name==='review') arr=arr.concat(SEED_REVIEW||[]);
   var list=document.getElementById('list-'+name);
   var empty=document.getElementById('empty-'+name);
   list.innerHTML='';
@@ -344,7 +375,7 @@ function render(name){
           (p.airline?'<span class="study-tag air">'+p.airline+'</span>':'')+
           (p.ppl?'<span class="study-tag ppl">👥 '+p.ppl+'</span>':'')+
         '</div>'+
-        '<div class="study-title">'+p.title+'</div>'+
+        '<div class="study-title">'+p.title+(p.closed?' <span style="background:#E74C3C;color:#fff;padding:1px 6px;border-radius:6px;font-size:0.68rem;font-weight:700;margin-left:4px;">마감</span>':'')+'</div>'+
         '<div class="study-meta">'+(p.sched||'')+' · '+p.date+' · '+p.author+'</div>'+
       '</div>';
       d.onclick=function(){alert(p.title+'\n\n'+p.body+'\n\n'+p.author+' · '+p.date);};
@@ -418,12 +449,14 @@ function sortByLocation(){
 }
 
 function updateCounts(){
-  ['study','talk','review'].forEach(function(n){
-    document.getElementById('cnt-'+n).textContent=getB(n).length+'개';
-  });
+  document.getElementById('cnt-study').textContent=(getB('study').length+(SEED_STUDY||[]).length)+'개';
+  document.getElementById('cnt-talk').textContent=(getB('talk').length+(SEED_TALK||[]).length)+'개';
+  document.getElementById('cnt-review').textContent=(getB('review').length+(SEED_REVIEW||[]).length)+'개';
   document.getElementById('cnt-pass').textContent=DUMMY_PASS.length+'개';
 }
 updateCounts();
+// 초기 렌더링
+render('study');render('talk');render('review');render('pass');
 </script>
 </body>
 </html>

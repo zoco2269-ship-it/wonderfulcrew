@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded',function(){
   <div style="display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;margin-top:10px;">
     <img src="images/coach-lecture.png" alt="원더풀크루 코치" style="width:160px;height:160px;object-fit:cover;object-position:65% 15%;border-radius:50%;border:3px solid rgba(201,168,76,0.5);box-shadow:0 8px 30px rgba(0,0,0,0.3);" onerror="this.style.display='none'">
     <div style="text-align:left;">
-      <h1 style="font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;">원더풀크루 코치의<br><em style="font-style:normal;color:var(--gold-light);font-weight:600;">합격 강의</em></h1>
+      <h1 style="font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;">원더풀크루 대표의<br><em style="font-style:normal;color:var(--gold-light);font-weight:600;">합격 강의</em></h1>
       <p style="color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:400px;line-height:1.8;">에미레이트 일등석 7년 · 코칭 13년의 내공을<br>강의 영상으로 만나보세요.</p>
     </div>
   </div>
@@ -131,7 +131,7 @@ var LECTURES=[
     {num:'6-10',title:'파이널 — 승무원, 두바이 관련',url:'https://vimeo.com/user230127533/6-10',desc:'왜 에미레이트인지(모든 지원자 공통 질문), 왜 캐빈크루 하고 싶어, 두바이에 왜 가고 싶어, 마지막 질문 있니?'}
   ]},
   {ch:'7강',title:'현직 승무원 특강',subs:[
-    {num:'특강',title:'현직 에미레이트 승무원 특강',url:'https://vimeo.com/user230127533/7',desc:'전직 홍콩 캐세이퍼시픽 항공 승무원이자 현직 두바이 아랍 에미레이트항공 현직 승무원이 두 항공사를 합격한 노하우를 전부 공개합니다! 현직만이 줄 수 있는 놓칠 수 없는 팁을 절대로 놓치지 마세요!'}
+    {num:'특강',title:'현직 에미레이트 승무원 특강',url:'https://vimeo.com/user230127533/7',desc:'전직 홍콩 캐세이퍼시픽 항공 승무원이자 현직 두바이 아랍 에미레이트항공 현직 승무원이 두 항공사를 합격한 노하우를 전부 공개합니다! 현직만이 줄 수 있는 놓칠 수 없는 팁을 절대로 놓치지 마세요!',thumb:'images/lecture-ch7.png'}
   ]}
 ];
 
@@ -149,11 +149,10 @@ LECTURES.forEach(function(ch){
     card.className='lec-card sub-link';
     card.setAttribute('data-url',s.url);
     card.style.cursor='pointer';
-    card.innerHTML=
-      '<div class="lec-thumb">'+
-        '<div class="num">'+s.num+'</div>'+
-        '<div class="play">▶</div>'+
-      '</div>'+
+    var thumbHtml=s.thumb?
+      '<div class="lec-thumb" style="background:none;"><img src="'+s.thumb+'" style="width:100%;height:100%;object-fit:cover;"><div class="play" style="position:absolute;">▶</div></div>':
+      '<div class="lec-thumb"><div class="num">'+s.num+'</div><div class="play">▶</div></div>';
+    card.innerHTML=thumbHtml+
       '<div class="lec-body">'+
         '<h4>'+s.title+'</h4>'+
         '<p>'+s.desc+'</p>'+

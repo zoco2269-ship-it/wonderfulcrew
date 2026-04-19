@@ -412,7 +412,11 @@ function getFaceReport(){
 • 카메라 시선: '+g+'%'+(g>=70?' ✓':' — 카메라를 더 정면으로 보세요')+'
 • 고개 기울기: '+(t<=20?'안정적 ✓':'기울어진 순간 '+t+'% — 바른 자세를 유지하세요');
 }
-navigator.mediaDevices.getUserMedia({video:true,audio:true});
+
+// 카메라 초기화
+  (async function(){
+    try{
+      var tempStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
       tempStream.getTracks().forEach(function(t){t.stop();});
       var devices=await navigator.mediaDevices.enumerateDevices();
       var videoDevices=devices.filter(function(d){return d.kind==='videoinput';});

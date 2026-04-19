@@ -672,7 +672,7 @@ document.addEventListener('click',function(e){if(!e.target.closest('#site-search
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-size:12px;}
 .cal-dow{text-align:center;padding:6px 0;color:var(--text-muted);font-weight:700;font-size:11px;}
 .cal-day{position:relative;width:100%;height:32px;display:flex;align-items:center;justify-content:center;color:var(--text-dark);cursor:pointer;transition:background 0.15s;font-size:12px;}
-.cal-day:hover:not(.muted){background:rgba(201,168,76,0.12);border-radius:50%;}
+.cal-day:hover:not(.muted){background:rgba(201,168,76,0.12);width:28px;height:28px;border-radius:50%;margin:0 auto;}
 .cal-day.muted{color:#ccc;}
 .cal-day.today{background:var(--gold);color:#fff;font-weight:700;width:28px;height:28px;border-radius:50%;margin:0 auto;}
 .cal-day.event::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--gold);}

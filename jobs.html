@@ -252,7 +252,10 @@ function wcSubscribeAlert(airline) {
         if(title&&link){
           var t=title.textContent;
           if(/학원|과외|academy|스쿨|학교|학과|대학저널|인강|강남|홍대.*승무원/i.test(t)) continue;
-          allNews.push({tag:queries[i].tag,title:t,link:link.textContent,date:pubDate?new Date(pubDate.textContent).toISOString().slice(0,10):''});
+          var articleDate=pubDate?new Date(pubDate.textContent).toISOString().slice(0,10):'';
+          // 1년 이상 오래된 기사 제외
+          if(articleDate){var oneYearAgo=new Date();oneYearAgo.setFullYear(oneYearAgo.getFullYear()-1);if(new Date(articleDate)<oneYearAgo) continue;}
+          allNews.push({tag:queries[i].tag,title:t,link:link.textContent,date:articleDate});
         }
       }
     }

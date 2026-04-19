@@ -78,11 +78,53 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <p>Chrome 브라우저 사용을 권장합니다. 브라우저에서 마이크 권한을 허용해주세요. 주소창 왼쪽 자물쇠 아이콘 → 마이크 → 허용으로 설정해주세요.</p>
 </div>
 
+<div class="contact-card" style="margin-top:40px;">
+  <h3>피드백 남기기</h3>
+  <p style="margin-bottom:16px;">서비스에 대한 의견, 개선 요청, 건의 사항을 자유롭게 남겨주세요.</p>
+  <div style="margin-bottom:12px;"><input type="text" id="fb-name" placeholder="이름 (선택)" style="width:100%;padding:10px 14px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;"></div>
+  <div style="margin-bottom:12px;"><input type="email" id="fb-email" placeholder="이메일 (선택)" style="width:100%;padding:10px 14px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;"></div>
+  <div style="margin-bottom:12px;">
+    <select id="fb-cat" style="width:100%;padding:10px 14px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;">
+      <option value="서비스 개선">서비스 개선 요청</option>
+      <option value="버그 신고">버그 신고</option>
+      <option value="콘텐츠 요청">콘텐츠 요청</option>
+      <option value="기타">기타 문의</option>
+    </select>
+  </div>
+  <div style="margin-bottom:16px;"><textarea id="fb-body" placeholder="내용을 입력해주세요" style="width:100%;min-height:100px;padding:10px 14px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;resize:vertical;"></textarea></div>
+  <button onclick="submitFeedback()" style="padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">보내기</button>
+  <div id="fb-result" style="margin-top:12px;font-size:0.84rem;color:var(--gold);display:none;">피드백이 접수되었습니다. 감사합니다!</div>
+</div>
+
 <div style="text-align:center;margin-top:32px;">
   <a href="index.html" style="display:inline-block;padding:12px 28px;background:var(--navy);color:#fff;border-radius:24px;font-size:0.86rem;font-weight:600;text-decoration:none;">← 홈으로</a>
 </div>
 
 </div></section>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+async function submitFeedback(){
+  var body=document.getElementById('fb-body').value.trim();
+  if(!body){alert('내용을 입력해주세요.');return;}
+  var data={
+    name:document.getElementById('fb-name').value.trim()||'익명',
+    email:document.getElementById('fb-email').value.trim()||'',
+    type:document.getElementById('fb-cat').value,
+    content:body,
+    at:new Date().toISOString()
+  };
+  try{
+    var res=await fetch('/api/supabase-config');
+    var cfg=await res.json();
+    if(cfg.url&&cfg.anonKey){
+      var sb=window.supabase.createClient(cfg.url,cfg.anonKey);
+      await sb.from('feedback').insert(data);
+    }
+  }catch(e){console.log('Feedback save error:',e);}
+  document.getElementById('fb-body').value='';
+  document.getElementById('fb-result').style.display='block';
+}
+</script>
 <footer>© 2026 WonderfulCrew Inc. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>
 </body>
 </html>

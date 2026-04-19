@@ -623,7 +623,7 @@ async function send(text){
       loading=false;btn.disabled=false;
       return;
     }
-    const res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,system:SYS+'\n\n규칙:\n1. 답변은 완결된 문장으로 끝내세요. 말하다 끊기면 안 됩니다.\n2. 질문에 맞는 적절한 길이로 답변하세요. 짧은 질문이면 짧게, 설명이 필요하면 충분히 설명하세요.\n3. 답변 끝에 질문과 관련된 플랫폼 기능을 자연스럽게 안내하세요.',messages:history})});
+    const res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,system:SYS+'\n\n규칙:\n1. 답변은 완결된 문장으로 끝내세요. 말하다 끊기면 안 됩니다.\n2. 최대 5문장 이내로 답변하세요.\n3. 답변 끝에 질문과 관련된 플랫폼 기능을 자연스럽게 안내하세요.',messages:history})});
     const data=await res.json();
     const reply=data.content?.[0]?.text||'죄송해요, 다시 시도해 주세요.';
     history.push({role:'assistant',content:reply});

@@ -221,6 +221,7 @@ async function stopAnswer(){
           var fbData=await fbRes.json();
           var fbText=((fbData&&fbData.content&&fbData.content[0]&&fbData.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
           fb.innerHTML='<b style="color:var(--gold);">피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>';
+          if(typeof savePracticeRecord==='function') savePracticeRecord({stage:'discussion2',question:scenarios[currentIdx]?.title||'',answer:fullText||'',feedback:fbText});
         }catch(e){fb.innerHTML+='<br>피드백 생성 실패. 다시 시도해주세요.';}
         document.getElementById('btn-next').disabled=false;
         document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=true;

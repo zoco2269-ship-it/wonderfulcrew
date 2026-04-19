@@ -571,6 +571,7 @@ async function generateFeedback(scenario){
     var mainFeedback=parts[0].trim();
     lastSuggestedResponse=(parts[1]||'').trim();
     fb.innerHTML='<b style="color:var(--gold);">피드백</b><br><br><div style="white-space:pre-line;">'+mainFeedback+'</div>';
+    if(typeof savePracticeRecord==='function') savePracticeRecord({airline:'',stage:'roleplay-ko',question:currentScenario||'',answer:fullText||'',feedback:mainFeedback});
     if(lastSuggestedResponse) document.getElementById('btn-model').style.display='inline-flex';
     document.getElementById('btn-next').style.display='inline-flex';
     document.getElementById('rec-label').textContent='완료';

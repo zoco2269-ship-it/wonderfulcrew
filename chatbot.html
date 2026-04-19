@@ -593,6 +593,7 @@ async function send(text){
     history.push({role:'assistant',content:reply});
     document.getElementById('wc-typing')?.remove();
     addMsg('ai',fmt(reply));
+    if(typeof savePracticeRecord==='function') savePracticeRecord({stage:'chatbot',question:msg,answer:'',feedback:reply});
     st.used++;saveSt();renderDots();
     // 챗봇에서 3회 대화 후 다른 연습 유도 (자동 이동 아닌 버튼)
     if(!st.unlimited && st.used>=3){

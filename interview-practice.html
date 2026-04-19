@@ -512,6 +512,8 @@ async function generateFeedback(){
       return;
     }
     fb.innerHTML='<b>피드백</b><br><br>'+text.replace(/\*\*/g,'').replace(/\*[^*]+\*/g,'');
+    // Supabase에 연습 기록 저장
+    if(typeof savePracticeRecord==='function') savePracticeRecord({airline:airlineName,stage:type,question:question,answer:fullText.trim(),feedback:text});
   }catch(e){
     fb.innerHTML='피드백 생성 실패: '+e.message+'<br>다시 시도해주세요.';
   }

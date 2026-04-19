@@ -174,7 +174,8 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="gold-line"></div>
   <p style="max-width:700px;margin:0 auto 36px;text-align:center;font-size:0.92rem;color:var(--text-mid);line-height:1.8;font-weight:300;">하이엔드 서비스 현장에서 실제로 사용하는 격조 있는 표현을 익힙니다.<br>예시 문장을 듣고 따라 읽으며 자연스럽게 체화하세요.</p>
   <div class="q-wrap" id="formal-wrap"></div>
-  <div style="max-width:860px;margin:30px auto 0;text-align:center;">
+  <div style="max-width:860px;margin:30px auto 0;text-align:center;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <button class="q-btn sample" style="padding:14px 32px;font-size:0.9rem;" onclick="refreshFormal()">더 연습하기</button>
     <a href="roleplay-practice.html" class="q-btn feedback" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;font-size:0.9rem;text-decoration:none;">롤플레이에서 직접 연습하기 →</a>
   </div>
 </section>
@@ -549,66 +550,130 @@ buildShadowCards(pickShadow3());
 function refreshShadowing(){buildShadowCards(pickShadow3());}
 
 // ============ FORMAL EXPRESSIONS ============
-var formalData = [
+var ALL_FORMAL = [
   {
     casual: "Show me your passport, please.",
     formal: "May I have your passport, please?",
-    example: "Good evening, Sir. Welcome aboard. May I have your passport and boarding pass, please? Thank you very much.",
+    example: "Good evening, Sir. Welcome aboard flight EK323 to Dubai. My name is Sarah and I'll be looking after you in First Class this evening. May I have your passport and boarding pass, please? Thank you very much. Your suite is 2A, right this way — please allow me to show you to your seat.",
     context: "탑승객 여권 확인 시",
     tip: "'Show me'는 명령형입니다. 프리미엄 서비스에서는 'May I have~'로 요청 형태를 사용합니다."
   },
   {
     casual: "Of course.",
     formal: "Certainly, Sir. / Certainly, Madam.",
-    example: "Certainly, Madam. I'll bring that for you right away. Is there anything else I may assist you with?",
+    example: "Certainly, Madam. I'll bring that for you right away. We also have a freshly prepared selection of canapés this evening — may I bring a plate along with your champagne? Is there anything else I may assist you with in the meantime?",
     context: "고객 요청에 대한 응답",
     tip: "'Of course'는 일상에서는 자연스럽지만, 하이엔드 서비스에서는 'Certainly'가 품격 있는 표현입니다. 반드시 Sir/Madam 호칭을 붙입니다."
   },
   {
     casual: "Wait a moment, please.",
     formal: "Allow me a moment, please. I'll be right back.",
-    example: "Allow me a moment, please, Sir. I'll check with my colleague and be right back with you.",
+    example: "Allow me a moment, please, Sir. I'll check with my senior colleague to find the best solution for you. I want to make sure we get this exactly right. I'll be right back with you — it shouldn't take more than a few minutes.",
     context: "잠시 자리를 비울 때",
     tip: "'Wait'은 고객에게 기다리라는 지시입니다. 'Allow me'는 허락을 구하는 표현으로 훨씬 정중합니다."
   },
   {
     casual: "What do you want to drink?",
     formal: "What may I offer you to drink this evening?",
-    example: "Good evening, Madam. What may I offer you to drink this evening? We have a lovely selection of champagnes and wines.",
+    example: "Good evening, Madam. What may I offer you to drink this evening? We have a lovely selection of champagnes — our Dom Pérignon is particularly popular — as well as a curated wine list and freshly squeezed juices. Please take your time to decide.",
     context: "기내 음료 서비스 시",
     tip: "'What do you want'은 직접적이고 캐주얼합니다. 'What may I offer you'는 서비스를 제공하는 자세를 담은 표현입니다."
   },
   {
     casual: "Sorry, we don't have that.",
     formal: "I'm afraid that's not available at the moment. May I suggest an alternative?",
-    example: "I'm afraid the chicken option is no longer available, Sir. However, may I suggest our braised lamb? Many of our guests have found it delightful.",
+    example: "I do apologise, Sir — I'm afraid the chicken option is no longer available this evening. However, may I suggest our braised lamb with rosemary jus? Many of our guests have found it absolutely delightful. I can also ask our chef if there's anything else we might prepare for you.",
     context: "요청한 메뉴/물품이 없을 때",
     tip: "단순히 없다고 말하지 않고, 대안을 먼저 제시하는 것이 프리미엄 서비스의 본질입니다."
   },
   {
     casual: "Do you need anything else?",
     formal: "Is there anything further I may assist you with?",
-    example: "Your blanket and pillow are ready, Madam. Is there anything further I may assist you with before you rest?",
+    example: "Your blanket and pillow are ready, Madam, and I've adjusted the temperature in your suite as well. Is there anything further I may assist you with before you rest? We'll be dimming the cabin lights shortly, but please don't hesitate to press your call button at any time.",
     context: "추가 요청 확인 시",
     tip: "'Need'보다 'assist'가 서비스 맥락에서 더 격조 있습니다. 'further'는 'else'의 포멀 버전입니다."
   },
   {
     casual: "Please sit down.",
     formal: "Please, make yourself comfortable.",
-    example: "Welcome to First Class, Sir. Your suite is right here — please, make yourself comfortable. I'll be with you shortly.",
+    example: "Welcome to First Class, Sir. Your suite is right here — please, make yourself comfortable. I'll hang your jacket for you and bring your welcome drink shortly. My name is Claire, and I'll be taking care of you throughout the flight. Please don't hesitate to let me know if there's anything you need.",
     context: "고객 착석 안내 시",
     tip: "'Sit down'은 지시입니다. 'Make yourself comfortable'은 고객의 편안함을 우선하는 표현입니다."
   },
   {
     casual: "Your food is here.",
     formal: "Your meal is served. Please enjoy.",
-    example: "Here is your starter, Madam — smoked salmon with a citrus dressing. Your meal is served. Please enjoy, and do let me know if you'd like anything further.",
+    example: "Here is your starter, Madam — smoked salmon with a citrus dressing, accompanied by a light mixed leaf salad. Your meal is served. Please enjoy, and do let me know how you find it. I'll return shortly to present the main course options — we have three wonderful dishes prepared by our onboard chef this evening.",
     context: "기내식/코스 서빙 시",
     tip: "'Food is here'는 단순 전달입니다. 'Your meal is served'는 정식 서비스 영어이며, 'Please enjoy'로 마무리합니다."
+  },
+  {
+    casual: "Sorry about that.",
+    formal: "Please accept my sincerest apologies for the inconvenience.",
+    example: "Please accept my sincerest apologies for the inconvenience, Sir. I completely understand your frustration, and I want to assure you that we take this matter very seriously. Allow me to look into this immediately and find the best possible solution for you. In the meantime, may I offer you a complimentary beverage while you wait?",
+    context: "고객 불만/컴플레인 대응 시",
+    tip: "'Sorry about that'은 가볍고 캐주얼합니다. 'Please accept my sincerest apologies'는 진정성과 격식을 동시에 전달합니다."
+  },
+  {
+    casual: "I don't know. Let me ask someone.",
+    formal: "That's an excellent question. Allow me to find out for you right away.",
+    example: "That's an excellent question, Madam. I want to make sure I give you the most accurate information, so allow me to check with our purser right away. I'll have an answer for you within just a few minutes. May I bring you a refreshment while you wait?",
+    context: "모르는 정보를 요청받았을 때",
+    tip: "'I don't know'라고 직접 말하면 전문성이 부족해 보입니다. 'Allow me to find out'은 적극적으로 해결하겠다는 자세를 보여줍니다."
+  },
+  {
+    casual: "The flight will be late.",
+    formal: "I regret to inform you that we are experiencing a slight delay.",
+    example: "Ladies and gentlemen, I regret to inform you that we are experiencing a slight delay of approximately thirty minutes due to air traffic control. We sincerely apologise for any inconvenience this may cause. Our cabin crew will be coming through the cabin shortly to offer complimentary refreshments. We appreciate your patience and understanding.",
+    context: "비행 지연 안내 시",
+    tip: "'The flight will be late'는 사실만 전달합니다. 'I regret to inform you'는 유감을 표현하며 고객 감정을 배려하는 표현입니다."
+  },
+  {
+    casual: "You can't do that here.",
+    formal: "I'm afraid that won't be possible in this area. May I suggest an alternative?",
+    example: "I'm afraid that won't be possible in this area for safety reasons, Sir. I completely understand, and I do apologise for the inconvenience. However, may I suggest the lounge area at the rear of the cabin? You'll find it much more comfortable there. Allow me to escort you — it would be my pleasure.",
+    context: "고객 행동을 정중히 제지할 때",
+    tip: "'You can't'은 거절입니다. 'I'm afraid that won't be possible'은 규정을 존중하면서도 대안을 함께 제시하는 품격 있는 표현입니다."
+  },
+  {
+    casual: "Goodbye. Have a nice day.",
+    formal: "It has been a pleasure serving you. We look forward to welcoming you aboard again.",
+    example: "Thank you so much for flying with us today, Sir. It has been an absolute pleasure serving you on this journey. I do hope you enjoyed your flight. We truly look forward to welcoming you aboard again in the near future. May I assist you with anything before you disembark?",
+    context: "하기 인사 시",
+    tip: "'Goodbye'만으로는 서비스가 끝나지 않습니다. 마지막 인사에서 감사와 재방문 기대를 담는 것이 프리미엄 서비스의 마무리입니다."
+  },
+  {
+    casual: "Are you okay?",
+    formal: "Is everything to your satisfaction? Please let me know if there's anything I can do.",
+    example: "Good evening, Sir. I just wanted to check in with you — is everything to your satisfaction this evening? Are you comfortable with the cabin temperature? Please do let me know if there's anything at all I can do to make your journey more enjoyable. We're here for you throughout the flight.",
+    context: "고객 컨디션/만족도 확인 시",
+    tip: "'Are you okay?'는 걱정의 뉘앙스가 있습니다. 'Is everything to your satisfaction?'은 서비스 품질을 확인하는 프로페셔널한 표현입니다."
+  },
+  {
+    casual: "Here, take this.",
+    formal: "Please allow me to offer you this with our compliments.",
+    example: "Sir, I noticed you mentioned it was a special occasion. Please allow me to offer you this bottle of champagne with our compliments. We'd like to congratulate you on your anniversary. On behalf of the entire crew, we wish you and your wife a truly wonderful celebration.",
+    context: "특별 서비스 제공 시",
+    tip: "'Here, take this'는 물건을 건네는 것뿐입니다. 'Allow me to offer you this with our compliments'는 항공사를 대표하여 마음을 전하는 격조 있는 표현입니다."
+  },
+  {
+    casual: "I'll help you with your bag.",
+    formal: "Please allow me to assist you with your luggage.",
+    example: "Please allow me to assist you with your luggage, Madam. I'll place your carry-on in the overhead compartment right above your seat so it's easily accessible during the flight. And may I hang your coat in our wardrobe as well? I want to make sure everything is settled comfortably for you before we depart.",
+    context: "수하물 도움 시",
+    tip: "'Help with your bag'은 캐주얼합니다. 'Allow me to assist you with your luggage'는 자발적으로 돕겠다는 격식 있는 표현입니다."
   }
 ];
+function pickFormal(n){
+  var arr=ALL_FORMAL.slice(),out=[];
+  for(var i=0;i<n&&arr.length>0;i++){var idx=Math.floor(Math.random()*arr.length);out.push(arr.splice(idx,1)[0]);}
+  return out;
+}
+var formalData = pickFormal(5);
 
+function buildFormalCards(){
 var formalWrap = document.getElementById('formal-wrap');
+formalWrap.innerHTML='';
 formalData.forEach(function(item, i) {
   var cardId = 'formal-card-' + i;
   var card = document.createElement('div');
@@ -617,8 +682,8 @@ formalData.forEach(function(item, i) {
   card.innerHTML =
     '<div class="q-num">Expression ' + (i + 1) + '</div>' +
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">' +
-      '<div style="padding:14px 16px;background:rgba(192,57,43,0.06);border-radius:8px;">' +
-        '<div style="font-size:0.72rem;color:#C0392B;font-weight:700;letter-spacing:0.1em;margin-bottom:6px;">CASUAL</div>' +
+      '<div style="padding:14px 16px;background:rgba(0,0,0,0.03);border-radius:8px;">' +
+        '<div style="font-size:0.72rem;color:#8A8A8A;font-weight:700;letter-spacing:0.1em;margin-bottom:6px;">CASUAL</div>' +
         '<div style="font-size:0.95rem;color:var(--text-dark);line-height:1.5;">' + item.casual + '</div>' +
       '</div>' +
       '<div style="padding:14px 16px;background:rgba(201,168,76,0.1);border-radius:8px;">' +
@@ -641,6 +706,14 @@ formalData.forEach(function(item, i) {
     '</div>';
   formalWrap.appendChild(card);
 });
+}
+buildFormalCards();
+
+function refreshFormal(){
+  formalData=pickFormal(5);
+  buildFormalCards();
+  document.getElementById('formal').scrollIntoView({behavior:'smooth'});
+}
 
 function formalListen(idx) {
   var text=formalData[idx].example;

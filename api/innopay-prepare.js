@@ -23,7 +23,7 @@ module.exports = async function handler(req, res) {
     const plans = {
       basic:   { name: 'WonderfulCrew Basic (월정액)',    amount: 199000 },
       elite:   { name: 'WonderfulCrew Elite (월정액)',    amount: 299000 },
-      premium: { name: 'WonderfulCrew Premium (2년)',     amount: 2500000 },
+      premium: { name: 'WonderfulCrew Premium (1년)',     amount: 2500000 },
     };
 
     const selected = plans[plan] || plans.basic;

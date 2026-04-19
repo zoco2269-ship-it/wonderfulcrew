@@ -251,7 +251,8 @@ function wcSubscribeAlert(airline) {
         var pubDate=items[j].querySelector('pubDate');
         if(title&&link){
           var t=title.textContent;
-          if(/학원|과외|academy|스쿨|학교|학과|대학저널|인강|강남|홍대.*승무원/i.test(t)) continue;
+          if(/학원|과외|academy|스쿨|학교|학과|대학저널|인강|강남|홍대.*승무원|브런치|brunch|블로그|티스토리|tistory|네이버.*카페|cafe\.naver/i.test(t)) continue;
+          if(link&&link.textContent&&/brunch\.co|blog\.naver|tistory\.com|cafe\.naver/i.test(link.textContent)) continue;
           var articleDate=pubDate?new Date(pubDate.textContent).toISOString().slice(0,10):'';
           // 1년 이상 오래된 기사 제외
           if(articleDate){var oneYearAgo=new Date();oneYearAgo.setFullYear(oneYearAgo.getFullYear()-1);if(new Date(articleDate)<oneYearAgo) continue;}

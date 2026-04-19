@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>비디오 면접 연습   WonderfulCrew</title>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
@@ -255,6 +257,60 @@ function loadMoreQuestions(){
   window.scrollTo({top:container.offsetTop-80,behavior:'smooth'});
 }
 
+// ===== MediaPipe 얼굴 분석 =====
+var faceStats={smileFrames:0,totalFrames:0,lookingCenter:0,headTiltFrames:0};
+var faceMeshInstance=null;
+var faceAnalysisActive=false;
+
+function initFaceMesh(videoEl){
+  if(!window.FaceMesh){console.log('MediaPipe not loaded');return;}
+  try{
+    faceMeshInstance=new FaceMesh({locateFile:function(f){return 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/'+f;}});
+    faceMeshInstance.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
+    faceMeshInstance.onResults(function(results){
+      if(!faceAnalysisActive)return;
+      faceStats.totalFrames++;
+      if(results.multiFaceLandmarks&&results.multiFaceLandmarks.length>0){
+        var lm=results.multiFaceLandmarks[0];
+        // 미소 감지: 입꼬리(61,291) 높이 vs 입중앙(13) 높이
+        var lipL=lm[61],lipR=lm[291],lipTop=lm[13];
+        var smileScore=(lipTop.y-((lipL.y+lipR.y)/2));
+        if(smileScore>0.01)faceStats.smileFrames++;
+        // 시선 감지: 코(1)가 화면 중앙 근처인지
+        var nose=lm[1];
+        if(Math.abs(nose.x-0.5)<0.15&&Math.abs(nose.y-0.45)<0.15)faceStats.lookingCenter++;
+        // 고개 기울기: 양쪽 눈(33,263) 높이 차이
+        var eyeL=lm[33],eyeR=lm[263];
+        if(Math.abs(eyeL.y-eyeR.y)>0.02)faceStats.headTiltFrames++;
+      }
+    });
+    // 주기적으로 프레임 전송
+    var analyzeInterval=setInterval(function(){
+      if(!faceAnalysisActive){clearInterval(analyzeInterval);return;}
+      if(videoEl.readyState>=2){
+        try{faceMeshInstance.send({image:videoEl});}catch(e){}
+      }
+    },500);
+  }catch(e){console.log('FaceMesh init error:',e);}
+}
+
+function getFaceReport(){
+  if(faceStats.totalFrames<5)return '(이미지 분석 데이터 부족)';
+  var smilePct=Math.round((faceStats.smileFrames/faceStats.totalFrames)*100);
+  var gazePct=Math.round((faceStats.lookingCenter/faceStats.totalFrames)*100);
+  var tiltPct=Math.round((faceStats.headTiltFrames/faceStats.totalFrames)*100);
+  var report='\n\n📷 이미지 분석:\n';
+  report+='• 미소 유지: '+smilePct+'%'+(smilePct>=60?' ✓':' — 더 웃어보세요')+'\n';
+  report+='• 카메라 시선: '+gazePct+'%'+(gazePct>=70?' ✓':' — 카메라를 더 정면으로 보세요')+'\n';
+  report+='• 고개 기울기: '+(tiltPct<=20?'안정적 ✓':'기울어진 순간 '+tiltPct+'% — 바른 자세를 유지하세요')+'\n';
+  return report;
+}
+
+function resetFaceStats(){
+  faceStats={smileFrames:0,totalFrames:0,lookingCenter:0,headTiltFrames:0};
+  faceAnalysisActive=false;
+}
+
 // Camera + Speech Recognition
 var streams=[];var recs=[];var mediaRecs=[];var videoChunks={};
 function startRec(i){
@@ -265,7 +321,7 @@ function startRec(i){
   var stopBtn=document.getElementById('stop-'+i);
   var tr=document.getElementById('tr-'+i);
 
-  navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(function(stream){
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true}).then(function(stream){
     streams[i]=stream;
     vid.srcObject=stream;
     ph.style.display='none';
@@ -273,6 +329,10 @@ function startRec(i){
     startBtn.style.display='none';
     stopBtn.style.display='inline-flex';
     tr.textContent='';
+    // 얼굴 분석 시작
+    resetFaceStats();
+    faceAnalysisActive=true;
+    initFaceMesh(vid);
 
     // MediaRecorder for video saving
     try{
@@ -314,6 +374,7 @@ function stopRec(i){
   badge.style.display='none';
   stopBtn.style.display='none';
   startBtn.textContent='다시 녹화';startBtn.style.display='inline-flex';
+  faceAnalysisActive=false;
   if(recs[i])try{recs[i].stop();}catch(e){}
   if(mediaRecs[i])try{mediaRecs[i].stop();}catch(e){}
   if(streams[i])streams[i].getTracks().forEach(function(t){t.stop();});
@@ -375,7 +436,8 @@ async function showScore(i){
       sc.querySelector('.score-msg').innerHTML='피드백 생성 실패. 응답: '+JSON.stringify(data).substring(0,200);
       return;
     }
-    sc.querySelector('.score-msg').innerHTML='<b>피드백</b><br><br>'+text.replace(/\*\*/g,'').replace(/\*[^*]+\*/g,'');
+    var faceReport=getFaceReport();
+    sc.querySelector('.score-msg').innerHTML='<b>피드백</b><br><br>'+text.replace(/\*\*/g,'').replace(/\*[^*]+\*/g,'')+'<br>'+faceReport.replace(/\n/g,'<br>');
   }catch(e){
     sc.querySelector('.score-msg').innerHTML='피드백 생성 실패: '+e.message;
   }

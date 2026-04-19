@@ -270,6 +270,16 @@ KO.forEach(function(item,idx){
   koC.appendChild(card);
 });
 
+// TTS 듣기 함수
+function speakEN(text){
+  var accent=document.querySelector('input[name=accent]:checked');
+  var lang=accent?accent.value:'en-GB';
+  if(typeof gcSpeak==='function'){gcSpeak(text,lang,'female');return;}
+  var u=new SpeechSynthesisUtterance(text);
+  u.lang=lang;u.rate=0.95;
+  window.speechSynthesis.speak(u);
+}
+
 // Render English
 var enC=document.getElementById('en-container');
 EN.forEach(function(item,idx){
@@ -277,7 +287,7 @@ EN.forEach(function(item,idx){
   var exprHtml=item.expressions?'<div style="margin-top:10px;">'+item.expressions.map(function(e){return '<span class="expr">'+e+'</span>';}).join(' ')+'</div>':'';
   var card=document.createElement('div');card.className='qa-card';
   card.innerHTML='<div class="qa-header" onclick="toggleQA(this,'+idx+',\'en\')"><div class="qa-num">'+(idx+1)+'</div><div class="qa-q">'+item.q+'</div>'+(locked?'<div class="qa-lock">🔒</div>':'')+'<div class="qa-arrow">→</div></div>'+
-    '<div class="qa-body"><div class="key">'+item.key+'</div><div class="ans">'+item.ans+exprHtml+'</div><div class="ko">'+item.ko+'</div></div>';
+    '<div class="qa-body"><div class="key">'+item.key+'</div><div class="ans">'+item.ans+'<br><button onclick="speakEN(this.closest(\'.ans\').childNodes[0].textContent)" style="margin-top:10px;padding:6px 16px;background:var(--navy);color:#fff;border:none;border-radius:16px;font-size:0.78rem;cursor:pointer;font-family:inherit;">🔊 듣기</button>'+exprHtml+'</div><div class="ko">'+item.ko+'</div></div>';
   enC.appendChild(card);
 });
 
@@ -286,7 +296,7 @@ function rv(id,data){
   var el=document.getElementById(id);
   data.forEach(function(v){
     var card=document.createElement('div');card.className='vocab-card';
-    card.innerHTML='<div class="vocab-en">'+v.en+'</div><div class="vocab-ko">'+v.ko+'</div><div class="vocab-ex">'+v.ex1+'<br>'+v.ex2+'</div>';
+    card.innerHTML='<div class="vocab-en">'+v.en+' <button onclick="speakEN(\''+v.ex1.replace(/'/g,"\\'")+'\')" style="padding:3px 10px;background:var(--navy);color:#fff;border:none;border-radius:12px;font-size:0.68rem;cursor:pointer;">🔊</button></div><div class="vocab-ko">'+v.ko+'</div><div class="vocab-ex">'+v.ex1+'<br>'+v.ex2+'</div>';
     el.appendChild(card);
   });
 }

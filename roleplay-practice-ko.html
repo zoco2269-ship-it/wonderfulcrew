@@ -373,9 +373,6 @@ function startInterview(){
   document.getElementById('avatar-emoji').textContent=chosenAvatar;
   document.getElementById('q-total').textContent=questions.length;
 
-  (async function(){
-    try{
-      var tempStream=await 
 // ===== MediaPipe 얼굴 분석 =====
 var faceStats={smileFrames:0,totalFrames:0,lookingCenter:0,headTiltFrames:0};
 var faceMeshInstance=null;var faceAnalysisActive=false;
@@ -405,15 +402,10 @@ function getFaceReport(){
   var s=Math.round((faceStats.smileFrames/faceStats.totalFrames)*100);
   var g=Math.round((faceStats.lookingCenter/faceStats.totalFrames)*100);
   var t=Math.round((faceStats.headTiltFrames/faceStats.totalFrames)*100);
-  return '
-
-📷 이미지 분석:
-• 미소 유지: '+s+'%'+(s>=60?' ✓':' — 더 웃어보세요')+'
-• 카메라 시선: '+g+'%'+(g>=70?' ✓':' — 카메라를 더 정면으로 보세요')+'
-• 고개 기울기: '+(t<=20?'안정적 ✓':'기울어진 순간 '+t+'% — 바른 자세를 유지하세요');
+  return '\n\n📷 이미지 분석:\n• 미소 유지: '+s+'%'+(s>=60?' ✓':' — 더 웃어보세요')+'\n• 카메라 시선: '+g+'%'+(g>=70?' ✓':' — 카메라를 더 정면으로 보세요')+'\n• 고개 기울기: '+(t<=20?'안정적 ✓':'기울어진 순간 '+t+'% — 바른 자세를 유지하세요');
 }
 
-// 카메라 초기화
+  // 카메라 초기화
   (async function(){
     try{
       var tempStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});

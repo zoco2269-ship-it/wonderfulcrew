@@ -89,6 +89,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="js/auth-gate.js"></script>
 <script src="js/google-tts.js"></script>
 <script src="js/free-trial.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -352,7 +354,44 @@ function startInterview(){
 
   (async function(){
     try{
-      var tempStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+      var tempStream=await 
+// ===== MediaPipe 얼굴 분석 =====
+var faceStats={smileFrames:0,totalFrames:0,lookingCenter:0,headTiltFrames:0};
+var faceMeshInstance=null;var faceAnalysisActive=false;
+function initFaceMesh(videoEl){
+  if(!window.FaceMesh) return;
+  try{
+    faceMeshInstance=new FaceMesh({locateFile:function(f){return 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/'+f;}});
+    faceMeshInstance.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
+    faceMeshInstance.onResults(function(r){
+      if(!faceAnalysisActive)return;
+      faceStats.totalFrames++;
+      if(r.multiFaceLandmarks&&r.multiFaceLandmarks.length>0){
+        var lm=r.multiFaceLandmarks[0];
+        var lipL=lm[61],lipR=lm[291],lipTop=lm[13];
+        if((lipTop.y-((lipL.y+lipR.y)/2))>0.01)faceStats.smileFrames++;
+        var nose=lm[1];
+        if(Math.abs(nose.x-0.5)<0.15&&Math.abs(nose.y-0.45)<0.15)faceStats.lookingCenter++;
+        var eyeL=lm[33],eyeR=lm[263];
+        if(Math.abs(eyeL.y-eyeR.y)>0.02)faceStats.headTiltFrames++;
+      }
+    });
+    setInterval(function(){if(faceAnalysisActive&&videoEl.readyState>=2)try{faceMeshInstance.send({image:videoEl});}catch(e){}},500);
+  }catch(e){}
+}
+function getFaceReport(){
+  if(faceStats.totalFrames<5)return '';
+  var s=Math.round((faceStats.smileFrames/faceStats.totalFrames)*100);
+  var g=Math.round((faceStats.lookingCenter/faceStats.totalFrames)*100);
+  var t=Math.round((faceStats.headTiltFrames/faceStats.totalFrames)*100);
+  return '
+
+📷 이미지 분석:
+• 미소 유지: '+s+'%'+(s>=60?' ✓':' — 더 웃어보세요')+'
+• 카메라 시선: '+g+'%'+(g>=70?' ✓':' — 카메라를 더 정면으로 보세요')+'
+• 고개 기울기: '+(t<=20?'안정적 ✓':'기울어진 순간 '+t+'% — 바른 자세를 유지하세요');
+}
+navigator.mediaDevices.getUserMedia({video:true,audio:true});
       tempStream.getTracks().forEach(function(t){t.stop();});
       var devices=await navigator.mediaDevices.enumerateDevices();
       var videoDevices=devices.filter(function(d){return d.kind==='videoinput';});
@@ -367,6 +406,8 @@ function startInterview(){
       var v=document.getElementById('cam-video');
       v.srcObject=stream;v.style.display='block';
       document.getElementById('cam-ph').style.display='none';
+      // 얼굴 분석 시작
+      if(typeof initFaceMesh==='function'){faceStats={smileFrames:0,totalFrames:0,lookingCenter:0,headTiltFrames:0};faceAnalysisActive=true;initFaceMesh(v);}
     }catch(e){
       document.getElementById('cam-ph').innerHTML='<div>카메라 연결 실패</div>';
     }
@@ -572,7 +613,9 @@ async function generateFeedback(scenario){
     var parts=feedbackText.split('---SUGGESTED---');
     var mainFeedback=parts[0].trim();
     lastSuggestedResponse=(parts[1]||'').trim();
-    fb.innerHTML='<b style="color:var(--gold);">피드백</b><br><br><div style="white-space:pre-line;">'+mainFeedback+'</div>';
+    var faceReport=typeof getFaceReport==='function'?getFaceReport():'';
+    faceAnalysisActive=false;
+    fb.innerHTML='<b style="color:var(--gold);">피드백</b><br><br><div style="white-space:pre-line;">'+mainFeedback+(faceReport?'\n'+faceReport:'')+'</div>';
     if(typeof savePracticeRecord==='function') savePracticeRecord({airline:'',stage:'roleplay-ko',question:currentScenario||'',answer:fullText||'',feedback:mainFeedback});
     if(lastSuggestedResponse) document.getElementById('btn-model').style.display='inline-flex';
     document.getElementById('btn-next').style.display='inline-flex';

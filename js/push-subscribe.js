@@ -7,10 +7,17 @@
   navigator.serviceWorker.register('/sw.js').catch(function() {});
 
   window.wcPromptPush = async function() {
-    // 이미 granted면 구독 정보 서버 전송 (매 로그인 시)
+    // 이미 granted면 구독 정보 서버 전송
     if (Notification.permission === 'granted') {
       await subscribePush();
       localStorage.setItem(PROMPTED_KEY, '1');
+      // 사용자에게 피드백
+      var toast=document.createElement('div');
+      toast.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1A2340;color:#fff;padding:12px 24px;border-radius:28px;font-size:0.84rem;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.2);';
+      toast.textContent='✓ 푸시 알림이 활성화되어 있습니다';
+      document.body.appendChild(toast);
+      setTimeout(function(){toast.style.opacity='0';toast.style.transition='opacity 0.5s';},2500);
+      setTimeout(function(){if(toast.parentNode)toast.remove();},3000);
       return;
     }
 

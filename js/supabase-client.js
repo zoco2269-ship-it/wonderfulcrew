@@ -288,7 +288,7 @@ function updateNavLoginBtn() {
   loginBtns.forEach(function(btn) {
     var txt = btn.textContent.trim();
     if (txt === '로그인' || txt === 'Sign In') {
-      btn.textContent = user.name || user.email?.split('@')[0] || '내 계정';
+      btn.textContent = 'MY';
       btn.href = 'my-progress.html';
     }
   });

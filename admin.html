@@ -73,7 +73,8 @@ textarea{min-height:80px;resize:vertical;}
   <a onclick="showPage('feedback')">💬 피드백 확인</a>
   <a onclick="showPage('inquiry')">📩 도입 문의</a>
   <a onclick="showPage('videos')">🎬 영상 관리</a>
-  <a onclick="showPage('noti')">🔔 알림 발송</a>
+  <a onclick="showPage('noti')">🔔 푸시 알림</a>
+  <a onclick="showPage('sms')">📱 문자/알림톡</a>
   <a href="index.html" style="margin-top:24px;color:var(--text-muted);font-size:0.8rem;">← 홈으로</a>
 </div>
 
@@ -334,8 +335,81 @@ WonderfulCrew 드림</textarea></div></div>
   </div>
 </div>
 
+<!-- 문자/알림톡 발송 -->
+<div class="page" id="page-sms">
+  <h2>문자 / 카카오 알림톡</h2>
+  <div class="sub">SMS · LMS · 카카오 알림톡 발송 (Solapi)</div>
+  <div class="card">
+    <h3>메시지 발송</h3>
+    <div class="form-row">
+      <div><label>발송 유형</label>
+        <select id="sms-type">
+          <option value="SMS">SMS (90자 이내)</option>
+          <option value="LMS">LMS (장문)</option>
+          <option value="KAKAO">카카오 알림톡</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div><label>수신 번호 (쉼표로 구분)</label><input type="text" id="sms-to" placeholder="01012345678, 01098765432"></div>
+    </div>
+    <div id="kakao-fields" style="display:none;">
+      <div class="form-row">
+        <div><label>카카오 발신프로필 ID (pfId)</label><input type="text" id="sms-pfid" placeholder="KA01PF..."></div>
+      </div>
+      <div class="form-row">
+        <div><label>알림톡 템플릿 ID</label><input type="text" id="sms-template" placeholder="KA01TP..."></div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div><label>제목 (LMS만)</label><input type="text" id="sms-subject" placeholder="WonderfulCrew"></div>
+    </div>
+    <div class="form-row">
+      <div><label>내용</label><textarea id="sms-text" placeholder="안녕하세요, WonderfulCrew입니다."></textarea></div>
+    </div>
+    <button class="btn-sm gold" onclick="sendSolapi()">발송하기</button>
+    <div id="sms-result" style="margin-top:14px;font-size:0.84rem;color:var(--text-mid);"></div>
+  </div>
+</div>
+
 </div>
 </div>
+
+<script>
+// 카카오 알림톡 필드 토글
+document.getElementById('sms-type').addEventListener('change',function(){
+  document.getElementById('kakao-fields').style.display=this.value==='KAKAO'?'block':'none';
+});
+
+async function sendSolapi(){
+  var type=document.getElementById('sms-type').value;
+  var to=document.getElementById('sms-to').value.trim().split(',').map(function(s){return s.trim();}).filter(Boolean);
+  var text=document.getElementById('sms-text').value.trim();
+  var result=document.getElementById('sms-result');
+  if(!to.length||!text){alert('수신 번호와 내용을 입력해주세요.');return;}
+  result.innerHTML='발송 중...';
+  try{
+    var body={type:type,to:to,text:text};
+    if(type==='LMS') body.subject=document.getElementById('sms-subject').value.trim()||'WonderfulCrew';
+    if(type==='KAKAO'){
+      body.pfId=document.getElementById('sms-pfid').value.trim();
+      body.templateId=document.getElementById('sms-template').value.trim();
+      if(!body.pfId||!body.templateId){alert('카카오 발신프로필 ID와 템플릿 ID를 입력해주세요.');result.innerHTML='';return;}
+    }
+    var res=await fetch('/api/solapi-send',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+(prompt('관리자 키:','wc-push-admin-2026')||'')},
+      body:JSON.stringify(body)
+    });
+    var data=await res.json();
+    if(data.ok){
+      result.innerHTML='✅ 발송 완료! 전체 '+data.count.total+'건 / 성공 '+data.count.sent+'건 / 실패 '+data.count.failed+'건';
+    } else {
+      result.innerHTML='❌ 실패: '+(data.error||'알 수 없는 오류');
+    }
+  }catch(e){result.innerHTML='❌ 오류: '+e.message;}
+}
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>

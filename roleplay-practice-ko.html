@@ -126,7 +126,8 @@ window.addEventListener('popstate',function(){
 <!-- SETUP SCREEN -->
 <div class="setup" id="setup">
   <h1>한국어 롤플레이 <em>면접 연습</em></h1>
-  <p>국내 항공사 기내 상황을 한국어로 연습합니다.<br>실제 면접처럼 카메라 앞에서 답변해보세요.</p>
+  <p id="rp-desc">국내 항공사 기내 상황을 한국어로 연습합니다.<br>실제 면접처럼 카메라 앞에서 답변해보세요.</p>
+  <script>if(new URLSearchParams(location.search).get('mode')==='hotel')document.getElementById('rp-desc').innerHTML='호텔 서비스 상황을 한국어로 연습합니다.<br>실제 면접처럼 카메라 앞에서 답변해보세요.';</script>
 
   <div class="avatar-grid" style="grid-template-columns:1fr 1fr;max-width:300px;margin:0 auto 20px;" id="avatar-grid">
     <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/avatar-male.png" onclick="selAvatar(this)"><span class="emoji">👨🏻</span>남성</div>
@@ -188,6 +189,25 @@ window.addEventListener('popstate',function(){
 </div>
 
 <script>
+// URL 파라미터로 모드 결정
+var rpMode=new URLSearchParams(location.search).get('mode')||'airline';
+
+// 호텔 시나리오
+var HOTEL_SCENARIOS=[
+  "VIP 고객이 체크인 시 예약한 스위트룸이 아직 준비가 안 됐습니다.",
+  "고객이 객실 냉방이 안 된다며 프론트로 직접 내려와 화를 냅니다.",
+  "레스토랑 만석인데 예약 없이 온 고객이 바로 자리를 달라고 합니다.",
+  "고객이 체크아웃 시 미니바 이용 요금에 이의를 제기합니다.",
+  "룸서비스 음식이 1시간 넘게 안 왔다고 컴플레인합니다.",
+  "고객이 객실에서 바퀴벌레를 봤다며 즉시 환불을 요구합니다.",
+  "투숙객이 옆방 소음이 너무 심하다고 새벽 2시에 전화합니다.",
+  "고객이 세탁 서비스에서 옷이 손상됐다고 주장합니다.",
+  "고객이 체크인하려는데 오버부킹으로 방이 없습니다.",
+  "고객이 수영장에서 미끄러져 다쳤다며 책임을 묻습니다.",
+  "고객의 아이가 로비에서 뛰어다니며 다른 투숙객이 불편해합니다.",
+  "고객이 호텔 Wi-Fi가 안 된다며 업무를 못 한다고 항의합니다."
+];
+
 // 국내 항공사 기내 상황 시나리오 (한국어)
 var SCENARIOS=[
   "승객이 창가 자리를 원하지만 만석이라 배정이 어렵습니다.",
@@ -333,7 +353,8 @@ function selAvatar(el){
 }
 
 function startInterview(){
-  var indexed=SCENARIOS.map(function(q,i){return {q:q,origIdx:i};});
+  var scenarioPool=rpMode==='hotel'?HOTEL_SCENARIOS:SCENARIOS;
+  var indexed=scenarioPool.map(function(q,i){return {q:q,origIdx:i};});
   var pool=indexed.slice();questions=[];
   for(var i=0;i<3&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
 

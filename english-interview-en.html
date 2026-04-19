@@ -99,7 +99,6 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <h2 class="sec-title">Korean Interview <em>FAQs</em></h2>
   <div class="gold-line"></div>
   <div id="ko-container"></div>
-  <div style="text-align:center;margin-top:28px;"><button onclick="loadMoreKo()" style="padding:14px 32px;background:var(--navy);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.9rem;font-weight:600;cursor:pointer;">Load More</button></div>
 </div>
 
 <!-- ===== 영어 면접 ===== -->
@@ -108,7 +107,6 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <h2 class="sec-title">English Interview <em>FAQs</em></h2>
   <div class="gold-line"></div>
   <div id="en-container"></div>
-  <div style="text-align:center;margin-top:28px;"><button onclick="loadMoreEn()" style="padding:14px 32px;background:var(--navy);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.9rem;font-weight:600;cursor:pointer;">Load More</button></div>
 </div>
 
 <!-- ===== 항공 영어 표현 ===== -->
@@ -263,9 +261,9 @@ var VOCAB={
 // Render Korean
 var koC=document.getElementById('ko-container');
 KO.forEach(function(item,idx){
-  var locked=idx>0;
+
   var card=document.createElement('div');card.className='qa-card';
-  card.innerHTML='<div class="qa-header" onclick="toggleQA(this,'+idx+',\'ko\')"><div class="qa-num">'+(idx+1)+'</div><div class="qa-q">'+item.q+'</div>'+(locked?'<div class="qa-lock">🔒</div>':'')+'<div class="qa-arrow">→</div></div>'+
+  card.innerHTML='<div class="qa-header" onclick="toggleQA(this,'+idx+',\'ko\')"><div class="qa-num">'+(idx+1)+'</div><div class="qa-q">'+item.q+'</div>'+'<div class="qa-arrow">→</div></div>'+
     '<div class="qa-body"><div class="key">'+item.key+'</div><div class="ans">'+item.ans+'</div><div class="tip"><b>Coaching TIP:</b> '+item.tip+'</div></div>';
   koC.appendChild(card);
 });
@@ -283,10 +281,10 @@ function speakEN(text){
 // Render English
 var enC=document.getElementById('en-container');
 EN.forEach(function(item,idx){
-  var locked=idx>0;
+
   var exprHtml=item.expressions?'<div style="margin-top:10px;">'+item.expressions.map(function(e){return '<span class="expr">'+e+'</span>';}).join(' ')+'</div>':'';
   var card=document.createElement('div');card.className='qa-card';
-  card.innerHTML='<div class="qa-header" onclick="toggleQA(this,'+idx+',\'en\')"><div class="qa-num">'+(idx+1)+'</div><div class="qa-q">'+item.q+'</div>'+(locked?'<div class="qa-lock">🔒</div>':'')+'<div class="qa-arrow">→</div></div>'+
+  card.innerHTML='<div class="qa-header" onclick="toggleQA(this,'+idx+',\'en\')"><div class="qa-num">'+(idx+1)+'</div><div class="qa-q">'+item.q+'</div>'+'<div class="qa-arrow">→</div></div>'+
     '<div class="qa-body"><div class="key">'+item.key+'</div><div class="ans">'+item.ans+'<br><button onclick="speakEN(this.closest(\'.ans\').childNodes[0].textContent)" style="margin-top:10px;padding:6px 16px;background:var(--navy);color:#fff;border:none;border-radius:16px;font-size:0.78rem;cursor:pointer;font-family:inherit;">🔊 듣기</button>'+exprHtml+'</div><div class="ko">'+item.ko+'</div></div>';
   enC.appendChild(card);
 });
@@ -302,30 +300,6 @@ function rv(id,data){
 }
 rv('v-safety',VOCAB.safety);rv('v-service',VOCAB.service);rv('v-announce',VOCAB.announce);rv('v-crew',VOCAB.crew);rv('v-aircraft',VOCAB.aircraft);
 
-// 토큰 1개당 3개 질문 열기
-var unlocked={};
-function applyLockUI(id){
-  unlocked[id]=2;
-  var cards=document.getElementById(id).querySelectorAll('.qa-card');
-  if(cards.length<=2)return;
-  for(var i=2;i<cards.length;i++){cards[i].style.filter='blur(4px)';cards[i].style.pointerEvents='none';}
-  var b=document.createElement('div');
-  b.id='lock-'+id;
-  b.style.cssText='text-align:center;padding:28px;margin:16px 0;background:linear-gradient(135deg,rgba(232,201,106,0.15),rgba(201,168,76,0.08));border:2px solid #C9A84C;border-radius:8px;';
-  b.innerHTML='<div style="font-size:0.95rem;color:#1A2340;font-weight:600;margin-bottom:12px;">Unlock 3 questions with 1 token</div><button onclick="unlock3(\''+id+'\')" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">Unlock 3 with 1 Token</button>';
-  cards[2].parentElement.insertBefore(b,cards[2]);
-}
-function unlock3(id){
-  var cards=document.getElementById(id).querySelectorAll('.qa-card');
-  var start=unlocked[id];
-  var end=Math.min(start+3,cards.length);
-  for(var i=start;i<end;i++){cards[i].style.filter='none';cards[i].style.pointerEvents='auto';}
-  unlocked[id]=end;
-  if(end>=cards.length){var lock=document.getElementById('lock-'+id);if(lock)lock.remove();}
-  else{var lock=document.getElementById('lock-'+id);if(lock&&cards[end])cards[end].parentElement.insertBefore(lock,cards[end]);}
-}
-applyLockUI('ko-container');
-applyLockUI('en-container');
 
 function toggleQA(header,idx,type){
   var card=header.parentElement;

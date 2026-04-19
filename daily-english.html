@@ -85,6 +85,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <script src="js/supabase-client.js"></script>
 <script src="js/auth-gate.js"></script>
 <script src="js/free-trial.js"></script>
+<script src="js/google-tts.js"></script>
 </head>
 <body>
 
@@ -109,10 +110,6 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="label">Daily English Practice</div>
   <h1>오늘도 한 걸음,<br><em>꾸준함이 합격의 비밀</em></h1>
   <div id="today-date" style="margin-top:18px;color:rgba(255,255,255,0.72);font-size:0.95rem;"></div>
-  <div class="streak-row">
-    <div class="streak-item"><div class="n" id="streak-count">0</div><div class="l">연속 출석일</div></div>
-    <div class="streak-item"><div class="n" id="total-count">0</div><div class="l">총 출석일</div></div>
-  </div>
   <div style="display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap;">
     <a href="#practice" style="padding:10px 22px;background:rgba(255,255,255,0.12);border:1px solid rgba(232,201,106,0.4);border-radius:24px;color:var(--gold-light);font-size:0.82rem;font-weight:600;text-decoration:none;">영어 Practice</a>
     <a href="#shadow" style="padding:10px 22px;background:rgba(255,255,255,0.12);border:1px solid rgba(232,201,106,0.4);border-radius:24px;color:var(--gold-light);font-size:0.82rem;font-weight:600;text-decoration:none;">기내방송 쉐도잉</a>
@@ -310,8 +307,7 @@ function buildCards(questions,startIdx){
   // ① 질문 듣기 TTS
   card.querySelector('[data-act="listen-q"]').addEventListener('click',function(){
     if(!('speechSynthesis' in window))return;
-    var u=new SpeechSynthesisUtterance(q);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.85;u.pitch=1.05;
-    window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+    var _accent=(document.getElementById("accent-choice")?document.getElementById("accent-choice").value:"en-GB");if(typeof gcSpeak==="function"){gcSpeak(,_accent,"female");}else{var u=new SpeechSynthesisUtterance();u.lang=_accent;u.rate=0.85;window.speechSynthesis.speak(u);}
   });
 
   // ② 답변 녹음
@@ -396,8 +392,7 @@ function buildCards(questions,startIdx){
     sampleArea.innerHTML=cachedSampleHtml;
     // 자동 TTS 재생 (따뜻한 톤, 영국식)
     if(sampleText&&'speechSynthesis' in window){
-      var u=new SpeechSynthesisUtterance(sampleText);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.82;u.pitch=1.1;
-      window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+      var _accent=(document.getElementById("accent-choice")?document.getElementById("accent-choice").value:"en-GB");if(typeof gcSpeak==="function"){gcSpeak(,_accent,"female");}else{var u=new SpeechSynthesisUtterance();u.lang=_accent;u.rate=0.85;window.speechSynthesis.speak(u);}
     }
     // ⑤ 쉐도잉 버튼 표시
     shadowBtns.style.display='flex';
@@ -411,8 +406,7 @@ function buildCards(questions,startIdx){
   // ⑤ 예시 듣기 TTS
   card.querySelector('[data-act="tts-sample"]').addEventListener('click',function(){
     if(!sampleText||!('speechSynthesis' in window))return;
-    var u=new SpeechSynthesisUtterance(sampleText);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.82;u.pitch=1.1;
-    window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+    var _accent=(document.getElementById("accent-choice")?document.getElementById("accent-choice").value:"en-GB");if(typeof gcSpeak==="function"){gcSpeak(,_accent,"female");}else{var u=new SpeechSynthesisUtterance();u.lang=_accent;u.rate=0.85;window.speechSynthesis.speak(u);}
   });
 
   // ⑤ 따라하기 (continuous + 수동 중지)
@@ -514,8 +508,7 @@ function buildShadowCards(sentences){
     var result=card.querySelector('.shadow-result');
     card.querySelector('[data-act="tts"]').addEventListener('click',function(){
       if(!('speechSynthesis' in window)){result.textContent='이 브라우저는 음성 합성을 지원하지 않아요.';return;}
-      var u=new SpeechSynthesisUtterance(s);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.85;u.pitch=1.1;
-      window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+      var _accent=(document.getElementById("accent-choice")?document.getElementById("accent-choice").value:"en-GB");if(typeof gcSpeak==="function"){gcSpeak(,_accent,"female");}else{var u=new SpeechSynthesisUtterance();u.lang=_accent;u.rate=0.85;window.speechSynthesis.speak(u);}
     });
     var recBtn2=card.querySelector('[data-act="rec"]');
     var activeRec=null;

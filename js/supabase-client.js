@@ -5,7 +5,7 @@ let _supabase = null;
 let _currentUser = null;
 let _supabaseReady = false;
 
-var ADMIN_EMAILS = ['zoco2269@gmail.com', 'guswn5164@gmail.com'];
+var ADMIN_EMAILS = ['zoco2269@gmail.com'];
 
 // 서버에서 Supabase 설정 로드
 (async function initSupabase(){

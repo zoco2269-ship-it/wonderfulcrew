@@ -468,45 +468,12 @@ function showStudyDetail(p){
     '<div style="font-size:0.9rem;color:#4A4438;line-height:1.8;margin-bottom:24px;white-space:pre-line;">'+p.body+'</div>'+
     (p.closed?
       '<div style="text-align:center;padding:14px;background:#f5f5f5;border-radius:10px;color:#999;font-size:0.86rem;">이 스터디는 마감되었습니다.</div>':
-      '<div style="text-align:center;">'+
-        (p.kakao?'<a href="'+p.kakao+'" target="_blank" style="display:inline-block;padding:14px 32px;background:#FEE500;color:#3C1E1E;border-radius:28px;font-size:0.9rem;font-weight:700;text-decoration:none;font-family:inherit;">카카오 오픈채팅 참여하기</a>':
-        '<button onclick="applyStudy(\''+p.title.replace(/'/g,"\\'")+'\',\''+p.author+'\')" style="padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">참여 신청하기</button>')+
-      '</div>')+
+      (p.kakao?'<div style="text-align:center;"><a href="'+p.kakao+'" target="_blank" style="display:inline-block;padding:14px 32px;background:#FEE500;color:#3C1E1E;border-radius:28px;font-size:0.9rem;font-weight:700;text-decoration:none;font-family:inherit;">카카오 오픈채팅 참여하기</a></div>':''))+
     (p.mine?'<button onclick="deleteStudy(\''+p.title.replace(/'/g,"\\'")+'\');this.closest(\'#study-modal\').remove();" style="display:block;margin:16px auto 0;background:none;border:none;color:#E74C3C;font-size:0.78rem;cursor:pointer;">이 글 삭제하기</button>':'')+
     '<button onclick="this.closest(\'#study-modal\').remove()" style="display:block;margin:16px auto 0;background:none;border:none;color:#999;font-size:0.82rem;cursor:pointer;">닫기</button>'+
     '</div>';
   document.body.appendChild(ov);
   ov.addEventListener('click',function(e){if(e.target===ov) ov.remove();});
-}
-
-function applyStudy(title,author){
-  var user=JSON.parse(localStorage.getItem('wc_user')||'{}');
-  if(!user.email){alert('로그인 후 신청할 수 있습니다.');location.href='login.html';return;}
-  // Supabase에 신청 저장 (feedback 테이블 활용)
-  (async function(){
-    try{
-      var res=await fetch('/api/supabase-config');
-      var cfg=await res.json();
-      if(cfg.url&&cfg.anonKey&&typeof window.supabase!=='undefined'){
-        var sb=window.supabase.createClient(cfg.url,cfg.anonKey);
-        await sb.from('feedback').insert({
-          name:user.name||user.email,
-          email:user.email,
-          type:'스터디 신청',
-          content:'[스터디 신청] '+title+' (작성자: '+author+')',
-          at:new Date().toISOString()
-        });
-      }
-    }catch(e){}
-  })();
-  var modal=document.getElementById('study-modal');
-  if(modal) modal.querySelector('div > div').innerHTML=
-    '<div style="text-align:center;padding:40px 20px;">'+
-    '<div style="font-size:2rem;margin-bottom:12px;">✓</div>'+
-    '<h3 style="font-family:DM Serif Display,serif;color:#1A2340;margin-bottom:8px;">신청 완료!</h3>'+
-    '<p style="font-size:0.88rem;color:#5A5048;line-height:1.7;">스터디 참여 신청이 접수되었습니다.<br>관리자 확인 후 연락드리겠습니다.</p>'+
-    '<button onclick="document.getElementById(\'study-modal\').remove()" style="margin-top:20px;padding:12px 28px;background:var(--navy);color:#fff;border:none;border-radius:24px;font-size:0.86rem;cursor:pointer;">확인</button>'+
-    '</div>';
 }
 
 function deleteStudy(title){

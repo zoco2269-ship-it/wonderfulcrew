@@ -251,14 +251,14 @@ function wcSubscribeAlert(airline) {
         var pubDate=items[j].querySelector('pubDate');
         if(title&&link){
           var t=title.textContent;
-          if(/학원|과외|academy|스쿨|학교|학과|대학저널|인강|강남|홍대.*승무원|브런치|brunch|블로그|티스토리|tistory|네이버.*카페|cafe\.naver|후기|꿈|일기|에세이|essay|vlog/i.test(t)) continue;
-          var linkUrl=link?link.textContent:'';
-          // 개인 블로그/카페 URL 차단
-          if(/brunch\.co|blog\.naver|tistory\.com|cafe\.naver|youtube\.com|youtu\.be|instagram|velog\.io|medium\.com|notion\.so/i.test(linkUrl)) continue;
-          // 뉴스 매체 소스만 허용 (source 태그 확인)
+          if(/학원|과외|academy|스쿨|학교|학과|대학저널|인강|강남|홍대.*승무원|후기|꿈|일기|에세이|essay|vlog/i.test(t)) continue;
+          // 공식 뉴스 매체만 허용 (화이트리스트)
           var source=items[j].querySelector('source');
           var srcName=source?source.textContent:'';
-          if(srcName&&/블로그|카페|브런치|유튜브|인스타/i.test(srcName)) continue;
+          var ALLOWED_SOURCES=/연합뉴스|조선일보|중앙일보|동아일보|한겨레|경향신문|매일경제|한국경제|서울경제|아시아경제|뉴시스|뉴스1|YTN|SBS|KBS|MBC|JTBC|채널A|TV조선|MBN|이데일리|머니투데이|파이낸셜뉴스|헤럴드경제|한국일보|세계일보|국민일보|데일리안|오마이뉴스|프레시안|여행신문|트래블바이크|aviation|reuters|bloomberg|CNN|BBC|Gulf News|The National|简单日报|Khaleej Times/i;
+          if(srcName&&!ALLOWED_SOURCES.test(srcName)) continue;
+          var linkUrl=link?link.textContent:'';
+          if(/brunch\.co|blog\.naver|tistory\.com|cafe\.naver|youtube\.com|velog\.io|medium\.com/i.test(linkUrl)) continue;
           var articleDate=pubDate?new Date(pubDate.textContent).toISOString().slice(0,10):'';
           // 1년 이상 오래된 기사 제외
           if(articleDate){var oneYearAgo=new Date();oneYearAgo.setFullYear(oneYearAgo.getFullYear()-1);if(new Date(articleDate)<oneYearAgo) continue;}

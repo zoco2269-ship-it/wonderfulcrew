@@ -122,6 +122,10 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <div id="questions"></div>
 
+<div id="more-practice" style="display:none;text-align:center;margin-top:32px;">
+  <button onclick="loadMoreQuestions()" style="padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">더 연습하기 →</button>
+</div>
+
 </div>
 </section>
 
@@ -166,6 +170,30 @@ var QUESTIONS_KO=[
   {num:'질문 4',q:randKoRP,hint:'롤플레이   사과, 해결책, 대안 제시, Service Recovery를 포함해서 답변하세요.'}
 ];
 
+// 추가 질문 풀
+var EXTRA_KO=[
+  [{num:'질문 1',q:'본인의 강점은 무엇인가요?',hint:'승무원 업무와 연결되는 강점을 말해보세요.'},
+   {num:'질문 2',q:'팀워크 경험을 말씀해주세요.',hint:'구체적인 에피소드로 답변하세요.'},
+   {num:'질문 3',q:'왜 이 항공사에 지원하셨나요?',hint:'항공사의 특징과 본인의 연결고리를 말하세요.'},
+   {num:'질문 4',q:KO_RP[Math.floor(Math.random()*KO_RP.length)],hint:'롤플레이 — 사과, 해결책, 대안 제시, Service Recovery를 포함해서 답변하세요.'}],
+  [{num:'질문 1',q:'승무원에게 가장 중요한 자질은 무엇인가요?',hint:'한 가지를 골라 이유와 함께 말해보세요.'},
+   {num:'질문 2',q:'어려운 고객을 대응한 경험이 있나요?',hint:'상황-행동-결과 순서로 답변하세요.'},
+   {num:'질문 3',q:'스트레스를 어떻게 관리하시나요?',hint:'구체적인 방법과 사례를 말해보세요.'},
+   {num:'질문 4',q:KO_RP[Math.floor(Math.random()*KO_RP.length)],hint:'롤플레이 — 사과, 해결책, 대안 제시, Service Recovery를 포함해서 답변하세요.'}],
+  [{num:'질문 1',q:'본인의 장단점을 말씀해주세요.',hint:'단점은 극복 노력과 함께 말하세요.'},
+   {num:'질문 2',q:'해외 경험이 있으면 말씀해주세요.',hint:'문화 이해와 적응력을 강조하세요.'},
+   {num:'질문 3',q:'입사 후 포부를 말씀해주세요.',hint:'구체적이고 현실적인 목표를 말하세요.'},
+   {num:'질문 4',q:KO_RP[Math.floor(Math.random()*KO_RP.length)],hint:'롤플레이 — 사과, 해결책, 대안 제시, Service Recovery를 포함해서 답변하세요.'}]
+];
+var EXTRA_EN=[
+  [{num:'Question 1',q:'What is your greatest strength?',hint:'Connect your strength to cabin crew duties.'},
+   {num:'Question 2',q:'Tell me about a time you worked in a team.',hint:'Use a specific example with STAR method.'},
+   {num:'Question 3',q:ROLEPLAY_QS[Math.floor(Math.random()*ROLEPLAY_QS.length)],hint:'Roleplay — Include apology, solution, alternative, and service recovery.'}],
+  [{num:'Question 1',q:'What do you think is the most important quality for cabin crew?',hint:'Pick one and explain why with an example.'},
+   {num:'Question 2',q:'How do you handle stress?',hint:'Give a specific method and real example.'},
+   {num:'Question 3',q:ROLEPLAY_QS[Math.floor(Math.random()*ROLEPLAY_QS.length)],hint:'Roleplay — Include apology, solution, alternative, and service recovery.'}]
+];
+var extraIdx=0;
 var QUESTIONS=lang==='ko'?QUESTIONS_KO:QUESTIONS_EN;
 
 var container=document.getElementById('questions');
@@ -198,6 +226,34 @@ QUESTIONS.forEach(function(item,i){
     '</div>';
   container.appendChild(div);
 });
+// 더 연습하기 버튼 표시
+document.getElementById('more-practice').style.display='block';
+
+function loadMoreQuestions(){
+  var extras=lang==='ko'?EXTRA_KO:EXTRA_EN;
+  if(extraIdx>=extras.length) extraIdx=0;
+  QUESTIONS=extras[extraIdx];
+  extraIdx++;
+  // 질문 다시 렌더링
+  container.innerHTML='';
+  QUESTIONS.forEach(function(q,i){
+    var div=document.createElement('div');div.className='q-section';
+    div.innerHTML='<div class="q-num">'+q.num+'</div><div class="q-text">'+q.q+'</div><div class="q-hint">'+q.hint+'</div>'+
+      '<div class="video-wrap"><video id="vid-'+i+'" autoplay muted playsinline></video><div class="vid-ph" id="ph-'+i+'"><div>📷</div><div>카메라 시작</div></div></div>'+
+      '<div class="btn-row"><button class="btn btn-navy" id="start-'+i+'" onclick="startRec('+i+')">카메라 시작 & 녹화</button><button class="btn btn-navy" id="stop-'+i+'" style="display:none" onclick="stopRec('+i+')">녹화 중지</button></div>'+
+      '<div class="transcript" id="tr-'+i+'"></div>'+
+      '<div class="btn-row"><button class="btn btn-gold" id="fb-'+i+'" disabled onclick="showScore('+i+')">피드백 보기</button></div>'+
+      '<div class="score-card" id="sc-'+i+'"><div class="score-title">Video Interview Score</div><div class="score-grid">'+
+        '<div class="score-item"><div class="label">첫인상</div><div class="value">--<span>/100</span></div></div>'+
+        '<div class="score-item"><div class="label">미소</div><div class="value">--<span>/100</span></div></div>'+
+        '<div class="score-item"><div class="label">목소리 톤</div><div class="value">--<span>/100</span></div></div>'+
+        '<div class="score-item"><div class="label">답변 내용</div><div class="value">--<span>/100</span></div></div>'+
+      '</div><div class="score-msg"></div></div>';
+    container.appendChild(div);
+  });
+  streams=[];recs=[];mediaRecs=[];videoChunks={};
+  window.scrollTo({top:container.offsetTop-80,behavior:'smooth'});
+}
 
 // Camera + Speech Recognition
 var streams=[];var recs=[];var mediaRecs=[];var videoChunks={};

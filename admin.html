@@ -71,6 +71,7 @@ textarea{min-height:80px;resize:vertical;}
   <a onclick="showPage('stats')">📈 사용 통계</a>
   <a onclick="showPage('marketing')">📧 마케팅 자동화</a>
   <a onclick="showPage('feedback')">💬 피드백 확인</a>
+  <a onclick="showPage('inquiry')">📩 도입 문의</a>
   <a onclick="showPage('videos')">🎬 영상 관리</a>
   <a onclick="showPage('noti')">🔔 알림 발송</a>
   <a href="index.html" style="margin-top:24px;color:var(--text-muted);font-size:0.8rem;">← 홈으로</a>
@@ -310,6 +311,16 @@ WonderfulCrew 드림</textarea></div></div>
   </div>
 </div>
 
+<!-- 도입 문의 -->
+<div class="page" id="page-inquiry">
+  <h2>도입 문의</h2>
+  <div class="sub">기업·기관 도입 문의 내역</div>
+  <div class="card">
+    <button class="btn-sm navy" onclick="loadInquiries()">문의 불러오기</button>
+    <div id="inquiry-list" style="margin-top:16px;"></div>
+  </div>
+</div>
+
 <div class="page" id="page-noti">
   <h2>알림 발송</h2>
   <div class="sub">전체 회원에게 수동 알림 발송</div>
@@ -327,14 +338,39 @@ WonderfulCrew 드림</textarea></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 <script>
-// 피드백 로딩
-function loadFeedback(){
-  var list=JSON.parse(localStorage.getItem('wc_feedback_list')||'[]');
+// 피드백 + 도입문의 로딩 (Supabase)
+async function loadFeedback(){
   var el=document.getElementById('feedback-list');
-  if(!list.length){el.innerHTML='<p style="color:var(--text-muted);">피드백이 없습니다.</p>';return;}
-  el.innerHTML=list.map(function(f){
-    return '<div style="padding:14px;border-bottom:1px solid var(--gold-pale);"><div style="font-size:0.78rem;color:var(--text-muted);">'+f.date+' · '+f.cat+' · '+f.name+(f.email?' · '+f.email:'')+'</div><div style="font-size:0.88rem;color:var(--text-dark);margin-top:6px;line-height:1.6;">'+f.body+'</div></div>';
-  }).join('');
+  el.innerHTML='<p style="color:var(--text-muted);">불러오는 중...</p>';
+  var sb=typeof getSupabase==='function'?getSupabase():null;
+  if(!sb){el.innerHTML='<p style="color:var(--text-muted);">Supabase 연결 대기 중... 잠시 후 다시 시도해주세요.</p>';return;}
+  var html='';
+  try{
+    var {data:fb}=await sb.from('feedback').select('*').order('at',{ascending:false}).limit(50);
+    if(fb&&fb.length){
+      html+='<h3 style="margin:16px 0 8px;color:var(--gold);">피드백 ('+fb.length+'건)</h3>';
+      html+=fb.map(function(f){
+        return '<div style="padding:14px;border-bottom:1px solid var(--gold-pale);"><div style="font-size:0.78rem;color:var(--text-muted);">'+(f.at||'').slice(0,10)+' · '+(f.type||'')+' · '+(f.name||'익명')+(f.email?' · '+f.email:'')+'</div><div style="font-size:0.88rem;color:var(--text-dark);margin-top:6px;line-height:1.6;">'+f.content+'</div></div>';
+      }).join('');
+    }
+    el.innerHTML=html||'<p style="color:var(--text-muted);">피드백이 없습니다.</p>';
+  }catch(e){el.innerHTML='<p style="color:var(--text-muted);">로드 실패: '+e.message+'</p>';}
+}
+
+// 도입 문의 로딩
+async function loadInquiries(){
+  var el=document.getElementById('inquiry-list');
+  el.innerHTML='<p style="color:var(--text-muted);">불러오는 중...</p>';
+  var sb=typeof getSupabase==='function'?getSupabase():null;
+  if(!sb){el.innerHTML='<p>Supabase 연결 대기 중...</p>';return;}
+  try{
+    var {data}=await sb.from('inquiries').select('*').order('at',{ascending:false}).limit(50);
+    if(!data||!data.length){el.innerHTML='<p style="color:var(--text-muted);">도입 문의가 없습니다.</p>';return;}
+    el.innerHTML='<table><tr><th>날짜</th><th>기관명</th><th>담당자</th><th>이메일</th><th>유형</th><th>내용</th></tr>'+
+      data.map(function(q){
+        return '<tr><td>'+(q.at||'').slice(0,10)+'</td><td>'+q.company+'</td><td>'+q.name+'</td><td>'+q.email+'</td><td>'+q.type+'</td><td style="max-width:300px;word-break:break-all;">'+q.content+'</td></tr>';
+      }).join('')+'</table>';
+  }catch(e){el.innerHTML='<p>로드 실패: '+e.message+'</p>';}
 }
 
 // Supabase 영상 로딩

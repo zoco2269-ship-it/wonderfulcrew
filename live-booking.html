@@ -59,64 +59,59 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <div class="hero">
   <div class="label">Live Classes</div>
   <h1>이달의 <em>라이브 수업</em></h1>
-  <p>전문 코치와 함께하는 오프라인/온라인 라이브 수업. 실전 면접 연습부터 1:1 피드백까지.</p>
+  <p>원더풀크루 대표와 함께하는 오프라인/온라인 라이브 수업.</p>
 </div>
 
 <section><div class="wrap">
 
-<div class="notice"><b>프리미엄 패키지 신청 후 가능합니다.</b> <a href="pricing.html" style="color:var(--gold);font-weight:700;">패키지 보기 →</a></div>
+<div class="notice"><b>프리미엄 패키지 구매 후 이용 가능합니다.</b> <a href="pricing.html" style="color:var(--gold);font-weight:700;">프리미엄 패키지 보기 →</a></div>
 
 <div class="class-card">
   <div class="class-info">
     <span class="class-type offline">오프라인 · 홍대</span>
-    <div class="class-title">에미레이트 면접 실전 연습</div>
-    <div class="class-meta"><b>4월 19일 (토)</b> · 14:00~17:00 · 3시간<br>장소: 홍대 스터디룸 (상세 주소 신청 후 안내)</div>
-    <div class="class-seats">정원 8명 · 잔여 3석</div>
+    <div class="class-title">실전 면접 연습</div>
+    <div class="class-meta"><b>5월 2일 (금)</b> · 18:00~21:00 · 3시간<br>장소: 홍대 강의실 (상세 주소 신청 후 안내)</div>
   </div>
-  <button class="class-btn open" onclick="alert('수업 신청은 카카오톡으로 문의해주세요.\n@wonderfulcrew')">신청하기</button>
+  <button class="class-btn open" onclick="applyClass(this,'실전 면접 연습','2026-05-02')">신청하기</button>
 </div>
 
-<div class="class-card">
-  <div class="class-info">
-    <span class="class-type online">온라인 · Zoom</span>
-    <div class="class-title">영어 면접 집중 클래스</div>
-    <div class="class-meta"><b>4월 22일 (화)</b> · 20:00~22:00 · 2시간<br>Zoom 링크 신청 후 발송</div>
-    <div class="class-seats">정원 15명 · 잔여 8석</div>
+<!-- 라이브 수업 현장 사진 -->
+<div style="margin-top:40px;">
+  <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--navy);margin-bottom:16px;">라이브 수업 현장</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <img src="images/live-class-1.jpg" alt="라이브 수업" style="width:100%;border-radius:10px;object-fit:cover;aspect-ratio:16/10;" onerror="this.style.display='none'">
+    <img src="images/live-class-2.jpg" alt="라이브 수업" style="width:100%;border-radius:10px;object-fit:cover;aspect-ratio:16/10;" onerror="this.style.display='none'">
+    <img src="images/live-class-3.jpg" alt="라이브 수업" style="width:100%;border-radius:10px;object-fit:cover;aspect-ratio:16/10;" onerror="this.style.display='none'">
+    <img src="images/live-class-4.jpg" alt="라이브 수업" style="width:100%;border-radius:10px;object-fit:cover;aspect-ratio:16/10;" onerror="this.style.display='none'">
   </div>
-  <button class="class-btn open" onclick="alert('수업 신청은 카카오톡으로 문의해주세요.\n@wonderfulcrew')">신청하기</button>
-</div>
-
-<div class="class-card">
-  <div class="class-info">
-    <span class="class-type offline">오프라인 · 홍대</span>
-    <div class="class-title">그루밍 & 이미지 메이킹 워크샵</div>
-    <div class="class-meta"><b>4월 26일 (토)</b> · 10:00~13:00 · 3시간<br>장소: 홍대 스터디룸</div>
-    <div class="class-seats">정원 6명 · 마감</div>
-  </div>
-  <button class="class-btn wait" onclick="alert('대기 등록되었습니다. 자리가 나면 연락드리겠습니다.')">대기 등록</button>
-</div>
-
-<div class="class-card">
-  <div class="class-info">
-    <span class="class-type online">온라인 · Zoom</span>
-    <div class="class-title">카타르/에티하드 면접 대비 특강</div>
-    <div class="class-meta"><b>5월 3일 (토)</b> · 14:00~16:00 · 2시간<br>Zoom 링크 신청 후 발송</div>
-    <div class="class-seats">정원 15명 · 잔여 12석</div>
-  </div>
-  <button class="class-btn open" onclick="alert('수업 신청은 카카오톡으로 문의해주세요.\n@wonderfulcrew')">신청하기</button>
-</div>
-
-<div class="class-card">
-  <div class="class-info">
-    <span class="class-type offline">오프라인 · 홍대</span>
-    <div class="class-title">1:1 모의 면접 (파이널 인터뷰)</div>
-    <div class="class-meta"><b>5월 10일 (토)</b> · 시간 개별 배정<br>장소: 홍대 스터디룸</div>
-    <div class="class-seats">정원 4명 · 잔여 2석</div>
-  </div>
-  <button class="class-btn open" onclick="alert('수업 신청은 카카오톡으로 문의해주세요.\n@wonderfulcrew')">신청하기</button>
 </div>
 
 </div></section>
+
+<script>
+async function applyClass(btn,className,date){
+  var user=JSON.parse(localStorage.getItem('wc_user')||'{}');
+  if(!user.email){alert('로그인 후 신청할 수 있습니다.');location.href='login.html';return;}
+  if(!confirm(className+' ('+date+') 수업을 신청하시겠습니까?')) return;
+  btn.disabled=true;btn.textContent='신청 완료';btn.className='class-btn full';
+  // Supabase에 신청 저장
+  try{
+    var res=await fetch('/api/supabase-config');
+    var cfg=await res.json();
+    if(cfg.url&&cfg.anonKey&&typeof window.supabase!=='undefined'){
+      var sb=window.supabase.createClient(cfg.url,cfg.anonKey);
+      await sb.from('feedback').insert({
+        name:user.name||user.email,
+        email:user.email,
+        type:'라이브 수업 신청',
+        content:'[수업 신청] '+className+' ('+date+')',
+        at:new Date().toISOString()
+      });
+    }
+  }catch(e){}
+  alert('신청이 완료되었습니다. 상세 안내는 이메일로 발송됩니다.');
+}
+</script>
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>
 </body>
 </html>

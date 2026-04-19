@@ -8,7 +8,16 @@
  *   payWithInnopay('basic', { buyerName: '홍길동', buyerEmail: 'test@test.com', buyerTel: '01012345678' })
  */
 
-async function payWithInnopay(plan, buyerInfo) {
+/**
+ * 가상계좌(무통장입금) 결제
+ *   payWithVbank('basic')
+ *   payWithVbank('elite')
+ */
+async function payWithVbank(plan, buyerInfo) {
+  return payWithInnopay(plan, buyerInfo, 'VBANK');
+}
+
+async function payWithInnopay(plan, buyerInfo, payMethod) {
   try {
     // 1. 서버에서 결제 파라미터 준비
     var res = await fetch('/api/innopay-prepare', {
@@ -36,7 +45,7 @@ async function payWithInnopay(plan, buyerInfo) {
 
     ih=850;
     innopay.goPay({
-      PayMethod: 'CARD',
+      PayMethod: payMethod || 'CARD',
       MID: data.mid,
       MerchantKey: data.merchantKey,
       GoodsName: data.goodsName,   // 상품명

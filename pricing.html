@@ -98,7 +98,15 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
       </label>
     </div>
 
-    <button class="btn-gold-big" id="pay-btn" disabled onclick="startCheckout()">지금 신청하기 →</button>
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <label style="flex:1;display:flex;align-items:center;gap:8px;padding:12px 16px;border:2px solid var(--gold-pale);border-radius:10px;cursor:pointer;font-size:0.86rem;color:var(--text-mid);">
+        <input type="radio" name="paymethod" value="CARD" checked onchange="document.getElementById('pay-btn').textContent='카드 결제하기 →'"> 카드 결제
+      </label>
+      <label style="flex:1;display:flex;align-items:center;gap:8px;padding:12px 16px;border:2px solid var(--gold-pale);border-radius:10px;cursor:pointer;font-size:0.86rem;color:var(--text-mid);">
+        <input type="radio" name="paymethod" value="VBANK" onchange="document.getElementById('pay-btn').textContent='가상계좌 발급하기 →'"> 가상계좌(무통장입금)
+      </label>
+    </div>
+    <button class="btn-gold-big" id="pay-btn" disabled onclick="startCheckout()">카드 결제하기 →</button>
   </div>
 </div></section>
 
@@ -109,7 +117,8 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 function startCheckout(){
   var btn=document.getElementById('pay-btn');
   btn.disabled=true;btn.textContent='처리 중...';
-  payWithInnopay('premium');
+  var method=document.querySelector('input[name=paymethod]:checked').value;
+  payWithInnopay('premium', null, method);
 }
 </script>
 </body>

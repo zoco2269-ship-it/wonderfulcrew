@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>도입 문의   WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);min-height:100vh;}a{color:inherit;text-decoration:none;}
+nav{display:flex;align-items:center;justify-content:center;padding:0 5%;height:72px;border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:"DM Serif Display",serif;font-size:1.5rem;font-weight:400;color:var(--navy);}.nav-logo span{color:var(--gold);}
+.hero{background:var(--navy);color:#fff;padding:120px 5% 60px;text-align:center;}
+.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:560px;margin:0 auto;line-height:1.8;}
+.form-wrap{max-width:580px;margin:0 auto;padding:48px 24px 80px;}
+.form-card{background:#fff;border:1px solid var(--gold-pale);padding:40px 36px;box-shadow:0 4px 24px rgba(0,0,0,0.04);}
+.field{margin-bottom:20px;}
+.field label{display:block;font-family:'Noto Sans KR',sans-serif;font-size:0.84rem;font-weight:600;color:var(--navy);margin-bottom:6px;}
+.field label em{color:var(--gold);font-style:normal;}
+.field input,.field textarea,.field select{width:100%;padding:12px 14px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.9rem;color:var(--text-dark);background:#fff;outline:none;transition:border-color 0.2s;}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--gold);}
+.field textarea{min-height:120px;resize:vertical;}
+.btn-submit{display:block;width:100%;padding:16px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(201,168,76,0.3);}
+.btn-submit:disabled{opacity:0.5;cursor:not-allowed;}
+.success{display:none;text-align:center;padding:60px 20px;}
+.success h2{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:12px;}
+.success p{font-size:0.9rem;color:var(--text-muted);line-height:1.7;}
+footer{background:var(--navy);color:rgba(255,255,255,0.6);padding:50px 5%;text-align:center;font-size:0.82rem;}
+</style>
+</head>
+<body>
+<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a></nav>
+
+<div class="hero">
+  <div class="label">Business Inquiry</div>
+  <h1>기업 · 기관<br><em>도입 문의</em></h1>
+  <p>항공사, 호텔, 교육기관을 위한 맞춤 서비스 교육 프로그램.<br>단체 도입 및 제휴 문의를 남겨주세요.</p>
+</div>
+
+<div class="form-wrap">
+  <div class="form-card" id="form-area">
+    <div class="field">
+      <label>담당자 성함 <em>*</em></label>
+      <input type="text" id="inq-name" placeholder="홍길동">
+    </div>
+    <div class="field">
+      <label>기업/기관명 <em>*</em></label>
+      <input type="text" id="inq-company" placeholder="OO항공 / OO대학교">
+    </div>
+    <div class="field">
+      <label>이메일 <em>*</em></label>
+      <input type="email" id="inq-email" placeholder="담당자@company.com">
+    </div>
+    <div class="field">
+      <label>연락처</label>
+      <input type="tel" id="inq-tel" placeholder="010-0000-0000">
+    </div>
+    <div class="field">
+      <label>문의 유형</label>
+      <select id="inq-type">
+        <option value="단체 도입">단체 도입 (교육기관 · 항공사)</option>
+        <option value="제휴 문의">제휴 문의</option>
+        <option value="강연 · 특강">강연 · 특강 요청</option>
+        <option value="기타">기타</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>문의 내용 <em>*</em></label>
+      <textarea id="inq-content" placeholder="도입 규모, 목적, 일정 등을 자유롭게 적어주세요."></textarea>
+    </div>
+    <button class="btn-submit" onclick="submitInquiry()">문의 보내기</button>
+  </div>
+
+  <div class="success" id="success-area">
+    <div style="font-size:2rem;margin-bottom:16px;">✓</div>
+    <h2>문의가 접수되었습니다</h2>
+    <p>빠른 시일 내에 담당자가 연락드리겠습니다.<br>감사합니다.</p>
+    <a href="index.html" style="display:inline-block;margin-top:24px;color:var(--gold);font-size:0.88rem;font-weight:600;">홈으로 돌아가기 →</a>
+  </div>
+</div>
+
+<footer>© 2026 WonderfulCrew Inc. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>
+
+<script>
+async function submitInquiry(){
+  var name=document.getElementById('inq-name').value.trim();
+  var company=document.getElementById('inq-company').value.trim();
+  var email=document.getElementById('inq-email').value.trim();
+  var content=document.getElementById('inq-content').value.trim();
+  if(!name||!company||!email||!content){alert('필수 항목을 모두 입력해주세요.');return;}
+
+  var data={
+    name:name,
+    company:company,
+    email:email,
+    tel:document.getElementById('inq-tel').value.trim(),
+    type:document.getElementById('inq-type').value,
+    content:content,
+    at:new Date().toISOString()
+  };
+  console.log('[WC INQUIRY]',JSON.stringify(data));
+
+  // Supabase에 저장 시도
+  try{
+    var res=await fetch('/api/supabase-config');
+    var cfg=await res.json();
+    if(cfg.url&&cfg.anonKey&&typeof window.supabase!=='undefined'){
+      var sb=window.supabase.createClient(cfg.url,cfg.anonKey);
+      await sb.from('inquiries').insert(data);
+    }
+  }catch(e){console.log('Inquiry save failed:',e);}
+
+  document.getElementById('form-area').style.display='none';
+  document.getElementById('success-area').style.display='block';
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</body>
+</html>

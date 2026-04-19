@@ -202,7 +202,8 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     </div>
     <label>닉네임</label><input type="text" id="s-author" placeholder="닉네임" maxlength="20">
     <label>제목</label><input type="text" id="s-title" placeholder="예: 에미레이트 준비 내 주변 스터디 구해요" maxlength="80">
-    <label>상세 내용</label><textarea id="s-body" placeholder="자기소개, 현재 준비 단계, 원하는 스터디 방식, 연락처(카카오 오픈채팅 등)"></textarea>
+    <label>카카오 오픈채팅 링크</label><input type="url" id="s-kakao" placeholder="https://open.kakao.com/o/..." maxlength="200">
+    <label>상세 내용</label><textarea id="s-body" placeholder="자기소개, 현재 준비 단계, 원하는 스터디 방식"></textarea>
     <div class="error-msg" id="err-study"></div>
     <div class="form-btns"><button class="submit" onclick="submitStudy()">올리기</button><button class="cancel" onclick="closeForm()">취소</button></div>
   </div>
@@ -272,10 +273,11 @@ function submitStudy(){
   var err=document.getElementById('err-study');err.style.display='none';
   if(!title||!body){err.textContent='제목과 내용을 입력해주세요.';err.style.display='block';return;}
   if(banned(title+body)){err.textContent='커뮤니티 정책에 의해 등록할 수 없는 내용입니다.';err.style.display='block';return;}
+  var kakao=document.getElementById('s-kakao').value.trim();
   var arr=getB('study');
-  arr.unshift({airline:airline[0]||'',loc:loc[0]||'',ppl:ppl[0]||'',sched:sched[0]||'',author:author,title:title,body:body,date:new Date().toISOString().slice(0,10)});
+  arr.unshift({airline:airline[0]||'',loc:loc[0]||'',ppl:ppl[0]||'',sched:sched[0]||'',author:author,title:title,body:body,kakao:kakao,date:new Date().toISOString().slice(0,10),mine:true});
   setB('study',arr);closeForm();render('study');clearChips('chips-airline');clearChips('chips-loc');clearChips('chips-ppl');clearChips('chips-sched');
-  document.getElementById('s-title').value='';document.getElementById('s-body').value='';
+  document.getElementById('s-title').value='';document.getElementById('s-body').value='';document.getElementById('s-kakao').value='';
 }
 
 // 일반글 제출
@@ -467,8 +469,10 @@ function showStudyDetail(p){
     (p.closed?
       '<div style="text-align:center;padding:14px;background:#f5f5f5;border-radius:10px;color:#999;font-size:0.86rem;">이 스터디는 마감되었습니다.</div>':
       '<div style="text-align:center;">'+
-        '<button onclick="applyStudy(\''+p.title.replace(/'/g,"\\'")+'\',\''+p.author+'\')" style="padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">참여 신청하기</button>'+
+        (p.kakao?'<a href="'+p.kakao+'" target="_blank" style="display:inline-block;padding:14px 32px;background:#FEE500;color:#3C1E1E;border-radius:28px;font-size:0.9rem;font-weight:700;text-decoration:none;font-family:inherit;">카카오 오픈채팅 참여하기</a>':
+        '<button onclick="applyStudy(\''+p.title.replace(/'/g,"\\'")+'\',\''+p.author+'\')" style="padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">참여 신청하기</button>')+
       '</div>')+
+    (p.mine?'<button onclick="deleteStudy(\''+p.title.replace(/'/g,"\\'")+'\');this.closest(\'#study-modal\').remove();" style="display:block;margin:16px auto 0;background:none;border:none;color:#E74C3C;font-size:0.78rem;cursor:pointer;">이 글 삭제하기</button>':'')+
     '<button onclick="this.closest(\'#study-modal\').remove()" style="display:block;margin:16px auto 0;background:none;border:none;color:#999;font-size:0.82rem;cursor:pointer;">닫기</button>'+
     '</div>';
   document.body.appendChild(ov);
@@ -503,6 +507,14 @@ function applyStudy(title,author){
     '<p style="font-size:0.88rem;color:#5A5048;line-height:1.7;">스터디 참여 신청이 접수되었습니다.<br>관리자 확인 후 연락드리겠습니다.</p>'+
     '<button onclick="document.getElementById(\'study-modal\').remove()" style="margin-top:20px;padding:12px 28px;background:var(--navy);color:#fff;border:none;border-radius:24px;font-size:0.86rem;cursor:pointer;">확인</button>'+
     '</div>';
+}
+
+function deleteStudy(title){
+  var arr=getB('study');
+  arr=arr.filter(function(p){return p.title!==title;});
+  setB('study',arr);
+  render('study');
+  updateCounts();
 }
 
 function updateCounts(){

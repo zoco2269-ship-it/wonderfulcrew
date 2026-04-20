@@ -99,22 +99,39 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   <a href="#" class="nav-back" onclick="goBack();return false;">← 돌아가기</a>
 </nav>
 <script>
+function fullCleanup(){
+  // 모든 오디오/마이크/카메라 자원 강제 정리
+  try{if(typeof roundEnding!=='undefined')roundEnding=true;}catch(e){}
+  try{if(typeof userTurnActive!=='undefined')userTurnActive=false;}catch(e){}
+  if('speechSynthesis' in window)try{window.speechSynthesis.cancel();}catch(e){}
+  // Web Audio (디스커션 전용 TTS)
+  try{if(typeof _discSource!=='undefined'&&_discSource){_discSource.onended=null;_discSource.stop();_discSource.disconnect();_discSource=null;}}catch(e){}
+  try{if(typeof _discCtx!=='undefined'&&_discCtx){_discCtx.close();_discCtx=null;}}catch(e){}
+  // 음성 인식
+  try{if(typeof recognition!=='undefined'&&recognition){recognition.onend=null;recognition.onresult=null;recognition.stop();recognition=null;}}catch(e){}
+  // 카메라/마이크 stream
+  try{if(typeof stream!=='undefined'&&stream){stream.getTracks().forEach(function(t){try{t.stop();}catch(e){}});stream=null;}}catch(e){}
+  // <video> 요소 srcObject 해제
+  try{var v=document.getElementById('cam-video');if(v){v.pause();v.srcObject=null;}}catch(e){}
+}
+
 function goBack(){
   var interview=document.getElementById('interview');
   if(interview&&interview.classList.contains('active')){
-    if('speechSynthesis' in window)window.speechSynthesis.cancel();
-    if(typeof recognition!=='undefined'&&recognition)try{recognition.stop();}catch(e){}
-    if(typeof stream!=='undefined'&&stream)stream.getTracks().forEach(function(t){t.stop();});
+    fullCleanup();
     interview.classList.remove('active');
     document.getElementById('setup').style.display='block';
   } else {
+    fullCleanup();
     history.back();
   }
 }
 window.addEventListener('popstate',function(){
   var interview=document.getElementById('interview');
   if(interview&&interview.classList.contains('active')){goBack();}
+  else {fullCleanup();}
 });
+window.addEventListener('pagehide',fullCleanup);
 </script>
 
 <!-- SETUP -->
@@ -630,10 +647,14 @@ async function generateFeedback(){
   }
 }
 
-window.addEventListener('beforeunload',function(){
-  if('speechSynthesis' in window)window.speechSynthesis.cancel();
-  if(stream)stream.getTracks().forEach(function(t){t.stop();});
-  if(recognition)try{recognition.stop();}catch(e){}
+window.addEventListener('beforeunload',fullCleanup);
+window.addEventListener('unload',fullCleanup);
+// 탭 visibility 변경 시 (백그라운드 전환) 오디오 일시 정지
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden){
+    if('speechSynthesis' in window)try{window.speechSynthesis.cancel();}catch(e){}
+    try{if(typeof _discSource!=='undefined'&&_discSource){_discSource.onended=null;_discSource.stop();_discSource=null;}}catch(e){}
+  }
 });
 </script>
 </body>

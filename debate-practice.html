@@ -174,18 +174,34 @@ function fullCleanup(){
 window.addEventListener('beforeunload',fullCleanup);
 window.addEventListener('pagehide',fullCleanup);
 
+function resetDebateUI(){
+  // 버튼 상태 초기화 (두 번째 이상 토픽 시작 시 필수)
+  document.getElementById('btn-answer').style.display='inline-flex';
+  document.getElementById('btn-answer').disabled=false;
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('btn-end').style.display='none';
+  document.getElementById('btn-next').style.display='inline-flex';
+  document.getElementById('rec-label').textContent='대기';
+  document.getElementById('waveform').classList.remove('active');
+  document.getElementById('card-ai').classList.remove('speaking');
+  document.getElementById('my-card').classList.remove('speaking');
+  document.getElementById('feedback').classList.remove('active');
+  document.getElementById('feedback').innerHTML='';
+}
+
 function startDebate(){
   myStance=document.querySelector('input[name="stance"]:checked').value;
   document.getElementById('setup').style.display='none';
   document.getElementById('debate').classList.add('active');
-  history.pushState({debate:true},'','');
+  if(!history.state||!history.state.debate)history.pushState({debate:true},'','');
   var t=TOPICS[selectedTopic];
   document.getElementById('t-text').textContent=t.t+' / '+t.ko;
   document.getElementById('t-stance').innerHTML='Your stance: <b>'+(myStance==='for'?'찬성 (For)':'반대 (Against)')+'</b> · AI는 반대 입장에서 토론합니다.';
   chatHistory=[];
+  resetDebateUI();
 
-  // 카메라
-  if(document.getElementById('cam-toggle').checked){
+  // 카메라 (이미 떠 있으면 재사용)
+  if(document.getElementById('cam-toggle').checked && !stream){
     (async function(){
       var attempts=[{video:{facingMode:{exact:'user'}},audio:true},{video:{facingMode:'user'},audio:true},{video:true,audio:true}];
       for(var i=0;i<attempts.length;i++){
@@ -267,42 +283,44 @@ async function stopAnswer(){
 }
 
 async function endDebate(){
-  fullCleanup();
+  // 진행 중인 인식·TTS만 정지 (카메라 stream은 유지 — 다음 토픽 이어가기 위해)
+  if('speechSynthesis' in window)try{window.speechSynthesis.cancel();}catch(e){}
+  try{if(recognition){recognition.onend=null;recognition.stop();recognition=null;}}catch(e){}
   document.getElementById('btn-answer').style.display='none';
   document.getElementById('btn-stop').style.display='none';
   document.getElementById('btn-end').style.display='none';
   document.getElementById('rec-label').textContent='완료';
+  document.getElementById('waveform').classList.remove('active');
   var fb=document.getElementById('feedback');fb.classList.add('active');
   var userTurns=chatHistory.filter(function(m){return m.role==='user';}).length;
   if(userTurns===0){fb.innerHTML='<b style="color:#E74C3C;">본인 발언이 없어 피드백을 작성할 수 없습니다.</b>';return;}
   fb.innerHTML='<b style="color:var(--gold);">피드백을 작성하고 있어요...</b>';
   var t=TOPICS[selectedTopic];
   var convo=chatHistory.map(function(m){return (m.role==='user'?'You ('+myStance+'): ':'AI ('+(myStance==='for'?'against':'for')+'): ')+m.content;}).join('\n');
+  var userAnswers=chatHistory.filter(function(m){return m.role==='user';}).map(function(m,i){return 'Turn '+(i+1)+': '+m.content;}).join('\n');
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:600,
-      system:'You are an English debate coach for cabin crew interview practice. The candidate debated in English. Evaluate ONLY the candidate (not the AI).\n\nRules:\n- Speech-to-text input — ignore grammar/punctuation.\n- Comment only on what they actually said.\n- Be encouraging but honest. Write in Korean.\n\nFormat:\n# 점수: X/100\n# 잘한 점\n- (실제 본인 발언 짧게 인용, 2개)\n# 개선할 점\n- (1~2개. 없으면 "특별한 개선점 없습니다.")\n# 실전 팁\n- (1개)',
-      messages:[{role:'user',content:'Topic: '+t.t+'\nCandidate stance: '+myStance+'\n\nDebate transcript:\n'+convo+'\n\nGive feedback on the candidate only.'}]
+      model:'claude-haiku-4-5-20251001',max_tokens:500,
+      system:'English debate coach. Evaluate ONLY the candidate\'s actual English utterances.\n\nStrict rules:\n- Comment ONLY on what the candidate actually said. NEVER speculate about their intent, body language, or about their silence.\n- Do NOT criticize for "not responding to opponent" — the candidate chose when to stop, and that choice is not a debate skill being evaluated here.\n- Do NOT invent observations ("maintained composure", "tried to preserve their stance") — evaluate only the verbal content.\n- Speech-to-text input — ignore grammar/punctuation.\n- Keep feedback short and directly tied to sentences the candidate said.\n- Write in Korean.\n\nFormat (매우 짧게):\n점수: X/100\n잘한 점: (실제 본인 발언에서 인용 1구절 + 짧은 평가 한 줄)\n개선할 점: (실제 말한 내용에 근거해서만. 없으면 "특별한 개선점 없습니다.")\n실전 팁: (1줄)',
+      messages:[{role:'user',content:'Topic: '+t.t+'\nCandidate stance: '+myStance+'\n\nCandidate utterances only:\n'+userAnswers+'\n\nFull context (for reference only, do not evaluate AI):\n'+convo}]
     })});
     var data=await res.json();
     var fbText=((data&&data.content&&data.content[0]&&data.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
-    fb.innerHTML='<b style="color:var(--gold);">디베이트 피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>'+
-      '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">'+
-      '<button onclick="newTopic()" style="padding:9px 20px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:20px;font-family:inherit;font-size:0.82rem;font-weight:700;cursor:pointer;">🔄 다음 주제</button>'+
-      '<a href="'+BACK_URL+'" style="color:var(--gold);font-size:0.82rem;">← 커리큘럼으로</a>'+
-      '</div>';
+    fb.innerHTML='<b style="color:var(--gold);">디베이트 피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>';
   }catch(e){fb.innerHTML='<b style="color:#E74C3C;">피드백 생성 실패.</b>';}
+  // 하단 컨트롤의 "다음 주제" 버튼이 이미 활성화되어 있음 → 중복 버튼 제거
+  document.getElementById('btn-next').style.display='inline-flex';
 }
 
 function newTopic(){
-  fullCleanup();
+  // 진행 중인 인식·TTS만 정리 (카메라는 유지)
+  if('speechSynthesis' in window)try{window.speechSynthesis.cancel();}catch(e){}
+  try{if(recognition){recognition.onend=null;recognition.stop();recognition=null;}}catch(e){}
   // 현재 주제 외 랜덤 선택
   var pool=TOPICS.map(function(_,i){return i;}).filter(function(i){return i!==selectedTopic;});
   selectedTopic=pool[Math.floor(Math.random()*pool.length)];
   document.querySelectorAll('.topic-card').forEach(function(c,i){c.classList.toggle('sel',i===selectedTopic);});
-  document.getElementById('feedback').classList.remove('active');
-  document.getElementById('feedback').innerHTML='';
-  // setup 화면으로 돌아가지 않고 바로 새 토픽 시작
+  // setup 화면으로 돌아가지 않고 바로 새 토픽 시작 (resetDebateUI가 버튼 상태 복원)
   startDebate();
 }
 </script>

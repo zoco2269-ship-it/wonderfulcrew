@@ -501,24 +501,32 @@ const labelEl=document.getElementById('wc-label');
 const bottomLabel=document.getElementById('wc-bottom-label');
 
 function renderDots(){
+  // 관리자·유료·구독 상태면 무제한으로 표시
+  var testMode=localStorage.getItem('wc_test_mode')==='true';
+  var isAdminUser=!testMode && typeof isAdmin==='function' && isAdmin();
+  var isPaid=localStorage.getItem('wc_paid')==='true';
+  var ftd={};try{ftd=JSON.parse(localStorage.getItem('wc_free_trial')||'{}');}catch(e){}
+  if(isAdminUser||isPaid||ftd.subscribed===true||st.unlimited){
+    dotsEl.innerHTML='';
+    labelEl.textContent=isAdminUser?'🔑 관리자 · 무제한':'멤버십 · 무제한';
+    labelEl.className='wc-counter-label';labelEl.style.color='#C5A55A';
+    return;
+  }
   dotsEl.innerHTML='';
-  for(let i=0;i<2;i++){const d=document.createElement('div');d.className='wc-dot'+(i<st.used&&!st.unlimited?' used':'');dotsEl.appendChild(d);}
+  for(let i=0;i<2;i++){const d=document.createElement('div');d.className='wc-dot'+(i<st.used?' used':'');dotsEl.appendChild(d);}
   if(st.formDone){
     const sep=document.createElement('div');sep.style.cssText='width:1px;height:10px;background:rgba(197,165,90,0.3);margin:0 3px;';dotsEl.appendChild(sep);
-    for(let i=0;i<3;i++){const d=document.createElement('div');const b=Math.max(0,st.used-2);d.className='wc-dot bonus'+(i<b&&!st.unlimited?' used':'');dotsEl.appendChild(d);}
+    for(let i=0;i<3;i++){const d=document.createElement('div');const b=Math.max(0,st.used-2);d.className='wc-dot bonus'+(i<b?' used':'');dotsEl.appendChild(d);}
   }
   if(st.bonusUnlocked){
     const sep=document.createElement('div');sep.style.cssText='width:1px;height:10px;background:rgba(197,165,90,0.3);margin:0 3px;';dotsEl.appendChild(sep);
-    for(let i=0;i<2;i++){const d=document.createElement('div');const b2=Math.max(0,st.used-5);d.className='wc-dot bonus'+(i<b2&&!st.unlimited?' used':'');dotsEl.appendChild(d);}
+    for(let i=0;i<2;i++){const d=document.createElement('div');const b2=Math.max(0,st.used-5);d.className='wc-dot bonus'+(i<b2?' used':'');dotsEl.appendChild(d);}
   }
-  if(st.unlimited){labelEl.textContent='멤버십 · 무제한';labelEl.className='wc-counter-label';labelEl.style.color='#C5A55A';}
-  else{
-    const max=st.bonusUnlocked?7:(st.formDone?5:2);
-    const rem=Math.max(0,max-st.used);
-    if(rem===0){labelEl.textContent='체험 완료';labelEl.className='wc-counter-label warn';}
-    else if(rem===1){labelEl.textContent='마지막 1회';labelEl.className='wc-counter-label warn';}
-    else{labelEl.textContent=`${rem}회 남음`;labelEl.className='wc-counter-label';}
-  }
+  const max=st.bonusUnlocked?7:(st.formDone?5:2);
+  const rem=Math.max(0,max-st.used);
+  if(rem===0){labelEl.textContent='체험 완료';labelEl.className='wc-counter-label warn';}
+  else if(rem===1){labelEl.textContent='마지막 1회';labelEl.className='wc-counter-label warn';}
+  else{labelEl.textContent=`${rem}회 남음`;labelEl.className='wc-counter-label';}
 }
 
 function renderReport(){

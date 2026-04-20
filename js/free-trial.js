@@ -116,10 +116,20 @@ function showSubscribePopup() {
 function renderTrialBadge(containerId) {
   var el = document.getElementById(containerId);
   if (!el) return;
-  if (isSubscribed()) {
+  // 테스트 모드는 실제 일반 사용자 상태로 보여주기
+  var testMode = localStorage.getItem('wc_test_mode') === 'true';
+  if (!testMode && typeof isAdmin === 'function' && isAdmin()) {
+    el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">🔑 관리자 모드 · 무제한</span>';
+    return;
+  }
+  if (localStorage.getItem('wc_paid') === 'true' || isSubscribed()) {
     el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">구독 중 ✓</span>';
+    return;
+  }
+  var left = getFreeTrialLeft();
+  if (left <= 0) {
+    el.innerHTML = '<span style="font-size:0.82rem;color:#C62828;font-weight:700;">무료체험 종료 · 요금제를 선택해주세요</span>';
   } else {
-    var left = getFreeTrialLeft();
     el.innerHTML = '<span style="font-size:0.82rem;color:#5A5048;">무료체험 <b style="color:#C9A84C;">' + left + '회</b> 남음</span>';
   }
 }

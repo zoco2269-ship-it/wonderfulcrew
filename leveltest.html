@@ -492,19 +492,18 @@ async function doAnalyze(textOnly){
   if(ms)ms.getTracks().forEach(function(t){t.stop();});
   // 무료체험 1회 소진
   if(typeof useFreeTrialOrCheck==='function' && !useFreeTrialOrCheck()) return;
-  renderResult({
-    score:78,level:'Upper-Intermediate',level_ko:'중상급',
-    score_breakdown:{service_mind:21,english:20,interview_readiness:18,growth_potential:19},
-    strengths:['서비스 마인드가 뛰어나요','적극적인 도전 정신이 있어요','성장 잠재력이 높아요'],
-    improvements:['영어 표현력을 더 키워보세요','자기소개를 간결하게 정리해보세요','지원 동기를 경험과 연결해보세요'],
-    airlines:[
-      {name:'에미레이트',match:88,reason:'영어 실력과 서비스 마인드가 적합해요',top:true},
-      {name:'카타르항공',match:82,reason:'글로벌 마인드가 잘 맞아요',top:false},
-      {name:'싱가포르항공',match:76,reason:'서비스 수준이 높은 항공사에 적합해요',top:false}
-    ],
-    coaching_priority:'영어 자기소개 30초 스크립트를 먼저 완성하세요.',
-    message:(U.name||'지원자')+'님, 지금 이 도전이 합격의 첫 걸음이에요. 원더풀크루와 함께라면 반드시 꿈을 이룰 수 있어요!'
-  });
+  // 더미 점수·추천 항공사 분석 화면 제거 — 바로 목표 항공사 선택으로 이동
+  try{
+    localStorage.setItem('wc_level_result',JSON.stringify({
+      completed:true,
+      name:U.name||'지원자',
+      lang:U.lang||'ko',
+      savedAt:Date.now()
+    }));
+    localStorage.removeItem('wc_airline');
+    localStorage.removeItem('wc_airline_name');
+  }catch(e){}
+  location.replace('curriculum.html');
 }
 function renderResult(r){
   try{localStorage.setItem('wc_level_result',JSON.stringify({score:r.score,level:r.level,level_ko:r.level_ko,airlines:r.airlines,name:U.name||'지원자',savedAt:Date.now()}));}catch(e){}

@@ -236,8 +236,8 @@ function startReadingQuestions(){
 }
 
 function render(){
-  var q=QUESTIONS[current];
-  document.getElementById('q-counter').textContent='Question '+(current+1)+' of '+QUESTIONS.length;
+  var q=activeSet[current];
+  document.getElementById('q-counter').textContent='Question '+(current+1)+' of '+activeSet.length;
   // 빈칸 표시 처리
   var text=q.q.replace(/_____/g,'<span class="blank"></span>');
   document.getElementById('q-text').innerHTML=text;
@@ -251,12 +251,12 @@ function render(){
     ob.appendChild(d);
   });
   // 진행 바
-  document.getElementById('prog-bar').style.width=((current+1)/QUESTIONS.length*100)+'%';
+  document.getElementById('prog-bar').style.width=((current+1)/activeSet.length*100)+'%';
   // 버튼 상태
   document.getElementById('btn-prev').disabled=(current===0);
   var next=document.getElementById('btn-next');
   next.disabled=(answers[current]===null);
-  next.textContent=(current===QUESTIONS.length-1)?'결과 보기 →':'다음 →';
+  next.textContent=(current===activeSet.length-1)?'결과 보기 →':'다음 →';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -268,7 +268,7 @@ function selectOption(i){
 function prevQ(){if(current>0){current--;render();}}
 function nextQ(){
   if(answers[current]===null)return;
-  if(current<QUESTIONS.length-1){current++;render();}
+  if(current<activeSet.length-1){current++;render();}
   else showResult();
 }
 

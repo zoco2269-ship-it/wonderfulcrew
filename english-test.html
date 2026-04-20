@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>영어 테스트 · WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--emirates-red:#D71920;--gold:#C9A84C;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Sans KR',sans-serif;background:#F6F6F8;color:var(--text-dark);min-height:100vh;}a{color:inherit;text-decoration:none;}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:#fff;border-bottom:1px solid #EAEAEA;}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--navy);}.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.88rem;color:var(--text-muted);}
+.nav-back:hover{color:var(--navy);}
+
+.wrap{max-width:560px;margin:0 auto;padding:32px 20px 60px;}
+
+/* Emirates-style question card */
+.q-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.q-header-left,.q-header-right{font-size:1.2rem;color:#999;cursor:pointer;}
+.brand-logo{background:var(--emirates-red);color:#fff;padding:6px 14px;font-family:serif;font-weight:700;letter-spacing:0.02em;font-size:0.88rem;border-radius:2px;}
+
+.q-counter{font-family:'DM Serif Display',serif;font-size:1.6rem;color:#1A1A1A;font-weight:700;margin-bottom:22px;}
+
+.q-text{font-size:1.02rem;line-height:1.7;color:#1A1A1A;margin-bottom:26px;}
+.q-text .blank{display:inline-block;min-width:90px;border-bottom:1px solid #1A1A1A;margin:0 3px;}
+
+.options{display:flex;flex-direction:column;}
+.opt{padding:18px 20px;border-bottom:1px solid #EEE;display:flex;align-items:center;gap:16px;cursor:pointer;transition:background 0.15s;}
+.opt:hover{background:#FAFAFA;}
+.opt-circle{width:20px;height:20px;border:1.5px solid #BBB;border-radius:50%;flex-shrink:0;position:relative;}
+.opt.sel .opt-circle{border-color:var(--emirates-red);border-width:2px;}
+.opt.sel .opt-circle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:10px;height:10px;background:var(--emirates-red);border-radius:50%;}
+.opt-text{font-size:0.94rem;color:#1A1A1A;}
+
+.progress{position:sticky;top:56px;background:#fff;height:4px;z-index:99;border-bottom:1px solid #EAEAEA;}
+.progress .bar{height:100%;background:var(--emirates-red);width:0%;transition:width 0.3s;}
+
+.btn-row{display:flex;gap:10px;margin-top:28px;justify-content:space-between;}
+.btn{padding:14px 28px;border:none;border-radius:6px;font-family:inherit;font-size:0.94rem;font-weight:700;cursor:pointer;transition:all 0.15s;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-primary{background:var(--emirates-red);color:#fff;flex:1;}
+.btn-primary:hover:not(:disabled){background:#B01218;}
+.btn-secondary{background:#fff;color:var(--text-mid);border:1px solid #DDD;}
+
+/* Intro */
+.intro{text-align:center;padding:50px 24px;}
+.intro .brand-logo{display:inline-block;margin-bottom:24px;}
+.intro h1{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--navy);margin-bottom:10px;line-height:1.3;}
+.intro .meta{font-size:0.92rem;color:var(--text-muted);line-height:1.8;margin-bottom:30px;}
+.intro .info-box{text-align:left;background:#fff;border:1px solid #EAEAEA;border-radius:8px;padding:20px 22px;margin-bottom:28px;font-size:0.88rem;color:var(--text-mid);line-height:1.8;}
+.intro .info-box b{color:var(--navy);}
+.intro .start-btn{padding:16px 48px;background:var(--emirates-red);color:#fff;border:none;border-radius:6px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0.02em;}
+.intro .start-btn:hover{background:#B01218;}
+
+/* Result */
+.result-hero{text-align:center;padding:40px 20px 20px;}
+.result-hero .emoji{font-size:3rem;margin-bottom:10px;}
+.result-hero h2{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin-bottom:8px;}
+.result-hero .score{font-family:'DM Serif Display',serif;font-size:3rem;color:var(--emirates-red);font-weight:700;line-height:1;margin:16px 0;}
+.result-hero .score span{font-size:1.2rem;color:var(--text-muted);}
+.result-hero .grade{font-size:0.96rem;color:var(--text-mid);margin-bottom:20px;}
+.review-list{margin-top:28px;}
+.review-item{background:#fff;border:1px solid #EAEAEA;border-radius:8px;padding:18px 20px;margin-bottom:12px;}
+.review-item .num{font-size:0.76rem;color:var(--text-muted);font-weight:700;letter-spacing:0.08em;margin-bottom:6px;}
+.review-item .q{font-size:0.9rem;color:var(--text-dark);line-height:1.6;margin-bottom:10px;}
+.review-item .ans{font-size:0.86rem;line-height:1.7;}
+.review-item .ans .wrong{color:#C62828;text-decoration:line-through;}
+.review-item .ans .right{color:#2E7D32;font-weight:700;}
+
+@media(max-width:600px){.wrap{padding:20px 16px 40px;}.q-counter{font-size:1.4rem;}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth-gate.js"></script>
+<script src="js/free-trial.js"></script>
+</head>
+<body>
+
+<nav>
+  <a href="curriculum.html" class="nav-back">← 커리큘럼으로</a>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <span style="width:80px;"></span>
+</nav>
+<div class="progress"><div class="bar" id="prog-bar"></div></div>
+
+<!-- INTRO -->
+<div class="wrap" id="screen-intro">
+  <div class="intro">
+    <div class="brand-logo">Emirates</div>
+    <h1>영어 테스트<br><span style="color:var(--emirates-red);">English Test</span></h1>
+    <p class="meta">Emirates 실전 영어 테스트 형식<br>30문항 객관식 · 예상 소요 10~15분</p>
+    <div class="info-box">
+      <b>테스트 안내</b><br>
+      · 빈칸에 들어갈 가장 적절한 단어를 4개 보기에서 선택하세요.<br>
+      · 실제 에미레이트·카타르 등 외항사 영어 테스트에서 자주 나오는<br>&nbsp;&nbsp;<b>어휘·전치사·서법조동사·표현</b>을 묻습니다.<br>
+      · 테스트 종료 후 <b>정답 해설 + 점수</b>가 제공됩니다.<br>
+      · 사전·번역기 사용은 실전 점수에 도움 안 됩니다. 스스로 풀어보세요.
+    </div>
+    <button class="start-btn" onclick="startTest()">테스트 시작하기 →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="wrap" id="screen-quiz" style="display:none;">
+  <div class="q-header">
+    <div class="q-header-left">←</div>
+    <div class="brand-logo">Emirates</div>
+    <div class="q-header-right">⚙ ?</div>
+  </div>
+  <div class="q-counter" id="q-counter">Question 1 of 30</div>
+  <div class="q-text" id="q-text"></div>
+  <div class="options" id="options"></div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" id="btn-prev" onclick="prevQ()">← 이전</button>
+    <button class="btn btn-primary" id="btn-next" onclick="nextQ()" disabled>다음 →</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="wrap" id="screen-result" style="display:none;">
+  <div class="result-hero">
+    <div class="emoji" id="r-emoji">🎉</div>
+    <h2 id="r-title">테스트 완료!</h2>
+    <div class="score"><span id="r-correct">0</span>/30<span style="font-size:0.8rem;"> 정답</span></div>
+    <div class="grade" id="r-grade"></div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:18px;">
+      <button class="btn btn-secondary" onclick="location.reload()">다시 풀기</button>
+      <a href="curriculum.html" class="btn btn-primary" style="text-decoration:none;display:inline-block;">커리큘럼으로</a>
+    </div>
+  </div>
+  <h3 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin:30px 0 14px;">문제별 해설</h3>
+  <div class="review-list" id="review-list"></div>
+</div>
+
+<script>
+// 30문항 — Emirates/Qatar 영어 테스트 실전 스타일
+// 각 문항: q(빈칸 문장, _____로 표시), options(4개), correct(0-indexed), explain(간단 설명)
+var QUESTIONS=[
+  {q:"The passenger was briefed by the crew to place her baggage _____ the seat in front of her.",opt:["above","between","under","in"],correct:2,explain:"좌석 아래(under) 보관이 표준 안내입니다."},
+  {q:"Customers _____ smoke on board the aircraft. It is prohibited.",opt:["may","must not","might not","should"],correct:1,explain:"금지 규칙은 'must not' (강한 금지)."},
+  {q:"Reserved seating is the policy. You should sit in your _____ seat to avoid disturbing others.",opt:["assigned","random","vacant","cancelled"],correct:0,explain:"배정된(assigned) 좌석."},
+  {q:"As a safety _____, flight attendants shall check all seat belts before takeoff.",opt:["description","precaution","caution","prevention"],correct:1,explain:"안전 예방조치는 precaution. 'as a safety precaution' 고정 표현."},
+  {q:"You must extinguish your cigarette _____ entering the building.",opt:["at","after","prior to","while"],correct:2,explain:"~하기 전에 = prior to (before과 같은 뜻의 격식 표현)."},
+  {q:"A decision was _____ to postpone the flight due to weather.",opt:["taken","done","make","said"],correct:0,explain:"'a decision was taken/made' 둘 다 가능. 보기 중엔 taken만 자연스러움."},
+  {q:"Air traffic controllers need to have strong _____ skills to give clear instructions to pilots.",opt:["extension","communication","demonstration","completion"],correct:1,explain:"커뮤니케이션 능력 = communication skills."},
+  {q:"It is a _____ for all cabin crew to wear the correct uniform.",opt:["requirement","qualification","revision","regulation"],correct:0,explain:"요구사항 = requirement. 'It is a requirement that...' 구문."},
+  {q:"Fitness trackers allow you to _____ your heart rate while exercising.",opt:["check","obtain","monitor","damage"],correct:2,explain:"지속적 관찰 = monitor."},
+  {q:"What is the baby's _____? If she is too heavy, the bassinet won't be safe.",opt:["height","weight","length","width"],correct:1,explain:"무거운지 여부 → weight(몸무게)."},
+  {q:"Did you _____ your supervisor to check if there are any changes over the holiday?",opt:["support","present","contact","discuss"],correct:2,explain:"연락하다 = contact. discuss는 '~에 대해 논의하다'로 with가 필요."},
+  {q:"The client angrily _____ a refund when he discovered the defect.",opt:["demanded","applied","confirmed","performed"],correct:0,explain:"요구하다 = demanded (강하게 요구)."},
+  {q:"The car is _____ with a warning light that comes on when the fuel tank is near empty.",opt:["operated","inflated","moved","fitted"],correct:3,explain:"장착되어 있다 = fitted with."},
+  {q:"How much money do you make _____ hour?",opt:["per","for","in","during"],correct:0,explain:"시간당 = per hour."},
+  {q:"Don't slam the door! Gently pull it closed by the _____.",opt:["handle","button","switch","lock"],correct:0,explain:"손잡이 = handle."},
+  {q:"It is important to be _____ when checking your work for errors.",opt:["thorough and detailed","correct and rapid","realistic and rushed","attention and careless"],correct:0,explain:"꼼꼼하고 세심하게 = thorough and detailed."},
+  {q:"He _____ the key in the lock to open the metal container.",opt:["rotated","completed","signaled","blocked"],correct:0,explain:"열쇠를 돌리다 = rotated (turned도 가능)."},
+  {q:"Check your luggage on arrival to ensure no one has _____ with it.",opt:["opened","tampered","damaged","touched"],correct:1,explain:"손댔다 (무단으로) = tampered with. 짝 전치사 with 주의."},
+  {q:"It is _____ for cyclists to wear a high visibility vest so motorists can see them at night.",opt:["relevant","designed","necessary","available"],correct:2,explain:"필요하다 = necessary."},
+  {q:"The firefighters wore protective clothing to minimise the _____ of exposure to fire.",opt:["risk","safety","condition","incident"],correct:0,explain:"노출 위험 = risk of exposure."},
+  {q:"The customer was shouting at the bartender. His behaviour was hardly _____.",opt:["appropriate","applicable","decent","inappropriate"],correct:0,explain:"hardly(거의 ~않다) + appropriate = 거의 적절하지 않다. inappropriate은 이중 부정 되어 잘못."},
+  {q:"Always familiarise yourself with the location of the emergency _____ in case of evacuation.",opt:["access","exits","effects","environment"],correct:1,explain:"비상구 = emergency exits."},
+  {q:"The trainer is sick today. Do you think the training _____?",opt:["will be happen","will postpone","won't be scheduling","will be cancelled"],correct:3,explain:"취소될 것이다 = will be cancelled (수동태)."},
+  {q:"The elevator is _____ maintenance today. Please use the stairs.",opt:["in","over","under","between"],correct:2,explain:"점검 중 = under maintenance."},
+  {q:"This course has both _____ and theoretical components.",opt:["digital","effective","standard","practical"],correct:3,explain:"실습과 이론 = practical and theoretical."},
+  {q:"According to the company manual, you shall not accept an item for return _____ the customer is able to produce a receipt.",opt:["unless","regardless","despite","except"],correct:0,explain:"~하지 않는 한 = unless."},
+  {q:"During the descent, several climbers collapsed from _____. It was a long and tiring journey.",opt:["awareness","aid","fatigue","fumes"],correct:2,explain:"피로 = fatigue."},
+  {q:"Passengers may attempt to transport _____ items such as flammable liquids or lithium batteries in hand luggage.",opt:["electrical","dangerous","secure","harmless"],correct:1,explain:"인화성 액체·리튬 배터리는 dangerous items."},
+  {q:"The crew member offered to _____ the elderly passenger's heavy bag into the overhead compartment.",opt:["lift","lift up","take","stow"],correct:3,explain:"수하물을 오버헤드에 넣다 = stow (승무원 전문 용어)."},
+  {q:"In the event of a sudden cabin decompression, oxygen masks will _____ automatically from the panel above.",opt:["appear","deploy","throw","break"],correct:1,explain:"산소마스크가 작동·전개되다 = deploy."},
+];
+
+var current=0;var answers=new Array(QUESTIONS.length).fill(null);var started=false;
+
+function startTest(){
+  if(!started){started=true;try{if(typeof useFreeTrialOrCheck==='function')useFreeTrialOrCheck();}catch(e){}}
+  document.getElementById('screen-intro').style.display='none';
+  document.getElementById('screen-quiz').style.display='block';
+  render();
+}
+
+function render(){
+  var q=QUESTIONS[current];
+  document.getElementById('q-counter').textContent='Question '+(current+1)+' of '+QUESTIONS.length;
+  // 빈칸 표시 처리
+  var text=q.q.replace(/_____/g,'<span class="blank"></span>');
+  document.getElementById('q-text').innerHTML=text;
+  var ob=document.getElementById('options');
+  ob.innerHTML='';
+  q.opt.forEach(function(o,i){
+    var d=document.createElement('div');d.className='opt';
+    if(answers[current]===i)d.classList.add('sel');
+    d.innerHTML='<div class="opt-circle"></div><div class="opt-text">'+o+'</div>';
+    d.onclick=function(){selectOption(i);};
+    ob.appendChild(d);
+  });
+  // 진행 바
+  document.getElementById('prog-bar').style.width=((current+1)/QUESTIONS.length*100)+'%';
+  // 버튼 상태
+  document.getElementById('btn-prev').disabled=(current===0);
+  var next=document.getElementById('btn-next');
+  next.disabled=(answers[current]===null);
+  next.textContent=(current===QUESTIONS.length-1)?'결과 보기 →':'다음 →';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function selectOption(i){
+  answers[current]=i;
+  render();
+}
+
+function prevQ(){if(current>0){current--;render();}}
+function nextQ(){
+  if(answers[current]===null)return;
+  if(current<QUESTIONS.length-1){current++;render();}
+  else showResult();
+}
+
+function showResult(){
+  document.getElementById('screen-quiz').style.display='none';
+  document.getElementById('screen-result').style.display='block';
+  var correctCount=0;
+  QUESTIONS.forEach(function(q,i){if(answers[i]===q.correct)correctCount++;});
+  document.getElementById('r-correct').textContent=correctCount;
+  var pct=Math.round(correctCount/QUESTIONS.length*100);
+  var emoji='🎉',title='훌륭합니다!',grade='';
+  if(pct>=90){emoji='🏆';title='완벽해요!';grade='외항사 영어 테스트 통과 수준 · 자신감 가지고 응시하세요.';}
+  else if(pct>=75){emoji='🎉';title='좋은 점수!';grade='합격 가능권. 틀린 문제만 복습하면 안정적입니다.';}
+  else if(pct>=60){emoji='💪';title='조금 더 필요해요';grade='어휘·전치사 집중 보완 필요. 실전 전 재응시 권장.';}
+  else{emoji='📚';title='어휘 기초 다지기';grade='매일 영어 쉐도잉 + 어휘 학습 후 재응시하세요.';}
+  document.getElementById('r-emoji').textContent=emoji;
+  document.getElementById('r-title').textContent=title;
+  document.getElementById('r-grade').textContent=grade;
+  // 문제별 해설
+  var rl=document.getElementById('review-list');
+  rl.innerHTML='';
+  QUESTIONS.forEach(function(q,i){
+    var userIdx=answers[i];
+    var isRight=(userIdx===q.correct);
+    var userAns=userIdx!==null?q.opt[userIdx]:'미응답';
+    var rightAns=q.opt[q.correct];
+    var ri=document.createElement('div');ri.className='review-item';
+    var ansHtml=isRight
+      ?'<span class="right">✓ '+rightAns+'</span>'
+      :'<span class="wrong">✗ '+userAns+'</span> → <span class="right">'+rightAns+'</span>';
+    ri.innerHTML='<div class="num">Q'+(i+1)+' '+(isRight?'정답':'오답')+'</div>'+
+      '<div class="q">'+q.q.replace(/_____/g,'<u>_____</u>')+'</div>'+
+      '<div class="ans">'+ansHtml+'</div>'+
+      '<div class="ans" style="color:var(--text-muted);margin-top:8px;font-size:0.82rem;">💡 '+q.explain+'</div>';
+    rl.appendChild(ri);
+  });
+  // Supabase 기록
+  if(typeof savePracticeRecord==='function'){
+    savePracticeRecord({stage:'English Test',airline:'Emirates',question:'30문항 객관식',answer:correctCount+'/30',score:pct,feedback:title+' — '+grade});
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

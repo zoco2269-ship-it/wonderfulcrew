@@ -28,7 +28,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 .avatar-opt{padding:14px 8px;background:rgba(255,255,255,0.04);border:2px solid rgba(201,168,76,0.15);border-radius:8px;text-align:center;cursor:pointer;transition:all 0.2s;font-size:0.78rem;color:rgba(255,255,255,0.7);}
 .avatar-opt:hover,.avatar-opt.sel{border-color:var(--gold);background:rgba(201,168,76,0.1);color:#fff;}
 .avatar-opt .emoji{font-size:1.8rem;margin-bottom:4px;display:block;}
-.btn-start{padding:16px 40px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:28px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.04em;}
+.btn-start{padding:16px 40px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:28px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.04em;}@media(max-width:600px){.btn-start{padding:10px 24px!important;font-size:0.82rem!important;border-radius:22px!important;}}
 .btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,168,76,0.4);}
 
 .interview{display:none;flex:1;flex-direction:column;}
@@ -126,7 +126,7 @@ window.addEventListener('popstate',function(){
 
 <!-- SETUP SCREEN -->
 <div class="setup" id="setup">
-  <h1>한국어 롤플레이 <em>면접 연습</em></h1>
+  <h1>한국어 롤플레이<br><em>면접연습</em></h1>
   <p id="rp-desc">국내 항공사 기내 상황을 한국어로 연습합니다.<br>실제 면접처럼 카메라 앞에서 답변해보세요.</p>
   <script>if(new URLSearchParams(location.search).get('mode')==='hotel'){document.getElementById('rp-desc').innerHTML='호텔 서비스 상황을 한국어로 연습합니다.<br>실제 면접처럼 카메라 앞에서 답변해보세요.';}</script>
 
@@ -554,6 +554,7 @@ function startListening(){
 if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}
 
 function _stopAllAudio(){
+  try{document.querySelectorAll('audio,video').forEach(function(el){try{el.pause();el.src='';el.load();}catch(e){}});}catch(e){}
   try{if(typeof gcStop==='function')gcStop();}catch(e){}
   try{if('speechSynthesis' in window)window.speechSynthesis.cancel();}catch(e){}
   try{if(recognition)recognition.stop();}catch(e){}

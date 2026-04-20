@@ -40,7 +40,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 .avatar-opt{padding:14px 8px;background:rgba(255,255,255,0.04);border:2px solid rgba(201,168,76,0.15);border-radius:8px;text-align:center;cursor:pointer;transition:all 0.2s;font-size:0.78rem;color:rgba(255,255,255,0.7);}
 .avatar-opt:hover,.avatar-opt.sel{border-color:var(--gold);background:rgba(201,168,76,0.1);color:#fff;}
 .avatar-opt .emoji{font-size:1.8rem;margin-bottom:4px;display:block;}
-.btn-start{padding:16px 40px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:28px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.04em;}
+.btn-start{padding:16px 40px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:28px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.04em;}@media(max-width:600px){.btn-start{padding:10px 24px!important;font-size:0.82rem!important;border-radius:22px!important;}}
 .btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,168,76,0.4);}
 
 /* Interview screen */
@@ -388,19 +388,9 @@ function startInterview(){
   if(mode==='cruise'){
     indexed=indexed.filter(function(s){return /cruise|resort|spa|cabana|shore excursion/i.test(s.q);});
   }
-  // 최근 푼 시나리오 제외 (localStorage 기반 반복 방지)
-  var storeKey=mode==='cruise'?'wc_rp_en_cruise_recent':'wc_rp_en_recent';
-  var recent=[];
-  try{recent=JSON.parse(localStorage.getItem(storeKey)||'[]');}catch(e){recent=[];}
-  var fresh=indexed.filter(function(x){return recent.indexOf(x.origIdx)===-1;});
-  if(fresh.length<3){recent=[];fresh=indexed.slice();}
-  // 3개 랜덤 선택
-  questions=[];
-  var pool=fresh.slice();
-  for(var i=0;i<3&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
-  var newRecent=recent.concat(questions.map(function(q){return q.origIdx;}));
-  while(newRecent.length>20)newRecent.shift();
-  try{localStorage.setItem(storeKey,JSON.stringify(newRecent));}catch(e){}
+  // 무제한 연습 — 전체 시나리오 풀을 셔플해서 questions에 담음
+  questions=indexed.slice();
+  for(var i=questions.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=questions[i];questions[i]=questions[j];questions[j]=tmp;}
 
   qIdx=0;
   document.getElementById('setup').style.display='none';
@@ -585,6 +575,9 @@ if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speech
 
 // 페이지 나갈 때 / 숨김 시 TTS + 카메라 + 마이크 모두 중지
 function _stopAllRoleplayAudio(){
+  try{
+    document.querySelectorAll('audio,video').forEach(function(el){try{el.pause();el.src='';el.load();}catch(e){}});
+  }catch(e){}
   try{if(typeof _ttsSeq!=='undefined')_ttsSeq++;}catch(e){}
   try{if(typeof _ttsAbort!=='undefined'&&_ttsAbort){_ttsAbort.abort();_ttsAbort=null;}}catch(e){}
   try{if(_ttsAudio){_ttsAudio.pause();_ttsAudio.currentTime=0;_ttsAudio=null;}}catch(e){}

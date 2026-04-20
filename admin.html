@@ -715,8 +715,12 @@ function enableTestMode(){
   updateTestModeStatus();
 }
 function disableTestMode(){
+  // 테스트 모드가 남긴 찌꺼기 모두 정리 → 순수 어드민 상태로 복귀
   localStorage.removeItem('wc_test_mode');
-  alert('테스트 모드 OFF. 어드민 권한 복귀됨.');
+  localStorage.removeItem('wc_free_trial');
+  localStorage.removeItem('wc_v3');
+  // 어드민은 wc_paid 없어도 isAdmin()으로 우회 가능하니 굳이 true 안 넣음
+  alert('✓ 테스트 모드 OFF\n✓ 무료체험 카운터 초기화\n✓ 챗봇 상태 초기화\n\n어드민 권한 전체 복귀됨. 모든 페이지 접근 가능합니다.');
   updateTestModeStatus();
 }
 function updateTestModeStatus(){

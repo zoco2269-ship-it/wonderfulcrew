@@ -111,6 +111,8 @@ function isLoggedIn() {
 }
 
 function isAdmin() {
+  // 테스트 모드 — 관리자가 결제 플로우 테스트할 때 어드민 권한 일시 해제
+  if (localStorage.getItem('wc_test_mode') === 'true') return false;
   var user = JSON.parse(localStorage.getItem('wc_user') || '{}');
   return ADMIN_EMAILS.indexOf(user.email) !== -1;
 }

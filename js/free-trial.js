@@ -19,6 +19,8 @@ function saveTrialData(data) {
 // Supabase에서 사용 횟수 동기화
 async function syncTrialFromServer() {
   if (_trialSynced) return;
+  // 테스트 모드일 때는 서버 동기화 건너뛰기 (관리자가 강제로 10회 소진 상태 유지)
+  if (localStorage.getItem('wc_test_mode') === 'true') return;
   try {
     var user = JSON.parse(localStorage.getItem('wc_user') || '{}');
     if (!user.id) return;
@@ -134,6 +136,13 @@ function renderTrialBadge(containerId) {
   if (gatedPages.indexOf(page) === -1) return;
   // 즉시 체크 (어드민이나 유료는 통과)
   function gateCheck(){
+    // 테스트 모드는 무조건 잠금 — 관리자가 결제 플로우 검증 중
+    if (localStorage.getItem('wc_test_mode') === 'true') {
+      document.body.style.pointerEvents = 'none';
+      document.body.style.filter = 'blur(4px)';
+      showLockedGate();
+      return;
+    }
     if (typeof isAdmin === 'function' && isAdmin()) return;
     if (localStorage.getItem('wc_paid') === 'true') return;
     var data = getTrialData();

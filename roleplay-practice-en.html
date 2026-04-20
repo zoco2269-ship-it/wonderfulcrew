@@ -584,10 +584,14 @@ if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speech
 
 // 페이지 나갈 때 / 숨김 시 TTS + 카메라 + 마이크 모두 중지
 function _stopAllRoleplayAudio(){
+  try{if(typeof _ttsSeq!=='undefined')_ttsSeq++;}catch(e){}
+  try{if(typeof _ttsAbort!=='undefined'&&_ttsAbort){_ttsAbort.abort();_ttsAbort=null;}}catch(e){}
   try{if(_ttsAudio){_ttsAudio.pause();_ttsAudio.currentTime=0;_ttsAudio=null;}}catch(e){}
   try{if('speechSynthesis' in window)window.speechSynthesis.cancel();}catch(e){}
-  try{if(recognition)recognition.stop();}catch(e){}
+  try{if(recognition){recognition.onend=null;recognition.stop();recognition=null;}}catch(e){}
   try{if(stream){stream.getTracks().forEach(function(t){t.stop();});stream=null;}}catch(e){}
+  try{var iCard=document.getElementById('interviewer-card');if(iCard)iCard.classList.remove('speaking');}catch(e){}
+  try{var mouth=document.getElementById('avatar-mouth');if(mouth)mouth.classList.remove('talking');}catch(e){}
 }
 window.addEventListener('beforeunload',_stopAllRoleplayAudio);
 window.addEventListener('pagehide',_stopAllRoleplayAudio);
@@ -607,14 +611,20 @@ function _sanitizeForTTS(t){
     .trim();
 }
 
+var _ttsSeq=0;
+var _ttsAbort=null;
+
 async function speakQuestion(text,lang){
   var iCard=document.getElementById('interviewer-card');
   var mouth=document.getElementById('avatar-mouth');
   iCard.classList.add('speaking');
   mouth.classList.add('talking');
 
-  // 이전 오디오 중지
-  if(_ttsAudio){try{_ttsAudio.pause();_ttsAudio=null;}catch(e){}}
+  // 이전 오디오·요청 완전 취소
+  _ttsSeq++;
+  var mySeq=_ttsSeq;
+  if(_ttsAbort){try{_ttsAbort.abort();}catch(e){}_ttsAbort=null;}
+  if(_ttsAudio){try{_ttsAudio.pause();_ttsAudio.currentTime=0;_ttsAudio=null;}catch(e){}}
   if('speechSynthesis' in window) window.speechSynthesis.cancel();
 
   var isMale=(chosenAvatar==='👨🏻');
@@ -622,23 +632,29 @@ async function speakQuestion(text,lang){
 
   // Google Cloud TTS API 시도
   try{
+    _ttsAbort=new AbortController();
     var res=await fetch('/api/tts',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text:text,lang:lang||'en-GB',gender:isMale?'male':'female'})
+      body:JSON.stringify({text:text,lang:lang||'en-GB',gender:isMale?'male':'female'}),
+      signal:_ttsAbort.signal
     });
+    // 응답 받는 사이 다른 호출이 들어왔으면 이 응답은 버림
+    if(mySeq!==_ttsSeq){iCard.classList.remove('speaking');mouth.classList.remove('talking');return;}
     if(res.ok){
       var data=await res.json();
+      if(mySeq!==_ttsSeq){iCard.classList.remove('speaking');mouth.classList.remove('talking');return;}
       if(data.audioContent){
         var audio=new Audio('data:audio/mp3;base64,'+data.audioContent);
         _ttsAudio=audio;
-        audio.onended=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');_ttsAudio=null;};
-        audio.onerror=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');_ttsAudio=null;};
+        audio.onended=function(){if(_ttsAudio===audio){iCard.classList.remove('speaking');mouth.classList.remove('talking');_ttsAudio=null;}};
+        audio.onerror=function(){if(_ttsAudio===audio){iCard.classList.remove('speaking');mouth.classList.remove('talking');_ttsAudio=null;}};
         audio.play();
         return;
       }
     }
-  }catch(e){console.log('Google TTS failed, falling back to browser TTS');}
+  }catch(e){if(e.name==='AbortError'){iCard.classList.remove('speaking');mouth.classList.remove('talking');return;}console.log('Google TTS failed, falling back to browser TTS');}
+  if(mySeq!==_ttsSeq){iCard.classList.remove('speaking');mouth.classList.remove('talking');return;}
 
   // 폴백: 브라우저 TTS
   if(!('speechSynthesis' in window)){iCard.classList.remove('speaking');mouth.classList.remove('talking');return;}

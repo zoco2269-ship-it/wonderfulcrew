@@ -725,10 +725,53 @@ document.addEventListener('click',function(e){if(!e.target.closest('#site-search
           <span style="font-size:0.76rem;color:var(--text-muted);">프리미엄 패키지 전용</span>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button onclick="if(localStorage.getItem('wc_paid')==='true'){location.href='live-booking.html';}else{alert('프리미엄 패키지 구매 후 이용 가능합니다.');location.href='pricing.html';}" style="padding:8px 16px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:18px;font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer;">라이브 강의 신청</button>
+          <button id="home-live-btn" onclick="goLive()" style="padding:8px 16px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:18px;font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer;">라이브 강의 신청</button>
           <a href="live-booking.html" style="display:inline-flex;align-items:center;padding:8px 16px;background:#fff;color:var(--navy);border:1px solid var(--gold-pale);border-radius:18px;font-size:0.78rem;font-weight:600;">더 알아보기</a>
         </div>
       </div>
+      <script>
+      function goLive(){
+        var paid=localStorage.getItem('wc_paid')==='true';
+        if(!paid){location.href='pricing.html';return;}
+        location.href='live-booking.html';
+      }
+      // 신청 완료된 수업이 있으면 버튼 텍스트 변경
+      function _hasAppliedAnyClass(){
+        for(var i=0;i<localStorage.length;i++){
+          var k=localStorage.key(i);
+          if(k&&k.indexOf('wc_class_applied_')===0&&localStorage.getItem(k)==='1')return true;
+        }
+        return false;
+      }
+      function _updateLiveBtn(){
+        var btn=document.getElementById('home-live-btn');
+        if(!btn)return;
+        if(_hasAppliedAnyClass()){
+          btn.innerHTML='✓ 신청 완료 — 내 수업 보기';
+          btn.style.background='linear-gradient(135deg,#1A2340,#2A3960)';
+        }
+      }
+      _updateLiveBtn();
+      // Supabase에서 본인 신청 내역도 동기화 (다른 기기 신청분 반영)
+      setTimeout(async function(){
+        try{
+          var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+          if(!u.email)return;
+          var r=await fetch('/api/supabase-config');
+          var cfg=await r.json();
+          if(!cfg.url||!cfg.anonKey||typeof window.supabase==='undefined')return;
+          var sb=window.supabase.createClient(cfg.url,cfg.anonKey);
+          var {data}=await sb.from('feedback').select('content').eq('email',u.email).eq('type','라이브 수업 신청').limit(20);
+          if(data&&data.length){
+            data.forEach(function(row){
+              var m=(row.content||'').match(/\[수업 신청\]\s*(.+?)\s*\((.+?)\)/);
+              if(m){localStorage.setItem('wc_class_applied_'+(m[1]+'__'+m[2]).replace(/\s/g,'_'),'1');}
+            });
+            _updateLiveBtn();
+          }
+        }catch(e){}
+      },1500);
+      </script>
     </div>
     <div class="recruit-card">
       <h3>최신 채용 뉴스</h3>

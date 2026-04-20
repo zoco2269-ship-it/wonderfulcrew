@@ -232,16 +232,9 @@ async function applyClass(btn,className,date){
       body:JSON.stringify({title:'신규 라이브 수업 신청',body:(user.name||user.email)+' · '+className+' ('+date+')',url:'/admin.html#feedback',tag:'live-class-'+date})
     });
   }catch(e){}
-  // 수업 카드에서 일시·장소 정보 추출해서 모달에 직접 표시
-  var classCard=btn.closest('.class-card')||btn.closest('div');
-  var detailText='';
-  if(classCard){
-    var meta=classCard.querySelector('.class-meta');
-    if(meta)detailText=meta.innerText.replace(/\s+/g,' ').trim();
-  }
   await wcModal({
-    title:'신청 접수되었습니다',
-    msg:(detailText?detailText+'\n\n':'')+'위 일정으로 출석해주세요. 변경 사항이 생기면 별도로 안내드립니다.',
+    title:'신청 완료',
+    msg:'신청 완료되었습니다.',
     icon:'✅'
   });
 }

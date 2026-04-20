@@ -762,10 +762,8 @@ async function endRoleplay(){
   // 녹화 중지
   if(mediaRecorder&&mediaRecorder.state==='recording')try{mediaRecorder.stop();}catch(e){}
   var duration=Math.round((Date.now()-recordStartTime)/1000);
-  if(duration>=20&&recordChunks.length>0&&typeof saveRoleplayFirstVideo==='function'){
-    var blob=new Blob(recordChunks,{type:'video/webm'});
-    saveRoleplayFirstVideo(blob,'Emirates').then(function(p){if(p)console.log('Roleplay first video saved:',p);});
-  }
+  // 서버 업로드 비활성화 — 연습 영상은 본인 기기에만 저장
+  void(duration);void(recordChunks);
 
   var fb=document.getElementById('feedback');
   fb.innerHTML='<span style="color:var(--gold);">Generating feedback...</span>';

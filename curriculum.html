@@ -252,6 +252,7 @@ AIRLINES.forEach(function(a){
   var btn=document.createElement('button');
   btn.className='airline-card';
   btn.dataset.key=a.key;
+  var isDomestic=DOMESTIC_KEYS.indexOf(a.key)>=0;
   var isBest=BEST_KEYS.indexOf(a.key)>=0;
   var isRec=REC_KEYS.indexOf(a.key)>=0;
   if(isBest)btn.classList.add('recommended');

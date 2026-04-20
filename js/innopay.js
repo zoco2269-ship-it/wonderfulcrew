@@ -77,16 +77,18 @@ async function payWithInnopay(plan, buyerInfo, payMethod) {
         var divpop=document.getElementById('divpop');
         var iframe=document.getElementById('InnoFrame');
         if(wrap){
-          wrap.style.cssText+=';overflow-y:auto !important;display:flex !important;align-items:flex-start !important;justify-content:center !important;padding:0 !important;margin:0 !important;';
+          wrap.style.cssText+=';overflow-y:auto !important;padding:0 !important;margin:0 !important;display:block !important;';
           wrap.scrollTop=0;
         }
         if(divpop){
-          divpop.style.cssText+=';position:relative !important;top:0 !important;left:auto !important;height:auto !important;min-height:auto !important;max-height:none !important;margin:0 !important;display:flex !important;flex-direction:column !important;border-radius:0 !important;';
+          // popWrapper(position:fixed, top:0)에 absolute로 top:0 고정 → 어떤 여백도 없이 화면 최상단부터 시작
+          divpop.style.cssText+=';position:absolute !important;top:0 !important;left:50% !important;transform:translateX(-50%) !important;height:auto !important;min-height:auto !important;max-height:none !important;margin:0 !important;padding:0 !important;border:0 !important;border-radius:0 !important;display:block !important;';
         }
         if(iframe){
-          // 결제 폼 전체 높이 확보 (대부분의 Innopay 폼이 ~900px 안에 들어감)
           iframe.style.cssText+=';height:1000px !important;min-height:900px !important;display:block !important;margin:0 !important;padding:0 !important;border:0 !important;vertical-align:top !important;';
         }
+        // body 스크롤 막힘 해제 (Innopay가 of_hidden 클래스 추가하지만 우리는 페이지 스크롤이 필요)
+        try{document.documentElement.classList.remove('of_hidden');document.body.classList.remove('of_hidden');}catch(e){}
       }catch(e){console.warn('[innopay] modal style override failed',e);}
     }, 400);
   } catch (e) {

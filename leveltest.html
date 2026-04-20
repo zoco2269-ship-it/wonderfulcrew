@@ -396,13 +396,14 @@ function goToCamera(){
   if(isFirstProfile){
     // 첫 프로필 입력 → 무료체험 10회 안내 후 언어선택으로
     var ov=document.createElement('div');
+    ov.id='wc-welcome-overlay';
     ov.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;';
     ov.innerHTML='<div style="background:#fff;border-radius:16px;padding:40px 32px;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">'+
       '<div style="font-size:2.4rem;margin-bottom:14px;">🎉</div>'+
       '<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:#1A2340;margin-bottom:10px;">'+name+'님, 환영합니다!</h2>'+
       '<p style="font-size:0.9rem;color:#5A5048;line-height:1.7;margin-bottom:6px;"><b style="color:#C9A84C;">무료체험 10회</b>가 지급되었습니다.</p>'+
       '<p style="font-size:0.82rem;color:#8A8070;line-height:1.6;margin-bottom:24px;">AI 면접 연습, 롤플레이, 디스커션 등<br>모든 기능을 10회까지 무료로 체험하세요.</p>'+
-      '<button onclick="this.closest(\'div[style]\').remove();showScreen(\'lang\');" style="padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;">레벨 테스트 시작하기</button>'+
+      '<button onclick="var o=document.getElementById(\'wc-welcome-overlay\');if(o)o.remove();showScreen(\'lang\');" style="padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;">레벨 테스트 시작하기</button>'+
       '<div style="margin-top:12px;"><a href="curriculum.html" style="color:#8A8070;font-size:0.82rem;text-decoration:none;">건너뛰고 바로 면접 연습하기 →</a></div>'+
       '</div>';
     document.body.appendChild(ov);

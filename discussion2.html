@@ -92,10 +92,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
       <div class="cam-placeholder" id="cam-ph"><div>📷</div><div>카메라</div></div>
       <div class="card-label"><div class="name">You</div><div class="role"><span id="rec-label">대기</span></div></div>
     </div>
-    <div class="card-frame" id="card-c">
-      <div class="avatar-display"><div class="avatar-face"><div class="face">👨🏻</div><div class="mouth" id="mouth-c"></div></div></div>
-      <div class="card-label"><div class="name">Candidate C</div><div class="role">Discussion Partner</div></div>
-    </div>
   </div>
   <div class="waveform" id="waveform"><div class="bar" style="animation-delay:0s;"></div><div class="bar" style="animation-delay:0.1s;"></div><div class="bar" style="animation-delay:0.15s;"></div><div class="bar" style="animation-delay:0.2s;"></div><div class="bar" style="animation-delay:0.25s;"></div><div class="bar" style="animation-delay:0.3s;"></div></div>
   <div class="transcript-bar" id="transcript">음성 답변 대기 중...</div>
@@ -103,6 +99,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   <div class="controls">
     <button class="ctrl-btn primary" id="btn-answer" onclick="startAnswer()">🎙 내 의견 말하기</button>
     <button class="ctrl-btn danger" id="btn-stop" onclick="stopAnswer()" style="display:none;">⏹ 완료</button>
+    <button class="ctrl-btn secondary" id="btn-end" onclick="endDiscussion()" style="display:none;">토론 종료 · 피드백 받기</button>
     <button class="ctrl-btn secondary" id="btn-next" disabled onclick="location.href='curriculum.html'">커리큘럼으로 →</button>
   </div>
 </div>
@@ -161,13 +158,6 @@ function aiTurnB(text){
   fb.innerHTML='<b style="color:var(--gold);">Candidate B:</b> '+text;fb.classList.add('active');
   gcSpeak(text,'en-GB','female',function(){card.classList.remove('speaking');});
 }
-function aiTurnC(text){
-  var card=document.getElementById('card-c');
-  card.classList.add('speaking');
-  var fb=document.getElementById('feedback');
-  fb.innerHTML+='<br><br><b style="color:var(--gold);">Candidate C:</b> '+text;
-  gcSpeak(text,'en-GB','male',function(){card.classList.remove('speaking');});
-}
 
 function startAnswer(){
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -195,57 +185,56 @@ async function stopAnswer(){
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:200,
-      system:'You are another candidate in a cabin crew group discussion. Scenario: '+TOPICS[selectedTopic].scenario+'\n\nRules:\n- Respond IN ENGLISH, 1-2 sentences only\n- You are a fellow candidate, NOT the interviewer\n- Either agree and add your perspective, or politely disagree with a reason\n- Use "We" language for teamwork\n- After 4 exchanges total, say "I think we have a good plan. Shall we present our conclusion?" and add [END]\n- Turn '+turnCount,
+      system:'You are another candidate in a cabin crew group discussion. Scenario: '+TOPICS[selectedTopic].scenario+'\n\nRules:\n- Respond IN ENGLISH, 1-2 sentences only\n- You are a fellow candidate, NOT the interviewer\n- Either agree and add your perspective, or politely disagree with a reason\n- Use "We" language for teamwork\n- Keep the discussion going. Do NOT conclude or say phrases like "Shall we present our conclusion?" — the candidate decides when to end.\n- Do NOT use any [END] tag.',
       messages:chatHistory
     })});
     var data=await res.json();
-    var aiText=((data&&data.content&&data.content[0]&&data.content[0].text)||'I agree with that approach.').replace(/\*\*/g,'');
+    var aiText=((data&&data.content&&data.content[0]&&data.content[0].text)||'I agree with that approach.').replace(/\*\*/g,'').replace(/\[END\]/g,'').trim();
     chatHistory.push({role:'assistant',content:'[B] '+aiText});
-    var isEnd=aiText.includes('[END]')||turnCount>=4;
-    var displayText=aiText.replace('[END]','').trim();
-    aiTurnB(displayText);
-    // Candidate C도 응답
-    try{
-      var resC=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        model:'claude-haiku-4-5-20251001',max_tokens:150,
-        system:'You are Candidate C in a cabin crew group discussion. Scenario: '+TOPICS[selectedTopic].scenario+'\n\nRules:\n- Respond IN ENGLISH, 1-2 sentences\n- Add a different perspective from Candidate B\n- Be collaborative, use "We" language\n- Do NOT use asterisks or stage directions',
-        messages:chatHistory
-      })});
-      var dataC=await resC.json();
-      var aiC=((dataC&&dataC.content&&dataC.content[0]&&dataC.content[0].text)||'').replace(/\*\*/g,'').replace(/\*[^*]+\*/g,'').trim();
-      if(aiC){chatHistory.push({role:'assistant',content:'[C] '+aiC});aiTurnC(aiC);}
-    }catch(e){}
-    if(isEnd){
-      setTimeout(async function(){
-        var fb=document.getElementById('feedback');
-        fb.innerHTML+='<br><br><b style="color:var(--gold);">피드백을 작성하고 있어요...</b>';
-        try{
-          var convo=chatHistory.map(function(m){return (m.role==='user'?'You':'Partner')+': '+m.content;}).join('\n');
-          var fbRes=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-            model:'claude-haiku-4-5-20251001',max_tokens:500,
-            system:'You are a cabin crew group discussion coach. The scenario was: "'+TOPICS[selectedTopic].scenario+'"\n\nEvaluate the candidate\'s performance. Format:\n\nOverall Score: X/100\n\nStrengths (2-3 points):\n- ...\n\nAreas to Improve (2-3 points):\n- ...\n\nKey Tip:\n- One specific actionable tip\n\nBe encouraging but honest. Write in Korean.',
-            messages:[{role:'user',content:'디스커션 대화:\n\n'+convo+'\n\n피드백을 주세요.'}]
-          })});
-          var fbData=await fbRes.json();
-          var fbText=((fbData&&fbData.content&&fbData.content[0]&&fbData.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
-          fb.innerHTML='<b style="color:var(--gold);">피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>';
-          if(typeof savePracticeRecord==='function') savePracticeRecord({stage:'discussion2',question:scenarios[currentIdx]?.title||'',answer:fullText||'',feedback:fbText});
-        }catch(e){fb.innerHTML+='<br>피드백 생성 실패. 다시 시도해주세요.';}
-        document.getElementById('btn-next').disabled=false;
-        document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=true;
-        document.getElementById('rec-label').textContent='완료';
-        // 롤플레이로 이어가기 버튼
-        var rpBtn=document.createElement('div');
-        rpBtn.style.cssText='text-align:center;margin-top:20px;padding:20px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:12px;';
-        rpBtn.innerHTML='<div style="font-size:0.82rem;color:var(--gold);font-weight:700;margin-bottom:8px;">디스커션 완료! 이어서 롤플레이도 연습해보세요</div>'+
-          '<a href="roleplay-practice-en.html" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border-radius:24px;font-size:0.88rem;font-weight:700;text-decoration:none;">롤플레이 연습하기 →</a>';
-        fb.after(rpBtn);
-      },2000);
-    } else {
-      document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=false;
-      document.getElementById('rec-label').textContent='대기';
-    }
+    aiTurnB(aiText);
+    // 다시 본인 차례 + 종료 버튼 노출 (사용자가 직접 종료)
+    document.getElementById('btn-answer').style.display='inline-flex';
+    document.getElementById('btn-answer').disabled=false;
+    document.getElementById('btn-end').style.display='inline-flex';
+    document.getElementById('rec-label').textContent='대기';
   }catch(e){document.getElementById('feedback').innerHTML='오류. 다시 시도해주세요.';document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=false;}
+}
+
+// 사용자가 직접 종료 버튼을 눌렀을 때만 피드백 생성
+async function endDiscussion(){
+  if(recognition)try{recognition.stop();}catch(e){}
+  if('speechSynthesis' in window)try{window.speechSynthesis.cancel();}catch(e){}
+  document.getElementById('btn-answer').style.display='none';
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('btn-end').style.display='none';
+  document.getElementById('rec-label').textContent='완료';
+  var fb=document.getElementById('feedback');
+  var userTurns=chatHistory.filter(function(m){return m.role==='user';}).length;
+  if(userTurns===0){
+    fb.innerHTML='<b style="color:#E74C3C;">본인 발언이 없어 피드백을 작성할 수 없습니다.</b>';
+    document.getElementById('btn-next').disabled=false;
+    return;
+  }
+  fb.innerHTML='<b style="color:var(--gold);">피드백을 작성하고 있어요...</b>';
+  try{
+    var convo=chatHistory.map(function(m){return (m.role==='user'?'You':'Partner')+': '+m.content;}).join('\n');
+    var userAnswers=chatHistory.filter(function(m){return m.role==='user';}).map(function(m,i){return 'Turn '+(i+1)+': '+m.content;}).join('\n');
+    var scopeNote=userTurns===1
+      ?'The candidate spoke only once. Do NOT evaluate listening/responding skills (not enough data). Only evaluate the content, logic, and English expression of that single answer.'
+      :'The candidate spoke '+userTurns+' times. Evaluate content, logic, English expression, AND how well they connected to the partner\'s points across turns.';
+    var fbRes=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:600,
+      system:'You are a cabin crew group discussion coach. Scenario: "'+TOPICS[selectedTopic].scenario+'"\n\n'+scopeNote+'\n\nRules:\n- Evaluate ONLY what the candidate (You) actually said. Do NOT evaluate the partner.\n- Speech-to-text input — ignore grammar/punctuation.\n- Never criticize for things not demonstrably in the answer.\n- Be encouraging but honest.\n\nFormat:\n\n# 점수: X/100\n\n# 잘한 점\n- (2개, 실제 본인 발언 짧게 인용)\n\n# 개선할 점\n- (1~2개 실제 근거 있는 것만. 없으면 "특별한 개선점 없습니다.")\n\n# 실전 팁\n- (1개)\n\nWrite in Korean.',
+      messages:[{role:'user',content:'Full discussion:\n\n'+convo+'\n\nCandidate\'s own answers only:\n'+userAnswers+'\n\nPlease give feedback on the candidate only.'}]
+    })});
+    var fbData=await fbRes.json();
+    var fbText=((fbData&&fbData.content&&fbData.content[0]&&fbData.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
+    fb.innerHTML='<b style="color:var(--gold);">피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>';
+    if(typeof savePracticeRecord==='function') savePracticeRecord({stage:'discussion2',question:TOPICS[selectedTopic].title,answer:userAnswers,feedback:fbText});
+  }catch(e){
+    fb.innerHTML='<b style="color:#E74C3C;">피드백 생성 실패. 다시 시도해주세요.</b>';
+  }
+  document.getElementById('btn-next').disabled=false;
 }
 function r(){return Math.floor(Math.random()*36)+50;}
 </script>

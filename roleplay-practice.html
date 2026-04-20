@@ -156,7 +156,7 @@ window.addEventListener('popstate',function(){
   </div>
   <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:16px;">아바타 이미지는 images/avatar-male.png, avatar-female.png에 넣으면 자동 적용됩니다.</div>
 
-  <div class="setup-grid" style="grid-template-columns:1fr;max-width:360px;margin:0 auto 24px;">
+  <div class="setup-grid" style="grid-template-columns:1fr 1fr;max-width:440px;margin:0 auto 24px;">
     <div>
       <div class="setup-label">영어 악센트</div>
       <select class="setup-select" id="s-accent">
@@ -166,6 +166,16 @@ window.addEventListener('popstate',function(){
         <option value="en-PH">Filipino English</option>
         <option value="fr-FR">French English</option>
         <option value="es-ES">Spanish English</option>
+      </select>
+    </div>
+    <div>
+      <div class="setup-label">배경 선택</div>
+      <select class="setup-select" id="s-setting">
+        <option value="flight">✈️ 기내 (In-flight)</option>
+        <option value="hotel">🏨 호텔</option>
+        <option value="restaurant">🍽 레스토랑</option>
+        <option value="cafe">☕ 카페·라운지</option>
+        <option value="cruise">🚢 크루즈</option>
       </select>
     </div>
   </div>
@@ -375,22 +385,92 @@ function selAvatar(el){
   chosenImg=el.dataset.img||'';
 }
 
+// ===== 호텔 / 레스토랑 / 카페 / 크루즈 시나리오 세트 =====
+var SCENARIO_SETS={
+  hotel:[
+    {q:"A hotel guest complains that their room has not been cleaned despite requesting housekeeping twice.",o:"I asked for housekeeping this morning and again at noon. It's now 4 PM and the room is still not cleaned. This is unacceptable."},
+    {q:"A guest at check-in insists they booked an ocean-view room, but the reservation shows a city-view.",o:"I specifically booked an ocean-view room for our anniversary. I have the confirmation email right here. Why is this a city-view?"},
+    {q:"A VIP guest demands a late checkout at 4 PM, but the hotel is fully booked.",o:"I'm a Platinum member. I need to stay until 4 PM. Just make it work. I don't care that you're fully booked."},
+    {q:"A guest reports the air conditioning in their room is broken on an extremely hot day.",o:"It's 35 degrees outside and my AC hasn't worked since I arrived. I haven't slept at all. Do something."},
+    {q:"A guest finds hair in the bathroom and demands to be moved to another room immediately.",o:"Look at this hair in the shower. I'm not showering here. Move me to a different room right now."},
+    {q:"A hotel guest's luggage was delivered to the wrong room and some items appear to be missing.",o:"My suitcase went to the wrong room. I finally got it back but my watch is missing from it."},
+    {q:"A guest complains about loud construction noise next to the hotel that started early in the morning.",o:"The construction started at 6 AM. I paid $400 a night to be woken up by jackhammers. This is ridiculous."},
+    {q:"A guest at the hotel restaurant is upset because they waited 40 minutes for their room service order.",o:"I ordered room service 40 minutes ago. The kids are starving. Where is our food?"},
+    {q:"A guest claims they were charged for minibar items they never consumed.",o:"This bill has $60 for minibar items. I didn't touch the minibar once. I want this removed."},
+    {q:"A honeymoon couple is disappointed the room upgrade they were promised was not applied.",o:"We booked this for our honeymoon and were told we'd get a suite upgrade. But we're in a standard room. What happened?"},
+    {q:"A guest's key card keeps deactivating every few hours.",o:"My key card has stopped working three times today. I'm locked out again. Can you fix this properly?"},
+    {q:"An elderly guest fell in the lobby and is shaken but refusing medical attention.",o:"I slipped on that wet floor. I'm fine, I don't need a doctor. But I want to know what you're going to do about the slippery floor."}
+  ],
+  restaurant:[
+    {q:"A restaurant guest finds a foreign object in their soup and is extremely upset.",o:"Look at this. There's a piece of plastic in my soup. I almost swallowed this. How does this happen?"},
+    {q:"A couple celebrating their anniversary was seated next to a loud group.",o:"It's our 10th anniversary. That group is screaming. Can you please move us somewhere quieter?"},
+    {q:"A guest with a severe nut allergy discovers their dish may contain traces of peanuts.",o:"I told the waiter I have a severe peanut allergy. I just tasted peanut in my sauce. I need to know now."},
+    {q:"A guest complains their steak is overcooked after specifically requesting medium-rare.",o:"I asked for medium-rare. This is well-done. Look at it — it's grey inside. Take it back."},
+    {q:"A large party's reservation was lost and there are no tables available for the next two hours.",o:"We booked this table for 10 people three weeks ago. I have the confirmation. What do you mean there's no record?"},
+    {q:"A guest is unhappy because the waiter charged them for items they did not order.",o:"I didn't order this $80 bottle of wine. I ordered the house red. Check the bill again."},
+    {q:"A regular guest is disappointed their favorite dish has been removed from the menu.",o:"I've been coming here for five years. The duck confit is gone? That's the only reason I come here."},
+    {q:"A guest spills red wine on their expensive outfit and blames the narrow table arrangement.",o:"Your tables are so cramped the waiter bumped into me. My dress is ruined. It's a designer dress."},
+    {q:"A vegetarian guest was served a dish with hidden meat ingredients.",o:"I told you I'm vegetarian. This broth is clearly made with chicken. I feel sick thinking about it."},
+    {q:"A guest waiting for a takeout order has been waiting 45 minutes and has a meeting.",o:"I ordered this 45 minutes ago for pickup. I have a meeting in 10 minutes. Where is my food?"}
+  ],
+  cafe:[
+    {q:"A café customer received the wrong order for the third time and is losing patience.",o:"I ordered an iced latte. This is a hot americano. This is the third time today you've gotten it wrong."},
+    {q:"A guest at the airline lounge is told their membership has expired.",o:"My Gold status doesn't expire until next year. Let me show you the email. I fly with you every week."},
+    {q:"A café customer's laptop was damaged when another customer accidentally spilled coffee.",o:"That guy just spilled his coffee on my laptop. The screen went black. Your café has to do something about this."},
+    {q:"A lounge guest complains Wi-Fi has been down for an hour and they have an urgent meeting.",o:"Your Wi-Fi has been down for an hour. I have a Zoom call in 15 minutes. This is supposed to be a business lounge."},
+    {q:"A customer in the café is upset they were charged twice for the same drink.",o:"Look at my statement. You charged me $6.50 twice for one latte. Refund it now please."},
+    {q:"A VIP lounge guest complains the food selection is not up to premium standards.",o:"I'm in the first class lounge and there's nothing but crackers and fruit. Where's the hot food? I fly business class every week."},
+    {q:"A café customer found an insect in their salad.",o:"There's an ant crawling in my salad. I just watched it. I lost my appetite. Take this away."},
+    {q:"A customer with a dairy allergy was given a drink with regular milk.",o:"I specifically asked for oat milk. This is clearly cow's milk. I'm lactose intolerant — I'll be sick tonight."},
+    {q:"A lounge guest is told they cannot bring their guest who is not a cardholder.",o:"I have Priority Pass. My husband is with me. Why can't he come in? We've done this at every other lounge."},
+    {q:"A café customer wants a refund because the pastry they purchased was stale.",o:"I just took a bite of this croissant. It's hard as a rock. I want my money back."}
+  ],
+  cruise:[
+    {q:"A cruise guest's cabin has a burst pipe and water is seeping into the floor.",o:"My cabin floor is flooding. The pipe under the sink burst. My luggage is getting wet. Do something!"},
+    {q:"A guest is seasick and cannot get out of bed but needs medication.",o:"I can't even stand up. I've been vomiting for 4 hours. I need medication but the ship's doctor office is closed."},
+    {q:"A guest missed the shore excursion bus and wants a full refund.",o:"The bus left 10 minutes early. I was there on time but the dock map was wrong. I missed a $200 tour."},
+    {q:"A cruise guest complains the advertised ocean-view balcony is actually obstructed by lifeboats.",o:"The brochure showed a clear ocean view. My entire balcony is blocked by a lifeboat. I paid extra for this."},
+    {q:"A guest's formal evening wear was damaged by the ship's laundry service.",o:"My tuxedo came back with a burn mark on the sleeve. There's a formal dinner tonight. What am I going to wear?"},
+    {q:"A group of rowdy passengers is disturbing other guests at the pool area.",o:"That group has been drinking and yelling by the pool all afternoon. Families with kids can't enjoy it. Do something."},
+    {q:"A guest with mobility issues cannot access the main dining room due to a broken elevator.",o:"I use a walker. The elevator to the dining room has been broken since this morning. I haven't eaten."},
+    {q:"A honeymoon couple is upset their romantic dinner reservation was given away.",o:"We booked the private dinner on deck three days ago. We just arrived and they said it's gone. It's our honeymoon."},
+    {q:"A guest claims jewelry was stolen from their cabin safe.",o:"My diamond earrings are gone from the safe. Only housekeeping has access. I want security now."},
+    {q:"A family is furious the kids' club is closed due to staff shortage and they have plans.",o:"We paid $8000 for this cruise partly because of kids' club. Now it's closed? We planned the spa at 2 PM."}
+  ]
+};
+
 function startInterview(){
-  // 원래 인덱스를 유지하며 최근 푼 시나리오는 제외
-  var indexed=SCENARIOS.map(function(q,i){return {q:q,origIdx:i};});
-  var recent=[];
-  try{recent=JSON.parse(localStorage.getItem('wc_rp_recent')||'[]');}catch(e){recent=[];}
-  var fresh=indexed.filter(function(x){return recent.indexOf(x.origIdx)===-1;});
-  // 남은 신선한 시나리오가 3개 미만이면 기록 리셋 (전체 풀 재진입)
-  if(fresh.length<3){recent=[];fresh=indexed.slice();}
-  // 3개 랜덤 선택
-  questions=[];
-  var pool=fresh.slice();
-  for(var i=0;i<3&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
-  // 사용한 시나리오 기록 (최근 20개까지만 유지)
-  var newRecent=recent.concat(questions.map(function(q){return q.origIdx;}));
-  while(newRecent.length>20)newRecent.shift();
-  try{localStorage.setItem('wc_rp_recent',JSON.stringify(newRecent));}catch(e){}
+  var setting=document.getElementById('s-setting').value||'flight';
+  window._curSetting=setting;
+  if(setting==='flight'){
+    // 기존 50개 기내 시나리오 + 하드코딩 OPENERS 사용
+    var indexed=SCENARIOS.map(function(q,i){return {q:q,origIdx:i,opener:null};});
+    var recent=[];
+    try{recent=JSON.parse(localStorage.getItem('wc_rp_recent_flight')||'[]');}catch(e){recent=[];}
+    var fresh=indexed.filter(function(x){return recent.indexOf(x.origIdx)===-1;});
+    if(fresh.length<3){recent=[];fresh=indexed.slice();}
+    questions=[];
+    var pool=fresh.slice();
+    for(var i=0;i<3&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
+    var newRecent=recent.concat(questions.map(function(q){return q.origIdx;}));
+    while(newRecent.length>20)newRecent.shift();
+    try{localStorage.setItem('wc_rp_recent_flight',JSON.stringify(newRecent));}catch(e){}
+  } else {
+    // 호텔/레스토랑/카페/크루즈 — 각 세트에서 랜덤 3개, opener 세트 내장
+    var set=SCENARIO_SETS[setting]||[];
+    var indexed2=set.map(function(it,i){return {q:it.q,origIdx:i,opener:it.o};});
+    var recentKey='wc_rp_recent_'+setting;
+    var recent2=[];
+    try{recent2=JSON.parse(localStorage.getItem(recentKey)||'[]');}catch(e){recent2=[];}
+    var fresh2=indexed2.filter(function(x){return recent2.indexOf(x.origIdx)===-1;});
+    if(fresh2.length<3){recent2=[];fresh2=indexed2.slice();}
+    questions=[];
+    var pool2=fresh2.slice();
+    for(var i=0;i<3&&pool2.length;i++){var x=Math.floor(Math.random()*pool2.length);questions.push(pool2.splice(x,1)[0]);}
+    var newRecent2=recent2.concat(questions.map(function(q){return q.origIdx;}));
+    while(newRecent2.length>15)newRecent2.shift();
+    try{localStorage.setItem(recentKey,JSON.stringify(newRecent2));}catch(e){}
+  }
 
   qIdx=0;
   document.getElementById('setup').style.display='none';
@@ -486,9 +566,9 @@ function showQuestion(){
   document.getElementById('waveform').classList.remove('active');
   fullText='';
 
-  // 고객 첫 대사 — 미리 작성된 대사로 즉시 시작 (API 호출 없음)
+  // 고객 첫 대사 — 시나리오 세트에 내장된 opener 우선, 없으면 기내 OPENERS[]
   var origIdx=q.origIdx!==undefined?q.origIdx:qIdx;
-  var opener=OPENERS[origIdx]||'Excuse me, I have a problem I need help with.';
+  var opener=q.opener||OPENERS[origIdx]||'Excuse me, I have a problem I need help with.';
   customerFirstSpeak(opener);
 }
 

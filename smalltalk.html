@@ -77,6 +77,23 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   <div class="tag">SMALLTALK · 1:1 · ENGLISH</div>
   <h1 id="sm-title">CV Drop <em>스몰톡</em></h1>
   <p>실제 CV Drop에서 면접관이 먼저 길게 인사하지 않아요.<br>본인이 먼저 인사하고 시작합니다.</p>
+  <div style="max-width:320px;margin:0 auto 16px;text-align:left;">
+    <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:6px;letter-spacing:0.06em;">지원 항공사 선택</div>
+    <select id="sm-airline" onchange="onAirlineChange()" style="width:100%;padding:10px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.3);border-radius:8px;color:#fff;font-family:inherit;font-size:0.88rem;">
+      <option value="generic">✈️ 외항사 (공통)</option>
+      <option value="emirates">🇦🇪 Emirates (에미레이트)</option>
+      <option value="qatar">🇶🇦 Qatar Airways (카타르)</option>
+      <option value="etihad">🇦🇪 Etihad (에티하드)</option>
+      <option value="singapore">🇸🇬 Singapore Airlines (싱가포르)</option>
+      <option value="cathay">🇭🇰 Cathay Pacific (캐세이)</option>
+      <option value="lufthansa">🇩🇪 Lufthansa (루프트한자)</option>
+      <option value="klm">🇳🇱 KLM</option>
+      <option value="finnair">🇫🇮 Finnair (핀에어)</option>
+      <option value="flydubai">🇦🇪 flydubai</option>
+      <option value="airasia">🇲🇾 AirAsia</option>
+      <option value="riyadh">🇸🇦 Riyadh Air (리야드에어)</option>
+    </select>
+  </div>
   <div style="background:rgba(201,168,76,0.1);border-left:3px solid var(--gold);padding:14px 18px;margin:0 auto 18px;text-align:left;font-size:0.9rem;color:rgba(255,255,255,0.9);line-height:1.8;max-width:460px;">
     <b style="color:var(--gold);">예시 (이런 식으로 시작하세요)</b><br>
     "Good morning, my name is Kate, nice to meet you."
@@ -116,26 +133,51 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
 <script>
 var recognition=null, fullText='', dialogue=[];
-// URL 파라미터로 항공사 컨텍스트 결정 (?airline=emirates 또는 qatar)
+// URL 파라미터 또는 드롭다운으로 항공사 컨텍스트 결정
 var urlParams=new URLSearchParams(location.search);
-var AIRLINE=urlParams.get('airline')||'qatar';
-var AIRLINE_NAME=AIRLINE==='emirates'?'Emirates':AIRLINE==='qatar'?'Qatar Airways':'the airline';
-var AIRLINE_KO=AIRLINE==='emirates'?'에미레이트':AIRLINE==='qatar'?'카타르':'';
-var BACK_URL=(function(){
-  try{var ref=document.referrer;if(ref){var u=new URL(ref);if(u.origin===location.origin){var n=u.pathname.split('/').pop();if(/curriculum|emirates-step2/.test(n))return n;}}}catch(e){}
-  return AIRLINE==='emirates'?'curriculum.html?airline=emirates':'curriculum-qatar.html';
-})();
+var AIRLINE=urlParams.get('airline')||'generic';
+var AIRLINE_NAMES={
+  generic:'an international airline', emirates:'Emirates', qatar:'Qatar Airways',
+  etihad:'Etihad Airways', singapore:'Singapore Airlines', cathay:'Cathay Pacific',
+  lufthansa:'Lufthansa', klm:'KLM', finnair:'Finnair', flydubai:'flydubai',
+  airasia:'AirAsia', riyadh:'Riyadh Air'
+};
+var AIRLINE_KOS={
+  generic:'', emirates:'에미레이트', qatar:'카타르', etihad:'에티하드',
+  singapore:'싱가포르', cathay:'캐세이', lufthansa:'루프트한자', klm:'KLM',
+  finnair:'핀에어', flydubai:'flydubai', airasia:'에어아시아', riyadh:'리야드에어'
+};
+var AIRLINE_NAME=AIRLINE_NAMES[AIRLINE]||AIRLINE_NAMES.generic;
+var AIRLINE_KO=AIRLINE_KOS[AIRLINE]||'';
+var BACK_URL='practice-foreign.html';
 
-// 시스템 프롬프트 — CV Drop 실전 플로우
-// 1) 지망생이 먼저 인사 → 면접관이 짧게 받고 첫 질문 "Why cabin crew?"
-// 2) 이후는 내용 기반 꼬리질문
+// 드롭다운 초기값 및 변경 핸들러
+window.onAirlineChange=function(){
+  var sel=document.getElementById('sm-airline');
+  if(!sel)return;
+  AIRLINE=sel.value;
+  AIRLINE_NAME=AIRLINE_NAMES[AIRLINE]||AIRLINE_NAMES.generic;
+  AIRLINE_KO=AIRLINE_KOS[AIRLINE]||'';
+  SYS_FIRSTTURN=AIRLINE_NAME+' CV Drop. Candidate just greeted you. Respond with ONE very short acknowledgment (e.g., "Good morning!" or "Nice to meet you too.") + ask "Why do you want to apply for cabin crew?" in the same message. Under 15 words total. English only. No quotation marks.';
+  SYS_FOLLOWUP=AIRLINE_NAME+' CV Drop interviewer. ONE short line, under 15 words. Brief reaction + one natural follow-up question based on what the candidate just said. Casual, warm. No "Tell me about a time" style. English only.';
+  SYS_CLOSING=AIRLINE_NAME+' CV Drop interviewer. The small talk is wrapping up. Give a warm natural closing in ONE short line (under 15 words). Example: "Thank you for coming today, nice meeting you!" / "Great talking with you, all the best!" No question. English only.';
+  try{document.getElementById('sm-title').innerHTML=(AIRLINE_KO?AIRLINE_KO+' ':'')+'CV Drop <em>스몰톡</em>';}catch(e){}
+};
+// URL 에 airline 이 왔으면 드롭다운 초기값 맞추기
+try{
+  var preset=urlParams.get('airline');
+  if(preset){
+    var s=document.getElementById('sm-airline');
+    if(s){ for(var i=0;i<s.options.length;i++){ if(s.options[i].value===preset){s.selectedIndex=i;break;}} }
+  }
+}catch(e){}
+
 var SYS_FIRSTTURN=AIRLINE_NAME+' CV Drop. Candidate just greeted you. Respond with ONE very short acknowledgment (e.g., "Good morning!" or "Nice to meet you too.") + ask "Why do you want to apply for cabin crew?" in the same message. Under 15 words total. English only. No quotation marks.';
 var SYS_FOLLOWUP=AIRLINE_NAME+' CV Drop interviewer. ONE short line, under 15 words. Brief reaction + one natural follow-up question based on what the candidate just said. Casual, warm. No "Tell me about a time" style. English only.';
-// 3번째 꼬리질문 이후 자동 종료용 closing
 var SYS_CLOSING=AIRLINE_NAME+' CV Drop interviewer. The small talk is wrapping up. Give a warm natural closing in ONE short line (under 15 words). Example: "Thank you for coming today, nice meeting you!" / "Great talking with you, all the best!" No question. English only.';
 
 // 제목에 항공사명 반영
-try{document.getElementById('sm-title').innerHTML=(AIRLINE_KO||'CV Drop')+(AIRLINE_KO?' CV Drop':'')+' <em>스몰톡</em>';}catch(e){}
+try{document.getElementById('sm-title').innerHTML=(AIRLINE_KO?AIRLINE_KO+' ':'')+'CV Drop <em>스몰톡</em>';}catch(e){}
 // interviewer 카드 회사명도 반영
 try{var roleLbl=document.querySelector('#card-ai .card-label .role, #card-ai [style*="var(--gold-light)"]');}catch(e){}
 

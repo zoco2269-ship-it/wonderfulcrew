@@ -123,13 +123,13 @@ async function getFeedback(){
   var fb=document.getElementById('feedback');fb.classList.add('active');fb.innerHTML='<span style="color:var(--gold);">피드백 생성 중...</span>';
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:500,
-      system:'You are a cabin crew interview coach evaluating a 1ST DISCUSSION presentation. This is an IMAGE interview. How to say matters far more than what to say.\n\nGive feedback in Korean, plain text (no **, no markdown):\n1) 자신감 & 에너지: 떨지 않고 당당하게 발표했는지. 밝고 친절한 톤이었는지\n2) 내용 구성: 4-5문장으로 깔끔했는지. 쉬운 단어를 사용했는지\n3) 서비스 마인드: 답변에서 서비스 경험이 자연스럽게 드러났는지\n4) 개선 포인트: 구체적으로 무엇을 바꾸면 좋을지\n\nKeep under 400 Korean characters.',
-      messages:[{role:'user',content:'Topic: '+TOPICS[selectedTopic]+'\n\nStudent presentation:\n'+ans}]
+      model:'claude-haiku-4-5-20251001',max_tokens:350,
+      system:'You are coaching a 1ST DISCUSSION presentation for Emirates/외항사 cabin crew.\n\n**CRITICAL CONTEXT — 이 단계는 "이미지 면접"임:**\n- 수십 명이 차례로 짧게 발표. 한 명당 발표 시간이 매우 짧음.\n- 발표 내용·논리·서비스 마인드는 평가 대상이 아님. 본질은 "많은 사람 앞에서 떨지 않고 자신감 있게 발표하는가" — 승무원 업무가 안전과 직결되기 때문.\n- 문장이 짧고 단편적인 게 정상. 오히려 길게 풀어 말하면 루즈해지고 감점.\n- 논리 평가 아님. 내용 연결·서비스 마인드 연결 요구 절대 금지.\n\n**절대 하지 말아야 할 피드백:**\n- "문장이 너무 짧고 단편적이다" → 틀림. 짧은 게 정상.\n- "서비스 경험을 여행지와 연결하라" → 틀림. 이 단계는 논리를 보는 곳이 아님.\n- "3-4개 완전한 문장으로 재구성" → 틀림. 오히려 5문장 넘기면 루즈.\n- 내용 깊이·구조·논리에 대한 지적 절대 금지.\n\n**평가 초점 (이것만):**\n1) 자신감 & 목소리: 떨지 않고 또렷하게, 기어들어가지 않게 발표했는지\n2) 에너지 & 톤: 밝고 따뜻한 톤이었는지\n3) 전달 속도: 너무 빠르지도 느리지도 않았는지\n4) 표정(미소): 웃으면서 발표하는 훈련 강조\n\n출력 (한국어, plain text, 매우 짧게):\n첫인상: (자신감·목소리·속도 한 줄 평)\n잘한 점: (1개)\n개선 포인트: (1개, 발표 방식·톤·속도·미소 관련만)\n\n300자 이내.',
+      messages:[{role:'user',content:'Topic: '+TOPICS[selectedTopic]+'\n\nStudent presentation (speech-to-text, 짧은 게 정상):\n'+ans}]
     })});
     var data=await res.json();var text=((data&&data.content&&data.content[0]&&data.content[0].text)||'').replace(/\*\*/g,'');
-    var s=[Math.floor(Math.random()*20)+65,Math.floor(Math.random()*20)+60,Math.floor(Math.random()*20)+55,Math.floor(Math.random()*25)+50];
-    fb.innerHTML=text.replace(/\n/g,'<br>')+'<br><br><b>Score: '+Math.round((s[0]+s[1]+s[2]+s[3])/4)+'/100</b> (자신감: '+s[0]+' | 에너지: '+s[1]+' | 전달력: '+s[2]+' | 내용: '+s[3]+')';
+    var s=[Math.floor(Math.random()*20)+65,Math.floor(Math.random()*20)+60,Math.floor(Math.random()*20)+55];
+    fb.innerHTML=text.replace(/\n/g,'<br>')+'<br><br><b>Score: '+Math.round((s[0]+s[1]+s[2])/3)+'/100</b> (자신감: '+s[0]+' | 에너지: '+s[1]+' | 전달력: '+s[2]+')';
   }catch(e){fb.innerHTML='오류. 다시 시도해주세요.';}
 }
 </script>

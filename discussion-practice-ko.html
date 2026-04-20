@@ -394,17 +394,25 @@ function appendLog(who,name,text){
   log.scrollTop=log.scrollHeight;
 }
 
-// 디스커션 전용 TTS: Blob URL + 실제 audio.duration 기반으로 정확히 대기
-// (공유 gcSpeak는 data: URL 기반이라 일부 환경에서 onended가 비정상적으로 빨리 발화해 다음 화자가 첫 화자를 끊어버리는 버그가 있음)
-var _discAudio=null;
+// 디스커션 전용 TTS — Web Audio API 기반. HTML5 Audio의 data:/blob: URL 환경 호환 이슈를 통째로 우회.
+// AudioBuffer의 duration은 디코딩 시점에 정확히 결정되므로 발화 끝까지 안전하게 대기 가능.
+var _discCtx=null;
+var _discSource=null;
+function _getAudioCtx(){
+  if(!_discCtx){
+    try{_discCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}
+  }
+  if(_discCtx&&_discCtx.state==='suspended'){try{_discCtx.resume();}catch(e){}}
+  return _discCtx;
+}
 async function speakText(text,persona){
   if(persona.noVoice){await new Promise(function(r){setTimeout(r,800);});return;}
   // 이전 오디오 강제 정지
-  if(_discAudio){try{_discAudio.pause();}catch(e){}_discAudio=null;}
+  if(_discSource){try{_discSource.onended=null;_discSource.stop();}catch(e){}_discSource=null;}
   if('speechSynthesis' in window)window.speechSynthesis.cancel();
 
-  // Google Cloud TTS 호출 → Blob URL 변환
-  var blobUrl=null;
+  // Google Cloud TTS 호출 → ArrayBuffer
+  var audioBytes=null;
   try{
     var res=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({text:text.substring(0,1000),lang:'ko-KR',gender:persona.gender||'male'})});
@@ -414,43 +422,56 @@ async function speakText(text,persona){
         var bin=atob(data.audioContent);
         var bytes=new Uint8Array(bin.length);
         for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
-        blobUrl=URL.createObjectURL(new Blob([bytes],{type:'audio/mp3'}));
+        audioBytes=bytes.buffer;
       }
     }
-  }catch(e){}
+  }catch(e){console.warn('[disc-tts] fetch failed',e);}
 
-  // TTS 실패 시 시간 기반 대기 (글자수×280ms)
-  if(!blobUrl){
+  if(!audioBytes){
+    console.warn('[disc-tts] no audio, falling back to time-based wait');
     await new Promise(function(resolve){setTimeout(resolve,Math.max(4000,text.length*280));});
     return;
   }
 
-  // 정확한 재생 완료까지 대기
+  var ctx=_getAudioCtx();
+  if(!ctx){
+    // Web Audio 미지원 환경 → 시간 기반
+    await new Promise(function(resolve){setTimeout(resolve,Math.max(4000,text.length*280));});
+    return;
+  }
+
+  // 디코딩 (Promise 기반)
+  var audioBuffer=null;
+  try{
+    audioBuffer=await new Promise(function(resolve,reject){
+      ctx.decodeAudioData(audioBytes,function(buf){resolve(buf);},function(err){reject(err);});
+    });
+  }catch(e){
+    console.warn('[disc-tts] decode failed',e);
+    await new Promise(function(resolve){setTimeout(resolve,Math.max(4000,text.length*280));});
+    return;
+  }
+
+  console.log('[disc-tts] playing',persona.name,'duration',audioBuffer.duration.toFixed(1)+'s','text:',text.substring(0,30)+'...');
+
+  // 재생 → 정확한 onended 또는 duration 기반 대기
   await new Promise(function(resolve){
-    var audio=new Audio(blobUrl);
-    _discAudio=audio;
-    var resolved=false;
-    function finish(){
-      if(resolved)return;
-      resolved=true;
-      try{URL.revokeObjectURL(blobUrl);}catch(e){}
-      if(_discAudio===audio)_discAudio=null;
+    var source=ctx.createBufferSource();
+    source.buffer=audioBuffer;
+    source.connect(ctx.destination);
+    _discSource=source;
+    var done=false;
+    function finish(reason){
+      if(done)return;
+      done=true;
+      console.log('[disc-tts] finished',persona.name,'via',reason);
+      if(_discSource===source)_discSource=null;
       resolve();
     }
-    audio.addEventListener('ended',finish);
-    audio.addEventListener('error',finish);
-    // 메타데이터 로드 후 실제 duration 기반 안전 타임아웃 설정
-    audio.addEventListener('loadedmetadata',function(){
-      var dur=(isFinite(audio.duration)&&audio.duration>0)?audio.duration:Math.max(20,text.length*0.32);
-      // 실제 길이 + 8초 여유. 이 안에 ended 안 오면 강제 종료
-      setTimeout(finish,(dur+8)*1000);
-    });
-    audio.play().catch(function(){
-      // 자동재생 차단 등으로 실패하면 시간 기반으로 폴백
-      setTimeout(finish,Math.max(20000,text.length*350));
-    });
-    // 최종 안전 상한 (3분)
-    setTimeout(finish,180000);
+    source.onended=function(){finish('onended');};
+    try{source.start(0);}catch(e){finish('start-failed');return;}
+    // 안전 타임아웃: 실제 duration + 5초
+    setTimeout(function(){finish('safety-timeout');},(audioBuffer.duration+5)*1000);
   });
 }
 

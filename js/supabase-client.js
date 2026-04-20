@@ -298,3 +298,24 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 console.log('WonderfulCrew Supabase Client v4 loaded');
+
+// ===== 모바일 네비 드롭다운 탭 토글 =====
+// 모바일에서 .nav-dropdown 의 첫 링크를 탭하면 서브메뉴 열기 (한 번 더 탭하면 이동)
+(function(){
+  document.addEventListener('click', function(e){
+    if (window.innerWidth > 900) return;
+    var anchor = e.target.closest('.nav-dropdown > a');
+    if (!anchor) {
+      // 바깥 탭하면 다 닫기
+      document.querySelectorAll('.nav-dropdown.open').forEach(function(d){d.classList.remove('open');});
+      return;
+    }
+    var dd = anchor.parentElement;
+    if (!dd.classList.contains('open')) {
+      e.preventDefault();
+      // 다른 드롭다운 닫기
+      document.querySelectorAll('.nav-dropdown.open').forEach(function(d){if(d!==dd)d.classList.remove('open');});
+      dd.classList.add('open');
+    }
+  });
+})();

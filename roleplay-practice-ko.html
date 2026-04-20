@@ -589,8 +589,9 @@ function stopAnswer(){
 
 function stopAndFeedback(){
   endingRoleplay=true;
+  try{if(typeof gcStop==='function')gcStop();}catch(e){}
   if('speechSynthesis' in window)window.speechSynthesis.cancel();
-  if(recognition)try{recognition.stop();}catch(e){}
+  if(recognition)try{recognition.onend=null;recognition.stop();recognition=null;}catch(e){}
   document.getElementById('btn-stop').style.display='none';
   document.getElementById('rec-dot').classList.remove('on');
   document.getElementById('waveform').classList.remove('active');
@@ -684,7 +685,8 @@ async function generateFeedback(scenario){
 }
 
 function nextQuestion(){
-  if(recognition)try{recognition.stop();}catch(e){}
+  try{if(typeof gcStop==='function')gcStop();}catch(e){}
+  if(recognition)try{recognition.onend=null;recognition.stop();recognition=null;}catch(e){}
   if('speechSynthesis' in window)window.speechSynthesis.cancel();
   mediaRecorder=null;
   qIdx++;

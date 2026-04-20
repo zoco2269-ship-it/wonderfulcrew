@@ -43,8 +43,15 @@ async function payWithInnopay(plan, buyerInfo, payMethod) {
       return;
     }
 
-    // 이노페이 iframe 높이 — 결제창 전체가 잘리지 않도록 충분히 크게 (최소 1100, 화면 높이와 페이지 설정값 중 큰 값)
-    ih=Math.max(1100, (typeof ih==='number'?ih:0), window.innerHeight);
+    // 이노페이 SDK 내부 로직: ih > window.innerHeight 이면 ih를 강제로 600으로 재설정하고 잘림.
+    // 따라서 반드시 ih ≤ window.innerHeight 이어야 함.
+    // iw도 동일 규칙: iw > window.innerWidth 이면 iw=422로 재설정됨.
+    var maxH=window.innerHeight-20; // 여유 20px
+    ih=Math.max(680, Math.min(maxH, 920)); // 680(Innopay 기본)~920 범위에서 viewport에 맞춤
+    if(typeof iw!=='undefined'){
+      var maxW=window.innerWidth-20;
+      iw=Math.max(680, Math.min(maxW, 820));
+    }
     innopay.goPay({
       PayMethod: payMethod || 'CARD',
       MID: data.mid,

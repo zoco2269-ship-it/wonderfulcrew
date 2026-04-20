@@ -32,8 +32,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 .q-banner{text-align:center;padding:16px 20px;background:rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.15);}
 .q-banner .label{font-size:0.7rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px;}
 .q-banner .question{font-size:0.95rem;color:#fff;font-weight:500;line-height:1.5;}
-.video-area{flex:1;display:flex;align-items:center;justify-content:center;gap:24px;padding:24px;min-height:0;}
-.card-frame{width:220px;aspect-ratio:9/16;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:0;}
+.video-area{flex:1;display:flex;align-items:center;justify-content:center;gap:24px;padding:20px;min-height:0;overflow:hidden;}
+.card-frame{height:100%;max-height:100%;aspect-ratio:9/16;max-width:220px;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:1;flex-basis:auto;}
 .card-frame.speaking{border-color:var(--gold);animation:goldGlow 1.5s infinite;}
 @keyframes goldGlow{0%,100%{border-color:rgba(201,168,76,0.4);}50%{border-color:rgba(201,168,76,1);}}
 .card-label{position:absolute;bottom:0;left:0;right:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,0.8));text-align:center;}
@@ -360,17 +360,20 @@ async function initCameraWithPicker(targetDeviceId){
       console.log('[final] camera:',picked.label||picked.deviceId);
     }
 
-    // picker UI 렌더 (카메라가 2개 이상일 때만)
-    if(cams.length>=2){
+    // picker UI — 카메라 1개여도 "카메라 바꾸기" 표시 (사용자가 수동 확인 가능)
+    if(cams.length>=1){
       var host=document.getElementById('cam-picker');
       if(!host){
         host=document.createElement('div');
         host.id='cam-picker';
-        host.style.cssText='position:absolute;top:6px;left:6px;right:6px;z-index:10;';
-        var studentCard=document.getElementById('student-card')||document.querySelector('.card-frame.me')||document.querySelector('#interview');
-        if(studentCard) studentCard.appendChild(host);
+        // q-banner 바로 아래, interview 상단에 고정 배치 (카드 위로 삐져나오지 않게)
+        host.style.cssText='position:absolute;top:70px;right:12px;z-index:50;';
+        var interview=document.getElementById('interview');
+        if(interview){interview.style.position='relative';interview.appendChild(host);}
       }
-      host.innerHTML='<select onchange="initCameraWithPicker(this.value)" style="width:100%;padding:5px 8px;background:rgba(0,0,0,0.6);color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:6px;font-size:0.7rem;">'+
+      var btnLabel=picked?(picked.label||'Camera').substring(0,24):'카메라 선택';
+      host.innerHTML='<select onchange="initCameraWithPicker(this.value)" title="카메라 선택" style="padding:6px 10px;background:rgba(201,168,76,0.9);color:#1A2340;border:none;border-radius:14px;font-size:0.72rem;font-weight:700;cursor:pointer;max-width:200px;">'+
+        '<option disabled>📷 카메라 변경</option>'+
         cams.map(function(c){var label=c.label||('Camera '+c.deviceId.slice(-4));return '<option value="'+c.deviceId+'"'+(picked&&c.deviceId===picked.deviceId?' selected':'')+'>'+label+'</option>';}).join('')+
       '</select>';
     }

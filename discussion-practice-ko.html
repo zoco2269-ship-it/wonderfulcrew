@@ -183,7 +183,7 @@ window.addEventListener('popstate',function(){
 
   <div class="controls">
     <button class="ctrl-btn danger" id="btn-stop" onclick="processMyTurn()" style="display:none;">⏹ 발언 종료</button>
-    <button class="ctrl-btn secondary" id="btn-next" onclick="nextRound()" style="display:none;">다음 라운드 →</button>
+    <button class="ctrl-btn secondary" id="btn-next" onclick="newQuestion()" style="display:none;">🔄 다음 질문 보기</button>
     <button class="ctrl-btn primary" id="btn-feedback" onclick="generateFeedback()" style="display:none;">토론 종료 · 피드백 받기</button>
   </div>
 </div>
@@ -349,8 +349,29 @@ async function processMyTurn(){
   await new Promise(function(r){setTimeout(r,700);});
   await aiPeerSpeak(PERSONA_C,'panel-c');
   document.getElementById('transcript').textContent='지원자 A (나)의 차례입니다. 이어서 발언하세요.';
+  document.getElementById('btn-next').style.display='inline-flex';
   document.getElementById('btn-feedback').style.display='inline-flex';
   startMyTurn();
+}
+
+// 새로운 주제로 다시 시작 (TOPICS_DEBATE + TOPICS_FREE 풀에서 랜덤 1개)
+function newQuestion(){
+  // 진행 중인 음성/오디오 정리
+  if(_discSource){try{_discSource.onended=null;_discSource.stop();}catch(e){}_discSource=null;}
+  if('speechSynthesis' in window)window.speechSynthesis.cancel();
+  userTurnActive=false;
+  if(recognition)try{recognition.stop();}catch(e){}
+
+  var pool=[];
+  TOPICS_DEBATE.forEach(function(t){pool.push({kind:'debate',text:t.t,a:t.a,b:t.b});});
+  TOPICS_FREE.forEach(function(t){pool.push({kind:'topic',text:t});});
+  // 현재 주제 제외
+  var current=topics[roundIdx]&&topics[roundIdx].text;
+  pool=pool.filter(function(t){return t.text!==current;});
+  pool.sort(function(){return Math.random()-0.5;});
+  topics=[pool[0]];
+  roundIdx=0;
+  showRound();
 }
 
 async function aiPeerSpeak(persona,panelId){
@@ -374,7 +395,8 @@ async function aiPeerSpeak(persona,panelId){
       '- IATA, 국제항공운송협회 등 특정 기관명을 반복 인용하지 마세요. 매번 다른 근거를 사용하세요\n'+
       '- 구분선(---), 줄바꿈 기호, 마크다운 서식 사용 금지\n'+
       '- "당신은 응답할 차례입니다" 같은 메타 지시문 절대 포함하지 마세요. 오직 토론 발언만 출력하세요\n'+
-      '- 본인 이름(지원자 B, 지원자 C)을 답변 앞에 붙이지 마세요\n'+
+      '- 본인 이름(지원자 B, 지원자 C)을 답변 앞이나 본문에 붙이지 마세요\n'+
+      '- "지원자 A", "[지원자 A]", "지원자 A님" 같은 다른 화자 호명/라벨 절대 사용 금지. 그냥 자연스럽게 본인 발언만 출력.\n'+
       '- 이전 발언자의 문장을 이어받아 완성하지 마세요. 본인의 새 문장으로 시작하세요.';
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:500,
@@ -382,7 +404,11 @@ async function aiPeerSpeak(persona,panelId){
     })});
     var data=await res.json();
     var txt=(data&&data.content&&data.content[0]&&data.content[0].text)||(persona.name+': 좋은 의견이네요. 저도 같은 맥락에서 덧붙이자면…');
-    txt=txt.replace(/\*\*/g,'').replace(/---+/g,'').replace(/\n{2,}/g,'\n').replace(/^\[?지원자\s*[A-C]\]?\s*[:：]?\s*/i,'').replace(/당신은.*차례입니다\.?/g,'').trim();
+    txt=txt.replace(/\*\*/g,'').replace(/---+/g,'').replace(/\n{2,}/g,'\n').replace(/당신은.*차례입니다\.?/g,'').trim();
+    // 모든 위치의 [지원자 X], 지원자 X:, 지원자 X) 등 화자 라벨 제거 (앞뿐 아니라 본문 중간 포함)
+    txt=txt.replace(/\[?지원자\s*[A-C]\]?\s*[:：)]\s*/g,'').trim();
+    // 답변이 다른 화자에게 직접 호명("지원자 A님")하는 표현도 제거
+    txt=txt.replace(/지원자\s*[A-C]\s*(님|분|씨)?[,，]?\s*/g,'').trim();
     // 토큰 한도로 잘려서 마침표 없이 끝나는 경우 → 마지막 완결 문장까지만 보존
     if(!/[.!?。…]$/.test(txt)){
       var m=txt.match(/^([\s\S]*[.!?。…])[^.!?。…]*$/);

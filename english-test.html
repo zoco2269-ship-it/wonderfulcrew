@@ -6,8 +6,8 @@
 <title>영어 테스트 · WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-:root{--emirates-red:#D71920;--gold:#C9A84C;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
-*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Sans KR',sans-serif;background:#F6F6F8;color:var(--text-dark);min-height:100vh;}a{color:inherit;text-decoration:none;}
+:root{--brand-primary:#C9A84C;--gold:#C9A84C;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh;}a{color:inherit;text-decoration:none;}
 nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:#fff;border-bottom:1px solid #EAEAEA;}
 .nav-logo{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--navy);}.nav-logo span{color:var(--gold);}
 .nav-back{font-size:0.88rem;color:var(--text-muted);}
@@ -18,7 +18,8 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 /* Emirates-style question card */
 .q-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
 .q-header-left,.q-header-right{font-size:1.2rem;color:#999;cursor:pointer;}
-.brand-logo{background:var(--emirates-red);color:#fff;padding:6px 14px;font-family:serif;font-weight:700;letter-spacing:0.02em;font-size:0.88rem;border-radius:2px;}
+.brand-logo{background:var(--navy);color:var(--brand-primary);padding:6px 14px;font-family:'DM Serif Display',serif;font-weight:700;letter-spacing:0.04em;font-size:0.88rem;border-radius:2px;}
+.brand-logo span{color:#fff;}
 
 .q-counter{font-family:'DM Serif Display',serif;font-size:1.6rem;color:#1A1A1A;font-weight:700;margin-bottom:22px;}
 
@@ -29,17 +30,17 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .opt{padding:18px 20px;border-bottom:1px solid #EEE;display:flex;align-items:center;gap:16px;cursor:pointer;transition:background 0.15s;}
 .opt:hover{background:#FAFAFA;}
 .opt-circle{width:20px;height:20px;border:1.5px solid #BBB;border-radius:50%;flex-shrink:0;position:relative;}
-.opt.sel .opt-circle{border-color:var(--emirates-red);border-width:2px;}
-.opt.sel .opt-circle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:10px;height:10px;background:var(--emirates-red);border-radius:50%;}
+.opt.sel .opt-circle{border-color:var(--brand-primary);border-width:2px;}
+.opt.sel .opt-circle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:10px;height:10px;background:var(--brand-primary);border-radius:50%;}
 .opt-text{font-size:0.94rem;color:#1A1A1A;}
 
 .progress{position:sticky;top:56px;background:#fff;height:4px;z-index:99;border-bottom:1px solid #EAEAEA;}
-.progress .bar{height:100%;background:var(--emirates-red);width:0%;transition:width 0.3s;}
+.progress .bar{height:100%;background:var(--brand-primary);width:0%;transition:width 0.3s;}
 
 .btn-row{display:flex;gap:10px;margin-top:28px;justify-content:space-between;}
 .btn{padding:14px 28px;border:none;border-radius:6px;font-family:inherit;font-size:0.94rem;font-weight:700;cursor:pointer;transition:all 0.15s;}
 .btn:disabled{opacity:0.4;cursor:not-allowed;}
-.btn-primary{background:var(--emirates-red);color:#fff;flex:1;}
+.btn-primary{background:var(--brand-primary);color:#fff;flex:1;}
 .btn-primary:hover:not(:disabled){background:#B01218;}
 .btn-secondary{background:#fff;color:var(--text-mid);border:1px solid #DDD;}
 
@@ -50,14 +51,14 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .intro .meta{font-size:0.92rem;color:var(--text-muted);line-height:1.8;margin-bottom:30px;}
 .intro .info-box{text-align:left;background:#fff;border:1px solid #EAEAEA;border-radius:8px;padding:20px 22px;margin-bottom:28px;font-size:0.88rem;color:var(--text-mid);line-height:1.8;}
 .intro .info-box b{color:var(--navy);}
-.intro .start-btn{padding:16px 48px;background:var(--emirates-red);color:#fff;border:none;border-radius:6px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0.02em;}
+.intro .start-btn{padding:16px 48px;background:var(--brand-primary);color:#fff;border:none;border-radius:6px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0.02em;}
 .intro .start-btn:hover{background:#B01218;}
 
 /* Result */
 .result-hero{text-align:center;padding:40px 20px 20px;}
 .result-hero .emoji{font-size:3rem;margin-bottom:10px;}
 .result-hero h2{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin-bottom:8px;}
-.result-hero .score{font-family:'DM Serif Display',serif;font-size:3rem;color:var(--emirates-red);font-weight:700;line-height:1;margin:16px 0;}
+.result-hero .score{font-family:'DM Serif Display',serif;font-size:3rem;color:var(--brand-primary);font-weight:700;line-height:1;margin:16px 0;}
 .result-hero .score span{font-size:1.2rem;color:var(--text-muted);}
 .result-hero .grade{font-size:0.96rem;color:var(--text-mid);margin-bottom:20px;}
 .review-list{margin-top:28px;}
@@ -87,13 +88,13 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 <!-- INTRO -->
 <div class="wrap" id="screen-intro">
   <div class="intro">
-    <div class="brand-logo">Emirates</div>
-    <h1>영어 테스트<br><span style="color:var(--emirates-red);">English Test</span></h1>
-    <p class="meta">Emirates 실전 영어 테스트 형식<br>30문항 객관식 · 예상 소요 10~15분</p>
+    <div class="brand-logo">Wonderful<span>Crew</span></div>
+    <h1>영어 테스트<br><span style="color:var(--brand-primary);">English Test</span></h1>
+    <p class="meta">외항사 실전 영어 테스트 형식<br>30문항 객관식 · 예상 소요 10~15분</p>
     <div class="info-box">
       <b>테스트 안내</b><br>
       · 빈칸에 들어갈 가장 적절한 단어를 4개 보기에서 선택하세요.<br>
-      · 실제 에미레이트·카타르 등 외항사 영어 테스트에서 자주 나오는<br>&nbsp;&nbsp;<b>어휘·전치사·서법조동사·표현</b>을 묻습니다.<br>
+      · 실제 외항사(에미레이트·카타르 등) 영어 테스트에서 자주 나오는<br>&nbsp;&nbsp;<b>어휘·전치사·서법조동사·표현</b>을 묻습니다.<br>
       · 테스트 종료 후 <b>정답 해설 + 점수</b>가 제공됩니다.<br>
       · 사전·번역기 사용은 실전 점수에 도움 안 됩니다. 스스로 풀어보세요.
     </div>
@@ -105,7 +106,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 <div class="wrap" id="screen-quiz" style="display:none;">
   <div class="q-header">
     <div class="q-header-left">←</div>
-    <div class="brand-logo">Emirates</div>
+    <div class="brand-logo">Wonderful<span>Crew</span></div>
     <div class="q-header-right">⚙ ?</div>
   </div>
   <div class="q-counter" id="q-counter">Question 1 of 30</div>

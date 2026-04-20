@@ -178,16 +178,40 @@ var AIRLINE_QS={
     {q:"What makes you the ideal cabin crew candidate?"}
   ],
   singapore:[
-    {q:"Why Singapore Airlines?"},
-    {q:"What does the Singapore Girl image mean to you?"},
-    {q:"Tell me about a time you provided exceptional service."},
-    {q:"How would you handle a cultural misunderstanding?"},
-    {q:"Describe a situation where you had to adapt quickly."},
-    {q:"What do you know about Singapore?"},
-    {q:"How do you maintain high standards under pressure?"},
-    {q:"Tell me about your teamwork experience."},
-    {q:"What is your biggest weakness and how do you manage it?"},
-    {q:"Where do you see yourself in 5 years?"}
+    // 실제 기출 (합격자 제보 기반)
+    {q:"Please introduce yourself."},
+    {q:"Tell me about yourself."},
+    {q:"Why do you want to become a cabin crew member?"},
+    {q:"Why do you want to work for Singapore Airlines?"},
+    {q:"Why did you resign from your previous job?"},
+    {q:"Why didn't you go back to your previous airline?"},
+    {q:"What is your current job?"},
+    {q:"How is your current job related to the cabin crew position?"},
+    {q:"Can you tell me about your previous job?"},
+    {q:"What was your major in university?"},
+    {q:"Can you tell me about your university life?"},
+    {q:"What would you do if your senior is younger than you?"},
+    {q:"How does your family feel about you becoming a flight attendant?"},
+    {q:"What qualities do you have that make you suitable for this role?"},
+    {q:"Do you find speaking English difficult?"},
+    {q:"What are your hobbies?"},
+    {q:"What do you know about Singapore Airlines?"},
+    {q:"What are the duties of a Singapore Airlines cabin crew member?"},
+    {q:"What do you know about Singapore as a country?"},
+    {q:"The induction training program is known to be tough. How do you feel about that?"},
+    {q:"What would your friends say are your strengths and weaknesses?"},
+    {q:"What do you look forward to and what challenges do you expect as a Singapore Airlines cabin crew?"},
+    {q:"Tell me about a time you provided excellent service."},
+    {q:"Tell me about a time you handled a difficult customer."},
+    {q:"Can you tell me about a time you turned a bad customer situation into a good one?"},
+    {q:"How would you handle a difficult passenger?"},
+    {q:"Can you tell us how you handle unexpected or challenging situations, especially under pressure?"},
+    {q:"What are some differences between Korea and Singapore?"},
+    {q:"How is Korean culture different from Singaporean culture?"},
+    {q:"If you move to Singapore, how would you embrace and adapt to its different culture?"},
+    {q:"What is one thing you don't really like about living in Korea?"},
+    {q:"How do you think your current work experience will help you as a flight attendant?"},
+    {q:"Why do you want to change your major or career?"}
   ],
   cathay:[
     {q:"Why Cathay Pacific?"},
@@ -313,24 +337,50 @@ function startInterview(){
   document.getElementById('setup').style.display='none';
   document.getElementById('interview').classList.add('active');
 
-  // 카메라 — 전면(사용자 얼굴) 우선. facingMode user를 강제 → fallback 으로 단순 video
+  // 카메라 — 전면(사용자 얼굴) 우선
+  // 데스크탑은 facingMode가 힌트일 뿐이라 외장 카메라 등이 선택될 수 있음.
+  // → 먼저 getUserMedia로 권한 받아 enumerateDevices의 label을 풀고, 전면 카메라 deviceId로 명시 선택.
   if(document.getElementById('cam-toggle').checked){
     (async function(){
-      var attempts=[
-        {video:{facingMode:{exact:'user'}},audio:true},
-        {video:{facingMode:'user'},audio:true},
-        {video:true,audio:true}
-      ];
-      for(var i=0;i<attempts.length;i++){
-        try{
-          stream=await navigator.mediaDevices.getUserMedia(attempts[i]);
-          var v=document.getElementById('cam-video');
-          v.srcObject=stream;v.style.display='block';
-          document.getElementById('cam-ph').style.display='none';
-          return;
-        }catch(e){}
+      function setStream(s){
+        stream=s;
+        var v=document.getElementById('cam-video');
+        v.srcObject=stream;v.style.display='block';
+        document.getElementById('cam-ph').style.display='none';
       }
-      document.getElementById('cam-ph').innerHTML='<div>카메라 연결 실패</div>';
+      try{
+        // 1) 아무 카메라나 권한 얻기 (label 채우기용)
+        var probe=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+        // 2) 장치 목록 조회
+        var devices=await navigator.mediaDevices.enumerateDevices();
+        var cams=devices.filter(function(d){return d.kind==='videoinput';});
+        // 3) 전면 키워드 우선 매칭
+        var frontRe=/front|전면|셀피|selfie|user|facetime|integrated|built-?in|webcam|internal/i;
+        var backRe=/back|후면|rear|environment|external|usb|virtual/i;
+        var frontCam=cams.find(function(c){return frontRe.test(c.label);});
+        if(!frontCam){
+          // 후면 키워드 아닌 카메라 중 첫 번째
+          frontCam=cams.find(function(c){return !backRe.test(c.label);});
+        }
+        probe.getTracks().forEach(function(t){t.stop();});
+        if(frontCam){
+          stream=await navigator.mediaDevices.getUserMedia({video:{deviceId:{exact:frontCam.deviceId}},audio:true});
+          setStream(stream);
+          console.log('[final] camera selected:',frontCam.label);
+        } else {
+          // 매칭 실패 시 facingMode로 재시도
+          stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});
+          setStream(stream);
+        }
+      }catch(e){
+        // 최후 폴백
+        try{
+          stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+          setStream(stream);
+        }catch(e2){
+          document.getElementById('cam-ph').innerHTML='<div>카메라 연결 실패</div>';
+        }
+      }
     })();
   }
   qIdx=0;showQuestion();

@@ -132,13 +132,32 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
 <script>
 var TOPICS=[
+  // === 싱가포르항공 실제 기출 주제 ===
+  {t:"Money can buy happiness.",ko:"돈으로 행복을 살 수 있다.",pro:"안정·자유·기회 확장으로 행복에 기여.",con:"돈은 수단일 뿐, 관계·건강이 본질."},
+  {t:"Does education have an impact on success?",ko:"교육이 성공에 영향을 미치는가?",pro:"기회 확장·사고력·네트워크 제공.",con:"사업가·예술가 등 학력 무관 성공 다수."},
+  {t:"Is IQ more important than EQ?",ko:"IQ가 EQ보다 중요한가?",pro:"분석·판단력은 IQ에 기반.",con:"서비스·리더십은 EQ가 결정적."},
+  {t:"The importance of vegetarianism after COVID-19.",ko:"코로나 이후 채식의 중요성.",pro:"환경·건강·팬데믹 예방.",con:"개인 선택. 영양 균형 고려 필요."},
+  {t:"Beautiful people make more money.",ko:"아름다운 사람이 돈을 더 번다.",pro:"서비스·영업직에서 첫인상 유리.",con:"실력·노력이 궁극적으로 결정."},
+  {t:"Should men take the primary role as the head of the household?",ko:"남성이 가장으로서의 주된 역할을 맡아야 하는가?",pro:"전통적 역할 분담의 안정성.",con:"성평등. 능력·상황별로 결정해야."},
+  {t:"Should men be expected to pay for dates?",ko:"데이트 비용은 남성이 부담해야 하는가?",pro:"전통적 예의·배려.",con:"평등한 관계. 형편 따라 나누는 게 자연스러움."},
+  {t:"Should married couples live with their parents after marriage?",ko:"결혼 후 부모와 동거해야 하는가?",pro:"돌봄·경제적 안정·육아 도움.",con:"프라이버시·독립성·갈등 가능성."},
+  {t:"Should married couples be responsible for caring for their ageing parents?",ko:"자녀가 노부모를 직접 부양해야 하는가?",pro:"가족 유대·도리.",con:"사회 시스템·전문 돌봄이 현실적."},
+  {t:"Should senior citizens be sent to live in nursing homes?",ko:"노인은 요양시설에서 지내야 하는가?",pro:"전문 돌봄·의료 접근성.",con:"가족과의 정서적 유대 중요."},
+  {t:"Is it better for dual-income couples to place their children in daycare?",ko:"맞벌이 부부는 아이를 어린이집에 맡기는 게 더 나은가?",pro:"사회성·규칙적 환경·부모의 커리어.",con:"영유아기 부모 애착이 핵심."},
+  {t:"Do you think women should marry early or later in life?",ko:"여성은 결혼을 일찍 하는 것과 늦게 하는 것, 어느 쪽이 좋은가?",pro:"(일찍) 건강·가족 계획 여유. (늦게) 커리어·자기 이해.",con:"개인 선택. 획일화할 수 없음."},
+  {t:"Which is better: arranged marriage or love marriage?",ko:"중매결혼과 연애결혼 중 어느 쪽이 나은가?",pro:"중매: 조건 검증·가족 동의. 연애: 애정·자발성.",con:"각자 장단점. 문화 맥락 중요."},
+  {t:"Do you think having siblings is better than being an only child?",ko:"형제자매가 있는 게 외동보다 나은가?",pro:"사회성·감정 발달·평생 동반자.",con:"외동은 부모의 집중 지원·자원 독점."},
+  {t:"Do you believe physical attractiveness leads to higher income?",ko:"외모가 높은 소득으로 이어지는가?",pro:"일부 직종(서비스·영업)에선 유리.",con:"장기적으론 실력·태도가 결정."},
+  {t:"Are beauty pageants still relevant in today's society?",ko:"미인대회가 오늘날에도 의미가 있는가?",pro:"자신감·기회·플랫폼 제공.",con:"외모 중심·시대 역행·성 상품화 우려."},
+  {t:"Does social media bring people closer or increase emotional distance?",ko:"소셜미디어는 사람을 가깝게 하는가 멀게 하는가?",pro:"지리적 거리 극복·연결 유지.",con:"피상적 관계·비교·고립감 초래."},
+  {t:"What are the pros and cons of becoming a parent at a young age?",ko:"젊은 나이에 부모가 되는 것의 장단점?",pro:"체력·아이와의 나이 차 유리.",con:"경제·커리어 준비 부족."},
+  {t:"Do women have the right to choose whether or not to give birth?",ko:"여성은 출산을 선택할 권리가 있는가?",pro:"신체 자기결정권.",con:"생명 윤리·사회적 책임 함께 고려."},
+  {t:"Is salary more important, or fulfillment at work?",ko:"급여와 직업 성취감 중 무엇이 더 중요한가?",pro:"(급여) 생활 안정·현실. (성취감) 동기·지속 가능성.",con:"균형이 필요. 단계별 우선순위 다름."},
+
+  // === 일반 디베이트 주제 ===
   {t:"Cabin crew should always prioritize safety over customer satisfaction.",ko:"승무원은 항상 고객 만족보다 안전을 우선해야 한다.",pro:"안전이 최우선. 단 한 번의 사고가 모든 신뢰를 깨뜨림.",con:"고객 만족 없이는 항공사가 존재할 수 없음. 균형이 필요."},
-  {t:"Bilingual cabin crew should be paid more than monolingual crew.",ko:"이중언어 가능 승무원은 단일언어 승무원보다 더 많은 급여를 받아야 한다.",pro:"추가 가치를 제공하므로 보상이 합리적.",con:"공정성·팀 단합 저해. 모든 크루의 기여가 동등함."},
-  {t:"Long-haul flights should ban alcohol service.",ko:"장거리 비행에서는 알코올 서비스를 금지해야 한다.",pro:"기내 분쟁·건강 문제 감소. 안전 최우선.",con:"고객 자유 침해. 항공사 매출에 큰 타격."},
   {t:"AI will replace most cabin crew roles within 20 years.",ko:"AI는 20년 안에 승무원 역할 대부분을 대체할 것이다.",pro:"안내·서빙은 자동화 가능. 비용 절감.",con:"인간적 케어와 비상 대응은 AI가 못함."},
-  {t:"Airlines should offer child-free cabins on long-haul flights.",ko:"항공사는 장거리 비행에서 어린이 없는 객실을 제공해야 한다.",pro:"비즈니스 승객의 휴식권 보장.",con:"가족 차별. 공공 운송수단의 본질에 어긋남."},
-  {t:"Cabin crew uniforms should be gender-neutral.",ko:"승무원 유니폼은 성중립적이어야 한다.",pro:"다양성 존중·시대 변화 반영.",con:"항공사 브랜드 정체성·전통 유지가 필요."},
-  {t:"In-flight Wi-Fi should be free for all passengers.",ko:"기내 Wi-Fi는 모든 승객에게 무료로 제공되어야 한다.",pro:"기본 서비스가 된 시대. 경쟁력 강화.",con:"비용 부담이 결국 항공권 가격에 전가됨."},
+  {t:"Long-haul flights should ban alcohol service.",ko:"장거리 비행에서는 알코올 서비스를 금지해야 한다.",pro:"기내 분쟁·건강 문제 감소. 안전 최우선.",con:"고객 자유 침해. 항공사 매출에 큰 타격."},
   {t:"First-class passengers should always be served before economy.",ko:"퍼스트클래스 승객은 항상 이코노미보다 먼저 서비스를 받아야 한다.",pro:"지불한 가격에 상응하는 차별화된 경험 제공.",con:"인간적 평등 원칙. 모든 승객이 동등하게 존중받아야."},
   {t:"Mandatory retirement age for cabin crew is necessary.",ko:"승무원 정년 제도는 필요하다.",pro:"체력 요구가 높은 직업 특성상 안전을 위해 필요.",con:"연령 차별. 능력으로 평가받아야 함."},
   {t:"Cabin crew should be allowed to refuse service to rude passengers.",ko:"승무원은 무례한 승객에 대해 서비스를 거부할 권리가 있어야 한다.",pro:"근로자 인권 보호. 학대 방지.",con:"서비스직의 본분. 고객 갈등 확대 위험."}

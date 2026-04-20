@@ -410,53 +410,22 @@ function startInterview(){
   document.getElementById('avatar-emoji').textContent=chosenAvatar;
   document.getElementById('q-total').textContent=questions.length;
 
-  // Start camera with picker
-  initRPCamera();
-
-  showQuestion();
-}
-
-// === 카메라 초기화 + 수동 picker (final.html 패턴) ===
-async function initRPCamera(targetDeviceId){
-  try{
-    if(!stream){
-      try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});}catch(e){document.getElementById('cam-ph').innerHTML='<div>Camera permission needed</div>';return;}
-    }
-    var devices=await navigator.mediaDevices.enumerateDevices();
-    var cams=devices.filter(function(d){return d.kind==='videoinput';});
-    var picked=null;
-    if(targetDeviceId){picked=cams.find(function(c){return c.deviceId===targetDeviceId;});}
-    if(!picked){
-      var frontRe=/front|전면|셀피|selfie|facetime|integrated|built-?in|internal|hd camera|hd webcam|mac.*camera|isight|laptop/i;
-      var badRe=/obs|virtual|droidcam|ivcam/i;
-      picked=cams.find(function(c){return frontRe.test(c.label);});
-      if(!picked) picked=cams.find(function(c){return !badRe.test(c.label);});
-      if(!picked) picked=cams[0];
-    }
-    if(picked){
-      stream.getTracks().forEach(function(t){t.stop();});
-      stream=await navigator.mediaDevices.getUserMedia({video:{deviceId:{exact:picked.deviceId}},audio:true});
+  // Camera — interview-practice.html에서 검증된 단순 호출 방식과 동일
+  (async function(){
+    try{
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});
       var v=document.getElementById('cam-video');
       if(v){v.srcObject=stream;v.style.display='block';}
       var ph=document.getElementById('cam-ph');
       if(ph)ph.style.display='none';
       try{initFaceMesh(v);faceAnalysisActive=true;}catch(e){}
+    }catch(e){
+      var ph=document.getElementById('cam-ph');
+      if(ph)ph.innerHTML='<div>Camera connection failed</div>';
     }
-    if(cams.length>=1){
-      var host=document.getElementById('cam-picker');
-      if(!host){
-        host=document.createElement('div');
-        host.id='cam-picker';
-        host.style.cssText='position:absolute;top:70px;right:12px;z-index:50;';
-        var interview=document.getElementById('interview');
-        if(interview){interview.style.position='relative';interview.appendChild(host);}
-      }
-      host.innerHTML='<select onchange="initRPCamera(this.value)" title="카메라 선택" style="padding:6px 10px;background:rgba(201,168,76,0.9);color:#1A2340;border:none;border-radius:14px;font-size:0.72rem;font-weight:700;cursor:pointer;max-width:200px;">'+
-        '<option disabled>📷 카메라 변경</option>'+
-        cams.map(function(c){var label=c.label||('Camera '+c.deviceId.slice(-4));return '<option value="'+c.deviceId+'"'+(picked&&c.deviceId===picked.deviceId?' selected':'')+'>'+label+'</option>';}).join('')+
-      '</select>';
-    }
-  }catch(e){console.warn('[roleplay-en] camera init failed',e);document.getElementById('cam-ph').innerHTML='<div>Camera connection failed</div>';}
+  })();
+
+  showQuestion();
 }
 
 // ===== MediaPipe 얼굴 분석 (startInterview 외부 — 함수 깨짐 방지) =====

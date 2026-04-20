@@ -472,8 +472,18 @@ function initFaceMesh(videoEl){
       faceStats.totalFrames++;
       if(r.multiFaceLandmarks&&r.multiFaceLandmarks.length>0){
         var lm=r.multiFaceLandmarks[0];
-        var lipL=lm[61],lipR=lm[291],lipTop=lm[13];
-        if((lipTop.y-((lipL.y+lipR.y)/2))>0.01)faceStats.smileFrames++;
+        // 미소 감지 — 두 가지 지표 결합 (둘 중 하나만 만족해도 미소로 카운트)
+        // (1) 입꼬리 들림: 입꼬리가 아랫입술 중앙선보다 위에 있는가
+        // (2) 입의 가로/세로 비율: 미소 시 입이 가로로 넓어짐 (mouth aspect ratio)
+        var lipL=lm[61],lipR=lm[291],lipTop=lm[13],lipBot=lm[14];
+        var faceL=lm[234],faceR=lm[454];
+        var cornerY=(lipL.y+lipR.y)/2;
+        var lipMidY=(lipTop.y+lipBot.y)/2;
+        var cornerLift=lipMidY-cornerY; // 양수 = 입꼬리가 입 중앙선보다 위
+        var mouthW=Math.abs(lipR.x-lipL.x);
+        var faceW=Math.abs(faceR.x-faceL.x);
+        var widthRatio=faceW>0?(mouthW/faceW):0; // 얼굴폭 대비 입폭 — 미소 시 0.42 이상
+        if(cornerLift>0.002 || widthRatio>0.42) faceStats.smileFrames++;
         var nose=lm[1];
         if(Math.abs(nose.x-0.5)<0.15&&Math.abs(nose.y-0.45)<0.15)faceStats.lookingCenter++;
         var eyeL=lm[33],eyeR=lm[263];
@@ -559,7 +569,7 @@ async function generateFeedback(){
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:1200,
-      system:(type==='hotel'||type==='hotel2'?'You are a luxury hotel interview coach.':'You are a cabin crew interview coach.')+' Evaluate ONLY what the student actually said. Input is from speech recognition — ignore grammar errors.\n\nCRITICAL RULES:\n- Only comment on what they ACTUALLY said. Do NOT mention topics they did not bring up.\n- Do NOT use a fixed checklist. Respond naturally to their specific answer.\n- NEVER suggest company policy, mileage, refunds, or compensation beyond their authority.\n- Focus on what crew CAN do: empathy, apology, available drinks/snacks/blankets, warm service.\n\nSERVICE PHILOSOPHY (use ONLY when the question is about service):\nIf the question asks about service (서비스란, 좋은 서비스, 서비스 경험 등), the model answer should naturally reflect this philosophy:\n- 서비스의 핵심은 고객의 입장이 되어보는 것. 고객이 어떤 심정일지 먼저 파악하고 이해하는 것에서 시작.\n- 좋은 서비스의 목적은 고객을 만족시켜서 다시 돌아오게 하는 것. 만족한 고객은 혼자 오지 않고 가족, 친구, 동료를 데리고 돌아온다.\n- 우리는 고객을 만나는 최접점에 있는 사람. 고객 만족도를 높이면 좋은 평판이 되고, 좋은 평판은 고객이 되돌아오는 이유가 된다.\nIMPORTANT: Do NOT force this philosophy into unrelated questions. Only use it when the question is directly about service. If the student mentioned similar ideas, praise them. If not, do NOT criticize — just reflect it naturally in the suggested answer.\n\nFormat (# not ##):\n# 점수: X/100\n# 잘한 점\n- (2-3 points)\n# 개선할 점\n- (2-3 points)\n# 제안 답변\n(5-6 sentences)\n\nBe encouraging. Write in Korean.',
+      system:(type==='hotel'||type==='hotel2'?'You are a luxury hotel interview coach.':'You are a cabin crew interview coach.')+' Evaluate ONLY what the student actually said. Input is from speech recognition — ignore grammar/punctuation errors.\n\nCRITICAL RULES:\n- Only comment on what they ACTUALLY said. Do NOT mention topics they did not bring up.\n- Do NOT use a fixed checklist. Respond naturally to their specific answer.\n- NEVER suggest company policy, mileage, refunds, or compensation beyond their authority.\n- Focus on what crew CAN do: empathy, apology, available drinks/snacks/blankets, warm service.\n\n**SCORING & 개선할 점 RULES (very important):**\n- If the answer is genuinely strong (well-structured, relevant, good content), give 90+ AND under 개선할 점 say "특별한 개선점 없습니다. 이 톤과 구조를 유지하세요." DO NOT manufacture critique just to fill the section.\n- Never criticize for things that are inherent to speech recognition (filler, repeated words, choppy phrasing) — those are NOT real flaws of the student.\n- If you criticize for X (e.g., "구체성 부족"), the 제안 답변 MUST clearly demonstrate X (must contain a concrete example). Otherwise do NOT raise that critique.\n- If 제안 답변 turns out essentially same as student\'s answer, score should be 90+ and 개선할 점 should reflect that (no major change).\n- Score 70-89 only if there are real, demonstrable issues you can show in the model answer.\n\nSERVICE PHILOSOPHY (use ONLY when the question is about service):\nIf the question asks about service (서비스란, 좋은 서비스, 서비스 경험 등), the model answer should naturally reflect this philosophy:\n- 서비스의 핵심은 고객의 입장이 되어보는 것. 고객이 어떤 심정일지 먼저 파악하고 이해하는 것에서 시작.\n- 좋은 서비스의 목적은 고객을 만족시켜서 다시 돌아오게 하는 것. 만족한 고객은 혼자 오지 않고 가족, 친구, 동료를 데리고 돌아온다.\n- 우리는 고객을 만나는 최접점에 있는 사람. 고객 만족도를 높이면 좋은 평판이 되고, 좋은 평판은 고객이 되돌아오는 이유가 된다.\nIMPORTANT: Do NOT force this philosophy into unrelated questions. Only use it when the question is directly about service. If the student mentioned similar ideas, praise them. If not, do NOT criticize — just reflect it naturally in the suggested answer.\n\nFormat (# not ##):\n# 점수: X/100\n# 잘한 점\n- (2-3 points)\n# 개선할 점\n- (1-2 real, demonstrable points OR "특별한 개선점 없습니다." if 90+)\n# 제안 답변\n(5-6 sentences — MUST contain any specific element you criticized for missing)\n\nBe encouraging. Write feedback sections in Korean. The 제안 답변 itself should be in the same language as the question (English if question is in English, Korean if question is in Korean).',
       messages:[{role:'user',content:'질문: '+question+'\n\n학생 답변: '+fullText.trim()+'\n\n피드백을 주세요.'}]
     })});
     var data=await res.json();

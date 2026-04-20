@@ -519,7 +519,7 @@ function initFaceMesh(videoEl){
         var widthRatio=faceW>0?(mouthW/faceW):0;
         // 미소 = 입꼬리가 실제로 들렸을 때만 (cornerLift 필수)
         // widthRatio는 보조 조건: 입을 가로로 더 늘인 경우
-        if(cornerLift>0.006 && widthRatio>0.46) faceStats.smileFrames++;
+        if(cornerLift>0.003 || widthRatio>0.44) faceStats.smileFrames++;
         var nose=lm[1];
         if(Math.abs(nose.x-0.5)<0.15&&Math.abs(nose.y-0.45)<0.15)faceStats.lookingCenter++;
         var eyeL=lm[33],eyeR=lm[263];

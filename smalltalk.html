@@ -166,7 +166,7 @@ function initFaceMesh(videoEl){
         var mouthW=Math.abs(lipR.x-lipL.x);
         var faceW=Math.abs(faceR.x-faceL.x);
         var widthRatio=faceW>0?(mouthW/faceW):0;
-        if(cornerLift>0.006 && widthRatio>0.46) faceStats.smileFrames++;
+        if(cornerLift>0.003 || widthRatio>0.44) faceStats.smileFrames++;
       }
     });
     faceInterval=setInterval(function(){

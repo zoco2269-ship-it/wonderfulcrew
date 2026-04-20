@@ -73,6 +73,17 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
 <!-- SESSION -->
 <div class="session" id="session">
+  <div class="video-area" style="display:flex;align-items:center;justify-content:center;gap:14px;padding:12px;flex-shrink:0;">
+    <div class="card-frame" id="card-ai" style="width:130px;height:160px;border-radius:10px;overflow:hidden;background:#000;border:2px solid rgba(255,255,255,0.08);position:relative;">
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#1A2340 0%,#2A3455 100%);font-size:2.6rem;">👩🏻</div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:6px;background:linear-gradient(transparent,rgba(0,0,0,0.85));text-align:center;"><div style="font-family:'DM Serif Display',serif;font-size:0.72rem;color:#fff;">Interviewer</div><div style="font-size:0.6rem;color:var(--gold-light);">Qatar Airways</div></div>
+    </div>
+    <div class="card-frame" id="my-card" style="width:130px;height:160px;border-radius:10px;overflow:hidden;background:#000;border:2px solid rgba(232,201,106,0.3);position:relative;">
+      <video id="cam-video" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;display:none;transform:scaleX(-1);"></video>
+      <div id="cam-ph" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.55);font-size:0.72rem;text-align:center;line-height:1.5;">카메라<br>대기 중</div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:6px;background:linear-gradient(transparent,rgba(0,0,0,0.85));text-align:center;"><div style="font-family:'DM Serif Display',serif;font-size:0.72rem;color:#fff;">You</div></div>
+    </div>
+  </div>
   <div class="chat" id="chat"></div>
   <div class="waveform" id="waveform">
     <div class="bar" style="animation-delay:0s;"></div><div class="bar" style="animation-delay:0.1s;"></div><div class="bar" style="animation-delay:0.15s;"></div><div class="bar" style="animation-delay:0.2s;"></div><div class="bar" style="animation-delay:0.25s;"></div><div class="bar" style="animation-delay:0.3s;"></div>
@@ -104,6 +115,8 @@ function fullCleanup(){
   if('speechSynthesis' in window)try{window.speechSynthesis.cancel();}catch(e){}
   if(typeof gcStop==='function')try{gcStop();}catch(e){}
   try{if(recognition){recognition.onend=null;recognition.stop();recognition=null;}}catch(e){}
+  try{if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;}}catch(e){}
+  try{var v=document.getElementById('cam-video');if(v){v.pause();v.srcObject=null;}}catch(e){}
 }
 window.addEventListener('beforeunload',fullCleanup);
 window.addEventListener('pagehide',fullCleanup);
@@ -116,15 +129,35 @@ function appendChat(who,text,isTmp){
   el.scrollTop=el.scrollHeight;
 }
 
+var camStream=null;
+async function startCamera(){
+  if(camStream)return;
+  var attempts=[{video:{facingMode:{exact:'user'}},audio:true},{video:{facingMode:'user'},audio:true},{video:true,audio:true}];
+  for(var i=0;i<attempts.length;i++){
+    try{
+      camStream=await navigator.mediaDevices.getUserMedia(attempts[i]);
+      var v=document.getElementById('cam-video');
+      v.srcObject=camStream;v.style.display='block';
+      document.getElementById('cam-ph').style.display='none';
+      return;
+    }catch(e){}
+  }
+  document.getElementById('cam-ph').innerHTML='카메라<br>연결 실패';
+}
+
 function startSmalltalk(){
   document.getElementById('setup').style.display='none';
   document.getElementById('session').classList.add('active');
   history.pushState({smalltalk:true},'','');
   dialogue=[];
   document.getElementById('chat').innerHTML='';
+  document.getElementById('feedback').classList.remove('active');
+  document.getElementById('feedback').innerHTML='';
+  startCamera();
   // 지망생이 먼저 인사하도록 안내만 표시. AI는 대기.
   appendChat('ai','(Please start with your greeting in English.)');
   document.getElementById('btn-answer').style.display='inline-flex';
+  document.getElementById('btn-answer').disabled=false;
   document.getElementById('btn-end').style.display='inline-flex';
   document.getElementById('transcript').textContent='🎙 Start by greeting the interviewer in English.';
 }
@@ -215,7 +248,10 @@ async function endSession(){
     var d=await r.json();
     var fbText=((d&&d.content&&d.content[0]&&d.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
     fb.innerHTML='<b style="color:var(--gold);">스몰톡 피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>'+
-      '<div style="margin-top:12px;"><a href="'+BACK_URL+'" style="color:var(--gold);font-size:0.82rem;">← 커리큘럼으로</a></div>';
+      '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">'+
+      '<button onclick="startSmalltalk()" style="padding:10px 22px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:22px;font-family:inherit;font-size:0.84rem;font-weight:700;cursor:pointer;">🔄 더 연습하기</button>'+
+      '<a href="'+BACK_URL+'" style="color:var(--gold);font-size:0.82rem;">← 커리큘럼으로</a>'+
+      '</div>';
   }catch(e){fb.innerHTML='<b style="color:#E74C3C;">피드백 생성 실패.</b>';}
 }
 </script>

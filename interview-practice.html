@@ -407,6 +407,29 @@ var Q_HOTEL_EXEC=[
   '마지막으로 하고 싶은 말씀이 있으신가요?'
 ];
 
+var Q_SMALLTALK=[
+  'Tell me about yourself.',
+  'How did you get here today?',
+  'What did you have for breakfast this morning?',
+  'How are you feeling today?',
+  'Have you traveled abroad? Where have you been?',
+  'What do you like to do in your free time?',
+  'Tell me about your hometown.',
+  'What was your last job about?',
+  'Do you speak any other languages besides English and Korean?',
+  'What do you think about Doha?',
+  'Why do you want to work for Qatar Airways?',
+  'What would you say is your biggest strength?',
+  'How do you handle stress in a busy environment?',
+  'Tell me about a time you helped a customer.',
+  'What do you do to stay healthy and in shape?',
+  'Describe your ideal holiday.',
+  'What is the last book or movie that impressed you?',
+  'Do you prefer working with a team or alone?',
+  'What do you think makes a good cabin crew member?',
+  'Is there anything you would like to ask me?'
+];
+
 var Q_CRUISE=[
   'Tell me about yourself.',
   'Why do you want to work on a cruise ship?',
@@ -431,6 +454,7 @@ var typeMap = {
   'hotel': { q: Q_HOTEL, label: '호텔 1차 면접', lang: 'ko-KR' },
   'hotel2': { q: Q_HOTEL2, label: '호텔 2차 면접', lang: 'ko-KR' },
   'hotel-exec': { q: Q_HOTEL_EXEC, label: '호텔 임원면접', lang: 'ko-KR' },
+  'smalltalk': { q: Q_SMALLTALK, label: '스몰톡 연습 (영어)', lang: 'en-US' },
   'cruise': { q: Q_CRUISE, label: '크루즈 면접', lang: 'en-US' }
 };
 var selected = typeMap[type] || typeMap['interview'];

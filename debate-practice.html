@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>디베이트 연습 (1:1) · WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--navy-dark:#111B2E;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--navy-dark);color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:rgba(17,27,46,0.95);border-bottom:1px solid rgba(201,168,76,0.15);flex-shrink:0;}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.8rem;color:rgba(255,255,255,0.55);}.nav-back:hover{color:var(--gold);}
+.setup{padding:36px 20px;max-width:780px;margin:0 auto;text-align:center;overflow-y:auto;}
+.setup h1{font-family:'DM Serif Display',serif;font-size:1.6rem;color:#fff;margin-bottom:6px;}
+.setup h1 em{font-style:normal;color:var(--gold);}
+.setup p{color:rgba(255,255,255,0.65);font-size:0.86rem;line-height:1.7;margin-bottom:22px;}
+.tag{display:inline-block;padding:5px 14px;background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold-light);font-size:0.7rem;letter-spacing:0.18em;border-radius:14px;margin-bottom:14px;font-family:'DM Serif Display',serif;font-weight:700;}
+.topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;text-align:left;}
+.topic-card{background:rgba(255,255,255,0.04);border:1.5px solid rgba(201,168,76,0.18);border-radius:10px;padding:14px;cursor:pointer;transition:all 0.18s;}
+.topic-card:hover,.topic-card.sel{border-color:var(--gold);background:rgba(201,168,76,0.1);}
+.topic-card h3{font-size:0.86rem;color:#fff;margin-bottom:6px;font-weight:600;}
+.topic-card p{font-size:0.74rem;color:rgba(255,255,255,0.55);line-height:1.55;margin:0;}
+.toggle-row{display:inline-flex;align-items:center;gap:8px;margin:8px 0 18px;font-size:0.82rem;color:rgba(255,255,255,0.7);}
+.toggle-row input{accent-color:var(--gold);}
+.btn-start{padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:26px;font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,168,76,0.4);}
+
+.debate{display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden;}
+.debate.active{display:flex;}
+.q-banner{padding:14px 22px;background:rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.18);}
+.q-banner .label{font-size:0.7rem;color:var(--gold);letter-spacing:0.16em;}
+.q-banner .topic{font-family:'Noto Serif KR',serif;font-size:1rem;color:#fff;margin-top:4px;line-height:1.5;}
+.q-banner .stance{font-size:0.78rem;color:rgba(255,255,255,0.65);margin-top:6px;}
+.q-banner .stance b{color:var(--gold-light);}
+.video-area{flex:1;display:flex;align-items:center;justify-content:center;gap:18px;padding:18px;min-height:0;}
+.card-frame{width:160px;height:min(220px,calc(100vh - 360px));border-radius:10px;overflow:hidden;background:#000;border:2px solid rgba(255,255,255,0.08);position:relative;flex-shrink:0;}
+.card-frame.speaking{border-color:var(--gold);animation:goldGlow 1.5s infinite;}
+@keyframes goldGlow{0%,100%{border-color:rgba(201,168,76,0.4);}50%{border-color:rgba(201,168,76,1);}}
+.avatar-display{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#1A2340 0%,#2A3455 100%);font-size:3rem;}
+.card-frame video{width:100%;height:100%;object-fit:cover;display:none;transform:scaleX(-1);}
+.cam-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.55);font-size:0.78rem;text-align:center;line-height:1.6;}
+.card-label{position:absolute;bottom:0;left:0;right:0;padding:8px;background:linear-gradient(transparent,rgba(0,0,0,0.85));text-align:center;}
+.card-label .name{font-family:'DM Serif Display',serif;font-size:0.78rem;color:#fff;}
+.card-label .role{font-size:0.62rem;color:var(--gold-light);letter-spacing:0.05em;margin-top:2px;}
+.waveform{height:24px;display:flex;align-items:center;justify-content:center;gap:3px;}
+.waveform .bar{width:3px;background:var(--gold);border-radius:2px;opacity:0.4;animation:wave 0.5s ease-in-out infinite alternate;}
+.waveform.active .bar{opacity:1;}
+@keyframes wave{0%{height:4px;}100%{height:18px;}}
+.transcript-bar{padding:10px 22px;background:rgba(255,255,255,0.04);font-size:0.84rem;color:rgba(255,255,255,0.7);min-height:36px;border-top:1px solid rgba(255,255,255,0.05);}
+.feedback-panel{display:none;padding:16px 22px;background:rgba(201,168,76,0.08);border-top:1px solid rgba(201,168,76,0.18);font-size:0.86rem;color:rgba(255,255,255,0.85);line-height:1.7;max-height:24vh;overflow-y:auto;}
+.feedback-panel.active{display:block;}
+.feedback-panel b{color:var(--gold);}
+.controls{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 20px;background:rgba(17,27,46,0.95);border-top:1px solid rgba(201,168,76,0.15);flex-wrap:wrap;flex-shrink:0;}
+.ctrl-btn{padding:11px 20px;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}
+.ctrl-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.ctrl-btn.primary{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;}
+.ctrl-btn.danger{background:#E74C3C;color:#fff;}
+.ctrl-btn.secondary{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);}
+.ctrl-btn.secondary:hover:not(:disabled){background:rgba(255,255,255,0.12);}
+@media(max-width:600px){.topic-grid{grid-template-columns:1fr;}.card-frame{width:120px;}.video-area{gap:10px;padding:12px;}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth-gate.js"></script>
+<script src="js/google-tts.js"></script>
+<script src="js/free-trial.js"></script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="#" class="nav-back" onclick="goBack();return false;">← 돌아가기</a>
+</nav>
+
+<!-- SETUP -->
+<div class="setup" id="setup">
+  <div class="tag">DEBATE PRACTICE · 1:1</div>
+  <h1>디베이트 <em>연습</em></h1>
+  <p>주어진 주제에 대해 AI 토론자와 1:1 찬반 토론을 진행합니다.<br>본인 입장을 선택한 뒤 시작하세요.</p>
+
+  <div class="topic-grid" id="topic-grid"></div>
+
+  <div style="text-align:left;margin-bottom:14px;">
+    <div style="font-size:0.74rem;color:var(--gold);font-weight:700;letter-spacing:0.08em;margin-bottom:6px;">YOUR STANCE (본인 입장)</div>
+    <label style="display:inline-block;margin-right:18px;color:rgba(255,255,255,0.85);font-size:0.86rem;cursor:pointer;">
+      <input type="radio" name="stance" value="for" checked style="accent-color:var(--gold);"> 찬성 (For)
+    </label>
+    <label style="display:inline-block;color:rgba(255,255,255,0.85);font-size:0.86rem;cursor:pointer;">
+      <input type="radio" name="stance" value="against" style="accent-color:var(--gold);"> 반대 (Against)
+    </label>
+  </div>
+
+  <label class="toggle-row">
+    <input type="checkbox" id="cam-toggle" checked> 카메라 ON
+  </label>
+  <br>
+  <button class="btn-start" onclick="startDebate()">디베이트 시작</button>
+</div>
+
+<!-- DEBATE -->
+<div class="debate" id="debate">
+  <div class="q-banner">
+    <div class="label">DEBATE TOPIC</div>
+    <div class="topic" id="t-text"></div>
+    <div class="stance" id="t-stance"></div>
+  </div>
+  <div class="video-area">
+    <div class="card-frame" id="card-ai">
+      <div class="avatar-display"><div id="ai-emoji">👤</div></div>
+      <div class="card-label"><div class="name">AI Debater</div><div class="role">Opposing Side</div></div>
+    </div>
+    <div class="card-frame" id="my-card">
+      <video id="cam-video" autoplay muted playsinline></video>
+      <div class="cam-placeholder" id="cam-ph">카메라<br>OFF</div>
+      <div class="card-label"><div class="name">You</div><div class="role"><span id="rec-label">대기</span></div></div>
+    </div>
+  </div>
+  <div class="waveform" id="waveform">
+    <div class="bar" style="animation-delay:0s;"></div><div class="bar" style="animation-delay:0.1s;"></div><div class="bar" style="animation-delay:0.15s;"></div><div class="bar" style="animation-delay:0.2s;"></div><div class="bar" style="animation-delay:0.25s;"></div><div class="bar" style="animation-delay:0.3s;"></div>
+  </div>
+  <div class="transcript-bar" id="transcript">잠시 후 본인 차례입니다...</div>
+  <div class="feedback-panel" id="feedback"></div>
+  <div class="controls">
+    <button class="ctrl-btn primary" id="btn-answer" onclick="startAnswer()">🎙 내 의견 말하기</button>
+    <button class="ctrl-btn danger" id="btn-stop" onclick="stopAnswer()" style="display:none;">⏹ 완료</button>
+    <button class="ctrl-btn secondary" id="btn-end" onclick="endDebate()" style="display:none;">토론 종료 · 피드백</button>
+    <button class="ctrl-btn secondary" id="btn-next" onclick="newTopic()">🔄 다음 주제</button>
+  </div>
+</div>
+
+<script>
+var TOPICS=[
+  {t:"Cabin crew should always prioritize safety over customer satisfaction.",ko:"승무원은 항상 고객 만족보다 안전을 우선해야 한다.",pro:"안전이 최우선. 단 한 번의 사고가 모든 신뢰를 깨뜨림.",con:"고객 만족 없이는 항공사가 존재할 수 없음. 균형이 필요."},
+  {t:"Bilingual cabin crew should be paid more than monolingual crew.",ko:"이중언어 가능 승무원은 단일언어 승무원보다 더 많은 급여를 받아야 한다.",pro:"추가 가치를 제공하므로 보상이 합리적.",con:"공정성·팀 단합 저해. 모든 크루의 기여가 동등함."},
+  {t:"Long-haul flights should ban alcohol service.",ko:"장거리 비행에서는 알코올 서비스를 금지해야 한다.",pro:"기내 분쟁·건강 문제 감소. 안전 최우선.",con:"고객 자유 침해. 항공사 매출에 큰 타격."},
+  {t:"AI will replace most cabin crew roles within 20 years.",ko:"AI는 20년 안에 승무원 역할 대부분을 대체할 것이다.",pro:"안내·서빙은 자동화 가능. 비용 절감.",con:"인간적 케어와 비상 대응은 AI가 못함."},
+  {t:"Airlines should offer child-free cabins on long-haul flights.",ko:"항공사는 장거리 비행에서 어린이 없는 객실을 제공해야 한다.",pro:"비즈니스 승객의 휴식권 보장.",con:"가족 차별. 공공 운송수단의 본질에 어긋남."},
+  {t:"Cabin crew uniforms should be gender-neutral.",ko:"승무원 유니폼은 성중립적이어야 한다.",pro:"다양성 존중·시대 변화 반영.",con:"항공사 브랜드 정체성·전통 유지가 필요."},
+  {t:"In-flight Wi-Fi should be free for all passengers.",ko:"기내 Wi-Fi는 모든 승객에게 무료로 제공되어야 한다.",pro:"기본 서비스가 된 시대. 경쟁력 강화.",con:"비용 부담이 결국 항공권 가격에 전가됨."},
+  {t:"First-class passengers should always be served before economy.",ko:"퍼스트클래스 승객은 항상 이코노미보다 먼저 서비스를 받아야 한다.",pro:"지불한 가격에 상응하는 차별화된 경험 제공.",con:"인간적 평등 원칙. 모든 승객이 동등하게 존중받아야."},
+  {t:"Mandatory retirement age for cabin crew is necessary.",ko:"승무원 정년 제도는 필요하다.",pro:"체력 요구가 높은 직업 특성상 안전을 위해 필요.",con:"연령 차별. 능력으로 평가받아야 함."},
+  {t:"Cabin crew should be allowed to refuse service to rude passengers.",ko:"승무원은 무례한 승객에 대해 서비스를 거부할 권리가 있어야 한다.",pro:"근로자 인권 보호. 학대 방지.",con:"서비스직의 본분. 고객 갈등 확대 위험."}
+];
+var selectedTopic=0;
+var stream=null,recognition=null,fullText='',chatHistory=[],myStance='for';
+var BACK_URL=(function(){
+  try{var ref=document.referrer;if(ref){var u=new URL(ref);if(u.origin===location.origin){var name=u.pathname.split('/').pop();if(/curriculum-/.test(name))return name;}}}catch(e){}
+  return 'curriculum.html';
+})();
+
+// 토픽 카드 생성
+var tg=document.getElementById('topic-grid');
+TOPICS.forEach(function(t,i){
+  var d=document.createElement('div');d.className='topic-card'+(i===0?' sel':'');
+  d.innerHTML='<h3>'+(i+1)+'. '+t.ko+'</h3><p>'+t.t+'</p>';
+  d.onclick=function(){document.querySelectorAll('.topic-card').forEach(function(c){c.classList.remove('sel');});d.classList.add('sel');selectedTopic=i;};
+  tg.appendChild(d);
+});
+
+function goBack(){
+  fullCleanup();
+  var d=document.getElementById('debate');
+  if(d&&d.classList.contains('active')){d.classList.remove('active');document.getElementById('setup').style.display='block';}
+  else{history.back();}
+}
+function fullCleanup(){
+  if('speechSynthesis' in window)try{window.speechSynthesis.cancel();}catch(e){}
+  try{if(recognition){recognition.onend=null;recognition.stop();recognition=null;}}catch(e){}
+  try{if(stream){stream.getTracks().forEach(function(t){t.stop();});stream=null;}}catch(e){}
+  try{var v=document.getElementById('cam-video');if(v){v.pause();v.srcObject=null;}}catch(e){}
+}
+window.addEventListener('beforeunload',fullCleanup);
+window.addEventListener('pagehide',fullCleanup);
+
+function startDebate(){
+  myStance=document.querySelector('input[name="stance"]:checked').value;
+  document.getElementById('setup').style.display='none';
+  document.getElementById('debate').classList.add('active');
+  history.pushState({debate:true},'','');
+  var t=TOPICS[selectedTopic];
+  document.getElementById('t-text').textContent=t.t+' / '+t.ko;
+  document.getElementById('t-stance').innerHTML='Your stance: <b>'+(myStance==='for'?'찬성 (For)':'반대 (Against)')+'</b> · AI는 반대 입장에서 토론합니다.';
+  chatHistory=[];
+
+  // 카메라
+  if(document.getElementById('cam-toggle').checked){
+    (async function(){
+      var attempts=[{video:{facingMode:{exact:'user'}},audio:true},{video:{facingMode:'user'},audio:true},{video:true,audio:true}];
+      for(var i=0;i<attempts.length;i++){
+        try{
+          stream=await navigator.mediaDevices.getUserMedia(attempts[i]);
+          var v=document.getElementById('cam-video');
+          v.srcObject=stream;v.style.display='block';
+          document.getElementById('cam-ph').style.display='none';
+          break;
+        }catch(e){}
+      }
+    })();
+  }
+
+  // 본인이 먼저 입장 발표 → AI 반응
+  document.getElementById('transcript').textContent='본인 입장을 영어로 1~2문장 짧게 말씀해 주세요.';
+}
+
+function startAnswer(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){document.getElementById('transcript').textContent='Chrome 브라우저에서 사용해 주세요.';return;}
+  recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
+  fullText='';
+  document.getElementById('btn-answer').style.display='none';
+  document.getElementById('btn-stop').style.display='inline-flex';
+  document.getElementById('rec-label').textContent='녹음 중';
+  document.getElementById('waveform').classList.add('active');
+  document.getElementById('my-card').classList.add('speaking');
+  recognition.onresult=function(ev){
+    var interim='';fullText='';
+    for(var r=0;r<ev.results.length;r++){
+      if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';
+      else interim+=ev.results[r][0].transcript;
+    }
+    document.getElementById('transcript').textContent=fullText+interim;
+  };
+  recognition.onend=function(){
+    if(document.getElementById('btn-stop').style.display!=='none'){try{recognition.start();}catch(e){}}
+  };
+  recognition.start();
+}
+
+async function stopAnswer(){
+  if(recognition)try{recognition.stop();}catch(e){}
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('rec-label').textContent='처리 중';
+  document.getElementById('waveform').classList.remove('active');
+  document.getElementById('my-card').classList.remove('speaking');
+  var ans=fullText.trim();
+  if(!ans){document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('rec-label').textContent='대기';return;}
+  chatHistory.push({role:'user',content:ans});
+
+  // AI 응답 (반대 입장에서)
+  var t=TOPICS[selectedTopic];
+  var aiStance=myStance==='for'?'against':'for';
+  var sys='You are debating a single human opponent in English. Topic: "'+t.t+'". You take the '+aiStance.toUpperCase()+' position. The opponent takes the '+myStance.toUpperCase()+' position.\n\nRules:\n- Reply in ENGLISH only, 1-2 sentences max.\n- Acknowledge their point briefly, then push back with a clear counter-argument.\n- Stay polite but firm. Use phrases like "I see your point, but..." / "That makes sense in some cases, however..."\n- Do NOT switch sides. Do NOT agree fully. Keep the debate going.\n- Do NOT conclude or end the debate yourself — the user decides when to stop.';
+  document.getElementById('card-ai').classList.add('speaking');
+  document.getElementById('transcript').textContent='AI debater is responding...';
+  try{
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:200,system:sys,messages:chatHistory
+    })});
+    var data=await res.json();
+    var aiText=((data&&data.content&&data.content[0]&&data.content[0].text)||'I disagree. Could you elaborate?').replace(/\*\*/g,'').trim();
+    chatHistory.push({role:'assistant',content:aiText});
+    document.getElementById('feedback').innerHTML='<b>AI Debater:</b> '+aiText;
+    document.getElementById('feedback').classList.add('active');
+    if(typeof gcSpeak==='function'){gcSpeak(aiText,'en-GB','female',function(){document.getElementById('card-ai').classList.remove('speaking');});}
+    else{document.getElementById('card-ai').classList.remove('speaking');}
+  }catch(e){
+    document.getElementById('card-ai').classList.remove('speaking');
+    document.getElementById('feedback').innerHTML='<span style="color:#E74C3C;">AI 응답 실패. 다시 시도해주세요.</span>';
+    document.getElementById('feedback').classList.add('active');
+  }
+  document.getElementById('btn-answer').style.display='inline-flex';
+  document.getElementById('btn-end').style.display='inline-flex';
+  document.getElementById('rec-label').textContent='대기';
+  document.getElementById('transcript').textContent='이어서 본인 의견을 말씀해 주세요.';
+}
+
+async function endDebate(){
+  fullCleanup();
+  document.getElementById('btn-answer').style.display='none';
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('btn-end').style.display='none';
+  document.getElementById('rec-label').textContent='완료';
+  var fb=document.getElementById('feedback');fb.classList.add('active');
+  var userTurns=chatHistory.filter(function(m){return m.role==='user';}).length;
+  if(userTurns===0){fb.innerHTML='<b style="color:#E74C3C;">본인 발언이 없어 피드백을 작성할 수 없습니다.</b>';return;}
+  fb.innerHTML='<b style="color:var(--gold);">피드백을 작성하고 있어요...</b>';
+  var t=TOPICS[selectedTopic];
+  var convo=chatHistory.map(function(m){return (m.role==='user'?'You ('+myStance+'): ':'AI ('+(myStance==='for'?'against':'for')+'): ')+m.content;}).join('\n');
+  try{
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:600,
+      system:'You are an English debate coach for cabin crew interview practice. The candidate debated in English. Evaluate ONLY the candidate (not the AI).\n\nRules:\n- Speech-to-text input — ignore grammar/punctuation.\n- Comment only on what they actually said.\n- Be encouraging but honest. Write in Korean.\n\nFormat:\n# 점수: X/100\n# 잘한 점\n- (실제 본인 발언 짧게 인용, 2개)\n# 개선할 점\n- (1~2개. 없으면 "특별한 개선점 없습니다.")\n# 실전 팁\n- (1개)',
+      messages:[{role:'user',content:'Topic: '+t.t+'\nCandidate stance: '+myStance+'\n\nDebate transcript:\n'+convo+'\n\nGive feedback on the candidate only.'}]
+    })});
+    var data=await res.json();
+    var fbText=((data&&data.content&&data.content[0]&&data.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
+    fb.innerHTML='<b style="color:var(--gold);">디베이트 피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>'+
+      '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">'+
+      '<button onclick="newTopic()" style="padding:9px 20px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:20px;font-family:inherit;font-size:0.82rem;font-weight:700;cursor:pointer;">🔄 다음 주제</button>'+
+      '<a href="'+BACK_URL+'" style="color:var(--gold);font-size:0.82rem;">← 커리큘럼으로</a>'+
+      '</div>';
+  }catch(e){fb.innerHTML='<b style="color:#E74C3C;">피드백 생성 실패.</b>';}
+}
+
+function newTopic(){
+  fullCleanup();
+  // 현재 주제 외 랜덤 선택
+  var pool=TOPICS.map(function(_,i){return i;}).filter(function(i){return i!==selectedTopic;});
+  selectedTopic=pool[Math.floor(Math.random()*pool.length)];
+  document.querySelectorAll('.topic-card').forEach(function(c,i){c.classList.toggle('sel',i===selectedTopic);});
+  document.getElementById('feedback').classList.remove('active');
+  document.getElementById('feedback').innerHTML='';
+  // setup 화면으로 돌아가지 않고 바로 새 토픽 시작
+  startDebate();
+}
+</script>
+</body>
+</html>

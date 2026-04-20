@@ -566,6 +566,13 @@ function toggleRec(){
         }
         document.getElementById('transcript').textContent=fullText+interim;
       };
+      // 침묵 길어져 자동 종료되면 답변 완료 누르기 전까지 자동 재시작
+      recognition.onend=function(){
+        if(mediaRecorder && mediaRecorder.state==='recording'){
+          try{recognition.start();}catch(e){}
+        }
+      };
+      recognition.onerror=function(e){console.warn('[interview] recognition error',e.error);};
       recognition.start();
     }
   } else {

@@ -47,6 +47,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 .ctrl-btn.danger{background:#E74C3C;color:#fff;}
 .ctrl-btn.secondary{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/auth-gate.js"></script>
@@ -129,6 +130,8 @@ function fullCleanup(){
   try{if(recognition){recognition.onend=null;recognition.stop();recognition=null;}}catch(e){}
   try{if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;}}catch(e){}
   try{var v=document.getElementById('cam-video');if(v){v.pause();v.srcObject=null;}}catch(e){}
+  faceActive=false;
+  if(faceInterval){clearInterval(faceInterval);faceInterval=null;}
 }
 window.addEventListener('beforeunload',fullCleanup);
 window.addEventListener('pagehide',fullCleanup);
@@ -142,6 +145,40 @@ function appendChat(who,text,isTmp){
 }
 
 var camStream=null;
+// MediaPipe 얼굴 분석
+var faceStats={smileFrames:0,totalFrames:0};
+var faceMeshInstance=null, faceActive=false, faceInterval=null;
+function initFaceMesh(videoEl){
+  if(!window.FaceMesh)return;
+  try{
+    faceMeshInstance=new FaceMesh({locateFile:function(f){return 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/'+f;}});
+    faceMeshInstance.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
+    faceMeshInstance.onResults(function(r){
+      if(!faceActive)return;
+      faceStats.totalFrames++;
+      if(r.multiFaceLandmarks&&r.multiFaceLandmarks.length>0){
+        var lm=r.multiFaceLandmarks[0];
+        var lipL=lm[61],lipR=lm[291],lipTop=lm[13],lipBot=lm[14];
+        var faceL=lm[234],faceR=lm[454];
+        var cornerY=(lipL.y+lipR.y)/2;
+        var lipMidY=(lipTop.y+lipBot.y)/2;
+        var cornerLift=lipMidY-cornerY;
+        var mouthW=Math.abs(lipR.x-lipL.x);
+        var faceW=Math.abs(faceR.x-faceL.x);
+        var widthRatio=faceW>0?(mouthW/faceW):0;
+        if(cornerLift>0.006 && widthRatio>0.46) faceStats.smileFrames++;
+      }
+    });
+    faceInterval=setInterval(function(){
+      if(faceActive&&videoEl.readyState>=2)try{faceMeshInstance.send({image:videoEl});}catch(e){}
+    },500);
+  }catch(e){}
+}
+function getSmilePct(){
+  if(faceStats.totalFrames<5)return null;
+  return Math.round((faceStats.smileFrames/faceStats.totalFrames)*100);
+}
+
 async function startCamera(){
   if(camStream)return;
   var attempts=[{video:{facingMode:{exact:'user'}},audio:true},{video:{facingMode:'user'},audio:true},{video:true,audio:true}];
@@ -151,6 +188,10 @@ async function startCamera(){
       var v=document.getElementById('cam-video');
       v.srcObject=camStream;v.style.display='block';
       document.getElementById('cam-ph').style.display='none';
+      // 얼굴 분석 시작
+      faceStats={smileFrames:0,totalFrames:0};
+      faceActive=true;
+      initFaceMesh(v);
       return;
     }catch(e){}
   }
@@ -253,10 +294,27 @@ async function stopAnswer(){
   }
 }
 
+// 미소 강조 멘트 (매 세션 랜덤 선택해서 반복 방지)
+var SMILE_EMPHASIS_POOL=[
+  {high:"😊 미소가 CV Drop의 시작이자 끝이에요. 지금 리듬 그대로, 면접장에서도 자연스럽게 유지하세요.",
+   mid:"😊 CV Drop에서는 웃음이 첫인상을 결정합니다. 조금 더 활짝 — 이 한 가지만 더 챙기면 확 달라져요.",
+   low:"😊 CV Drop은 미소 하나로 합격이 갈립니다. 첫 문장부터 끝 인사까지 절대 표정을 놓치지 마세요."},
+  {high:"🌟 면접관이 가장 먼저 보는 건 미소예요. 이 톤을 끝까지 유지하면 그게 바로 합격의 키입니다.",
+   mid:"🌟 미소는 연습으로 늘어요. 거울 앞에서 말하면서 웃는 훈련을 매일 5분씩, 그게 핵심이에요.",
+   low:"🌟 CV Drop에서 미소 없는 답변은 내용이 아무리 좋아도 기억에 안 남습니다. 무조건 미소 먼저."},
+  {high:"✨ 지금처럼 자연스러운 웃음이 CV Drop의 90%예요. 이 에너지가 합격을 만듭니다.",
+   mid:"✨ 웃으면서 말하는 연습, 집에서도 녹화하면서 확인해보세요. 영어 잘하는 것보다 이게 훨씬 중요해요.",
+   low:"✨ 에미레이트·카타르·싱가포르 모두 '미소가 없으면 탈락'이 기본 원칙. 여기서 면접이 결정됩니다."},
+  {high:"💫 표정의 일관성이 대단해요. 첫인상도 마무리도 똑같이 환하게 — 이게 CV Drop 합격 DNA입니다.",
+   mid:"💫 '말 + 미소'를 동시에 — 둘 중 하나라도 놓치면 감점이에요. 웃으면서 말하는 훈련 꾸준히.",
+   low:"💫 심사관이 10초 안에 결정합니다. 그 10초의 90%는 미소예요. 다음엔 '이미 웃고 들어간다'는 생각으로."}
+];
+
 async function endSession(){
   if('speechSynthesis' in window)try{window.speechSynthesis.cancel();}catch(e){}
   if(typeof gcStop==='function')try{gcStop();}catch(e){}
   try{if(recognition){recognition.onend=null;recognition.stop();recognition=null;}}catch(e){}
+  faceActive=false;
   document.getElementById('btn-answer').style.display='none';
   document.getElementById('btn-stop').style.display='none';
   document.getElementById('btn-end').style.display='none';
@@ -265,15 +323,33 @@ async function endSession(){
   if(userTurns===0){fb.innerHTML='<b style="color:#E74C3C;">본인 발언이 없어 피드백 불가.</b>';return;}
   fb.innerHTML='<b style="color:var(--gold);">피드백 작성 중...</b>';
   var userAnswers=dialogue.filter(function(d){return d.who==='user';}).map(function(d,i){return (i+1)+'. '+d.text;}).join('\n');
+
+  // 미소 점수 계산 + 레벨별 멘트 랜덤 선택
+  var smilePct=getSmilePct();
+  var smileBlock='';
+  var smileSet=SMILE_EMPHASIS_POOL[Math.floor(Math.random()*SMILE_EMPHASIS_POOL.length)];
+  if(smilePct===null){
+    smileBlock='<div style="margin-top:10px;padding:10px 14px;background:rgba(201,168,76,0.12);border-left:3px solid var(--gold);font-size:0.84rem;line-height:1.7;">'+smileSet.low+'</div>';
+  } else {
+    var lvl=smilePct>=60?'high':smilePct>=30?'mid':'low';
+    var msg=smileSet[lvl];
+    var color=lvl==='high'?'#2E7D32':lvl==='mid'?'#E65100':'#C62828';
+    smileBlock='<div style="margin-top:10px;padding:12px 14px;background:rgba(201,168,76,0.12);border-left:3px solid var(--gold);font-size:0.86rem;line-height:1.75;">'+
+      '<div style="font-size:0.76rem;color:var(--gold);letter-spacing:0.08em;font-weight:700;margin-bottom:6px;">SMILE SCORE · 미소 점수</div>'+
+      '<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px;"><div style="font-family:DM Serif Display,serif;font-size:1.8rem;color:'+color+';">'+smilePct+'%</div><div style="font-size:0.78rem;color:rgba(255,255,255,0.55);">(측정 '+faceStats.totalFrames+'프레임 중 '+faceStats.smileFrames+'프레임 미소 감지)</div></div>'+
+      '<div>'+msg+'</div></div>';
+  }
+
   try{
     var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:180,
-      system:'CV Drop 스몰톡 코치. 본인 답변만 평가. 한국어로 매우 짧게.\n\n출력 (이 형식만):\n점수: X/100\n한 줄 칭찬: (답변 중 한 구절 인용)\n한 줄 팁: (가장 중요한 개선 1개. 없으면 "지금 흐름 유지하세요.")',
+      model:'claude-haiku-4-5-20251001',max_tokens:220,
+      system:'CV Drop 스몰톡 코치. 본인 답변만 평가. 한국어로 매우 짧게.\n\n규칙:\n- 점수·칭찬·팁 3줄만.\n- 팁은 내용 전달력·발음·표현 등 답변 관련만. 미소 관련 코멘트는 절대 넣지 말 것 (시스템이 따로 표시함).\n\n출력 형식:\n점수: X/100\n한 줄 칭찬: (답변 중 한 구절 인용)\n한 줄 팁: (가장 중요한 개선 1개. 없으면 "지금 흐름 유지하세요.")',
       messages:[{role:'user',content:'본인 답변:\n'+userAnswers}]
     })});
     var d=await r.json();
     var fbText=((d&&d.content&&d.content[0]&&d.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
     fb.innerHTML='<b style="color:var(--gold);">스몰톡 피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>'+
+      smileBlock+
       '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">'+
       '<button onclick="startSmalltalk()" style="padding:10px 22px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:22px;font-family:inherit;font-size:0.84rem;font-weight:700;cursor:pointer;">🔄 더 연습하기</button>'+
       '<a href="'+BACK_URL+'" style="color:var(--gold);font-size:0.82rem;">← 커리큘럼으로</a>'+

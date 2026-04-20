@@ -326,6 +326,58 @@ function goBack(){
 
 // 음성 미리 로드
 if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}
+
+// === 카메라 초기화 + 수동 picker ===
+async function initCameraWithPicker(targetDeviceId){
+  try{
+    // 권한 획득 (label unlock)
+    if(!stream){
+      try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});}catch(e){document.getElementById('cam-ph').innerHTML='<div>카메라 권한 필요</div>';return;}
+    }
+    // 장치 목록
+    var devices=await navigator.mediaDevices.enumerateDevices();
+    var cams=devices.filter(function(d){return d.kind==='videoinput';});
+
+    // 원하는 deviceId 지정된 경우 그걸로 교체, 아니면 자동 선택
+    var picked=null;
+    if(targetDeviceId){
+      picked=cams.find(function(c){return c.deviceId===targetDeviceId;});
+    }
+    if(!picked){
+      // 외장·가상 키워드는 제외, 전면/내장 키워드 우선
+      var frontRe=/front|전면|셀피|selfie|facetime|integrated|built-?in|internal|hd camera|hd webcam|mac.*camera|isight|laptop/i;
+      var badRe=/obs|virtual|droidcam|ivcam/i;
+      picked=cams.find(function(c){return frontRe.test(c.label);});
+      if(!picked) picked=cams.find(function(c){return !badRe.test(c.label);});
+      if(!picked) picked=cams[0];
+    }
+
+    // 지정 deviceId로 재획득
+    if(picked){
+      stream.getTracks().forEach(function(t){t.stop();});
+      stream=await navigator.mediaDevices.getUserMedia({video:{deviceId:{exact:picked.deviceId}},audio:true});
+      var v=document.getElementById('cam-video');
+      v.srcObject=stream;v.style.display='block';
+      document.getElementById('cam-ph').style.display='none';
+      console.log('[final] camera:',picked.label||picked.deviceId);
+    }
+
+    // picker UI 렌더 (카메라가 2개 이상일 때만)
+    if(cams.length>=2){
+      var host=document.getElementById('cam-picker');
+      if(!host){
+        host=document.createElement('div');
+        host.id='cam-picker';
+        host.style.cssText='position:absolute;top:6px;left:6px;right:6px;z-index:10;';
+        var studentCard=document.getElementById('student-card')||document.querySelector('.card-frame.me')||document.querySelector('#interview');
+        if(studentCard) studentCard.appendChild(host);
+      }
+      host.innerHTML='<select onchange="initCameraWithPicker(this.value)" style="width:100%;padding:5px 8px;background:rgba(0,0,0,0.6);color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:6px;font-size:0.7rem;">'+
+        cams.map(function(c){var label=c.label||('Camera '+c.deviceId.slice(-4));return '<option value="'+c.deviceId+'"'+(picked&&c.deviceId===picked.deviceId?' selected':'')+'>'+label+'</option>';}).join('')+
+      '</select>';
+    }
+  }catch(e){console.warn('[final] camera init failed',e);document.getElementById('cam-ph').innerHTML='<div>카메라 연결 실패</div>';}
+}
 window.addEventListener('beforeunload',function(){if('speechSynthesis' in window)window.speechSynthesis.cancel();if(stream)stream.getTracks().forEach(function(t){t.stop();});});
 
 function startInterview(){
@@ -337,51 +389,9 @@ function startInterview(){
   document.getElementById('setup').style.display='none';
   document.getElementById('interview').classList.add('active');
 
-  // 카메라 — 전면(사용자 얼굴) 우선
-  // 데스크탑은 facingMode가 힌트일 뿐이라 외장 카메라 등이 선택될 수 있음.
-  // → 먼저 getUserMedia로 권한 받아 enumerateDevices의 label을 풀고, 전면 카메라 deviceId로 명시 선택.
+  // 카메라 초기화 + 수동 선택 드롭다운
   if(document.getElementById('cam-toggle').checked){
-    (async function(){
-      function setStream(s){
-        stream=s;
-        var v=document.getElementById('cam-video');
-        v.srcObject=stream;v.style.display='block';
-        document.getElementById('cam-ph').style.display='none';
-      }
-      try{
-        // 1) 아무 카메라나 권한 얻기 (label 채우기용)
-        var probe=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-        // 2) 장치 목록 조회
-        var devices=await navigator.mediaDevices.enumerateDevices();
-        var cams=devices.filter(function(d){return d.kind==='videoinput';});
-        // 3) 전면 키워드 우선 매칭
-        var frontRe=/front|전면|셀피|selfie|user|facetime|integrated|built-?in|webcam|internal/i;
-        var backRe=/back|후면|rear|environment|external|usb|virtual/i;
-        var frontCam=cams.find(function(c){return frontRe.test(c.label);});
-        if(!frontCam){
-          // 후면 키워드 아닌 카메라 중 첫 번째
-          frontCam=cams.find(function(c){return !backRe.test(c.label);});
-        }
-        probe.getTracks().forEach(function(t){t.stop();});
-        if(frontCam){
-          stream=await navigator.mediaDevices.getUserMedia({video:{deviceId:{exact:frontCam.deviceId}},audio:true});
-          setStream(stream);
-          console.log('[final] camera selected:',frontCam.label);
-        } else {
-          // 매칭 실패 시 facingMode로 재시도
-          stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});
-          setStream(stream);
-        }
-      }catch(e){
-        // 최후 폴백
-        try{
-          stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-          setStream(stream);
-        }catch(e2){
-          document.getElementById('cam-ph').innerHTML='<div>카메라 연결 실패</div>';
-        }
-      }
-    })();
+    initCameraWithPicker();
   }
   qIdx=0;showQuestion();
 }

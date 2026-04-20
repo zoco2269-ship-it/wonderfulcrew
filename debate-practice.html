@@ -8,12 +8,13 @@
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--navy-dark:#111B2E;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--navy-dark);color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--navy-dark);color:#fff;min-height:100vh;display:flex;flex-direction:column;}
+body.debate-active{height:100vh;overflow:hidden;}
 a{color:inherit;text-decoration:none;}
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:rgba(17,27,46,0.95);border-bottom:1px solid rgba(201,168,76,0.15);flex-shrink:0;}
 .nav-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}.nav-logo span{color:var(--gold);}
 .nav-back{font-size:0.8rem;color:rgba(255,255,255,0.55);}.nav-back:hover{color:var(--gold);}
-.setup{padding:36px 20px;max-width:780px;margin:0 auto;text-align:center;overflow-y:auto;}
+.setup{padding:36px 20px;max-width:780px;margin:0 auto;text-align:center;}
 .setup h1{font-family:'DM Serif Display',serif;font-size:1.6rem;color:#fff;margin-bottom:6px;}
 .setup h1 em{font-style:normal;color:var(--gold);}
 .setup p{color:rgba(255,255,255,0.65);font-size:0.86rem;line-height:1.7;margin-bottom:22px;}
@@ -190,7 +191,11 @@ TOPICS.forEach(function(t,i){
 function goBack(){
   fullCleanup();
   var d=document.getElementById('debate');
-  if(d&&d.classList.contains('active')){d.classList.remove('active');document.getElementById('setup').style.display='block';}
+  if(d&&d.classList.contains('active')){
+    d.classList.remove('active');
+    document.body.classList.remove('debate-active');
+    document.getElementById('setup').style.display='block';
+  }
   else{history.back();}
 }
 function fullCleanup(){
@@ -223,6 +228,7 @@ function startDebate(){
   myStance=picked?picked.value:'for';
   document.getElementById('setup').style.display='none';
   document.getElementById('debate').classList.add('active');
+  document.body.classList.add('debate-active');
   if(!history.state||!history.state.debate)history.pushState({debate:true},'','');
   var t=TOPICS[selectedTopic];
   document.getElementById('t-text').textContent=t.t+' / '+t.ko;

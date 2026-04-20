@@ -616,10 +616,14 @@ async function processAnswer(){
   fb.innerHTML='<span style="color:var(--gold);">고객이 반응하고 있어요...</span>';
   fb.classList.add('active');
 
+  var turnCount=chatHistory.filter(function(m){return m.role==='user';}).length;
+  var turnInstr=turnCount<3
+    ?'\n- Keep the exchange going. Either push back with a new concern or ask a natural follow-up question like "But what about...?" / "Could you also...?". DO NOT end the conversation.'
+    :'\n- After '+turnCount+' exchanges you may wrap up with a brief grateful closing (1 sentence).';
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:80,
-      system:'You are a passenger on an airplane. Situation: "'+scenario+'"\n\nRules:\n- Reply to what the crew member ACTUALLY said\n- If they asked a question, ANSWER it\n- If they offered a solution, react to it\n- 1-2 sentences only\n- Natural English\n- Do NOT use asterisks or stage directions. Only speak dialogue',
+      system:'You are a passenger on an airplane. Situation: "'+scenario+'"\n\nRules:\n- Reply to what the crew member ACTUALLY said\n- If they asked a question, ANSWER it\n- If they offered a solution, react to it\n- 1-2 sentences only\n- Natural English\n- Do NOT use asterisks or stage directions. Only speak dialogue\n- This is turn '+turnCount+' — multi-turn roleplay, keep going for at least 3 exchanges.'+turnInstr,
       messages:chatHistory
     })});
     var data=await res.json();

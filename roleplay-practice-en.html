@@ -673,17 +673,17 @@ async function processAnswer(){
     var turnCount=chatHistory.filter(function(m){return m.role==='user';}).length;
     var setting=detectSetting(scenario);
 
-    var finalTurnInstruction='';
-    if(turnCount>=3){
-      finalTurnInstruction='\n- This is the final turn. Ask the staff member ONE follow-up question: "Why did you decide to handle it that way?" or "What made you think of that solution?" Then add [END] at the very end.';
-      var alreadyExplainedWhy=chatHistory.some(function(m){return m.role==='user'&&/because|reason|that\'s why|I thought|I believed|I wanted to/i.test(m.content);});
-      if(alreadyExplainedWhy){
-        finalTurnInstruction='\n- The staff already explained their reasoning. Wrap up naturally with a grateful response (e.g. "That makes sense. Thank you for your help.") and add [END] at the very end.';
-      }
+    var turnInstruction='';
+    if(turnCount<3){
+      turnInstruction='\n- This is turn '+turnCount+' of minimum 3. DO NOT end the conversation yet. Either accept the solution and ask a natural FOLLOW-UP question (e.g. "Thanks — but what about my connecting flight then?" / "That works, but could you also...?"), or push back with a new concern. Never add [END].';
+    } else if(turnCount===3){
+      turnInstruction='\n- This is turn 3. Ask ONE wrap-up follow-up question like "Why did you decide to handle it that way?" or "What made you think of that solution?" Do NOT add [END] yet.';
+    } else {
+      turnInstruction='\n- The conversation has had enough exchanges. Wrap up naturally with a grateful closing (e.g. "That makes sense. Thank you for your help.") and add [END] at the very end.';
     }
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:200,
-      system:'You are a '+setting.role+' at '+setting.place+'. The situation is: "'+scenario+'"\n\nYou are the upset/confused '+setting.role+'. The '+setting.staff+' just responded to you. React naturally IN ENGLISH. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the '+setting.role+'\n- If the staff apologized well and offered a good solution, accept it gratefully (e.g. "Oh that sounds nice, thank you.")\n- If the solution is weak, push back gently (e.g. "But I specifically requested..." or "That doesn\'t really help...")\n- Do NOT ask how the staff felt. Instead ask WHY they chose that approach.\n- Be realistic, not overly aggressive\n- Do NOT use asterisks or stage directions like *coughing* or *looking angry*. Only speak dialogue\n- This is turn '+turnCount+' of the conversation'+finalTurnInstruction,
+      system:'You are a '+setting.role+' at '+setting.place+'. The situation is: "'+scenario+'"\n\nYou are the upset/confused '+setting.role+'. The '+setting.staff+' just responded to you. React naturally IN ENGLISH. Keep responses 1-2 sentences max.\n\nRules:\n- Stay in character as the '+setting.role+'\n- Keep the conversation going with natural reactions and follow-up concerns/questions — this is a multi-turn roleplay, NOT a one-shot.\n- If the solution is weak, push back gently (e.g. "But I specifically requested..." or "That doesn\'t really help...")\n- Be realistic, not overly aggressive\n- Do NOT use asterisks or stage directions like *coughing* or *looking angry*. Only speak dialogue\n- This is turn '+turnCount+' of the conversation'+turnInstruction,
       messages:chatHistory
     })});
     var data=await res.json();
@@ -692,7 +692,8 @@ async function processAnswer(){
 
     chatHistory.push({role:'assistant',content:aiText});
 
-    var isEnd=aiText.includes('[END]')||turnCount>=4;
+    // 최소 3턴 강제 — 3턴 이전에 [END]가 오더라도 무시
+    var isEnd=(aiText.includes('[END]') && turnCount>=3)||turnCount>=4;
     var displayText=aiText.replace('[END]','').trim();
 
     fb.innerHTML='<b style="color:var(--gold);">'+setting.role.charAt(0).toUpperCase()+setting.role.slice(1)+':</b> '+displayText;

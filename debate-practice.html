@@ -81,17 +81,24 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   <p>싱가포르 디베이트는 <b style="color:var(--gold-light);">일방 발표 형식</b>입니다.<br>주고받는 토론이 아니라, 주제와 입장이 주어지면 각자 생각을 정리해<br>한 명씩 1회씩 발표하고 끝납니다.</p>
   <div style="background:rgba(201,168,76,0.1);border-left:3px solid var(--gold);padding:12px 16px;margin:0 auto 18px;text-align:left;max-width:520px;font-size:0.82rem;color:rgba(255,255,255,0.78);line-height:1.75;">
     <b style="color:var(--gold);">진행 방식</b><br>
-    ① 주제와 <b>본인 입장(찬성 또는 반대)이 무작위로 주어짐</b><br>
-    ② 주어진 입장에서 1회 발표<br>
+    ① 주제 선택 + 본인 입장 선택 (연습용)<br>
+    ② 선택한 입장에서 1회 발표<br>
     ③ AI 지원자가 반대 입장에서 1회 발표 (참고용)<br>
     ④ 피드백 · 끝<br>
-    <span style="color:rgba(255,255,255,0.55);font-size:0.76rem;">※ 실제 싱가폴 면접처럼 입장은 선택할 수 없고 랜덤 배정됩니다.<br>※ 유창함보다 <b>자신감 있고 또렷한 발표력</b>이 핵심입니다.</span>
+    <span style="color:rgba(255,255,255,0.55);font-size:0.76rem;">※ 실제 면접에서는 면접관이 찬/반 입장을 배정합니다. 연습이므로 직접 선택 가능.<br>※ 유창함보다 <b>자신감 있고 또렷한 발표력</b>이 핵심입니다.</span>
   </div>
 
   <div class="topic-grid" id="topic-grid"></div>
 
-  <div style="text-align:center;margin-bottom:14px;font-size:0.78rem;color:rgba(255,255,255,0.55);">
-    입장(찬성/반대)은 시작 시 <b style="color:var(--gold);">무작위로 배정</b>됩니다. 실제 싱가폴 면접과 동일.
+  <div style="text-align:left;margin-bottom:14px;">
+    <div style="font-size:0.74rem;color:var(--gold);font-weight:700;letter-spacing:0.08em;margin-bottom:6px;">YOUR STANCE (본인 입장 · 연습용)</div>
+    <label style="display:inline-block;margin-right:18px;color:rgba(255,255,255,0.85);font-size:0.86rem;cursor:pointer;">
+      <input type="radio" name="stance" value="for" checked style="accent-color:var(--gold);"> 찬성 (For)
+    </label>
+    <label style="display:inline-block;color:rgba(255,255,255,0.85);font-size:0.86rem;cursor:pointer;">
+      <input type="radio" name="stance" value="against" style="accent-color:var(--gold);"> 반대 (Against)
+    </label>
+    <div style="font-size:0.7rem;color:rgba(255,255,255,0.45);margin-top:4px;">실제 면접에서는 면접관이 배정합니다. 여기선 연습 위해 직접 선택.</div>
   </div>
 
   <label class="toggle-row">
@@ -211,8 +218,9 @@ function resetDebateUI(){
 }
 
 function startDebate(){
-  // 입장 무작위 배정 (실제 싱가폴 면접 방식)
-  myStance=Math.random()<0.5?'for':'against';
+  // 연습용 — 사용자가 선택한 입장 사용 (실제 면접은 면접관이 배정)
+  var picked=document.querySelector('input[name="stance"]:checked');
+  myStance=picked?picked.value:'for';
   document.getElementById('setup').style.display='none';
   document.getElementById('debate').classList.add('active');
   if(!history.state||!history.state.debate)history.pushState({debate:true},'','');

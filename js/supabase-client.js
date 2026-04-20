@@ -280,6 +280,11 @@ function updateNavLoginBtn() {
     if (txt === '로그인' || txt === 'Sign In') {
       btn.textContent = 'MY';
       btn.href = 'my-progress.html';
+      btn.classList.add('wc-my-btn');
+      // 인라인 style에서 wide padding/letter-spacing만 조정 (기존 gold gradient 유지)
+      btn.style.padding = '6px 14px';
+      btn.style.fontSize = '0.78rem';
+      btn.style.letterSpacing = '0.06em';
     }
   });
 }

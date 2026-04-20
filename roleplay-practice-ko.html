@@ -409,8 +409,17 @@ function selAvatar(el){
 function startInterview(){
   var scenarioPool=rpMode==='hotel'?HOTEL_SCENARIOS:SCENARIOS;
   var indexed=scenarioPool.map(function(q,i){return {q:q,origIdx:i};});
-  var pool=indexed.slice();questions=[];
+  // 최근 푼 시나리오 제외
+  var storeKey=rpMode==='hotel'?'wc_rp_ko_hotel_recent':'wc_rp_ko_recent';
+  var recent=[];
+  try{recent=JSON.parse(localStorage.getItem(storeKey)||'[]');}catch(e){recent=[];}
+  var fresh=indexed.filter(function(x){return recent.indexOf(x.origIdx)===-1;});
+  if(fresh.length<3){recent=[];fresh=indexed.slice();}
+  var pool=fresh.slice();questions=[];
   for(var i=0;i<3&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
+  var newRecent=recent.concat(questions.map(function(q){return q.origIdx;}));
+  while(newRecent.length>20)newRecent.shift();
+  try{localStorage.setItem(storeKey,JSON.stringify(newRecent));}catch(e){}
 
   qIdx=0;
   document.getElementById('setup').style.display='none';

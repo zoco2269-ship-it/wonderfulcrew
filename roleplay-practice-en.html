@@ -380,7 +380,6 @@ function selAvatar(el){
 }
 
 function startInterview(){
-  var count=document.getElementById('s-count').value;
   // 원래 인덱스를 유지하며 셔플
   var indexed=SCENARIOS.map(function(q,i){return {q:q,origIdx:i};});
   // mode=cruise → 크루즈/리조트 시나리오만 필터
@@ -388,12 +387,19 @@ function startInterview(){
   if(mode==='cruise'){
     indexed=indexed.filter(function(s){return /cruise|resort|spa|cabana|shore excursion/i.test(s.q);});
   }
-  if(count==='all'){questions=indexed;}
-  else{
-    var n=parseInt(count);questions=[];
-    var pool=indexed.slice();
-    for(var i=0;i<n&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
-  }
+  // 최근 푼 시나리오 제외 (localStorage 기반 반복 방지)
+  var storeKey=mode==='cruise'?'wc_rp_en_cruise_recent':'wc_rp_en_recent';
+  var recent=[];
+  try{recent=JSON.parse(localStorage.getItem(storeKey)||'[]');}catch(e){recent=[];}
+  var fresh=indexed.filter(function(x){return recent.indexOf(x.origIdx)===-1;});
+  if(fresh.length<3){recent=[];fresh=indexed.slice();}
+  // 3개 랜덤 선택
+  questions=[];
+  var pool=fresh.slice();
+  for(var i=0;i<3&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
+  var newRecent=recent.concat(questions.map(function(q){return q.origIdx;}));
+  while(newRecent.length>20)newRecent.shift();
+  try{localStorage.setItem(storeKey,JSON.stringify(newRecent));}catch(e){}
 
   qIdx=0;
   document.getElementById('setup').style.display='none';

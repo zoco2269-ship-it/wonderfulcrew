@@ -143,7 +143,7 @@ window.addEventListener('popstate',function(){
   </div>
   <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:16px;">아바타 이미지는 images/avatar-male.png, avatar-female.png에 넣으면 자동 적용됩니다.</div>
 
-  <div class="setup-grid">
+  <div class="setup-grid" style="grid-template-columns:1fr;max-width:360px;margin:0 auto 24px;">
     <div>
       <div class="setup-label">영어 악센트</div>
       <select class="setup-select" id="s-accent">
@@ -153,14 +153,6 @@ window.addEventListener('popstate',function(){
         <option value="en-PH">Filipino English</option>
         <option value="fr-FR">French English</option>
         <option value="es-ES">Spanish English</option>
-      </select>
-    </div>
-    <div>
-      <div class="setup-label">시나리오</div>
-      <select class="setup-select" id="s-count">
-        <option value="3">랜덤 3개</option>
-        <option value="5">랜덤 5개</option>
-        <option value="all">전체</option>
       </select>
     </div>
   </div>
@@ -366,15 +358,21 @@ function selAvatar(el){
 }
 
 function startInterview(){
-  var count=document.getElementById('s-count').value;
-  // 원래 인덱스를 유지하며 셔플
+  // 원래 인덱스를 유지하며 최근 푼 시나리오는 제외
   var indexed=SCENARIOS.map(function(q,i){return {q:q,origIdx:i};});
-  if(count==='all'){questions=indexed;}
-  else{
-    var n=parseInt(count);questions=[];
-    var pool=indexed.slice();
-    for(var i=0;i<n&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
-  }
+  var recent=[];
+  try{recent=JSON.parse(localStorage.getItem('wc_rp_recent')||'[]');}catch(e){recent=[];}
+  var fresh=indexed.filter(function(x){return recent.indexOf(x.origIdx)===-1;});
+  // 남은 신선한 시나리오가 3개 미만이면 기록 리셋 (전체 풀 재진입)
+  if(fresh.length<3){recent=[];fresh=indexed.slice();}
+  // 3개 랜덤 선택
+  questions=[];
+  var pool=fresh.slice();
+  for(var i=0;i<3&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
+  // 사용한 시나리오 기록 (최근 20개까지만 유지)
+  var newRecent=recent.concat(questions.map(function(q){return q.origIdx;}));
+  while(newRecent.length>20)newRecent.shift();
+  try{localStorage.setItem('wc_rp_recent',JSON.stringify(newRecent));}catch(e){}
 
   qIdx=0;
   document.getElementById('setup').style.display='none';

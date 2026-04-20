@@ -130,6 +130,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 <script src="js/supabase-client.js"></script>
 <script src="js/free-trial.js"></script>
 <script src="js/auth-gate.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 </head>
 <body>
 <nav>
@@ -293,6 +294,40 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 </div>
 <script>
 var U={};var ms=null,mr=null,rc=[],ti=null,recog=null,spokenText='';
+var faceStats={smileFrames:0,totalFrames:0,lookingCenter:0,headTiltFrames:0};
+var faceMeshInstance=null,faceActive=false,faceInterval=null;
+function initFaceMesh(videoEl){
+  if(!window.FaceMesh)return;
+  try{
+    faceMeshInstance=new FaceMesh({locateFile:function(f){return 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/'+f;}});
+    faceMeshInstance.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
+    faceMeshInstance.onResults(function(r){
+      if(!faceActive)return;
+      faceStats.totalFrames++;
+      if(r.multiFaceLandmarks&&r.multiFaceLandmarks.length>0){
+        var lm=r.multiFaceLandmarks[0];
+        var lipL=lm[61],lipR=lm[291],lipTop=lm[13],lipBot=lm[14];
+        var faceL=lm[234],faceR=lm[454];
+        var cornerY=(lipL.y+lipR.y)/2;
+        var lipMidY=(lipTop.y+lipBot.y)/2;
+        var cornerLift=lipMidY-cornerY;
+        var mouthW=Math.abs(lipR.x-lipL.x);
+        var faceW=Math.abs(faceR.x-faceL.x);
+        var widthRatio=faceW>0?(mouthW/faceW):0;
+        if(cornerLift>0.003||widthRatio>0.44)faceStats.smileFrames++;
+        var nose=lm[1];
+        if(Math.abs(nose.x-0.5)<0.15&&Math.abs(nose.y-0.45)<0.15)faceStats.lookingCenter++;
+        var eyeL=lm[33],eyeR=lm[263];
+        if(Math.abs(eyeL.y-eyeR.y)>0.02)faceStats.headTiltFrames++;
+      }
+    });
+    faceInterval=setInterval(function(){
+      if(faceActive&&videoEl.readyState>=2)try{faceMeshInstance.send({image:videoEl});}catch(e){}
+    },500);
+  }catch(e){}
+}
+function getSmilePct(){return faceStats.totalFrames<5?0:Math.round(faceStats.smileFrames/faceStats.totalFrames*100);}
+function getGazePct(){return faceStats.totalFrames<5?0:Math.round(faceStats.lookingCenter/faceStats.totalFrames*100);}
 // 프로필 입력 여부에 따라 첫 화면 결정
 (function(){
   var profileDone=localStorage.getItem('wc_profile_done');
@@ -465,6 +500,10 @@ async function startCam(){
       }
     };
     mr.start();
+    // 얼굴 분석 시작
+    faceStats={smileFrames:0,totalFrames:0,lookingCenter:0,headTiltFrames:0};
+    faceActive=true;
+    try{initFaceMesh(document.getElementById('preview'));}catch(e){}
     // 음성 인식으로 전사본 캡처 (분석용)
     try{
       var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -496,6 +535,7 @@ async function startCam(){
 function stopRec(){
   if(mr&&mr.state!=='inactive')mr.stop();
   if(recog)try{recog.onend=null;recog.stop();}catch(e){}
+  faceActive=false;if(faceInterval){clearInterval(faceInterval);faceInterval=null;}
   if(ti)clearInterval(ti);
   document.getElementById('rec-badge').style.display='none';
   document.getElementById('btn-stop').style.display='none';
@@ -525,8 +565,10 @@ async function doAnalyze(textOnly){
   // Claude AI 에게 실제 분석 요청
   var transcript=(spokenText||'').trim();
   var langLabel=U.lang==='en'?'영어':U.lang==='both'?'한국어 + 영어':'한국어';
-  var sys='당신은 승무원 면접 레벨테스트 분석가입니다. 지원자의 자기소개 발화를 기반으로 현재 레벨을 평가하세요.\n\n평가 기준 (각 25점):\n1. 서비스 마인드 (service_mind) — 따뜻함·배려·지원동기의 진정성\n2. 영어 수준 (english) — 언어 구사력. 한국어만 녹음했으면 프로필(eng)의 자기평가를 참고해서 추정\n3. 면접 준비도 (interview_readiness) — 답변 구조·자신감·명료함\n4. 성장 잠재력 (growth_potential) — 자세·태도·개선 의지\n\n반드시 다음 JSON 한 개만 응답 (다른 텍스트 절대 금지):\n{"score":총점, "level":"Beginner|Intermediate|Upper-Intermediate|Advanced", "level_ko":"초급|중급|중상급|상급", "score_breakdown":{"service_mind":X, "english":X, "interview_readiness":X, "growth_potential":X}, "strengths":["...","...","..."], "improvements":["...","..."], "airlines":[{"name":"...","match":숫자,"reason":"...","top":true/false}], "coaching_priority":"우선순위 1가지 한 줄", "message":"격려 메시지 1문장"}\n\n항공사 추천 규칙:\n- 점수 90+ : 에미레이트·카타르·싱가포르 등 최상위 외항사 매칭 높게\n- 점수 70-89 : 중하위 외항사(KLM·핀에어·캐세이) + 대한항공·아시아나\n- 점수 50-69 : 국내 LCC (제주·진에어·에어프레미아) 강세\n- 점수 50 미만 : 교육·준비 더 필요 — 국내 LCC 중심\n- 3개 추천, 가장 적합한 것 top:true';
-  var userContent='지원자 프로필:\n- 이름: '+(U.name||'지원자')+'\n- 교육: '+(U.edu||'미입력')+'\n- 지원 경험: '+(U.apply||'미입력')+'\n- 자기평가 영어 레벨: '+(U.eng||'미입력')+'\n- 테스트 언어: '+langLabel+'\n\n자기소개 발화 (음성인식):\n"'+(transcript||'(음성 인식 불가 — 프로필만으로 평가)')+'"';
+  var smilePct=getSmilePct();
+  var gazePct=getGazePct();
+  var sys='당신은 승무원 면접 레벨테스트 분석가입니다. 지원자의 자기소개 발화 + 얼굴 분석 결과로 현재 레벨을 평가하세요.\n\n평가 기준 (각 20점, 총 100점):\n1. 서비스 마인드 (service_mind) — 따뜻함·배려·지원동기의 진정성\n2. 영어 수준 (english) — 언어 구사력. 한국어만 녹음했으면 프로필(eng)의 자기평가 참고\n3. 면접 준비도 (interview_readiness) — 답변 구조·자신감·명료함\n4. 성장 잠재력 (growth_potential) — 자세·태도·개선 의지\n5. 미소·표정 (smile) — 실측 미소 퍼센트 기반 (주어진 smile_pct 값 활용)\n\n미소 점수 환산 가이드:\n- smile_pct 70%+ → 18~20점 (아주 환하고 지속적)\n- smile_pct 50-69% → 14~17점 (양호)\n- smile_pct 30-49% → 9~13점 (부족)\n- smile_pct 30% 미만 → 5~8점 (심각)\n- smile_pct 0 (측정 불가) → 10점 기본값\n\n반드시 다음 JSON 한 개만 응답 (다른 텍스트 절대 금지):\n{"score":총점, "level":"Beginner|Intermediate|Upper-Intermediate|Advanced", "level_ko":"초급|중급|중상급|상급", "score_breakdown":{"service_mind":X, "english":X, "interview_readiness":X, "growth_potential":X, "smile":X}, "strengths":["...","...","..."], "improvements":["...","..."], "airlines":[{"name":"...","match":숫자,"reason":"...","top":true/false}], "coaching_priority":"우선순위 1가지 한 줄", "message":"격려 메시지 1문장"}\n\n항공사 추천 규칙:\n- 점수 90+ : 에미레이트·카타르·싱가포르 등 최상위 외항사\n- 점수 70-89 : 중하위 외항사(KLM·핀에어·캐세이) + 대한항공·아시아나\n- 점수 50-69 : 국내 LCC (제주·진에어·에어프레미아)\n- 점수 50 미만 : 국내 LCC 중심, 준비 보완 필요\n- 3개 추천, 가장 적합한 것 top:true';
+  var userContent='지원자 프로필:\n- 이름: '+(U.name||'지원자')+'\n- 교육: '+(U.edu||'미입력')+'\n- 지원 경험: '+(U.apply||'미입력')+'\n- 자기평가 영어 레벨: '+(U.eng||'미입력')+'\n- 테스트 언어: '+langLabel+'\n\n얼굴 분석 (MediaPipe 실측):\n- smile_pct: '+smilePct+'% (프레임 중 미소 비율)\n- gaze_center_pct: '+gazePct+'% (카메라 정면 응시 비율)\n\n자기소개 발화 (음성인식):\n"'+(transcript||'(음성 인식 불가 — 프로필 + 얼굴 분석만으로 평가)')+'"';
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,system:sys,
@@ -557,20 +599,26 @@ function renderResult(r){
   document.getElementById('r-score').textContent=r.score;
   document.getElementById('r-level').textContent=r.level_ko+' · '+r.level;
   if(r.message){document.getElementById('r-coach-msg').innerHTML='<div class="coach-msg"><div class="coach-msg-label">Coach Message</div><div class="coach-msg-text">'+r.message+'</div></div>';}
-  // 점수 세부 항목
+  // 점수 세부 항목 (각 20점 만점)
   if(r.score_breakdown){
     var sb=r.score_breakdown;
     var breakdown='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">';
-    var labels={service_mind:'서비스 마인드',english:'영어 수준',interview_readiness:'면접 준비도',growth_potential:'성장 잠재력'};
-    Object.keys(sb).forEach(function(k){
-      var pct=Math.round((sb[k]/25)*100);
+    var labels={service_mind:'서비스 마인드',english:'영어 수준',interview_readiness:'면접 준비도',growth_potential:'성장 잠재력',smile:'😊 미소·표정'};
+    Object.keys(labels).forEach(function(k){
+      if(sb[k]===undefined)return;
+      var pct=Math.round((sb[k]/20)*100);
       breakdown+='<div style="background:#fff;border:1px solid rgba(201,168,76,0.2);padding:12px 14px;">';
       breakdown+='<div style="font-size:0.7rem;font-weight:700;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">'+labels[k]+'</div>';
-      breakdown+='<div style="font-size:1.3rem;font-weight:700;color:var(--navy);">'+sb[k]+'<span style="font-size:0.75rem;color:var(--text-muted);font-weight:400;">/25</span></div>';
+      breakdown+='<div style="font-size:1.3rem;font-weight:700;color:var(--navy);">'+sb[k]+'<span style="font-size:0.75rem;color:var(--text-muted);font-weight:400;">/20</span></div>';
       breakdown+='<div style="height:4px;background:var(--gold-pale);margin-top:6px;"><div style="height:100%;background:var(--gold);width:'+pct+'%;transition:width 0.8s ease;"></div></div>';
       breakdown+='</div>';
     });
     breakdown+='</div>';
+    // 실측 미소·시선 퍼센트도 함께 표시
+    var sp=getSmilePct(),gp=getGazePct();
+    if(sp>0||gp>0){
+      breakdown+='<div style="margin-top:10px;padding:10px 14px;background:rgba(201,168,76,0.08);border-left:3px solid var(--gold);font-size:0.82rem;color:var(--text-mid);">📷 실측: 미소 유지 <b>'+sp+'%</b> · 카메라 정면 <b>'+gp+'%</b></div>';
+    }
     var secBD=document.createElement('div');
     secBD.className='res-section';
     secBD.innerHTML='<div class="res-section-title">📊 세부 점수</div>'+breakdown;

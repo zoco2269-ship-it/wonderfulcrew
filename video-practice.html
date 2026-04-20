@@ -103,7 +103,9 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <div class="hero">
   <div class="label">Step 1 · Video Interview</div>
+  <div style="display:inline-block;padding:6px 18px;background:var(--gold);color:#fff;font-size:0.78rem;font-weight:800;letter-spacing:0.15em;border-radius:20px;margin-bottom:14px;">NO SMILE · NO CABIN CREW</div>
   <h1>비디오 면접 <em>연습</em></h1>
+  <p style="font-size:0.86rem;font-weight:600;color:var(--gold-light);margin-top:6px;">"The most important things are SMILE · CONFIDENCE · BE YOURSELF"</p>
   <p>이 단계는 이미지 면접입니다. What to say보다 How to say가 압도적으로 중요합니다.</p>
   <p style="font-size:0.76rem;color:rgba(255,255,255,0.45);margin-top:8px;">카메라 · 마이크 기능을 위해 Chrome 브라우저 사용을 권장합니다.</p>
 </div>
@@ -212,6 +214,29 @@ var EXTRA_EN=[
    {num:'Question 2',q:'How do you handle stress?',hint:'Give a specific method and real example.'},
    {num:'Question 3',q:ROLEPLAY_QS[Math.floor(Math.random()*ROLEPLAY_QS.length)],hint:'Roleplay — Include apology, solution, alternative, and service recovery.'}]
 ];
+
+// 에미레이트 비디오 면접 실전 기출 질문 풀 (사용자 제공)
+var EMIRATES_VIDEO_QS=[
+  "Talk about your hometown.",
+  "What do you expect from living in Dubai?",
+  "Talk about something in your personality.",
+  "What do you do in your spare time?",
+  "What does your hometown look like?",
+  "Why do you believe that your experience in customer service is suitable for such a role?",
+  "What do you expect of the role if you are successful?",
+  "What is good customer service?",
+  "Why do you love customer service?",
+  "What challenges do you expect if you get the cabin crew job?",
+  "What is the best service you have ever experienced?",
+  "What do you expect from the job?",
+  "What makes you extraordinary in customer service?",
+  "What do you know about life in Dubai?",
+  "How do your friends and co-workers describe you?",
+  "How would you describe your personality?",
+  "How do you see the cabin crew job?",
+  "What do you expect to learn from working with Emirates?",
+  "What is something that adds joy to your life?"
+];
 var extraIdx=0;
 // 모든 질문을 한 풀로 합쳐서 랜덤 선택. 한 화면에 질문 한 개씩.
 function flattenPool(base,extras,roleplays,roleplayHint){
@@ -224,6 +249,10 @@ function flattenPool(base,extras,roleplays,roleplayHint){
 var POOL=lang==='ko'
   ?flattenPool(QUESTIONS_KO,EXTRA_KO,KO_RP,'롤플레이 — 사과, 해결책, 대안 제시, Service Recovery를 포함해서 답변하세요.')
   :flattenPool(QUESTIONS_EN,EXTRA_EN,ROLEPLAY_QS,'Roleplay — Include apology, solution, alternative, and service recovery.');
+// 영어 모드면 에미레이트 실전 기출도 풀에 추가
+if(lang!=='ko'){
+  EMIRATES_VIDEO_QS.forEach(function(q){POOL.push({q:q,hint:'Emirates 실전 기출 — SMILE · CONFIDENCE · BE YOURSELF. 30~60초.'});});
+}
 var qCount=0;
 var lastQ='';
 

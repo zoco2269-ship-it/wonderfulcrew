@@ -194,11 +194,42 @@ var QUESTIONS=[
   {q:"In the event of a sudden cabin decompression, oxygen masks will _____ automatically from the panel above.",opt:["appear","deploy","throw","break"],correct:1,explain:"산소마스크가 작동·전개되다 = deploy."},
 ];
 
-var current=0;var answers=new Array(QUESTIONS.length).fill(null);var started=false;
+// 독해 8문항 — Dolphin 지문 기반
+var READING_QUESTIONS=[
+  {q:"According to the passage, how do tucuxi dolphins in Brazil catch fish?",opt:["By trapping them in sponges","By flicking them into the air with their tail flukes","By using seaweed to hide their approach","By following shrimp boats"],correct:1,explain:"본문 첫 단락: tucuxi dolphins use 'tail whacking' and flick fish up to 9 metres."},
+  {q:"What do bottlenose dolphins off Australia use sponges for?",opt:["To communicate with other dolphins","To attract fish","To protect their snouts from fish spines","To help them swim faster"],correct:2,explain:"2단락: sponges protect them from the spines of stonefish and stingrays."},
+  {q:"In Karen Pryor's famous experiment, what was the result when humans were given a similar task?",opt:["Humans figured it out much faster than dolphins","Humans could not complete the task","Humans took about as long as the dolphins","Humans refused to participate"],correct:2,explain:"3단락: humans took about as long as the dolphins to figure out what was required."},
+  {q:"The word 'mimicked' in the passage is closest in meaning to:",opt:["created","copied","explained","avoided"],correct:1,explain:"mimic = 따라하다, 모방하다 = copied. 새끼 돌고래가 어미의 담배 연기를 흉내낸 맥락."},
+  {q:"What is a 'signature whistle' according to the passage?",opt:["A warning signal used when danger is near","A unique sound that works like a name for each dolphin","A mating call between dolphins","A sound used to stun prey"],correct:1,explain:"5단락: 'a unique sound that, like a name, allows individuals to identify each other'."},
+  {q:"Which of the following best describes Akeakamai's ability?",opt:["She could only follow one command at a time","She understood over 2,000 sentences","She taught other dolphins to swim","She invented a new sign language"],correct:1,explain:"5단락: Akeakamai learned 60+ words and could understand more than 2,000 sentences."},
+  {q:"The mirror experiment at the New York Aquarium was designed to test:",opt:["Whether dolphins could see colour","How fast dolphins could swim","Whether dolphins are self-aware","How dolphins communicate with humans"],correct:2,explain:"마지막 단락: test whether two bottlenose dolphins were self-aware."},
+  {q:"What does the passage suggest about the intelligence of dolphins?",opt:["They are less intelligent than previously thought","They have the same level of awareness as only people and great apes","They cannot learn without strict training","They only use tools in captivity"],correct:1,explain:"마지막 단락: self-awareness, 'a quality previously only seen in people and great apes'."}
+];
 
-function startTest(){
+var current=0;var answers=[];var started=false;var activeSet=QUESTIONS;var activeMode='vocab';
+
+function startTest(mode){
+  activeMode=mode||'vocab';
+  if(activeMode==='reading'){
+    activeSet=READING_QUESTIONS;
+    document.getElementById('screen-intro').style.display='none';
+    document.getElementById('screen-passage').style.display='block';
+    return;
+  }
+  activeSet=QUESTIONS;
+  answers=new Array(activeSet.length).fill(null);
+  current=0;
   if(!started){started=true;try{if(typeof useFreeTrialOrCheck==='function')useFreeTrialOrCheck();}catch(e){}}
   document.getElementById('screen-intro').style.display='none';
+  document.getElementById('screen-quiz').style.display='block';
+  render();
+}
+
+function startReadingQuestions(){
+  answers=new Array(activeSet.length).fill(null);
+  current=0;
+  if(!started){started=true;try{if(typeof useFreeTrialOrCheck==='function')useFreeTrialOrCheck();}catch(e){}}
+  document.getElementById('screen-passage').style.display='none';
   document.getElementById('screen-quiz').style.display='block';
   render();
 }
@@ -244,9 +275,12 @@ function showResult(){
   document.getElementById('screen-quiz').style.display='none';
   document.getElementById('screen-result').style.display='block';
   var correctCount=0;
-  QUESTIONS.forEach(function(q,i){if(answers[i]===q.correct)correctCount++;});
+  activeSet.forEach(function(q,i){if(answers[i]===q.correct)correctCount++;});
   document.getElementById('r-correct').textContent=correctCount;
-  var pct=Math.round(correctCount/QUESTIONS.length*100);
+  // 총점 표시 분모 고정
+  var scoreEl=document.querySelector('.result-hero .score');
+  if(scoreEl)scoreEl.innerHTML='<span id="r-correct">'+correctCount+'</span>/'+activeSet.length+'<span style="font-size:0.8rem;"> 정답</span>';
+  var pct=Math.round(correctCount/activeSet.length*100);
   var emoji='🎉',title='훌륭합니다!',grade='';
   if(pct>=90){emoji='🏆';title='완벽해요!';grade='외항사 영어 테스트 통과 수준 · 자신감 가지고 응시하세요.';}
   else if(pct>=75){emoji='🎉';title='좋은 점수!';grade='합격 가능권. 틀린 문제만 복습하면 안정적입니다.';}
@@ -258,7 +292,7 @@ function showResult(){
   // 문제별 해설
   var rl=document.getElementById('review-list');
   rl.innerHTML='';
-  QUESTIONS.forEach(function(q,i){
+  activeSet.forEach(function(q,i){
     var userIdx=answers[i];
     var isRight=(userIdx===q.correct);
     var userAns=userIdx!==null?q.opt[userIdx]:'미응답';

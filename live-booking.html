@@ -76,14 +76,45 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 </div>
 
 <!-- 라이브 수업 현장 사진 -->
-<div style="margin-top:40px;">
-  <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--navy);margin-bottom:16px;">라이브 수업 현장</h3>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-    <img src="images/live-class-1.jpg" alt="라이브 수업" style="width:100%;border-radius:10px;object-fit:cover;aspect-ratio:16/10;" onerror="this.style.display='none'">
-    <img src="images/live-class-2.jpg" alt="라이브 수업" style="width:100%;border-radius:10px;object-fit:cover;aspect-ratio:16/10;" onerror="this.style.display='none'">
-    <img src="images/live-class-3.jpg" alt="라이브 수업" style="width:100%;border-radius:10px;object-fit:cover;aspect-ratio:16/10;" onerror="this.style.display='none'">
-    <img src="images/live-class-4.jpg" alt="라이브 수업" style="width:100%;border-radius:10px;object-fit:cover;aspect-ratio:16/10;" onerror="this.style.display='none'">
-  </div>
+<div style="margin-top:48px;">
+  <h3 style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--navy);margin-bottom:6px;">라이브 수업 현장</h3>
+  <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:24px;">실제 진행된 라이브 수업 사진들입니다.</p>
+
+  <style>
+    .lec-group{margin-bottom:32px;}
+    .lec-group-label{display:inline-block;font-family:'DM Serif Display',serif;font-size:0.72rem;letter-spacing:0.2em;color:var(--gold);padding:4px 12px;border:1px solid var(--gold);border-radius:14px;margin-bottom:12px;text-transform:uppercase;}
+    .lec-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin;}
+    .lec-strip::-webkit-scrollbar{height:6px;}
+    .lec-strip::-webkit-scrollbar-thumb{background:var(--gold-pale);border-radius:3px;}
+    .lec-card{flex:0 0 auto;height:200px;border-radius:10px;overflow:hidden;background:#f5f5f5;border:1px solid var(--gold-pale);}
+    .lec-card img{height:100%;width:auto;display:block;object-fit:cover;}
+    @media(max-width:600px){.lec-card{height:160px;}}
+  </style>
+
+  <div id="lec-groups"></div>
+
+  <script>
+  (function(){
+    var GROUPS = [
+      { num: 1, files: ['lecture1-1.png','lecture1-2.png','lecture1-3.png'] },
+      { num: 2, files: ['lecture2-1.png','lecture2-2.png','lecture2-3.png','lecture2-4.png','lecture2-5.png'] },
+      { num: 3, files: ['lecture3-1.jpg','lecture3-2.png','lecture3-3.png','lecture3-4.jpg','lecture3-5.jpg','lecture3-6.png'] },
+      { num: 4, files: ['lecture4-1.jpg','lecture4-2.jpg','lecture4-3.jpg','lecture4-4.jpg','lecture4-5.jpg'] },
+      { num: 5, files: ['lecture5-1.HEIC','lecture5-2.HEIC','lecture5-3.HEIC','lecture5-4.HEIC'] },
+      { num: 6, files: ['lecture6-1.jpg','lecture6-2.jpg','lecture6-3.jpg','lecture6-4.jpg','lecture6-5.jpg','lecture6-6.jpg','lecture6-7.jpg'] }
+    ];
+    var html = GROUPS.map(function(g){
+      var imgs = g.files.map(function(f){
+        return '<div class="lec-card"><img src="images/'+f+'" alt="라이브 수업 회차 '+g.num+'" loading="lazy" onerror="this.parentElement.style.display=&quot;none&quot;"></div>';
+      }).join('');
+      return '<div class="lec-group">'+
+        '<div class="lec-group-label">Class #'+g.num+'</div>'+
+        '<div class="lec-strip">'+imgs+'</div>'+
+      '</div>';
+    }).join('');
+    document.getElementById('lec-groups').innerHTML = html;
+  })();
+  </script>
 </div>
 
 </div></section>

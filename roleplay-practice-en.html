@@ -151,27 +151,20 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   </div>
   <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:16px;">Place avatar images at images/avatar-male.png and avatar-female.png.</div>
 
-  <div class="setup-grid">
+  <div class="setup-grid" style="grid-template-columns:1fr;">
     <div>
       <div class="setup-label">English Accent</div>
       <select class="setup-select" id="s-accent">
-        <option value="en-GB">British English</option>
-        <option value="en-US">American English</option>
-        <option value="en-IN">Indian English</option>
-        <option value="en-PH">Filipino English</option>
-        <option value="es-ES">Spanish Accent</option>
-        <option value="fr-FR">French Accent</option>
-      </select>
-    </div>
-    <div>
-      <div class="setup-label">Scenarios</div>
-      <select class="setup-select" id="s-count">
-        <option value="3">Random 3</option>
-        <option value="5">Random 5</option>
-        <option value="all">All</option>
+        <option value="en-GB">영국 (British)</option>
+        <option value="en-US">미국 (American)</option>
+        <option value="en-IN">인도 (Indian)</option>
+        <option value="en-PH">필리핀 (Filipino)</option>
+        <option value="es-ES">스페인 (Spanish)</option>
+        <option value="fr-FR">프랑스 (French)</option>
       </select>
     </div>
   </div>
+  <input type="hidden" id="s-count" value="all">
 
   <button class="btn-start" onclick="startInterview()">Start Interview</button>
 </div>
@@ -432,8 +425,26 @@ function startInterview(){
       var constraints=frontId
         ?{video:{deviceId:{exact:frontId}},audio:true}
         :{video:{facingMode:'user'},audio:true};
-      stream=await 
-// ===== MediaPipe 얼굴 분석 =====
+      stream=await navigator.mediaDevices.getUserMedia(constraints);
+      var v=document.getElementById('cam-video');
+      v.srcObject=stream;v.style.display='block';
+      document.getElementById('cam-ph').style.display='none';
+      try{initFaceMesh(v);faceAnalysisActive=true;}catch(e){}
+    }catch(e){
+      // 폴백: 아무 카메라
+      try{
+        stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+        var v2=document.getElementById('cam-video');
+        v2.srcObject=stream;v2.style.display='block';
+        document.getElementById('cam-ph').style.display='none';
+      }catch(e2){document.getElementById('cam-ph').innerHTML='<div>Camera connection failed</div>';}
+    }
+  })();
+
+  showQuestion();
+}
+
+// ===== MediaPipe 얼굴 분석 (startInterview 외부 — 함수 깨짐 방지) =====
 var faceStats={smileFrames:0,totalFrames:0,lookingCenter:0,headTiltFrames:0};
 var faceMeshInstance=null;var faceAnalysisActive=false;
 function initFaceMesh(videoEl){
@@ -446,8 +457,15 @@ function initFaceMesh(videoEl){
       faceStats.totalFrames++;
       if(r.multiFaceLandmarks&&r.multiFaceLandmarks.length>0){
         var lm=r.multiFaceLandmarks[0];
-        var lipL=lm[61],lipR=lm[291],lipTop=lm[13];
-        if((lipTop.y-((lipL.y+lipR.y)/2))>0.01)faceStats.smileFrames++;
+        var lipL=lm[61],lipR=lm[291],lipTop=lm[13],lipBot=lm[14];
+        var faceL=lm[234],faceR=lm[454];
+        var cornerY=(lipL.y+lipR.y)/2;
+        var lipMidY=(lipTop.y+lipBot.y)/2;
+        var cornerLift=lipMidY-cornerY;
+        var mouthW=Math.abs(lipR.x-lipL.x);
+        var faceW=Math.abs(faceR.x-faceL.x);
+        var widthRatio=faceW>0?(mouthW/faceW):0;
+        if(cornerLift>0.002 || widthRatio>0.42) faceStats.smileFrames++;
         var nose=lm[1];
         if(Math.abs(nose.x-0.5)<0.15&&Math.abs(nose.y-0.45)<0.15)faceStats.lookingCenter++;
         var eyeL=lm[33],eyeR=lm[263];
@@ -462,29 +480,7 @@ function getFaceReport(){
   var s=Math.round((faceStats.smileFrames/faceStats.totalFrames)*100);
   var g=Math.round((faceStats.lookingCenter/faceStats.totalFrames)*100);
   var t=Math.round((faceStats.headTiltFrames/faceStats.totalFrames)*100);
-  return '
-
-📷 이미지 분석:
-• 미소 유지: '+s+'%'+(s>=60?' ✓':' — 더 웃어보세요')+'
-• 카메라 시선: '+g+'%'+(g>=70?' ✓':' — 카메라를 더 정면으로 보세요')+'
-• 고개 기울기: '+(t<=20?'안정적 ✓':'기울어진 순간 '+t+'% — 바른 자세를 유지하세요');
-}
-navigator.mediaDevices.getUserMedia(constraints);
-      var v=document.getElementById('cam-video');
-      v.srcObject=stream;v.style.display='block';
-      document.getElementById('cam-ph').style.display='none';
-    }catch(e){
-      // 폴백: 아무 카메라
-      try{
-        stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-        var v2=document.getElementById('cam-video');
-        v2.srcObject=stream;v2.style.display='block';
-        document.getElementById('cam-ph').style.display='none';
-      }catch(e2){document.getElementById('cam-ph').innerHTML='<div>Camera connection failed</div>';}
-    }
-  })();
-
-  showQuestion();
+  return '\n\n📷 이미지 분석:\n• 미소 유지: '+s+'%'+(s>=60?' ✓':' — 더 웃어보세요')+'\n• 카메라 시선: '+g+'%'+(g>=70?' ✓':' — 카메라를 더 정면으로 보세요')+'\n• 고개 기울기: '+(t<=20?'안정적 ✓':'기울어진 순간 '+t+'% — 바른 자세를 유지하세요');
 }
 
 function showQuestion(){

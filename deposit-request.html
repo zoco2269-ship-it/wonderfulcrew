@@ -84,13 +84,13 @@ footer{padding:40px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="card">
     <h3>2. 입금 계좌 안내</h3>
     <div class="bank-box">
-      <div class="lbl">입금 계좌 (예금주: 원더풀크루)</div>
-      <div class="val">국민은행 123456-12-123456</div>
+      <div class="lbl">입금 계좌 (예금주: 주식회사 원더풀크루)</div>
+      <div class="val">국민은행 032901-04-373391</div>
       <div class="amount" id="pay-amount">2,500,000원</div>
     </div>
     <div class="notice">
       <b>안내</b><br>
-      · 3일 이내로 위 계좌에 입금해주세요.<br>
+      · 위 계좌로 입금해주세요.<br>
       · 입금자명은 <b>본인 실명</b>으로 입금해주세요 (다른 이름이면 꼭 아래에 기입).<br>
       · 입금 확인 후 <b>영업시간 기준 12시간 이내</b>에 서비스가 활성화됩니다.
     </div>
@@ -157,7 +157,7 @@ async function submitDeposit(e){
     var sm=document.getElementById('success-msg');
     sm.style.display='block';
     sm.innerHTML='<b>✓ 입금 신청이 접수되었습니다.</b><br><br>'+
-      '<b>국민은행 123456-12-123456</b> 으로 <b>'+selectedAmount.toLocaleString('ko-KR')+'원</b>을 입금해주세요.<br>'+
+      '<b>국민은행 032901-04-373391 (주식회사 원더풀크루)</b> 으로 <b>'+selectedAmount.toLocaleString('ko-KR')+'원</b>을 입금해주세요.<br>'+
       '입금자명: <b>'+depositor+'</b><br><br>'+
       '입금 확인 후 영업시간 기준 12시간 이내에 자동으로 활성화됩니다.<br>'+
       '문의: <a href="mailto:zoco2269@gmail.com" style="color:#2E7D32;font-weight:600;">zoco2269@gmail.com</a>';

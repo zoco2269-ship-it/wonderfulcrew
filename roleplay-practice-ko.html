@@ -565,7 +565,6 @@ function showSuggestedResponse(){
   var fb=document.getElementById('feedback');
   fb.innerHTML+='<br><br><b style="color:var(--gold);">모범답변:</b><br><div style="white-space:pre-line;background:rgba(201,168,76,0.08);padding:16px;border-left:3px solid var(--gold);margin-top:8px;">'+lastSuggestedResponse+'</div>';
   document.getElementById('btn-model').style.display='none';
-  speakQuestion(lastSuggestedResponse);
 }
 
 var endingRoleplay=false;

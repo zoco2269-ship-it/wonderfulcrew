@@ -783,8 +783,6 @@ function showModel(){
   var scrollPos=fb.scrollTop;
   fb.innerHTML+=('<br><br><b style="color:var(--gold);">Model Answer:</b><br>'+model);
   fb.scrollTop=scrollPos;
-  var accent=document.getElementById('s-accent').value;
-  speakQuestion(model,accent);
 }
 
 function nextQuestion(){

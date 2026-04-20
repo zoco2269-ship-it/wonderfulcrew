@@ -292,7 +292,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 
 </div>
 <script>
-var U={};var ms=null,mr=null,rc=[],ti=null;
+var U={};var ms=null,mr=null,rc=[],ti=null,recog=null,spokenText='';
 // 프로필 입력 여부에 따라 첫 화면 결정
 (function(){
   var profileDone=localStorage.getItem('wc_profile_done');
@@ -465,6 +465,28 @@ async function startCam(){
       }
     };
     mr.start();
+    // 음성 인식으로 전사본 캡처 (분석용)
+    try{
+      var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+      if(SR){
+        recog=new SR();
+        recog.lang=(U.lang==='en'||U.lang==='both')?'en-US':'ko-KR';
+        recog.interimResults=true;recog.continuous=true;
+        spokenText='';
+        recog.onresult=function(ev){
+          var f='';
+          for(var r=0;r<ev.results.length;r++){
+            if(ev.results[r].isFinal)f+=ev.results[r][0].transcript+' ';
+          }
+          if(f)spokenText=f;
+        };
+        recog.onend=function(){
+          // 녹화 중이면 자동 재시작
+          if(mr&&mr.state==='recording')try{recog.start();}catch(e){}
+        };
+        recog.start();
+      }
+    }catch(e){console.log('음성 인식 사용 불가',e);}
     document.getElementById('rec-badge').style.display='flex';
     var t=document.getElementById('timer');t.style.display='block';
     var f=document.getElementById('timer-fill');var el=0;
@@ -473,6 +495,7 @@ async function startCam(){
 }
 function stopRec(){
   if(mr&&mr.state!=='inactive')mr.stop();
+  if(recog)try{recog.onend=null;recog.stop();}catch(e){}
   if(ti)clearInterval(ti);
   document.getElementById('rec-badge').style.display='none';
   document.getElementById('btn-stop').style.display='none';
@@ -490,20 +513,42 @@ function retryCam(){
 }
 async function doAnalyze(textOnly){
   if(ms)ms.getTracks().forEach(function(t){t.stop();});
+  if(recog)try{recog.onend=null;recog.stop();}catch(e){}
   // 무료체험 1회 소진
   if(typeof useFreeTrialOrCheck==='function' && !useFreeTrialOrCheck()) return;
-  // 더미 점수·추천 항공사 분석 화면 제거 — 바로 목표 항공사 선택으로 이동
+  // 로딩 화면
+  showScreen('result');
+  document.getElementById('r-name').textContent=U.name||'지원자';
+  document.getElementById('r-score').textContent='…';
+  document.getElementById('r-level').textContent='AI 분석 중';
+  document.getElementById('r-coach-msg').innerHTML='<div class="coach-msg"><div class="coach-msg-text" style="text-align:center;">본인 발화를 AI가 분석하고 있어요. 10~20초 정도 걸려요…</div></div>';
+  // Claude AI 에게 실제 분석 요청
+  var transcript=(spokenText||'').trim();
+  var langLabel=U.lang==='en'?'영어':U.lang==='both'?'한국어 + 영어':'한국어';
+  var sys='당신은 승무원 면접 레벨테스트 분석가입니다. 지원자의 자기소개 발화를 기반으로 현재 레벨을 평가하세요.\n\n평가 기준 (각 25점):\n1. 서비스 마인드 (service_mind) — 따뜻함·배려·지원동기의 진정성\n2. 영어 수준 (english) — 언어 구사력. 한국어만 녹음했으면 프로필(eng)의 자기평가를 참고해서 추정\n3. 면접 준비도 (interview_readiness) — 답변 구조·자신감·명료함\n4. 성장 잠재력 (growth_potential) — 자세·태도·개선 의지\n\n반드시 다음 JSON 한 개만 응답 (다른 텍스트 절대 금지):\n{"score":총점, "level":"Beginner|Intermediate|Upper-Intermediate|Advanced", "level_ko":"초급|중급|중상급|상급", "score_breakdown":{"service_mind":X, "english":X, "interview_readiness":X, "growth_potential":X}, "strengths":["...","...","..."], "improvements":["...","..."], "airlines":[{"name":"...","match":숫자,"reason":"...","top":true/false}], "coaching_priority":"우선순위 1가지 한 줄", "message":"격려 메시지 1문장"}\n\n항공사 추천 규칙:\n- 점수 90+ : 에미레이트·카타르·싱가포르 등 최상위 외항사 매칭 높게\n- 점수 70-89 : 중하위 외항사(KLM·핀에어·캐세이) + 대한항공·아시아나\n- 점수 50-69 : 국내 LCC (제주·진에어·에어프레미아) 강세\n- 점수 50 미만 : 교육·준비 더 필요 — 국내 LCC 중심\n- 3개 추천, 가장 적합한 것 top:true';
+  var userContent='지원자 프로필:\n- 이름: '+(U.name||'지원자')+'\n- 교육: '+(U.edu||'미입력')+'\n- 지원 경험: '+(U.apply||'미입력')+'\n- 자기평가 영어 레벨: '+(U.eng||'미입력')+'\n- 테스트 언어: '+langLabel+'\n\n자기소개 발화 (음성인식):\n"'+(transcript||'(음성 인식 불가 — 프로필만으로 평가)')+'"';
   try{
-    localStorage.setItem('wc_level_result',JSON.stringify({
-      completed:true,
-      name:U.name||'지원자',
-      lang:U.lang||'ko',
-      savedAt:Date.now()
-    }));
-    localStorage.removeItem('wc_airline');
-    localStorage.removeItem('wc_airline_name');
-  }catch(e){}
-  location.replace('curriculum.html');
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,system:sys,
+        messages:[{role:'user',content:userContent}]})});
+    var data=await res.json();
+    var raw=(data&&data.content&&data.content[0]&&data.content[0].text)||'';
+    raw=raw.replace(/```json/g,'').replace(/```/g,'').trim();
+    var r=null;
+    try{r=JSON.parse(raw);}catch(e){
+      // JSON 파싱 실패 시 최소 결과
+      r={score:65,level:'Intermediate',level_ko:'중급',
+         score_breakdown:{service_mind:16,english:16,interview_readiness:16,growth_potential:17},
+         strengths:['응시 의지가 좋아요'],improvements:['발화 내용을 더 구체적으로 준비해보세요'],
+         airlines:[{name:'제주항공',match:75,reason:'국내 LCC부터 시작 추천',top:true}],
+         coaching_priority:'자기소개 30초 스크립트를 먼저 완성하세요.',
+         message:'꾸준히 연습하면 충분히 가능합니다.'};
+    }
+    renderResult(r);
+  }catch(e){
+    alert('분석 실패: '+e.message+'\n다시 시도해주세요.');
+    showScreen('camera');
+  }
 }
 function renderResult(r){
   try{localStorage.setItem('wc_level_result',JSON.stringify({score:r.score,level:r.level,level_ko:r.level_ko,airlines:r.airlines,name:U.name||'지원자',savedAt:Date.now()}));}catch(e){}

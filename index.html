@@ -21,7 +21,9 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;}
+html{overflow-x:hidden;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;width:100%;}
+@media(max-width:900px){img,video,iframe{max-width:100%;height:auto;}section,div,nav,main,footer,article,aside{max-width:100vw;}}
 
 /* ── NAV ── */
 nav {

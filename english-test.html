@@ -90,16 +90,40 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
   <div class="intro">
     <div class="brand-logo">Wonderful<span>Crew</span></div>
     <h1>영어 테스트<br><span style="color:var(--brand-primary);">English Test</span></h1>
-    <p class="meta">외항사 실전 영어 테스트 형식<br>30문항 객관식 · 예상 소요 10~15분</p>
-    <div class="info-box">
-      <b>테스트 안내</b><br>
-      · 빈칸에 들어갈 가장 적절한 단어를 4개 보기에서 선택하세요.<br>
-      · 실제 외항사(에미레이트·카타르 등) 영어 테스트에서 자주 나오는<br>&nbsp;&nbsp;<b>어휘·전치사·서법조동사·표현</b>을 묻습니다.<br>
-      · 테스트 종료 후 <b>정답 해설 + 점수</b>가 제공됩니다.<br>
-      · 사전·번역기 사용은 실전 점수에 도움 안 됩니다. 스스로 풀어보세요.
+    <p class="meta">외항사 실전 영어 테스트 형식 · 두 가지 유형</p>
+    <div class="info-box" style="text-align:center;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;">
+        <button onclick="startTest('vocab')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:10px;padding:20px 14px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:left;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);font-weight:700;margin-bottom:6px;">① 어휘 테스트</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;">30문항 · 빈칸 채우기<br>어휘·전치사·서법조동사</div>
+        </button>
+        <button onclick="startTest('reading')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:10px;padding:20px 14px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:left;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);font-weight:700;margin-bottom:6px;">② 독해 테스트</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;">지문 1개 · 8문항<br>내용 이해 + 어휘 추론</div>
+        </button>
+      </div>
+      <div style="font-size:0.8rem;color:var(--text-muted);line-height:1.8;text-align:left;">
+        · 빈칸/지문에 맞는 가장 적절한 선택지를 고르세요.<br>
+        · 실제 외항사(에미레이트·카타르 등) 영어 테스트에서 자주 나오는 유형입니다.<br>
+        · 사전·번역기 사용은 실전 점수에 도움 안 됩니다. 스스로 풀어보세요.
+      </div>
     </div>
-    <button class="start-btn" onclick="startTest()">테스트 시작하기 →</button>
   </div>
+</div>
+
+<!-- READING PASSAGE -->
+<div class="wrap" id="screen-passage" style="display:none;">
+  <div class="q-counter" style="margin-bottom:10px;">READING PASSAGE</div>
+  <h2 style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--navy);margin-bottom:14px;">Dolphins — Deep Thinkers?</h2>
+  <div style="background:#fff;border:1px solid var(--gold-pale);border-radius:8px;padding:22px 24px;font-size:0.9rem;line-height:1.9;color:var(--text-dark);max-height:55vh;overflow-y:auto;">
+    <p style="margin-bottom:14px;">Dolphins have invented a range of feeding strategies that more than match the diversity of habitats in which they live. In an estuary off the coast of Brazil, tucuxi dolphins are regularly seen capturing fish by "tail whacking". They flick a fish up to 9 metres with their tail flukes and then pick the stunned prey from the water surface. Peale's dolphins in the Straits of Magellan off Patagonia forage in kelp beds, using seaweed to disguise their approach. In Galveston Bay, Texas, certain female bottlenose dolphins and their young follow shrimp boats — swimming into the shrimp nets to take live fish and then wriggling out again, a skill requiring expertise to avoid entanglement.</p>
+    <p style="margin-bottom:14px;">Dolphins can also use tools to solve problems. Scientists have observed a dolphin coaxing a reluctant moray eel out of its crevice by killing a scorpion fish and using its spiny body to poke at the eel. Off the western coast of Australia, bottlenose dolphins place sponges over their snouts, which protects them from the spines of stonefish and stingrays as they forage over shallow seabeds.</p>
+    <p style="margin-bottom:14px;">A dolphin's ability to invent novel behaviours was tested in a famous experiment by the renowned expert Karen Pryor. Two rough-toothed dolphins were rewarded whenever they came up with a new behaviour. It took just a few trials for both dolphins to realise what was required. A similar trial was set up with humans — they took about as long as the dolphins to figure out what was expected.</p>
+    <p style="margin-bottom:14px;">Dolphins are quick learners. Calves stay with their mothers for several years, allowing time for extensive learning particularly through imitation. At one dolphinarium, a person watching from the pool window noticed that when she released a puff of smoke from her cigarette, a dolphin calf immediately swam off to her mother, returned, and released a mouthful of milk, causing a similar effect to the cigarette smoke.</p>
+    <p style="margin-bottom:14px;">To keep track of relationships in a large social group, dolphins use a variety of clicks and whistles. Some species have a <b>signature whistle</b> — a unique sound that, like a name, allows individuals to identify each other. At the Kewalo Basin Marine Laboratory in Hawaii, Lou Herman and his team tested dolphins' ability to comprehend language using sign language. One star dolphin, Akeakamai, learned a vocabulary of more than 60 words and could understand more than 2,000 sentences. Particularly impressive was the dolphins' relaxed attitude when new sentences were introduced — the characteristic of true understanding, not rigid training.</p>
+    <p>Another test of awareness comes from mirror experiments. Diana Reiss and her researchers installed mirrors inside the New York Aquarium to test whether two bottlenose dolphins were self-aware enough to recognise their reflections. They placed non-toxic black ink markings on the dolphins' bodies. The dolphins swam to the mirror and exposed the black mark to check it out — spending more time in front of the mirror when marked than when not. The ability to recognise themselves in the mirror suggests self-awareness, a quality previously only seen in people and great apes.</p>
+  </div>
+  <button class="btn btn-primary" style="width:100%;margin-top:20px;" onclick="startReadingQuestions()">지문 다 읽었어요 — 문제 풀기 →</button>
 </div>
 
 <!-- QUIZ -->

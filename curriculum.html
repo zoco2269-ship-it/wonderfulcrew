@@ -244,21 +244,36 @@ var DOMESTIC_KEYS=['koreanair','asiana','jeju','jinair','tway','airpremia','airs
 var savedAirline=null;
 try{savedAirline=localStorage.getItem('wc_airline');}catch(e){}
 
+// 영역별 BEST / 추천 — LEVEL 결과 없을 때 기본값
+var FOREIGN_BEST='emirates';
+var DOMESTIC_BEST='koreanair';
+var FOREIGN_RECOMMENDED=['qatar','singapore','etihad','cathay'];
+var DOMESTIC_RECOMMENDED=['asiana','jeju','jinair','airpremia'];
+
 AIRLINES.forEach(function(a){
   var btn=document.createElement('button');
   btn.className='airline-card';
   btn.dataset.key=a.key;
-  if(topKey===a.key)btn.classList.add('recommended');
+  var isDomestic=DOMESTIC_KEYS.indexOf(a.key)>=0;
+  // BEST 결정: LEVEL 기반 우선, 없으면 기본값
+  var isBest=false;
+  if(topKey){isBest=(topKey===a.key);}
+  else{isBest=(isDomestic?(DOMESTIC_BEST===a.key):(FOREIGN_BEST===a.key));}
+  // 추천 결정: LEVEL 기반 우선, 없으면 기본값
+  var isRec=false;
+  if(recommendedKeys&&recommendedKeys.length){isRec=(recommendedKeys.indexOf(a.key)>=0);}
+  else{isRec=(isDomestic?(DOMESTIC_RECOMMENDED.indexOf(a.key)>=0):(FOREIGN_RECOMMENDED.indexOf(a.key)>=0));}
+  if(isBest)btn.classList.add('recommended');
   if(savedAirline===a.key)btn.classList.add('selected');
   var tier='';
-  if(topKey===a.key)tier='<div class="airline-tier">BEST</div>';
-  else if(recommendedKeys.indexOf(a.key)>=0)tier='<div class="airline-tier" style="background:var(--navy);">추천</div>';
+  if(isBest)tier='<div class="airline-tier">BEST</div>';
+  else if(isRec)tier='<div class="airline-tier" style="background:var(--navy);">추천</div>';
   btn.innerHTML=tier+
     '<div class="airline-name-en">'+a.en+'</div>'+
     '<div class="airline-name-ko">'+a.ko+'</div>'+
     '<div class="airline-region">'+a.region+'</div>';
   btn.onclick=function(){selectAirline(a);};
-  (DOMESTIC_KEYS.indexOf(a.key)>=0?gridDomestic:gridForeign).appendChild(btn);
+  (isDomestic?gridDomestic:gridForeign).appendChild(btn);
 });
 
 // ─── 항공사 선택 ───

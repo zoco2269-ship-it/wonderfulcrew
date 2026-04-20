@@ -361,15 +361,19 @@ footer{
 @media(max-width:600px){
   .res-cards{grid-template-columns:1fr;}
   .hero-title{font-size:2.4rem;}
-  .nav-links{display:none;}
-  nav{padding:0 4%!important;height:auto!important;min-height:56px;}
+  /* 모바일 상단 메뉴 가로 스크롤로 표시 */
+  nav{flex-wrap:wrap!important;padding:6px 4%!important;height:auto!important;min-height:56px;}
   .nav-logo{font-size:1.1rem!important;flex-shrink:0;}
-  nav>div:last-child{flex-direction:column!important;align-items:flex-end!important;gap:4px!important;flex-shrink:0;padding:6px 0;}
+  .nav-links{display:flex!important;order:3;flex-basis:100%;overflow-x:auto;gap:14px!important;padding:6px 0 8px!important;white-space:nowrap;scrollbar-width:none;-ms-overflow-style:none;}
+  .nav-links::-webkit-scrollbar{display:none;}
+  .nav-links>a,.nav-links>.nav-dropdown{font-size:0.72rem!important;line-height:normal!important;flex-shrink:0;}
+  .nav-dropdown-menu{display:none!important;}
+  nav>div:last-child{flex-direction:row!important;align-items:center!important;gap:6px!important;flex-shrink:0;}
   nav>div:last-child>a{white-space:nowrap!important;}
-  .nav-cta{font-size:0.68rem!important;padding:5px 12px!important;white-space:nowrap!important;letter-spacing:0!important;}
-  .mobile-sub-row{display:flex!important;gap:4px;}
-  nav a[href*="login"]{font-size:0.64rem!important;padding:4px 9px!important;white-space:nowrap!important;letter-spacing:0!important;}
-  nav a[href*="index-en"]{font-size:0.62rem!important;padding:3px 7px!important;}
+  .nav-cta{font-size:0.66rem!important;padding:5px 10px!important;white-space:nowrap!important;letter-spacing:0!important;}
+  .mobile-sub-row{display:contents;}
+  nav a[href*="login"]{font-size:0.64rem!important;padding:5px 10px!important;white-space:nowrap!important;letter-spacing:0!important;}
+  nav a[href*="index-en"]{font-size:0.62rem!important;padding:4px 8px!important;}
   .hero-label{font-size:0.65rem!important;letter-spacing:0.15em!important;margin-bottom:14px!important;}
   #hero{min-height:auto!important;padding:110px 0 60px!important;height:auto!important;}
   /* 히어로 CTA 버튼 얇게 */

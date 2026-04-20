@@ -290,7 +290,7 @@ async function stopAnswer(){
   var t=TOPICS[selectedTopic];
   var aiStance=myStance==='for'?'against':'for';
   var aiStanceKo=myStance==='for'?'반대':'찬성';
-  var sys='Singapore Airlines debate — standalone presentation format. Topic: "'+t.t+'". You are giving your own presentation from the '+aiStance.toUpperCase()+' position. This is NOT a back-and-forth debate. Just deliver a standalone 2~3 sentence presentation (30~45 seconds spoken) stating your position with clear reasoning.\n\nRules:\n- English only. 2~3 sentences, natural spoken style.\n- Do NOT reference or respond to the candidate. This is parallel presentation, not rebuttal.\n- Start with your position clearly: "I believe..." / "In my opinion..."\n- Give one or two simple reasons. Keep it casual and confident, not academic.\n- Do NOT use phrases like "I see your point" or "However" — you are NOT rebutting.';
+  var sys='Singapore Airlines debate — standalone presentation format. Topic: "'+t.t+'". You are giving your own presentation from the '+aiStance.toUpperCase()+' position. This is NOT a back-and-forth debate. Just deliver a standalone 2~3 sentence presentation (30~45 seconds spoken) stating your position with clear reasoning.\n\nRules:\n- English only. 2~3 sentences, natural spoken style that sounds GOOD when read aloud.\n- Do NOT use any special characters: no #, $, %, &, *, parentheses, brackets, dashes, hashtags, emojis. Only plain sentences.\n- Do NOT use numbers with prefixes like "$5,000" — write it out: "five thousand dollars" or just "a significant budget".\n- Do NOT reference or respond to the candidate. This is parallel presentation, not rebuttal.\n- Start with your position clearly: "I believe..." / "In my opinion..."\n- Give one or two simple reasons. Keep it casual and confident, not academic.\n- Do NOT use phrases like "I see your point" or "However" — you are NOT rebutting.';
   document.getElementById('card-ai').classList.add('speaking');
   document.getElementById('transcript').textContent='AI 지원자('+aiStanceKo+' 입장)가 발표합니다...';
   document.getElementById('btn-answer').style.display='none';
@@ -305,8 +305,13 @@ async function stopAnswer(){
     chatHistory.push({role:'assistant',content:aiText});
     document.getElementById('feedback').innerHTML='<b>AI 지원자 ('+aiStanceKo+' 입장 발표 · 참고용):</b><br>'+aiText;
     document.getElementById('feedback').classList.add('active');
+    // TTS용 텍스트 정리: 특수문자·기호 제거 (읽히면 이상한 것들)
+    var ttsText=aiText
+      .replace(/[#$@&*_~`<>{}\[\]|\\^=+]/g,' ')   // 기호류
+      .replace(/\$\s*(\d+)[,\d]*/g,'$1 dollars')   // $ 달러 표기 단순화
+      .replace(/\s+/g,' ').trim();
     if(typeof gcSpeak==='function'){
-      gcSpeak(aiText,'en-GB','female',function(){
+      gcSpeak(ttsText,'en-GB','female',function(){
         document.getElementById('card-ai').classList.remove('speaking');
         document.getElementById('transcript').textContent='디베이트 발표 완료. 피드백 생성 중...';
         setTimeout(endDebate,800);
@@ -342,7 +347,7 @@ async function endDebate(){
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:500,
-      system:'English debate coach. Evaluate ONLY the candidate\'s actual English utterances.\n\nStrict rules:\n- Comment ONLY on what the candidate actually said. NEVER speculate about their intent, body language, or about their silence.\n- Do NOT criticize for "not responding to opponent" — the candidate chose when to stop, and that choice is not a debate skill being evaluated here.\n- Do NOT invent observations ("maintained composure", "tried to preserve their stance") — evaluate only the verbal content.\n- Speech-to-text input — ignore grammar/punctuation.\n- Keep feedback short and directly tied to sentences the candidate said.\n- Write in Korean.\n\nFormat (매우 짧게):\n점수: X/100\n잘한 점: (실제 본인 발언에서 인용 1구절 + 짧은 평가 한 줄)\n개선할 점: (실제 말한 내용에 근거해서만. 없으면 "특별한 개선점 없습니다.")\n실전 팁: (1줄)',
+      system:'싱가폴 디베이트 코치. 본인 실제 영어 발언만 평가.\n\n**이 단계의 본질:** 싱가폴 디베이트는 논리 경쟁이 아니라 "이미지 면접"입니다. 심각하게 발표하면 안 되고, 찬/반이 주어지면 그 입장에서 자신감 있고 밝게 1회 발표만 하면 끝. 면접관이 보는 것은 발표력·태도·미소.\n\n**엄격한 규칙:**\n- 본인이 실제 말한 문장만 평가. 침묵·의도·태도 추측 금지.\n- "반대 의견에 대응 못했다" 같은 비평 절대 금지 — 발표 1회로 끝나는 포맷임.\n- 음성 인식 결과 — 문법·구두점 무시.\n- 한국어로 매우 짧게.\n- 실전 팁은 **반드시** 다음 요소 중 하나 이상 포함: (1) 미소·표정 유지가 기본. 심각하지 말고 웃으며 발표. (2) 자신감 있는 목소리. (3) 이건 이미지 면접이라는 점. (4) 또렷한 발음·자세.\n\n출력 형식 (매우 짧게):\n점수: X/100\n잘한 점: (실제 본인 발언에서 인용 1구절 + 짧은 평가)\n개선할 점: (실제 말한 내용 근거. 없으면 "특별한 개선점 없습니다.")\n실전 팁: (미소·자신감·이미지 면접 요소 중심 1~2줄)',
       messages:[{role:'user',content:'Topic: '+t.t+'\nCandidate stance: '+myStance+'\n\nCandidate utterances only:\n'+userAnswers+'\n\nFull context (for reference only, do not evaluate AI):\n'+convo}]
     })});
     var data=await res.json();

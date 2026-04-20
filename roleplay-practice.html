@@ -157,3 +157,548 @@ window.addEventListener('popstate',function(){
     </div>
   </div>
 
+  <div style="background:rgba(46,125,50,0.08);border:1px solid rgba(46,125,50,0.3);border-radius:10px;padding:12px 16px;margin:0 auto 18px;max-width:560px;font-size:0.84rem;color:#2E7D32;line-height:1.65;">🔒 <b>영상은 본인 기기에만 저장됩니다.</b> 녹화 내용은 WonderfulCrew 서버로 전송되지 않아요. 편하게 찍으세요.</div>
+  <button class="btn-start" onclick="startInterview()">면접 시작하기</button>
+</div>
+
+<!-- INTERVIEW SCREEN -->
+<div class="interview" id="interview">
+  <div class="q-banner">
+    <div class="label">Question <span id="q-idx">1</span> / <span id="q-total">3</span></div>
+    <div class="question" id="q-text"></div>
+  </div>
+
+  <div class="video-area">
+    <!-- 면접관 아바타 -->
+    <div class="card-frame" id="interviewer-card">
+      <div class="avatar-display">
+        <img id="avatar-img" src="" alt="Interviewer" style="width:100%;height:100%;object-fit:cover;display:none;">
+        <div class="avatar-face" id="avatar-face-fallback">
+          <div class="face" id="avatar-emoji">👨🏻</div>
+          <div class="mouth" id="avatar-mouth"></div>
+        </div>
+      </div>
+      <div class="card-label">
+        <div class="name" id="interviewer-name">Interviewer</div>
+        <div class="role">WonderfulCrew AI</div>
+      </div>
+    </div>
+
+    <!-- 학생 카메라 -->
+    <div class="card-frame" id="student-card">
+      <video id="cam-video" autoplay muted playsinline style="display:none;transform:scaleX(-1);"></video>
+      <div class="cam-placeholder" id="cam-ph">
+        <div>📷</div>
+        <div>카메라 준비 중</div>
+      </div>
+      <div class="card-label">
+        <div class="name">You</div>
+        <div class="role"><span class="rec-dot" id="rec-dot"></span> <span id="rec-label">대기</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="waveform" id="waveform">
+    <div class="bar" style="animation-delay:0s;"></div><div class="bar" style="animation-delay:0.1s;"></div><div class="bar" style="animation-delay:0.2s;"></div>
+    <div class="bar" style="animation-delay:0.3s;"></div><div class="bar" style="animation-delay:0.15s;"></div><div class="bar" style="animation-delay:0.25s;"></div>
+    <div class="bar" style="animation-delay:0.05s;"></div><div class="bar" style="animation-delay:0.35s;"></div><div class="bar" style="animation-delay:0.12s;"></div>
+  </div>
+
+  <div class="transcript-bar" id="transcript">고객이 먼저 말합니다...</div>
+  <div class="feedback-panel" id="feedback"></div>
+
+  <div class="controls">
+    <button class="ctrl-btn danger" id="btn-stop" onclick="stopAndFeedback()" style="display:none;">⏹ 답변 종료</button>
+    <button class="ctrl-btn primary" id="btn-model" onclick="showSuggestedResponse()" style="display:none;">모범답변 보기</button>
+    <button class="ctrl-btn secondary" id="btn-next" onclick="nextQuestion()" style="display:none;">다음 질문 →</button>
+  </div>
+</div>
+
+<script>
+// Scenarios
+var SCENARIOS=[
+  "A passenger wants a window seat but the flight is completely full.",
+  "A business class passenger's preferred meal choice has run out.",
+  "A passenger complains the cabin is too cold, but nearby passengers say it's fine.",
+  "A child has been crying for 30 minutes and other passengers are complaining.",
+  "A passenger asks for more alcohol but appears quite intoxicated.",
+  "A passenger's carry-on bag doesn't fit in the overhead bin.",
+  "A passenger requests a Hindu vegetarian meal that wasn't pre-ordered.",
+  "Two passengers are arguing loudly over the shared armrest.",
+  "A passenger refuses to fasten their seatbelt during turbulence.",
+  "A passenger's in-flight entertainment screen is not working.",
+  "A drink was accidentally spilled on a passenger's clothes.",
+  "A passenger is having an allergic reaction after eating the meal.",
+  "A passenger demands to be upgraded to business class for free.",
+  "A passenger discovers their passport is missing after boarding.",
+  "A passenger is scared of flying and is having a panic attack during takeoff.",
+  "A passenger complains the WiFi is not working and they need it for an urgent work call.",
+  "A passenger's child keeps kicking the seat in front, and the other passenger is furious.",
+  "An elderly passenger needs help getting to the lavatory but the seatbelt sign is on.",
+  "A passenger claims they were overcharged for a duty-free item.",
+  "Two passengers want to swap seats but one is in an emergency exit row.",
+  "A passenger is loudly playing music without headphones.",
+  "A passenger requests a blanket but all blankets have been distributed.",
+  "A passenger complains about a strong body odor from the person sitting next to them.",
+  "A passenger's laptop battery is swelling and getting hot.",
+  "A passenger wants to store a musical instrument in the overhead bin but it's too large.",
+  "A passenger insists on standing in the aisle during turbulence to stretch.",
+  "A passenger is upset because their connecting flight is about to depart and you're delayed.",
+  "A passenger found hair in their meal and refuses to eat anything else.",
+  "A passenger with a nut allergy is worried because the person next to them opened peanuts.",
+  "A passenger is traveling with a sick infant and asks for medical advice.",
+  "A passenger accidentally locked themselves in the lavatory.",
+  "A passenger wants to change to a seat next to their partner but the flight is full.",
+  "A passenger complains the overhead reading light is broken.",
+  "A first class passenger is disappointed with the quality of the meal.",
+  "A passenger is upset their special occasion (birthday) was not acknowledged.",
+  "A passenger refuses to put their seat upright for landing.",
+  "A passenger is snoring very loudly and other passengers are complaining.",
+  "A passenger spilled coffee on their own laptop and is blaming the turbulence.",
+  "A passenger wants to smoke in the lavatory.",
+  "A passenger is visibly nervous about the sounds the aircraft is making.",
+  "A passenger demands to speak to the captain about the flight route.",
+  "A passenger's child is running up and down the aisle during meal service.",
+  "A passenger claims another passenger stole their headphones.",
+  "A passenger with mobility issues needs to deplane first but others are rushing.",
+  "A passenger is taking photos of other passengers without their consent.",
+  "A passenger complains the cabin crew is spending too much time with first class.",
+  "A passenger wants a full refund mid-flight because of poor service.",
+  "A passenger is anxious about a medical condition and forgot their medication.",
+  "A group of passengers are being very loud and drinking excessively.",
+  "A passenger requests a specific newspaper but it has run out."
+];
+
+// 고객 첫 대사 (API 호출 없이 즉시 시작)
+var OPENERS={
+  0:"Excuse me, I specifically requested a window seat when I booked. Is there really nothing you can do?",
+  1:"I ordered the steak but you're telling me it's not available? I'm in business class, this is unacceptable.",
+  2:"I'm freezing here. Can you please turn up the temperature? I've been cold for the last hour.",
+  3:"Excuse me, that baby has been crying non-stop for 30 minutes. I can't sleep at all. Can you do something?",
+  4:"Hi, can I get another glass of wine please? Actually, make it two.",
+  5:"My bag won't fit up there. I don't want to check it in, I have valuables inside.",
+  6:"I ordered a Hindu vegetarian meal but apparently it wasn't registered. I can't eat any of the options you have.",
+  7:"This person keeps taking my armrest! Can you please tell them to stay on their side?",
+  8:"I'm fine, I don't need a seatbelt. We're barely moving anyway.",
+  9:"My screen has been broken since takeoff. I've been sitting here with nothing to do for two hours.",
+  10:"You just spilled a drink all over my shirt! This is a brand new shirt!",
+  11:"I'm not feeling well... I think something in the meal is making me sick. My throat feels tight.",
+  12:"I think I deserve an upgrade to business class. My seat is broken and I paid a lot for this ticket.",
+  13:"Oh no, I can't find my passport! I had it in my bag but it's gone. What am I going to do?",
+  14:"I can't breathe... I'm so scared. The plane is shaking and I feel like I'm going to die.",
+  15:"Your WiFi has been down for an hour! I have an important video call in 10 minutes.",
+  16:"Excuse me, that child behind me has been kicking my seat for the entire flight!",
+  17:"I really need to use the restroom but you're telling me I can't get up?",
+  18:"I was charged twice for this perfume! Check your system, this is wrong.",
+  19:"We want to swap seats. Why can't I just sit in that empty exit row seat?",
+  20:"Can you tell that guy to turn his music off? I can hear it from here!",
+  21:"I'm freezing and you don't have any more blankets? How is that possible?",
+  22:"I don't mean to be rude, but the person next to me has a very strong smell. I can't sit here.",
+  23:"My laptop is getting really hot and the battery looks swollen. What should I do?",
+  24:"My cello is very valuable. I can't let it go in the cargo hold.",
+  25:"I've been sitting for 8 hours, I need to walk around. I don't care about the seatbelt sign.",
+  26:"My connecting flight leaves in 30 minutes and we're still on the ground! What's going to happen?",
+  27:"There's a hair in my food! This is disgusting. I'm not eating anything from your kitchen.",
+  28:"The person next to me just opened a bag of peanuts and I have a severe nut allergy!",
+  29:"My baby has a high fever. Do you have any medicine on board?",
+  30:"Help! I'm stuck in the lavatory! The lock won't open!",
+  31:"My wife is sitting 10 rows behind me. Can't you move someone so we can sit together?",
+  32:"My reading light doesn't work. How am I supposed to read for the next 6 hours?",
+  33:"I paid thousands for first class and this steak is cold and overcooked. This is unacceptable.",
+  34:"It's my birthday today and nobody even said happy birthday. I expected more from this airline.",
+  35:"I'm comfortable like this. I don't want to put my seat up.",
+  36:"That man is snoring so loudly I can't sleep! Can you wake him up or move me?",
+  37:"The turbulence made me spill coffee all over my laptop! Your airline should pay for this.",
+  38:"I just need one cigarette. Can't I quickly smoke in the lavatory?",
+  39:"What was that noise? It sounded like something broke. Are we safe?",
+  40:"I want to talk to the pilot. I don't think we're going the right way.",
+  41:"Your meal cart almost hit my child who was in the aisle! This is dangerous!",
+  42:"Someone took my headphones from my seat pocket while I was in the lavatory!",
+  43:"I have a wheelchair waiting at the gate. Can you make sure I get off first?",
+  44:"That person has been photographing me without asking. Can you make them stop?",
+  45:"Economy passengers don't exist to you, do we? You've been in first class the whole flight!",
+  46:"I want a full refund. The service on this flight has been terrible.",
+  47:"I forgot my heart medication at home. I'm starting to feel chest pains.",
+  48:"Your group over there has been drinking and shouting for hours. Some of us are trying to sleep!",
+  49:"Excuse me, do you have the Financial Times? I always read it on my flights and I can't find one anywhere."
+};
+
+var MODELS={
+  0:"I'm really sorry about that. Let me check all sections for any window seat. Unfortunately they're all taken. May I recommend this aisle seat near the front? It has extra legroom. And I'll bring you a complimentary drink once we're airborne.",
+  1:"I sincerely apologize. Let me check other cabins. I'm afraid it's gone, but our chef's second option is excellent. I'll also bring champagne on the house as my apology.",
+  2:"I completely understand. Let me bring you a warm blanket right away and adjust the airflow above your seat. Would you like some hot tea as well?",
+  3:"Let me check on the family first. I'll bring warm milk and a coloring kit. For you, may I offer noise-cancelling headphones?",
+  4:"I want you to arrive feeling great. May I suggest a refreshing juice instead? We have amazing fresh orange juice. I'll bring some snacks too.",
+  5:"Let me help rearrange some items. If it still doesn't fit, I can gate-check it with a priority tag so it's first out.",
+  6:"I'm sorry we don't have that pre-ordered. We have a vegetarian pasta that's meat-free. I'll personally check ingredients and note it for your return flight.",
+  7:"I understand space can be tight. I have a spare cushion, and there's a seat with more space nearby. Can I bring you both a drink?",
+  8:"Your safety is our top priority. The captain turned on the sign because of rough air ahead. Can I help adjust the belt so it's comfortable?",
+  9:"So sorry about that. Let me try resetting it. If not, I have a spare tablet with our full movie library. Let me bring a complimentary drink too.",
+  10:"I am so sorry. Let me get club soda and napkins right away. We have a spare shirt, and I'll arrange dry cleaning at no cost.",
+  11:"Please stay calm. I'll call for medical professionals and get our first aid kit. I'll inform the captain for priority landing if needed.",
+  12:"I understand. Unfortunately upgrades are managed by ground team. Let me bring extra pillows, blanket, and our premium amenity kit instead.",
+  13:"I understand how stressful this is. Let me help you look carefully. I'll also check with the gate team. If we can't find it, I'll connect you with emergency documentation."
+};
+
+var chosenAvatar='👨🏻';
+var chosenImg='images/avatar-male.png';
+var questions=[];
+var qIdx=0;
+var stream=null;
+var recognition=null;
+var fullText='';
+var mediaRecorder=null;
+var recordChunks=[];
+var recordStartTime=0;
+
+function selAvatar(el){
+  document.querySelectorAll('.avatar-opt').forEach(function(a){a.classList.remove('sel');});
+  el.classList.add('sel');
+  chosenAvatar=el.dataset.avatar;
+  chosenImg=el.dataset.img||'';
+}
+
+function startInterview(){
+  // 원래 인덱스를 유지하며 최근 푼 시나리오는 제외
+  var indexed=SCENARIOS.map(function(q,i){return {q:q,origIdx:i};});
+  var recent=[];
+  try{recent=JSON.parse(localStorage.getItem('wc_rp_recent')||'[]');}catch(e){recent=[];}
+  var fresh=indexed.filter(function(x){return recent.indexOf(x.origIdx)===-1;});
+  // 남은 신선한 시나리오가 3개 미만이면 기록 리셋 (전체 풀 재진입)
+  if(fresh.length<3){recent=[];fresh=indexed.slice();}
+  // 3개 랜덤 선택
+  questions=[];
+  var pool=fresh.slice();
+  for(var i=0;i<3&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
+  // 사용한 시나리오 기록 (최근 20개까지만 유지)
+  var newRecent=recent.concat(questions.map(function(q){return q.origIdx;}));
+  while(newRecent.length>20)newRecent.shift();
+  try{localStorage.setItem('wc_rp_recent',JSON.stringify(newRecent));}catch(e){}
+
+  qIdx=0;
+  document.getElementById('setup').style.display='none';
+  document.getElementById('interview').classList.add('active');
+  history.pushState({roleplay:true},'','');
+  // 아바타 이미지 또는 이모지 표시
+  var avatarImg=document.getElementById('avatar-img');
+  var avatarFallback=document.getElementById('avatar-face-fallback');
+  if(chosenImg){
+    avatarImg.src=chosenImg;
+    avatarImg.style.display='block';
+    avatarFallback.style.display='none';
+    avatarImg.onerror=function(){avatarImg.style.display='none';avatarFallback.style.display='flex';};
+  }
+  document.getElementById('avatar-emoji').textContent=chosenAvatar;
+  document.getElementById('q-total').textContent=questions.length;
+
+  // Start camera
+  // 카메라: 정면(셀카) 우선, 실패 시 기본 카메라
+  // 카메라: 모든 비디오 장치를 확인해서 전면(내장) 카메라를 우선 선택
+  (async function(){
+    try{
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});
+      var v=document.getElementById('cam-video');
+      if(v){v.srcObject=stream;v.style.display='block';}
+      var ph=document.getElementById('cam-ph');
+      if(ph)ph.style.display='none';
+      try{initFaceMesh(v);faceAnalysisActive=true;}catch(e){}
+    }catch(e){
+      var ph=document.getElementById('cam-ph');
+      if(ph)ph.innerHTML='<div>Camera connection failed</div>';
+    }
+  })();
+
+  showQuestion();
+}
+
+// ===== MediaPipe 얼굴 분석 (startInterview 외부 — 함수 깨짐 방지) =====
+var faceStats={smileFrames:0,totalFrames:0,lookingCenter:0,headTiltFrames:0};
+var faceMeshInstance=null;var faceAnalysisActive=false;
+function initFaceMesh(videoEl){
+  if(!window.FaceMesh) return;
+  try{
+    faceMeshInstance=new FaceMesh({locateFile:function(f){return 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/'+f;}});
+    faceMeshInstance.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
+    faceMeshInstance.onResults(function(r){
+      if(!faceAnalysisActive)return;
+      faceStats.totalFrames++;
+      if(r.multiFaceLandmarks&&r.multiFaceLandmarks.length>0){
+        var lm=r.multiFaceLandmarks[0];
+        var lipL=lm[61],lipR=lm[291],lipTop=lm[13],lipBot=lm[14];
+        var faceL=lm[234],faceR=lm[454];
+        var cornerY=(lipL.y+lipR.y)/2;
+        var lipMidY=(lipTop.y+lipBot.y)/2;
+        var cornerLift=lipMidY-cornerY;
+        var mouthW=Math.abs(lipR.x-lipL.x);
+        var faceW=Math.abs(faceR.x-faceL.x);
+        var widthRatio=faceW>0?(mouthW/faceW):0;
+        if(cornerLift>0.006 && widthRatio>0.46) faceStats.smileFrames++;
+        var nose=lm[1];
+        if(Math.abs(nose.x-0.5)<0.15&&Math.abs(nose.y-0.45)<0.15)faceStats.lookingCenter++;
+        var eyeL=lm[33],eyeR=lm[263];
+        if(Math.abs(eyeL.y-eyeR.y)>0.02)faceStats.headTiltFrames++;
+      }
+    });
+    setInterval(function(){if(faceAnalysisActive&&videoEl.readyState>=2)try{faceMeshInstance.send({image:videoEl});}catch(e){}},500);
+  }catch(e){}
+}
+function getFaceReport(){
+  if(faceStats.totalFrames<5)return '';
+  var s=Math.round((faceStats.smileFrames/faceStats.totalFrames)*100);
+  var g=Math.round((faceStats.lookingCenter/faceStats.totalFrames)*100);
+  var t=Math.round((faceStats.headTiltFrames/faceStats.totalFrames)*100);
+  return '\n\n📷 이미지 분석:\n• 미소 유지: '+s+'%'+(s>=60?' ✓':' — 더 웃어보세요')+'\n• 카메라 시선: '+g+'%'+(g>=70?' ✓':' — 카메라를 더 정면으로 보세요')+'\n• 고개 기울기: '+(t<=20?'안정적 ✓':'기울어진 순간 '+t+'% — 바른 자세를 유지하세요');
+}
+
+var timeExpired=false;
+var roleplayTimer=null;
+
+function showQuestion(){
+  chatHistory=[];endingRoleplay=false;timeExpired=false;
+  if(roleplayTimer)clearTimeout(roleplayTimer);
+  roleplayTimer=setTimeout(function(){timeExpired=true;},180000);
+  var q=questions[qIdx];
+  document.getElementById('q-idx').textContent=qIdx+1;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('transcript').textContent='고객이 먼저 말합니다...';
+  document.getElementById('feedback').classList.remove('active');
+  document.getElementById('feedback').innerHTML='';
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('btn-next').style.display='none';
+  document.getElementById('waveform').classList.remove('active');
+  fullText='';
+
+  // 고객 첫 대사 — 미리 작성된 대사로 즉시 시작 (API 호출 없음)
+  var origIdx=q.origIdx!==undefined?q.origIdx:qIdx;
+  var opener=OPENERS[origIdx]||'Excuse me, I have a problem I need help with.';
+  customerFirstSpeak(opener);
+}
+
+function customerFirstSpeak(openerText){
+  var fb=document.getElementById('feedback');
+
+  chatHistory.push({role:'assistant',content:openerText});
+  fb.innerHTML='<b style="color:var(--gold);">Passenger:</b> '+openerText;
+  fb.classList.add('active');
+
+  // TTS 즉시 시작
+  var accent=document.getElementById('s-accent').value;
+  speakQuestion(openerText,accent);
+
+  // TTS 끝나면 자동으로 학생 음성 인식 시작
+  var checkTTS=setInterval(function(){
+    if(!window.speechSynthesis.speaking){
+      clearInterval(checkTTS);
+      startListening();
+    }
+  },300);
+}
+
+function startListening(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){document.getElementById('transcript').textContent='Chrome에서 사용해 주세요.';return;}
+  recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
+  fullText='';
+  document.getElementById('btn-stop').style.display='inline-flex';
+  document.getElementById('rec-dot').classList.add('on');
+  document.getElementById('rec-label').textContent='녹음 중';
+  document.getElementById('waveform').classList.add('active');
+  document.getElementById('transcript').textContent='지금 답변하세요...';
+
+  // 백그라운드 영상 녹화
+  if(!mediaRecorder&&stream){
+    try{
+      recordStartTime=Date.now();
+      recordChunks=[];
+      mediaRecorder=new MediaRecorder(stream,{mimeType:'video/webm'});
+      mediaRecorder.ondataavailable=function(e){if(e.data.size>0)recordChunks.push(e.data);};
+      mediaRecorder.start();
+    }catch(e){}
+  }
+
+  recognition.onresult=function(ev){
+    var interim='';fullText='';
+    for(var r=0;r<ev.results.length;r++){
+      if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';
+      else interim+=ev.results[r][0].transcript;
+    }
+    document.getElementById('transcript').textContent=fullText+interim;
+  };
+  recognition.onend=function(){
+    if(endingRoleplay) return;
+    if(fullText.trim()){
+      document.getElementById('transcript').textContent=fullText.trim();
+      processAnswer();
+    } else {
+      // 아무 말 안 했으면 다시 듣기 시작
+      try{recognition.start();}catch(e){}
+    }
+  };
+  recognition.start();
+}
+
+// 음성 목록 미리 로드
+if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}
+
+// 페이지 나갈 때 / 숨김 시 TTS + 카메라 + 마이크 모두 중지
+function _stopAllAudio(){
+  try{if(typeof gcStop==='function')gcStop();}catch(e){}
+  try{if('speechSynthesis' in window)window.speechSynthesis.cancel();}catch(e){}
+  try{if(recognition)recognition.stop();}catch(e){}
+  try{if(stream){stream.getTracks().forEach(function(t){t.stop();});stream=null;}}catch(e){}
+}
+window.addEventListener('beforeunload',_stopAllAudio);
+window.addEventListener('pagehide',_stopAllAudio);
+document.addEventListener('visibilitychange',function(){if(document.hidden)_stopAllAudio();});
+
+function speakQuestion(text,lang){
+  var iCard=document.getElementById('interviewer-card');
+  var mouth=document.getElementById('avatar-mouth');
+  iCard.classList.add('speaking');
+  mouth.classList.add('talking');
+  var isMale=(chosenAvatar==='👨🏻');
+  gcSpeak(text,lang||'en-GB',isMale?'male':'female',function(){
+    iCard.classList.remove('speaking');mouth.classList.remove('talking');
+  });
+}
+
+var chatHistory=[];
+var lastSuggestedResponse='';
+
+function showSuggestedResponse(){
+  if(!lastSuggestedResponse) return;
+  var fb=document.getElementById('feedback');
+  fb.innerHTML+='<br><br><b style="color:var(--gold);">Model Answer:</b><br><div style="white-space:pre-line;background:rgba(201,168,76,0.08);padding:16px;border-left:3px solid var(--gold);margin-top:8px;">'+lastSuggestedResponse+'</div>';
+  document.getElementById('btn-model').style.display='none';
+}
+
+var endingRoleplay=false;
+
+function stopAnswer(){
+  if(recognition)try{recognition.stop();}catch(e){}
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('rec-dot').classList.remove('on');
+  document.getElementById('rec-label').textContent='처리 중';
+  document.getElementById('waveform').classList.remove('active');
+}
+
+function stopAndFeedback(){
+  endingRoleplay=true;
+  try{if(typeof gcStop==='function')gcStop();}catch(e){}
+  if('speechSynthesis' in window)window.speechSynthesis.cancel();
+  if(recognition)try{recognition.onend=null;recognition.stop();recognition=null;}catch(e){}
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('rec-dot').classList.remove('on');
+  document.getElementById('waveform').classList.remove('active');
+  var lastAns=fullText.trim();
+  if(lastAns&&lastAns!=='지금 답변하세요...'){
+    chatHistory.push({role:'user',content:lastAns});
+  }
+  if(mediaRecorder&&mediaRecorder.state==='recording')try{mediaRecorder.stop();}catch(e){}
+  var q=questions[qIdx];
+  var scenario=typeof q==='string'?q:q.q;
+  generateFeedback(scenario);
+}
+
+async function processAnswer(){
+  stopAnswer();
+
+  var ans=fullText.trim()||document.getElementById('transcript').textContent.trim();
+  if(!ans||ans==='지금 답변하세요...'){startListening();return;}
+
+  chatHistory.push({role:'user',content:ans});
+
+  var fb=document.getElementById('feedback');
+  var q=questions[qIdx];
+  var scenario=typeof q==='string'?q:q.q;
+
+  // 고객이 학생 답변에 반응
+  fb.innerHTML='<span style="color:var(--gold);">고객이 반응하고 있어요...</span>';
+  fb.classList.add('active');
+
+  var turnCount=chatHistory.filter(function(m){return m.role==='user';}).length;
+  var turnInstr=turnCount<3
+    ?'\n- Keep the exchange going. Either push back with a new concern or ask a natural follow-up question like "But what about...?" / "Could you also...?". DO NOT end the conversation.'
+    :'\n- After '+turnCount+' exchanges you may wrap up with a brief grateful closing (1 sentence).';
+  try{
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:80,
+      system:'You are a passenger on an airplane. Situation: "'+scenario+'"\n\nRules:\n- Reply to what the crew member ACTUALLY said\n- If they asked a question, ANSWER it\n- If they offered a solution, react to it\n- 1-2 sentences only\n- Natural English\n- Do NOT use asterisks or stage directions. Only speak dialogue\n- This is turn '+turnCount+' — multi-turn roleplay, keep going for at least 3 exchanges.'+turnInstr,
+      messages:chatHistory
+    })});
+    var data=await res.json();
+    var aiText=(data&&data.content&&data.content[0]&&data.content[0].text)||'I see.';
+    aiText=aiText.replace(/\*\*/g,'').trim();
+
+    chatHistory.push({role:'assistant',content:aiText});
+    fb.innerHTML='<b style="color:var(--gold);">Passenger:</b> '+aiText;
+
+    var accent=document.getElementById('s-accent').value;
+    speakQuestion(aiText,accent);
+
+    // TTS 끝나면 → 3분 지났으면 피드백, 아니면 대화 계속
+    var checkTTS=setInterval(function(){
+      if(!window.speechSynthesis.speaking){
+        clearInterval(checkTTS);
+        if(timeExpired){
+          generateFeedback(scenario);
+        } else {
+          startListening();
+        }
+      }
+    },300);
+  }catch(e){
+    fb.innerHTML='<span style="color:#E74C3C;">오류 발생.</span>';
+  }
+}
+
+async function generateFeedback(scenario){
+  if(mediaRecorder&&mediaRecorder.state==='recording')try{mediaRecorder.stop();}catch(e){}
+  var fb=document.getElementById('feedback');
+  fb.innerHTML='<span style="color:var(--gold);">피드백을 작성하고 있어요...</span>';
+
+  try{
+    var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Crew':'Passenger')+': '+m.content;}).join('\n');
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:500,
+      system:'You are a cabin crew interview coach. Evaluate the following roleplay conversation. The scenario was: "'+scenario+'"\n\nIMPORTANT SCORING GUIDELINES:\n- The student\'s answers come from SPEECH RECOGNITION, so ignore grammar mistakes, broken sentences, capitalization issues. Focus on the CONTENT and INTENT.\n- If the student apologized, offered solutions, showed empathy, or asked good questions → that deserves 70+ points\n- If the student covered most key points (apology + solution + alternative + service recovery) → 80+ points\n- Only give below 50 if the student said almost nothing useful\n- Be ENCOURAGING. These are students practicing. Highlight what they did RIGHT.\n\nProvide feedback in EXACTLY this format:\n\nOverall Score: X/100\n\nStrengths:\n- (2-3 bullet points about what they did well)\n\nAreas to Improve:\n- (1-2 gentle suggestions)\n\n---SUGGESTED---\n(Write a short ideal response for this scenario. 3-4 sentences. This helps the student learn.)\n\nWrite in English. Keep it concise and encouraging.',
+      messages:[{role:'user',content:'Here is the full roleplay conversation:\n\n'+convoSummary+'\n\nPlease give feedback.'}]
+    })});
+    var data=await res.json();
+    var feedbackText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Good effort!';
+    feedbackText=feedbackText.replace(/\*\*/g,'');
+
+    var parts=feedbackText.split('---SUGGESTED---');
+    var mainFeedback=parts[0].trim();
+    lastSuggestedResponse=(parts[1]||'').trim();
+
+    fb.innerHTML='<b style="color:var(--gold);">Feedback</b><br><br><div style="white-space:pre-line;">'+mainFeedback+'</div>';
+    if(lastSuggestedResponse) document.getElementById('btn-model').style.display='inline-flex';
+    document.getElementById('btn-next').style.display='inline-flex';
+    document.getElementById('rec-label').textContent='완료';
+  }catch(e){
+    fb.innerHTML='<span style="color:#E74C3C;">피드백 생성 실패.</span>';
+    document.getElementById('btn-next').style.display='inline-flex';
+  }
+}
+
+function nextQuestion(){
+  try{if(typeof gcStop==='function')gcStop();}catch(e){}
+  if(recognition)try{recognition.onend=null;recognition.stop();recognition=null;}catch(e){}
+  if('speechSynthesis' in window)window.speechSynthesis.cancel();
+  mediaRecorder=null;
+  qIdx++;
+  if(qIdx>=questions.length){
+    document.getElementById('q-banner').innerHTML='<div class="label">COMPLETE</div><div class="question">All scenarios completed!</div>';
+    document.getElementById('feedback').innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br><br><a href="javascript:goBack()" style="color:var(--gold);">← 면접관 선택으로</a>';
+    document.getElementById('feedback').classList.add('active');
+    document.querySelectorAll('.ctrl-btn').forEach(function(b){b.style.display='none';});
+    return;
+  }
+  showQuestion();
+}
+
+function r(){return Math.floor(Math.random()*36)+50;}
+</script>
+</body>
+</html>

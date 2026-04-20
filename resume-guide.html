@@ -64,6 +64,13 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 .nav-dd-grid{min-width:auto;width:max-content;display:none;grid-template-columns:1fr;gap:0!important;padding:0!important;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border-radius:20px;}
 .nav-dropdown:hover .nav-dd-grid{display:grid!important;}
+@media(max-width:600px){
+  .card img{max-width:100%;height:auto!important;}
+  .card>div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important;gap:16px!important;}
+  .card>div[style*="display:flex"]{flex-direction:column!important;}
+  .card>div>div[style*="width:200px"]{width:100%!important;max-width:240px!important;height:auto!important;aspect-ratio:3/4;}
+  .card{padding:18px 14px!important;}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>

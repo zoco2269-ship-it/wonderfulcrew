@@ -11,7 +11,14 @@
     'login.html','login-en.html','plans.html','plans-en.html',
     'pricing.html','pricing-en.html','contact.html','terms.html',
     'privacy.html','copyright.html',
-    'deposit-request.html'
+    'deposit-request.html',
+    'lecture.html','lecture-en.html',
+    'resume-guide.html','resume-guide-en.html',
+    'interview-guide.html','interview-guide-en.html',
+    'grooming-guide.html','grooming-guide-en.html',
+    'culture-difference.html','culture-difference-en.html',
+    'customer-service.html','customer-service-en.html',
+    'english-interview.html','english-interview-en.html'
   ];
   if (publicPages.indexOf(page) !== -1) return;
 

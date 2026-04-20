@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>무통장 입금 신청 · WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);min-height:100vh;}a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:64px;background:rgba(250,247,240,0.94);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);}.nav-logo span{color:var(--gold);}
+.back{font-size:0.82rem;color:var(--text-muted);}
+.hero{padding:110px 5% 32px;background:var(--navy);color:#fff;text-align:center;}
+.hero .tag{font-family:'DM Serif Display',serif;font-size:0.78rem;letter-spacing:0.28em;color:var(--gold-light);text-transform:uppercase;margin-bottom:12px;}
+.hero h1{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:300;}
+.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}
+.hero p{color:rgba(255,255,255,0.7);font-size:0.88rem;margin-top:10px;}
+section{padding:36px 5% 64px;}
+.wrap{max-width:640px;margin:0 auto;}
+.card{background:#fff;border:1px solid var(--gold-pale);padding:28px 26px;margin-bottom:20px;}
+.card h3{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--navy);margin-bottom:14px;}
+.plan-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+.plan-opt{padding:14px 10px;border:2px solid var(--gold-pale);text-align:center;cursor:pointer;transition:all 0.2s;background:#fff;}
+.plan-opt:hover,.plan-opt.sel{border-color:var(--gold);background:rgba(201,168,76,0.06);}
+.plan-opt .n{font-family:'DM Serif Display',serif;font-size:0.96rem;color:var(--navy);margin-bottom:2px;}
+.plan-opt .a{font-size:0.78rem;color:var(--gold);font-weight:700;}
+.plan-opt .d{font-size:0.68rem;color:var(--text-muted);margin-top:2px;}
+.bank-box{background:rgba(201,168,76,0.08);border:1px solid var(--gold);padding:18px 20px;margin:14px 0;font-family:'Noto Sans KR',sans-serif;}
+.bank-box .lbl{font-size:0.72rem;color:var(--gold);letter-spacing:0.1em;font-weight:700;margin-bottom:4px;}
+.bank-box .val{font-size:1rem;color:var(--navy);font-weight:700;}
+.bank-box .amount{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--gold);margin-top:8px;}
+.form-label{display:block;font-size:0.8rem;color:var(--text-muted);font-weight:600;margin-bottom:5px;margin-top:12px;}
+.form-input{width:100%;padding:11px 14px;border:1px solid var(--gold-pale);border-radius:6px;font-family:inherit;font-size:0.9rem;background:#fff;}
+.form-input:focus{border-color:var(--gold);outline:none;}
+.submit-btn{display:block;width:100%;padding:14px;margin-top:20px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-family:inherit;font-size:0.94rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.notice{font-size:0.8rem;color:var(--text-mid);line-height:1.7;margin-top:14px;background:rgba(255,243,224,0.5);border-left:3px solid #E65100;padding:12px 14px;}
+.success{background:#E8F5E9;border:1px solid #2E7D32;color:#2E7D32;padding:18px 20px;border-radius:8px;margin-bottom:16px;font-size:0.9rem;line-height:1.7;}
+footer{padding:40px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.78rem;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="plans.html" class="back">← 요금제로</a>
+</nav>
+
+<div class="hero">
+  <div class="tag">Bank Transfer</div>
+  <h1>무통장 입금 <em>신청</em></h1>
+  <p>카드 결제가 어려우시면 계좌이체로 신청하세요. 입금 확인 후 자동으로 활성화됩니다.</p>
+</div>
+
+<section>
+<div class="wrap">
+
+<div id="success-msg" class="success" style="display:none;"></div>
+
+<form id="deposit-form" onsubmit="submitDeposit(event)">
+  <div class="card">
+    <h3>1. 플랜 선택</h3>
+    <div class="plan-grid">
+      <div class="plan-opt" data-plan="basic" data-amount="199000" onclick="selPlan(this)">
+        <div class="n">베이직</div>
+        <div class="a">199,000원</div>
+        <div class="d">월 구독</div>
+      </div>
+      <div class="plan-opt" data-plan="elite" data-amount="299000" onclick="selPlan(this)">
+        <div class="n">엘리트</div>
+        <div class="a">299,000원</div>
+        <div class="d">월 구독</div>
+      </div>
+      <div class="plan-opt sel" data-plan="premium" data-amount="2500000" onclick="selPlan(this)">
+        <div class="n">프리미엄</div>
+        <div class="a">2,500,000원</div>
+        <div class="d">1년 패키지</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>2. 입금 계좌 안내</h3>
+    <div class="bank-box">
+      <div class="lbl">입금 계좌 (예금주: 원더풀크루)</div>
+      <div class="val">국민은행 123456-12-123456</div>
+      <div class="amount" id="pay-amount">2,500,000원</div>
+    </div>
+    <div class="notice">
+      <b>안내</b><br>
+      · 3일 이내로 위 계좌에 입금해주세요.<br>
+      · 입금자명은 <b>본인 실명</b>으로 입금해주세요 (다른 이름이면 꼭 아래에 기입).<br>
+      · 입금 확인 후 <b>영업시간 기준 12시간 이내</b>에 서비스가 활성화됩니다.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>3. 신청자 정보</h3>
+    <label class="form-label">이름 *</label>
+    <input class="form-input" type="text" id="f-name" required placeholder="홍길동">
+    <label class="form-label">이메일 * (가입 이메일)</label>
+    <input class="form-input" type="email" id="f-email" required placeholder="you@example.com">
+    <label class="form-label">연락처</label>
+    <input class="form-input" type="tel" id="f-phone" placeholder="010-0000-0000">
+    <label class="form-label">입금자명 * (통장에 찍힐 이름)</label>
+    <input class="form-input" type="text" id="f-depositor" required placeholder="본인 이름 또는 실제 입금자명">
+    <label class="form-label">메모 (선택)</label>
+    <input class="form-input" type="text" id="f-memo" placeholder="요청사항·세금계산서 필요 여부 등">
+  </div>
+
+  <button type="submit" class="submit-btn" id="submit-btn">입금 신청 제출하기</button>
+</form>
+
+</div>
+</section>
+
+<footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.</footer>
+
+<script>
+var selectedPlan='premium';
+var selectedAmount=2500000;
+
+function selPlan(el){
+  document.querySelectorAll('.plan-opt').forEach(function(x){x.classList.remove('sel');});
+  el.classList.add('sel');
+  selectedPlan=el.dataset.plan;
+  selectedAmount=parseInt(el.dataset.amount,10);
+  document.getElementById('pay-amount').textContent=selectedAmount.toLocaleString('ko-KR')+'원';
+}
+
+// 로그인 정보로 이메일·이름 자동 채움
+try{
+  var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+  if(u.email)document.getElementById('f-email').value=u.email;
+  if(u.name)document.getElementById('f-name').value=u.name;
+}catch(e){}
+
+async function submitDeposit(e){
+  e.preventDefault();
+  var name=document.getElementById('f-name').value.trim();
+  var email=document.getElementById('f-email').value.trim();
+  var phone=document.getElementById('f-phone').value.trim();
+  var depositor=document.getElementById('f-depositor').value.trim();
+  var memo=document.getElementById('f-memo').value.trim();
+  if(!name||!email||!depositor){alert('이름·이메일·입금자명은 필수입니다.');return;}
+  var u={};try{u=JSON.parse(localStorage.getItem('wc_user')||'{}');}catch(err){}
+  var btn=document.getElementById('submit-btn');
+  btn.disabled=true;btn.textContent='제출 중...';
+  try{
+    var r=await fetch('/api/request-deposit',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({userId:u.id||'',email:email,name:name,plan:selectedPlan,depositorName:depositor,phone:phone,memo:memo})});
+    var d=await r.json();
+    if(!r.ok||d.error){alert('신청 실패: '+(d.error||'서버 오류'));btn.disabled=false;btn.textContent='입금 신청 제출하기';return;}
+    document.getElementById('deposit-form').style.display='none';
+    var sm=document.getElementById('success-msg');
+    sm.style.display='block';
+    sm.innerHTML='<b>✓ 입금 신청이 접수되었습니다.</b><br><br>'+
+      '<b>국민은행 123456-12-123456</b> 으로 <b>'+selectedAmount.toLocaleString('ko-KR')+'원</b>을 입금해주세요.<br>'+
+      '입금자명: <b>'+depositor+'</b><br><br>'+
+      '입금 확인 후 영업시간 기준 12시간 이내에 자동으로 활성화됩니다.<br>'+
+      '문의: <a href="mailto:zoco2269@gmail.com" style="color:#2E7D32;font-weight:600;">zoco2269@gmail.com</a>';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(err){alert('네트워크 오류: '+err.message);btn.disabled=false;btn.textContent='입금 신청 제출하기';}
+}
+</script>
+</body>
+</html>

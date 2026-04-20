@@ -65,6 +65,7 @@ textarea{min-height:80px;resize:vertical;}
   <a class="active" onclick="showPage('overview')">📊 대시보드</a>
   <a onclick="showPage('members')">👥 회원 관리</a>
   <a onclick="showPage('payments')">💳 결제 현황</a>
+  <a onclick="showPage('deposits')">🏦 입금 대기</a>
   <a onclick="showPage('tokens')">🪙 토큰 관리</a>
   <a onclick="showPage('approval')">🏆 합격 인증 승인</a>
   <a onclick="showPage('live')">📅 라이브 수업</a>
@@ -138,6 +139,19 @@ textarea{min-height:80px;resize:vertical;}
       <div><label>&nbsp;</label><button class="btn-sm gold" onclick="backfillPayment()">등록</button></div>
     </div>
     <div id="bf-result" style="margin-top:10px;font-size:0.84rem;"></div>
+  </div>
+</div>
+
+<!-- 입금 대기 -->
+<div class="page" id="page-deposits">
+  <h2>무통장 입금 대기</h2>
+  <div class="sub">사용자가 신청한 입금 건 — 은행 앱에서 실제 입금 확인 후 '승인' 누르면 자동 활성화됩니다.</div>
+  <div class="card">
+    <h3>대기 중인 입금 신청</h3>
+    <table id="deposits-table">
+      <tr><th>신청일</th><th>이름</th><th>이메일</th><th>플랜</th><th>금액</th><th>입금자명</th><th>연락처</th><th>메모</th><th>상태</th><th>처리</th></tr>
+      <tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:20px;">불러오는 중...</td></tr>
+    </table>
   </div>
 </div>
 
@@ -569,6 +583,48 @@ function showPage(name){
   document.getElementById('page-'+name).classList.add('active');
   document.querySelectorAll('.sidebar a').forEach(function(a){a.classList.remove('active');});
   event.target.classList.add('active');
+  if(name==='deposits')loadDeposits();
+}
+
+async function loadDeposits(){
+  var tbl=document.getElementById('deposits-table');
+  tbl.innerHTML='<tr><th>신청일</th><th>이름</th><th>이메일</th><th>플랜</th><th>금액</th><th>입금자명</th><th>연락처</th><th>메모</th><th>상태</th><th>처리</th></tr>';
+  var d=await fetchAdmin('pending-deposits');
+  if(!d||!d.ok){tbl.innerHTML+='<tr><td colspan="10" style="color:#C62828;">로드 실패</td></tr>';return;}
+  if(!d.deposits.length){tbl.innerHTML+='<tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:20px;">대기 중인 입금 신청이 없습니다.</td></tr>';return;}
+  d.deposits.forEach(function(r){
+    var statusBadge=r.status==='pending'?'<span class="badge yellow">대기</span>'
+      :r.status==='approved'?'<span class="badge green">승인</span>'
+      :'<span class="badge red">거절</span>';
+    var actions=r.status==='pending'
+      ?'<button class="btn-sm gold" onclick="approveDeposit(\''+r.id+'\',\'approve\')">✓ 승인</button> '+
+       '<button class="btn-sm red" onclick="approveDeposit(\''+r.id+'\',\'reject\')">거절</button>'
+      :'-';
+    tbl.innerHTML+='<tr>'+
+      '<td>'+fmtDate(r.created_at)+'</td>'+
+      '<td>'+(r.name||'-')+'</td>'+
+      '<td>'+(r.email||'-')+'</td>'+
+      '<td>'+(r.plan||'-')+'</td>'+
+      '<td>'+fmtAmt(r.amount)+'원</td>'+
+      '<td><b>'+(r.depositor_name||'-')+'</b></td>'+
+      '<td>'+(r.phone||'-')+'</td>'+
+      '<td style="font-size:0.78rem;">'+(r.memo||'-')+'</td>'+
+      '<td>'+statusBadge+'</td>'+
+      '<td>'+actions+'</td></tr>';
+  });
+}
+
+async function approveDeposit(id,action){
+  var msg=action==='approve'?'이 입금을 승인하시겠습니까? 사용자 서비스가 즉시 활성화됩니다.':'이 입금 신청을 거절하시겠습니까?';
+  if(!confirm(msg))return;
+  try{
+    var r=await fetch('/api/approve-deposit',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({adminEmail:_adminEmail(),depositId:id,action:action})});
+    var d=await r.json();
+    if(!r.ok||d.error){alert('처리 실패: '+(d.error||'서버 오류'));return;}
+    alert(action==='approve'?'승인 완료! 사용자 플랜이 활성화되었습니다.':'거절 처리되었습니다.');
+    loadDeposits();
+  }catch(e){alert('네트워크 오류: '+e.message);}
 }
 
 // 마케팅: 더미 연락처 파싱

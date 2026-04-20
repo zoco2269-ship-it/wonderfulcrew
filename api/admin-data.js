@@ -83,6 +83,11 @@ module.exports = async function(req, res) {
       return res.json({ ok: true, requests: reqs || [] });
     }
 
+    if (scope === 'pending-deposits') {
+      const { data: deposits } = await sb.from('pending_deposits').select('*').order('created_at', { ascending: false }).limit(200);
+      return res.json({ ok: true, deposits: deposits || [] });
+    }
+
     return res.status(400).json({ error: 'unknown scope' });
   } catch (e) {
     console.error('[admin-data] error:', e);

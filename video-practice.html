@@ -122,10 +122,22 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </ul>
 </div>
 
-<div id="questions"></div>
-
-<div id="more-practice" style="display:none;text-align:center;margin-top:32px;">
-  <button onclick="loadMoreQuestions()" style="padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">더 연습하기 →</button>
+<div class="q-card" id="single-q">
+  <div class="q-num" id="q-counter">질문 1</div>
+  <div class="q-text" id="q-text">로딩 중...</div>
+  <div class="q-hint" id="q-hint"></div>
+  <div class="cam-box">
+    <video id="vid" autoplay muted playsinline></video>
+    <div class="cam-placeholder" id="ph">카메라를 시작하세요</div>
+    <div class="rec-badge" id="rec-badge"><div class="rec-dot"></div>REC</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-navy" id="start-btn" onclick="startRec()">카메라 시작 & 녹화</button>
+    <button class="btn btn-navy" id="stop-btn" style="display:none" onclick="stopRec()">녹화 중지</button>
+    <button class="btn btn-outline" id="save-btn" style="display:none" onclick="saveVideo()">녹화 영상 저장</button>
+    <button class="btn btn-gold" onclick="nextQuestion()">🔄 다음 질문 →</button>
+  </div>
+  <div class="transcript" id="tr"></div>
 </div>
 
 </div>
@@ -196,157 +208,83 @@ var EXTRA_EN=[
    {num:'Question 3',q:ROLEPLAY_QS[Math.floor(Math.random()*ROLEPLAY_QS.length)],hint:'Roleplay — Include apology, solution, alternative, and service recovery.'}]
 ];
 var extraIdx=0;
-var QUESTIONS=lang==='ko'?QUESTIONS_KO:QUESTIONS_EN;
+// 모든 질문을 한 풀로 합쳐서 랜덤 선택. 한 화면에 질문 한 개씩.
+function flattenPool(base,extras,roleplays,roleplayHint){
+  var pool=[];
+  base.forEach(function(q){pool.push({q:q.q,hint:q.hint});});
+  extras.forEach(function(set){set.forEach(function(q){pool.push({q:q.q,hint:q.hint});});});
+  roleplays.forEach(function(r){pool.push({q:r,hint:roleplayHint});});
+  return pool;
+}
+var POOL=lang==='ko'
+  ?flattenPool(QUESTIONS_KO,EXTRA_KO,KO_RP,'롤플레이 — 사과, 해결책, 대안 제시, Service Recovery를 포함해서 답변하세요.')
+  :flattenPool(QUESTIONS_EN,EXTRA_EN,ROLEPLAY_QS,'Roleplay — Include apology, solution, alternative, and service recovery.');
+var qCount=0;
+var lastQ='';
 
-var container=document.getElementById('questions');
-QUESTIONS.forEach(function(item,i){
-  var div=document.createElement('div');
-  div.className='q-card';
-  div.innerHTML=
-    '<div class="q-num">'+item.num+'</div>'+
-    '<div class="q-text">'+item.q+'</div>'+
-    '<div class="q-hint">'+item.hint+'</div>'+
-    '<div class="cam-box"><video id="vid-'+i+'" autoplay muted playsinline></video><div class="cam-placeholder" id="ph-'+i+'">카메라를 시작하세요</div><div class="rec-badge" id="rec-'+i+'"><div class="rec-dot"></div>REC</div></div>'+
-    '<div class="btn-row">'+
-      '<button class="btn btn-navy" id="start-'+i+'" onclick="startRec('+i+')">카메라 시작 & 녹화</button>'+
-      '<button class="btn btn-navy" id="stop-'+i+'" style="display:none" onclick="stopRec('+i+')">녹화 중지</button>'+
-    '</div>'+
-    '<div class="transcript" id="tr-'+i+'"></div>'+
-    '<div class="btn-row">'+
-      '<button class="btn btn-gold" id="fb-'+i+'" disabled onclick="showScore('+i+')">피드백 보기</button>'+
-      '<button class="btn btn-outline" id="save-'+i+'" style="display:none" onclick="saveVideo('+i+')">녹화 영상 저장</button>'+
-    '</div>'+
-    '<div class="score-card" id="sc-'+i+'">'+
-      '<div class="score-title">Video Interview Score</div>'+
-      '<div class="score-grid">'+
-        '<div class="score-item"><div class="label">첫인상 / Image</div><div class="value">--<span>/100</span></div></div>'+
-        '<div class="score-item"><div class="label">미소 / Smile</div><div class="value">--<span>/100</span></div></div>'+
-        '<div class="score-item"><div class="label">목소리 톤 / Tone</div><div class="value">--<span>/100</span></div></div>'+
-        '<div class="score-item"><div class="label">답변 내용 / Content</div><div class="value">--<span>/100</span></div></div>'+
-      '</div>'+
-      '<div class="score-msg"></div>'+
-    '</div>';
-  container.appendChild(div);
-});
-// 더 연습하기 버튼 표시
-document.getElementById('more-practice').style.display='block';
-
-function loadMoreQuestions(){
-  var extras=lang==='ko'?EXTRA_KO:EXTRA_EN;
-  if(extraIdx>=extras.length) extraIdx=0;
-  QUESTIONS=extras[extraIdx];
-  extraIdx++;
-  // 질문 다시 렌더링
-  container.innerHTML='';
-  QUESTIONS.forEach(function(q,i){
-    var div=document.createElement('div');div.className='q-section';
-    div.innerHTML='<div class="q-num">'+q.num+'</div><div class="q-text">'+q.q+'</div><div class="q-hint">'+q.hint+'</div>'+
-      '<div class="video-wrap"><video id="vid-'+i+'" autoplay muted playsinline></video><div class="vid-ph" id="ph-'+i+'"><div>📷</div><div>카메라 시작</div></div></div>'+
-      '<div class="btn-row"><button class="btn btn-navy" id="start-'+i+'" onclick="startRec('+i+')">카메라 시작 & 녹화</button><button class="btn btn-navy" id="stop-'+i+'" style="display:none" onclick="stopRec('+i+')">녹화 중지</button></div>'+
-      '<div class="transcript" id="tr-'+i+'"></div>'+
-      '<div class="btn-row"><button class="btn btn-gold" id="fb-'+i+'" disabled onclick="showScore('+i+')">피드백 보기</button></div>'+
-      '<div class="score-card" id="sc-'+i+'"><div class="score-title">Video Interview Score</div><div class="score-grid">'+
-        '<div class="score-item"><div class="label">첫인상</div><div class="value">--<span>/100</span></div></div>'+
-        '<div class="score-item"><div class="label">미소</div><div class="value">--<span>/100</span></div></div>'+
-        '<div class="score-item"><div class="label">목소리 톤</div><div class="value">--<span>/100</span></div></div>'+
-        '<div class="score-item"><div class="label">답변 내용</div><div class="value">--<span>/100</span></div></div>'+
-      '</div><div class="score-msg"></div></div>';
-    container.appendChild(div);
-  });
-  streams=[];recs=[];mediaRecs=[];videoChunks={};
-  window.scrollTo({top:container.offsetTop-80,behavior:'smooth'});
+function pickRandom(){
+  if(POOL.length<=1)return POOL[0];
+  var picked;
+  do{picked=POOL[Math.floor(Math.random()*POOL.length)];}while(picked.q===lastQ);
+  lastQ=picked.q;
+  return picked;
 }
 
-// ===== MediaPipe 얼굴 분석 =====
-var faceStats={smileFrames:0,totalFrames:0,lookingCenter:0,headTiltFrames:0};
-var faceMeshInstance=null;
-var faceAnalysisActive=false;
+function nextQuestion(){
+  // 진행 중인 녹화·카메라 정리
+  if(typeof rec!=='undefined'&&rec){try{rec.stop();}catch(e){}rec=null;}
+  if(typeof mediaRec!=='undefined'&&mediaRec){try{mediaRec.stop();}catch(e){}mediaRec=null;}
+  if(typeof currentStream!=='undefined'&&currentStream){currentStream.getTracks().forEach(function(t){t.stop();});currentStream=null;}
+  document.getElementById('rec-badge').style.display='none';
+  document.getElementById('stop-btn').style.display='none';
+  document.getElementById('save-btn').style.display='none';
+  document.getElementById('start-btn').style.display='inline-flex';
+  document.getElementById('start-btn').textContent='카메라 시작 & 녹화';
+  var ph=document.getElementById('ph');ph.style.display='flex';ph.textContent='카메라를 시작하세요';
+  var vid=document.getElementById('vid');vid.srcObject=null;
+  document.getElementById('tr').textContent='';
 
-function initFaceMesh(videoEl){
-  if(!window.FaceMesh){console.log('MediaPipe not loaded');return;}
-  try{
-    faceMeshInstance=new FaceMesh({locateFile:function(f){return 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/'+f;}});
-    faceMeshInstance.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
-    faceMeshInstance.onResults(function(results){
-      if(!faceAnalysisActive)return;
-      faceStats.totalFrames++;
-      if(results.multiFaceLandmarks&&results.multiFaceLandmarks.length>0){
-        var lm=results.multiFaceLandmarks[0];
-        // 미소 감지: 입꼬리(61,291) 높이 vs 입중앙(13) 높이
-        var lipL=lm[61],lipR=lm[291],lipTop=lm[13];
-        var smileScore=(lipTop.y-((lipL.y+lipR.y)/2));
-        if(smileScore>0.01)faceStats.smileFrames++;
-        // 시선 감지: 코(1)가 화면 중앙 근처인지
-        var nose=lm[1];
-        if(Math.abs(nose.x-0.5)<0.15&&Math.abs(nose.y-0.45)<0.15)faceStats.lookingCenter++;
-        // 고개 기울기: 양쪽 눈(33,263) 높이 차이
-        var eyeL=lm[33],eyeR=lm[263];
-        if(Math.abs(eyeL.y-eyeR.y)>0.02)faceStats.headTiltFrames++;
-      }
-    });
-    // 주기적으로 프레임 전송
-    var analyzeInterval=setInterval(function(){
-      if(!faceAnalysisActive){clearInterval(analyzeInterval);return;}
-      if(videoEl.readyState>=2){
-        try{faceMeshInstance.send({image:videoEl});}catch(e){}
-      }
-    },500);
-  }catch(e){console.log('FaceMesh init error:',e);}
+  // 새 질문
+  qCount++;
+  var picked=pickRandom();
+  document.getElementById('q-counter').textContent=(lang==='ko'?'질문 ':'Question ')+qCount;
+  document.getElementById('q-text').textContent=picked.q;
+  document.getElementById('q-hint').textContent=picked.hint||'';
 }
 
-function getFaceReport(){
-  if(faceStats.totalFrames<5)return '(이미지 분석 데이터 부족)';
-  var smilePct=Math.round((faceStats.smileFrames/faceStats.totalFrames)*100);
-  var gazePct=Math.round((faceStats.lookingCenter/faceStats.totalFrames)*100);
-  var tiltPct=Math.round((faceStats.headTiltFrames/faceStats.totalFrames)*100);
-  var report='\n\n📷 이미지 분석:\n';
-  report+='• 미소 유지: '+smilePct+'%'+(smilePct>=60?' ✓':' — 더 웃어보세요')+'\n';
-  report+='• 카메라 시선: '+gazePct+'%'+(gazePct>=70?' ✓':' — 카메라를 더 정면으로 보세요')+'\n';
-  report+='• 고개 기울기: '+(tiltPct<=20?'안정적 ✓':'기울어진 순간 '+tiltPct+'% — 바른 자세를 유지하세요')+'\n';
-  return report;
-}
+// 첫 질문 로드
+nextQuestion();
 
-function resetFaceStats(){
-  faceStats={smileFrames:0,totalFrames:0,lookingCenter:0,headTiltFrames:0};
-  faceAnalysisActive=false;
-}
+// ===== 단일 카메라 + 녹화 =====
+var currentStream=null,rec=null,mediaRec=null,videoChunks=[];
 
-// Camera + Speech Recognition
-var streams=[];var recs=[];var mediaRecs=[];var videoChunks={};
-function startRec(i){
-  var vid=document.getElementById('vid-'+i);
-  var ph=document.getElementById('ph-'+i);
-  var badge=document.getElementById('rec-'+i);
-  var startBtn=document.getElementById('start-'+i);
-  var stopBtn=document.getElementById('stop-'+i);
-  var tr=document.getElementById('tr-'+i);
+function startRec(){
+  var vid=document.getElementById('vid');
+  var ph=document.getElementById('ph');
+  var badge=document.getElementById('rec-badge');
+  var startBtn=document.getElementById('start-btn');
+  var stopBtn=document.getElementById('stop-btn');
+  var tr=document.getElementById('tr');
 
   navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true}).then(function(stream){
-    streams[i]=stream;
+    currentStream=stream;
     vid.srcObject=stream;
     ph.style.display='none';
     badge.style.display='flex';
     startBtn.style.display='none';
     stopBtn.style.display='inline-flex';
     tr.textContent='';
-    // 얼굴 분석 시작
-    resetFaceStats();
-    faceAnalysisActive=true;
-    initFaceMesh(vid);
 
-    // MediaRecorder for video saving
     try{
-      videoChunks[i]=[];
-      var mr=new MediaRecorder(stream,{mimeType:'video/webm'});
-      mr.ondataavailable=function(e){if(e.data.size>0)videoChunks[i].push(e.data);};
-      mr.start();
-      mediaRecs[i]=mr;
+      videoChunks=[];
+      mediaRec=new MediaRecorder(stream,{mimeType:'video/webm'});
+      mediaRec.ondataavailable=function(e){if(e.data.size>0)videoChunks.push(e.data);};
+      mediaRec.start();
     }catch(e){}
 
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     if(SR){
-      var rec=new SR();rec.lang=lang==='ko'?'ko-KR':'en-US';rec.interimResults=true;rec.continuous=true;
-      recs[i]=rec;
+      rec=new SR();rec.lang=lang==='ko'?'ko-KR':'en-US';rec.interimResults=true;rec.continuous=true;
       var finalText='';
       rec.onresult=function(ev){
         var interim='';finalText='';
@@ -356,92 +294,44 @@ function startRec(i){
         }
         tr.textContent=finalText+interim;
       };
-      rec.onend=function(){
-        if(finalText.trim())tr.textContent=finalText.trim();
-      };
+      rec.onend=function(){if(finalText.trim())tr.textContent=finalText.trim();};
       rec.start();
     }
-  }).catch(function(){
-    ph.textContent='카메라 권한이 필요합니다.';
-  });
+  }).catch(function(){ph.textContent='카메라 권한이 필요합니다.';});
 }
 
-function stopRec(i){
-  var badge=document.getElementById('rec-'+i);
-  var startBtn=document.getElementById('start-'+i);
-  var stopBtn=document.getElementById('stop-'+i);
-  var fbBtn=document.getElementById('fb-'+i);
-  badge.style.display='none';
-  stopBtn.style.display='none';
+function stopRec(){
+  document.getElementById('rec-badge').style.display='none';
+  document.getElementById('stop-btn').style.display='none';
+  var startBtn=document.getElementById('start-btn');
   startBtn.textContent='다시 녹화';startBtn.style.display='inline-flex';
-  faceAnalysisActive=false;
-  if(recs[i])try{recs[i].stop();}catch(e){}
-  if(mediaRecs[i])try{mediaRecs[i].stop();}catch(e){}
-  if(streams[i])streams[i].getTracks().forEach(function(t){t.stop();});
-  var tr=document.getElementById('tr-'+i);
-  if(tr.textContent.trim()){fbBtn.disabled=false;}
-  document.getElementById('save-'+i).style.display='inline-flex';
+  if(rec)try{rec.stop();}catch(e){}
+  if(mediaRec)try{mediaRec.stop();}catch(e){}
+  if(currentStream)currentStream.getTracks().forEach(function(t){t.stop();});
+  document.getElementById('save-btn').style.display='inline-flex';
 }
 
-async function saveVideo(i){
-  if(!videoChunks[i]||!videoChunks[i].length){alert('저장할 영상이 없어요.');return;}
-  var blob=new Blob(videoChunks[i],{type:'video/webm'});
-  var filename='wonderfulcrew_video_Q'+(i+1)+'_'+new Date().toISOString().slice(0,10)+'.webm';
-
-  // 로컬 다운로드
+async function saveVideo(){
+  if(!videoChunks||!videoChunks.length){alert('저장할 영상이 없어요.');return;}
+  var blob=new Blob(videoChunks,{type:'video/webm'});
+  var filename='wonderfulcrew_video_Q'+qCount+'_'+new Date().toISOString().slice(0,10)+'.webm';
   var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');
-  a.href=url;a.download=filename;
+  var a=document.createElement('a');a.href=url;a.download=filename;
   document.body.appendChild(a);a.click();document.body.removeChild(a);
   URL.revokeObjectURL(url);
-
-  // Supabase 업로드 (로그인 시)
   if(typeof uploadVideo==='function'){
     var path=await uploadVideo(blob,filename);
-    if(path){
-      console.log('Supabase upload success:',path);
-      // 연습 기록 저장
-      if(typeof savePracticeRecord==='function'){
-        savePracticeRecord({airline:'Emirates',stage:'Video Interview',question:QUESTIONS[i].q,answer:document.getElementById('tr-'+i).textContent,videoPath:path});
-      }
+    if(path&&typeof savePracticeRecord==='function'){
+      savePracticeRecord({stage:'Video Interview',question:document.getElementById('q-text').textContent,answer:document.getElementById('tr').textContent,videoPath:path});
     }
   }
 }
-async function showScore(i){
-  var tr=document.getElementById('tr-'+i).textContent.trim();
-  if(!tr) tr='(음성 인식 없음)';
-  var sc=document.getElementById('sc-'+i);
-  var question=QUESTIONS[i].q;
 
-  // 로딩 표시
-  sc.querySelector('.score-msg').innerHTML='<span style="color:var(--gold);">피드백을 작성하고 있어요...</span>';
-  sc.classList.add('visible');
-
-  // 점수 영역 숨기기 (AI가 직접 점수 제공)
-  sc.querySelectorAll('.score-grid').forEach(function(g){g.style.display='none';});
-
-  try{
-    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:1200,
-      system:'You are a cabin crew video interview coach. Evaluate ONLY what the student actually said. Input is from speech recognition — ignore grammar errors.\n\nCRITICAL RULES:\n- Only comment on what they ACTUALLY said. Do NOT use a fixed checklist.\n- NEVER suggest company policy, mileage, refunds, or compensation beyond their authority.\n- Focus on what crew CAN do: empathy, apology, available drinks/snacks/blankets, warm service.\n\nSERVICE PHILOSOPHY (use ONLY when the question is about service):\nIf the question asks about service, the model answer should naturally reflect:\n- 서비스의 핵심은 고객의 입장이 되어보는 것. 고객의 심정을 먼저 파악하고 이해하는 것에서 시작.\n- 좋은 서비스의 목적은 고객을 만족시켜서 다시 돌아오게 하는 것. 만족한 고객은 가족, 친구를 데리고 돌아온다.\n- 우리는 고객을 만나는 최접점. 고객 만족도가 좋은 평판이 되고, 고객이 되돌아오는 이유가 된다.\nIMPORTANT: Do NOT force this into unrelated questions. Only when directly about service. If student mentioned similar ideas, praise them. If not, do NOT criticize.\n\nFormat:\n# 점수: X/100\n# 잘한 점\n- (2-3 points)\n# 개선할 점\n- (2-3 points)\n# 제안 답변\n(5-6 sentences)\n\nWrite in Korean.',
-      messages:[{role:'user',content:'질문: '+question+'\n\n학생 답변: '+tr+'\n\n피드백을 주세요.'}]
-    })});
-    var data=await res.json();
-    if(data&&data.error){
-      sc.querySelector('.score-msg').innerHTML='API 오류: '+(data.error.message||JSON.stringify(data.error));
-      return;
-    }
-    var text=(data&&data.content&&data.content[0]&&data.content[0].text)||'';
-    if(!text){
-      sc.querySelector('.score-msg').innerHTML='피드백 생성 실패. 응답: '+JSON.stringify(data).substring(0,200);
-      return;
-    }
-    var faceReport=getFaceReport();
-    sc.querySelector('.score-msg').innerHTML='<b>피드백</b><br><br>'+text.replace(/\*\*/g,'').replace(/\*[^*]+\*/g,'')+'<br>'+faceReport.replace(/\n/g,'<br>');
-  }catch(e){
-    sc.querySelector('.score-msg').innerHTML='피드백 생성 실패: '+e.message;
-  }
-}
+window.addEventListener('beforeunload',function(){
+  if(rec)try{rec.stop();}catch(e){}
+  if(mediaRec)try{mediaRec.stop();}catch(e){}
+  if(currentStream)currentStream.getTracks().forEach(function(t){t.stop();});
+});
 </script>
 </body>
 </html>

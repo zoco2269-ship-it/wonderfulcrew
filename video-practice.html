@@ -329,9 +329,7 @@ async function getFeedback(){
   if(!ans){body.innerHTML='<span style="color:#E74C3C;">답변 음성이 인식되지 않았습니다. 마이크를 확인하시고 다시 녹화해주세요.</span>';return;}
   body.textContent='피드백 작성 중...';
   var isKo=lang==='ko';
-  var sys=isKo
-    ?'비디오 면접(이미지 면접) 코치. 승무원 면접에서는 내용(What)보다 전달 방식(How)이 훨씬 중요. 본인 답변의 내용은 짧게 언급하되, 실전 팁은 오직 이 4가지만 다룰 것: ①활짝 웃기 ②밝고 자신감 있는 톤 ③친절한 목소리 ④적절한 속도·길이. 발음·문법 지적 금지. 한국어로 5줄 이내.\n\n출력 형식:\n점수: X/100\n잘한 점: (답변 중 한 구절 간단 인용)\n실전 팁 3가지:\n1. ...\n2. ...\n3. ...'
-    :'Video interview (image-focused) coach for cabin crew. What you say matters less than HOW. Briefly acknowledge content, then focus ONLY on: ①bright smile ②confident upbeat tone ③warm voice ④appropriate pace/length. No pronunciation or grammar nitpicks. Korean output only, max 5 lines.\n\nFormat:\n점수: X/100\n잘한 점: (짧은 인용)\n실전 팁 3가지:\n1. ...\n2. ...\n3. ...';
+  var sys='비디오 면접(이미지 면접) 코치. 승무원 면접에서는 내용(What)보다 전달 방식(How)이 훨씬 중요. 한국어로 답변하세요.\n\n**평가 기준:**\n- 활짝 웃고 있는지 · 밝고 자신감 있는 톤인지 · 친절한 목소리인지 · 적절한 속도와 길이인지\n- 답변 내용은 전달력·진정성·승무원 자질과의 연결 관점에서 자유롭게 평가\n- 발음·문법 세부 지적은 하지 말 것 (음성인식 결과이므로)\n\n**출력 구조:**\n종합 점수: X/100\n\n잘한 점:\n- (답변의 좋은 부분 구체적으로 짚기)\n\n개선하면 좋은 점:\n- (실전에서 더 돋보이려면 어떻게 하면 좋을지 — 웃음·톤·자신감 중심)\n\n모범 답변 방향:\n(이 질문에 대해 어떤 방향/흐름으로 답하면 좋을지 간단한 가이드. 전체 대본이 아닌 방향성)';
   try{
     var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:sys,

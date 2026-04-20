@@ -66,6 +66,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   </div>
 
   <div class="transcript" id="transcript"></div>
+  <div id="example-area" style="display:none;margin-top:14px;text-align:center;"></div>
 
   <div class="tip-box">
     <b>TIP:</b> 완벽한 문장이 아니어도 괜찮습니다. 키워드를 보자마자 바로 말을 시작하는 연습이 핵심입니다. 자신감 있는 태도와 자연스러운 미소가 중요합니다.
@@ -76,6 +77,24 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 var WORDS=['Family','Teamwork','Culture','Travel','Safety','Leadership','Service','Communication','Diversity','Happiness','Challenge','Confidence','Dream','Respect','Hospitality','Passion','Patience','Flexibility','Smile','Adventure','Home','Friendship','Success','Trust','Kindness','Experience','Goal','Morning','Celebration','Music','Food','Technology','Health','Nature','Fashion','Childhood','Airport','Sunset','Coffee','Book'];
 
 var SENTENCES=['Tell me about a time you helped someone.','Describe your perfect day off.','What does teamwork mean to you?','How would you handle a rude passenger?','Why is customer service important?','What makes you unique?','Describe a challenge you overcame.','What is your greatest strength?','How do you stay calm under pressure?','What does diversity mean in the workplace?','Tell me about your best travel experience.','How would you welcome a nervous first-time flyer?','What does professionalism look like to you?','Describe a situation where you went above and beyond.','What would you do if you disagreed with a colleague?'];
+
+var SENTENCE_EXAMPLES={
+  'Tell me about a time you helped someone.':"Last month an elderly customer at the café was struggling with the menu. I sat with her for a few minutes and recommended something she'd like. She came back the next day and asked for me by name.",
+  'Describe your perfect day off.':"My perfect day off starts with a slow morning coffee and a long walk. In the evening I love cooking a simple dinner for close friends — nothing fancy, just being together.",
+  'What does teamwork mean to you?':"For me teamwork is knowing your role but also covering for someone when they need it. It's not about being equal, it's about the customer experience being smooth.",
+  'How would you handle a rude passenger?':"I'd stay calm and listen first — most rude behavior comes from stress. I'd acknowledge their feelings, offer what I can do right now, and check in again later in the flight.",
+  'Why is customer service important?':"Because it's the part people actually remember. The food, the seat, the route — all that becomes background. What stays with them is how they were treated.",
+  'What makes you unique?':"I notice small things — when someone is quiet, when something is missing on a tray. It's not a skill people see immediately, but it really shows in service.",
+  'Describe a challenge you overcame.':"In my first month at a hotel, I once handled a complaint in three languages I wasn't fluent in. I survived by listening more than speaking, and the guest left smiling.",
+  'What is your greatest strength?':"Staying calm when things go wrong. On busy shifts or during delays, I actually think more clearly under pressure, which is exactly when a team needs someone steady.",
+  'How do you stay calm under pressure?':"I focus on the next single thing I need to do, instead of the whole picture. Then I breathe slowly through my nose — it sounds simple but it really resets my voice and posture.",
+  'What does diversity mean in the workplace?':"Diversity means we bring different things to the team, and the best service comes from combining them. A passenger from anywhere should feel like someone on the crew understands them.",
+  'Tell me about your best travel experience.':"I once stayed with a host family in Vietnam who didn't speak English. We communicated with food and gestures for a week. That trip taught me how much you can connect without words.",
+  'How would you welcome a nervous first-time flyer?':"I'd notice them at boarding, give a warm smile, and mention what to expect during takeoff. Just being acknowledged calms most first-time nerves.",
+  'What does professionalism look like to you?':"It's looking the same in the first hour as you do in the last hour of a long shift. Same tone, same posture, same warmth. Professionalism is consistency.",
+  'Describe a situation where you went above and beyond.':"A regular customer mentioned her grandmother's birthday, so I wrote a small handwritten card and put it in her takeaway bag. She brought her grandmother in the next week.",
+  'What would you do if you disagreed with a colleague?':"Not in front of customers. After the rush, I'd ask them privately how they saw the situation. Most disagreements come from missing context, not from real conflict."
+};
 
 var mode='word';
 var timerInterval=null;
@@ -121,7 +140,18 @@ function startRound(){
       for(var r=0;r<ev.results.length;r++){text+=ev.results[r][0].transcript+' ';}
       document.getElementById('transcript').textContent=text.trim();
     };
+    // 음성 인식이 자동 종료될 경우 (긴 침묵 등) Stop 누르기 전까지 자동 재시작
+    recognition.onend=function(){
+      if(document.getElementById('btn-stop').style.display!=='none'){
+        try{recognition.start();}catch(e){}
+      }
+    };
+    recognition.onerror=function(e){
+      console.warn('[shooting] recognition error',e.error);
+    };
     recognition.start();
+  } else {
+    document.getElementById('transcript').textContent='Chrome 브라우저에서 사용해 주세요.';
   }
 }
 
@@ -139,9 +169,28 @@ function nextKeyword(){
   var kw=document.getElementById('keyword');
   kw.style.opacity='0';
   setTimeout(function(){
-    kw.textContent=pickRandom();
+    var picked=pickRandom();
+    kw.textContent=picked;
     kw.style.opacity='1';
+    renderExample(picked);
   },200);
+}
+
+function renderExample(picked){
+  var area=document.getElementById('example-area');
+  if(!area)return;
+  if(mode!=='sentence'||!SENTENCE_EXAMPLES[picked]){
+    area.style.display='none';
+    return;
+  }
+  area.style.display='block';
+  area.innerHTML='<button onclick="toggleExample()" style="padding:8px 18px;background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold);border-radius:18px;font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer;">💡 예시 답변 보기</button>'+
+    '<div id="example-text" style="display:none;margin-top:10px;padding:14px 18px;background:rgba(255,255,255,0.05);border-left:2px solid var(--gold);font-size:0.86rem;line-height:1.7;color:rgba(255,255,255,0.85);text-align:left;font-family:inherit;">'+SENTENCE_EXAMPLES[picked]+'</div>';
+}
+function toggleExample(){
+  var t=document.getElementById('example-text');
+  if(!t)return;
+  t.style.display=t.style.display==='none'?'block':'none';
 }
 </script>
 </body>

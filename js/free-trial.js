@@ -16,26 +16,39 @@ function saveTrialData(data) {
   localStorage.setItem(FREE_TRIAL_KEY, JSON.stringify(data));
 }
 
-// Supabase에서 사용 횟수 동기화 — 서버·로컬 중 큰 값 사용 (절대 감소 불가)
-async function syncTrialFromServer() {
-  if (_trialSynced) return;
-  // 테스트 모드일 때는 서버 동기화 건너뛰기 (관리자가 강제로 10회 소진 상태 유지)
+// 서버(Supabase user_metadata)에 사용 횟수 저장 — 브라우저간 공유
+async function saveTrialToServer(used) {
   if (localStorage.getItem('wc_test_mode') === 'true') return;
   try {
-    var user = JSON.parse(localStorage.getItem('wc_user') || '{}');
-    if (!user.id) return;
-    var res = await fetch('/api/supabase-config');
-    var cfg = await res.json();
-    if (!cfg.url || !cfg.anonKey || typeof window.supabase === 'undefined') return;
-    var sb = window.supabase.createClient(cfg.url, cfg.anonKey);
-    var { data } = await sb.from('practice_records').select('id').eq('user_id', user.id);
-    if (data) {
-      var localData = getTrialData();
-      var localUsed = localData.used || 0;
-      // 무료체험은 단조 증가만 — 서버·로컬 중 큰 값 사용
-      localData.used = Math.max(localUsed, data.length);
-      saveTrialData(localData);
-      _trialSynced = true;
+    var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+    if (!sb) return;
+    await sb.auth.updateUser({ data: { free_trial_used: used } });
+  } catch(e) {}
+}
+
+// Supabase에서 사용 횟수 동기화 — 서버·로컬 중 큰 값 사용 (절대 감소 불가)
+// user_metadata.free_trial_used 를 소스로 사용 → 브라우저 바꿔도 카운트 유지
+async function syncTrialFromServer() {
+  if (_trialSynced) return;
+  if (localStorage.getItem('wc_test_mode') === 'true') return;
+  try {
+    var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+    if (!sb) return;
+    var { data } = await sb.auth.getUser();
+    if (!data || !data.user) return;
+    var serverUsed = 0;
+    if (data.user.user_metadata && typeof data.user.user_metadata.free_trial_used === 'number') {
+      serverUsed = data.user.user_metadata.free_trial_used;
+    }
+    var localData = getTrialData();
+    var localUsed = localData.used || 0;
+    var merged = Math.max(localUsed, serverUsed);
+    localData.used = merged;
+    saveTrialData(localData);
+    _trialSynced = true;
+    // 로컬이 서버보다 크면 서버에 업로드 (다른 브라우저에서 공유되도록)
+    if (localUsed > serverUsed) {
+      try { await sb.auth.updateUser({ data: { free_trial_used: merged } }); } catch(e) {}
     }
   } catch(e) { /* fallback to localStorage */ }
 }
@@ -69,6 +82,7 @@ function useFreeTrialOrCheck() {
   if (left > 0) {
     data.used = used + 1;
     saveTrialData(data);
+    saveTrialToServer(data.used);
     var remaining = FREE_TRIAL_MAX - data.used;
     showTrialToast(remaining);
     return true;
@@ -168,6 +182,7 @@ function renderTrialBadge(containerId) {
     if (used < FREE_TRIAL_MAX) {
       data.used = used + 1;
       saveTrialData(data);
+      saveTrialToServer(data.used);
       showTrialToast(FREE_TRIAL_MAX - data.used);
       return;
     }

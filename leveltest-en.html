@@ -195,53 +195,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 </div>
 </div>
 
-<!-- STEP 1: INFO -->
-<div id="screen-info" class="screen">
-<div class="wrap">
-  <div class="prog-steps"><div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div></div>
-  <div class="prog-label">STEP 1 / 3   Basic Info</div>
-  <h1 class="step-title">Tell Us <em>About You</em><br></h1>
-  <p class="step-sub">For personalized assessment and airline recommendation.<br>Please enter your basic info.</p>
-  <div class="gold-bar"></div>
-  <div class="field"><label class="field-label">Name <em>*</em></label><input class="field-input" id="f-name" type="text" placeholder="홍길동"></div>
-  <div class="field"><label class="field-label">Phone <em>*</em></label><input class="field-input" id="f-phone" type="tel" placeholder="010-0000-0000"></div>
-  <div class="field"><label class="field-label">Email <em>*</em></label><input class="field-input" id="f-email" type="email" placeholder="example@email.com"></div>
-  <div class="field" style="margin-top:24px;">
-    <label class="field-label">승무원 교육 경험 <em>*</em></label>
-    <div class="radio-group">
-      <label class="radio-opt"><input type="radio" name="edu" value="None"><span class="radio-text">None   처음 준비해요</span></label>
-      <label class="radio-opt"><input type="radio" name="edu" value="Self-study"><span class="radio-text">Self-study으로 준비 중이에요</span></label>
-      <label class="radio-opt"><input type="radio" name="edu" value="학원"><span class="radio-text">Academy 경험 있어요</span></label>
-      <label class="radio-opt"><input type="radio" name="edu" value="코칭"><span class="radio-text">1:1 Coaching 받은 적 있어요</span></label>
-    </div>
-  </div>
-  <div class="field" style="margin-top:20px;">
-    <label class="field-label">승무원 Application Experience <em>*</em></label>
-    <div class="radio-group">
-      <label class="radio-opt"><input type="radio" name="apply" value="None"><span class="radio-text">Never applied yet</span></label>
-      <label class="radio-opt"><input type="radio" name="apply" value="서류탈락"><span class="radio-text">지원했지만 서류에서 탈락했어요</span></label>
-      <label class="radio-opt"><input type="radio" name="apply" value="면접탈락"><span class="radio-text">면접까지 갔다가 탈락했어요</span></label>
-      <label class="radio-opt"><input type="radio" name="apply" value="재도전"><span class="radio-text">합격 후 재도전 중이에요</span></label>
-    </div>
-  </div>
-  <div class="field" style="margin-top:20px;">
-    <label class="field-label">English Level <em>*</em></label>
-    <div class="radio-group">
-      <label class="radio-opt"><input type="radio" name="eng" value="기초"><span class="radio-text">기초   간단한 인사 정도예요</span></label>
-      <label class="radio-opt"><input type="radio" name="eng" value="Conversational"><span class="radio-text">Conversational   불편하지 않게 대화해요</span></label>
-      <label class="radio-opt"><input type="radio" name="eng" value="비즈니스"><span class="radio-text">비즈니스   면접도 자신 있어요</span></label>
-      <label class="radio-opt"><input type="radio" name="eng" value="Near-native"><span class="radio-text">Near-native</span></label>
-    </div>
-  </div>
-  <div style="margin-top:32px;"><button class="btn-gold" onclick="goToCamera()">Start Level Test</button></div>
-</div>
-</div>
-
-<!-- STEP 2: CAMERA -->
+<!-- CAMERA -->
 <div id="screen-camera" class="screen">
 <div class="wrap">
-  <div class="prog-steps"><div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div></div>
-  <div class="prog-label">STEP 2 / 3   Video Interview Test</div>
   <h2 class="step-title">카메라 앞에서<br><em>자기소개</em>를 해주세요</h2>
   <p class="step-sub" id="camera-sub">잠시 후 질문이 표시됩니다.</p>
   <div class="gold-bar"></div>
@@ -275,12 +231,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 </div>
 </div>
 
-<!-- STEP 3: RESULT -->
+<!-- RESULT -->
 <div id="screen-result" class="screen">
 <div class="wrap">
-  <div class="prog-steps"><div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div></div>
-  <div class="prog-label">STEP 3 / 3   Results & Recommendations</div>
-  <div class="step-eyebrow">Result</div>
   <h2 class="step-title"><em id="r-name">지원자</em>님의<br>레벨 분석 결과예요</h2>
   <div class="gold-bar"></div>
   <div style="text-align:center;margin-bottom:32px;">
@@ -358,28 +311,12 @@ function setLang(lang){
   }
   qa.innerHTML=html;
   document.getElementById('camera-sub').innerHTML=cfg.sub;
-  showScreen('info');
-}
-function goToCamera(){
-  var name=document.getElementById('f-name').value.trim()||'테스트';
-  var phone=document.getElementById('f-phone').value.trim()||'010-0000-0000';
-  U.name=name;U.phone=phone;U.email=document.getElementById('f-email').value.trim();
-  U.edu=document.querySelector('input[name=edu]:checked')?.value||'N/A';
-  U.apply=document.querySelector('input[name=apply]:checked')?.value||'N/A';
-  U.eng=document.querySelector('input[name=eng]:checked')?.value||'N/A';
-  console.log('[WC LEAD]',JSON.stringify(U));
+  try{
+    var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+    if(!U.name) U.name=u.name||'지원자';
+    if(!U.email) U.email=u.email||'';
+  }catch(e){ if(!U.name) U.name='지원자'; }
   showScreen('camera');
-}
-function skipWithTestData(){
-  document.getElementById('f-name').value='테스트';
-  document.getElementById('f-phone').value='010-0000-0000';
-  document.getElementById('f-email').value='test@test.com';
-  // 첫 번째 옵션 선택 (None/None/기초)
-  ['edu','apply','eng'].forEach(function(n){
-    var first=document.querySelector('input[name='+n+']');
-    if(first){first.checked=true;first.dispatchEvent(new Event('change'));}
-  });
-  goToCamera();
 }
 async function startCam(){
   try{
@@ -509,7 +446,10 @@ function renderResult(r){
       saveBtnEl.style.cssText='margin-bottom:12px;';
       saveBtnEl.innerHTML='⬇ 내 면접 영상 저장하기';
       saveBtnEl.onclick=saveVideo;
-      document.querySelector('.prog-steps').closest('.wrap').querySelector('.divider').before(saveBtnEl);
+      var resWrap=document.querySelector('#screen-result .wrap');
+      var firstDiv=resWrap?resWrap.querySelector('.divider'):null;
+      if(firstDiv) firstDiv.before(saveBtnEl);
+      else if(resWrap) resWrap.appendChild(saveBtnEl);
     }
   }
   if(!document.getElementById('r-go-curriculum')){

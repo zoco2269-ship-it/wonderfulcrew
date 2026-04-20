@@ -140,18 +140,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 </nav>
 <div id="app">
 
-<!-- 프로필 미입력 시 프로필 입력(STEP1)으로, 레벨테스트 완료 시 커리큘럼으로 -->
+<!-- 레벨테스트 완료 시 커리큘럼으로 -->
 <script>
 (function(){
-  var profileDone=localStorage.getItem('wc_profile_done');
   var levelDone=localStorage.getItem('wc_level_result');
-  // 프로필 입력 완료 + 레벨테스트 완료 → 커리큘럼으로
-  if(profileDone && levelDone){
+  if(levelDone){
     location.href='curriculum.html';
     return;
   }
-  // 프로필 입력 완료 + 레벨테스트 미완료 → 언어선택(STEP0)부터
-  // 프로필 미입력 → 프로필 입력(STEP1)으로 (아래 스크립트에서 처리)
 })();
 </script>
 <!-- STEP 0: 언어 선택 -->
@@ -184,56 +180,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 </div>
 </div>
 
-<!-- STEP 1: INFO (프로필 미입력이면 여기가 첫 화면) -->
-<div id="screen-info" class="screen">
-<div class="wrap">
-  <div class="prog-steps"><div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div></div>
-  <div class="prog-label">STEP 1 / 3   기본 정보</div>
-  <div id="trial-reward-msg" style="background:linear-gradient(135deg,#1A2340,#2A3455);color:#fff;padding:16px 20px;border-radius:12px;margin-bottom:20px;text-align:center;display:none;">
-    <span style="color:#E8C96A;font-weight:700;">무료체험 10회</span>를 드립니다 — 아래 정보를 입력하시면 바로 시작됩니다.
-  </div>
-  <h1 class="step-title">먼저 <em>나에 대해</em><br>알려주세요</h1>
-  <p class="step-sub">맞춤형 레벨 평가와 항공사 추천을 위해<br>간단한 정보를 입력해주세요.</p>
-  <div class="gold-bar"></div>
-  <div class="field"><label class="field-label">이름 <em>*</em></label><input class="field-input" id="f-name" type="text" placeholder="홍길동"></div>
-  <div class="field"><label class="field-label">전화번호 <em>*</em></label><input class="field-input" id="f-phone" type="tel" placeholder="010-0000-0000"></div>
-  <div class="field"><label class="field-label">이메일 <em>*</em></label><input class="field-input" id="f-email" type="email" placeholder="example@email.com"></div>
-  <div class="field" style="margin-top:24px;">
-    <label class="field-label">승무원 교육 경험 <em>*</em></label>
-    <div class="radio-group">
-      <label class="radio-opt"><input type="radio" name="edu" value="없음"><span class="radio-text">없음   처음 준비해요</span></label>
-      <label class="radio-opt"><input type="radio" name="edu" value="독학"><span class="radio-text">독학으로 준비 중이에요</span></label>
-      <label class="radio-opt"><input type="radio" name="edu" value="학원"><span class="radio-text">학원 수강 경험 있어요</span></label>
-      <label class="radio-opt"><input type="radio" name="edu" value="코칭"><span class="radio-text">1:1 코칭 받은 적 있어요</span></label>
-    </div>
-  </div>
-  <div class="field" style="margin-top:20px;">
-    <label class="field-label">승무원 지원 경험 <em>*</em></label>
-    <div class="radio-group">
-      <label class="radio-opt"><input type="radio" name="apply" value="없음"><span class="radio-text">아직 지원한 적 없어요</span></label>
-      <label class="radio-opt"><input type="radio" name="apply" value="서류탈락"><span class="radio-text">지원했지만 서류에서 탈락했어요</span></label>
-      <label class="radio-opt"><input type="radio" name="apply" value="면접탈락"><span class="radio-text">면접까지 갔다가 탈락했어요</span></label>
-      <label class="radio-opt"><input type="radio" name="apply" value="재도전"><span class="radio-text">합격 후 재도전 중이에요</span></label>
-    </div>
-  </div>
-  <div class="field" style="margin-top:20px;">
-    <label class="field-label">영어 수준 <em>*</em></label>
-    <div class="radio-group">
-      <label class="radio-opt"><input type="radio" name="eng" value="기초"><span class="radio-text">기초   간단한 인사 정도예요</span></label>
-      <label class="radio-opt"><input type="radio" name="eng" value="일상회화"><span class="radio-text">일상회화   불편하지 않게 대화해요</span></label>
-      <label class="radio-opt"><input type="radio" name="eng" value="비즈니스"><span class="radio-text">비즈니스   면접도 자신 있어요</span></label>
-      <label class="radio-opt"><input type="radio" name="eng" value="원어민급"><span class="radio-text">원어민급</span></label>
-    </div>
-  </div>
-  <div style="margin-top:32px;"><button class="btn-gold" id="btn-profile-next" onclick="goToCamera()">시작하기</button></div>
-</div>
-</div>
-
-<!-- STEP 2: CAMERA -->
+<!-- CAMERA -->
 <div id="screen-camera" class="screen">
 <div class="wrap">
-  <div class="prog-steps"><div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div></div>
-  <div class="prog-label">STEP 2 / 3   영상 면접 테스트</div>
   <h2 class="step-title">카메라 앞에서<br><em>자기소개</em>를 해주세요</h2>
   <p class="step-sub" id="camera-sub">잠시 후 질문이 표시됩니다.</p>
   <div class="gold-bar"></div>
@@ -271,12 +220,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 </div>
 </div>
 
-<!-- STEP 3: RESULT -->
+<!-- RESULT -->
 <div id="screen-result" class="screen">
 <div class="wrap">
-  <div class="prog-steps"><div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div></div>
-  <div class="prog-label">STEP 3 / 3   결과 & 추천</div>
-  <div class="step-eyebrow">Result</div>
   <h2 class="step-title"><em id="r-name">지원자</em>님의<br>레벨 분석 결과예요</h2>
   <div class="gold-bar"></div>
   <div style="text-align:center;margin-bottom:32px;">
@@ -333,32 +279,16 @@ function initFaceMesh(videoEl){
 }
 function getSmilePct(){return faceStats.totalFrames<5?0:Math.round(faceStats.smileFrames/faceStats.totalFrames*100);}
 function getGazePct(){return faceStats.totalFrames<5?0:Math.round(faceStats.lookingCenter/faceStats.totalFrames*100);}
-// 프로필 입력 여부에 따라 첫 화면 결정
+// 첫 화면은 언어 선택
 (function(){
-  var profileDone=localStorage.getItem('wc_profile_done');
-  if(!profileDone){
-    // 프로필 미입력 → "나에 대해 알려주세요" 먼저 (무료체험 안내 메시지 표시)
-    document.getElementById('screen-info').classList.add('active');
-    var msg=document.getElementById('trial-reward-msg');
-    if(msg) msg.style.display='block';
-  } else {
-    // 프로필 완료 → 언어선택
-    document.getElementById('screen-lang').classList.add('active');
-  }
-  // 기존 프로필 정보 자동 입력
+  document.getElementById('screen-lang').classList.add('active');
+  // 로그인 사용자 정보로 U 초기화
   try{
-    var p=JSON.parse(localStorage.getItem('wc_profile')||'{}');
-    if(p.name) document.getElementById('f-name').value=p.name;
-    if(p.phone) document.getElementById('f-phone').value=p.phone;
-    if(p.email) document.getElementById('f-email').value=p.email;
+    var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+    if(u.name) U.name=u.name;
+    if(u.email) U.email=u.email;
   }catch(e){}
 })();
-document.querySelectorAll('.radio-opt input').forEach(function(r){
-  r.addEventListener('change',function(){
-    document.querySelectorAll('input[name="'+this.name+'"]').forEach(function(x){x.closest('.radio-opt').classList.remove('sel');});
-    this.closest('.radio-opt').classList.add('sel');
-  });
-});
 function showScreen(n){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById('screen-'+n).classList.add('active');window.scrollTo(0,0);}
 var LANG='ko';
 var QUESTIONS={
@@ -408,60 +338,13 @@ function setLang(lang){
   }
   qa.innerHTML=html;
   document.getElementById('camera-sub').innerHTML=cfg.sub;
-  showScreen('info');
-}
-function goToCamera(){
-  var name=document.getElementById('f-name').value.trim();
-  var phone=document.getElementById('f-phone').value.trim();
-  var email=document.getElementById('f-email').value.trim();
-  var edu=document.querySelector('input[name=edu]:checked');
-  var apply=document.querySelector('input[name=apply]:checked');
-  var eng=document.querySelector('input[name=eng]:checked');
-  // 필수 입력 검증
-  if(!name){alert('이름을 입력해주세요.');document.getElementById('f-name').focus();return;}
-  if(!phone||phone.length<10){alert('전화번호를 정확히 입력해주세요.');document.getElementById('f-phone').focus();return;}
-  if(!email||!email.includes('@')){alert('이메일을 정확히 입력해주세요.');document.getElementById('f-email').focus();return;}
-  if(!edu){alert('승무원 교육 경험을 선택해주세요.');return;}
-  if(!apply){alert('승무원 지원 경험을 선택해주세요.');return;}
-  if(!eng){alert('영어 수준을 선택해주세요.');return;}
-  U.name=name;U.phone=phone;U.email=email;
-  U.edu=edu.value;U.apply=apply.value;U.eng=eng.value;
-  console.log('[WC LEAD]',JSON.stringify(U));
-
-  // 프로필 저장
-  var isFirstProfile=!localStorage.getItem('wc_profile_done');
-  localStorage.setItem('wc_profile_done','1');
-  localStorage.setItem('wc_profile',JSON.stringify(U));
-
-  if(isFirstProfile){
-    // 첫 프로필 입력 → 무료체험 10회 안내 후 언어선택으로
-    var ov=document.createElement('div');
-    ov.id='wc-welcome-overlay';
-    ov.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;';
-    ov.innerHTML='<div style="background:#fff;border-radius:16px;padding:40px 32px;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">'+
-      '<div style="font-size:2.4rem;margin-bottom:14px;">🎉</div>'+
-      '<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:#1A2340;margin-bottom:10px;">'+name+'님, 환영합니다!</h2>'+
-      '<p style="font-size:0.9rem;color:#5A5048;line-height:1.7;margin-bottom:6px;"><b style="color:#C9A84C;">무료체험 10회</b>가 지급되었습니다.</p>'+
-      '<p style="font-size:0.82rem;color:#8A8070;line-height:1.6;margin-bottom:24px;">AI 면접 연습, 롤플레이, 디스커션 등<br>모든 기능을 10회까지 무료로 체험하세요.</p>'+
-      '<button onclick="var o=document.getElementById(\'wc-welcome-overlay\');if(o)o.remove();showScreen(\'lang\');" style="padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;">레벨 테스트 시작하기</button>'+
-      '<div style="margin-top:12px;"><a href="curriculum.html" style="color:#8A8070;font-size:0.82rem;text-decoration:none;">건너뛰고 바로 면접 연습하기 →</a></div>'+
-      '</div>';
-    document.body.appendChild(ov);
-  } else {
-    // 이미 프로필 입력 완료 → 바로 카메라
-    showScreen('camera');
-  }
-}
-function skipWithTestData(){
-  document.getElementById('f-name').value='테스트';
-  document.getElementById('f-phone').value='010-0000-0000';
-  document.getElementById('f-email').value='test@test.com';
-  // 첫 번째 옵션 선택 (없음/없음/기초)
-  ['edu','apply','eng'].forEach(function(n){
-    var first=document.querySelector('input[name='+n+']');
-    if(first){first.checked=true;first.dispatchEvent(new Event('change'));}
-  });
-  goToCamera();
+  // 로그인 사용자 이름/이메일을 U에 보장
+  try{
+    var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+    if(!U.name) U.name=u.name||'지원자';
+    if(!U.email) U.email=u.email||'';
+  }catch(e){ if(!U.name) U.name='지원자'; }
+  showScreen('camera');
 }
 async function startCam(){
   try{
@@ -646,7 +529,10 @@ function renderResult(r){
       saveBtnEl.style.cssText='margin-bottom:12px;';
       saveBtnEl.innerHTML='⬇ 내 면접 영상 저장하기';
       saveBtnEl.onclick=saveVideo;
-      document.querySelector('.prog-steps').closest('.wrap').querySelector('.divider').before(saveBtnEl);
+      var resWrap=document.querySelector('#screen-result .wrap');
+      var firstDiv=resWrap?resWrap.querySelector('.divider'):null;
+      if(firstDiv) firstDiv.before(saveBtnEl);
+      else if(resWrap) resWrap.appendChild(saveBtnEl);
     }
   }
   if(!document.getElementById('r-go-curriculum')){

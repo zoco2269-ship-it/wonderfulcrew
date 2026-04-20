@@ -144,9 +144,9 @@ function showUser(user) {
     if (typeof wcPromptPush === 'function') wcPromptPush();
     // 푸시 팝업 닫힌 후 자동 이동 (3초 대기)
     setTimeout(function() {
-      var profileDone = localStorage.getItem('wc_profile_done');
-      if (!profileDone) {
-        location.href = 'leveltest.html';  // → 프로필 입력 화면으로
+      var levelDone = localStorage.getItem('wc_level_result');
+      if (!levelDone) {
+        location.href = 'leveltest.html';
       } else {
         location.href = 'curriculum.html';
       }

@@ -501,11 +501,13 @@ function customerFirstSpeak(openerText){
   fb.classList.add('active');
   speakQuestion(openerText);
   var checkTTS=setInterval(function(){
-    if(!window.speechSynthesis.speaking){
+    var gcPlaying=(typeof _gcTtsAudio!=='undefined' && _gcTtsAudio && !_gcTtsAudio.paused && !_gcTtsAudio.ended);
+    var synPlaying=('speechSynthesis' in window && window.speechSynthesis.speaking);
+    if(!gcPlaying && !synPlaying){
       clearInterval(checkTTS);
-      startListening();
+      setTimeout(startListening,400);
     }
-  },300);
+  },200);
 }
 
 function startListening(){

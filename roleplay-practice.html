@@ -491,11 +491,13 @@ function customerFirstSpeak(openerText){
 
   // TTS 끝나면 자동으로 학생 음성 인식 시작
   var checkTTS=setInterval(function(){
-    if(!window.speechSynthesis.speaking){
+    var gcPlaying=(typeof _gcTtsAudio!=='undefined' && _gcTtsAudio && !_gcTtsAudio.paused && !_gcTtsAudio.ended);
+    var synPlaying=('speechSynthesis' in window && window.speechSynthesis.speaking);
+    if(!gcPlaying && !synPlaying){
       clearInterval(checkTTS);
-      startListening();
+      setTimeout(startListening,400);
     }
-  },300);
+  },200);
 }
 
 function startListening(){
@@ -641,16 +643,19 @@ async function processAnswer(){
     speakQuestion(aiText,accent);
 
     // TTS 끝나면 → 3분 지났으면 피드백, 아니면 대화 계속
+    // Google Cloud Audio + speechSynthesis 양쪽 체크
     var checkTTS=setInterval(function(){
-      if(!window.speechSynthesis.speaking){
+      var gcPlaying=(typeof _gcTtsAudio!=='undefined' && _gcTtsAudio && !_gcTtsAudio.paused && !_gcTtsAudio.ended);
+      var synPlaying=('speechSynthesis' in window && window.speechSynthesis.speaking);
+      if(!gcPlaying && !synPlaying){
         clearInterval(checkTTS);
         if(timeExpired){
           generateFeedback(scenario);
         } else {
-          startListening();
+          setTimeout(startListening,400);
         }
       }
-    },300);
+    },200);
   }catch(e){
     fb.innerHTML='<span style="color:#E74C3C;">오류 발생.</span>';
   }

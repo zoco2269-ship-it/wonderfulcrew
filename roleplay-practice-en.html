@@ -738,12 +738,16 @@ async function processAnswer(){
       },2000);
     } else {
       // TTS 끝나면 자동으로 다시 학생 음성 인식
+      // Google Cloud Audio(_ttsAudio)와 브라우저 speechSynthesis 둘 다 체크
       var checkTTS=setInterval(function(){
-        if(!window.speechSynthesis.speaking){
+        var gcPlaying=(typeof _ttsAudio!=='undefined' && _ttsAudio && !_ttsAudio.paused && !_ttsAudio.ended);
+        var synPlaying=('speechSynthesis' in window && window.speechSynthesis.speaking);
+        if(!gcPlaying && !synPlaying){
           clearInterval(checkTTS);
-          startListening();
+          // 약간의 간격을 두고 학생 턴 시작 (오디오 여운 + 자연스러움)
+          setTimeout(startListening,400);
         }
-      },300);
+      },200);
     }
   }catch(e){
     fb.innerHTML='<span style="color:#E74C3C;">An error occurred. Please try again.</span>';

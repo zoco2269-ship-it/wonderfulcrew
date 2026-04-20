@@ -8,7 +8,9 @@
 <style>
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--navy-dark:#111B2E;--text-mid:#4A4438;--text-muted:#5A5048;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--navy-dark);color:#fff;min-height:100vh;display:flex;flex-direction:column;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--navy-dark);color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+.interview.active{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;}
+.feedback-panel{max-height:24vh;overflow-y:auto;}
 a{color:inherit;text-decoration:none;}
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:rgba(17,27,46,0.95);border-bottom:1px solid rgba(201,168,76,0.15);}
 .nav-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}.nav-logo span{color:var(--gold);}
@@ -145,7 +147,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
     <button class="ctrl-btn primary" id="btn-answer" onclick="startAnswer()">🎙 답변 시작</button>
     <button class="ctrl-btn danger" id="btn-stop" onclick="stopAnswer()" style="display:none;">⏹ 답변 완료</button>
     <button class="ctrl-btn secondary" id="btn-model" onclick="showModel()" disabled>모범 답변</button>
-    <button class="ctrl-btn secondary" id="btn-next" onclick="nextQuestion()" disabled>다음 질문 →</button>
+    <button class="ctrl-btn secondary" id="btn-next" onclick="nextQuestion()">다음 질문 →</button>
   </div>
 </div>
 
@@ -311,21 +313,24 @@ function startInterview(){
   document.getElementById('setup').style.display='none';
   document.getElementById('interview').classList.add('active');
 
-  // 카메라
+  // 카메라 — 전면(사용자 얼굴) 우선. facingMode user를 강제 → fallback 으로 단순 video
   if(document.getElementById('cam-toggle').checked){
     (async function(){
-      try{
-        var devices=await navigator.mediaDevices.enumerateDevices();
-        var videoDevices=devices.filter(function(d){return d.kind==='videoinput';});
-        var frontId=null;
-        var frontKeywords=/front|전면|내장|integrated|webcam|facetime|camera hd|built-in|isight/i;
-        for(var d=0;d<videoDevices.length;d++){if(frontKeywords.test(videoDevices[d].label)){frontId=videoDevices[d].deviceId;break;}}
-        var constraints=frontId?{video:{deviceId:{exact:frontId}},audio:true}:{video:{facingMode:'user'},audio:true};
-        stream=await navigator.mediaDevices.getUserMedia(constraints);
-        var v=document.getElementById('cam-video');
-        v.srcObject=stream;v.style.display='block';
-        document.getElementById('cam-ph').style.display='none';
-      }catch(e){try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});var v2=document.getElementById('cam-video');v2.srcObject=stream;v2.style.display='block';document.getElementById('cam-ph').style.display='none';}catch(e2){document.getElementById('cam-ph').innerHTML='<div>카메라 연결 실패</div>';}}
+      var attempts=[
+        {video:{facingMode:{exact:'user'}},audio:true},
+        {video:{facingMode:'user'},audio:true},
+        {video:true,audio:true}
+      ];
+      for(var i=0;i<attempts.length;i++){
+        try{
+          stream=await navigator.mediaDevices.getUserMedia(attempts[i]);
+          var v=document.getElementById('cam-video');
+          v.srcObject=stream;v.style.display='block';
+          document.getElementById('cam-ph').style.display='none';
+          return;
+        }catch(e){}
+      }
+      document.getElementById('cam-ph').innerHTML='<div>카메라 연결 실패</div>';
     })();
   }
   qIdx=0;showQuestion();
@@ -340,7 +345,7 @@ function showQuestion(){
   document.getElementById('feedback').innerHTML='';
   document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=false;
   document.getElementById('btn-stop').style.display='none';
-  document.getElementById('btn-model').disabled=true;document.getElementById('btn-next').disabled=true;
+  document.getElementById('btn-model').disabled=true; // 다음 질문은 항상 활성화 (자유 이동 가능)
   document.getElementById('waveform').classList.remove('active');
   var accent=document.getElementById('s-accent').value;
   speakQ(QS[qIdx].q,accent);
@@ -382,9 +387,11 @@ async function stopAnswer(){
   fb.innerHTML='<span style="color:var(--gold);">면접관이 답변을 듣고 있어요...</span>';fb.classList.add('active');
   try{
     var turnCount=chatHistory.filter(function(m){return m.role==='user';}).length;
+    var airlineKey=document.getElementById('s-airline').value;
+    var airlineName={emirates:'Emirates',qatar:'Qatar Airways',singapore:'Singapore Airlines',cathay:'Cathay Pacific',etihad:'Etihad',koreanair:'Korean Air',asiana:'Asiana',general:'a major airline'}[airlineKey]||'a major airline';
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:300,
-      system:'You are a senior cabin crew interviewer conducting a FINAL INTERVIEW for Emirates. Question: "'+QS[qIdx].q+'"\n\nRules:\n- Reply in ENGLISH only\n- Keep responses VERY SHORT: 1 sentence max. Just a brief follow-up question or acknowledgment.\n- Examples of good responses: "Can you give me a specific example?" / "How did that make you feel?" / "What did you learn from that?" / "Interesting. And what happened next?"\n- Do NOT give long responses. Real interviewers are concise.\n- After 2-3 exchanges, just say "Thank you." and add [END]\n- Turn '+turnCount,
+      system:'You are a senior cabin crew interviewer conducting a FINAL INTERVIEW for '+airlineName+'. Question being asked: "'+QS[qIdx].q+'"\n\nRules:\n- Reply in ENGLISH only.\n- Keep responses VERY SHORT: 1 sentence max. Just a brief follow-up question or acknowledgment.\n- Examples: "Can you give me a specific example?" / "How did that make you feel?" / "What did you learn from that?" / "Interesting. And what happened next?"\n- Real interviewers are concise. No long responses.\n- The candidate is interviewing for '+airlineName+'. Do NOT mention or compare any other airline. Do NOT assume the candidate applied elsewhere or ask "why this airline instead of X". If the candidate happens to mention another airline name in their answer, ignore it gracefully — do not bring it up again.\n- After 2-3 exchanges, just say "Thank you." and add [END].\n- Turn '+turnCount,
       messages:chatHistory
     })});
     var data=await res.json();

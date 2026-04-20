@@ -358,14 +358,16 @@ footer{
   .res-cards{grid-template-columns:1fr;}
   .hero-title{font-size:2.4rem;}
   .nav-links{display:none;}
-  nav{padding:0 4%!important;}
-  nav>div:last-child{flex-wrap:nowrap!important;gap:5px!important;flex-shrink:0;}
-  nav>div:last-child>a{white-space:nowrap!important;flex-shrink:0;}
-  .nav-cta{font-size:0.65rem!important;padding:5px 9px!important;white-space:nowrap!important;letter-spacing:0!important;}
-  nav a[href*="login"]{font-size:0.65rem!important;padding:5px 9px!important;white-space:nowrap!important;letter-spacing:0!important;}
-  nav a[href*="index-en"]{font-size:0.6rem!important;padding:3px 7px!important;}
+  nav{padding:0 4%!important;height:auto!important;min-height:56px;}
+  .nav-logo{font-size:1.1rem!important;flex-shrink:0;}
+  nav>div:last-child{flex-direction:column!important;align-items:flex-end!important;gap:4px!important;flex-shrink:0;padding:6px 0;}
+  nav>div:last-child>a{white-space:nowrap!important;}
+  .nav-cta{font-size:0.68rem!important;padding:5px 12px!important;white-space:nowrap!important;letter-spacing:0!important;}
+  .mobile-sub-row{display:flex!important;gap:4px;}
+  nav a[href*="login"]{font-size:0.64rem!important;padding:4px 9px!important;white-space:nowrap!important;letter-spacing:0!important;}
+  nav a[href*="index-en"]{font-size:0.62rem!important;padding:3px 7px!important;}
   .hero-label{font-size:0.65rem!important;letter-spacing:0.15em!important;margin-bottom:14px!important;}
-  #hero{min-height:auto!important;padding:90px 0 60px!important;height:auto!important;}
+  #hero{min-height:auto!important;padding:110px 0 60px!important;height:auto!important;}
 }
 
 /* ── AI DEMO SECTION ── */
@@ -487,8 +489,10 @@ footer{
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
-    <a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;transition:all 0.2s;">로그인</a>
-    <a href="index-en.html" style="display:inline-flex;align-items:center;padding:6px 12px;border-radius:16px;background:rgba(26,35,64,0.06);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-size:0.72rem;font-weight:600;text-decoration:none;">EN</a>
+    <div class="mobile-sub-row" style="display:contents;">
+      <a href="login.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;transition:all 0.2s;">로그인</a>
+      <a href="index-en.html" style="display:inline-flex;align-items:center;padding:6px 12px;border-radius:16px;background:rgba(26,35,64,0.06);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-size:0.72rem;font-weight:600;text-decoration:none;">EN</a>
+    </div>
   </div>
 </nav>
 

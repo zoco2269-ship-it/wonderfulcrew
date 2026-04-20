@@ -90,6 +90,12 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <h1>나에게 맞는<br><em>요금제 선택하기</em></h1>
   <p>무료체험 10회 후 베이직·엘리트 또는 프리미엄 패키지로 합격까지 함께하세요.</p>
   <div id="trial-status" style="margin-top:20px;"></div>
+  <div id="test-mode-banner" style="display:none;margin:20px auto 0;max-width:560px;padding:14px 18px;background:rgba(255,152,0,0.18);border:1px solid #E65100;border-radius:10px;color:#fff;font-size:0.86rem;line-height:1.7;">
+    🧪 <b>테스트 모드 ON</b> — 어드민 우회 해제 상태로 결제 플로우 검증 중입니다.
+    <a href="admin.html" style="color:#E8C96A;text-decoration:underline;font-weight:700;margin-left:6px;">어드민으로 이동 →</a>
+    <button onclick="localStorage.removeItem('wc_test_mode');alert('테스트 모드 OFF');location.href='admin.html';" style="margin-left:8px;padding:6px 14px;background:#fff;color:#1A2340;border:none;border-radius:14px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">여기서 끄기</button>
+  </div>
+  <script>if(localStorage.getItem('wc_test_mode')==='true')document.getElementById('test-mode-banner').style.display='block';</script>
 </div>
 
 <!-- 요금제 -->

@@ -456,12 +456,27 @@ async function sendPushNoti(){
 
 // 관리자 접근 체크 (이메일 기반)
 (function(){
+  var ADMIN_EMAILS=['zoco2269@gmail.com','guswn5164@gmail.com'];
   var user=JSON.parse(localStorage.getItem('wc_user')||'{}');
-  if(user.email!=='zoco2269@gmail.com'){
-    alert('관리자 전용 페이지입니다.');
-    location.href='index.html';
-    return;
-  }
+  if(ADMIN_EMAILS.indexOf(user.email)!==-1)return;
+  // wc_user 비어있을 수 있음 — Supabase 세션 복원 잠깐 기다린 후 재확인
+  setTimeout(function(){
+    var u2=JSON.parse(localStorage.getItem('wc_user')||'{}');
+    if(ADMIN_EMAILS.indexOf(u2.email)!==-1)return;
+    if(typeof getSupabase==='function'&&getSupabase()){
+      getSupabase().auth.getSession().then(function(r){
+        var email=r&&r.data&&r.data.session&&r.data.session.user&&r.data.session.user.email;
+        if(ADMIN_EMAILS.indexOf(email)!==-1){
+          localStorage.setItem('wc_user',JSON.stringify({id:r.data.session.user.id,email:email,name:''}));
+          location.reload();
+        }else{
+          alert('관리자 전용 페이지입니다.');location.href='index.html';
+        }
+      }).catch(function(){alert('관리자 전용 페이지입니다.');location.href='index.html';});
+    }else{
+      alert('관리자 전용 페이지입니다.');location.href='index.html';
+    }
+  },800);
 })();
 
 // === 실데이터 로드 (서버 admin-data API 사용 — Service Key로 RLS 우회) ===

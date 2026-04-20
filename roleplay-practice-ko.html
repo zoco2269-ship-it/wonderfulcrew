@@ -537,14 +537,15 @@ function startListening(){
 
 if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}
 
-window.addEventListener('beforeunload',function(){
-  if('speechSynthesis' in window)window.speechSynthesis.cancel();
-  if(stream)stream.getTracks().forEach(function(t){t.stop();});
-  if(recognition)try{recognition.stop();}catch(e){}
-});
-window.addEventListener('pagehide',function(){
-  if('speechSynthesis' in window)window.speechSynthesis.cancel();
-});
+function _stopAllAudio(){
+  try{if(typeof gcStop==='function')gcStop();}catch(e){}
+  try{if('speechSynthesis' in window)window.speechSynthesis.cancel();}catch(e){}
+  try{if(recognition)recognition.stop();}catch(e){}
+  try{if(stream){stream.getTracks().forEach(function(t){t.stop();});stream=null;}}catch(e){}
+}
+window.addEventListener('beforeunload',_stopAllAudio);
+window.addEventListener('pagehide',_stopAllAudio);
+document.addEventListener('visibilitychange',function(){if(document.hidden)_stopAllAudio();});
 
 function speakQuestion(text){
   var iCard=document.getElementById('interviewer-card');

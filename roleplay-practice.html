@@ -149,6 +149,8 @@ window.addEventListener('popstate',function(){
       <select class="setup-select" id="s-accent">
         <option value="en-GB">British English</option>
         <option value="en-US">American English</option>
+        <option value="en-IN">Indian English</option>
+        <option value="en-PH">Filipino English</option>
         <option value="fr-FR">French English</option>
         <option value="es-ES">Spanish English</option>
       </select>
@@ -539,15 +541,16 @@ function startListening(){
 // 음성 목록 미리 로드
 if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}
 
-// 페이지 나갈 때 TTS + 카메라 + 마이크 모두 중지
-window.addEventListener('beforeunload',function(){
-  if('speechSynthesis' in window)window.speechSynthesis.cancel();
-  if(stream)stream.getTracks().forEach(function(t){t.stop();});
-  if(recognition)try{recognition.stop();}catch(e){}
-});
-window.addEventListener('pagehide',function(){
-  if('speechSynthesis' in window)window.speechSynthesis.cancel();
-});
+// 페이지 나갈 때 / 숨김 시 TTS + 카메라 + 마이크 모두 중지
+function _stopAllAudio(){
+  try{if(typeof gcStop==='function')gcStop();}catch(e){}
+  try{if('speechSynthesis' in window)window.speechSynthesis.cancel();}catch(e){}
+  try{if(recognition)recognition.stop();}catch(e){}
+  try{if(stream){stream.getTracks().forEach(function(t){t.stop();});stream=null;}}catch(e){}
+}
+window.addEventListener('beforeunload',_stopAllAudio);
+window.addEventListener('pagehide',_stopAllAudio);
+document.addEventListener('visibilitychange',function(){if(document.hidden)_stopAllAudio();});
 
 function speakQuestion(text,lang){
   var iCard=document.getElementById('interviewer-card');

@@ -40,7 +40,7 @@ export default async function handler(req, res) {
       }],
       mode: 'subscription',
       success_url: `${req.headers.origin || 'https://wonderfulcrew.vercel.app'}/success.html?plan=${plan}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.origin || 'https://wonderfulcrew.vercel.app'}/token-rewards.html`,
+      cancel_url: `${req.headers.origin || 'https://wonderfulcrew.vercel.app'}/plans.html`,
     });
 
     res.status(200).json({ url: session.url, id: session.id });

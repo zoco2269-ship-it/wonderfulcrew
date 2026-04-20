@@ -11,12 +11,12 @@ module.exports = async function handler(req, res) {
   const API_KEY = process.env.INNOPAY_API_KEY;
 
   if (!MID || !API_KEY) {
-    return res.redirect('/token-rewards.html?pay=error&msg=server_config');
+    return res.redirect('/plans.html?pay=error&msg=server_config');
   }
 
   // 인증 실패
   if (resultCode !== '0000') {
-    return res.redirect(`/token-rewards.html?pay=fail&msg=${encodeURIComponent(resultMsg || 'auth_failed')}`);
+    return res.redirect(`/plans.html?pay=fail&msg=${encodeURIComponent(resultMsg || 'auth_failed')}`);
   }
 
   try {
@@ -43,9 +43,9 @@ module.exports = async function handler(req, res) {
       // 결제 성공 → success 페이지로 리다이렉트
       return res.redirect(`/success.html?pay=innopay&tid=${tid}&moid=${moid}&amount=${amt}`);
     } else {
-      return res.redirect(`/token-rewards.html?pay=fail&msg=${encodeURIComponent(approveData.resultMsg || 'approve_failed')}`);
+      return res.redirect(`/plans.html?pay=fail&msg=${encodeURIComponent(approveData.resultMsg || 'approve_failed')}`);
     }
   } catch (e) {
-    return res.redirect(`/token-rewards.html?pay=error&msg=${encodeURIComponent(e.message)}`);
+    return res.redirect(`/plans.html?pay=error&msg=${encodeURIComponent(e.message)}`);
   }
 }

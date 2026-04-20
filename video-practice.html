@@ -103,10 +103,9 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <div class="hero">
   <div class="label">Step 1 · Video Interview</div>
-  <div style="display:inline-block;padding:6px 18px;background:var(--gold);color:#fff;font-size:0.78rem;font-weight:800;letter-spacing:0.15em;border-radius:20px;margin-bottom:14px;">NO SMILE · NO CABIN CREW</div>
   <h1>비디오 면접 <em>연습</em></h1>
-  <p style="font-size:0.86rem;font-weight:600;color:var(--gold-light);margin-top:6px;">"The most important things are SMILE · CONFIDENCE · BE YOURSELF"</p>
-  <p>이 단계는 이미지 면접입니다. What to say보다 How to say가 압도적으로 중요합니다.</p>
+  <p style="font-size:0.88rem;font-weight:700;color:var(--gold-light);margin-top:8px;letter-spacing:0.06em;">SMILE · CONFIDENCE · BE YOURSELF</p>
+  <p style="margin-top:10px;">전달 방식이 내용보다 훨씬 중요합니다.</p>
   <p style="font-size:0.76rem;color:rgba(255,255,255,0.45);margin-top:8px;">카메라 · 마이크 기능을 위해 Chrome 브라우저 사용을 권장합니다.</p>
 </div>
 
@@ -114,7 +113,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <div class="wrap">
 
 <div class="info-box">
-  <h3>비디오 면접 핵심 포인트</h3>
+  <h3>비디오 면접 핵심 포인트 — NO SMILE · NO CABIN CREW</h3>
   <p>면접관은 영상에서 '이 사람이 승객 앞에 서면 어떤 느낌일까'를 상상합니다.</p>
   <ul>
     <li><strong>Smiling Face:</strong> 자연스러운 미소 유지. 승객이 feel welcomed 되는 따뜻한 표정</li>
@@ -142,7 +141,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </div>
   <div class="transcript" id="tr"></div>
   <div class="score-card" id="fb-card">
-    <div class="score-title">✨ 이미지 면접 피드백</div>
+    <div class="score-title">피드백</div>
     <div id="fb-content" style="font-size:0.9rem;color:var(--text-mid);line-height:1.8;white-space:pre-line;"></div>
   </div>
 </div>
@@ -251,7 +250,7 @@ var POOL=lang==='ko'
   :flattenPool(QUESTIONS_EN,EXTRA_EN,ROLEPLAY_QS,'Roleplay — Include apology, solution, alternative, and service recovery.');
 // 영어 모드면 에미레이트 실전 기출도 풀에 추가
 if(lang!=='ko'){
-  EMIRATES_VIDEO_QS.forEach(function(q){POOL.push({q:q,hint:'Emirates 실전 기출 — SMILE · CONFIDENCE · BE YOURSELF. 30~60초.'});});
+  EMIRATES_VIDEO_QS.forEach(function(q){POOL.push({q:q,hint:'SMILE · CONFIDENCE · BE YOURSELF · 30~60초'});});
 }
 var qCount=0;
 var lastQ='';
@@ -358,13 +357,22 @@ async function getFeedback(){
   if(!ans){body.innerHTML='<span style="color:#E74C3C;">답변 음성이 인식되지 않았습니다. 마이크를 확인하시고 다시 녹화해주세요.</span>';return;}
   body.textContent='피드백 작성 중...';
   var isKo=lang==='ko';
-  var sys='비디오 면접(이미지 면접) 코치. 승무원 면접에서는 내용(What)보다 전달 방식(How)이 훨씬 중요. 한국어로 답변하세요.\n\n**평가 기준:**\n- 활짝 웃고 있는지 · 밝고 자신감 있는 톤인지 · 친절한 목소리인지 · 적절한 속도와 길이인지\n- 답변 내용은 전달력·진정성·승무원 자질과의 연결 관점에서 자유롭게 평가\n- 발음·문법 세부 지적은 하지 말 것 (음성인식 결과이므로)\n\n**출력 구조:**\n종합 점수: X/100\n\n잘한 점:\n- (답변의 좋은 부분 구체적으로 짚기)\n\n개선하면 좋은 점:\n- (실전에서 더 돋보이려면 어떻게 하면 좋을지 — 웃음·톤·자신감 중심)\n\n모범 답변 방향:\n(이 질문에 대해 어떤 방향/흐름으로 답하면 좋을지 간단한 가이드. 전체 대본이 아닌 방향성)';
+  var sys='승무원 비디오 면접 코치. 한국어로 답변.\n\n평가 관점: 전달 방식(웃음·톤·자신감·속도)이 내용보다 훨씬 중요. 답변 내용은 전달력·진정성·승무원 자질 관점에서 평가. 발음·문법 세부 지적 금지 (음성인식 결과).\n\n**출력 규칙 — 매우 중요:**\n- 마크다운 기호 절대 사용 금지: #, ##, ###, ---, **, *, 리스트 - 표시 등 모두 금지.\n- 한국어 평문으로만 작성. 문단은 빈 줄로 구분.\n- 제목·구분선·볼드·헤딩 기호 사용하지 말 것.\n- AI 티 나는 리스트·계층 구조 금지.\n\n출력 형식 (이 텍스트 그대로, 뒤에 내용만 채워서):\n\n종합 점수: X점\n\n잘한 점: (답변의 좋은 부분 한두 문장)\n\n개선하면 좋은 점: (웃음·톤·자신감 중심 한두 문장)\n\n모범 답변 방향: (이 질문을 어떤 흐름으로 답하면 좋을지 두세 문장. 전체 대본 아닌 방향성)';
   try{
     var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:sys,
         messages:[{role:'user',content:'질문: '+q+'\n\n본인 답변(음성인식):\n'+ans}]})});
     var d=await r.json();
-    var txt=((d&&d.content&&d.content[0]&&d.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
+    var raw=(d&&d.content&&d.content[0]&&d.content[0].text)||'피드백 생성 실패';
+    // 마크다운 기호 전부 제거 — AI 티 제거
+    var txt=raw
+      .replace(/^#{1,6}\s+/gm,'')    // # 제목 제거
+      .replace(/\*\*/g,'')             // ** 볼드 제거
+      .replace(/(^|\s)\*(?!\*)/g,'$1') // * 단독 제거
+      .replace(/^[-*]\s+/gm,'')        // - 리스트 제거
+      .replace(/^---+\s*$/gm,'')       // --- 구분선 제거
+      .replace(/\n{3,}/g,'\n\n')       // 빈 줄 3개 이상 → 2개
+      .trim();
     body.textContent=txt;
     if(typeof savePracticeRecord==='function'){
       savePracticeRecord({stage:'Video Interview',question:q,answer:ans,feedback:txt});

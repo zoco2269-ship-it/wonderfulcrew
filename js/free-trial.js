@@ -16,7 +16,7 @@ function saveTrialData(data) {
   localStorage.setItem(FREE_TRIAL_KEY, JSON.stringify(data));
 }
 
-// Supabase에서 사용 횟수 동기화
+// Supabase에서 사용 횟수 동기화 — 서버·로컬 중 큰 값 사용 (절대 감소 불가)
 async function syncTrialFromServer() {
   if (_trialSynced) return;
   // 테스트 모드일 때는 서버 동기화 건너뛰기 (관리자가 강제로 10회 소진 상태 유지)
@@ -31,7 +31,9 @@ async function syncTrialFromServer() {
     var { data } = await sb.from('practice_records').select('id').eq('user_id', user.id);
     if (data) {
       var localData = getTrialData();
-      localData.used = data.length;
+      var localUsed = localData.used || 0;
+      // 무료체험은 단조 증가만 — 서버·로컬 중 큰 값 사용
+      localData.used = Math.max(localUsed, data.length);
       saveTrialData(localData);
       _trialSynced = true;
     }

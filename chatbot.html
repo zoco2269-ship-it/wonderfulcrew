@@ -107,6 +107,9 @@ body{background:#FAF7F0;font-family:'Noto Sans KR','Inter','Apple SD Gothic Neo'
 .wc-coach-name{font-size:0.82rem;font-weight:600;color:#1A2340;}
 .wc-coach-sub{font-size:0.71rem;color:#8A7E6E;margin-top:2px;line-height:1.5;}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth-gate.js"></script>
 <script src="js/free-trial.js"></script>
 </head>
 <body>
@@ -482,6 +485,13 @@ const KEY='wc_v3';
 function loadSt(){try{const s=localStorage.getItem(KEY);if(s)return JSON.parse(s);}catch(e){}return{used:0,formDone:false,unlimited:false,bonusUnlocked:false,reportSeen:false};}
 function saveSt(){localStorage.setItem(KEY,JSON.stringify(st));}
 let st=loadSt(),loading=false,history=[];
+// wc_free_trial (공통 카운터)와 동기화 — 더 큰 값으로 맞춤 (챗봇 st.used 초기화 방지)
+try{
+  var _ftd=JSON.parse(localStorage.getItem('wc_free_trial')||'{}');
+  var _ftUsed=_ftd.used||0;
+  if(_ftUsed>st.used){st.used=_ftUsed;saveSt();}
+  if(_ftd.subscribed===true)st.unlimited=true;
+}catch(e){}
 
 const chat=document.getElementById('wc-chat');
 const inp=document.getElementById('wc-input');

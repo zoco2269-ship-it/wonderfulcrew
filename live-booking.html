@@ -119,12 +119,96 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 </div></section>
 
+<!-- 커스텀 모달 (브라우저 기본 alert의 도메인 헤더 회피) -->
+<div id="wc-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;max-width:400px;width:100%;padding:32px 28px;border-radius:14px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,0.2);">
+    <div id="wc-modal-icon" style="font-size:2rem;margin-bottom:12px;">🎓</div>
+    <h3 id="wc-modal-title" style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--navy);margin-bottom:10px;">알림</h3>
+    <p id="wc-modal-msg" style="font-size:0.9rem;color:var(--text-mid);line-height:1.7;margin-bottom:22px;"></p>
+    <div id="wc-modal-actions" style="display:flex;gap:10px;justify-content:center;">
+      <button id="wc-modal-cancel" style="padding:11px 22px;background:rgba(26,35,64,0.08);border:none;border-radius:22px;font-family:inherit;font-size:0.86rem;color:var(--text-mid);cursor:pointer;display:none;">취소</button>
+      <button id="wc-modal-ok" style="padding:11px 26px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.86rem;font-weight:600;cursor:pointer;">확인</button>
+    </div>
+  </div>
+</div>
 <script>
+function wcModal(opts){
+  // opts: { title, msg, icon, confirm:true/false }
+  return new Promise(function(resolve){
+    var m=document.getElementById('wc-modal');
+    document.getElementById('wc-modal-title').textContent=opts.title||'알림';
+    document.getElementById('wc-modal-msg').textContent=opts.msg||'';
+    document.getElementById('wc-modal-icon').textContent=opts.icon||'🎓';
+    var cancelBtn=document.getElementById('wc-modal-cancel');
+    cancelBtn.style.display=opts.confirm?'inline-flex':'none';
+    var okBtn=document.getElementById('wc-modal-ok');
+    okBtn.textContent=opts.okText||'확인';
+    m.style.display='flex';
+    function close(result){m.style.display='none';okBtn.onclick=null;cancelBtn.onclick=null;resolve(result);}
+    okBtn.onclick=function(){close(true);};
+    cancelBtn.onclick=function(){close(false);};
+  });
+}
+
+function _appliedKey(className,date){return 'wc_class_applied_'+(className+'__'+date).replace(/\s/g,'_');}
+
+function markBtnApplied(btn){
+  btn.disabled=true;
+  btn.textContent='신청 완료';
+  btn.className='class-btn full';
+}
+
+// 페이지 로드 시 이미 신청한 수업 비활성화
+async function refreshAppliedState(){
+  var user=JSON.parse(localStorage.getItem('wc_user')||'{}');
+  if(!user.email)return;
+  // 1차: localStorage 캐시 (즉시 반영)
+  document.querySelectorAll('.class-btn[onclick]').forEach(function(btn){
+    var m=btn.getAttribute('onclick').match(/applyClass\(this,'([^']+)','([^']+)'\)/);
+    if(!m)return;
+    var key=_appliedKey(m[1],m[2]);
+    if(localStorage.getItem(key)==='1')markBtnApplied(btn);
+  });
+  // 2차: Supabase에서 본인 신청 내역 조회 (다른 기기·캐시 클리어 대비)
+  try{
+    var res=await fetch('/api/supabase-config');
+    var cfg=await res.json();
+    if(!cfg.url||!cfg.anonKey||typeof window.supabase==='undefined')return;
+    var sb=window.supabase.createClient(cfg.url,cfg.anonKey);
+    var {data}=await sb.from('feedback').select('content').eq('email',user.email).eq('type','라이브 수업 신청');
+    if(!data)return;
+    data.forEach(function(row){
+      // content 형식: "[수업 신청] {name} ({date})"
+      var parsed=(row.content||'').match(/\[수업 신청\]\s*(.+?)\s*\((.+?)\)/);
+      if(!parsed)return;
+      var key=_appliedKey(parsed[1],parsed[2]);
+      localStorage.setItem(key,'1');
+      document.querySelectorAll('.class-btn[onclick]').forEach(function(btn){
+        var m=btn.getAttribute('onclick').match(/applyClass\(this,'([^']+)','([^']+)'\)/);
+        if(m&&m[1]===parsed[1]&&m[2]===parsed[2])markBtnApplied(btn);
+      });
+    });
+  }catch(e){console.warn('[live] refresh failed',e);}
+}
+
 async function applyClass(btn,className,date){
   var user=JSON.parse(localStorage.getItem('wc_user')||'{}');
-  if(!user.email){alert('로그인 후 신청할 수 있습니다.');location.href='login.html';return;}
-  if(!confirm(className+' ('+date+') 수업을 신청하시겠습니까?')) return;
-  btn.disabled=true;btn.textContent='신청 완료';btn.className='class-btn full';
+  if(!user.email){
+    await wcModal({title:'로그인이 필요합니다',msg:'수업 신청은 로그인 후 가능합니다.',icon:'🔐'});
+    location.href='login.html';return;
+  }
+  // 중복 신청 방지
+  if(localStorage.getItem(_appliedKey(className,date))==='1'){
+    await wcModal({title:'이미 신청하신 수업입니다',msg:'중복 신청은 불가능합니다.',icon:'ℹ️'});
+    markBtnApplied(btn);return;
+  }
+  var ok=await wcModal({
+    title:'수업 신청 확인',
+    msg:className+' ('+date+') 수업을 신청하시겠습니까?',
+    icon:'📅',confirm:true,okText:'신청하기'
+  });
+  if(!ok)return;
+  markBtnApplied(btn);
   // Supabase에 신청 저장
   try{
     var res=await fetch('/api/supabase-config');
@@ -140,8 +224,23 @@ async function applyClass(btn,className,date){
       });
     }
   }catch(e){}
-  alert('신청이 완료되었습니다. 상세 안내는 이메일로 발송됩니다.');
+  // 캐시 표시
+  localStorage.setItem(_appliedKey(className,date),'1');
+  // 관리자 푸시 알림 (실시간 통보)
+  try{
+    fetch('/api/push-send',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer wc-push-admin-2026'},
+      body:JSON.stringify({title:'신규 라이브 수업 신청',body:(user.name||user.email)+' · '+className+' ('+date+')',url:'/admin.html#feedback',tag:'live-class-'+date})
+    });
+  }catch(e){}
+  await wcModal({
+    title:'신청 완료',
+    msg:'신청이 접수되었습니다.\n사장님이 확인 후 직접 연락드립니다.',
+    icon:'✅'
+  });
 }
+
+// 페이지 로드 시 자동 실행 (Supabase 초기화 후)
+setTimeout(refreshAppliedState,1500);
 </script>
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>
 </body>

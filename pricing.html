@@ -307,6 +307,11 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <script src="js/innopay.js"></script>
 <script>
 function startCheckout(){
+  if(!localStorage.getItem('wc_user')){
+    alert('결제를 진행하려면 먼저 로그인해주세요.');
+    location.href='login.html?redirect='+encodeURIComponent('pricing.html');
+    return;
+  }
   var btn=document.getElementById('pay-btn');
   btn.disabled=true;btn.textContent='처리 중...';
   payWithInnopay('premium');

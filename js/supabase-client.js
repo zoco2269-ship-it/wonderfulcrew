@@ -135,23 +135,8 @@ function requireAuth() {
     'login.html','login-en.html','plans.html','plans-en.html',
     'pricing.html','pricing-en.html','contact.html','terms.html',
     'privacy.html','copyright.html',
-    'column.html','column-en.html',
-    'jobs.html','jobs-en.html',
-    'interview-guide.html','interview-guide-en.html',
-    'grooming-guide.html','grooming-guide-en.html',
-    'resume-guide.html','resume-guide-en.html',
-    'customer-service.html','customer-service-en.html',
-    'culture-difference.html','culture-difference-en.html',
-    'curriculum.html',
-    'curriculum-koreanair.html','curriculum-asiana.html','curriculum-jeju.html',
-    'curriculum-jinair.html','curriculum-tway.html','curriculum-airbusan.html',
-    'curriculum-airseoul.html','curriculum-eastar.html','curriculum-aerok.html',
-    'curriculum-airpremia.html','curriculum-cathay.html','curriculum-etihad.html',
-    'curriculum-qatar.html','curriculum-singapore.html','curriculum-klm.html',
-    'curriculum-lufthansa.html','curriculum-finnair.html','curriculum-airasia.html'
+    'deposit-request.html'
   ];
-  // 칼럼 상세 페이지도 공개
-  if (page.indexOf('column/') === 0 || page.match(/^column\//)) return;
   if (publicPages.indexOf(page) !== -1) return;
   // 나머지는 전부 로그인 필요
   location.href = 'login.html';

@@ -11,8 +11,6 @@
     'login.html','login-en.html','plans.html','plans-en.html',
     'pricing.html','pricing-en.html','contact.html','terms.html',
     'privacy.html','copyright.html',
-    'column.html','column-en.html',
-    'jobs.html','jobs-en.html',
     'deposit-request.html'
   ];
   if (publicPages.indexOf(page) !== -1) return;

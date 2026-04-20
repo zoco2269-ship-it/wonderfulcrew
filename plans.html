@@ -118,7 +118,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
       <p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:4px 0;">19.9만원<span style="font-size:0.7rem;color:var(--text-muted);">/월</span></p>
       <p style="font-size:0.72rem;color:#E74C3C;font-weight:600;margin-bottom:8px;">기간 한정 50% 할인</p>
       <p style="font-size:0.82rem;color:var(--text-mid);">월 한도량 500 usage</p>
-      <button class="btn-gold" style="width:100%;text-align:center;justify-content:center;" onclick="payWithInnopay('basic')">구독하기</button>
+      <button class="btn-gold" style="width:100%;text-align:center;justify-content:center;" onclick="_requireLoginThen(function(){payWithInnopay('basic');})">구독하기</button>
     </div>
     <div class="card" style="text-align:center;border:2px solid var(--gold);position:relative;overflow:hidden;">
       <div style="position:absolute;top:8px;right:-28px;background:#E74C3C;color:#fff;font-size:0.6rem;font-weight:800;padding:4px 32px;transform:rotate(45deg);">50% OFF</div>
@@ -127,7 +127,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
       <p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:4px 0;">29.9만원<span style="font-size:0.7rem;color:var(--text-muted);">/월</span></p>
       <p style="font-size:0.72rem;color:#E74C3C;font-weight:600;margin-bottom:8px;">기간 한정 50% 할인</p>
       <p style="font-size:0.82rem;color:var(--text-mid);">월 한도량 1,200 usage + AI 코치</p>
-      <button class="btn-gold" style="width:100%;text-align:center;justify-content:center;" onclick="payWithInnopay('elite')">구독하기</button>
+      <button class="btn-gold" style="width:100%;text-align:center;justify-content:center;" onclick="_requireLoginThen(function(){payWithInnopay('elite');})">구독하기</button>
     </div>
   </div>
 
@@ -172,6 +172,12 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <script>
 // 무료체험 상태 표시
 renderTrialBadge('trial-status');
+// 결제 전 로그인 체크
+function _requireLoginThen(fn){
+  if(localStorage.getItem('wc_user')){fn();return;}
+  alert('결제를 진행하려면 먼저 로그인해주세요.');
+  location.href='login.html?redirect='+encodeURIComponent('plans.html');
+}
 </script>
 </body>
 </html>

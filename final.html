@@ -34,7 +34,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 .q-banner .label{font-size:0.7rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px;}
 .q-banner .question{font-size:0.95rem;color:#fff;font-weight:500;line-height:1.5;}
 .video-area{flex:1;display:flex;align-items:center;justify-content:center;gap:20px;padding:14px;min-height:0;overflow:hidden;}
-.card-frame{height:auto;max-height:100%;aspect-ratio:4/3;width:260px;max-width:44vw;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:1;flex-basis:auto;}
+.card-frame{width:200px;aspect-ratio:9/16;max-height:100%;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:1;}
 .card-frame video{width:100%;height:100%;object-fit:cover;}
 .card-frame.speaking{border-color:var(--gold);animation:goldGlow 1.5s infinite;}
 @keyframes goldGlow{0%,100%{border-color:rgba(201,168,76,0.4);}50%{border-color:rgba(201,168,76,1);}}
@@ -61,19 +61,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 .ctrl-btn.secondary{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);}
 .ctrl-btn.danger{background:#E74C3C;color:#fff;}
 @media(max-width:600px){
-  body{height:100dvh;overflow:hidden;}
-  .card-frame{width:44vw!important;max-width:180px!important;aspect-ratio:4/3!important;}
-  .video-area{gap:10px;padding:10px;min-height:0;flex:1;}
+  .card-frame{width:160px;}
+  .video-area{gap:12px;padding:12px;}
   .setup-grid{grid-template-columns:1fr;}
-  .q-banner{padding:8px 12px;}
-  .q-banner .label{font-size:0.62rem;margin-bottom:2px;}
-  .q-banner .question{font-size:0.86rem;line-height:1.4;}
-  .waveform{height:20px;}
-  .transcript-bar{padding:5px 12px;font-size:0.74rem;min-height:22px;}
-  .feedback-panel{max-height:22dvh;padding:12px 14px;font-size:0.8rem;}
-  .controls{gap:6px;padding:8px 10px env(safe-area-inset-bottom,8px);}
-  .ctrl-btn{padding:9px 14px;font-size:0.76rem;}
-  .interview.active{height:calc(100dvh - 56px);}
+  .controls{flex-wrap:wrap;gap:8px;padding:12px env(safe-area-inset-bottom,12px);}
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

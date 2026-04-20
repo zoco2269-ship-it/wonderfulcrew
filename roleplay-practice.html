@@ -556,20 +556,20 @@ function startListening(){
     return;
   }
   // 모바일 Android Chrome: continuous=true 는 불안정 — 한 번에 한 발화만 받고 자동 재시작
-  var isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
   recognition=new SR();
   recognition.lang='en-US';
   recognition.interimResults=true;
-  recognition.continuous=!isMobile;
+  recognition.continuous=true;
   fullText='';
+  window._manualStop=false;
   var bA=document.getElementById('btn-answer');if(bA) bA.style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('rec-dot').classList.add('on');
   document.getElementById('rec-label').textContent='답변 중';
   document.getElementById('waveform').classList.add('active');
-  document.getElementById('transcript').textContent='🎙 듣고 있어요… 편하게 말해주세요';
+  document.getElementById('transcript').textContent='🎙 듣고 있어요… 말이 끝나면 ⏹ 답변 종료를 눌러주세요';
 
-  // 모바일은 getUserMedia 가 audio 를 쥐고 있으면 SR 이 안 잡힘 → mediaRecorder 스킵
+  var isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
   if(!isMobile && !mediaRecorder && stream){
     try{
       recordStartTime=Date.now();
@@ -581,12 +581,12 @@ function startListening(){
   }
 
   recognition.onresult=function(ev){
-    var interim='';fullText='';
-    for(var r=0;r<ev.results.length;r++){
+    var interim='';
+    for(var r=ev.resultIndex;r<ev.results.length;r++){
       if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';
       else interim+=ev.results[r][0].transcript;
     }
-    document.getElementById('transcript').textContent=fullText+interim;
+    document.getElementById('transcript').textContent=(fullText+interim)||'🎙 듣고 있어요…';
   };
   recognition.onerror=function(ev){
     var code=ev.error||'unknown';
@@ -608,17 +608,25 @@ function startListening(){
   };
   recognition.onend=function(){
     if(endingRoleplay) return;
-    if(fullText.trim()){
-      document.getElementById('transcript').textContent=fullText.trim();
-      processAnswer();
+    // 사용자가 ⏹ 누르기 전엔 자동 재시작 (Android Chrome 은 5~8초마다 auto-stop)
+    if(window._manualStop){
+      if(fullText.trim()){
+        document.getElementById('transcript').textContent=fullText.trim();
+        processAnswer();
+      } else {
+        document.getElementById('btn-stop').style.display='none';
+        document.getElementById('rec-dot').classList.remove('on');
+        document.getElementById('waveform').classList.remove('active');
+        document.getElementById('rec-label').textContent='대기';
+        var bA3=document.getElementById('btn-answer');if(bA3) bA3.style.display='inline-flex';
+        document.getElementById('transcript').textContent='목소리가 없어요. 🎙 답변하기 버튼을 누르고 말해 주세요.';
+      }
     } else {
-      // 아무 말 안 했으면 답변 버튼 다시 노출 (모바일 호환)
-      document.getElementById('btn-stop').style.display='none';
-      document.getElementById('rec-dot').classList.remove('on');
-      document.getElementById('waveform').classList.remove('active');
-      document.getElementById('rec-label').textContent='대기';
-      var bA3=document.getElementById('btn-answer');if(bA3) bA3.style.display='inline-flex';
-      document.getElementById('transcript').textContent='목소리가 없어요. 🎙 답변하기 버튼을 누르고 말해 주세요.';
+      try{ recognition.start(); }catch(e){
+        document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 인식 중단. 🎙 답변하기 다시 눌러 주세요.</span>';
+        var bA5=document.getElementById('btn-answer');if(bA5) bA5.style.display='inline-flex';
+        document.getElementById('btn-stop').style.display='none';
+      }
     }
   };
   try{
@@ -676,6 +684,7 @@ function stopAnswer(){
 }
 
 function stopAndFeedback(){
+  window._manualStop=true;
   endingRoleplay=true;
   try{if(typeof gcStop==='function')gcStop();}catch(e){}
   if('speechSynthesis' in window)window.speechSynthesis.cancel();

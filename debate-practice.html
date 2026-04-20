@@ -226,7 +226,7 @@ function startDebate(){
   if(!history.state||!history.state.debate)history.pushState({debate:true},'','');
   var t=TOPICS[selectedTopic];
   document.getElementById('t-text').textContent=t.t+' / '+t.ko;
-  document.getElementById('t-stance').innerHTML='🎯 배정된 입장: <b style="color:var(--gold-light);">'+(myStance==='for'?'찬성 (For)':'반대 (Against)')+'</b> · 이 입장에서 1회 발표 후, AI 지원자가 반대 입장으로 발표합니다.';
+  document.getElementById('t-stance').innerHTML='🎯 선택한 입장: <b style="color:var(--gold-light);">'+(myStance==='for'?'찬성 (For)':'반대 (Against)')+'</b> · 이 입장에서 1회 발표 후, AI 지원자가 반대 입장으로 발표합니다.';
   chatHistory=[];
   resetDebateUI();
 

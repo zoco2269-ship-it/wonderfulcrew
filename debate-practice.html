@@ -78,7 +78,15 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <div class="setup" id="setup">
   <div class="tag">DEBATE PRACTICE · 1:1</div>
   <h1>디베이트 <em>연습</em></h1>
-  <p>주어진 주제에 대해 AI 토론자와 1:1 찬반 토론을 진행합니다.<br>본인 입장을 선택한 뒤 시작하세요.</p>
+  <p>싱가포르 디베이트는 <b style="color:var(--gold-light);">일방 발표 형식</b>입니다.<br>주고받는 토론이 아니라, 주제와 입장이 주어지면 각자 생각을 정리해<br>한 명씩 1회씩 발표하고 끝납니다.</p>
+  <div style="background:rgba(201,168,76,0.1);border-left:3px solid var(--gold);padding:12px 16px;margin:0 auto 18px;text-align:left;max-width:520px;font-size:0.82rem;color:rgba(255,255,255,0.78);line-height:1.75;">
+    <b style="color:var(--gold);">진행 방식</b><br>
+    ① 주제 + 본인 입장 선택 (찬성/반대)<br>
+    ② 본인이 선택한 입장에서 1회 발표<br>
+    ③ AI 지원자가 반대 입장에서 1회 발표 (참고용)<br>
+    ④ 피드백 · 끝<br>
+    <span style="color:rgba(255,255,255,0.55);font-size:0.76rem;">※ 유창함보다 <b>자신감 있고 또렷한 발표력</b>이 핵심입니다.</span>
+  </div>
 
   <div class="topic-grid" id="topic-grid"></div>
 
@@ -273,32 +281,41 @@ async function stopAnswer(){
   if(!ans){document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('rec-label').textContent='대기';return;}
   chatHistory.push({role:'user',content:ans});
 
-  // AI 응답 (반대 입장에서)
+  // 본인 발표 완료 → AI가 반대 입장에서 1회 발표 (참고용) → 자동 종료
   var t=TOPICS[selectedTopic];
   var aiStance=myStance==='for'?'against':'for';
-  var sys='You are debating a single human opponent in English. Topic: "'+t.t+'". You take the '+aiStance.toUpperCase()+' position. The opponent takes the '+myStance.toUpperCase()+' position.\n\nRules:\n- Reply in ENGLISH only, 1-2 sentences max.\n- Acknowledge their point briefly, then push back with a clear counter-argument.\n- Stay polite but firm. Use phrases like "I see your point, but..." / "That makes sense in some cases, however..."\n- Do NOT switch sides. Do NOT agree fully. Keep the debate going.\n- Do NOT conclude or end the debate yourself — the user decides when to stop.';
+  var aiStanceKo=myStance==='for'?'반대':'찬성';
+  var sys='Singapore Airlines debate — standalone presentation format. Topic: "'+t.t+'". You are giving your own presentation from the '+aiStance.toUpperCase()+' position. This is NOT a back-and-forth debate. Just deliver a standalone 2~3 sentence presentation (30~45 seconds spoken) stating your position with clear reasoning.\n\nRules:\n- English only. 2~3 sentences, natural spoken style.\n- Do NOT reference or respond to the candidate. This is parallel presentation, not rebuttal.\n- Start with your position clearly: "I believe..." / "In my opinion..."\n- Give one or two simple reasons. Keep it casual and confident, not academic.\n- Do NOT use phrases like "I see your point" or "However" — you are NOT rebutting.';
   document.getElementById('card-ai').classList.add('speaking');
-  document.getElementById('transcript').textContent='AI debater is responding...';
+  document.getElementById('transcript').textContent='AI 지원자('+aiStanceKo+' 입장)가 발표합니다...';
+  document.getElementById('btn-answer').style.display='none';
+  document.getElementById('btn-end').style.display='none';
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:200,system:sys,messages:chatHistory
+      model:'claude-haiku-4-5-20251001',max_tokens:160,system:sys,
+      messages:[{role:'user',content:'Present your '+aiStance+' position on the topic now.'}]
     })});
     var data=await res.json();
-    var aiText=((data&&data.content&&data.content[0]&&data.content[0].text)||'I disagree. Could you elaborate?').replace(/\*\*/g,'').trim();
+    var aiText=((data&&data.content&&data.content[0]&&data.content[0].text)||'I think this is an important question, and my position is clear based on practical reasoning.').replace(/\*\*/g,'').trim();
     chatHistory.push({role:'assistant',content:aiText});
-    document.getElementById('feedback').innerHTML='<b>AI Debater:</b> '+aiText;
+    document.getElementById('feedback').innerHTML='<b>AI 지원자 ('+aiStanceKo+' 입장 발표 · 참고용):</b><br>'+aiText;
     document.getElementById('feedback').classList.add('active');
-    if(typeof gcSpeak==='function'){gcSpeak(aiText,'en-GB','female',function(){document.getElementById('card-ai').classList.remove('speaking');});}
-    else{document.getElementById('card-ai').classList.remove('speaking');}
+    if(typeof gcSpeak==='function'){
+      gcSpeak(aiText,'en-GB','female',function(){
+        document.getElementById('card-ai').classList.remove('speaking');
+        document.getElementById('transcript').textContent='디베이트 발표 완료. 피드백 생성 중...';
+        setTimeout(endDebate,800);
+      });
+    } else {
+      document.getElementById('card-ai').classList.remove('speaking');
+      setTimeout(endDebate,1500);
+    }
   }catch(e){
     document.getElementById('card-ai').classList.remove('speaking');
-    document.getElementById('feedback').innerHTML='<span style="color:#E74C3C;">AI 응답 실패. 다시 시도해주세요.</span>';
+    document.getElementById('feedback').innerHTML='<span style="color:#E74C3C;">AI 발표 실패. 바로 피드백으로 진행합니다.</span>';
     document.getElementById('feedback').classList.add('active');
+    setTimeout(endDebate,800);
   }
-  document.getElementById('btn-answer').style.display='inline-flex';
-  document.getElementById('btn-end').style.display='inline-flex';
-  document.getElementById('rec-label').textContent='대기';
-  document.getElementById('transcript').textContent='이어서 본인 의견을 말씀해 주세요.';
 }
 
 async function endDebate(){

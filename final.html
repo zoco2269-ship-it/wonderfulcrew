@@ -307,60 +307,6 @@ function goBack(){
 // 음성 미리 로드
 if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}
 
-// === 카메라 초기화 + 수동 picker ===
-async function initCameraWithPicker(targetDeviceId){
-  try{
-    // 권한 획득 (label unlock)
-    if(!stream){
-      try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});}catch(e){document.getElementById('cam-ph').innerHTML='<div>카메라 권한 필요</div>';return;}
-    }
-    // 장치 목록
-    var devices=await navigator.mediaDevices.enumerateDevices();
-    var cams=devices.filter(function(d){return d.kind==='videoinput';});
-
-    // 원하는 deviceId 지정된 경우 그걸로 교체, 아니면 자동 선택
-    var picked=null;
-    if(targetDeviceId){
-      picked=cams.find(function(c){return c.deviceId===targetDeviceId;});
-    }
-    if(!picked){
-      // 외장·가상 키워드는 제외, 전면/내장 키워드 우선
-      var frontRe=/front|전면|셀피|selfie|facetime|integrated|built-?in|internal|hd camera|hd webcam|mac.*camera|isight|laptop/i;
-      var badRe=/obs|virtual|droidcam|ivcam/i;
-      picked=cams.find(function(c){return frontRe.test(c.label);});
-      if(!picked) picked=cams.find(function(c){return !badRe.test(c.label);});
-      if(!picked) picked=cams[0];
-    }
-
-    // 지정 deviceId로 재획득
-    if(picked){
-      stream.getTracks().forEach(function(t){t.stop();});
-      stream=await navigator.mediaDevices.getUserMedia({video:{deviceId:{exact:picked.deviceId}},audio:true});
-      var v=document.getElementById('cam-video');
-      v.srcObject=stream;v.style.display='block';
-      document.getElementById('cam-ph').style.display='none';
-      console.log('[final] camera:',picked.label||picked.deviceId);
-    }
-
-    // picker UI — 카메라 1개여도 "카메라 바꾸기" 표시 (사용자가 수동 확인 가능)
-    if(cams.length>=1){
-      var host=document.getElementById('cam-picker');
-      if(!host){
-        host=document.createElement('div');
-        host.id='cam-picker';
-        // q-banner 바로 아래, interview 상단에 고정 배치 (카드 위로 삐져나오지 않게)
-        host.style.cssText='position:absolute;top:70px;right:12px;z-index:50;';
-        var interview=document.getElementById('interview');
-        if(interview){interview.style.position='relative';interview.appendChild(host);}
-      }
-      var btnLabel=picked?(picked.label||'Camera').substring(0,24):'카메라 선택';
-      host.innerHTML='<select onchange="initCameraWithPicker(this.value)" title="카메라 선택" style="padding:6px 10px;background:rgba(201,168,76,0.9);color:#1A2340;border:none;border-radius:14px;font-size:0.72rem;font-weight:700;cursor:pointer;max-width:200px;">'+
-        '<option disabled>📷 카메라 변경</option>'+
-        cams.map(function(c){var label=c.label||('Camera '+c.deviceId.slice(-4));return '<option value="'+c.deviceId+'"'+(picked&&c.deviceId===picked.deviceId?' selected':'')+'>'+label+'</option>';}).join('')+
-      '</select>';
-    }
-  }catch(e){console.warn('[final] camera init failed',e);document.getElementById('cam-ph').innerHTML='<div>카메라 연결 실패</div>';}
-}
 window.addEventListener('beforeunload',function(){if('speechSynthesis' in window)window.speechSynthesis.cancel();if(stream)stream.getTracks().forEach(function(t){t.stop();});});
 
 function startInterview(){
@@ -372,9 +318,18 @@ function startInterview(){
   document.getElementById('setup').style.display='none';
   document.getElementById('interview').classList.add('active');
 
-  // 카메라 초기화 + 수동 선택 드롭다운
+  // 카메라 — interview-practice.html에서 검증된 단순 호출 방식과 동일
   if(document.getElementById('cam-toggle').checked){
-    initCameraWithPicker();
+    (async function(){
+      try{
+        stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});
+        var v=document.getElementById('cam-video');
+        v.srcObject=stream;v.style.display='block';
+        document.getElementById('cam-ph').style.display='none';
+      }catch(e){
+        document.getElementById('cam-ph').innerHTML='<div>카메라 연결 실패</div>';
+      }
+    })();
   }
   qIdx=0;showQuestion();
 }

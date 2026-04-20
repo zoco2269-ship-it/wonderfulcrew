@@ -61,16 +61,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   .topic-card{padding:12px 14px;}
   .topic-card h3{font-size:0.88rem;}
   .topic-card p{font-size:0.72rem;}
-  .interview.active{min-height:calc(100dvh - 56px);}
-  .q-banner{padding:10px 14px;}
-  .q-banner .question{font-size:0.9rem;}
-  .q-banner .question+.question{font-size:0.72rem!important;margin-top:5px!important;}
-  .card-frame{width:100px!important;aspect-ratio:3/4!important;}
-  .video-area{gap:8px;padding:8px;min-height:0;}
-  .waveform{height:18px;}
-  .transcript-bar{padding:6px 14px;font-size:0.76rem;min-height:26px;}
-  .controls{flex-wrap:wrap;gap:6px;padding:10px 10px env(safe-area-inset-bottom,10px);position:sticky;bottom:0;z-index:10;}
-  .ctrl-btn{padding:10px 14px!important;font-size:0.76rem!important;}
+  /* 카메라는 그대로 크게. 주제가 길면 스크롤로 내려 보게 */
+  .card-frame{width:160px;}
+  .controls{flex-wrap:wrap;gap:6px;padding:10px 12px env(safe-area-inset-bottom,10px);}
+  .ctrl-btn{padding:10px 14px!important;font-size:0.78rem!important;}
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

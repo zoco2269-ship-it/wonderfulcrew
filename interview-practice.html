@@ -462,6 +462,16 @@ var questions = selected.q;
 var label = selected.label;
 var recognitionLang = selected.lang || 'ko-KR';
 document.getElementById('q-label').textContent=label;
+// 답변 언어 안내 배지 (질문 카드 위쪽에 표시)
+(function(){
+  var qText=document.getElementById('q-text');
+  if(!qText||document.getElementById('lang-hint'))return;
+  var hint=document.createElement('div');
+  hint.id='lang-hint';
+  hint.style.cssText='display:inline-block;padding:6px 14px;background:'+(recognitionLang==='en-US'?'rgba(201,168,76,0.18)':'rgba(232,201,106,0.12)')+';color:var(--gold);font-size:0.78rem;font-weight:600;border:1px solid var(--gold);border-radius:14px;margin-bottom:12px;letter-spacing:0.04em;';
+  hint.textContent=recognitionLang==='en-US'?'🇬🇧 답변 언어: English (영어로 말씀해 주세요)':'🇰🇷 답변 언어: 한국어';
+  qText.parentNode.insertBefore(hint,qText);
+})();
 
 function pickQ(){
   var q=questions[Math.floor(Math.random()*questions.length)];

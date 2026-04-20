@@ -385,11 +385,11 @@ async function aiPeerSpeak(persona,panelId){
       '스타일: '+persona.style+'\n'+
       '주제: "'+topic.text+'"'+(topic.kind==='debate'?' (찬반 토론: '+topic.a+' / '+topic.b+')':'')+'\n\n'+
       '규칙:\n'+
-      '- 다른 지원자 의견을 먼저 한 줄로 인정/요약한 뒤 본인 관점을 제시 ("말씀 잘 들었습니다. 거기에 더해 저는…")\n'+
-      '- **반드시 2~3문장 이내로 짧게** 마무리하세요. 길게 풀어 쓰면 안 됩니다.\n'+
+      '- 다른 지원자 의견을 짧게 한 마디로 인정한 뒤 본인 관점 제시 ("좋은 의견입니다. 저는…")\n'+
+      '- **반드시 1~2문장, 80자 이내로 매우 짧게** 답하세요. 실제 그룹 디스커션은 한 사람이 길게 말하지 않습니다.\n'+
       '- **반드시 완결된 문장(마침표)으로 끝내세요.** 문장 중간에 끊지 마세요.\n'+
       '- 한국어 존댓말\n'+
-      '- 새로운 데이터/사례/관점 한 가지 반드시 포함\n'+
+      '- 핵심 한 가지만 짧고 선명하게. 여러 근거/사례 나열 금지.\n'+
       '- 다른 지원자를 부정하지 말고 연결하되, 본인 입장은 선명하게\n'+
       '- 영어 금지\n'+
       '- IATA, 국제항공운송협회 등 특정 기관명을 반복 인용하지 마세요. 매번 다른 근거를 사용하세요\n'+
@@ -398,12 +398,30 @@ async function aiPeerSpeak(persona,panelId){
       '- 본인 이름(지원자 B, 지원자 C)을 답변 앞이나 본문에 붙이지 마세요\n'+
       '- "지원자 A", "[지원자 A]", "지원자 A님" 같은 다른 화자 호명/라벨 절대 사용 금지. 그냥 자연스럽게 본인 발언만 출력.\n'+
       '- 이전 발언자의 문장을 이어받아 완성하지 마세요. 본인의 새 문장으로 시작하세요.';
-    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:500,
-      system:sys,messages:chatHistory
-    })});
-    var data=await res.json();
-    var txt=(data&&data.content&&data.content[0]&&data.content[0].text)||(persona.name+': 좋은 의견이네요. 저도 같은 맥락에서 덧붙이자면…');
+    // API 호출 (1회 재시도)
+    async function callAI(){
+      var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',max_tokens:250,
+        system:sys,messages:chatHistory
+      })});
+      return await r.json();
+    }
+    var data=null,txt='';
+    try{data=await callAI();}catch(e){console.warn('[disc-ai] 1차 실패',e);}
+    if(!data||!data.content||!data.content[0]||!data.content[0].text){
+      console.warn('[disc-ai] 응답 비정상 → 1회 재시도',data);
+      try{data=await callAI();}catch(e){console.warn('[disc-ai] 2차도 실패',e);}
+    }
+    txt=(data&&data.content&&data.content[0]&&data.content[0].text)||'';
+    // 두 번 다 실패 시 완결된 fallback 문장 (… 없이)
+    if(!txt){
+      var fallbacks=[
+        '좋은 의견 잘 들었습니다. 저는 이 부분에서 균형이 가장 중요하다고 봅니다.',
+        '말씀에 공감합니다. 저는 현장 경험에서도 비슷한 결론에 닿았습니다.',
+        '좋은 지적이라고 생각합니다. 저는 거기에 더해 일관성이 핵심이라 봅니다.'
+      ];
+      txt=fallbacks[Math.floor(Math.random()*fallbacks.length)];
+    }
     txt=txt.replace(/\*\*/g,'').replace(/---+/g,'').replace(/\n{2,}/g,'\n').replace(/당신은.*차례입니다\.?/g,'').trim();
     // 모든 위치의 [지원자 X], 지원자 X:, 지원자 X) 등 화자 라벨 제거 (앞뿐 아니라 본문 중간 포함)
     txt=txt.replace(/\[?지원자\s*[A-C]\]?\s*[:：)]\s*/g,'').trim();

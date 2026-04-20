@@ -134,6 +134,11 @@ function renderTrialBadge(containerId) {
     'live-booking.html','lecture.html'
   ];
   if (gatedPages.indexOf(page) === -1) return;
+  // 테스트 모드는 즉시 리다이렉트 (DOM 기다리지 않음)
+  if (localStorage.getItem('wc_test_mode') === 'true') {
+    location.replace('plans.html?blocked=' + encodeURIComponent(page));
+    return;
+  }
   // 즉시 체크 (어드민이나 유료는 통과)
   function gateCheck(){
     // 테스트 모드는 무조건 잠금 — 관리자가 결제 플로우 검증 중

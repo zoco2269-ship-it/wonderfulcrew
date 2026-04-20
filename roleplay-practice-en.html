@@ -588,6 +588,18 @@ window.addEventListener('pagehide',function(){
 
 var _ttsAudio=null;
 
+function _sanitizeForTTS(t){
+  if(!t)return '';
+  return String(t)
+    .replace(/[→←↑↓⇒⇐⟶⟵]/g,', ')
+    .replace(/[•·●■□▪▫◆◇★☆]/g,', ')
+    .replace(/[\/\\]/g,' ')
+    .replace(/[#*_`~]/g,'')
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'')
+    .replace(/\s{2,}/g,' ')
+    .trim();
+}
+
 async function speakQuestion(text,lang){
   var iCard=document.getElementById('interviewer-card');
   var mouth=document.getElementById('avatar-mouth');
@@ -599,6 +611,7 @@ async function speakQuestion(text,lang){
   if('speechSynthesis' in window) window.speechSynthesis.cancel();
 
   var isMale=(chosenAvatar==='👨🏻');
+  text=_sanitizeForTTS(text);
 
   // Google Cloud TTS API 시도
   try{

@@ -166,7 +166,10 @@ async function signInWith(provider) {
   try {
     var { error } = await sb.auth.signInWithOAuth({
       provider: provider,
-      options: { redirectTo: window.location.origin + '/login.html' }
+      options: {
+        redirectTo: window.location.origin + '/login.html',
+        queryParams: { prompt: 'select_account' }
+      }
     });
     if (error) alert('로그인 실패: ' + error.message);
   } catch(e) { alert('로그인 오류: ' + e.message); }

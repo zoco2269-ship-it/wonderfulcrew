@@ -98,14 +98,28 @@ textarea{min-height:80px;resize:vertical;}
     <div class="stat-box"><div class="num" style="font-size:0.86rem;color:var(--text-muted);line-height:2.4;">실데이터</div><div class="lbl">상태</div></div>
   </div>
   <div class="card" style="background:rgba(255,243,224,0.5);border-left:4px solid #E65100;margin-top:24px;">
-    <h3 style="color:#E65100;">🧪 결제 플로우 테스트 모드</h3>
+    <h3 style="color:#E65100;">🧪 결제 플로우 테스트</h3>
     <p style="font-size:0.86rem;color:var(--text-mid);line-height:1.7;margin-bottom:12px;">
-      관리자 계정(어드민 이메일)은 기본적으로 유료 기능 제한을 우회합니다. 실제 결제 플로우를 확인하려면 <b>테스트 모드</b>를 켜서 일반 사용자처럼 행동하게 만드세요.
-      <br>켜면: 어드민 우회 해제 + wc_paid 초기화 + 무료체험 10회 소진 상태로 설정됨.
+      관리자 계정(<b>zoco2269@gmail.com</b>)은 <b>isAdmin() 자동 우회</b>로 유료 기능 전부 접근 가능. 실제 일반 사용자 경험을 검증하려면 아래 <b>①번이 가장 확실한 방법</b>입니다.
     </p>
-    <div id="test-mode-status" style="margin-bottom:10px;font-size:0.84rem;"></div>
-    <button class="btn-sm gold" onclick="enableTestMode()">🧪 테스트 모드 켜기 (내 결제상태 초기화)</button>
-    <button class="btn-sm navy" onclick="disableTestMode()" style="margin-left:6px;">✓ 테스트 모드 끄기 (어드민 복귀)</button>
+    <div id="test-mode-status" style="margin-bottom:14px;font-size:0.84rem;"></div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="padding:12px 14px;background:#fff;border:1px solid var(--gold-pale);border-radius:6px;">
+        <div style="font-weight:700;color:#2E7D32;margin-bottom:6px;">① 다른 구글 계정으로 테스트 (권장 · 가장 정확)</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;line-height:1.6;">
+          로그아웃 후 어드민 이메일이 아닌 구글 계정으로 로그인. 브라우저 캐시·로컬스토리지 영향 없이 진짜 일반 사용자로 동작합니다.
+        </div>
+        <button class="btn-sm navy" onclick="logoutForTest()">로그아웃하고 다른 계정으로 로그인 →</button>
+      </div>
+      <div style="padding:12px 14px;background:#fff;border:1px solid var(--gold-pale);border-radius:6px;">
+        <div style="font-weight:700;color:#E65100;margin-bottom:6px;">② localStorage 테스트 모드 (보조 · 캐시에 민감)</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;line-height:1.6;">
+          브라우저 캐시가 구버전이면 제대로 동작 안 함. 강력 새로고침 필수. 동일 계정 안에서 우회만 해제.
+        </div>
+        <button class="btn-sm gold" onclick="enableTestMode()">🧪 테스트 모드 켜기</button>
+        <button class="btn-sm navy" onclick="disableTestMode()" style="margin-left:6px;">✓ 끄기 (어드민 복귀)</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -637,6 +651,25 @@ async function loadDeposits(){
       '<td>'+statusBadge+'</td>'+
       '<td>'+actions+'</td></tr>';
   });
+}
+
+async function logoutForTest(){
+  if(!confirm('로그아웃 후 login.html 로 이동합니다. 다른 구글 계정을 선택해서 로그인하면 일반 사용자 상태로 테스트할 수 있습니다. 진행하시겠습니까?'))return;
+  try{
+    // localStorage / sessionStorage 완전 정리 (모든 캐시 제거)
+    localStorage.removeItem('wc_user');
+    localStorage.removeItem('wc_paid');
+    localStorage.removeItem('wc_paid_date');
+    localStorage.removeItem('wc_subscription_expires');
+    localStorage.removeItem('wc_eng_tokens');
+    localStorage.removeItem('wc_free_trial');
+    localStorage.removeItem('wc_test_mode');
+    localStorage.removeItem('wc_v3');
+    if(typeof getSupabase==='function'&&getSupabase()){
+      try{await getSupabase().auth.signOut();}catch(e){}
+    }
+  }catch(e){}
+  location.replace('login.html');
 }
 
 function enableTestMode(){

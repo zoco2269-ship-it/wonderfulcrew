@@ -88,7 +88,10 @@ async function signInWithGoogle() {
   if (!sb) { alert('서버 연결 중입니다. 잠시 후 다시 시도해주세요.'); return; }
   var { data, error } = await sb.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.origin + '/login.html' }
+    options: {
+      redirectTo: window.location.origin + '/login.html',
+      queryParams: { prompt: 'select_account' }
+    }
   });
   if (error) alert('로그인 실패: ' + error.message);
 }

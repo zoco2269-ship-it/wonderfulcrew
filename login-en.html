@@ -161,7 +161,10 @@ async function signInWith(provider) {
   try {
     var { error } = await sb.auth.signInWithOAuth({
       provider: provider,
-      options: { redirectTo: window.location.origin + '/login-en.html' }
+      options: {
+        redirectTo: window.location.origin + '/login-en.html',
+        queryParams: { prompt: 'select_account' }
+      }
     });
     if (error) alert('Login failed: ' + error.message);
   } catch(e) { alert('Login error: ' + e.message); }

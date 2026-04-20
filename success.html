@@ -35,10 +35,32 @@ a.btn{display:inline-block;margin-top:20px;padding:14px 32px;background:linear-g
 // 결제 완료 시 localStorage에 기록
 localStorage.setItem('wc_paid','true');
 localStorage.setItem('wc_paid_date',new Date().toISOString());
-// 토큰 무제한 설정
 var t=JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');
 t.tokens=99999;t.unlimited=true;
 localStorage.setItem('wc_eng_tokens',JSON.stringify(t));
+
+// Supabase에 결제 기록 + 구독 활성화 (서버에 영구 저장)
+(function(){
+  try{
+    var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+    var qp=new URLSearchParams(location.search);
+    var tid=qp.get('tid')||'';
+    var moid=qp.get('moid')||'';
+    var amount=qp.get('amount')||'';
+    if(!moid)return; // 결제 콜백 없이 직접 진입한 경우
+    // plan 추정: amount로 판단
+    var plan='basic';
+    var amt=parseInt(amount,10)||0;
+    if(amt>=2000000)plan='premium';
+    else if(amt>=290000)plan='elite';
+    fetch('/api/save-payment',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({userId:u.id||'',email:u.email||'',name:u.name||'',plan:plan,tid:tid,moid:moid,amount:amount})
+    }).then(function(r){return r.json();}).then(function(d){
+      console.log('[wc-payment] saved:',d);
+      if(d&&d.expiresAt){localStorage.setItem('wc_subscription_expires',d.expiresAt);}
+    }).catch(function(e){console.warn('[wc-payment] save failed:',e);});
+  }catch(e){console.warn('[wc-payment] error:',e);}
+})();
 </script>
 </body>
 </html>

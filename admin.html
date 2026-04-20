@@ -507,56 +507,89 @@ async function sendPushNoti(){
   }
 })();
 
-// Supabase에서 실제 데이터 로드
-async function loadDashboard(){
-  var sb=typeof getSupabase==='function'?getSupabase():null;
-  if(!sb){console.log('Supabase not ready');return;}
+// === 실데이터 로드 (서버 admin-data API 사용 — Service Key로 RLS 우회) ===
+function _adminEmail(){var u=JSON.parse(localStorage.getItem('wc_user')||'{}');return u.email||'';}
+async function fetchAdmin(scope){
   try{
-    // 회원 수 (Supabase auth는 직접 조회 불가, practice_records의 고유 user_id로 추정)
-    var {data:records}=await sb.from('practice_records').select('user_id');
-    var uniqueUsers=records?[...new Set(records.map(r=>r.user_id))]:[];
-    document.querySelectorAll('.stat-box .num')[0].textContent=uniqueUsers.length||'0';
-
-    // 오늘 연습 기록
-    var today=new Date().toISOString().slice(0,10);
-    var {data:todayRecs}=await sb.from('practice_records').select('id').gte('created_at',today+'T00:00:00');
-    document.querySelectorAll('.stat-box .num')[1].textContent=(todayRecs?todayRecs.length:0);
-
-    // 결제 건수
-    var {data:payments}=await sb.from('payments').select('*');
-    document.querySelectorAll('.stat-box .num')[2].textContent=(payments?payments.length:0)+'건';
-    var totalAmt=payments?payments.reduce(function(s,p){return s+(p.amount||0);},0):0;
-    document.querySelectorAll('.stat-box .num')[3].textContent=Math.round(totalAmt/10000)+'만';
-
-    // 회원 목록 테이블
-    var memberTable=document.querySelector('#page-members table');
-    if(memberTable && uniqueUsers.length){
-      var rows='<tr><th>User ID</th><th>연습 횟수</th><th>최근 활동</th></tr>';
-      var userCounts={};
-      records.forEach(function(r){userCounts[r.user_id]=(userCounts[r.user_id]||0)+1;});
-      uniqueUsers.slice(0,50).forEach(function(uid){
-        rows+='<tr><td>'+uid.substring(0,20)+'...</td><td>'+userCounts[uid]+'회</td><td><span class="badge green">활성</span></td></tr>';
-      });
-      memberTable.innerHTML=rows;
-    }
-
-    // 도입 문의
-    var {data:inquiries}=await sb.from('inquiries').select('*').order('at',{ascending:false}).limit(20);
-    if(inquiries && inquiries.length){
-      var fbList=document.getElementById('feedback-list');
-      if(fbList){
-        fbList.innerHTML='<h3 style="margin-bottom:12px;">도입 문의 ('+inquiries.length+'건)</h3>'+
-          inquiries.map(function(q){
-            return '<div style="padding:14px;border-bottom:1px solid var(--gold-pale);">'+
-              '<div style="font-size:0.78rem;color:var(--text-muted);">'+q.at+' · '+q.company+' · '+q.name+' · '+q.email+'</div>'+
-              '<div style="font-size:0.88rem;color:var(--text-dark);margin-top:6px;line-height:1.6;">['+q.type+'] '+q.content+'</div></div>';
-          }).join('');
-      }
-    }
-  }catch(e){console.error('Dashboard load error:',e);}
+    var r=await fetch('/api/admin-data',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({adminEmail:_adminEmail(),scope:scope})});
+    return await r.json();
+  }catch(e){console.warn('[admin-data] '+scope+' failed',e);return null;}
 }
-// Supabase 준비 후 로드
-setTimeout(loadDashboard,2000);
+function fmtAmt(n){return (n||0).toLocaleString('ko-KR');}
+function fmtDate(s){if(!s)return '-';return s.slice(0,10);}
+
+async function loadOverview(){
+  var d=await fetchAdmin('overview');
+  if(!d||!d.ok)return;
+  var statBoxes=document.querySelectorAll('#page-overview .stat-box .num');
+  if(statBoxes.length>=4){
+    statBoxes[0].textContent=d.totalMembers;
+    statBoxes[1].textContent=d.todayJoined;
+    statBoxes[2].textContent=d.monthPaymentCount+'건';
+    statBoxes[3].textContent=Math.round((d.monthRevenue||0)/10000).toLocaleString()+'만';
+  }
+  if(statBoxes.length>=8){
+    statBoxes[4].textContent=d.activeSubscriptions;
+    statBoxes[5].textContent=d.totalPayments+'건';
+    statBoxes[6].textContent=Math.round((d.allTimeRevenue||0)/10000).toLocaleString()+'만';
+  }
+}
+
+async function loadMembersTable(){
+  var d=await fetchAdmin('members');
+  var t=document.querySelector('#page-members table');
+  if(!t||!d||!d.ok)return;
+  var rows='<tr><th>이름</th><th>이메일</th><th>가입일</th><th>플랜</th><th>구독상태</th><th>만료일</th></tr>';
+  if(!d.members.length){
+    rows+='<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">회원이 없습니다.</td></tr>';
+  } else {
+    d.members.forEach(function(m){
+      var sub=m.subscription;
+      var status=sub?(sub.status==='active'?'<span class="badge green">'+sub.plan+'</span>':'<span class="badge yellow">'+sub.status+'</span>'):'<span class="badge red">무료</span>';
+      var exp=sub?fmtDate(sub.expires_at):'-';
+      rows+='<tr><td>'+(m.name||'-')+'</td><td>'+(m.email||'-')+'</td><td>'+fmtDate(m.created_at)+'</td><td>'+(m.plan||'free')+'</td><td>'+status+'</td><td>'+exp+'</td></tr>';
+    });
+  }
+  t.innerHTML=rows;
+}
+
+async function loadPaymentsTable(){
+  var d=await fetchAdmin('payments');
+  if(!d||!d.ok)return;
+  // 통계 박스 갱신
+  var stats=document.querySelectorAll('#page-payments .stat-box .num');
+  var monthStart=new Date();monthStart.setDate(1);monthStart.setHours(0,0,0,0);
+  var monthPay=d.payments.filter(function(p){return p.status==='completed'&&new Date(p.created_at)>=monthStart;});
+  var monthRev=monthPay.reduce(function(s,p){return s+(p.amount||0);},0);
+  var card=d.payments.filter(function(p){return p.status==='completed'&&p.method==='innopay';}).length;
+  if(stats.length>=4){
+    stats[0].textContent=monthPay.length+'건';
+    stats[1].textContent=Math.round(monthRev/10000).toLocaleString()+'만';
+    stats[2].textContent=card+'건';
+    stats[3].textContent=(d.payments.length-card)+'건';
+  }
+  // 테이블
+  var t=document.querySelector('#page-payments table');
+  if(!t)return;
+  var rows='<tr><th>날짜</th><th>회원</th><th>이메일</th><th>플랜</th><th>금액</th><th>주문번호</th><th>상태</th></tr>';
+  if(!d.payments.length){
+    rows+='<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">결제 내역이 없습니다.</td></tr>';
+  } else {
+    d.payments.forEach(function(p){
+      var statusBadge=p.status==='completed'?'<span class="badge green">완료</span>':p.status==='pending'?'<span class="badge yellow">대기</span>':'<span class="badge red">'+p.status+'</span>';
+      rows+='<tr><td>'+fmtDate(p.created_at)+'</td><td>'+(p.user_name||'-')+'</td><td>'+(p.user_email||'-')+'</td><td>'+(p.plan||'-')+'</td><td>'+fmtAmt(p.amount)+'원</td><td style="font-size:0.72rem;color:var(--text-muted);">'+(p.moid||'-')+'</td><td>'+statusBadge+'</td></tr>';
+    });
+  }
+  t.innerHTML=rows;
+}
+
+// 페이지 첫 진입 시 dashboard + members + payments 모두 로드
+setTimeout(function(){
+  loadOverview();
+  loadMembersTable();
+  loadPaymentsTable();
+},1500);
 
 function showPage(name){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});

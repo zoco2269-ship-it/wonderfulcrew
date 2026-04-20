@@ -513,11 +513,13 @@ function initFaceMesh(videoEl){
         var faceL=lm[234],faceR=lm[454];
         var cornerY=(lipL.y+lipR.y)/2;
         var lipMidY=(lipTop.y+lipBot.y)/2;
-        var cornerLift=lipMidY-cornerY; // 양수 = 입꼬리가 입 중앙선보다 위
+        var cornerLift=lipMidY-cornerY; // 양수 = 입꼬리가 입 중앙선보다 위 (실제 미소)
         var mouthW=Math.abs(lipR.x-lipL.x);
         var faceW=Math.abs(faceR.x-faceL.x);
-        var widthRatio=faceW>0?(mouthW/faceW):0; // 얼굴폭 대비 입폭 — 미소 시 0.42 이상
-        if(cornerLift>0.002 || widthRatio>0.42) faceStats.smileFrames++;
+        var widthRatio=faceW>0?(mouthW/faceW):0;
+        // 미소 = 입꼬리가 실제로 들렸을 때만 (cornerLift 필수)
+        // widthRatio는 보조 조건: 입을 가로로 더 늘인 경우
+        if(cornerLift>0.006 && widthRatio>0.46) faceStats.smileFrames++;
         var nose=lm[1];
         if(Math.abs(nose.x-0.5)<0.15&&Math.abs(nose.y-0.45)<0.15)faceStats.lookingCenter++;
         var eyeL=lm[33],eyeR=lm[263];

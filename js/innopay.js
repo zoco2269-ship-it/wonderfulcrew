@@ -66,6 +66,28 @@ async function payWithInnopay(plan, buyerInfo, payMethod) {
       Signature: data.signature,
       Timestamp: data.timestamp,
     });
+
+    // === 결제창 잘림 강제 우회 ===
+    // Innopay SDK가 desktop에서 div height를 viewport보다 작게 강제하므로
+    // 모달 생성 후 popWrapper에 overflow:auto, divpop은 auto height로 덮어씀.
+    // 그러면 사용자가 페이지 자체를 스크롤하여 결제창 하단(취소/다음)까지 볼 수 있음.
+    setTimeout(function(){
+      try{
+        var wrap=document.querySelector('.popWrapper');
+        var divpop=document.getElementById('divpop');
+        var iframe=document.getElementById('InnoFrame');
+        if(wrap){
+          wrap.style.cssText+=';overflow-y:auto !important;display:flex !important;align-items:flex-start !important;justify-content:center !important;padding:20px 0 !important;';
+        }
+        if(divpop){
+          divpop.style.cssText+=';position:relative !important;top:0 !important;left:auto !important;height:auto !important;min-height:auto !important;max-height:none !important;margin:0 auto !important;display:flex !important;flex-direction:column !important;';
+        }
+        if(iframe){
+          // 결제 폼 전체 높이 확보 (대부분의 Innopay 폼이 ~900px 안에 들어감)
+          iframe.style.cssText+=';height:1000px !important;min-height:900px !important;display:block !important;';
+        }
+      }catch(e){console.warn('[innopay] modal style override failed',e);}
+    }, 400);
   } catch (e) {
     alert('결제 연결 실패: ' + e.message);
     console.error('Innopay error:', e);

@@ -334,9 +334,43 @@ Travel: Visited 12 countries across Asia and Europe</div>
   <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(232,201,106,0.08),rgba(201,168,76,0.04));border-color:var(--gold);">
     <h3>실제 합격생 CV 더 보기</h3>
     <p style="font-size:0.86rem;color:var(--text-mid);margin-bottom:16px;">에미레이트, 카타르, 싱가포르 등 실제 합격생의 CV를 확인하세요.</p>
-    <button onclick="alert('월정액 구독 후 이용 가능합니다.')" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">합격 CV 보기 (월정액)</button>
+    <button onclick="showCVSamples()" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">합격 CV 보기 (월정액)</button>
   </div>
 </div>
+
+<!-- 합격 CV 샘플 모달 -->
+<div id="cv-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
+  <div style="background:#fff;max-width:780px;width:100%;border-radius:12px;padding:28px 24px;position:relative;max-height:92vh;overflow-y:auto;">
+    <button onclick="document.getElementById('cv-modal').style.display='none'" style="position:absolute;top:14px;right:14px;width:34px;height:34px;border:none;background:rgba(0,0,0,0.05);border-radius:50%;font-size:1.2rem;cursor:pointer;line-height:1;">×</button>
+    <h3 style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--navy);margin-bottom:6px;">실제 합격생 CV 샘플</h3>
+    <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:18px;">개인 식별 정보는 비공개 처리되어 있습니다.</p>
+    <div id="cv-list" style="display:flex;flex-direction:column;gap:18px;"></div>
+    <p style="font-size:0.78rem;color:var(--text-muted);text-align:center;margin-top:18px;line-height:1.6;">신규 합격 CV는 시즌별로 업데이트됩니다.</p>
+  </div>
+</div>
+<script>
+var WC_CV_SAMPLES = [
+  { src: 'images/cv1.png', label: '에미레이트 합격 (2025) — Cabin Crew' }
+];
+function showCVSamples(){
+  var paid = localStorage.getItem('wc_paid')==='true' || (typeof isAdmin==='function' && isAdmin());
+  if(!paid){
+    if(confirm('월정액 구독자 전용 콘텐츠입니다. 요금제 페이지로 이동할까요?')){
+      location.href='plans.html';
+    }
+    return;
+  }
+  var list = document.getElementById('cv-list');
+  list.innerHTML = WC_CV_SAMPLES.map(function(cv){
+    return '<div style="border:1px solid var(--gold-pale);border-radius:8px;overflow:hidden;">'+
+      '<img src="'+cv.src+'" alt="'+cv.label+'" style="width:100%;display:block;background:#f5f5f5;">'+
+      '<div style="padding:10px 14px;font-size:0.82rem;color:var(--text-mid);background:var(--cream);">'+cv.label+'</div>'+
+    '</div>';
+  }).join('');
+  var modal = document.getElementById('cv-modal');
+  modal.style.display = 'flex';
+}
+</script>
 
 <!-- AI 자소서 작성 -->
 <div class="tab-content" id="tab-ai-write">

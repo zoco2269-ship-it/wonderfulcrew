@@ -187,7 +187,7 @@ window.addEventListener('popstate',function(){
   <div class="feedback-panel" id="feedback"></div>
 
   <div class="controls">
-    <button class="ctrl-btn primary" id="btn-answer" onclick="startListening()" style="display:none;">🎙 답변하기</button>
+    <button class="ctrl-btn primary" id="btn-answer" onclick="requestMicAndListen()" style="display:none;">🎙 답변하기</button>
     <button class="ctrl-btn danger" id="btn-stop" onclick="stopAndFeedback()" style="display:none;">⏹ 답변 종료</button>
     <button class="ctrl-btn primary" id="btn-model" onclick="showSuggestedResponse()" style="display:none;">모범답변 보기</button>
     <button class="ctrl-btn secondary" id="btn-next" onclick="nextQuestion()" style="display:none;">다음 상황 →</button>
@@ -509,6 +509,28 @@ function customerFirstSpeak(openerText){
       var bA=document.getElementById('btn-answer');if(bA) bA.style.display='inline-flex';
     }
   },200);
+}
+
+async function requestMicAndListen(){
+  var tx=document.getElementById('transcript');
+  try{
+    tx.textContent='🎤 마이크 권한 확인 중...';
+    var micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    micStream.getTracks().forEach(function(t){t.stop();});
+    startListening();
+  }catch(err){
+    var name=err&&err.name||'unknown';
+    var msg='';
+    if(name==='NotAllowedError'||name==='SecurityError')
+      msg='마이크 권한이 거부됐어요. 주소창 자물쇠 🔒 → 권한 → 마이크 → 허용 으로 바꾸고 새로고침.';
+    else if(name==='NotFoundError')
+      msg='마이크를 찾을 수 없어요. 기기 설정 확인.';
+    else if(name==='NotReadableError')
+      msg='마이크가 다른 앱에서 사용 중. 다른 앱 종료 후 재시도.';
+    else msg='마이크 접근 실패: '+name;
+    tx.innerHTML='<span style="color:#E74C3C;">⚠ '+msg+'</span>';
+    var bA=document.getElementById('btn-answer');if(bA) bA.style.display='inline-flex';
+  }
 }
 
 function startListening(){

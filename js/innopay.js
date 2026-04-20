@@ -77,7 +77,7 @@ async function payWithInnopay(plan, buyerInfo, payMethod) {
         var divpop=document.getElementById('divpop');
         var iframe=document.getElementById('InnoFrame');
         if(wrap){
-          wrap.style.cssText+=';overflow-y:auto !important;display:flex !important;align-items:flex-start !important;justify-content:center !important;padding:20px 0 !important;';
+          wrap.style.cssText+=';overflow-y:auto !important;display:flex !important;align-items:flex-start !important;justify-content:center !important;padding:0 !important;';
         }
         if(divpop){
           divpop.style.cssText+=';position:relative !important;top:0 !important;left:auto !important;height:auto !important;min-height:auto !important;max-height:none !important;margin:0 auto !important;display:flex !important;flex-direction:column !important;';

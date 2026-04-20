@@ -167,8 +167,8 @@ LECTURES.forEach(function(ch){
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>
 <script>
 // 영상 보기 클릭 시 결제 체크
-// URL에 ?admin=1이면 관리자 세팅
-try{if(new URLSearchParams(location.search).get('admin')==='1'){localStorage.setItem('wc_user','{"id":"admin","email":"zoco2269@gmail.com","name":"Admin"}');localStorage.setItem('wc_paid','true');}}catch(e){}
+// URL에 ?admin=1 + 테스트 모드 아닐 때만 관리자 세팅
+try{if(new URLSearchParams(location.search).get('admin')==='1'&&localStorage.getItem('wc_test_mode')!=='true'){localStorage.setItem('wc_user','{"id":"admin","email":"zoco2269@gmail.com","name":"Admin"}');localStorage.setItem('wc_paid','true');}}catch(e){}
 
 // 프리미엄 안내 모달
 var _modal=document.createElement('div');
@@ -187,9 +187,10 @@ document.addEventListener('click',function(e){
   var card=e.target.closest('.sub-link');
   if(!card) return;
   var paid=false;
-  if(localStorage.getItem('wc_paid')==='true') paid=true;
-  if(typeof isAdmin==='function'&&isAdmin()) paid=true;
-  try{var u=JSON.parse(localStorage.getItem('wc_user')||'{}');if(u.email==='zoco2269@gmail.com') paid=true;}catch(ex){}
+  if(localStorage.getItem('wc_test_mode')!=='true'){
+    if(localStorage.getItem('wc_paid')==='true') paid=true;
+    if(typeof isAdmin==='function'&&isAdmin()) paid=true;
+  }
   if(paid){
     window.open(card.getAttribute('data-url'),'_blank');
   } else {

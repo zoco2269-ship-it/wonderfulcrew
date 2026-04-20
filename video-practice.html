@@ -134,10 +134,15 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="btn-row">
     <button class="btn btn-navy" id="start-btn" onclick="startRec()">카메라 시작 & 녹화</button>
     <button class="btn btn-navy" id="stop-btn" style="display:none" onclick="stopRec()">녹화 중지</button>
+    <button class="btn btn-gold" id="fb-btn" style="display:none" onclick="getFeedback()">✨ 피드백 받기</button>
     <button class="btn btn-outline" id="save-btn" style="display:none" onclick="saveVideo()">녹화 영상 저장</button>
-    <button class="btn btn-gold" onclick="nextQuestion()">🔄 다음 질문 →</button>
+    <button class="btn btn-outline" onclick="nextQuestion()">🔄 다음 질문 →</button>
   </div>
   <div class="transcript" id="tr"></div>
+  <div class="score-card" id="fb-card">
+    <div class="score-title">✨ 이미지 면접 피드백</div>
+    <div id="fb-content" style="font-size:0.9rem;color:var(--text-mid);line-height:1.8;white-space:pre-line;"></div>
+  </div>
 </div>
 
 </div>
@@ -238,6 +243,9 @@ function nextQuestion(){
   document.getElementById('rec-badge').style.display='none';
   document.getElementById('stop-btn').style.display='none';
   document.getElementById('save-btn').style.display='none';
+  document.getElementById('fb-btn').style.display='none';
+  document.getElementById('fb-card').classList.remove('visible');
+  document.getElementById('fb-content').textContent='';
   document.getElementById('start-btn').style.display='inline-flex';
   document.getElementById('start-btn').textContent='카메라 시작 & 녹화';
   var ph=document.getElementById('ph');ph.style.display='flex';ph.textContent='카메라를 시작하세요';
@@ -309,6 +317,32 @@ function stopRec(){
   if(mediaRec)try{mediaRec.stop();}catch(e){}
   if(currentStream)currentStream.getTracks().forEach(function(t){t.stop();});
   document.getElementById('save-btn').style.display='inline-flex';
+  document.getElementById('fb-btn').style.display='inline-flex';
+}
+
+async function getFeedback(){
+  var ans=(document.getElementById('tr').textContent||'').trim();
+  var q=document.getElementById('q-text').textContent;
+  var card=document.getElementById('fb-card');
+  var body=document.getElementById('fb-content');
+  card.classList.add('visible');
+  if(!ans){body.innerHTML='<span style="color:#E74C3C;">답변 음성이 인식되지 않았습니다. 마이크를 확인하시고 다시 녹화해주세요.</span>';return;}
+  body.textContent='피드백 작성 중...';
+  var isKo=lang==='ko';
+  var sys=isKo
+    ?'비디오 면접(이미지 면접) 코치. 승무원 면접에서는 내용(What)보다 전달 방식(How)이 훨씬 중요. 본인 답변의 내용은 짧게 언급하되, 실전 팁은 오직 이 4가지만 다룰 것: ①활짝 웃기 ②밝고 자신감 있는 톤 ③친절한 목소리 ④적절한 속도·길이. 발음·문법 지적 금지. 한국어로 5줄 이내.\n\n출력 형식:\n점수: X/100\n잘한 점: (답변 중 한 구절 간단 인용)\n실전 팁 3가지:\n1. ...\n2. ...\n3. ...'
+    :'Video interview (image-focused) coach for cabin crew. What you say matters less than HOW. Briefly acknowledge content, then focus ONLY on: ①bright smile ②confident upbeat tone ③warm voice ④appropriate pace/length. No pronunciation or grammar nitpicks. Korean output only, max 5 lines.\n\nFormat:\n점수: X/100\n잘한 점: (짧은 인용)\n실전 팁 3가지:\n1. ...\n2. ...\n3. ...';
+  try{
+    var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:sys,
+        messages:[{role:'user',content:'질문: '+q+'\n\n본인 답변(음성인식):\n'+ans}]})});
+    var d=await r.json();
+    var txt=((d&&d.content&&d.content[0]&&d.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
+    body.textContent=txt;
+    if(typeof savePracticeRecord==='function'){
+      savePracticeRecord({stage:'Video Interview',question:q,answer:ans,feedback:txt});
+    }
+  }catch(e){body.innerHTML='<span style="color:#E74C3C;">피드백 생성 실패: '+e.message+'</span>';}
 }
 
 async function saveVideo(){

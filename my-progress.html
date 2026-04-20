@@ -137,10 +137,10 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <!-- 배지 시스템 -->
 <div class="card">
   <h3>획득 배지</h3>
-  <div class="badge-row">
-    <div class="badge earned">🔥 3일 연속 출석</div>
-    <div class="badge earned">📝 첫 영어 쉐도잉</div>
-    <div class="badge earned">🎙️ 첫 롤플레이</div>
+  <div class="badge-row" id="badge-row">
+    <div class="badge">🔥 3일 연속 출석</div>
+    <div class="badge">📝 첫 영어 쉐도잉</div>
+    <div class="badge">🎙️ 첫 롤플레이</div>
     <div class="badge">🏆 7일 연속 출석</div>
     <div class="badge">⭐ 10문제 완료</div>
     <div class="badge">💎 30일 연속 출석</div>
@@ -152,13 +152,9 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <!-- 연습 기록 -->
 <div class="card">
   <h3>최근 연습 기록</h3>
-  <table>
+  <table id="practice-table">
     <tr><th>날짜</th><th>항공사</th><th>단계</th><th>점수</th><th>피드백 요약</th></tr>
-    <tr><td>2026-04-13</td><td>에미레이트</td><td>파이널</td><td style="color:var(--gold);font-weight:700;">78</td><td>서비스 경험 구체적으로 잘 표현</td></tr>
-    <tr><td>2026-04-12</td><td>에미레이트</td><td>롤플레이</td><td style="color:var(--gold);font-weight:700;">72</td><td>사과 표현 양호. Recovery 보완</td></tr>
-    <tr><td>2026-04-12</td><td>영어쉐도잉</td><td>Q&A 3문제</td><td style="color:var(--gold);font-weight:700;">-</td><td>출석 완료</td></tr>
-    <tr><td>2026-04-11</td><td>에미레이트</td><td>디스커션</td><td style="color:var(--gold);font-weight:700;">65</td><td>우선순위 판단 양호</td></tr>
-    <tr><td>2026-04-10</td><td>에미레이트</td><td>비디오면접</td><td style="color:var(--gold);font-weight:700;">70</td><td>미소 좋음. 톤 더 밝게</td></tr>
+    <tr id="practice-empty"><td colspan="5" style="text-align:center;color:var(--text-muted);padding:28px;">아직 연습 기록이 없습니다. 커리큘럼에서 첫 연습을 시작하세요.</td></tr>
   </table>
   <div style="text-align:center;margin-top:14px;font-size:0.78rem;color:var(--text-muted);">학습 기록은 연습할수록 자동으로 업데이트됩니다.</div>
 </div>
@@ -167,8 +163,12 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>
 
 <script>
-// 점수 데이터
-var SCORES={fluency:72,confidence:68,structure:65,pronunciation:58,service:75};
+// 점수 데이터 — 실제 연습 기록 기반. 기록 없으면 0.
+var SCORES={fluency:0,confidence:0,structure:0,pronunciation:0,service:0};
+try{
+  var _saved=JSON.parse(localStorage.getItem('wc_skill_scores')||'{}');
+  if(_saved.fluency!==undefined)SCORES=_saved;
+}catch(e){}
 
 // 스코어 바 애니메이션
 Object.keys(SCORES).forEach(function(k){
@@ -245,7 +245,7 @@ if(td.purchaseDate){var exp=new Date(td.purchaseDate);exp.setDate(exp.getDate()+
 var att=JSON.parse(localStorage.getItem('wc_english_streak')||'{}');
 document.getElementById('p-streak').textContent=att.streak||0;
 document.getElementById('p-total').textContent=att.total||0;
-document.getElementById('p-best').textContent=Math.max(att.streak||0,7);
+document.getElementById('p-best').textContent=att.bestStreak||att.streak||0;
 
 // 출석 캘린더
 var today=new Date();var y=today.getFullYear(),m=today.getMonth();
@@ -277,18 +277,43 @@ function updateTarget(){
 }
 updateTarget();
 
-// 원더풀크루 한마디 (랜덤)
-var comments=[
-  '<b>지난주보다 유창함이 15% 올랐어요!</b> 계속 이 페이스로 가세요.',
-  '<b>3일 연속 출석 중!</b> 꾸준함이 합격의 비밀입니다.',
-  '<b>롤플레이 점수가 올라가고 있어요.</b> Service Recovery를 좀 더 연습해볼까요?',
-  '<b>영어 쉐도잉을 매일 하고 계시네요!</b> 발음이 확실히 좋아지고 있어요.',
-  '<b>목표 항공사까지 2단계 남았어요.</b> 조금만 더 힘내세요!',
-  '<b>오늘도 접속해주셨네요!</b> 하루 한 문제라도 연습하면 큰 차이가 납니다.',
-  '<b>파이널 면접 답변이 점점 깊어지고 있어요.</b> 서비스 마인드가 느껴집니다.',
-  '<b>이번 주 5일 연습했어요!</b> 이 습관이면 면접장에서 자신감이 넘칠 거예요.'
-];
-document.getElementById('daily-comment').innerHTML=comments[Math.floor(Math.random()*comments.length)]+' ✈️';
+// 원더풀크루 한마디 — 기록이 없으면 온보딩 메시지로
+var daily=document.getElementById('daily-comment');
+if(daily){
+  var streak=att.streak||0;
+  if(streak===0){
+    daily.innerHTML='<b>첫 연습을 시작해볼까요?</b> 커리큘럼에서 단계별 연습을 시작하면 기록이 쌓입니다. ✈️';
+  } else if(streak<3){
+    daily.innerHTML='<b>'+streak+'일 연속 연습 중!</b> 꾸준함이 합격의 비밀입니다. ✈️';
+  } else if(streak<7){
+    daily.innerHTML='<b>'+streak+'일 연속 — 좋은 습관이 만들어지고 있어요!</b> 이 페이스 유지하세요. ✈️';
+  } else {
+    daily.innerHTML='<b>'+streak+'일 연속 — 엄청난 꾸준함!</b> 합격이 가까워지고 있어요. ✈️';
+  }
+}
+
+// Supabase에서 실제 연습 기록 로드
+(async function(){
+  try{
+    var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+    if(!u.id||typeof getSupabase!=='function')return;
+    var sb=getSupabase();
+    if(!sb)return;
+    var {data:records}=await sb.from('practice_records').select('*').eq('user_id',u.id).order('created_at',{ascending:false}).limit(10);
+    if(!records||!records.length)return;
+    var tbl=document.getElementById('practice-table');
+    // 기존 '기록 없음' 행 제거
+    var empty=document.getElementById('practice-empty');if(empty)empty.remove();
+    records.forEach(function(r){
+      var date=(r.created_at||'').slice(0,10);
+      var fb=(r.feedback||'').replace(/\*\*/g,'').substring(0,60);
+      var score=r.score||'-';
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td>'+date+'</td><td>'+(r.airline||'-')+'</td><td>'+(r.stage||'-')+'</td><td style="color:var(--gold);font-weight:700;">'+score+'</td><td>'+fb+'</td>';
+      tbl.appendChild(tr);
+    });
+  }catch(e){}
+})();
 </script>
 <div style="text-align:center;padding:40px 20px 20px;">
   <button onclick="if(confirm('로그아웃 하시겠습니까?')){localStorage.removeItem('wc_user');localStorage.removeItem('wc_paid');if(typeof signOut==='function')signOut();else location.href='index.html';}" style="padding:10px 24px;background:none;border:1px solid #ddd;border-radius:20px;color:#999;font-size:0.82rem;cursor:pointer;font-family:inherit;">로그아웃</button>

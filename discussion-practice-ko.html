@@ -620,7 +620,11 @@ async function generateFeedback(){
     var data=await res.json();
     var txt=(data&&data.content&&data.content[0]&&data.content[0].text)||'수고하셨습니다.';
     txt=txt.replace(/\*\*/g,'');
-    fb.innerHTML='<b>디스커션 피드백</b><br><br><div style="white-space:pre-line;">'+txt+'</div><br><a href="'+BACK_URL+'" style="color:var(--gold);">← 커리큘럼으로</a>';
+    fb.innerHTML='<b>디스커션 피드백</b><br><br><div style="white-space:pre-line;">'+txt+'</div>'+
+      '<div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">'+
+      '<button onclick="newQuestion()" style="padding:10px 22px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:22px;font-family:inherit;font-size:0.84rem;font-weight:700;cursor:pointer;">🔄 다음 질문 보기</button>'+
+      '<a href="'+BACK_URL+'" style="color:var(--gold);font-size:0.84rem;">← 커리큘럼으로</a>'+
+      '</div>';
   }catch(e){
     fb.innerHTML='<b style="color:#E74C3C;">피드백 생성 실패.</b>';
   }

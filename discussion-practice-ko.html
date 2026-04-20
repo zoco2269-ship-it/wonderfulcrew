@@ -121,7 +121,7 @@ window.addEventListener('popstate',function(){
 <div class="setup" id="setup">
   <div class="tag">GROUP DISCUSSION · KOREAN</div>
   <h1>한국어 <em>그룹 디스커션</em> 연습</h1>
-  <p>국내 항공사 1차/2차 토론면접 실전 포맷. 가상의 동료 지원자 2명과 함께 주제를 놓고 의견을 주고받으며 연습합니다.</p>
+  <p>국내 항공사 1차/2차 토론면접 실전 포맷.<br>가상의 동료 지원자 2명과 함께 주제를 놓고 의견을 주고받으며 연습합니다.</p>
 
   <div class="format-info">
     <b>실전 포맷 기준</b><br>
@@ -226,6 +226,22 @@ var recognition=null;
 var fullText='';
 var chatHistory=[];
 var roundEnding=false;
+var userTurnActive=false; // 본인 발언 중일 때만 true. AI 발언 중 음성인식 자동 재시작 방지
+
+// 디스커션 진입 시점의 referrer 기억 → 피드백 후 "커리큘럼으로" 버튼이 원래 항공사 페이지로 돌아가도록
+var BACK_URL=(function(){
+  try{
+    var ref=document.referrer||'';
+    if(ref){
+      var u=new URL(ref);
+      if(u.origin===location.origin){
+        var name=u.pathname.split('/').pop();
+        if(/^curriculum-[a-z0-9-]+\.html$/i.test(name))return name;
+      }
+    }
+  }catch(e){}
+  return 'curriculum.html';
+})();
 
 function startDiscussion(){
   totalRounds=1;
@@ -288,6 +304,7 @@ function startMyTurn(){
   if(!SR){document.getElementById('transcript').textContent='Chrome에서 사용해 주세요.';return;}
   recognition=new SR();recognition.lang='ko-KR';recognition.interimResults=true;recognition.continuous=true;
   fullText='';
+  userTurnActive=true;
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('rec-dot').classList.add('on');
   document.getElementById('rec-label').textContent='녹음 중';
@@ -304,13 +321,15 @@ function startMyTurn(){
   };
   recognition.onend=function(){
     if(roundEnding)return;
-    // 음성 인식이 자동 종료되면 재시작 (사용자가 btn-stop 누를 때까지 유지)
+    // 본인 발언 중일 때만 자동 재시작 (AI 발언 중에는 마이크/오디오 충돌 방지를 위해 재시작 안 함)
+    if(!userTurnActive)return;
     try{recognition.start();}catch(e){}
   };
   recognition.start();
 }
 
 function stopMyTurn(){
+  userTurnActive=false; // 자동 재시작 차단
   if(recognition)try{recognition.stop();}catch(e){}
   document.getElementById('btn-stop').style.display='none';
   document.getElementById('rec-dot').classList.remove('on');
@@ -326,6 +345,8 @@ async function processMyTurn(){
   appendLog('user','You (지원자 A)',ans);
   chatHistory.push({role:'user',content:ans});
   await aiPeerSpeak(PERSONA_B,'panel-b');
+  // 자연스러운 대화 간격 (B와 C 사이)
+  await new Promise(function(r){setTimeout(r,700);});
   await aiPeerSpeak(PERSONA_C,'panel-c');
   document.getElementById('transcript').textContent='지원자 A (나)의 차례입니다. 이어서 발언하세요.';
   document.getElementById('btn-feedback').style.display='inline-flex';
@@ -373,14 +394,63 @@ function appendLog(who,name,text){
   log.scrollTop=log.scrollHeight;
 }
 
-function speakText(text,persona){
-  return new Promise(function(resolve){
-    if(persona.noVoice){setTimeout(resolve,800);return;}
+// 디스커션 전용 TTS: Blob URL + 실제 audio.duration 기반으로 정확히 대기
+// (공유 gcSpeak는 data: URL 기반이라 일부 환경에서 onended가 비정상적으로 빨리 발화해 다음 화자가 첫 화자를 끊어버리는 버그가 있음)
+var _discAudio=null;
+async function speakText(text,persona){
+  if(persona.noVoice){await new Promise(function(r){setTimeout(r,800);});return;}
+  // 이전 오디오 강제 정지
+  if(_discAudio){try{_discAudio.pause();}catch(e){}_discAudio=null;}
+  if('speechSynthesis' in window)window.speechSynthesis.cancel();
+
+  // Google Cloud TTS 호출 → Blob URL 변환
+  var blobUrl=null;
+  try{
+    var res=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text:text.substring(0,1000),lang:'ko-KR',gender:persona.gender||'male'})});
+    if(res.ok){
+      var data=await res.json();
+      if(data.audioContent){
+        var bin=atob(data.audioContent);
+        var bytes=new Uint8Array(bin.length);
+        for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+        blobUrl=URL.createObjectURL(new Blob([bytes],{type:'audio/mp3'}));
+      }
+    }
+  }catch(e){}
+
+  // TTS 실패 시 시간 기반 대기 (글자수×280ms)
+  if(!blobUrl){
+    await new Promise(function(resolve){setTimeout(resolve,Math.max(4000,text.length*280));});
+    return;
+  }
+
+  // 정확한 재생 완료까지 대기
+  await new Promise(function(resolve){
+    var audio=new Audio(blobUrl);
+    _discAudio=audio;
     var resolved=false;
-    gcSpeak(text,'ko-KR',persona.gender||'male',function(){
-      if(!resolved){resolved=true;resolve();}
+    function finish(){
+      if(resolved)return;
+      resolved=true;
+      try{URL.revokeObjectURL(blobUrl);}catch(e){}
+      if(_discAudio===audio)_discAudio=null;
+      resolve();
+    }
+    audio.addEventListener('ended',finish);
+    audio.addEventListener('error',finish);
+    // 메타데이터 로드 후 실제 duration 기반 안전 타임아웃 설정
+    audio.addEventListener('loadedmetadata',function(){
+      var dur=(isFinite(audio.duration)&&audio.duration>0)?audio.duration:Math.max(20,text.length*0.32);
+      // 실제 길이 + 8초 여유. 이 안에 ended 안 오면 강제 종료
+      setTimeout(finish,(dur+8)*1000);
     });
-    setTimeout(function(){if(!resolved){resolved=true;resolve();}},15000);
+    audio.play().catch(function(){
+      // 자동재생 차단 등으로 실패하면 시간 기반으로 폴백
+      setTimeout(finish,Math.max(20000,text.length*350));
+    });
+    // 최종 안전 상한 (3분)
+    setTimeout(finish,180000);
   });
 }
 
@@ -412,7 +482,7 @@ async function generateFeedback(){
     var data=await res.json();
     var txt=(data&&data.content&&data.content[0]&&data.content[0].text)||'수고하셨습니다.';
     txt=txt.replace(/\*\*/g,'');
-    fb.innerHTML='<b>디스커션 피드백</b><br><br><div style="white-space:pre-line;">'+txt+'</div><br><a href="curriculum.html" style="color:var(--gold);">← 커리큘럼으로</a>';
+    fb.innerHTML='<b>디스커션 피드백</b><br><br><div style="white-space:pre-line;">'+txt+'</div><br><a href="'+BACK_URL+'" style="color:var(--gold);">← 커리큘럼으로</a>';
   }catch(e){
     fb.innerHTML='<b style="color:#E74C3C;">피드백 생성 실패.</b>';
   }

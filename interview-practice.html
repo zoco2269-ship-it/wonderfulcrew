@@ -386,6 +386,27 @@ var Q_HOTEL2=[
   '5년 후 본인의 모습을 그려주세요.'
 ];
 
+var Q_HOTEL_EXEC=[
+  '간단하게 자기소개 해주세요.',
+  '왜 호텔 업계에서 일하고 싶으신가요?',
+  '왜 우리 호텔에 지원하셨나요?',
+  '입사 후 5년 뒤 본인의 모습을 그려주세요.',
+  '호텔리어로서 본인만의 차별화 포인트는 무엇인가요?',
+  '본인이 생각하는 프리미엄 서비스의 본질은 무엇인가요?',
+  '리더십을 발휘한 경험을 구체적으로 말씀해주세요.',
+  '가장 어려웠던 고객 응대 경���과 그 과정에서 배운 점은?',
+  '호텔 산업의 미래에 대해 어떻게 생각하나요?',
+  '팀을 이끌어본 경험이 있다면 말씀해주세요.',
+  '고객의 기대를 초과한 서비스를 제공한 경험이 있나요?',
+  '갈등 상황에서 어떻게 중재하시나요?',
+  '규정과 고객 만족이 상충할 때 어떤 기준으로 판단하시겠습니까?',
+  '호텔리어에게 가장 중요한 자질은 무엇이라고 생각하나요?',
+  '입사하면 우리 호텔에 어떤 기여를 할 수 있다고 생각하나요?',
+  '최근 호스피탈리티 산업에서 주목하고 있는 트렌드가 있다면?',
+  '글로벌 고객을 응대하기 위해 어떤 준비를 하셨나요?',
+  '마지막으로 하고 싶은 말씀이 있으신가요?'
+];
+
 var Q_CRUISE=[
   'Tell me about yourself.',
   'Why do you want to work on a cruise ship?',
@@ -405,15 +426,17 @@ var Q_CRUISE=[
 ];
 
 var typeMap = {
-  'interview': { q: Q_INTERVIEW, label: '면접 질문' },
-  'executive': { q: Q_EXECUTIVE, label: '임원면접 질문' },
-  'hotel': { q: Q_HOTEL, label: '호텔 1차 면접' },
-  'hotel2': { q: Q_HOTEL2, label: '호텔 2차 면접' },
-  'cruise': { q: Q_CRUISE, label: '크루즈 면접' }
+  'interview': { q: Q_INTERVIEW, label: '면접 질문', lang: 'ko-KR' },
+  'executive': { q: Q_EXECUTIVE, label: '임원면접 질문', lang: 'ko-KR' },
+  'hotel': { q: Q_HOTEL, label: '호텔 1차 면접', lang: 'ko-KR' },
+  'hotel2': { q: Q_HOTEL2, label: '호텔 2차 면접', lang: 'ko-KR' },
+  'hotel-exec': { q: Q_HOTEL_EXEC, label: '호텔 임원면접', lang: 'ko-KR' },
+  'cruise': { q: Q_CRUISE, label: '크루즈 면접', lang: 'en-US' }
 };
 var selected = typeMap[type] || typeMap['interview'];
 var questions = selected.q;
 var label = selected.label;
+var recognitionLang = selected.lang || 'ko-KR';
 document.getElementById('q-label').textContent=label;
 
 function pickQ(){
@@ -500,7 +523,7 @@ function toggleRec(){
     // 음성 인식
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     if(SR){
-      recognition=new SR();recognition.lang='ko-KR';recognition.interimResults=true;recognition.continuous=true;
+      recognition=new SR();recognition.lang=recognitionLang;recognition.interimResults=true;recognition.continuous=true;
       recognition.onresult=function(ev){
         var interim='';fullText='';
         for(var r=0;r<ev.results.length;r++){

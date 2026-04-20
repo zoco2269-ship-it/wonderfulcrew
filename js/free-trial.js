@@ -120,25 +120,60 @@ function renderTrialBadge(containerId) {
   }
 }
 
-// 연습 페이지 진입 시 자동 1회 소진
+// 연습·유료 페이지 진입 시 게이트
 (function(){
   var page = location.pathname.split('/').pop() || '';
-  var practicePages = [
+  var gatedPages = [
     'interview-practice.html','roleplay-practice-ko.html','roleplay-practice-en.html',
     'roleplay-practice.html','discussion-practice-ko.html','discussion-practice.html',
     'discussion1.html','discussion2.html','video-practice.html','final.html',
-    'chatbot.html','chatbot-en.html','word-shooting.html','ai-coach.html','ai-coach-en.html'
+    'chatbot.html','chatbot-en.html','word-shooting.html','ai-coach.html','ai-coach-en.html',
+    'debate-practice.html','smalltalk.html','walking-analysis.html','coach-feedback.html',
+    'live-booking.html','lecture.html'
   ];
-  if (practicePages.indexOf(page) === -1) return;
+  if (gatedPages.indexOf(page) === -1) return;
+  // 즉시 체크 (어드민이나 유료는 통과)
+  function gateCheck(){
+    if (typeof isAdmin === 'function' && isAdmin()) return;
+    if (localStorage.getItem('wc_paid') === 'true') return;
+    var data = getTrialData();
+    if (data.subscribed === true) return;
+    var used = data.used || 0;
+    if (used < FREE_TRIAL_MAX) {
+      data.used = used + 1;
+      saveTrialData(data);
+      showTrialToast(FREE_TRIAL_MAX - data.used);
+      return;
+    }
+    // 무료체험 소진 + 미결제 → 강제 게이트
+    document.body.style.pointerEvents = 'none';
+    document.body.style.filter = 'blur(4px)';
+    showLockedGate();
+  }
+  function showLockedGate(){
+    if (document.getElementById('wc-locked-gate')) return;
+    var g = document.createElement('div');
+    g.id = 'wc-locked-gate';
+    g.style.cssText = 'position:fixed;inset:0;background:rgba(10,15,30,0.88);z-index:99999;display:flex;align-items:center;justify-content:center;pointer-events:auto;';
+    g.innerHTML = '<div style="background:#fff;border-radius:20px;padding:44px 36px;max-width:420px;width:90%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.5);pointer-events:auto;filter:none;">' +
+      '<div style="font-size:2.4rem;margin-bottom:14px;">🔒</div>' +
+      '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.5rem;color:#1A2340;margin-bottom:10px;">유료 회원 전용 콘텐츠</h2>' +
+      '<p style="font-size:0.9rem;color:#5A5048;line-height:1.75;margin-bottom:26px;">무료체험 10회를 모두 사용하셨습니다.<br>요금제를 결제하시면 바로 이용 가능합니다.</p>' +
+      '<div style="display:flex;flex-direction:column;gap:10px;">' +
+        '<a href="plans.html" style="display:block;padding:15px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.94rem;font-weight:700;text-decoration:none;pointer-events:auto;">요금제 보러가기 →</a>' +
+        '<a href="pricing.html" style="display:block;padding:12px;background:#1A2340;color:#fff;border-radius:28px;font-size:0.86rem;font-weight:600;text-decoration:none;pointer-events:auto;">🏆 프리미엄 250만원 패키지</a>' +
+        '<a href="index.html" style="display:block;padding:10px;color:#5A5048;font-size:0.82rem;text-decoration:underline;pointer-events:auto;">홈으로 돌아가기</a>' +
+      '</div>' +
+    '</div>';
+    document.body.appendChild(g);
+  }
   document.addEventListener('DOMContentLoaded', function(){
-    // 서버 동기화 후 체크
+    gateCheck();
+    // 서버와 동기화 후 재확인
     setTimeout(function(){
-      syncTrialFromServer().then(function(){
-        if (!useFreeTrialOrCheck()) {
-          var main = document.querySelector('.main, .wrap, #app, main, .content');
-          if (main) main.style.opacity = '0.3';
-        }
-      });
-    }, 2000);
+      if (typeof syncTrialFromServer === 'function') {
+        syncTrialFromServer().then(gateCheck);
+      }
+    }, 1500);
   });
 })();

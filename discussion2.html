@@ -143,11 +143,14 @@ function startDiscussion(){
   if(document.getElementById('cam-toggle').checked){
     (async function(){var camOpts=[{video:{facingMode:{exact:'user'}},audio:true},{video:{facingMode:'user'},audio:true},{video:true,audio:true}];for(var i=0;i<camOpts.length;i++){try{stream=await navigator.mediaDevices.getUserMedia(camOpts[i]);var v=document.getElementById('cam-video');v.srcObject=stream;v.style.display='block';document.getElementById('cam-ph').style.display='none';break;}catch(e){}}})();
   }
-  // AI가 먼저 의견 제시
+  // AI가 먼저 의견 제시 — TOPICS 인덱스와 1:1 매칭
   var openers={
-    0:"So we have 7 passengers who all booked the extra legroom seat, but only 1 is available. Who do you think should get it?",
-    1:"We have 10 guests but only 2 rooms available. As hotel managers, who should we prioritize? What do you think?",
-    2:"We have 6 issues happening at the same time in our restaurant. Which one should we handle first?"
+    0:"So we have 10 guests but only 2 rooms. As hotel managers, who should we prioritize?",
+    1:"OK, it's the last day of the season and we've got 6 things happening at once. Which one do we handle first?",
+    2:"Our flight is delayed 6 hours and there are 6 situations going on in the cabin. Who should we help first?",
+    3:"We have 7 passengers who all booked the extra legroom seat, but only 1 is available. Who gets it?",
+    4:"We have 6 issues happening at the same time in our restaurant. Which one should we handle first?",
+    5:"There's a passenger overboard and 4 other crises all at once on this cruise. What do we do first?"
   };
   aiTurnB(openers[selectedTopic]||"So, what do you think we should do first?");
 }

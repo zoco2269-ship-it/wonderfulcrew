@@ -114,6 +114,8 @@ var BACK_URL=(function(){
 // 2) 이후는 내용 기반 꼬리질문
 var SYS_FIRSTTURN=AIRLINE_NAME+' CV Drop. Candidate just greeted you. Respond with ONE very short acknowledgment (e.g., "Good morning!" or "Nice to meet you too.") + ask "Why do you want to apply for cabin crew?" in the same message. Under 15 words total. English only. No quotation marks.';
 var SYS_FOLLOWUP=AIRLINE_NAME+' CV Drop interviewer. ONE short line, under 15 words. Brief reaction + one natural follow-up question based on what the candidate just said. Casual, warm. No "Tell me about a time" style. English only.';
+// 3번째 꼬리질문 이후 자동 종료용 closing
+var SYS_CLOSING=AIRLINE_NAME+' CV Drop interviewer. The small talk is wrapping up. Give a warm natural closing in ONE short line (under 15 words). Example: "Thank you for coming today, nice meeting you!" / "Great talking with you, all the best!" No question. English only.';
 
 // 제목에 항공사명 반영
 try{document.getElementById('sm-title').innerHTML=(AIRLINE_KO||'CV Drop')+(AIRLINE_KO?' CV Drop':'')+' <em>스몰톡</em>';}catch(e){}
@@ -206,10 +208,15 @@ async function stopAnswer(){
   appendChat('ai','...',true);
   document.getElementById('transcript').textContent='Interviewer is thinking...';
 
-  // 첫 번째 사용자 발화면 SYS_FIRSTTURN, 이후는 SYS_FOLLOWUP
-  var isFirst=dialogue.filter(function(d){return d.who==='user';}).length===1;
-  var sys=isFirst?SYS_FIRSTTURN:SYS_FOLLOWUP;
-  // 최근 대화만 전달 (첫 턴은 지망생 인사 1개만)
+  // 사용자 발화 횟수 기반으로 플로우 결정
+  // userTurns=1 (인사만) → FIRSTTURN (ack + Q1)
+  // userTurns=2 → FOLLOWUP (Q2)
+  // userTurns=3 → FOLLOWUP (Q3)
+  // userTurns=4 → CLOSING + 자동 종료 (꼬리질문 3개 완료)
+  var userTurns=dialogue.filter(function(d){return d.who==='user';}).length;
+  var isFirst=userTurns===1;
+  var isClosing=userTurns>=4;
+  var sys=isFirst?SYS_FIRSTTURN:(isClosing?SYS_CLOSING:SYS_FOLLOWUP);
   var recent=isFirst
     ?'Candidate greeted: '+ans
     :dialogue.slice(-6).filter(function(d){return d.text.indexOf('(Please start')!==0;}).map(function(d){return (d.who==='ai'?'Interviewer: ':'You: ')+d.text;}).join('\n');
@@ -219,16 +226,25 @@ async function stopAnswer(){
       messages:[{role:'user',content:recent}]
     })});
     var data=await r.json();
-    var txt=((data&&data.content&&data.content[0]&&data.content[0].text)||'That sounds nice! And how did you get here today?').replace(/\*\*/g,'').replace(/^Interviewer:\s*/i,'').trim();
+    var txt=((data&&data.content&&data.content[0]&&data.content[0].text)||(isClosing?'Thank you for coming today, nice meeting you!':'That sounds nice! And how did you get here today?')).replace(/\*\*/g,'').replace(/^Interviewer:\s*/i,'').trim();
     dialogue.push({who:'ai',text:txt});
-    // thinking 제거 후 실제 응답
     var tmp=document.getElementById('tmp-turn');if(tmp)tmp.remove();
     appendChat('ai',txt);
-    // 버튼 즉시 활성화
+    if(typeof gcSpeak==='function')gcSpeak(txt,'en-GB','female',function(){});
+
+    if(isClosing){
+      // 3번째 꼬리질문 완료 → 자동 종료 + 피드백
+      document.getElementById('btn-answer').style.display='none';
+      document.getElementById('btn-end').style.display='none';
+      document.getElementById('transcript').textContent='Small talk completed. Generating feedback...';
+      // TTS 잠시 듣고 피드백 진입 (1.5초 여유)
+      setTimeout(function(){endSession();},1500);
+      return;
+    }
+
+    // 계속 진행
     document.getElementById('btn-answer').style.display='inline-flex';
     document.getElementById('transcript').textContent='Your turn — press 🎙 to answer.';
-    // TTS 백그라운드 (빠른 재생)
-    if(typeof gcSpeak==='function')gcSpeak(txt,'en-GB','female',function(){});
   }catch(e){
     var tmp=document.getElementById('tmp-turn');if(tmp)tmp.remove();
     appendChat('ai','Sorry, could you say that again?');

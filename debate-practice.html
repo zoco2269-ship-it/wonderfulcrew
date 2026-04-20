@@ -270,7 +270,7 @@ function startAnswer(){
   fullText='';
   document.getElementById('btn-answer').style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
-  document.getElementById('rec-label').textContent='녹음 중';
+  document.getElementById('rec-label').textContent='답변 중';
   document.getElementById('waveform').classList.add('active');
   document.getElementById('my-card').classList.add('speaking');
   recognition.onresult=function(ev){

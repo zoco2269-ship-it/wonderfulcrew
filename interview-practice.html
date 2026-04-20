@@ -543,7 +543,8 @@ function getFaceReport(){
 
 async function startCam(){
   try{
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});
+    // 모바일 SR 호환: audio 제거 → SR 이 마이크 단독 점유
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}});
     var v=document.getElementById('cam');
     v.srcObject=stream;v.style.display='block';
     document.getElementById('cam-ph').style.display='none';

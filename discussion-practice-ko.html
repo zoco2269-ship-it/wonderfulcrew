@@ -284,7 +284,8 @@ function startDiscussion(){
 function startCamera(){
   (async function(){
     try{
-      var tempStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+      // 모바일 SR 호환: audio 제거 → SR 이 마이크 단독 점유
+      var tempStream=await navigator.mediaDevices.getUserMedia({video:true});
       tempStream.getTracks().forEach(function(t){t.stop();});
       var devices=await navigator.mediaDevices.enumerateDevices();
       var videoDevices=devices.filter(function(d){return d.kind==='videoinput';});
@@ -294,7 +295,7 @@ function startCamera(){
         if(frontKeywords.test(videoDevices[i].label)){selectedId=videoDevices[i].deviceId;break;}
       }
       if(!selectedId&&videoDevices.length>0)selectedId=videoDevices[0].deviceId;
-      var constraints=selectedId?{video:{deviceId:{exact:selectedId}},audio:true}:{video:true,audio:true};
+      var constraints=selectedId?{video:{deviceId:{exact:selectedId}}}:{video:true};
       stream=await navigator.mediaDevices.getUserMedia(constraints);
       var v=document.getElementById('cam-video');
       v.srcObject=stream;v.style.display='block';
@@ -336,7 +337,7 @@ function startMyTurn(){
   userTurnActive=true;
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('rec-dot').classList.add('on');
-  document.getElementById('rec-label').textContent='녹음 중';
+  document.getElementById('rec-label').textContent='답변 중';
   document.getElementById('waveform').classList.add('active');
   document.getElementById('panel-me').classList.add('speaking');
 

@@ -308,7 +308,8 @@ function startRec(){
   var stopBtn=document.getElementById('stop-btn');
   var tr=document.getElementById('tr');
 
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true}).then(function(stream){
+  // 모바일 SR 호환: audio 제거 → 음성 인식이 마이크 단독 사용
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}).then(function(stream){
     currentStream=stream;
     vid.srcObject=stream;
     ph.style.display='none';

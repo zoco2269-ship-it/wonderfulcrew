@@ -199,7 +199,7 @@ function startAnswer(){
   fullText='';
   document.getElementById('btn-answer').style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
-  document.getElementById('rec-label').textContent='녹음 중';
+  document.getElementById('rec-label').textContent='답변 중';
   document.getElementById('waveform').classList.add('active');
   recognition.onresult=function(ev){var interim='';fullText='';for(var r=0;r<ev.results.length;r++){if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';else interim+=ev.results[r][0].transcript;}document.getElementById('transcript').textContent=fullText+interim;};
   recognition.onend=function(){if(fullText.trim())document.getElementById('transcript').textContent=fullText.trim();};

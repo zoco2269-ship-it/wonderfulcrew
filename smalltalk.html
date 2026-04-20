@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스몰톡 연습 (핑퐁) · WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--navy-dark:#111B2E;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--navy-dark);color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:rgba(17,27,46,0.95);border-bottom:1px solid rgba(201,168,76,0.15);flex-shrink:0;}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.8rem;color:rgba(255,255,255,0.55);}.nav-back:hover{color:var(--gold);}
+
+.setup{padding:36px 20px;text-align:center;max-width:600px;margin:0 auto;overflow-y:auto;}
+.setup .tag{display:inline-block;padding:5px 14px;background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold-light);font-size:0.7rem;letter-spacing:0.18em;border-radius:14px;margin-bottom:12px;font-family:'DM Serif Display',serif;font-weight:700;}
+.setup h1{font-family:'DM Serif Display',serif;font-size:1.6rem;color:#fff;margin-bottom:8px;}
+.setup h1 em{font-style:normal;color:var(--gold);}
+.setup p{color:rgba(255,255,255,0.65);font-size:0.84rem;line-height:1.7;margin-bottom:18px;}
+.btn-start{padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:26px;font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;}
+.btn-start:disabled{opacity:0.5;cursor:wait;}
+
+.session{display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden;}
+.session.active{display:flex;}
+.chat{flex:1;overflow-y:auto;padding:16px 22px;background:rgba(0,0,0,0.2);}
+.chat .turn{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.05);}
+.chat .turn:last-child{border-bottom:none;}
+.chat .speaker{font-size:0.74rem;color:var(--gold);font-weight:700;letter-spacing:0.06em;margin-bottom:5px;}
+.chat .speaker.user{color:var(--gold-light);}
+.chat .text{font-size:0.94rem;line-height:1.7;color:rgba(255,255,255,0.88);}
+.chat .thinking{color:rgba(255,255,255,0.4);font-style:italic;}
+
+.transcript-bar{padding:9px 22px;background:rgba(255,255,255,0.04);font-size:0.82rem;color:rgba(255,255,255,0.65);min-height:34px;border-top:1px solid rgba(255,255,255,0.05);flex-shrink:0;}
+.waveform{height:20px;display:flex;align-items:center;justify-content:center;gap:3px;flex-shrink:0;}
+.waveform .bar{width:3px;background:var(--gold);border-radius:2px;opacity:0.4;animation:wave 0.5s ease-in-out infinite alternate;}
+.waveform.active .bar{opacity:1;}
+@keyframes wave{0%{height:4px;}100%{height:18px;}}
+.feedback-panel{display:none;padding:14px 22px;background:rgba(201,168,76,0.08);border-top:1px solid rgba(201,168,76,0.18);font-size:0.88rem;color:rgba(255,255,255,0.88);line-height:1.7;max-height:30vh;overflow-y:auto;flex-shrink:0;}
+.feedback-panel.active{display:block;}
+.feedback-panel b{color:var(--gold);}
+.controls{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 20px;background:rgba(17,27,46,0.95);border-top:1px solid rgba(201,168,76,0.15);flex-wrap:wrap;flex-shrink:0;}
+.ctrl-btn{padding:11px 22px;border:none;border-radius:22px;font-family:inherit;font-size:0.84rem;font-weight:600;cursor:pointer;}
+.ctrl-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.ctrl-btn.primary{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;}
+.ctrl-btn.danger{background:#E74C3C;color:#fff;}
+.ctrl-btn.secondary{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth-gate.js"></script>
+<script src="js/google-tts.js"></script>
+<script src="js/free-trial.js"></script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a>
+  <a href="#" class="nav-back" onclick="goBack();return false;">← 돌아가기</a>
+</nav>
+
+<!-- SETUP -->
+<div class="setup" id="setup">
+  <div class="tag">SMALLTALK · 1:1 · ENGLISH</div>
+  <h1>카타르 CV Drop <em>스몰톡</em></h1>
+  <p>실제 CV Drop에서 면접관이 먼저 길게 인사하지 않아요.<br>본인이 먼저 인사하고 시작합니다.</p>
+  <div style="background:rgba(201,168,76,0.1);border-left:3px solid var(--gold);padding:14px 18px;margin:0 auto 18px;text-align:left;font-size:0.9rem;color:rgba(255,255,255,0.9);line-height:1.8;max-width:460px;">
+    <b style="color:var(--gold);">예시 (이런 식으로 시작하세요)</b><br>
+    "Good morning, my name is Kate, nice to meet you."<br>
+    "Hello, I'm [이름]. Thank you for having me."
+  </div>
+  <button class="btn-start" id="btn-start" onclick="startSmalltalk()">스몰톡 시작</button>
+</div>
+
+<!-- SESSION -->
+<div class="session" id="session">
+  <div class="chat" id="chat"></div>
+  <div class="waveform" id="waveform">
+    <div class="bar" style="animation-delay:0s;"></div><div class="bar" style="animation-delay:0.1s;"></div><div class="bar" style="animation-delay:0.15s;"></div><div class="bar" style="animation-delay:0.2s;"></div><div class="bar" style="animation-delay:0.25s;"></div><div class="bar" style="animation-delay:0.3s;"></div>
+  </div>
+  <div class="transcript-bar" id="transcript">Press 🎙 to answer in English.</div>
+  <div class="feedback-panel" id="feedback"></div>
+  <div class="controls">
+    <button class="ctrl-btn primary" id="btn-answer" onclick="startAnswer()" style="display:none;">🎙 Answer</button>
+    <button class="ctrl-btn danger" id="btn-stop" onclick="stopAnswer()" style="display:none;">⏹ Done</button>
+    <button class="ctrl-btn secondary" id="btn-end" onclick="endSession()" style="display:none;">🛑 종료 · 피드백</button>
+  </div>
+</div>
+
+<script>
+var recognition=null, fullText='', dialogue=[];
+var BACK_URL=(function(){
+  try{var ref=document.referrer;if(ref){var u=new URL(ref);if(u.origin===location.origin){var n=u.pathname.split('/').pop();if(/curriculum-/.test(n))return n;}}}catch(e){}
+  return 'curriculum-qatar.html';
+})();
+
+// 시스템 프롬프트 — 카타르 CV Drop 실전 플로우
+// 1) 지망생이 먼저 인사 → 면접관이 짧게 받고 첫 질문 "Why cabin crew?"
+// 2) 이후는 내용 기반 꼬리질문
+var SYS_FIRSTTURN='Qatar Airways CV Drop. Candidate just greeted you. Respond with ONE very short acknowledgment (e.g., "Good morning!" or "Nice to meet you too.") + ask "Why do you want to apply for cabin crew?" in the same message. Under 15 words total. English only. No quotation marks.';
+var SYS_FOLLOWUP='Qatar CV Drop interviewer. ONE short line, under 15 words. Brief reaction + one natural follow-up question based on what the candidate just said. Casual, warm. No "Tell me about a time" style. English only.';
+
+function goBack(){fullCleanup();var s=document.getElementById('session');if(s&&s.classList.contains('active')){s.classList.remove('active');document.getElementById('setup').style.display='block';}else{history.back();}}
+function fullCleanup(){
+  if('speechSynthesis' in window)try{window.speechSynthesis.cancel();}catch(e){}
+  if(typeof gcStop==='function')try{gcStop();}catch(e){}
+  try{if(recognition){recognition.onend=null;recognition.stop();recognition=null;}}catch(e){}
+}
+window.addEventListener('beforeunload',fullCleanup);
+window.addEventListener('pagehide',fullCleanup);
+
+function appendChat(who,text,isTmp){
+  var el=document.getElementById('chat');
+  var label=who==='ai'?'Interviewer':'You';
+  var cls=isTmp?' thinking':'';
+  el.innerHTML+='<div class="turn"'+(isTmp?' id="tmp-turn"':'')+'><div class="speaker '+(who==='user'?'user':'')+'">'+label+'</div><div class="text'+cls+'">'+text+'</div></div>';
+  el.scrollTop=el.scrollHeight;
+}
+
+function startSmalltalk(){
+  document.getElementById('setup').style.display='none';
+  document.getElementById('session').classList.add('active');
+  history.pushState({smalltalk:true},'','');
+  dialogue=[];
+  document.getElementById('chat').innerHTML='';
+  // 지망생이 먼저 인사하도록 안내만 표시. AI는 대기.
+  appendChat('ai','(Please start with your greeting in English.)');
+  document.getElementById('btn-answer').style.display='inline-flex';
+  document.getElementById('btn-end').style.display='inline-flex';
+  document.getElementById('transcript').textContent='🎙 Start by greeting the interviewer in English.';
+}
+
+function startAnswer(){
+  // 진행 중인 TTS 즉시 정지 → 사용자 말이 겹치지 않게
+  if(typeof gcStop==='function')gcStop();
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){document.getElementById('transcript').textContent='Use Chrome browser please.';return;}
+  recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
+  fullText='';
+  document.getElementById('btn-answer').style.display='none';
+  document.getElementById('btn-stop').style.display='inline-flex';
+  document.getElementById('waveform').classList.add('active');
+  recognition.onresult=function(ev){
+    var interim='';fullText='';
+    for(var r=0;r<ev.results.length;r++){
+      if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';
+      else interim+=ev.results[r][0].transcript;
+    }
+    document.getElementById('transcript').textContent=fullText+interim;
+  };
+  recognition.onend=function(){if(document.getElementById('btn-stop').style.display!=='none'){try{recognition.start();}catch(e){}}};
+  recognition.start();
+}
+
+async function stopAnswer(){
+  if(recognition)try{recognition.stop();}catch(e){}
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('waveform').classList.remove('active');
+  var ans=fullText.trim();
+  if(!ans){document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('transcript').textContent='Try again — speak in English.';return;}
+  dialogue.push({who:'user',text:ans});
+  appendChat('user',ans);
+  // "thinking" 플레이스홀더 즉시 표시 (체감 속도 향상)
+  appendChat('ai','...',true);
+  document.getElementById('transcript').textContent='Interviewer is thinking...';
+
+  // 첫 번째 사용자 발화면 SYS_FIRSTTURN, 이후는 SYS_FOLLOWUP
+  var isFirst=dialogue.filter(function(d){return d.who==='user';}).length===1;
+  var sys=isFirst?SYS_FIRSTTURN:SYS_FOLLOWUP;
+  // 최근 대화만 전달 (첫 턴은 지망생 인사 1개만)
+  var recent=isFirst
+    ?'Candidate greeted: '+ans
+    :dialogue.slice(-6).filter(function(d){return d.text.indexOf('(Please start')!==0;}).map(function(d){return (d.who==='ai'?'Interviewer: ':'You: ')+d.text;}).join('\n');
+  try{
+    var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:60,system:sys,
+      messages:[{role:'user',content:recent}]
+    })});
+    var data=await r.json();
+    var txt=((data&&data.content&&data.content[0]&&data.content[0].text)||'That sounds nice! And how did you get here today?').replace(/\*\*/g,'').replace(/^Interviewer:\s*/i,'').trim();
+    dialogue.push({who:'ai',text:txt});
+    // thinking 제거 후 실제 응답
+    var tmp=document.getElementById('tmp-turn');if(tmp)tmp.remove();
+    appendChat('ai',txt);
+    // 버튼 즉시 활성화
+    document.getElementById('btn-answer').style.display='inline-flex';
+    document.getElementById('transcript').textContent='Your turn — press 🎙 to answer.';
+    // TTS 백그라운드 (빠른 재생)
+    if(typeof gcSpeak==='function')gcSpeak(txt,'en-GB','female',function(){});
+  }catch(e){
+    var tmp=document.getElementById('tmp-turn');if(tmp)tmp.remove();
+    appendChat('ai','Sorry, could you say that again?');
+    dialogue.push({who:'ai',text:'Sorry, could you say that again?'});
+    document.getElementById('btn-answer').style.display='inline-flex';
+  }
+}
+
+async function endSession(){
+  if('speechSynthesis' in window)try{window.speechSynthesis.cancel();}catch(e){}
+  if(typeof gcStop==='function')try{gcStop();}catch(e){}
+  try{if(recognition){recognition.onend=null;recognition.stop();recognition=null;}}catch(e){}
+  document.getElementById('btn-answer').style.display='none';
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('btn-end').style.display='none';
+  var fb=document.getElementById('feedback');fb.classList.add('active');
+  var userTurns=dialogue.filter(function(d){return d.who==='user';}).length;
+  if(userTurns===0){fb.innerHTML='<b style="color:#E74C3C;">본인 발언이 없어 피드백 불가.</b>';return;}
+  fb.innerHTML='<b style="color:var(--gold);">피드백 작성 중...</b>';
+  var userAnswers=dialogue.filter(function(d){return d.who==='user';}).map(function(d,i){return (i+1)+'. '+d.text;}).join('\n');
+  try{
+    var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:180,
+      system:'CV Drop 스몰톡 코치. 본인 답변만 평가. 한국어로 매우 짧게.\n\n출력 (이 형식만):\n점수: X/100\n한 줄 칭찬: (답변 중 한 구절 인용)\n한 줄 팁: (가장 중요한 개선 1개. 없으면 "지금 흐름 유지하세요.")',
+      messages:[{role:'user',content:'본인 답변:\n'+userAnswers}]
+    })});
+    var d=await r.json();
+    var fbText=((d&&d.content&&d.content[0]&&d.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
+    fb.innerHTML='<b style="color:var(--gold);">스몰톡 피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>'+
+      '<div style="margin-top:12px;"><a href="'+BACK_URL+'" style="color:var(--gold);font-size:0.82rem;">← 커리큘럼으로</a></div>';
+  }catch(e){fb.innerHTML='<b style="color:#E74C3C;">피드백 생성 실패.</b>';}
+}
+</script>
+</body>
+</html>

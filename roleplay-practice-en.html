@@ -420,7 +420,8 @@ function startInterview(){
   // Camera — interview-practice.html에서 검증된 단순 호출 방식과 동일
   (async function(){
     try{
-      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});
+      // 모바일 SR 호환: audio 요청 제외 → SR 이 마이크 단독 점유
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}});
       var v=document.getElementById('cam-video');
       if(v){v.srcObject=stream;v.style.display='block';}
       var ph=document.getElementById('cam-ph');
@@ -545,18 +546,24 @@ async function customerFirstSpeak(scenario){
 
 function startListening(){
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){document.getElementById('transcript').textContent='Please use Chrome browser.';return;}
-  recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
+  if(!SR){
+    document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ Speech recognition not supported. Please use Chrome/Edge.</span>';
+    return;
+  }
+  var isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  recognition=new SR();
+  recognition.lang='en-US';
+  recognition.interimResults=true;
+  recognition.continuous=!isMobile;
   fullText='';
   var bA=document.getElementById('btn-answer');if(bA) bA.style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('rec-dot').classList.add('on');
-  document.getElementById('rec-label').textContent='Recording';
+  document.getElementById('rec-label').textContent='답변 중';
   document.getElementById('waveform').classList.add('active');
-  document.getElementById('transcript').textContent='Your turn to respond...';
+  document.getElementById('transcript').textContent='🎙 Listening… Speak naturally';
 
-  // 백그라운드 영상 녹화
-  if(!mediaRecorder&&stream){
+  if(!isMobile && !mediaRecorder && stream){
     try{
       recordStartTime=Date.now();
       recordChunks=[];
@@ -574,14 +581,43 @@ function startListening(){
     }
     document.getElementById('transcript').textContent=fullText+interim;
   };
+  recognition.onerror=function(ev){
+    var code=ev.error||'unknown';
+    var msg='';
+    if(code==='not-allowed'||code==='service-not-allowed')
+      msg='마이크 권한 필요. 주소창 자물쇠 → 마이크 허용.';
+    else if(code==='no-speech')
+      msg='목소리가 들리지 않았어요. 🎙 Tap to Answer 를 다시 눌러 주세요.';
+    else if(code==='audio-capture')
+      msg='마이크가 잠겨있어요. 다른 앱을 닫고 새로고침.';
+    else if(code==='network')
+      msg='네트워크 오류. 다시 시도해 주세요.';
+    else msg='Speech error: '+code;
+    document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ '+msg+'</span>';
+    var bA2=document.getElementById('btn-answer');if(bA2) bA2.style.display='inline-flex';
+    document.getElementById('btn-stop').style.display='none';
+    document.getElementById('rec-dot').classList.remove('on');
+    document.getElementById('waveform').classList.remove('active');
+  };
   recognition.onend=function(){
     if(fullText.trim()){
       document.getElementById('transcript').textContent=fullText.trim();
-      // 자동으로 AI 응답 처리
       processAnswer();
+    } else {
+      document.getElementById('btn-stop').style.display='none';
+      document.getElementById('rec-dot').classList.remove('on');
+      document.getElementById('waveform').classList.remove('active');
+      document.getElementById('rec-label').textContent='Standby';
+      var bA3=document.getElementById('btn-answer');if(bA3) bA3.style.display='inline-flex';
+      document.getElementById('transcript').textContent='No voice detected. Tap 🎙 Answer and speak.';
     }
   };
-  recognition.start();
+  try{
+    recognition.start();
+  }catch(err){
+    document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ Start failed: '+err.message+'</span>';
+    var bA4=document.getElementById('btn-answer');if(bA4) bA4.style.display='inline-flex';
+  }
 }
 
 // 음성 목록 미리 로드

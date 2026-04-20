@@ -443,10 +443,10 @@ function startInterview(){
   document.getElementById('avatar-emoji').textContent=chosenAvatar;
   document.getElementById('q-total').textContent=questions.length;
 
-  // 카메라 초기화
+  // 카메라 초기화 — 모바일 SR 호환: audio 제외 (마이크 단독 점유 해제)
   (async function(){
     try{
-      var tempStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+      var tempStream=await navigator.mediaDevices.getUserMedia({video:true});
       tempStream.getTracks().forEach(function(t){t.stop();});
       var devices=await navigator.mediaDevices.enumerateDevices();
       var videoDevices=devices.filter(function(d){return d.kind==='videoinput';});
@@ -456,7 +456,7 @@ function startInterview(){
         if(frontKeywords.test(videoDevices[i].label)){selectedId=videoDevices[i].deviceId;break;}
       }
       if(!selectedId&&videoDevices.length>0)selectedId=videoDevices[0].deviceId;
-      var constraints=selectedId?{video:{deviceId:{exact:selectedId}},audio:true}:{video:true,audio:true};
+      var constraints=selectedId?{video:{deviceId:{exact:selectedId}}}:{video:true};
       stream=await navigator.mediaDevices.getUserMedia(constraints);
       var v=document.getElementById('cam-video');
       v.srcObject=stream;v.style.display='block';
@@ -513,17 +513,24 @@ function customerFirstSpeak(openerText){
 
 function startListening(){
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){document.getElementById('transcript').textContent='Chrome에서 사용해 주세요.';return;}
-  recognition=new SR();recognition.lang='ko-KR';recognition.interimResults=true;recognition.continuous=true;
+  if(!SR){
+    document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 이 브라우저는 음성 인식을 지원하지 않아요. Chrome/Edge 에서 이용해 주세요.</span>';
+    return;
+  }
+  var isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  recognition=new SR();
+  recognition.lang='ko-KR';
+  recognition.interimResults=true;
+  recognition.continuous=!isMobile;
   fullText='';
   var bA=document.getElementById('btn-answer');if(bA) bA.style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('rec-dot').classList.add('on');
   document.getElementById('rec-label').textContent='답변 중';
   document.getElementById('waveform').classList.add('active');
-  document.getElementById('transcript').textContent='지금 답변하세요...';
+  document.getElementById('transcript').textContent='🎙 듣고 있어요… 편하게 말해 주세요';
 
-  if(!mediaRecorder&&stream){
+  if(!isMobile && !mediaRecorder && stream){
     try{
       recordStartTime=Date.now();
       recordChunks=[];
@@ -541,16 +548,44 @@ function startListening(){
     }
     document.getElementById('transcript').textContent=fullText+interim;
   };
+  recognition.onerror=function(ev){
+    var code=ev.error||'unknown';
+    var msg='';
+    if(code==='not-allowed'||code==='service-not-allowed')
+      msg='마이크 권한이 필요해요. 주소창 자물쇠 → 마이크 허용으로 설정해 주세요.';
+    else if(code==='no-speech')
+      msg='목소리를 못 들었어요. 🎙 답변하기 버튼을 다시 눌러 주세요.';
+    else if(code==='audio-capture')
+      msg='마이크가 잠겨있어요. 다른 앱(녹음기 등)을 닫고 페이지를 새로고침해 주세요.';
+    else if(code==='network')
+      msg='네트워크 오류로 인식 중단. 다시 시도해 주세요.';
+    else msg='음성 인식 오류: '+code;
+    document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ '+msg+'</span>';
+    var bA2=document.getElementById('btn-answer');if(bA2) bA2.style.display='inline-flex';
+    document.getElementById('btn-stop').style.display='none';
+    document.getElementById('rec-dot').classList.remove('on');
+    document.getElementById('waveform').classList.remove('active');
+  };
   recognition.onend=function(){
     if(endingRoleplay) return;
     if(fullText.trim()){
       document.getElementById('transcript').textContent=fullText.trim();
       processAnswer();
     } else {
-      try{recognition.start();}catch(e){}
+      document.getElementById('btn-stop').style.display='none';
+      document.getElementById('rec-dot').classList.remove('on');
+      document.getElementById('waveform').classList.remove('active');
+      document.getElementById('rec-label').textContent='대기';
+      var bA3=document.getElementById('btn-answer');if(bA3) bA3.style.display='inline-flex';
+      document.getElementById('transcript').textContent='목소리가 없어요. 🎙 답변하기 버튼을 누르고 말해 주세요.';
     }
   };
-  recognition.start();
+  try{
+    recognition.start();
+  }catch(err){
+    document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 시작 실패: '+err.message+'</span>';
+    var bA4=document.getElementById('btn-answer');if(bA4) bA4.style.display='inline-flex';
+  }
 }
 
 if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}

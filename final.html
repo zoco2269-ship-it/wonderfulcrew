@@ -83,13 +83,15 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
       <select class="setup-select" id="s-airline">
         <option value="emirates">Emirates</option>
         <option value="qatar">Qatar Airways</option>
+        <option value="etihad">Etihad Airways</option>
         <option value="singapore">Singapore Airlines</option>
         <option value="cathay">Cathay Pacific</option>
-        <option value="etihad">Etihad Airways</option>
+        <option value="finnair">Finnair</option>
         <option value="klm">KLM</option>
         <option value="lufthansa">Lufthansa</option>
         <option value="airasia">AirAsia</option>
-        <option value="general">일반 면접</option>
+        <option value="flydubai">Flydubai</option>
+        <option value="riyadh">Riyadh Air</option>
       </select>
     </div>
     <div>
@@ -449,7 +451,7 @@ async function stopAnswer(){
   try{
     var turnCount=chatHistory.filter(function(m){return m.role==='user';}).length;
     var airlineKey=document.getElementById('s-airline').value;
-    var airlineName={emirates:'Emirates',qatar:'Qatar Airways',singapore:'Singapore Airlines',cathay:'Cathay Pacific',etihad:'Etihad',koreanair:'Korean Air',asiana:'Asiana',general:'a major airline'}[airlineKey]||'a major airline';
+    var airlineName={emirates:'Emirates',qatar:'Qatar Airways',etihad:'Etihad Airways',singapore:'Singapore Airlines',cathay:'Cathay Pacific',finnair:'Finnair',klm:'KLM',lufthansa:'Lufthansa',airasia:'AirAsia',flydubai:'Flydubai',riyadh:'Riyadh Air',general:'a major airline'}[airlineKey]||'a major airline';
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:300,
       system:'You are a senior cabin crew interviewer conducting a FINAL INTERVIEW for '+airlineName+'. Question being asked: "'+QS[qIdx].q+'"\n\nRules:\n- Reply in ENGLISH only.\n- Keep responses VERY SHORT: 1 sentence max. Just a brief follow-up question or acknowledgment.\n- Examples: "Can you give me a specific example?" / "How did that make you feel?" / "What did you learn from that?" / "Interesting. And what happened next?"\n- Real interviewers are concise. No long responses.\n- The candidate is interviewing for '+airlineName+'. Do NOT mention or compare any other airline. Do NOT assume the candidate applied elsewhere or ask "why this airline instead of X". If the candidate happens to mention another airline name in their answer, ignore it gracefully — do not bring it up again.\n- After 2-3 exchanges, just say "Thank you." and add [END].\n- Turn '+turnCount,

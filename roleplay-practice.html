@@ -395,9 +395,22 @@ function startInterview(){
   // 카메라: 모든 비디오 장치를 확인해서 전면(내장) 카메라를 우선 선택
   (async function(){
     try{
-      // 먼저 권한 요청
-      var tempStream=await 
-// ===== MediaPipe 얼굴 분석 =====
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});
+      var v=document.getElementById('cam-video');
+      if(v){v.srcObject=stream;v.style.display='block';}
+      var ph=document.getElementById('cam-ph');
+      if(ph)ph.style.display='none';
+      try{initFaceMesh(v);faceAnalysisActive=true;}catch(e){}
+    }catch(e){
+      var ph=document.getElementById('cam-ph');
+      if(ph)ph.innerHTML='<div>Camera connection failed</div>';
+    }
+  })();
+
+  showQuestion();
+}
+
+// ===== MediaPipe 얼굴 분석 (startInterview 외부 — 함수 깨짐 방지) =====
 var faceStats={smileFrames:0,totalFrames:0,lookingCenter:0,headTiltFrames:0};
 var faceMeshInstance=null;var faceAnalysisActive=false;
 function initFaceMesh(videoEl){
@@ -410,8 +423,15 @@ function initFaceMesh(videoEl){
       faceStats.totalFrames++;
       if(r.multiFaceLandmarks&&r.multiFaceLandmarks.length>0){
         var lm=r.multiFaceLandmarks[0];
-        var lipL=lm[61],lipR=lm[291],lipTop=lm[13];
-        if((lipTop.y-((lipL.y+lipR.y)/2))>0.01)faceStats.smileFrames++;
+        var lipL=lm[61],lipR=lm[291],lipTop=lm[13],lipBot=lm[14];
+        var faceL=lm[234],faceR=lm[454];
+        var cornerY=(lipL.y+lipR.y)/2;
+        var lipMidY=(lipTop.y+lipBot.y)/2;
+        var cornerLift=lipMidY-cornerY;
+        var mouthW=Math.abs(lipR.x-lipL.x);
+        var faceW=Math.abs(faceR.x-faceL.x);
+        var widthRatio=faceW>0?(mouthW/faceW):0;
+        if(cornerLift>0.006 && widthRatio>0.46) faceStats.smileFrames++;
         var nose=lm[1];
         if(Math.abs(nose.x-0.5)<0.15&&Math.abs(nose.y-0.45)<0.15)faceStats.lookingCenter++;
         var eyeL=lm[33],eyeR=lm[263];
@@ -426,37 +446,7 @@ function getFaceReport(){
   var s=Math.round((faceStats.smileFrames/faceStats.totalFrames)*100);
   var g=Math.round((faceStats.lookingCenter/faceStats.totalFrames)*100);
   var t=Math.round((faceStats.headTiltFrames/faceStats.totalFrames)*100);
-  return '
-
-📷 이미지 분석:
-• 미소 유지: '+s+'%'+(s>=60?' ✓':' — 더 웃어보세요')+'
-• 카메라 시선: '+g+'%'+(g>=70?' ✓':' — 카메라를 더 정면으로 보세요')+'
-• 고개 기울기: '+(t<=20?'안정적 ✓':'기울어진 순간 '+t+'% — 바른 자세를 유지하세요');
-}
-navigator.mediaDevices.getUserMedia({video:true,audio:true});
-      tempStream.getTracks().forEach(function(t){t.stop();});
-      // 장치 목록 확인
-      var devices=await navigator.mediaDevices.enumerateDevices();
-      var videoDevices=devices.filter(function(d){return d.kind==='videoinput';});
-      var selectedId=null;
-      // 내장/전면 카메라 찾기 (이름에 front, 전면, integrated, webcam, facetime 포함)
-      var frontKeywords=/front|전면|내장|integrated|webcam|facetime|camera hd|built-in/i;
-      for(var i=0;i<videoDevices.length;i++){
-        if(frontKeywords.test(videoDevices[i].label)){selectedId=videoDevices[i].deviceId;break;}
-      }
-      // 못 찾으면 첫 번째 카메라
-      if(!selectedId&&videoDevices.length>0)selectedId=videoDevices[0].deviceId;
-      var constraints=selectedId?{video:{deviceId:{exact:selectedId}},audio:true}:{video:true,audio:true};
-      stream=await navigator.mediaDevices.getUserMedia(constraints);
-      var v=document.getElementById('cam-video');
-      v.srcObject=stream;v.style.display='block';
-      document.getElementById('cam-ph').style.display='none';
-    }catch(e){
-      document.getElementById('cam-ph').innerHTML='<div>Camera connection failed</div>';
-    }
-  })();
-
-  showQuestion();
+  return '\n\n📷 이미지 분석:\n• 미소 유지: '+s+'%'+(s>=60?' ✓':' — 더 웃어보세요')+'\n• 카메라 시선: '+g+'%'+(g>=70?' ✓':' — 카메라를 더 정면으로 보세요')+'\n• 고개 기울기: '+(t<=20?'안정적 ✓':'기울어진 순간 '+t+'% — 바른 자세를 유지하세요');
 }
 
 var timeExpired=false;

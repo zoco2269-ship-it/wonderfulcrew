@@ -747,8 +747,10 @@ document.addEventListener('click',function(e){if(!e.target.closest('#site-search
         var btn=document.getElementById('home-live-btn');
         if(!btn)return;
         if(_hasAppliedAnyClass()){
-          btn.innerHTML='✓ 신청 완료 — 내 수업 보기';
+          btn.innerHTML='✓ 신청 완료';
           btn.style.background='linear-gradient(135deg,#1A2340,#2A3960)';
+          btn.onclick=function(e){e.preventDefault();return false;};
+          btn.style.cursor='default';
         }
       }
       _updateLiveBtn();

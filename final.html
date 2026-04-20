@@ -165,7 +165,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   <div class="transcript-bar" id="transcript">음성 답변 대기 중...</div>
   <div class="feedback-panel" id="feedback"></div>
   <div class="controls">
-    <button class="ctrl-btn primary" id="btn-answer" onclick="startAnswer()">🎙 답변 시작</button>
+    <button class="ctrl-btn primary" id="btn-answer" onclick="requestMicAndAnswer()">🎙 답변 시작</button>
     <button class="ctrl-btn danger" id="btn-stop" onclick="stopAnswer()" style="display:none;">⏹ 답변 완료</button>
     <button class="ctrl-btn secondary" id="btn-model" onclick="showModel()" disabled>모범 답변</button>
     <button class="ctrl-btn secondary" id="btn-next" onclick="nextQuestion()">다음 질문 →</button>
@@ -343,7 +343,8 @@ function startInterview(){
   if(document.getElementById('cam-toggle').checked){
     (async function(){
       try{
-        stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});
+        // 모바일 SR 호환: audio 제외 → SR 이 마이크 단독 점유
+        stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}});
         var v=document.getElementById('cam-video');
         v.srcObject=stream;v.style.display='block';
         document.getElementById('cam-ph').style.display='none';
@@ -380,22 +381,85 @@ function speakQ(text,lang){
   });
 }
 
+// 모바일 호환: 마이크 권한 명시 요청 후 SR 시작 (user-gesture 보존)
+window.requestMicAndAnswer = async function(){
+  var tx=document.getElementById('transcript');
+  if(tx) tx.innerHTML='<span style="color:#E8C96A;">🔴 마이크 권한 확인 중...</span>';
+  try{
+    var s=await navigator.mediaDevices.getUserMedia({audio:true});
+    s.getTracks().forEach(function(t){t.stop();});
+    startAnswer();
+  }catch(err){
+    var n=err&&err.name||'unknown';
+    var msg='';
+    if(n==='NotAllowedError'||n==='SecurityError') msg='마이크 권한이 거부됐어요. 주소창 🔒 → 권한 → 마이크 → 허용 으로 바꾸고 새로고침.';
+    else if(n==='NotFoundError') msg='마이크를 찾을 수 없어요.';
+    else if(n==='NotReadableError') msg='마이크가 다른 앱에서 사용 중. 다른 앱 종료 후 재시도.';
+    else msg='마이크 접근 실패: '+n;
+    tx.innerHTML='<span style="color:#E74C3C;">⚠ '+msg+'</span>';
+    document.getElementById('btn-answer').style.display='inline-flex';
+  }
+};
+
 function startAnswer(){
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR)return;
-  recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
+  if(!SR){
+    document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 이 브라우저는 음성 인식을 지원하지 않아요. Chrome/Edge 권장.</span>';
+    return;
+  }
+  recognition=new SR();
+  recognition.lang='en-US';
+  recognition.interimResults=true;
+  recognition.continuous=true;
   fullText='';
+  window._finalManualStop=false;
   document.getElementById('btn-answer').style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('rec-label').textContent='답변 중';
   document.getElementById('waveform').classList.add('active');
-  recognition.onresult=function(ev){var interim='';fullText='';for(var r=0;r<ev.results.length;r++){if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';else interim+=ev.results[r][0].transcript;}document.getElementById('transcript').textContent=fullText+interim;};
-  recognition.onend=function(){if(fullText.trim())document.getElementById('transcript').textContent=fullText.trim();};
-  recognition.start();
+  document.getElementById('transcript').textContent='🎙 듣고 있어요… 말이 끝나면 ⏹ 답변 종료를 눌러주세요';
+  recognition.onresult=function(ev){
+    var interim='';
+    for(var r=ev.resultIndex;r<ev.results.length;r++){
+      if(ev.results[r].isFinal) fullText+=ev.results[r][0].transcript+' ';
+      else interim+=ev.results[r][0].transcript;
+    }
+    document.getElementById('transcript').textContent=(fullText+interim)||'🎙 듣고 있어요…';
+  };
+  recognition.onerror=function(ev){
+    var c=ev.error||'unknown',m='';
+    if(c==='not-allowed'||c==='service-not-allowed') m='마이크 권한 필요. 🔒 → 마이크 허용.';
+    else if(c==='no-speech') m='목소리 못 들었어요. 🎙 답변 시작 다시 눌러 주세요.';
+    else if(c==='audio-capture') m='마이크 잠김. 다른 앱 종료 후 재시도.';
+    else if(c==='network') m='네트워크 오류.';
+    else m='인식 오류: '+c;
+    document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ '+m+'</span>';
+    document.getElementById('btn-answer').style.display='inline-flex';
+    document.getElementById('btn-stop').style.display='none';
+    document.getElementById('waveform').classList.remove('active');
+  };
+  recognition.onend=function(){
+    // 사용자가 ⏹ 누르기 전까진 자동 재시작 (Android Chrome 5~8초마다 auto-stop)
+    if(window._finalManualStop){
+      if(fullText.trim()) document.getElementById('transcript').textContent=fullText.trim();
+    } else {
+      try{ recognition.start(); }catch(e){
+        document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 인식 중단. 🎙 답변 시작 다시 눌러 주세요.</span>';
+        document.getElementById('btn-answer').style.display='inline-flex';
+        document.getElementById('btn-stop').style.display='none';
+      }
+    }
+  };
+  try{ recognition.start(); }
+  catch(err){
+    document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 시작 실패: '+err.message+'</span>';
+    document.getElementById('btn-answer').style.display='inline-flex';
+  }
 }
 
 async function stopAnswer(){
-  if(recognition)recognition.stop();
+  window._finalManualStop=true;
+  if(recognition)try{recognition.stop();}catch(e){}
   document.getElementById('btn-stop').style.display='none';
   document.getElementById('rec-label').textContent='처리 중';
   document.getElementById('waveform').classList.remove('active');

@@ -239,9 +239,56 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(232,201,106,0.08),rgba(201,168,76,0.04));border-color:var(--gold);">
     <h3>실제 합격생 자기소개서 더 보기</h3>
     <p style="font-size:0.86rem;color:var(--text-mid);margin-bottom:16px;">대한항공, 아시아나, 에미레이트 등 실제 합격생의 자기소개서/CV를 확인하세요.</p>
-    <button onclick="alert('월정액 구독 후 이용 가능합니다.')" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">합격 자기소개서 보기 (월정액)</button>
+    <button onclick="showResumeSamples()" style="padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;">합격 자기소개서 보기 (월정액)</button>
   </div>
 </div>
+
+<!-- 합격 자기소개서 샘플 모달 -->
+<div id="resume-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
+  <div style="background:#fff;max-width:820px;width:100%;border-radius:12px;padding:32px 28px;position:relative;max-height:92vh;overflow-y:auto;">
+    <button onclick="document.getElementById('resume-modal').style.display='none'" style="position:absolute;top:14px;right:14px;width:34px;height:34px;border:none;background:rgba(0,0,0,0.05);border-radius:50%;font-size:1.2rem;cursor:pointer;line-height:1;">×</button>
+    <h3 style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:6px;">실제 합격생 자기소개서 샘플</h3>
+    <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:22px;">개인 식별 정보는 비공개 처리되어 있습니다.</p>
+    <div id="resume-list" style="display:flex;flex-direction:column;gap:28px;"></div>
+  </div>
+</div>
+<script>
+var WC_RESUME_SAMPLES = [
+  {
+    airline: '대한항공 합격생',
+    items: [
+      { q: '문항 1. 지원 동기 및 입사 후 포부 (700자)', a: "스물두 살, 워킹홀리데이로 혼자 캐나다에 갔을 때입니다. 밴쿠버에서 환승편을 놓쳐 영어도 짧은 채로 공항에 혼자 남겨졌습니다. 막막한 상황에서 결국 스스로 카운터를 찾아다니고, 다음 편을 알아보고, 해결했습니다. 그 과정에서 처음으로 생각했습니다. 이런 순간에 사람 곁에 있어주는 일을 하고 싶다고.\n\n서비스의 핵심은 기술이 아니라 타이밍입니다. 필요한 순간에 필요한 사람 곁에 있는 것, 그게 전부라는 걸 그날 배웠습니다.\n\n이후 저는 의도적으로 '사람을 읽는 감각'을 훈련해왔습니다. 호텔 프런트에서는 체크인 줄이 길어질 때 표정이 굳어지는 고객을 먼저 찾아갔고, 식음료 파트에서는 말하지 않아도 필요한 것을 먼저 채워두는 습관을 들였습니다. 화려한 스펙이 아니라 이 감각을 훈련해온 것이 제가 대한항공에 지원하는 이유입니다.\n\n입사 후에는 '기억되는 승무원'이 되고 싶습니다. 기내식을 건네는 방식, 난기류 때 목소리 톤, 마지막 하기 인사의 눈 맞춤 — 그 작은 것들이 쌓여 고객이 다음 예약에서 대한항공을 먼저 떠올리게 만든다고 믿습니다. 대한항공이 오랫동안 세계 항공업계에서 신뢰를 쌓아온 이유가 바로 그 디테일의 축적이라고 생각합니다. 그 일부가 되고 싶습니다." },
+      { q: '문항 2. 팀 내 갈등을 해결한 경험 (600자)', a: "대학교 4학년 팀 프로젝트에서 팀장을 맡았을 때입니다. 팀원 중 한 명이 마감 이틀 전부터 연락이 끊겼습니다. 나머지 셋이 밤을 새웠고, 분위기는 당연히 좋지 않았습니다.\n\n발표가 끝난 다음 날, 저는 그 팀원에게 단둘이 밥을 먹자고 했습니다. 따지려는 게 아니었습니다. 뭔가 사정이 있을 거라는 생각이 먼저였습니다. 실제로 그 시기에 가족 건강 문제가 겹쳐 있었고, 연락을 못 한 것에 미안해하면서도 말 꺼낼 타이밍을 계속 놓치고 있었습니다.\n\n그때 두 가지를 배웠습니다. 갈등은 대부분 정보 부재에서 시작된다는 것, 그리고 리더의 역할은 결과를 끌어내는 것이 아니라 팀원이 말할 수 있는 공간을 먼저 만드는 것이라는 점입니다.\n\n기내도 마찬가지라고 생각합니다. 동료가 실수했을 때 그 순간 지적하는 것보다, 비행 후에 조용히 이야기를 나누는 쪽이 팀 전체에 더 낫습니다. 저는 그 판단을 이미 현장에서 몸으로 익혔습니다." },
+      { q: '문항 3. 고객 불만을 해결한 경험 (600자)', a: "호텔 프런트 근무 중 예약 시스템 오류로 해외 출장객의 객실이 누락된 상황이 생겼습니다. 고객은 이미 지쳐 있었고, 저를 향해 언성을 높였습니다.\n\n저는 해명을 먼저 하지 않았습니다. \"지금 많이 당황하셨겠습니다\"라는 말을 먼저 꺼냈습니다. 그다음 고객 앞에서 바로 제휴 호텔에 전화를 걸었습니다. 해결 과정을 보여주는 것이 말보다 빠르다는 걸 알고 있었기 때문입니다. 10분 안에 동급 객실을 확보했고, 이동 택시비와 조식 이용권을 추가로 안내했습니다.\n\n고객은 체크아웃 날 프런트에 들러 감사 인사를 했습니다. 불만 고객이 단골이 되는 순간이었습니다.\n\n이 경험에서 배운 것은 하나입니다. 고객이 원하는 건 완벽한 해명이 아니라 '이 사람이 내 편이구나'라는 확신이라는 것. 그 확신을 주는 방법은 공감을 먼저, 행동을 빠르게, 그리고 결과로 마무리하는 것입니다. 기내에서도 이 순서는 바뀌지 않는다고 생각합니다." },
+      { q: '문항 4. 본인의 강점과 약점 (500자)', a: "강점은 '먼저 움직이는 것'입니다. 상황이 나빠지기 전에 감지하고 선제적으로 행동하는 습관이 있습니다. 식음료 파트에서 일할 때 러시아워 전에 미리 자리 세팅을 점검하고 부족한 것을 채워두면, 바쁜 시간에 허둥대는 일이 없었습니다. 작은 준비가 서비스의 질을 결정한다고 믿습니다.\n\n약점은 '혼자 다 해결하려는 경향'입니다. 팀 상황이 급박해질수록 도움을 요청하기보다 직접 처리하려 했고, 그게 오히려 팀 흐름을 끊는 경우가 있었습니다. 이후 업무 강도가 높아지는 상황에서는 의식적으로 먼저 \"지금 제가 도와드릴 부분이 있나요?\"를 묻는 습관을 만들었습니다. 혼자 빠른 것보다 같이 단단한 것이 낫다는 걸, 현장에서 배웠습니다." }
+    ]
+  }
+];
+function showResumeSamples(){
+  var paid = localStorage.getItem('wc_paid')==='true' || (typeof isAdmin==='function' && isAdmin());
+  if(!paid){
+    if(confirm('월정액 구독자 전용 콘텐츠입니다. 요금제 페이지로 이동할까요?')){
+      location.href='plans.html';
+    }
+    return;
+  }
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  var list = document.getElementById('resume-list');
+  list.innerHTML = WC_RESUME_SAMPLES.map(function(r){
+    var items = r.items.map(function(it){
+      return '<div style="margin-top:14px;">'+
+        '<div style="font-family:DM Serif Display,serif;font-size:0.95rem;color:var(--gold);margin-bottom:8px;">'+esc(it.q)+'</div>'+
+        '<div style="font-size:0.88rem;color:var(--text-mid);line-height:1.85;white-space:pre-line;">'+esc(it.a)+'</div>'+
+      '</div>';
+    }).join('');
+    return '<div style="border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:22px 24px;background:var(--cream);">'+
+      '<div style="display:inline-block;padding:5px 14px;background:var(--navy);color:var(--gold-light);font-size:0.74rem;letter-spacing:0.1em;font-weight:700;border-radius:14px;margin-bottom:14px;">'+esc(r.airline)+'</div>'+
+      items+
+    '</div>';
+  }).join('');
+  document.getElementById('resume-modal').style.display = 'flex';
+}
+</script>
 
 <!-- ===== 외국 항공사 CV ===== -->
 <div class="tab-content" id="tab-cv">

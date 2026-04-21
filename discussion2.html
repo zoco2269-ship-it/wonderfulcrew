@@ -220,7 +220,7 @@ async function startAnswer(){
   document.getElementById('rec-label').textContent='답변 중';
   document.getElementById('waveform').classList.add('active');
   document.getElementById('transcript').textContent='🎙 듣고 있어요…';
-  recognition.onresult=function(ev){var interim='',sessionFinal='';for(var r=0;r<ev.results.length;r++){if(ev.results[r].isFinal)sessionFinal+=ev.results[r][0].transcript+' ';else interim+=ev.results[r][0].transcript;}window._sessionFinal=sessionFinal;document.getElementById('transcript').textContent=(fullText+sessionFinal+interim).trim()||'🎙 듣고 있어요…';};
+  recognition.onresult=function(ev){var interim='',sessionFinal='';var seen={},finals=[];for(var r=0;r<ev.results.length;r++){if(ev.results[r].isFinal){var t=(ev.results[r][0].transcript||"").trim();if(t && !seen[t]){seen[t]=1;finals.push(t);}}else{interim+=ev.results[r][0].transcript;}}var sessionFinal=finals.length?finals.join(" ")+" ":"";window._sessionFinal=sessionFinal;document.getElementById('transcript').textContent=(fullText+sessionFinal+interim).trim()||'🎙 듣고 있어요…';};
   recognition.onerror=function(ev){
     var c=ev.error||'unknown';
     if(c==='not-allowed'||c==='service-not-allowed')document.getElementById('transcript').textContent='⚠ 마이크 권한 거부됨.';

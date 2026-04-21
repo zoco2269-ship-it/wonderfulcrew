@@ -403,13 +403,20 @@ async function startRec(){
   rec=new SR();
   rec.lang=(window._vpLangOverride)||(lang==='ko'?'ko-KR':'en-US');
   rec.interimResults=true;rec.continuous=true;
+  // REBUILD + 중복 제거 — 안드로이드 크롬 duplicate-final 방어
+  window._vpSessionFinal='';
   rec.onresult=function(ev){
-    var interim='';
-    for(var r=ev.resultIndex;r<ev.results.length;r++){
-      if(ev.results[r].isFinal)window._vpFinalText+=ev.results[r][0].transcript+' ';
-      else interim+=ev.results[r][0].transcript;
+    var interim='',seen={},finals=[];
+    for(var r=0;r<ev.results.length;r++){
+      if(ev.results[r].isFinal){
+        var t=(ev.results[r][0].transcript||'').trim();
+        if(t && !seen[t]){seen[t]=1;finals.push(t);}
+      }else{
+        interim+=ev.results[r][0].transcript;
+      }
     }
-    tr.textContent=(window._vpFinalText+interim).trim()||'🎙 듣고 있어요…';
+    window._vpSessionFinal=finals.length?finals.join(' ')+' ':'';
+    tr.textContent=(window._vpFinalText+window._vpSessionFinal+interim).trim()||'🎙 듣고 있어요…';
   };
   rec.onerror=function(ev){
     var c=ev.error||'';
@@ -417,6 +424,7 @@ async function startRec(){
     else if(c==='audio-capture')tr.textContent='⚠ 마이크를 열 수 없어요.';
   };
   rec.onend=function(){
+    window._vpFinalText+=(window._vpSessionFinal||'');window._vpSessionFinal='';
     if(window._manualStop)return;
     setTimeout(function(){
       if(window._manualStop)return;

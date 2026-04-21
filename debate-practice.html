@@ -296,11 +296,16 @@ async function startAnswer(){
   document.getElementById('transcript').textContent='🎙 듣고 있어요…';
   // 세션별 REBUILD — 안드로이드 크롬 duplicate-final 방어
   recognition.onresult=function(ev){
-    var interim='',sessionFinal='';
+    var interim='',seen={},finals=[];
     for(var r=0;r<ev.results.length;r++){
-      if(ev.results[r].isFinal)sessionFinal+=ev.results[r][0].transcript+' ';
-      else interim+=ev.results[r][0].transcript;
+      if(ev.results[r].isFinal){
+        var t=(ev.results[r][0].transcript||'').trim();
+        if(t && !seen[t]){seen[t]=1;finals.push(t);}
+      }else{
+        interim+=ev.results[r][0].transcript;
+      }
     }
+    var sessionFinal=finals.length?finals.join(' ')+' ':'';
     window._sessionFinal=sessionFinal;
     document.getElementById('transcript').textContent=(fullText+sessionFinal+interim).trim()||'🎙 듣고 있어요…';
   };

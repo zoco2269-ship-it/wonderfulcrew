@@ -9,7 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-html,body{overflow-x:hidden;max-width:100vw;-webkit-text-size-adjust:100%;text-size-adjust:100%;}@media(max-width:768px){html{font-size:17px!important;}html.is-chrome{font-size:18.5px!important;}}img,video,iframe{max-width:100%;height:auto;}@media(max-width:900px){.nav-links{display:flex!important;overflow-x:auto!important;gap:14px!important;padding:8px 12px!important;max-width:100%!important;white-space:nowrap!important;scrollbar-width:none;-ms-overflow-style:none;}.nav-links::-webkit-scrollbar{display:none;}.nav-links>a,.nav-links>.nav-dropdown,.nav-links .nav-dropdown>a{font-size:0.96rem!important;flex-shrink:0;line-height:normal!important;}.nav-dropdown-menu{display:none!important;}.nav-dropdown.open>.nav-dropdown-menu{display:block!important;position:static!important;box-shadow:none!important;border:none!important;background:rgba(26,35,64,0.95)!important;padding:4px 0!important;margin-top:4px!important;border-radius:8px!important;}.nav-dropdown.open>.nav-dropdown-menu a{color:#fff!important;padding:8px 14px!important;font-size:1rem!important;}nav{flex-wrap:wrap!important;height:auto!important;padding:6px 4%!important;min-height:auto!important;}.nav-cta,nav a[href*="login"]{white-space:nowrap!important;font-size:0.58rem!important;padding:5px 9px!important;letter-spacing:0!important;}nav a[href*="index-en"],nav a[href*="index.html"]:not(.nav-logo){font-size:0.58rem!important;padding:4px 8px!important;white-space:nowrap!important;}.nav-logo{font-size:1.1rem!important;}}
+html,body{overflow-x:hidden;max-width:100vw;-webkit-text-size-adjust:100%;text-size-adjust:100%;}@media(max-width:768px){html{font-size:17px!important;}html.is-chrome{font-size:18.5px!important;}}img,video,iframe{max-width:100%;height:auto;}@media(max-width:900px){.nav-links{display:flex!important;overflow-x:auto!important;gap:14px!important;padding:8px 12px!important;max-width:100%!important;white-space:nowrap!important;scrollbar-width:none;-ms-overflow-style:none;}.nav-links::-webkit-scrollbar{display:none;}.nav-links>a,.nav-links>.nav-dropdown,.nav-links .nav-dropdown>a{font-size:0.96rem!important;flex-shrink:0;line-height:normal!important;}.nav-dropdown-menu{display:none!important;}.nav-dropdown.open>.nav-dropdown-menu{display:block!important;position:static!important;box-shadow:none!important;border:none!important;background:rgba(26,35,64,0.95)!important;padding:4px 0!important;margin-top:4px!important;border-radius:8px!important;}.nav-dropdown.open>.nav-dropdown-menu a{color:#fff!important;padding:8px 14px!important;font-size:1rem!important;}nav{flex-wrap:wrap!important;height:auto!important;padding:6px 4%!important;min-height:auto!important;}.nav-cta,nav a[href*="login"]{white-space:nowrap!important;font-size:0.58rem!important;padding:3px 8px!important;letter-spacing:0!important;line-height:1.2!important;}nav a[href*="index-en"],nav a[href*="index.html"]:not(.nav-logo){font-size:0.58rem!important;padding:3px 7px!important;white-space:nowrap!important;line-height:1.2!important;}.nav-logo{font-size:1.1rem!important;}}
 :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--text-dark);}
@@ -41,7 +41,7 @@ section{padding:60px 5%;}
 .cam-box{width:100%;max-width:480px;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;position:relative;margin-bottom:16px;}
 .cam-box video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);}
 .cam-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:0.88rem;}
-.rec-badge{position:absolute;top:12px;left:12px;display:none;align-items:center;gap:6px;background:rgba(192,57,43,0.9);color:#fff;padding:4px 10px;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;border-radius:12px;}
+.rec-badge{display:none!important;}
 .rec-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
@@ -368,55 +368,76 @@ nextQuestion();
 // ===== 단일 카메라 + 녹화 =====
 var currentStream=null,rec=null,mediaRec=null,videoChunks=[];
 
-function startRec(){
+async function startRec(){
   var vid=document.getElementById('vid');
   var ph=document.getElementById('ph');
-  var badge=document.getElementById('rec-badge');
   var startBtn=document.getElementById('start-btn');
   var stopBtn=document.getElementById('stop-btn');
   var tr=document.getElementById('tr');
+  window._vpFinalText='';
+  window._manualStop=false;
 
-  // 모바일 SR 호환: audio 제거 → 음성 인식이 마이크 단독 사용
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}).then(function(stream){
-    currentStream=stream;
-    vid.srcObject=stream;
+  // 마이크 권한 먼저
+  try{
+    var mic=await navigator.mediaDevices.getUserMedia({audio:true});
+    mic.getTracks().forEach(function(t){t.stop();});
+  }catch(e){
+    tr.textContent='⚠ 마이크 권한이 필요합니다. 주소창 🔒 → 마이크 허용.';
+    return;
+  }
+  // 카메라
+  try{
+    currentStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}});
+    vid.srcObject=currentStream;
     ph.style.display='none';
-    badge.style.display='flex';
-    startBtn.style.display='none';
-    stopBtn.style.display='inline-flex';
-    tr.textContent='';
+  }catch(e){
+    ph.textContent='카메라 권한이 필요합니다.';
+    return;
+  }
+  startBtn.style.display='none';
+  stopBtn.style.display='inline-flex';
+  tr.textContent='🎙 듣고 있어요…';
 
-    try{
-      videoChunks=[];
-      mediaRec=new MediaRecorder(stream,{mimeType:'video/webm'});
-      mediaRec.ondataavailable=function(e){if(e.data.size>0)videoChunks.push(e.data);};
-      mediaRec.start();
-    }catch(e){}
-
-    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(SR){
-      rec=new SR();rec.lang=(window._vpLangOverride)||(lang==='ko'?'ko-KR':'en-US');rec.interimResults=true;rec.continuous=true;
-      var finalText='';
-      rec.onresult=function(ev){
-        var interim='';finalText='';
-        for(var r=0;r<ev.results.length;r++){
-          if(ev.results[r].isFinal)finalText+=ev.results[r][0].transcript+' ';
-          else interim+=ev.results[r][0].transcript;
-        }
-        tr.textContent=finalText+interim;
-      };
-      rec.onend=function(){if(finalText.trim())tr.textContent=finalText.trim();};
-      rec.start();
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){tr.textContent='⚠ Chrome/Edge 에서 사용해주세요.';return;}
+  rec=new SR();
+  rec.lang=(window._vpLangOverride)||(lang==='ko'?'ko-KR':'en-US');
+  rec.interimResults=true;rec.continuous=true;
+  rec.onresult=function(ev){
+    var interim='';
+    for(var r=ev.resultIndex;r<ev.results.length;r++){
+      if(ev.results[r].isFinal)window._vpFinalText+=ev.results[r][0].transcript+' ';
+      else interim+=ev.results[r][0].transcript;
     }
-  }).catch(function(){ph.textContent='카메라 권한이 필요합니다.';});
+    tr.textContent=(window._vpFinalText+interim).trim()||'🎙 듣고 있어요…';
+  };
+  rec.onerror=function(ev){
+    var c=ev.error||'';
+    if(c==='not-allowed'||c==='service-not-allowed')tr.textContent='⚠ 마이크 권한 거부됨.';
+    else if(c==='audio-capture')tr.textContent='⚠ 마이크를 열 수 없어요.';
+  };
+  rec.onend=function(){
+    if(window._manualStop)return;
+    setTimeout(function(){
+      if(window._manualStop)return;
+      try{
+        var SR2=window.SpeechRecognition||window.webkitSpeechRecognition;
+        var r2=new SR2();
+        r2.lang=rec.lang;r2.interimResults=true;r2.continuous=true;
+        r2.onresult=rec.onresult;r2.onerror=rec.onerror;r2.onend=rec.onend;
+        rec=r2;r2.start();
+      }catch(e){}
+    },200);
+  };
+  try{rec.start();}catch(e){tr.textContent='⚠ 음성 인식 시작 실패';}
 }
 
 function stopRec(){
-  document.getElementById('rec-badge').style.display='none';
+  window._manualStop=true;
   document.getElementById('stop-btn').style.display='none';
   var startBtn=document.getElementById('start-btn');
-  startBtn.textContent='다시 녹화';startBtn.style.display='inline-flex';
-  if(rec)try{rec.stop();}catch(e){}
+  startBtn.textContent='다시 시작';startBtn.style.display='inline-flex';
+  if(rec)try{rec.onend=null;rec.stop();}catch(e){}
   if(mediaRec)try{mediaRec.stop();}catch(e){}
   if(currentStream)currentStream.getTracks().forEach(function(t){t.stop();});
   document.getElementById('save-btn').style.display='inline-flex';

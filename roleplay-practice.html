@@ -154,9 +154,8 @@ window.addEventListener('popstate',function(){
     <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/avatar-male.png" onclick="selAvatar(this)"><span class="emoji">👨🏻</span>남성 면접관</div>
     <div class="avatar-opt" data-avatar="👩🏻" data-img="images/avatar-female.png" onclick="selAvatar(this)"><span class="emoji">👩🏻</span>여성 면접관</div>
   </div>
-  <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:16px;">아바타 이미지는 images/avatar-male.png, avatar-female.png에 넣으면 자동 적용됩니다.</div>
 
-  <div class="setup-grid" style="grid-template-columns:1fr 1fr;max-width:440px;margin:0 auto 24px;">
+  <div class="setup-grid" style="grid-template-columns:1fr;max-width:320px;margin:0 auto 24px;">
     <div>
       <div class="setup-label">영어 악센트</div>
       <select class="setup-select" id="s-accent">
@@ -168,16 +167,6 @@ window.addEventListener('popstate',function(){
         <option value="es-ES">Spanish English</option>
       </select>
     </div>
-    <div>
-      <div class="setup-label">배경 선택</div>
-      <select class="setup-select" id="s-setting">
-        <option value="flight">✈️ 기내 (In-flight)</option>
-        <option value="hotel">🏨 호텔</option>
-        <option value="restaurant">🍽 레스토랑</option>
-        <option value="cafe">☕ 카페·라운지</option>
-        <option value="cruise">🚢 크루즈</option>
-      </select>
-    </div>
   </div>
   <button class="btn-start" onclick="startInterview()">면접 시작하기</button>
 </div>
@@ -185,7 +174,6 @@ window.addEventListener('popstate',function(){
 <!-- INTERVIEW SCREEN -->
 <div class="interview" id="interview">
   <div class="q-banner">
-    <div class="label">Question <span id="q-idx">1</span> / <span id="q-total">3</span></div>
     <div class="question" id="q-text"></div>
   </div>
 
@@ -437,37 +425,24 @@ var SCENARIO_SETS={
 };
 
 function startInterview(){
-  var setting=document.getElementById('s-setting').value||'flight';
-  window._curSetting=setting;
-  if(setting==='flight'){
-    // 기존 50개 기내 시나리오 + 하드코딩 OPENERS 사용
-    var indexed=SCENARIOS.map(function(q,i){return {q:q,origIdx:i,opener:null};});
-    var recent=[];
-    try{recent=JSON.parse(localStorage.getItem('wc_rp_recent_flight')||'[]');}catch(e){recent=[];}
-    var fresh=indexed.filter(function(x){return recent.indexOf(x.origIdx)===-1;});
-    if(fresh.length<3){recent=[];fresh=indexed.slice();}
-    questions=[];
-    var pool=fresh.slice();
-    for(var i=0;i<3&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
-    var newRecent=recent.concat(questions.map(function(q){return q.origIdx;}));
-    while(newRecent.length>20)newRecent.shift();
-    try{localStorage.setItem('wc_rp_recent_flight',JSON.stringify(newRecent));}catch(e){}
-  } else {
-    // 호텔/레스토랑/카페/크루즈 — 각 세트에서 랜덤 3개, opener 세트 내장
-    var set=SCENARIO_SETS[setting]||[];
-    var indexed2=set.map(function(it,i){return {q:it.q,origIdx:i,opener:it.o};});
-    var recentKey='wc_rp_recent_'+setting;
-    var recent2=[];
-    try{recent2=JSON.parse(localStorage.getItem(recentKey)||'[]');}catch(e){recent2=[];}
-    var fresh2=indexed2.filter(function(x){return recent2.indexOf(x.origIdx)===-1;});
-    if(fresh2.length<3){recent2=[];fresh2=indexed2.slice();}
-    questions=[];
-    var pool2=fresh2.slice();
-    for(var i=0;i<3&&pool2.length;i++){var x=Math.floor(Math.random()*pool2.length);questions.push(pool2.splice(x,1)[0]);}
-    var newRecent2=recent2.concat(questions.map(function(q){return q.origIdx;}));
-    while(newRecent2.length>15)newRecent2.shift();
-    try{localStorage.setItem(recentKey,JSON.stringify(newRecent2));}catch(e){}
-  }
+  // 모든 배경(기내/호텔/레스토랑/카페/크루즈) 통합 풀에서 랜덤 3개 추출
+  var allPool=[];
+  // 기내 — 기존 50개 + OPENERS[]
+  SCENARIOS.forEach(function(q,i){allPool.push({q:q,origIdx:'f'+i,opener:OPENERS[i]||null});});
+  // 나머지 세트 — 내장 opener
+  ['hotel','restaurant','cafe','cruise'].forEach(function(set){
+    (SCENARIO_SETS[set]||[]).forEach(function(it,i){allPool.push({q:it.q,origIdx:set[0]+i,opener:it.o});});
+  });
+  var recent=[];
+  try{recent=JSON.parse(localStorage.getItem('wc_rp_recent_all')||'[]');}catch(e){recent=[];}
+  var fresh=allPool.filter(function(x){return recent.indexOf(x.origIdx)===-1;});
+  if(fresh.length<3){recent=[];fresh=allPool.slice();}
+  questions=[];
+  var pool=fresh.slice();
+  for(var i=0;i<3&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
+  var newRecent=recent.concat(questions.map(function(q){return q.origIdx;}));
+  while(newRecent.length>30)newRecent.shift();
+  try{localStorage.setItem('wc_rp_recent_all',JSON.stringify(newRecent));}catch(e){}
 
   qIdx=0;
   document.getElementById('setup').style.display='none';
@@ -483,7 +458,6 @@ function startInterview(){
     avatarImg.onerror=function(){avatarImg.style.display='none';avatarFallback.style.display='flex';};
   }
   document.getElementById('avatar-emoji').textContent=chosenAvatar;
-  document.getElementById('q-total').textContent=questions.length;
 
   // Start camera
   // 카메라: 정면(셀카) 우선, 실패 시 기본 카메라
@@ -553,7 +527,6 @@ function showQuestion(){
   if(roleplayTimer)clearTimeout(roleplayTimer);
   roleplayTimer=setTimeout(function(){timeExpired=true;},180000);
   var q=questions[qIdx];
-  document.getElementById('q-idx').textContent=qIdx+1;
   document.getElementById('q-text').textContent=q.q;
   document.getElementById('transcript').textContent='고객이 먼저 말합니다...';
   document.getElementById('feedback').classList.remove('active');
@@ -702,6 +675,26 @@ function startListening(){
         document.getElementById('transcript').textContent='목소리가 없어요. 🎙 답변하기 버튼을 누르고 말해 주세요.';
       }
     } else {
+      // 새 인스턴스로 재시작 (Android Chrome auto-stop 대응)
+      setTimeout(function(){
+        if(endingRoleplay||window._manualStop) return;
+        try{
+          var SR2=window.SpeechRecognition||window.webkitSpeechRecognition;
+          var r2=new SR2();
+          r2.lang='en-US';r2.interimResults=true;r2.continuous=true;
+          r2.onresult=recognition?recognition.onresult:null;
+          r2.onerror=recognition?recognition.onerror:null;
+          r2.onend=recognition?recognition.onend:null;
+          recognition=r2;
+          r2.start();
+        }catch(e){
+          document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 잠시 중단 — 🎙 답변하기 다시 눌러주세요.</span>';
+          var bA5=document.getElementById('btn-answer');if(bA5) bA5.style.display='inline-flex';
+          document.getElementById('btn-stop').style.display='none';
+        }
+      },150);
+      return;
+      // 아래는 이전 로직 (도달하지 않음)
       try{ recognition.start(); }catch(e){
         document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 인식 중단. 🎙 답변하기 다시 눌러 주세요.</span>';
         var bA5=document.getElementById('btn-answer');if(bA5) bA5.style.display='inline-flex';
@@ -874,11 +867,24 @@ function nextQuestion(){
   mediaRecorder=null;
   qIdx++;
   if(qIdx>=questions.length){
-    document.getElementById('q-banner').innerHTML='<div class="label">COMPLETE</div><div class="question">All scenarios completed!</div>';
-    document.getElementById('feedback').innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br><br><a href="javascript:goBack()" style="color:var(--gold);">← 면접관 선택으로</a>';
-    document.getElementById('feedback').classList.add('active');
-    document.querySelectorAll('.ctrl-btn').forEach(function(b){b.style.display='none';});
-    return;
+    // 무제한 — 새 시나리오 3개 또 뽑기
+    var allPool=[];
+    SCENARIOS.forEach(function(q,i){allPool.push({q:q,origIdx:'f'+i,opener:OPENERS[i]||null});});
+    ['hotel','restaurant','cafe','cruise'].forEach(function(set){
+      (SCENARIO_SETS[set]||[]).forEach(function(it,i){allPool.push({q:it.q,origIdx:set[0]+i,opener:it.o});});
+    });
+    var recent=[];
+    try{recent=JSON.parse(localStorage.getItem('wc_rp_recent_all')||'[]');}catch(e){recent=[];}
+    var fresh=allPool.filter(function(x){return recent.indexOf(x.origIdx)===-1;});
+    if(fresh.length<3){recent=[];fresh=allPool.slice();}
+    questions=[];
+    var pool=fresh.slice();
+    for(var i=0;i<3&&pool.length;i++){var x=Math.floor(Math.random()*pool.length);questions.push(pool.splice(x,1)[0]);}
+    var newRecent=recent.concat(questions.map(function(q){return q.origIdx;}));
+    while(newRecent.length>30)newRecent.shift();
+    try{localStorage.setItem('wc_rp_recent_all',JSON.stringify(newRecent));}catch(e){}
+    qIdx=0;
+    chatHistory=[];
   }
   showQuestion();
 }

@@ -38,10 +38,10 @@ section{padding:44px 5% 60px;}
 .wrap{max-width:1000px;margin:0 auto;}
 
 .airline-block{margin-bottom:36px;}
-.airline-label{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-.airline-label .flag{font-size:1.4rem;}
-.airline-label .name{font-family:"DM Serif Display",serif;font-size:1.15rem;color:var(--navy);font-weight:700;}
-.airline-label .tag{font-size:0.7rem;color:var(--gold);background:var(--gold-pale);padding:3px 10px;border-radius:10px;letter-spacing:0.08em;font-weight:700;}
+.airline-label{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.airline-label .code{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:24px;padding:0 8px;background:var(--navy);color:var(--gold-light);font-family:"DM Serif Display",serif;font-size:0.78rem;font-weight:700;letter-spacing:0.05em;border-radius:4px;}
+.airline-label .name{font-family:"Noto Serif KR","DM Serif Display",serif;font-size:1.1rem;color:var(--navy);font-weight:700;}
+.airline-label .tag{font-size:0.75rem;color:#fff;background:var(--gold);padding:4px 12px;border-radius:12px;letter-spacing:0.06em;font-weight:700;}
 
 .hub-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
 .hub-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:20px 22px;text-decoration:none;color:inherit;transition:all 0.2s;cursor:pointer;position:relative;min-height:130px;}
@@ -99,7 +99,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <!-- Emirates -->
 <div class="airline-block">
-  <div class="airline-label"><span class="flag">🇦🇪</span><span class="name">Emirates</span><span class="tag">1차 + 2차</span></div>
+  <div class="airline-label"><span class="code">EK</span><span class="name">Emirates</span><span class="tag">1차 + 2차</span></div>
   <div class="hub-grid">
     <a class="hub-card" href="discussion1.html">
       <div class="hub-title">1차 디스커션</div>
@@ -116,7 +116,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <!-- Singapore -->
 <div class="airline-block">
-  <div class="airline-label"><span class="flag">🇸🇬</span><span class="name">Singapore Airlines</span><span class="tag">디베이트</span></div>
+  <div class="airline-label"><span class="code">SQ</span><span class="name">Singapore Airlines</span><span class="tag">디베이트</span></div>
   <div class="hub-grid">
     <a class="hub-card" href="debate-practice.html">
       <div class="hub-title">디베이트 (찬반 토론)</div>
@@ -128,7 +128,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <!-- Qatar -->
 <div class="airline-block">
-  <div class="airline-label"><span class="flag">🇶🇦</span><span class="name">Qatar Airways</span><span class="tag">워드 슈팅</span></div>
+  <div class="airline-label"><span class="code">QR</span><span class="name">Qatar Airways</span><span class="tag">워드 슈팅</span></div>
   <div class="hub-grid">
     <a class="hub-card" href="word-shooting.html">
       <div class="hub-title">워드 슈팅 (즉석 1분 스피치)</div>
@@ -140,7 +140,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <!-- 기타 항공사 종합 -->
 <div class="airline-block">
-  <div class="airline-label"><span class="flag">🌍</span><span class="name">기타 외항사 (Etihad·Cathay·Lufthansa·KLM 등)</span><span class="tag">종합 디스커션</span></div>
+  <div class="airline-label"><span class="code" style="background:var(--gold);color:#fff;">ETC</span><span class="name">기타 외항사 (Etihad·Cathay·Lufthansa·KLM 등)</span><span class="tag">종합 디스커션</span></div>
   <div class="hub-grid">
     <a class="hub-card" href="discussion2.html">
       <div class="hub-title">다양한 주제 디스커션</div>

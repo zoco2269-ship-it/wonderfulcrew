@@ -746,11 +746,35 @@ function speakQuestion(text,lang){
 var chatHistory=[];
 var lastSuggestedResponse='';
 
-function showSuggestedResponse(){
-  if(!lastSuggestedResponse) return;
+async function showSuggestedResponse(){
   var fb=document.getElementById('feedback');
-  fb.innerHTML+='<br><br><b style="color:var(--gold);">Model Answer:</b><br><div style="white-space:pre-line;background:rgba(201,168,76,0.08);padding:16px;border-left:3px solid var(--gold);margin-top:8px;">'+lastSuggestedResponse+'</div>';
-  document.getElementById('btn-model').style.display='none';
+  fb.classList.add('active');
+  // 이미 피드백으로 생성된 모범답변이 있으면 표시
+  if(lastSuggestedResponse){
+    fb.innerHTML+='<br><br><b style="color:var(--gold);">Model Answer:</b><br><div style="white-space:pre-line;background:rgba(201,168,76,0.08);padding:16px;border-left:3px solid var(--gold);margin-top:8px;">'+lastSuggestedResponse+'</div>';
+    document.getElementById('btn-model').style.display='none';
+    return;
+  }
+  // 즉석 모범답변 생성 (대화 중 요청)
+  var q=questions[qIdx];
+  var scenario=typeof q==='string'?q:q.q;
+  var lastPassenger='';
+  for(var i=chatHistory.length-1;i>=0;i--){if(chatHistory[i].role==='assistant'){lastPassenger=chatHistory[i].content;break;}}
+  fb.innerHTML='<span style="color:var(--gold);">모범답변을 작성하고 있어요...</span>';
+  try{
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:200,
+      system:'You are a cabin crew trainer. Give an ideal model answer (2-4 sentences) for the cabin crew to say to the passenger in this scenario.\n\nScenario: '+scenario+(lastPassenger?'\nPassenger just said: '+lastPassenger:'')+'\n\nWrite only the model answer — no preamble, no stage directions. Professional, warm, solution-oriented. English only.',
+      messages:[{role:'user',content:'Give me a model cabin crew response.'}]
+    })});
+    var data=await res.json();
+    var txt=((data&&data.content&&data.content[0]&&data.content[0].text)||'I\'m so sorry for the inconvenience. Let me look into this right away and find a solution for you.').replace(/\*\*/g,'').trim();
+    lastSuggestedResponse=txt;
+    fb.innerHTML='<b style="color:var(--gold);">Model Answer:</b><br><div style="white-space:pre-line;background:rgba(201,168,76,0.08);padding:16px;border-left:3px solid var(--gold);margin-top:8px;">'+txt+'</div>';
+    document.getElementById('btn-model').style.display='none';
+  }catch(e){
+    fb.innerHTML='<span style="color:#E74C3C;">모범답변 생성 실패. 다시 시도해 주세요.</span>';
+  }
 }
 
 var endingRoleplay=false;
@@ -829,6 +853,12 @@ async function processAnswer(){
           generateFeedback(scenario);
         } else {
           var bA=document.getElementById('btn-answer');if(bA) bA.style.display='inline-flex';
+          // 모바일: 매 턴 후 모범답변/다음질문 버튼도 함께 노출
+          var isMobile=window.matchMedia&&window.matchMedia('(max-width:768px)').matches;
+          if(isMobile){
+            var bM=document.getElementById('btn-model');if(bM) bM.style.display='inline-flex';
+            var bN=document.getElementById('btn-next');if(bN) bN.style.display='inline-flex';
+          }
         }
       }
     },200);

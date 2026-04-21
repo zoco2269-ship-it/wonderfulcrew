@@ -12,6 +12,7 @@ html,body{overflow-x:hidden;max-width:100vw;-webkit-text-size-adjust:100%;text-s
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Noto Sans KR',sans-serif;background:var(--navy-dark);color:#fff;min-height:100vh;display:flex;flex-direction:column;}
 body.debate-active{height:100vh;overflow:hidden;}
+body.debate-active .debate.active{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;}
 a{color:inherit;text-decoration:none;}
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:rgba(17,27,46,0.95);border-bottom:1px solid rgba(201,168,76,0.15);flex-shrink:0;}
 .nav-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}.nav-logo span{color:var(--gold);}
@@ -39,7 +40,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 .q-banner .stance{font-size:0.78rem;color:rgba(255,255,255,0.65);margin-top:6px;}
 .q-banner .stance b{color:var(--gold-light);}
 .video-area{flex:1;display:flex;align-items:center;justify-content:center;gap:18px;padding:18px;min-height:0;}
-.card-frame{width:160px;height:min(220px,calc(100vh - 360px));border-radius:10px;overflow:hidden;background:#000;border:2px solid rgba(255,255,255,0.08);position:relative;flex-shrink:0;}
+.card-frame{width:200px;aspect-ratio:9/16;max-height:100%;border-radius:10px;overflow:hidden;background:#000;border:2px solid rgba(255,255,255,0.08);position:relative;flex-shrink:1;}
 .card-frame.speaking{border-color:var(--gold);animation:goldGlow 1.5s infinite;}
 @keyframes goldGlow{0%,100%{border-color:rgba(201,168,76,0.4);}50%{border-color:rgba(201,168,76,1);}}
 .avatar-display{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#1A2340 0%,#2A3455 100%);font-size:3rem;}
@@ -63,7 +64,21 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 .ctrl-btn.danger{background:#E74C3C;color:#fff;}
 .ctrl-btn.secondary{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);}
 .ctrl-btn.secondary:hover:not(:disabled){background:rgba(255,255,255,0.12);}
-@media(max-width:600px){.topic-grid{grid-template-columns:1fr;}.card-frame{width:120px;}.video-area{gap:10px;padding:12px;}}
+@media(max-width:600px){
+  .topic-grid{grid-template-columns:1fr;}
+  body.debate-active{height:100dvh;}
+  body.debate-active .debate.active{height:calc(100dvh - 56px);}
+  .video-area{gap:10px;padding:8px;min-height:0;flex:1;align-items:center;}
+  .card-frame{width:45vw;max-width:200px;height:auto;aspect-ratio:9/16;max-height:calc(100dvh - 260px);}
+  .q-banner{padding:10px 14px;}
+  .q-banner .topic{font-size:0.95rem;line-height:1.4;}
+  .q-banner .stance{font-size:0.82rem;}
+  .transcript-bar{padding:8px 14px;font-size:0.92rem;min-height:30px;}
+  .waveform{height:20px;}
+  .feedback-panel{max-height:22dvh;padding:12px 16px;font-size:0.92rem;}
+  .controls{flex-wrap:wrap;gap:8px;padding:10px 12px env(safe-area-inset-bottom,10px);}
+  .ctrl-btn{padding:11px 18px!important;font-size:0.9rem!important;}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
@@ -243,7 +258,7 @@ function startDebate(){
   // 카메라 (이미 떠 있으면 재사용)
   if(document.getElementById('cam-toggle').checked && !stream){
     (async function(){
-      var attempts=[{video:{facingMode:{exact:'user'}},audio:true},{video:{facingMode:'user'},audio:true},{video:true,audio:true}];
+      var attempts=[{video:{facingMode:{exact:'user'}},audio:false},{video:{facingMode:'user'},audio:false},{video:true,audio:false}];
       for(var i=0;i<attempts.length;i++){
         try{
           stream=await navigator.mediaDevices.getUserMedia(attempts[i]);
@@ -260,32 +275,61 @@ function startDebate(){
   document.getElementById('transcript').textContent='본인 입장을 영어로 1~2문장 짧게 말씀해 주세요.';
 }
 
-function startAnswer(){
+async function startAnswer(){
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){document.getElementById('transcript').textContent='Chrome 브라우저에서 사용해 주세요.';return;}
+  if(!SR){document.getElementById('transcript').textContent='⚠ Chrome/Edge 에서 사용해 주세요.';return;}
+  // 마이크 권한 명시적 요청
+  try{
+    var tmp=await navigator.mediaDevices.getUserMedia({audio:true});
+    tmp.getTracks().forEach(function(t){t.stop();});
+  }catch(e){
+    document.getElementById('transcript').textContent='⚠ 마이크 권한이 필요해요. 주소창 🔒 → 마이크 허용.';
+    return;
+  }
   recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
-  fullText='';
+  fullText='';window._sessionFinal='';window._manualStop=false;
   document.getElementById('btn-answer').style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('rec-label').textContent='답변 중';
   document.getElementById('waveform').classList.add('active');
   document.getElementById('my-card').classList.add('speaking');
+  document.getElementById('transcript').textContent='🎙 듣고 있어요…';
+  // 세션별 REBUILD — 안드로이드 크롬 duplicate-final 방어
   recognition.onresult=function(ev){
-    var interim='';fullText='';
+    var interim='',sessionFinal='';
     for(var r=0;r<ev.results.length;r++){
-      if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';
+      if(ev.results[r].isFinal)sessionFinal+=ev.results[r][0].transcript+' ';
       else interim+=ev.results[r][0].transcript;
     }
-    document.getElementById('transcript').textContent=fullText+interim;
+    window._sessionFinal=sessionFinal;
+    document.getElementById('transcript').textContent=(fullText+sessionFinal+interim).trim()||'🎙 듣고 있어요…';
+  };
+  recognition.onerror=function(ev){
+    var c=ev.error||'';
+    if(c==='not-allowed'||c==='service-not-allowed')document.getElementById('transcript').textContent='⚠ 마이크 권한 거부됨.';
+    else if(c==='audio-capture')document.getElementById('transcript').textContent='⚠ 마이크를 열 수 없어요.';
   };
   recognition.onend=function(){
-    if(document.getElementById('btn-stop').style.display!=='none'){try{recognition.start();}catch(e){}}
+    fullText+=(window._sessionFinal||'');window._sessionFinal='';
+    if(window._manualStop)return;
+    setTimeout(function(){
+      if(window._manualStop)return;
+      try{
+        var SR2=window.SpeechRecognition||window.webkitSpeechRecognition;
+        var r2=new SR2();
+        r2.lang='en-US';r2.interimResults=true;r2.continuous=true;
+        r2.onresult=recognition.onresult;r2.onerror=recognition.onerror;r2.onend=recognition.onend;
+        recognition=r2;r2.start();
+      }catch(e){}
+    },200);
   };
-  recognition.start();
+  try{recognition.start();}catch(e){document.getElementById('transcript').textContent='⚠ 음성 인식 시작 실패';}
 }
 
 async function stopAnswer(){
-  if(recognition)try{recognition.stop();}catch(e){}
+  window._manualStop=true;
+  if(recognition)try{recognition.onend=null;recognition.stop();}catch(e){}
+  fullText+=(window._sessionFinal||'');window._sessionFinal='';
   document.getElementById('btn-stop').style.display='none';
   document.getElementById('rec-label').textContent='처리 중';
   document.getElementById('waveform').classList.remove('active');

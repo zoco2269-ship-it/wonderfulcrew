@@ -77,11 +77,11 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
 <!-- SETUP -->
 <div class="setup" id="setup">
-  <h1>종합 <em>디스커션 연습</em></h1>
+  <h1><em>디스커션 연습</em></h1>
   <p>다른 지원자(AI)와 실시간으로 토론하세요.<br>우선순위 판단, 팀워크, 서비스 마인드가 핵심입니다.</p>
   <div style="background:rgba(201,168,76,0.1);border-left:3px solid var(--gold);padding:12px 16px;margin:0 0 22px;font-size:0.86rem;color:rgba(255,255,255,0.88);line-height:1.7;text-align:left;border-radius:0 6px 6px 0;">
-    <b style="color:var(--gold);">📌 다양한 기출 기반 종합 디스커션 주제입니다.</b><br>
-    Etihad·Cathay·Lufthansa·KLM·Finnair 등 외항사 1차/2차 디스커션에서 자주 등장하는 패턴을 모아두었습니다.
+    <b style="color:var(--gold);">📌 다양한 기출 기반 디스커션 주제입니다.</b><br>
+    외항사 디스커션에서 자주 등장하는 패턴을 모아두었습니다.
   </div>
 
   <div class="topic-grid" id="topic-grid"></div>
@@ -130,7 +130,15 @@ var TOPICS=[
   {title:'팀 갈등 해결',desc:'장거리 비행 중 동료 승무원 사이 갈등 발생. 해결 순서는?',scenario:'Mid-flight, two crew members have a serious argument about task distribution. Passengers notice the tension. Discussion: 1.Chief purser intervenes immediately 2.Wait until after landing 3.Split their zones for remainder 4.Service priority over personal issues 5.Report to airline HR later 6.Mediate between them in galley. How would your team handle this?'},
   {title:'서비스 우선순위',desc:'만석 비행 중 6개 서비스 요청 동시 발생. 우선순위를 정하세요.',scenario:'On a full flight, 6 simultaneous requests hit your galley: 1.First class passenger wants champagne refill 2.Economy passenger feels nauseous 3.Parent needs baby formula heated 4.Elderly passenger needs help to lavatory 5.Passenger complains seat belt broken 6.Crew member is struggling with meal cart. Prioritize and explain reasoning.'},
   {title:'문화 다양성 대응',desc:'다국적 승객 8명, 각자 다른 요구사항. 팀으로 어떻게 대응할까요?',scenario:'Your flight has passengers with diverse needs: 1.Muslim family requesting halal + private prayer area 2.Hindu passenger with strict vegetarian needs 3.Orthodox Jewish passenger needs kosher unopened 4.Couple celebrating 50th anniversary 5.Unaccompanied minor (8 years old) 6.Elderly person with dementia traveling alone 7.Wheelchair user needing mobility help 8.Korean businessman feeling unwell. Divide attention as a team.'},
-  {title:'공항 대기 위기',desc:'폭풍으로 5시간 지연. 탑승구에 500명 대기 중. 대응 순서?',scenario:'Due to heavy storm, your flight is delayed 5 hours. 500 passengers are waiting at the gate, frustrated and tired. Available resources: 200 meal vouchers, 50 hotel rooms, limited staff. Consider priorities: 1.Elderly/disabled/families with infants 2.Business class and loyalty members 3.Connecting passengers who will miss next flight 4.General economy 5.Crew rest regulations. Discuss fair allocation.'}
+  {title:'공항 대기 위기',desc:'폭풍으로 5시간 지연. 탑승구에 500명 대기 중. 대응 순서?',scenario:'Due to heavy storm, your flight is delayed 5 hours. 500 passengers are waiting at the gate, frustrated and tired. Available resources: 200 meal vouchers, 50 hotel rooms, limited staff. Consider priorities: 1.Elderly/disabled/families with infants 2.Business class and loyalty members 3.Connecting passengers who will miss next flight 4.General economy 5.Crew rest regulations. Discuss fair allocation.'},
+  {title:'런던 플라이트 밀 서비스 메뉴',desc:'런던 직항 비행 기내식 메뉴 구성. 비행 시간대별로 어떤 메뉴가 적절할까요?',scenario:'Your team needs to plan the in-flight meal menu for a London direct flight. Consider meal timings: 1.Morning departure (breakfast + lunch) 2.Afternoon departure (lunch + dinner) 3.Night departure (dinner + breakfast). For each time slot, discuss appropriate dishes, dietary variety (halal/vegan/kosher), portion size, and cultural preferences of London-bound passengers. Agree on signature items.'},
+  {title:'새로운 데스티네이션 프로모션',desc:'항공사가 새 노선을 오픈합니다. 어떤 프로모션 이벤트로 알릴까요?',scenario:'Your airline is launching a brand new route. You need to create buzz and fill seats in the first 3 months. Discuss promotion event ideas: 1.Influencer trip giveaway 2.First-100-passengers upgrade 3.Pop-up event at destination 4.Social media contest 5.Partnership with local celebrity 6.Free stopover package. Which 2-3 combine best, and why?'},
+  {title:'어린이 고객 메뉴',desc:'어린이 승객을 위한 기내식 메뉴 구성. 아이들이 좋아할 메뉴는?',scenario:'Your airline is designing a special kids meal program. Discuss what to include: 1.Universal favorites (pasta, pizza, chicken nuggets) 2.Healthy options (fruits, veggies) 3.Fun presentation (character shaped) 4.Snacks between meals 5.Drink options (juice, hot chocolate) 6.Special diet kids (allergies). Keep cost reasonable. Agree on menu.'},
+  {title:'듀티프리 서울 아이템',desc:'인천 → 해외 비행에서 한국 특색 듀티프리 아이템 선정.',scenario:'You need to curate duty-free items that represent Seoul/Korea for international passengers flying out of Incheon. Categories to discuss: 1.K-beauty products (skincare, masks) 2.Korean snacks/food (honey butter chips, ginseng candy) 3.Premium ginseng/red ginseng products 4.Traditional crafts (handmade) 5.K-pop merchandise 6.Hanbok-inspired fashion items 7.Soju/Korean liquor. Pick top 4-5 signature items.'},
+  {title:'파리→도하 Afternoon Tea',desc:'파리발 도하행 비행에서 제공할 애프터눈 티 메뉴 구성.',scenario:'You are planning the afternoon tea service for Paris-Doha flight (premium cabin). Consider French elegance + Middle Eastern touch. Discuss: 1.Sandwich selection (cucumber, smoked salmon, egg, Arabic flavors) 2.Scones (plain, raisin) with clotted cream & jam 3.Pastries (macarons, éclairs, baklava) 4.Tea selection (Earl Grey, Moroccan mint, Darjeeling) 5.Champagne pairing options. Balance French tradition and Qatari hospitality.'},
+  {title:'바다에 추락 · 보트에 1명',desc:'비행기가 바다에 추락. 구명보트에 1명만 태울 수 있다. 누구?',scenario:'A plane has crashed into the ocean. Only ONE person can be taken on the limited life raft. 8 survivors: 1.A 10-year-old boy traveling alone 2.A pregnant woman 3.David Beckham (famous footballer) 4.A nurse 5.A professional model 6.A cabin crew member 7.A VIP business executive 8.A 70-year-old elderly passenger. Discuss who should be prioritized and justify your choice based on values — not utility alone.'},
+  {title:'해외 거주 장단점',desc:'다른 나라에 살 때 좋은 점과 힘든 점. 승무원 지망생 관점에서.',scenario:'As future cabin crew who will live abroad (Dubai, Doha, Singapore), discuss both advantages and disadvantages of living in a foreign country: 1.Advantages — cultural exposure, career growth, savings, adventure 2.Disadvantages — homesickness, language barrier, family distance, cultural adjustment. Share personal views, then agree on how to handle the disadvantages.'},
+  {title:'무인도 준비물',desc:'무인도에 갈 때 가져갈 5가지 물건. 생존과 삶의 질 중 무엇을 우선?',scenario:'Your group will be stranded on a deserted island for 1 month. You can bring 5 items TOTAL (not each — as a team). Options: knife, lighter, rope, first aid kit, water filter, tent, fishing gear, book, mirror, compass, mosquito net, flashlight, blanket, cooking pot, satellite phone. Discuss survival vs quality of life, agree on 5.'}
 ];
 var selectedTopic=0;
 var stream=null,recognition=null,fullText='',chatHistory=[],turnCount=0;
@@ -172,7 +180,15 @@ function startDiscussion(){
     6:"Two crew are fighting mid-flight. How should we handle it?",
     7:"6 service requests at once. Which do we handle first?",
     8:"8 passengers with very different needs — how do we split as a team?",
-    9:"500 passengers stuck, 5-hour delay. Who gets what first?"
+    9:"500 passengers stuck, 5-hour delay. Who gets what first?",
+    10:"We're planning the London flight menu by time of day. Where should we start?",
+    11:"New route launch — how do we promote it? Any ideas?",
+    12:"Kids meal menu. What do kids actually like and eat?",
+    13:"Duty-free items representing Seoul. Which ones feel most Korean?",
+    14:"Paris to Doha afternoon tea. French or Middle Eastern flavors?",
+    15:"Plane crashed, only one seat on the raft. Who goes?",
+    16:"Living abroad as cabin crew — what's the best part, the hardest part?",
+    17:"We can bring only 5 items to a deserted island. Where do we start?"
   };
   aiTurnB(openers[selectedTopic]||"So, what do you think we should do first?");
 }

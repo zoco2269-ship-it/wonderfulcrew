@@ -91,22 +91,16 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
   <div class="intro">
     <div class="brand-logo">Wonderful<span>Crew</span></div>
     <h1>영어 테스트<br><span style="color:var(--brand-primary);">English Test</span></h1>
-    <p class="meta">외항사 실전 영어 테스트 형식 · 두 가지 유형</p>
-    <div class="info-box" style="text-align:center;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;align-items:stretch;">
+    <div class="info-box" style="text-align:center;padding-top:8px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch;">
         <button onclick="startTest('vocab')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:10px;padding:20px 14px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:left;display:flex;flex-direction:column;justify-content:flex-start;min-height:110px;">
           <div style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);font-weight:700;margin-bottom:6px;">① 어휘 테스트</div>
-          <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;">30문항 · 빈칸 채우기<br>어휘·전치사·서법조동사</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;">30문항 · 빈칸 채우기</div>
         </button>
         <button onclick="startTest('reading')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:10px;padding:20px 14px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:left;display:flex;flex-direction:column;justify-content:flex-start;min-height:110px;">
           <div style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);font-weight:700;margin-bottom:6px;">② 독해 테스트</div>
-          <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;">지문 1개 · 8문항<br>내용 이해 + 어휘 추론</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;">지문 1개 · 8문항</div>
         </button>
-      </div>
-      <div style="font-size:0.8rem;color:var(--text-muted);line-height:1.8;text-align:left;">
-        · 빈칸/지문에 맞는 가장 적절한 선택지를 고르세요.<br>
-        · 실제 외항사(에미레이트·카타르 등) 영어 테스트에서 자주 나오는 유형입니다.<br>
-        · 사전·번역기 사용은 실전 점수에 도움 안 됩니다. 스스로 풀어보세요.
       </div>
     </div>
   </div>
@@ -132,7 +126,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
   <div class="q-header">
     <div class="q-header-left">←</div>
     <div class="brand-logo">Wonderful<span>Crew</span></div>
-    <div class="q-header-right">⚙ ?</div>
+    <div class="q-header-right"></div>
   </div>
   <div class="q-counter" id="q-counter">Question 1 of 30</div>
   <div class="q-text" id="q-text"></div>

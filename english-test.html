@@ -70,7 +70,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .review-item .ans .wrong{color:#C62828;text-decoration:line-through;}
 .review-item .ans .right{color:#2E7D32;font-weight:700;}
 
-@media(max-width:600px){.wrap{padding:20px 16px 40px;}.q-counter{font-size:1.4rem;}}
+@media(max-width:600px){.wrap{padding:20px 12px 40px;max-width:100%;}.q-counter{font-size:1.4rem;}.intro{padding:30px 10px;}.intro .info-box{padding:14px 12px;}.test-mode-grid{gap:8px!important;}.test-mode-grid button{padding:14px 8px!important;font-size:0.95rem;}.test-mode-grid button>div:first-child{font-size:0.94rem!important;}.test-mode-grid button>div:last-child{font-size:0.7rem!important;}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
@@ -89,16 +89,17 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 <!-- INTRO -->
 <div class="wrap" id="screen-intro">
   <div class="intro">
+    <div class="brand-logo">Wonderful<span>Crew</span></div>
     <h1>영어 테스트<br><span style="color:var(--brand-primary);">English Test</span></h1>
     <div class="info-box" style="text-align:center;padding-top:8px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch;">
-        <button onclick="startTest('vocab')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:10px;padding:20px 14px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:left;display:flex;flex-direction:column;justify-content:flex-start;min-height:110px;">
-          <div style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);font-weight:700;margin-bottom:6px;">① 어휘 테스트</div>
-          <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;">30문항 · 빈칸 채우기</div>
+      <div class="test-mode-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:stretch;">
+        <button onclick="startTest('vocab')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:10px;padding:16px 10px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90px;white-space:nowrap;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);font-weight:700;margin-bottom:4px;">① 어휘 테스트</div>
+          <div style="font-size:0.76rem;color:var(--text-muted);">30문항 · 빈칸 채우기</div>
         </button>
-        <button onclick="startTest('reading')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:10px;padding:20px 14px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:left;display:flex;flex-direction:column;justify-content:flex-start;min-height:110px;">
-          <div style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);font-weight:700;margin-bottom:6px;">② 독해 테스트</div>
-          <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;">지문 1개 · 8문항</div>
+        <button onclick="startTest('reading')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:10px;padding:16px 10px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90px;white-space:nowrap;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);font-weight:700;margin-bottom:4px;">② 독해 테스트</div>
+          <div style="font-size:0.76rem;color:var(--text-muted);">지문 1개 · 8문항</div>
         </button>
       </div>
     </div>

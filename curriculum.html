@@ -75,11 +75,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   .airline-wrap{grid-template-columns:1fr 1fr;gap:10px;}
   .airline-group{grid-template-columns:1fr;gap:8px;}
   .airline-grid{grid-template-columns:repeat(2,1fr);}
-  .airline-card{padding:10px 9px;min-height:68px;}
-  .airline-name-en{font-size:0.82rem;}
-  .airline-name-ko{font-size:0.7rem;}
-  .airline-region{font-size:0.58rem;}
-  .airline-tier{font-size:0.5rem;padding:1px 5px;}
+  /* 카드 크기 완전 고정 — 텍스트 길이 상관없이 모두 동일 */
+  .airline-card{padding:10px 8px;min-height:78px;height:78px;overflow:hidden;}
+  .airline-name-en{font-size:0.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .airline-name-ko{font-size:0.68rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .airline-region{font-size:0.56rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}
+  .airline-tier{font-size:0.48rem;padding:1px 5px;top:5px;right:5px;}
   .step-card{padding:18px 18px;gap:14px;}
   .step-num{font-size:1.8rem;width:38px;}
   .step-title{font-size:0.94rem;}
@@ -165,7 +166,7 @@ var AIRLINES=[
   {key:'asiana',en:'Asiana Airlines',ko:'아시아나 항공',region:'Korea'},
   {key:'jeju',en:'Jeju Air',ko:'제주항공',region:'Korea'},
   {key:'jinair',en:'Jin Air',ko:'진에어',region:'Korea'},
-  {key:'tway',en:"Trinity Air",ko:'트리니티항공(구 티웨이)',region:'Korea'},
+  {key:'tway',en:"Trinity Air",ko:'트리니티항공',region:'Korea'},
   {key:'airpremia',en:'Air Premia',ko:'에어프레미아',region:'Korea'},
   {key:'airseoul',en:'Air Seoul',ko:'에어서울',region:'Korea'},
   {key:'airbusan',en:'Air Busan',ko:'에어부산',region:'Korea'},
@@ -174,7 +175,7 @@ var AIRLINES=[
   {key:'domestic-other',en:'Other Korean',ko:'기타 국내 항공사',region:'Korea'},
   {key:'cathay',en:'Cathay Pacific',ko:'캐세이퍼시픽',region:'Hong Kong'},
   {key:'riyadh',en:'Riyadh Air',ko:'리야드에어',region:'Saudi Arabia · Riyadh'},
-  {key:'klm',en:'KLM Royal Dutch',ko:'KLM',region:'Netherlands · Amsterdam'},
+  {key:'klm',en:'KLM Royal Dutch',ko:'KLM',region:'Netherlands'},
   {key:'lufthansa',en:'Lufthansa',ko:'루프트한자',region:'Germany · Frankfurt'},
   {key:'flydubai',en:'flydubai',ko:'flydubai',region:'UAE · Dubai'},
   {key:'finnair',en:'Finnair',ko:'핀에어',region:'Finland · Helsinki'},
@@ -488,7 +489,7 @@ if(_urlAirline && savedAirline){
     var hubBtn=document.createElement('a');
     hubBtn.href='practice-foreign.html';
     hubBtn.style.cssText='display:inline-block;margin:30px auto 0;padding:16px 44px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:32px;font-family:DM Serif Display,serif;font-size:1.05rem;font-weight:700;text-decoration:none;box-shadow:0 8px 24px rgba(201,168,76,0.3);letter-spacing:0.04em;text-align:center;';
-    hubBtn.textContent='외항사 면접 연습 시작하기 →';
+    hubBtn.textContent='외항사 면접<br>시작하기';
     var hubWrap=document.createElement('div');
     hubWrap.style.cssText='text-align:center;';
     hubWrap.appendChild(hubBtn);

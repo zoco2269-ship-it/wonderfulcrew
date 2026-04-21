@@ -128,6 +128,15 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </ul>
 </div>
 
+<div style="max-width:380px;margin:0 auto 20px;text-align:left;">
+  <div style="font-size:0.86rem;color:var(--gold);font-weight:700;margin-bottom:6px;letter-spacing:0.04em;">비디오 면접 대상</div>
+  <select id="vp-mode" onchange="onVpModeChange()" style="width:100%;padding:11px 14px;background:#fff;border:2px solid var(--gold-pale);border-radius:8px;color:var(--text-dark);font-family:inherit;font-size:0.94rem;font-weight:600;cursor:pointer;">
+    <option value="general">일반 (공통 기출 풀)</option>
+    <option value="emirates">Emirates (실전 19개)</option>
+    <option value="singapore">Singapore Airlines (실전 15개)</option>
+  </select>
+</div>
+
 <div class="q-card" id="single-q">
   <div class="q-num" id="q-counter">질문 1</div>
   <div class="q-text" id="q-text">로딩 중...</div>
@@ -241,6 +250,23 @@ var EMIRATES_VIDEO_QS=[
   "What do you expect to learn from working with Emirates?",
   "What is something that adds joy to your life?"
 ];
+var SINGAPORE_VIDEO_QS=[
+  "Please introduce yourself.",
+  "Why do you want to become a cabin crew member?",
+  "Why Singapore Airlines?",
+  "What do you know about Singapore Airlines?",
+  "What qualities make you suitable for this role?",
+  "Tell me about a time you provided excellent customer service.",
+  "How would you handle a difficult passenger?",
+  "What are your strengths and weaknesses?",
+  "How do you handle stress and pressure?",
+  "Tell me about your previous work experience.",
+  "What would your friends say about you?",
+  "How is your current job related to the cabin crew position?",
+  "What challenges do you expect as a Singapore Airlines cabin crew?",
+  "How would you adapt to living in Singapore?",
+  "Why do you think you are the right fit for this position?"
+];
 var extraIdx=0;
 // 모든 질문을 한 풀로 합쳐서 랜덤 선택. 한 화면에 질문 한 개씩.
 function flattenPool(base,extras,roleplays,roleplayHint){
@@ -250,13 +276,27 @@ function flattenPool(base,extras,roleplays,roleplayHint){
   roleplays.forEach(function(r){pool.push({q:r,hint:roleplayHint});});
   return pool;
 }
-var POOL=lang==='ko'
-  ?flattenPool(QUESTIONS_KO,EXTRA_KO,KO_RP,'롤플레이 — 사과, 해결책, 대안 제시, Service Recovery를 포함해서 답변하세요.')
-  :flattenPool(QUESTIONS_EN,EXTRA_EN,ROLEPLAY_QS,'Roleplay — Include apology, solution, alternative, and service recovery.');
-// 영어 모드면 에미레이트 실전 기출도 풀에 추가
-if(lang!=='ko'){
-  EMIRATES_VIDEO_QS.forEach(function(q){POOL.push({q:q,hint:'SMILE · CONFIDENCE · BE YOURSELF · 30~60초'});});
+function buildPool(mode){
+  if(lang==='ko'){
+    return flattenPool(QUESTIONS_KO,EXTRA_KO,KO_RP,'롤플레이 — 사과, 해결책, 대안 제시, Service Recovery를 포함해서 답변하세요.');
+  }
+  if(mode==='emirates'){
+    return EMIRATES_VIDEO_QS.map(function(q){return {q:q,hint:'SMILE · CONFIDENCE · BE YOURSELF · 30~60초'};});
+  }
+  if(mode==='singapore'){
+    return SINGAPORE_VIDEO_QS.map(function(q){return {q:q,hint:'Natural smile · Clear voice · Be yourself · 30~60초'};});
+  }
+  // general — 공통 기출 풀
+  return flattenPool(QUESTIONS_EN,EXTRA_EN,ROLEPLAY_QS,'Roleplay — Include apology, solution, alternative, and service recovery.');
 }
+var POOL=buildPool('general');
+window.onVpModeChange=function(){
+  var mode=document.getElementById('vp-mode').value||'general';
+  POOL=buildPool(mode);
+  lastQ='';
+  qCount=0;
+  if(typeof nextQuestion==='function') nextQuestion();
+};
 var qCount=0;
 var lastQ='';
 

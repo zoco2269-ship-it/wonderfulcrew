@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2차 디스커션 연습 WonderfulCrew</title>
+<title>종합 디스커션 연습 · WonderfulCrew</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 html,body{overflow-x:hidden;max-width:100vw;}img,video,iframe{max-width:100%;height:auto;}@media(max-width:900px){.nav-links{display:flex!important;overflow-x:auto!important;gap:14px!important;padding:8px 12px!important;max-width:100%!important;white-space:nowrap!important;scrollbar-width:none;-ms-overflow-style:none;}.nav-links::-webkit-scrollbar{display:none;}.nav-links>a,.nav-links>.nav-dropdown,.nav-links .nav-dropdown>a{font-size:0.72rem!important;flex-shrink:0;line-height:normal!important;}.nav-dropdown-menu{display:none!important;}.nav-dropdown.open>.nav-dropdown-menu{display:block!important;position:static!important;box-shadow:none!important;border:none!important;background:rgba(26,35,64,0.95)!important;padding:4px 0!important;margin-top:4px!important;border-radius:8px!important;}.nav-dropdown.open>.nav-dropdown-menu a{color:#fff!important;padding:6px 14px!important;font-size:0.78rem!important;}nav{flex-wrap:wrap!important;height:auto!important;padding:6px 4%!important;min-height:auto!important;}.nav-cta,nav a[href*="login"]{white-space:nowrap!important;font-size:0.68rem!important;padding:6px 12px!important;letter-spacing:0!important;}nav a[href*="index-en"],nav a[href*="index.html"]:not(.nav-logo){font-size:0.64rem!important;padding:5px 9px!important;white-space:nowrap!important;}.nav-logo{font-size:1.1rem!important;}}
@@ -73,15 +73,15 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="js/free-trial.js"></script>
 </head>
 <body>
-<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a><a href="curriculum.html" class="nav-back">← 커리큘럼</a></nav>
+<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a><a href="discussion-hub.html" class="nav-back">← 디스커션 허브</a></nav>
 
 <!-- SETUP -->
 <div class="setup" id="setup">
-  <h1>2차 디스커션 <em>연습</em></h1>
-  <p>다른 지원자(AI)와 실시간으로 토론하세요. 우선순위 판단, 팀워크, 서비스 마인드가 핵심입니다.</p>
+  <h1>종합 <em>디스커션 연습</em></h1>
+  <p>다른 지원자(AI)와 실시간으로 토론하세요.<br>우선순위 판단, 팀워크, 서비스 마인드가 핵심입니다.</p>
   <div style="background:rgba(201,168,76,0.1);border-left:3px solid var(--gold);padding:12px 16px;margin:0 0 22px;font-size:0.86rem;color:rgba(255,255,255,0.88);line-height:1.7;text-align:left;border-radius:0 6px 6px 0;">
-    <b style="color:var(--gold);">📌 에미레이트 2차 디스커션 기출 주제입니다.</b><br>
-    카타르·싱가포르·에티하드·캐세이 등 다른 항공사 디스커션 면접에도 비슷한 패턴이 나오니, 항공사에 관계없이 모두 활용해 연습하세요.
+    <b style="color:var(--gold);">📌 다양한 기출 기반 종합 디스커션 주제입니다.</b><br>
+    Etihad·Cathay·Lufthansa·KLM·Finnair 등 외항사 1차/2차 디스커션에서 자주 등장하는 패턴을 모아두었습니다.
   </div>
 
   <div class="topic-grid" id="topic-grid"></div>
@@ -96,7 +96,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
 <!-- INTERVIEW -->
 <div class="interview" id="interview">
-  <div class="q-banner"><div class="label">2nd Discussion</div><div class="question" id="q-text"></div><div class="question" id="q-desc" style="font-size:0.78rem;color:rgba(255,255,255,0.55);margin-top:8px;line-height:1.6;"></div></div>
+  <div class="q-banner"><div class="label">General Discussion</div><div class="question" id="q-text"></div><div class="question" id="q-desc" style="font-size:0.78rem;color:rgba(255,255,255,0.55);margin-top:8px;line-height:1.6;"></div></div>
   <div class="video-area">
     <div class="card-frame" id="card-b">
       <div class="avatar-display"><div class="avatar-face"><div class="face">👩🏻</div><div class="mouth" id="mouth-b"></div></div></div>
@@ -115,29 +115,26 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
     <button class="ctrl-btn primary" id="btn-answer" onclick="startAnswer()">🎙 내 의견 말하기</button>
     <button class="ctrl-btn danger" id="btn-stop" onclick="stopAnswer()" style="display:none;">⏹ 완료</button>
     <button class="ctrl-btn secondary" id="btn-end" onclick="endDiscussion()" style="display:none;">토론 종료 · 피드백 받기</button>
-    <button class="ctrl-btn secondary" id="btn-next" disabled onclick="location.href='curriculum.html'">커리큘럼으로 →</button>
+    <button class="ctrl-btn secondary" id="btn-next" disabled onclick="location.href='discussion-hub.html'">허브로 →</button>
   </div>
 </div>
 
 <script>
 var TOPICS=[
-  {title:'호텔 오버부킹',desc:'시스템 에러로 10명 중 2명만 숙박 가능. 당신은 호텔 매니저. 프로필: 파티걸 / 유명인 / 가족 / VIP / 잡지 에디터 / CEO / 인플루언서 / 여행 작가 / 환자 / 투숙객(변기 고장)',scenario:'Hotel overbooking due to system error. 10 guests, only 2 rooms available. You are the hotel manager. Guest profiles: 1.Party girl 2.Celebrity 3.Family with baby 4.VIP regular 5.Magazine editor reviewing your hotel 6.CEO of another hotel chain 7.Social media influencer 8.Travel writer 9.Hospital patient needing rest 10.Current guest whose toilet is broken. Discuss who gets the 2 rooms and how to handle the rest.'},
-  {title:'워터파크 매니저',desc:'시즌 마지막 날. 이 도시 유일한 워터파크. 6가지 동시 상황 발생. 우선순위를 정하세요.',scenario:'Today is the last day of the season at the only waterpark in this city. You are the manager. 6 situations happening at once: 1.Child lost and crying 2.Guest slipped and injured near pool 3.Long queue complaints at popular slide 4.Group of teenagers being rowdy and unsafe 5.VIP guest demanding private area 6.Food vendor ran out of most items. Prioritize and discuss how to handle each.'},
-  {title:'비행기 딜레이',desc:'비행기가 6시간 딜레이. 기내에서 6가지 상황이 동시 발생. 우선순위를 정하세요.',scenario:'Flight delayed 6 hours. You are cabin crew on board. 6 simultaneous situations: 1.Elderly passenger feeling dizzy and needs medication 2.Business passenger demanding to speak to captain 3.Mother with crying baby needs formula 4.Passenger threatening to open emergency door 5.Two passengers arguing over overhead bin space 6.Diabetic passenger needs food urgently. Prioritize and discuss.'},
-  {title:'레스토랑 매니저',desc:'만석 레스토랑. 6가지 동시 상황 발생. VIP 소음 컴플레인 / 발렛 / 반려견 알레르기 / 자켓 분실 / 복장 미달 / 소이밀크 품절',scenario:'Full restaurant, you are the manager. 6 simultaneous issues: 1.VIP complains about kids making noise 2.Valet parking backed up, guests waiting 3.Guest has severe dog allergy but another table has a service dog 4.Guest claims jacket was lost in cloakroom 5.Group arrived in casual clothes at business-attire restaurant 6.Celebrity orders soy cappuccino but soy milk is sold out. Prioritize and discuss.'},
-  {title:'레그룸',desc:'Extra Legroom 7명 예약, 1석만 가능. 이코노미 만석. 누구에게 배정? 프로필: 임산부 / 영유아 엄마 / 다리 다친 승객 / 키 큰 남성 / 노인 / 비즈니스맨 / 충성 고객',scenario:'Extra Legroom seat overbooking. 7 passengers booked but only 1 seat available. Economy is full. Profiles: 1.Pregnant woman 2.Mother with infant 3.Passenger with leg injury 4.Very tall man (6ft5) 5.Elderly passenger with tight connection 6.Businessman who paid extra 7.Loyal frequent flyer. Discuss who should get the seat and what to offer others.'},
-  {title:'마지막 치킨 밀',desc:'기내식 서비스 중 치킨밀 1개만 남음. 6명 승객이 모두 치킨을 원함. 누구에게?',scenario:'During meal service, only one chicken meal left. 6 passengers all want the chicken. You are cabin crew — discuss who gets it and how to handle the others: 1.Elderly couple 2.A passenger who already missed their preferred meal on their previous connecting flight 3.A passenger who pre-ordered the chicken meal 4.A Skywards passenger (VIP) 5.A mother and son who are upset after losing a toy at the airport 6.A honeymoon couple. Prioritize and give reasons.'},
-  {title:'폴라로이드 사진',desc:'기내에 폴라로이드 필름 1장만 남음. 6 그룹 중 한 팀만 기념 사진 가능. 누구에게?',scenario:'On board there is only ONE polaroid film left. The crew can take only one memorial photo for passengers. 6 candidate groups: 1.A couple celebrating their 30th wedding anniversary 2.A child traveling alone for the first time 3.A passenger who just got engaged mid-flight 4.A family spreading grandmother\'s ashes on the trip 5.Long-haul Skywards Platinum passenger flying 100th time 6.A group of friends returning from their first Hajj. Discuss who should get the photo and why.'},
-  {title:'마지막 오버헤드빈',desc:'오버헤드빈 공간 1개 남음. 6명 승객의 짐이 필요. 누구의 짐을 넣어줄까?',scenario:'Only ONE overhead bin space left. 6 passengers need to store their cabin bags. You are crew — discuss who gets the space and what to do with the others: 1.Passenger with a cello (musical instrument, fragile) 2.Business passenger with laptop bag containing presentation materials 3.Grandma with handmade gift for grandchild 4.Tall passenger at exit row (legroom already tight) 5.Late boarder whose bag was checked but came back 6.Passenger with medication in carry-on. Prioritize and explain.'},
-  {title:'자선 기금 배분',desc:'항공사 자선 기금 $10,000. 5개 프로젝트 중 배분 결정. 아동교육 / 환경보호 / 의료지원 / 동물보호 / 문화보존',scenario:'Your airline has $10,000 charity fund to distribute. 5 projects competing: 1.Children education in rural Africa 2.Ocean cleanup and environmental project 3.Medical supplies for refugees 4.Animal shelter and wildlife protection 5.Cultural heritage preservation in Southeast Asia. Discuss how to split the budget. You can fund one or multiple.'},
-  {title:'공항 위기 상황',desc:'폭설로 공항 폐쇄. 5,000명 발이 묶임. 당신은 공항 운영 매니저. 리소스가 제한된 상황.',scenario:'Airport closed due to heavy snowstorm. 5,000 passengers stranded. You are the airport operations manager. Limited resources: only 500 blankets, 200 hotel rooms nearby, food for 2,000 people. 6 priority groups: 1.Unaccompanied minors 2.Elderly and disabled 3.Families with infants 4.Business travelers with connections 5.First class passengers 6.Economy passengers. Discuss resource allocation and priorities.'},
-  {title:'크루즈 선장',desc:'크루즈에서 5가지 동시 상황 발생. 당신은 크루 매니저. 우선순위를 정하세요.',scenario:'You are the crew manager on a luxury cruise. 5 simultaneous situations: 1.Passenger fell overboard - last seen 10 minutes ago 2.Kitchen fire in deck 3 restaurant 3.Norovirus outbreak - 20 passengers ill 4.Celebrity guest threatening to post negative review unless upgraded 5.Crew member collapsed from exhaustion. Prioritize and discuss how to handle each.'},
-  {title:'베스트 데스티네이션',desc:'항공사가 새 노선을 개설합니다. 5개 도시 중 1개를 선택하세요. 이유를 토론하세요.',scenario:'Your airline is opening one new route. 5 candidate destinations: 1.Maldives (luxury tourism) 2.Lagos, Nigeria (growing market) 3.Reykjavik, Iceland (unique destination) 4.Ho Chi Minh City (business hub) 5.Tbilisi, Georgia (emerging tourism). Each candidate presents their city. Discuss and agree on one destination and explain why.'}
+  {title:'신규 노선 선정',desc:'항공사가 새 노선 1개를 개설합니다. 5개 후보 도시 중 하나를 선택하세요.',scenario:'Your airline will open one new route. 5 candidates: 1.Maldives (luxury leisure) 2.Lagos, Nigeria (growing Africa market) 3.Reykjavik, Iceland (unique destination) 4.Ho Chi Minh City (business hub) 5.Tbilisi, Georgia (emerging tourism). Discuss and agree on one. Consider profitability, brand fit, passenger demand.'},
+  {title:'친환경 우선순위',desc:'항공사가 친환경 전략을 세웁니다. 4가지 중 무엇을 우선할까요?',scenario:'Your airline is launching a sustainability initiative. 4 options: 1.Switch to eco-friendly bio-fuel (expensive) 2.Remove all single-use plastic on board 3.Offset carbon for every passenger 4.Upgrade to fuel-efficient aircraft. Limited budget — pick 1 or 2 to prioritize.'},
+  {title:'기내식 개편',desc:'기내식 메뉴 전체 개편. 6가지 고려 요소 중 무엇을 강조할까요?',scenario:'The airline is overhauling its in-flight menu. 6 considerations: 1.Premium gourmet (high cost) 2.Diverse cultural options (halal, kosher, vegan) 3.Local/regional specialties per route 4.Sustainability (less meat, plant-based) 5.Child-friendly options 6.Budget-conscious economy meals. Prioritize top 2-3 and explain.'},
+  {title:'위기 PR 대응',desc:'SNS에서 승무원 갑질 영상이 바이럴. 즉시 대응 순서를 정하세요.',scenario:'A viral video shows a crew member reacting rudely to a passenger. Media is calling, social media is exploding. As cabin crew representatives, discuss response priorities: 1.Public apology statement 2.Internal investigation 3.Contact the passenger directly 4.Crew training review 5.CEO press conference 6.Social media silence until facts known. What order, and why?'},
+  {title:'디지털 vs 대면 서비스',desc:'항공사가 셀프 체크인/키오스크 확대 vs 직원 대면 서비스 유지 결정.',scenario:'Your airline is deciding how much to automate. Options: 1.Full automation — kiosks + apps replace counter staff (cost cut, faster) 2.Hybrid — automation for standard, staff for premium only 3.Keep current full staff — premium image. Discuss trade-offs: cost, customer experience, brand image.'},
+  {title:'VIP 프로그램 개편',desc:'로열티 프로그램 개편. 어떤 혜택을 추가/삭제할까요?',scenario:'Your airline is revamping its frequent flyer program. Proposals: 1.Free lounge access all tiers 2.Remove expiry on miles 3.Add lifestyle perks (hotel, dining partners) 4.Family pooling of miles 5.Instant upgrade chance per flight 6.Carbon offset with miles. Budget allows 2-3. Prioritize.'},
+  {title:'팀 갈등 해결',desc:'장거리 비행 중 동료 승무원 사이 갈등 발생. 해결 순서는?',scenario:'Mid-flight, two crew members have a serious argument about task distribution. Passengers notice the tension. Discussion: 1.Chief purser intervenes immediately 2.Wait until after landing 3.Split their zones for remainder 4.Service priority over personal issues 5.Report to airline HR later 6.Mediate between them in galley. How would your team handle this?'},
+  {title:'서비스 우선순위',desc:'만석 비행 중 6개 서비스 요청 동시 발생. 우선순위를 정하세요.',scenario:'On a full flight, 6 simultaneous requests hit your galley: 1.First class passenger wants champagne refill 2.Economy passenger feels nauseous 3.Parent needs baby formula heated 4.Elderly passenger needs help to lavatory 5.Passenger complains seat belt broken 6.Crew member is struggling with meal cart. Prioritize and explain reasoning.'},
+  {title:'문화 다양성 대응',desc:'다국적 승객 8명, 각자 다른 요구사항. 팀으로 어떻게 대응할까요?',scenario:'Your flight has passengers with diverse needs: 1.Muslim family requesting halal + private prayer area 2.Hindu passenger with strict vegetarian needs 3.Orthodox Jewish passenger needs kosher unopened 4.Couple celebrating 50th anniversary 5.Unaccompanied minor (8 years old) 6.Elderly person with dementia traveling alone 7.Wheelchair user needing mobility help 8.Korean businessman feeling unwell. Divide attention as a team.'},
+  {title:'공항 대기 위기',desc:'폭풍으로 5시간 지연. 탑승구에 500명 대기 중. 대응 순서?',scenario:'Due to heavy storm, your flight is delayed 5 hours. 500 passengers are waiting at the gate, frustrated and tired. Available resources: 200 meal vouchers, 50 hotel rooms, limited staff. Consider priorities: 1.Elderly/disabled/families with infants 2.Business class and loyalty members 3.Connecting passengers who will miss next flight 4.General economy 5.Crew rest regulations. Discuss fair allocation.'}
 ];
 var selectedTopic=0;
 var stream=null,recognition=null,fullText='',chatHistory=[],turnCount=0;
 
-// 토픽 카드 생성
 var tg=document.getElementById('topic-grid');
 TOPICS.forEach(function(t,i){
   var d=document.createElement('div');d.className='topic-card'+(i===0?' sel':'');
@@ -153,7 +150,6 @@ function startDiscussion(){
   document.getElementById('interview').classList.add('active');
   var t=TOPICS[selectedTopic];
   document.getElementById('q-text').textContent=t.title;
-  // 시나리오에서 프로필 리스트 추출해 줄바꿈 표시
   var scen=t.scenario||'';
   var profiles=scen.split(/\s*\d+\./).slice(1).map(function(s){return s.trim();}).filter(Boolean);
   var descHtml=t.desc;
@@ -164,22 +160,19 @@ function startDiscussion(){
   chatHistory=[];turnCount=0;
 
   if(document.getElementById('cam-toggle').checked){
-    (async function(){var camOpts=[{video:{facingMode:{exact:'user'}},audio:true},{video:{facingMode:'user'},audio:true},{video:true,audio:true}];for(var i=0;i<camOpts.length;i++){try{stream=await navigator.mediaDevices.getUserMedia(camOpts[i]);var v=document.getElementById('cam-video');v.srcObject=stream;v.style.display='block';document.getElementById('cam-ph').style.display='none';break;}catch(e){}}})();
+    (async function(){var camOpts=[{video:{facingMode:{exact:'user'}}},{video:{facingMode:'user'}},{video:true}];for(var i=0;i<camOpts.length;i++){try{stream=await navigator.mediaDevices.getUserMedia(camOpts[i]);var v=document.getElementById('cam-video');v.srcObject=stream;v.style.display='block';document.getElementById('cam-ph').style.display='none';break;}catch(e){}}})();
   }
-  // AI가 먼저 의견 제시 — TOPICS 인덱스와 1:1 매칭
   var openers={
-    0:"So we have 10 guests but only 2 rooms. As hotel managers, who should we prioritize?",
-    1:"OK, it's the last day of the season and we've got 6 things happening at once. Which one do we handle first?",
-    2:"Our flight is delayed 6 hours and there are 6 situations going on in the cabin. Who should we help first?",
-    3:"We have 6 issues happening at the same time in our restaurant. Which one should we handle first?",
-    4:"We have 7 passengers who all booked the extra legroom seat, but only 1 is available. Who gets it?",
-    5:"Only one chicken meal left and 6 passengers all want it. Who do you think should get it?",
-    6:"We only have one polaroid film left. Who should we take the memorial photo for?",
-    7:"Just one overhead bin space left and 6 passengers need it. Whose bag should go in?",
-    8:"We've got $10,000 charity fund for 5 projects. How should we split it?",
-    9:"Airport is closed with 5,000 passengers stranded. Where do we start?",
-    10:"There's a passenger overboard and 4 other crises all at once on this cruise. What do we do first?",
-    11:"We're opening one new route from 5 candidate cities. Which one sounds best to you?"
+    0:"We're picking one new route from 5 cities. Which one sounds best to you?",
+    1:"We have 4 sustainability options but limited budget. What should we prioritize?",
+    2:"We're redesigning the in-flight menu. 6 things to consider — what's most important?",
+    3:"We've got a PR crisis on our hands. What should we do first?",
+    4:"Full automation, hybrid, or keep all staff? What's your view?",
+    5:"We're changing the loyalty program. Which perks should we add?",
+    6:"Two crew are fighting mid-flight. How should we handle it?",
+    7:"6 service requests at once. Which do we handle first?",
+    8:"8 passengers with very different needs — how do we split as a team?",
+    9:"500 passengers stuck, 5-hour delay. Who gets what first?"
   };
   aiTurnB(openers[selectedTopic]||"So, what do you think we should do first?");
 }
@@ -218,14 +211,13 @@ async function stopAnswer(){
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:120,
-      system:'You are a fellow candidate (not interviewer) in a cabin crew group discussion. Scenario: '+TOPICS[selectedTopic].scenario+'\n\n**CRITICAL — speaking style:**\n- This is a CABIN CREW group discussion, NOT a TED talk or academic debate.\n- Real candidates speak SIMPLY and CASUALLY. Short. Conversational. Under 25 words.\n- NEVER use formal/academic vocabulary like "allocate", "dedicate", "align with values", "prioritize strategically", "lasting impact", "urgent human needs". Write like a friendly ordinary person chatting.\n- NEVER use dash clauses or long sentences with multiple clauses.\n- Do NOT try to sound smart or polished. Simple everyday English only.\n- Examples of GOOD style: "I think we should help the kids first. They need education the most, right?" / "That sounds good, but maybe we also keep some money for the animals?"\n- Examples of BAD style: "I agree that X is crucial and could have lasting impact, while we might consider..."\n\nRules:\n- Respond IN ENGLISH, 1-2 short sentences only. Under 25 words.\n- Have your own opinion but express it CASUALLY.\n- Either agree briefly and add a simple thought, or gently disagree with a simple reason.\n- Use "we" / "I think" / "maybe" / "what about" style.\n- Keep discussion going. Do NOT conclude. Do NOT use [END] tag.',
+      system:'You are a fellow candidate (not interviewer) in a cabin crew group discussion. Scenario: '+TOPICS[selectedTopic].scenario+'\n\nSpeaking style: short, casual, conversational. 1-2 sentences only, under 25 words. Use "I think", "maybe", "what about" style. Keep discussion going, don\'t conclude. English only. No asterisks.',
       messages:chatHistory
     })});
     var data=await res.json();
     var aiText=((data&&data.content&&data.content[0]&&data.content[0].text)||'I agree with that approach.').replace(/\*\*/g,'').replace(/\[END\]/g,'').trim();
     chatHistory.push({role:'assistant',content:'[B] '+aiText});
     aiTurnB(aiText);
-    // 다시 본인 차례 + 종료 버튼 노출 (사용자가 직접 종료)
     document.getElementById('btn-answer').style.display='inline-flex';
     document.getElementById('btn-answer').disabled=false;
     document.getElementById('btn-end').style.display='inline-flex';
@@ -233,7 +225,6 @@ async function stopAnswer(){
   }catch(e){document.getElementById('feedback').innerHTML='오류. 다시 시도해주세요.';document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=false;}
 }
 
-// 사용자가 직접 종료 버튼을 눌렀을 때만 피드백 생성
 async function endDiscussion(){
   if(recognition)try{recognition.stop();}catch(e){}
   if('speechSynthesis' in window)try{window.speechSynthesis.cancel();}catch(e){}
@@ -252,24 +243,18 @@ async function endDiscussion(){
   try{
     var convo=chatHistory.map(function(m){return (m.role==='user'?'You':'Partner')+': '+m.content;}).join('\n');
     var userAnswers=chatHistory.filter(function(m){return m.role==='user';}).map(function(m,i){return 'Turn '+(i+1)+': '+m.content;}).join('\n');
-    var scopeNote=userTurns===1
-      ?'The candidate spoke only once. Do NOT evaluate listening/responding skills (not enough data). Only evaluate the content, logic, and English expression of that single answer.'
-      :'The candidate spoke '+userTurns+' times. Evaluate content, logic, English expression, AND how well they connected to the partner\'s points across turns.';
     var fbRes=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:600,
-      system:'You are a cabin crew group discussion coach. Scenario: "'+TOPICS[selectedTopic].scenario+'"\n\n'+scopeNote+'\n\nRules:\n- Evaluate ONLY what the candidate (You) actually said. Do NOT evaluate the partner.\n- Speech-to-text input — ignore grammar/punctuation.\n- Never criticize for things not demonstrably in the answer.\n- Be encouraging but honest.\n\nFormat:\n\n# 점수: X/100\n\n# 잘한 점\n- (2개, 실제 본인 발언 짧게 인용)\n\n# 개선할 점\n- (1~2개 실제 근거 있는 것만. 없으면 "특별한 개선점 없습니다.")\n\n# 실전 팁\n- (1개)\n\nWrite in Korean.',
-      messages:[{role:'user',content:'Full discussion:\n\n'+convo+'\n\nCandidate\'s own answers only:\n'+userAnswers+'\n\nPlease give feedback on the candidate only.'}]
+      system:'You are a cabin crew group discussion coach. Scenario: "'+TOPICS[selectedTopic].scenario+'"\n\nEvaluate ONLY what the candidate (You) said. Speech-to-text input — ignore grammar. Be encouraging but honest.\n\nFormat:\n\n# 점수: X/100\n\n# 잘한 점\n- (2개, 실제 본인 발언 짧게 인용)\n\n# 개선할 점\n- (1~2개)\n\n# 실전 팁\n- (1개)\n\nWrite in Korean. No markdown # symbols, use plain text headers.',
+      messages:[{role:'user',content:'Full discussion:\n\n'+convo+'\n\nCandidate\'s own answers only:\n'+userAnswers}]
     })});
     var fbData=await fbRes.json();
-    var fbText=((fbData&&fbData.content&&fbData.content[0]&&fbData.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
-    fb.innerHTML='<b style="color:var(--gold);">피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>';
-    if(typeof savePracticeRecord==='function') savePracticeRecord({stage:'discussion2',question:TOPICS[selectedTopic].title,answer:userAnswers,feedback:fbText});
-  }catch(e){
-    fb.innerHTML='<b style="color:#E74C3C;">피드백 생성 실패. 다시 시도해주세요.</b>';
-  }
-  document.getElementById('btn-next').disabled=false;
+    var fbText=((fbData&&fbData.content&&fbData.content[0]&&fbData.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'').replace(/^#+\s*/gm,'');
+    fb.innerHTML='<pre style="white-space:pre-wrap;font-family:inherit;font-size:0.88rem;color:rgba(255,255,255,0.9);line-height:1.75;">'+fbText+'</pre>';
+    document.getElementById('btn-next').disabled=false;
+    try{if(typeof savePracticeRecord==='function') savePracticeRecord({stage:'discussion-general',question:TOPICS[selectedTopic].title,answer:userAnswers,feedback:fbText});}catch(e){}
+  }catch(e){fb.innerHTML='피드백 생성 오류. 다시 시도해주세요.';}
 }
-function r(){return Math.floor(Math.random()*36)+50;}
 </script>
 </body>
 </html>

@@ -281,12 +281,7 @@ function updateNavLoginBtn() {
       btn.textContent = 'MY';
       btn.href = 'my-progress.html';
       btn.classList.add('wc-my-btn');
-      // EN 버튼 스타일과 동일하게 맞추기 (높이·굵기 일치, 배경만 골드)
-      btn.style.padding = '6px 12px';
-      btn.style.fontSize = '0.72rem';
-      btn.style.letterSpacing = '0.04em';
-      btn.style.fontWeight = '700';
-      btn.style.borderRadius = '16px';
+      // 텍스트만 MY 로 바꾸고 크기·스타일은 원래 로그인 버튼 스타일 그대로 유지
     }
   });
 }

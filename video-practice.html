@@ -131,9 +131,10 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <div style="max-width:380px;margin:0 auto 20px;text-align:left;">
   <div style="font-size:0.86rem;color:var(--gold);font-weight:700;margin-bottom:6px;letter-spacing:0.04em;">비디오 면접 대상</div>
   <select id="vp-mode" onchange="onVpModeChange()" style="width:100%;padding:11px 14px;background:#fff;border:2px solid var(--gold-pale);border-radius:8px;color:var(--text-dark);font-family:inherit;font-size:0.94rem;font-weight:600;cursor:pointer;">
-    <option value="general">일반 (공통 기출 풀)</option>
+    <option value="general">외항사 공통 기출 (영어)</option>
     <option value="emirates">Emirates (실전 19개)</option>
     <option value="singapore">Singapore Airlines (실전 15개)</option>
+    <option value="domestic">국내 항공사 (한국어 기출 20개)</option>
   </select>
 </div>
 
@@ -267,6 +268,28 @@ var SINGAPORE_VIDEO_QS=[
   "How would you adapt to living in Singapore?",
   "Why do you think you are the right fit for this position?"
 ];
+var DOMESTIC_VIDEO_QS=[
+  "자기소개를 1분 안에 해주세요.",
+  "우리 항공사에 지원하신 동기는 무엇인가요?",
+  "승무원이 되고 싶은 이유를 말씀해 주세요.",
+  "본인의 장점과 단점을 각각 하나씩 말씀해 주세요.",
+  "고객에게 최고의 서비스를 제공한 경험이 있다면 말씀해 주세요.",
+  "까다로운 고객을 응대한 경험이 있나요? 어떻게 대응하셨나요?",
+  "팀워크가 중요했던 경험을 공유해 주세요.",
+  "스트레스를 어떻게 관리하시나요?",
+  "본인이 승무원에 적합하다고 생각하는 이유는 무엇인가요?",
+  "최근에 가장 감명 깊게 본 책이나 영화는 무엇인가요?",
+  "취미나 특기를 소개해 주세요.",
+  "10년 뒤 본인의 모습을 어떻게 그리고 계신가요?",
+  "우리 항공사의 서비스 중 인상 깊었던 점은?",
+  "건강 관리는 어떻게 하고 계신가요?",
+  "마지막으로 본인을 어필하고 싶은 말씀이 있다면 해주세요.",
+  "동료와 갈등이 생겼을 때 어떻게 해결하시겠습니까?",
+  "해외 생활 경험이 있다면 힘들었던 점은 무엇이었나요?",
+  "외국인 승객과 의사소통이 어려울 때 어떻게 대처하시겠습니까?",
+  "본인만의 차별화된 강점은 무엇이라고 생각하시나요?",
+  "근무 중 실수를 했을 때 어떻게 대처하시겠습니까?"
+];
 var extraIdx=0;
 // 모든 질문을 한 풀로 합쳐서 랜덤 선택. 한 화면에 질문 한 개씩.
 function flattenPool(base,extras,roleplays,roleplayHint){
@@ -277,8 +300,8 @@ function flattenPool(base,extras,roleplays,roleplayHint){
   return pool;
 }
 function buildPool(mode){
-  if(lang==='ko'){
-    return flattenPool(QUESTIONS_KO,EXTRA_KO,KO_RP,'롤플레이 — 사과, 해결책, 대안 제시, Service Recovery를 포함해서 답변하세요.');
+  if(mode==='domestic'){
+    return DOMESTIC_VIDEO_QS.map(function(q){return {q:q,hint:'자연스러운 미소 · 또렷한 발음 · 30~60초'};});
   }
   if(mode==='emirates'){
     return EMIRATES_VIDEO_QS.map(function(q){return {q:q,hint:'SMILE · CONFIDENCE · BE YOURSELF · 30~60초'};});
@@ -286,13 +309,18 @@ function buildPool(mode){
   if(mode==='singapore'){
     return SINGAPORE_VIDEO_QS.map(function(q){return {q:q,hint:'Natural smile · Clear voice · Be yourself · 30~60초'};});
   }
-  // general — 공통 기출 풀
+  if(lang==='ko'){
+    return flattenPool(QUESTIONS_KO,EXTRA_KO,KO_RP,'롤플레이 — 사과, 해결책, 대안 제시, Service Recovery를 포함해서 답변하세요.');
+  }
+  // general — 외항사 공통 기출 풀 (영어)
   return flattenPool(QUESTIONS_EN,EXTRA_EN,ROLEPLAY_QS,'Roleplay — Include apology, solution, alternative, and service recovery.');
 }
 var POOL=buildPool('general');
 window.onVpModeChange=function(){
   var mode=document.getElementById('vp-mode').value||'general';
   POOL=buildPool(mode);
+  // 모드에 따라 SR 언어 자동 전환
+  window._vpLangOverride=(mode==='domestic')?'ko-KR':'en-US';
   lastQ='';
   qCount=0;
   if(typeof nextQuestion==='function') nextQuestion();
@@ -366,7 +394,7 @@ function startRec(){
 
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     if(SR){
-      rec=new SR();rec.lang=lang==='ko'?'ko-KR':'en-US';rec.interimResults=true;rec.continuous=true;
+      rec=new SR();rec.lang=(window._vpLangOverride)||(lang==='ko'?'ko-KR':'en-US');rec.interimResults=true;rec.continuous=true;
       var finalText='';
       rec.onresult=function(ev){
         var interim='';finalText='';

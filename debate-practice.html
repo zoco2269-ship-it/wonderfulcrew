@@ -321,7 +321,7 @@ async function startAnswer(){
         r2.onresult=recognition.onresult;r2.onerror=recognition.onerror;r2.onend=recognition.onend;
         recognition=r2;r2.start();
       }catch(e){}
-    },200);
+    },400);
   };
   try{recognition.start();}catch(e){document.getElementById('transcript').textContent='⚠ 음성 인식 시작 실패';}
 }

@@ -262,11 +262,13 @@ async function startAnswer(){
     document.getElementById('transcript').textContent=(fullText+sessionFinal+interim).trim()||'🎙 Listening…';
   };
   recognition.onerror=function(ev){
-    if(ev.error==='not-allowed'||ev.error==='service-not-allowed'){
+    var c=ev.error||'';
+    if(c==='no-speech'||c==='aborted')return;
+    if(c==='not-allowed'||c==='service-not-allowed'){
       document.getElementById('transcript').textContent='마이크 권한이 차단되었습니다.';
       document.getElementById('btn-answer').style.display='inline-flex';
       document.getElementById('btn-stop').style.display='none';
-    }else if(ev.error==='audio-capture'){
+    }else if(c==='audio-capture'){
       document.getElementById('transcript').textContent='마이크를 인식할 수 없습니다.';
     }
   };
@@ -285,7 +287,7 @@ async function startAnswer(){
         recognition=r2;
         r2.start();
       }catch(e){}
-    },200);
+    },400);
   };
   try{recognition.start();}catch(e){document.getElementById('transcript').textContent='마이크 시작 실패';}
 }

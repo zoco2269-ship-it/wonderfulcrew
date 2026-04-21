@@ -427,7 +427,7 @@ async function startRec(){
         r2.onresult=rec.onresult;r2.onerror=rec.onerror;r2.onend=rec.onend;
         rec=r2;r2.start();
       }catch(e){}
-    },200);
+    },400);
   };
   try{rec.start();}catch(e){tr.textContent='⚠ 음성 인식 시작 실패';}
 }

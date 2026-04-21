@@ -70,17 +70,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 #section-curriculum{display:none;}
 
 @media(max-width:760px){
-  .airline-wrap{grid-template-columns:1fr;gap:18px;}
+  #app{padding-top:130px;}
+  /* 모바일: 좌(외항사) | 우(국내) 2 컬럼 유지, 각 컬럼 내부는 1개씩 세로 쌓기 */
+  .airline-wrap{grid-template-columns:1fr 1fr;gap:10px;}
+  .airline-group{grid-template-columns:1fr;gap:8px;}
   .airline-grid{grid-template-columns:repeat(2,1fr);}
+  .airline-card{padding:10px 9px;min-height:68px;}
+  .airline-name-en{font-size:0.82rem;}
+  .airline-name-ko{font-size:0.7rem;}
+  .airline-region{font-size:0.58rem;}
+  .airline-tier{font-size:0.5rem;padding:1px 5px;}
   .step-card{padding:18px 18px;gap:14px;}
   .step-num{font-size:1.8rem;width:38px;}
   .step-title{font-size:0.94rem;}
   .step-desc{font-size:0.78rem;}
+  .wrap{padding:40px 16px;}
 }
 @media(max-width:480px){
-  .airline-group{grid-template-columns:1fr;}
   .airline-grid{grid-template-columns:1fr;}
-  .wrap{padding:40px 18px;}
 }
 
 .nav-dropdown{position:relative;}

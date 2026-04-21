@@ -403,20 +403,20 @@ async function startRec(){
   rec=new SR();
   rec.lang=(window._vpLangOverride)||(lang==='ko'?'ko-KR':'en-US');
   rec.interimResults=true;rec.continuous=true;
-  // REBUILD + 중복 제거 — 안드로이드 크롬 duplicate-final 방어
-  window._vpSessionFinal='';
+  // 전역 dedupe — 모든 세션의 final 을 정규화 키로 한 번씩만 수집
+  window._finalSeen={};window._finalList=[];
+  var norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
   rec.onresult=function(ev){
-    var interim='',seen={},finals=[];
+    var interim='';
     for(var r=0;r<ev.results.length;r++){
       if(ev.results[r].isFinal){
         var t=(ev.results[r][0].transcript||'').trim();
-        if(t && !seen[t]){seen[t]=1;finals.push(t);}
-      }else{
-        interim+=ev.results[r][0].transcript;
-      }
+        var k=norm(t);
+        if(k && !window._finalSeen[k]){window._finalSeen[k]=1;window._finalList.push(t);}
+      }else{interim+=ev.results[r][0].transcript;}
     }
-    window._vpSessionFinal=finals.length?finals.join(' ')+' ':'';
-    tr.textContent=(window._vpFinalText+window._vpSessionFinal+interim).trim()||'🎙 듣고 있어요…';
+    window._vpFinalText=window._finalList.join(' ');
+    tr.textContent=(window._vpFinalText+(interim?' '+interim:'')).trim()||'🎙 듣고 있어요…';
   };
   rec.onerror=function(ev){
     var c=ev.error||'';
@@ -424,7 +424,6 @@ async function startRec(){
     else if(c==='audio-capture')tr.textContent='⚠ 마이크를 열 수 없어요.';
   };
   rec.onend=function(){
-    window._vpFinalText+=(window._vpSessionFinal||'');window._vpSessionFinal='';
     if(window._manualStop)return;
     setTimeout(function(){
       if(window._manualStop)return;

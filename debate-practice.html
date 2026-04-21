@@ -287,27 +287,25 @@ async function startAnswer(){
     return;
   }
   recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
-  fullText='';window._sessionFinal='';window._manualStop=false;
+  fullText='';window._manualStop=false;window._finalSeen={};window._finalList=[];
   document.getElementById('btn-answer').style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('rec-label').textContent='답변 중';
   document.getElementById('waveform').classList.add('active');
   document.getElementById('my-card').classList.add('speaking');
   document.getElementById('transcript').textContent='🎙 듣고 있어요…';
-  // 세션별 REBUILD — 안드로이드 크롬 duplicate-final 방어
+  var norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
   recognition.onresult=function(ev){
-    var interim='',seen={},finals=[];
+    var interim='';
     for(var r=0;r<ev.results.length;r++){
       if(ev.results[r].isFinal){
         var t=(ev.results[r][0].transcript||'').trim();
-        if(t && !seen[t]){seen[t]=1;finals.push(t);}
-      }else{
-        interim+=ev.results[r][0].transcript;
-      }
+        var k=norm(t);
+        if(k && !window._finalSeen[k]){window._finalSeen[k]=1;window._finalList.push(t);}
+      }else{interim+=ev.results[r][0].transcript;}
     }
-    var sessionFinal=finals.length?finals.join(' ')+' ':'';
-    window._sessionFinal=sessionFinal;
-    document.getElementById('transcript').textContent=(fullText+sessionFinal+interim).trim()||'🎙 듣고 있어요…';
+    fullText=window._finalList.join(' ');
+    document.getElementById('transcript').textContent=(fullText+(interim?' '+interim:'')).trim()||'🎙 듣고 있어요…';
   };
   recognition.onerror=function(ev){
     var c=ev.error||'';
@@ -315,7 +313,6 @@ async function startAnswer(){
     else if(c==='audio-capture')document.getElementById('transcript').textContent='⚠ 마이크를 열 수 없어요.';
   };
   recognition.onend=function(){
-    fullText+=(window._sessionFinal||'');window._sessionFinal='';
     if(window._manualStop)return;
     setTimeout(function(){
       if(window._manualStop)return;

@@ -214,21 +214,33 @@ async function startAnswer(){
     return;
   }
   recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
-  fullText='';window._sessionFinal='';window._manualStop=false;
+  fullText='';window._manualStop=false;window._finalSeen={};window._finalList=[];
   document.getElementById('btn-answer').style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('rec-label').textContent='답변 중';
   document.getElementById('waveform').classList.add('active');
   document.getElementById('transcript').textContent='🎙 듣고 있어요…';
-  recognition.onresult=function(ev){var interim='',sessionFinal='';var seen={},finals=[];for(var r=0;r<ev.results.length;r++){if(ev.results[r].isFinal){var t=(ev.results[r][0].transcript||"").trim();if(t && !seen[t]){seen[t]=1;finals.push(t);}}else{interim+=ev.results[r][0].transcript;}}var sessionFinal=finals.length?finals.join(" ")+" ":"";window._sessionFinal=sessionFinal;document.getElementById('transcript').textContent=(fullText+sessionFinal+interim).trim()||'🎙 듣고 있어요…';};
+  var norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
+  recognition.onresult=function(ev){
+    var interim='';
+    for(var r=0;r<ev.results.length;r++){
+      if(ev.results[r].isFinal){
+        var t=(ev.results[r][0].transcript||'').trim();
+        var k=norm(t);
+        if(k && !window._finalSeen[k]){window._finalSeen[k]=1;window._finalList.push(t);}
+      }else{interim+=ev.results[r][0].transcript;}
+    }
+    fullText=window._finalList.join(' ');
+    document.getElementById('transcript').textContent=(fullText+(interim?' '+interim:'')).trim()||'🎙 듣고 있어요…';
+  };
   recognition.onerror=function(ev){
     var c=ev.error||'unknown';
+    if(c==='no-speech'||c==='aborted')return;
     if(c==='not-allowed'||c==='service-not-allowed')document.getElementById('transcript').textContent='⚠ 마이크 권한 거부됨.';
     else if(c==='audio-capture')document.getElementById('transcript').textContent='⚠ 마이크를 열 수 없어요.';
     else if(c==='network')document.getElementById('transcript').textContent='⚠ 네트워크 오류.';
   };
   recognition.onend=function(){
-    fullText+=(window._sessionFinal||'');window._sessionFinal='';
     if(window._manualStop){if(fullText.trim())document.getElementById('transcript').textContent=fullText.trim();return;}
     setTimeout(function(){if(window._manualStop)return;try{var SR2=window.SpeechRecognition||window.webkitSpeechRecognition;var r2=new SR2();r2.lang='en-US';r2.interimResults=true;r2.continuous=true;r2.onresult=recognition.onresult;r2.onerror=recognition.onerror;r2.onend=recognition.onend;recognition=r2;r2.start();}catch(e){}},400);
   };

@@ -246,25 +246,32 @@ async function startAnswer(){
     return;
   }
   recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
-  fullText='';window._sessionFinal='';window._manualStop=false;
+  fullText='';window._manualStop=false;
+  // 전역 dedupe — 모든 세션의 final 을 정규화 키로 한 번씩만 수집
+  window._finalSeen={};
+  window._finalList=[];
   document.getElementById('btn-answer').style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('waveform').classList.add('active');
   document.getElementById('transcript').textContent='🎙 Listening…';
-  // 세션별 REBUILD + 중복 문자열 제거 — 안드로이드 크롬 duplicate-final 방어
+  var norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
   recognition.onresult=function(ev){
-    var interim='',seen={},finals=[];
+    var interim='';
     for(var r=0;r<ev.results.length;r++){
       if(ev.results[r].isFinal){
         var t=(ev.results[r][0].transcript||'').trim();
-        if(t && !seen[t]){seen[t]=1;finals.push(t);}
+        var k=norm(t);
+        if(k && !window._finalSeen[k]){
+          window._finalSeen[k]=1;
+          window._finalList.push(t);
+        }
       }else{
         interim+=ev.results[r][0].transcript;
       }
     }
-    var sessionFinal=finals.length?finals.join(' ')+' ':'';
-    window._sessionFinal=sessionFinal;
-    document.getElementById('transcript').textContent=(fullText+sessionFinal+interim).trim()||'🎙 Listening…';
+    fullText=window._finalList.join(' ');
+    var disp=(fullText+(interim?' '+interim:'')).trim();
+    document.getElementById('transcript').textContent=disp||'🎙 Listening…';
   };
   recognition.onerror=function(ev){
     var c=ev.error||'';
@@ -278,7 +285,6 @@ async function startAnswer(){
     }
   };
   recognition.onend=function(){
-    fullText+=(window._sessionFinal||'');window._sessionFinal='';
     if(window._manualStop)return;
     setTimeout(function(){
       if(window._manualStop)return;

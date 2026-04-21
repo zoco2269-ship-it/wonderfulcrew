@@ -131,33 +131,33 @@ async function startRec(){
     return;
   }
   recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
-  fullText='';window._sessionFinal='';window._manualStop=false;
+  fullText='';window._manualStop=false;
+  window._finalSeen={};window._finalList=[];
   document.getElementById('btn-rec').style.display='none';document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('waveform').classList.add('active');document.getElementById('transcript').textContent='🎙 발표 중...';
-  // 세션별로 최종 문자열을 REBUILD — 중복 final 이벤트 방어 (안드로이드 크롬 duplicate-final 버그)
+  var norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
   recognition.onresult=function(ev){
-    var interim='',seen={},finals=[];
+    var interim='';
     for(var r=0;r<ev.results.length;r++){
       if(ev.results[r].isFinal){
         var t=(ev.results[r][0].transcript||'').trim();
-        if(t && !seen[t]){seen[t]=1;finals.push(t);}
+        var k=norm(t);
+        if(k && !window._finalSeen[k]){window._finalSeen[k]=1;window._finalList.push(t);}
       }else{
         interim+=ev.results[r][0].transcript;
       }
     }
-    var sessionFinal=finals.length?finals.join(' ')+' ':'';
-    window._sessionFinal=sessionFinal;
-    document.getElementById('transcript').textContent=(fullText+sessionFinal+interim).trim()||'🎙 듣고 있어요…';
+    fullText=window._finalList.join(' ');
+    document.getElementById('transcript').textContent=(fullText+(interim?' '+interim:'')).trim()||'🎙 듣고 있어요…';
   };
   recognition.onerror=function(ev){
     var c=ev.error||'unknown';
+    if(c==='no-speech'||c==='aborted')return;
     if(c==='not-allowed'||c==='service-not-allowed')document.getElementById('transcript').textContent='⚠ 마이크 권한 거부됨.';
     else if(c==='audio-capture')document.getElementById('transcript').textContent='⚠ 마이크를 열 수 없어요.';
     else if(c==='network')document.getElementById('transcript').textContent='⚠ 네트워크 오류.';
   };
   recognition.onend=function(){
-    // 현 세션 최종문을 fullText 에 커밋 (중복은 이미 REBUILD 로 방어됨)
-    fullText+=(window._sessionFinal||'');window._sessionFinal='';
     if(window._manualStop){if(fullText.trim())document.getElementById('transcript').textContent=fullText.trim();return;}
     setTimeout(function(){
       if(window._manualStop)return;

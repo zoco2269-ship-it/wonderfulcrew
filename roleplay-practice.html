@@ -617,6 +617,7 @@ function startListening(){
   recognition.continuous=true;
   fullText='';
   window._manualStop=false;
+  window._finalSeen={};window._finalList=[];
   var bA=document.getElementById('btn-answer');if(bA) bA.style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('rec-dot').classList.add('on');
@@ -635,21 +636,21 @@ function startListening(){
     }catch(e){}
   }
 
-  // 세션별 REBUILD — 안드로이드 크롬 duplicate-final 이벤트 방어
-  window._sessionFinal='';
+  // 전역 dedupe — 모든 세션의 final 을 정규화 키로 한 번씩만 수집
+  var norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
   recognition.onresult=function(ev){
-    var interim='',seen={},finals=[];
+    var interim='';
     for(var r=0;r<ev.results.length;r++){
       if(ev.results[r].isFinal){
         var t=(ev.results[r][0].transcript||'').trim();
-        if(t && !seen[t]){seen[t]=1;finals.push(t);}
+        var k=norm(t);
+        if(k && !window._finalSeen[k]){window._finalSeen[k]=1;window._finalList.push(t);}
       }else{
         interim+=ev.results[r][0].transcript;
       }
     }
-    var sessionFinal=finals.length?finals.join(' ')+' ':'';
-    window._sessionFinal=sessionFinal;
-    document.getElementById('transcript').textContent=(fullText+sessionFinal+interim).trim()||'🎙 듣고 있어요…';
+    fullText=window._finalList.join(' ');
+    document.getElementById('transcript').textContent=(fullText+(interim?' '+interim:'')).trim()||'🎙 듣고 있어요…';
   };
   recognition.onerror=function(ev){
     var code=ev.error||'unknown';
@@ -670,8 +671,6 @@ function startListening(){
     document.getElementById('waveform').classList.remove('active');
   };
   recognition.onend=function(){
-    // 현 세션 최종문 커밋
-    fullText+=(window._sessionFinal||'');window._sessionFinal='';
     if(endingRoleplay) return;
     // 사용자가 ⏹ 누르기 전엔 자동 재시작 (Android Chrome 은 5~8초마다 auto-stop)
     if(window._manualStop){

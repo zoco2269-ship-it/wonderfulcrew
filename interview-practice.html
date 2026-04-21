@@ -58,11 +58,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
     <div class="cam-box">
       <video id="cam" autoplay muted playsinline></video>
       <div class="cam-ph" id="cam-ph"><div style="font-size:1.6rem;opacity:0.5;">📷</div><div>카메라를 시작하세요</div></div>
-      <div class="rec-badge" id="rec-badge"><div class="rec-dot"></div>REC</div>
     </div>
     <div class="btn-row">
       <button class="btn btn-gold" id="btn-start" onclick="startCam()">카메라 시작</button>
-      <button class="btn btn-red" id="btn-rec" style="display:none;" onclick="toggleRec()">🔴 녹화 시작</button>
+      <button class="btn btn-red" id="btn-rec" style="display:none;" onclick="toggleRec()">🎙 답변 시작</button>
       <button class="btn btn-navy" id="btn-next" onclick="nextQ()">다음 질문 →</button>
     </div>
     <div class="transcript" id="transcript"></div>
@@ -525,10 +524,14 @@ function initFaceMesh(videoEl){
 }
 function getFaceReport(){
   if(faceStats.totalFrames<5)return '';
-  var s=Math.round((faceStats.smileFrames/faceStats.totalFrames)*100);
-  var g=Math.round((faceStats.lookingCenter/faceStats.totalFrames)*100);
-  var t=Math.round((faceStats.headTiltFrames/faceStats.totalFrames)*100);
-  return '\n\n📷 이미지 분석:\n• 미소 유지: '+s+'%'+(s>=60?' ✓':' — 더 웃어보세요')+'\n• 카메라 시선: '+g+'%'+(g>=70?' ✓':' — 카메라를 더 정면으로 보세요')+'\n• 고개 기울기: '+(t<=20?'안정적 ✓':'기울어진 순간 '+t+'% — 바른 자세를 유지하세요');
+  var s=(faceStats.smileFrames/faceStats.totalFrames);
+  var g=(faceStats.lookingCenter/faceStats.totalFrames);
+  var t=(faceStats.headTiltFrames/faceStats.totalFrames);
+  var tips=[];
+  tips.push('• 미소 — '+(s>=0.6?'좋아요, 자연스러운 미소 유지되고 있어요':'더 활짝 웃어보세요. 입꼬리를 살짝 올리고 눈도 함께 웃는 느낌으로'));
+  tips.push('• 카메라 시선 — '+(g>=0.7?'카메라를 잘 바라보고 있어요':'카메라 렌즈를 정면으로 바라보세요. 대화하듯 자연스럽게'));
+  tips.push('• 자세 — '+(t<=0.2?'바른 자세 유지 중':'고개가 자주 기울어져요. 목과 어깨를 바르게 유지해 주세요'));
+  return '\n\n📷 이미지 분석:\n'+tips.join('\n');
 }
 
 async function startCam(){
@@ -558,7 +561,7 @@ function toggleRec(){
     mediaRecorder=new MediaRecorder(stream,{mimeType:'video/webm'});
     mediaRecorder.ondataavailable=function(e){if(e.data.size>0)chunks.push(e.data);};
     mediaRecorder.start();
-    document.getElementById('rec-badge').style.display='flex';
+    var rb=document.getElementById('rec-badge');if(rb) rb.style.display='flex';
     btn.textContent='⏹ 답변 완료 · 피드백 받기';
     btn.style.background='#E74C3C';
     // 음성 인식
@@ -583,11 +586,11 @@ function toggleRec(){
       recognition.start();
     }
   } else {
-    // 녹화 중지
+    // 답변 종료
     mediaRecorder.stop();
     if(recognition)try{recognition.stop();}catch(e){}
-    document.getElementById('rec-badge').style.display='none';
-    btn.textContent='🔴 녹화 시작';
+    var rb=document.getElementById('rec-badge');if(rb) rb.style.display='none';
+    btn.textContent='🎙 답변 시작';
     btn.style.background='';
     btn.disabled=true;
     // 피드백 (음성 인식 안 됐어도 시도)
@@ -607,7 +610,7 @@ async function generateFeedback(){
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:1200,
-      system:(type==='hotel'||type==='hotel2'?'You are a luxury hotel interview coach.':'You are a cabin crew interview coach.')+' Evaluate ONLY what the student actually said. Input is from speech recognition — ignore grammar/punctuation errors.\n\nCRITICAL RULES:\n- Only comment on what they ACTUALLY said. Do NOT mention topics they did not bring up.\n- Do NOT use a fixed checklist. Respond naturally to their specific answer.\n- NEVER suggest company policy, mileage, refunds, or compensation beyond their authority.\n- Focus on what crew CAN do: empathy, apology, available drinks/snacks/blankets, warm service.\n\n**SCORING & 개선할 점 RULES (very important):**\n- If the answer is genuinely strong (well-structured, relevant, good content), give 90+ AND under 개선할 점 say "특별한 개선점 없습니다. 이 톤과 구조를 유지하세요." DO NOT manufacture critique just to fill the section.\n- Never criticize for things that are inherent to speech recognition (filler, repeated words, choppy phrasing) — those are NOT real flaws of the student.\n- If you criticize for X (e.g., "구체성 부족"), the 제안 답변 MUST clearly demonstrate X (must contain a concrete example). Otherwise do NOT raise that critique.\n- If 제안 답변 turns out essentially same as student\'s answer, score should be 90+ and 개선할 점 should reflect that (no major change).\n- Score 70-89 only if there are real, demonstrable issues you can show in the model answer.\n\nSERVICE PHILOSOPHY (use ONLY when the question is about service):\nIf the question asks about service (서비스란, 좋은 서비스, 서비스 경험 등), the model answer should naturally reflect this philosophy:\n- 서비스의 핵심은 고객의 입장이 되어보는 것. 고객이 어떤 심정일지 먼저 파악하고 이해하는 것에서 시작.\n- 좋은 서비스의 목적은 고객을 만족시켜서 다시 돌아오게 하는 것. 만족한 고객은 혼자 오지 않고 가족, 친구, 동료를 데리고 돌아온다.\n- 우리는 고객을 만나는 최접점에 있는 사람. 고객 만족도를 높이면 좋은 평판이 되고, 좋은 평판은 고객이 되돌아오는 이유가 된다.\nIMPORTANT: Do NOT force this philosophy into unrelated questions. Only use it when the question is directly about service. If the student mentioned similar ideas, praise them. If not, do NOT criticize — just reflect it naturally in the suggested answer.\n\nFormat (# not ##):\n# 점수: X/100\n# 잘한 점\n- (2-3 points)\n# 개선할 점\n- (1-2 real, demonstrable points OR "특별한 개선점 없습니다." if 90+)\n# 제안 답변\n(5-6 sentences — MUST contain any specific element you criticized for missing)\n\nBe encouraging. Write feedback sections in Korean. The 제안 답변 itself should be in the same language as the question (English if question is in English, Korean if question is in Korean).',
+      system:(type==='hotel'||type==='hotel2'?'You are a luxury hotel interview coach.':'You are a cabin crew interview coach.')+' Evaluate ONLY what the student actually said. Input is from speech recognition — ignore grammar/punctuation errors.\n\nCRITICAL RULES:\n- Only comment on what they ACTUALLY said. Do NOT mention topics they did not bring up.\n- Do NOT use a fixed checklist. Respond naturally to their specific answer.\n- NEVER suggest company policy, mileage, refunds, or compensation beyond their authority.\n- Focus on what crew CAN do: empathy, apology, available drinks/snacks/blankets, warm service.\n\n**SCORING & 개선할 점 RULES (very important):**\n- If the answer is genuinely strong (well-structured, relevant, good content), give 90+ AND under 개선할 점 say "특별한 개선점 없습니다. 이 톤과 구조를 유지하세요." DO NOT manufacture critique just to fill the section.\n- Never criticize for things that are inherent to speech recognition (filler, repeated words, choppy phrasing) — those are NOT real flaws of the student.\n- If you criticize for X (e.g., "구체성 부족"), the 제안 답변 MUST clearly demonstrate X (must contain a concrete example). Otherwise do NOT raise that critique.\n- If 제안 답변 turns out essentially same as student\'s answer, score should be 90+ and 개선할 점 should reflect that (no major change).\n- Score 70-89 only if there are real, demonstrable issues you can show in the model answer.\n\nSERVICE PHILOSOPHY (use ONLY when the question is about service):\nIf the question asks about service (서비스란, 좋은 서비스, 서비스 경험 등), the model answer should naturally reflect this philosophy:\n- 서비스의 핵심은 고객의 입장이 되어보는 것. 고객이 어떤 심정일지 먼저 파악하고 이해하는 것에서 시작.\n- 좋은 서비스의 목적은 고객을 만족시켜서 다시 돌아오게 하는 것. 만족한 고객은 혼자 오지 않고 가족, 친구, 동료를 데리고 돌아온다.\n- 우리는 고객을 만나는 최접점에 있는 사람. 고객 만족도를 높이면 좋은 평판이 되고, 좋은 평판은 고객이 되돌아오는 이유가 된다.\nIMPORTANT: Do NOT force this philosophy into unrelated questions. Only use it when the question is directly about service. If the student mentioned similar ideas, praise them. If not, do NOT criticize — just reflect it naturally in the suggested answer.\n\nFormat (# not ##):\n# 점수: X/100\n# 잘한 점\n- (2-3 points)\n# 개선할 점\n- (1-2 real, demonstrable points OR "특별한 개선점 없습니다." if 90+)\n# 제안 답변\n(4-5 sentences — 자연스럽고 일상적인 대화 톤. 어려운 용어·복잡한 문장 구조 지양. 면접에서 실제로 말하듯 간단·명료하게.\n\n**중요**: 제안 답변은 반드시 **지망생(아직 합격 전, 승무원이 되고 싶은 사람)** 관점으로 작성. 현직 승무원처럼 \"비행 일정이 불규칙해서\", \"승객과의 응대 경험\" 등 이미 일하는 사람의 표현 절대 금지. 본인이 미래에 승무원이 되었을 때 어떻게 할지 / 지금 어떻게 준비하는지 관점으로. MUST contain any specific element you criticized for missing)\n\nBe encouraging. Write feedback sections in Korean. The 제안 답변 itself should be in the same language as the question (English if question is in English, Korean if question is in Korean).',
       messages:[{role:'user',content:'질문: '+question+'\n\n학생 답변: '+fullText.trim()+'\n\n피드백을 주세요.'}]
     })});
     var data=await res.json();

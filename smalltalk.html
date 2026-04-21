@@ -25,6 +25,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
 .session{display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden;}
 .session.active{display:flex;}
+.video-area{display:flex;align-items:center;justify-content:center;gap:20px;padding:14px;flex-shrink:0;min-height:0;}
+.card-frame{width:45vw;max-width:220px;aspect-ratio:9/16;max-height:38vh;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:1;}
+.card-frame video{width:100%;height:100%;object-fit:cover;}
+.avatar-display{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#1A2340,#2A3455);}
+.cam-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.45);font-size:0.82rem;text-align:center;}
+.card-label{position:absolute;bottom:0;left:0;right:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,0.8));text-align:center;}
+.card-label .name{font-family:'DM Serif Display',serif;font-size:0.85rem;color:#fff;}
 .chat{flex:1;overflow-y:auto;padding:16px 22px;background:rgba(0,0,0,0.2);}
 .chat .turn{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.05);}
 .chat .turn:last-child{border-bottom:none;}
@@ -77,23 +84,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   <div class="tag">SMALLTALK · 1:1 · ENGLISH</div>
   <h1 id="sm-title">CV Drop <em>스몰톡</em></h1>
   <p>실제 CV Drop에서 면접관이 먼저 길게 인사하지 않아요.<br>본인이 먼저 인사하고 시작합니다.</p>
-  <div style="max-width:320px;margin:0 auto 16px;text-align:left;">
-    <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:6px;letter-spacing:0.06em;">지원 항공사 선택</div>
-    <select id="sm-airline" onchange="onAirlineChange()" style="width:100%;padding:10px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.3);border-radius:8px;color:#fff;font-family:inherit;font-size:0.88rem;">
-      <option value="generic">✈️ 외항사 (공통)</option>
-      <option value="emirates">🇦🇪 Emirates (에미레이트)</option>
-      <option value="qatar">🇶🇦 Qatar Airways (카타르)</option>
-      <option value="etihad">🇦🇪 Etihad (에티하드)</option>
-      <option value="singapore">🇸🇬 Singapore Airlines (싱가포르)</option>
-      <option value="cathay">🇭🇰 Cathay Pacific (캐세이)</option>
-      <option value="lufthansa">🇩🇪 Lufthansa (루프트한자)</option>
-      <option value="klm">🇳🇱 KLM</option>
-      <option value="finnair">🇫🇮 Finnair (핀에어)</option>
-      <option value="flydubai">🇦🇪 flydubai</option>
-      <option value="airasia">🇲🇾 AirAsia</option>
-      <option value="riyadh">🇸🇦 Riyadh Air (리야드에어)</option>
-    </select>
-  </div>
   <div style="background:rgba(201,168,76,0.1);border-left:3px solid var(--gold);padding:14px 18px;margin:0 auto 18px;text-align:left;font-size:0.9rem;color:rgba(255,255,255,0.9);line-height:1.8;max-width:460px;">
     <b style="color:var(--gold);">예시 (이런 식으로 시작하세요)</b><br>
     "Good morning, my name is Kate, nice to meet you."
@@ -103,15 +93,15 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
 <!-- SESSION -->
 <div class="session" id="session">
-  <div class="video-area" style="display:flex;align-items:center;justify-content:center;gap:14px;padding:12px;flex-shrink:0;">
-    <div class="card-frame" id="card-ai" style="width:130px;height:160px;border-radius:10px;overflow:hidden;background:#000;border:2px solid rgba(255,255,255,0.08);position:relative;">
-      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#1A2340 0%,#2A3455 100%);font-size:2.6rem;">👩🏻</div>
-      <div style="position:absolute;bottom:0;left:0;right:0;padding:6px;background:linear-gradient(transparent,rgba(0,0,0,0.85));text-align:center;"><div style="font-family:'DM Serif Display',serif;font-size:0.72rem;color:#fff;">Interviewer</div></div>
+  <div class="video-area">
+    <div class="card-frame" id="card-ai">
+      <div class="avatar-display" style="font-size:3rem;">👩🏻</div>
+      <div class="card-label"><div class="name">Interviewer</div></div>
     </div>
-    <div class="card-frame" id="my-card" style="width:130px;height:160px;border-radius:10px;overflow:hidden;background:#000;border:2px solid rgba(232,201,106,0.3);position:relative;">
+    <div class="card-frame" id="my-card">
       <video id="cam-video" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;display:none;transform:scaleX(-1);"></video>
-      <div id="cam-ph" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.55);font-size:0.72rem;text-align:center;line-height:1.5;">카메라<br>대기 중</div>
-      <div style="position:absolute;bottom:0;left:0;right:0;padding:6px;background:linear-gradient(transparent,rgba(0,0,0,0.85));text-align:center;"><div style="font-family:'DM Serif Display',serif;font-size:0.72rem;color:#fff;">You</div></div>
+      <div id="cam-ph" class="cam-placeholder">카메라 대기 중</div>
+      <div class="card-label"><div class="name">You</div></div>
     </div>
   </div>
   <div class="chat" id="chat"></div>
@@ -129,51 +119,21 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
 <script>
 var recognition=null, fullText='', dialogue=[];
-// URL 파라미터 또는 드롭다운으로 항공사 컨텍스트 결정
-var urlParams=new URLSearchParams(location.search);
-var AIRLINE=urlParams.get('airline')||'generic';
-var AIRLINE_NAMES={
-  generic:'an international airline', emirates:'Emirates', qatar:'Qatar Airways',
-  etihad:'Etihad Airways', singapore:'Singapore Airlines', cathay:'Cathay Pacific',
-  lufthansa:'Lufthansa', klm:'KLM', finnair:'Finnair', flydubai:'flydubai',
-  airasia:'AirAsia', riyadh:'Riyadh Air'
-};
-var AIRLINE_KOS={
-  generic:'', emirates:'에미레이트', qatar:'카타르', etihad:'에티하드',
-  singapore:'싱가포르', cathay:'캐세이', lufthansa:'루프트한자', klm:'KLM',
-  finnair:'핀에어', flydubai:'flydubai', airasia:'에어아시아', riyadh:'리야드에어'
-};
-var AIRLINE_NAME=AIRLINE_NAMES[AIRLINE]||AIRLINE_NAMES.generic;
-var AIRLINE_KO=AIRLINE_KOS[AIRLINE]||'';
 var BACK_URL='practice-foreign.html';
 
-// 드롭다운 초기값 및 변경 핸들러
-window.onAirlineChange=function(){
-  var sel=document.getElementById('sm-airline');
-  if(!sel)return;
-  AIRLINE=sel.value;
-  AIRLINE_NAME=AIRLINE_NAMES[AIRLINE]||AIRLINE_NAMES.generic;
-  AIRLINE_KO=AIRLINE_KOS[AIRLINE]||'';
-  SYS_FIRSTTURN=AIRLINE_NAME+' CV Drop. Candidate just greeted you. Respond with ONE very short acknowledgment (e.g., "Good morning!" or "Nice to meet you too.") + ask "Why do you want to apply for cabin crew?" in the same message. Under 15 words total. English only. No quotation marks.';
-  SYS_FOLLOWUP=AIRLINE_NAME+' CV Drop interviewer. ONE short line, under 15 words. Brief reaction + one natural follow-up question based on what the candidate just said. Casual, warm. No "Tell me about a time" style. English only.';
-  SYS_CLOSING=AIRLINE_NAME+' CV Drop interviewer. The small talk is wrapping up. Give a warm natural closing in ONE short line (under 15 words). Example: "Thank you for coming today, nice meeting you!" / "Great talking with you, all the best!" No question. English only.';
-  try{document.getElementById('sm-title').innerHTML=(AIRLINE_KO?AIRLINE_KO+' ':'')+'CV Drop <em>스몰톡</em>';}catch(e){}
-};
-// URL 에 airline 이 왔으면 드롭다운 초기값 맞추기
-try{
-  var preset=urlParams.get('airline');
-  if(preset){
-    var s=document.getElementById('sm-airline');
-    if(s){ for(var i=0;i<s.options.length;i++){ if(s.options[i].value===preset){s.selectedIndex=i;break;}} }
-  }
-}catch(e){}
-
-var SYS_FIRSTTURN=AIRLINE_NAME+' CV Drop. Candidate just greeted you. Respond with ONE very short acknowledgment (e.g., "Good morning!" or "Nice to meet you too.") + ask "Why do you want to apply for cabin crew?" in the same message. Under 15 words total. English only. No quotation marks.';
-var SYS_FOLLOWUP=AIRLINE_NAME+' CV Drop interviewer. ONE short line, under 15 words. Brief reaction + one natural follow-up question based on what the candidate just said. Casual, warm. No "Tell me about a time" style. English only.';
-var SYS_CLOSING=AIRLINE_NAME+' CV Drop interviewer. The small talk is wrapping up. Give a warm natural closing in ONE short line (under 15 words). Example: "Thank you for coming today, nice meeting you!" / "Great talking with you, all the best!" No question. English only.';
+// 첫 질문 랜덤 — Cabin Crew 동기 또는 Why this airline 중 하나
+var FIRST_QUESTIONS=[
+  'Why do you want to apply for cabin crew?',
+  'Why do you want to join our airline?',
+  'Why this airline?',
+  'What made you interested in cabin crew?'
+];
+var firstQ=FIRST_QUESTIONS[Math.floor(Math.random()*FIRST_QUESTIONS.length)];
+var SYS_FIRSTTURN='You are an airline CV Drop interviewer. Candidate just greeted you. Respond with ONE very short acknowledgment (e.g., "Good morning!" or "Nice to meet you too.") + ask "'+firstQ+'" in the same message. Under 15 words total. English only. No quotation marks.';
+var SYS_FOLLOWUP='You are an airline CV Drop interviewer. ONE short line, under 15 words. Brief reaction + one natural follow-up question based on what the candidate just said. Casual, warm. No "Tell me about a time" style. English only.';
+var SYS_CLOSING='You are an airline CV Drop interviewer. The small talk is wrapping up. Give a warm natural closing in ONE short line (under 15 words). Example: "Thank you for coming today, nice meeting you!" / "Great talking with you, all the best!" No question. English only.';
 
 // 제목에 항공사명 반영
-try{document.getElementById('sm-title').innerHTML=(AIRLINE_KO?AIRLINE_KO+' ':'')+'CV Drop <em>스몰톡</em>';}catch(e){}
 // interviewer 카드 회사명도 반영
 try{var roleLbl=document.querySelector('#card-ai .card-label .role, #card-ai [style*="var(--gold-light)"]');}catch(e){}
 

@@ -635,13 +635,16 @@ function startListening(){
     }catch(e){}
   }
 
+  // 세션별 REBUILD — 안드로이드 크롬 duplicate-final 이벤트 방어
+  window._sessionFinal='';
   recognition.onresult=function(ev){
-    var interim='';
-    for(var r=ev.resultIndex;r<ev.results.length;r++){
-      if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';
+    var interim='',sessionFinal='';
+    for(var r=0;r<ev.results.length;r++){
+      if(ev.results[r].isFinal)sessionFinal+=ev.results[r][0].transcript+' ';
       else interim+=ev.results[r][0].transcript;
     }
-    document.getElementById('transcript').textContent=(fullText+interim)||'🎙 듣고 있어요…';
+    window._sessionFinal=sessionFinal;
+    document.getElementById('transcript').textContent=(fullText+sessionFinal+interim).trim()||'🎙 듣고 있어요…';
   };
   recognition.onerror=function(ev){
     var code=ev.error||'unknown';
@@ -662,6 +665,8 @@ function startListening(){
     document.getElementById('waveform').classList.remove('active');
   };
   recognition.onend=function(){
+    // 현 세션 최종문 커밋
+    fullText+=(window._sessionFinal||'');window._sessionFinal='';
     if(endingRoleplay) return;
     // 사용자가 ⏹ 누르기 전엔 자동 재시작 (Android Chrome 은 5~8초마다 auto-stop)
     if(window._manualStop){

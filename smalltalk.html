@@ -246,19 +246,20 @@ async function startAnswer(){
     return;
   }
   recognition=new SR();recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=true;
-  fullText='';
-  window._manualStop=false;
+  fullText='';window._sessionFinal='';window._manualStop=false;
   document.getElementById('btn-answer').style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('waveform').classList.add('active');
   document.getElementById('transcript').textContent='🎙 Listening…';
+  // 세션별 REBUILD — 안드로이드 크롬 duplicate-final 이벤트 방어
   recognition.onresult=function(ev){
-    var interim='';
-    for(var r=ev.resultIndex;r<ev.results.length;r++){
-      if(ev.results[r].isFinal)fullText+=ev.results[r][0].transcript+' ';
+    var interim='',sessionFinal='';
+    for(var r=0;r<ev.results.length;r++){
+      if(ev.results[r].isFinal)sessionFinal+=ev.results[r][0].transcript+' ';
       else interim+=ev.results[r][0].transcript;
     }
-    document.getElementById('transcript').textContent=(fullText+interim).trim()||'🎙 Listening…';
+    window._sessionFinal=sessionFinal;
+    document.getElementById('transcript').textContent=(fullText+sessionFinal+interim).trim()||'🎙 Listening…';
   };
   recognition.onerror=function(ev){
     if(ev.error==='not-allowed'||ev.error==='service-not-allowed'){
@@ -270,6 +271,7 @@ async function startAnswer(){
     }
   };
   recognition.onend=function(){
+    fullText+=(window._sessionFinal||'');window._sessionFinal='';
     if(window._manualStop)return;
     setTimeout(function(){
       if(window._manualStop)return;

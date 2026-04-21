@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<script>(function(){var u=navigator.userAgent;if(u.indexOf("Chrome")>-1&&u.indexOf("Edg/")<0&&u.indexOf("OPR/")<0&&u.indexOf("SamsungBrowser")<0)document.documentElement.classList.add("is-chrome");})();</script>
+<script>(function(){var u=navigator.userAgent;if(u.indexOf("Chrome")>-1&&u.indexOf("Edg/")<0&&u.indexOf("OPR/")<0&&u.indexOf("SamsungBrowser")<0)document.documentElement.classList.add("is-chrome");document.addEventListener("click",function(e){if(window.innerWidth>900)return;var a=e.target.closest&&e.target.closest(".nav-dropdown > a");if(!a){document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open");});return;}var p=a.parentElement;if(!p.classList.contains("open")){e.preventDefault();document.querySelectorAll(".nav-dropdown.open").forEach(function(d){if(d!==p)d.classList.remove("open");});p.classList.add("open");}});})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI 코치   WonderfulCrew</title>

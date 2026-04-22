@@ -336,17 +336,25 @@ async function stopAnswer(){
     dialogue.push({who:'ai',text:txt});
     var tmp=document.getElementById('tmp-turn');if(tmp)tmp.remove();
     appendChat('ai',txt);
-    if(typeof gcSpeak==='function')gcSpeak(txt,'en-GB','female',function(){});
 
     if(isClosing){
-      // 3번째 꼬리질문 완료 → 자동 종료 + 피드백
+      // 3번째 꼬리질문 완료 → AI 의 마무리 멘트가 끝난 뒤 피드백 진입
       document.getElementById('btn-answer').style.display='none';
       document.getElementById('btn-end').style.display='none';
       document.getElementById('transcript').textContent='Small talk completed. Generating feedback...';
-      // TTS 잠시 듣고 피드백 진입 (1.5초 여유)
-      setTimeout(function(){endSession();},1500);
+      var _closingDone=false;
+      var _closeAndFeedback=function(){if(_closingDone)return;_closingDone=true;endSession();};
+      // TTS 완료 후 피드백 — gcSpeak callback 사용
+      if(typeof gcSpeak==='function'){
+        gcSpeak(txt,'en-GB','female',function(){setTimeout(_closeAndFeedback,400);});
+      }
+      // 안전 폴백: 글자 수 기반 최대 대기 (단어당 약 350ms + 여유 1.5초), 혹은 20초 하드캡
+      var _ttsFallbackMs=Math.min(20000, Math.max(4000, txt.length*120 + 1500));
+      setTimeout(_closeAndFeedback, _ttsFallbackMs);
       return;
     }
+
+    if(typeof gcSpeak==='function')gcSpeak(txt,'en-GB','female',function(){});
 
     // 계속 진행
     document.getElementById('btn-answer').style.display='inline-flex';

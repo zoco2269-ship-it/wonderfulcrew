@@ -289,9 +289,9 @@ function buildCards(questions,startIdx){
     '<div class="q-text">'+q+'</div>'+
     // ① Listen to Question
     '<button class="q-btn feedback" data-act="listen-q" style="margin-bottom:16px;">Listen to Question</button>'+
-    // ② Record Answer
+    // ② Answer
     '<div class="q-voice-area">'+
-      '<button class="q-record-btn" data-state="idle">Start Recording</button>'+
+      '<button class="q-record-btn" data-state="idle">Start Answer</button>'+
       '<div class="q-transcript" id="transcript-'+i+'"></div>'+
     '</div>'+
     // ③ 제출 (피드백 + 모범답변 1회 호출)
@@ -349,7 +349,7 @@ function buildCards(questions,startIdx){
     var finalText='';
     var _seen={}, _list=[];
     var _norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
-    recBtn.dataset.state='recording';recBtn.classList.add('recording');recBtn.textContent='Recording... (클릭하여 중지)';
+    recBtn.dataset.state='recording';recBtn.classList.add('recording');recBtn.textContent='Answering... (클릭하여 중지)';
     transcript.textContent='';
     recognition.onresult=function(ev){
       var interimSeen={}, interim='';
@@ -367,14 +367,14 @@ function buildCards(questions,startIdx){
       transcript.textContent=(finalText+(interim?' '+interim:'')).trim();
     };
     recognition.onend=function(){
-      recBtn.dataset.state='idle';recBtn.classList.remove('recording');recBtn.textContent='다시 녹음';
+      recBtn.dataset.state='idle';recBtn.classList.remove('recording');recBtn.textContent='Answer Again';
       if(finalText.trim()||transcript.textContent.trim()){
         transcript.textContent=finalText.trim()||transcript.textContent.trim();
         submitBtn.disabled=false;
       }
     };
     recognition.onerror=function(e){
-      recBtn.dataset.state='idle';recBtn.classList.remove('recording');recBtn.textContent='다시 녹음';
+      recBtn.dataset.state='idle';recBtn.classList.remove('recording');recBtn.textContent='Answer Again';
       if(e.error!=='aborted')transcript.textContent='인식 실패   다시 시도해 주세요.';
     };
     recognition.start();

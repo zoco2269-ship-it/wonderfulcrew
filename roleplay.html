@@ -337,6 +337,7 @@ nav{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/auth-gate.js"></script>
+<script src="js/sr-dedupe.js?v=3"></script>
 </head>
 <body>
 <nav>
@@ -783,12 +784,21 @@ function startMic(){
     recognition.lang=LANG==='en'?'en-US':'ko-KR';
     recognition.continuous=true;recognition.interimResults=true;
     var finalTranscript='';
+    window._finalSeen={};window._finalList=[];
+    var norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
     recognition.onresult=function(e){
-      var interim='';
-      for(var i=e.resultIndex;i<e.results.length;i++){
-        if(e.results[i].isFinal)finalTranscript+=e.results[i][0].transcript;
-        else interim+=e.results[i][0].transcript;
+      var interimSeen={}, interim='';
+      for(var i=0;i<e.results.length;i++){
+        var t=(e.results[i][0].transcript||'').trim();
+        if(!t) continue;
+        var k=norm(t); if(!k) continue;
+        if(e.results[i].isFinal){
+          if(!window._finalSeen[k]){window._finalSeen[k]=1;window._finalList.push(t);}
+        }else{
+          if(!window._finalSeen[k] && !interimSeen[k]){interimSeen[k]=1;interim+=(interim?' ':'')+t;}
+        }
       }
+      finalTranscript=window._finalList.join(' ');
       document.getElementById('cq-hint').textContent=(finalTranscript||interim)||'듣고 있어요...';
     };
     recognition.onend=function(){

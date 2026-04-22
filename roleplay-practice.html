@@ -812,8 +812,10 @@ function stopAndFeedback(){
 async function processAnswer(){
   stopAnswer();
 
-  var ans=fullText.trim()||document.getElementById('transcript').textContent.trim();
-  if(!ans||ans==='지금 답변하세요...'){startListening();return;}
+  var _rawTr=document.getElementById('transcript').textContent.trim();
+  var _isPlaceholder=/^🎙|^듣고 있어요|^지금 답변하세요|^목소리가 없어요|^고객이 먼저 말합니다|^🔴 버튼/.test(_rawTr);
+  var ans=fullText.trim()||(_isPlaceholder?'':_rawTr);
+  if(!ans){startListening();return;}
 
   chatHistory.push({role:'user',content:ans});
 

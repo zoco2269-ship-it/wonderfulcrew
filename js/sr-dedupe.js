@@ -1,7 +1,10 @@
-// Android Chrome Web Speech API 중복 방출 버그 방어층 v4
-// consecutive 반복 제거 + prefix/overlap 병합 + MutationObserver 즉시 반응
+// Android Chrome Web Speech API 중복 방출 버그 방어층 v5
+// 모바일 Android Chrome 에서만 동작 (데스크톱은 건드리지 않음)
 (function(){
   if(!window.addEventListener) return;
+  // 모바일 전용 — 데스크톱에서는 SR 정상 동작하므로 건드리지 않음
+  var isMobile = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent);
+  if(!isMobile) return;
 
   function normWord(w){
     return (w||'').toLowerCase().replace(/[^\w가-힣]/g,'');

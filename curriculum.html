@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<script>(function(){var u=navigator.userAgent;if(u.indexOf("Chrome")>-1&&u.indexOf("Edg/")<0&&u.indexOf("OPR/")<0&&u.indexOf("SamsungBrowser")<0)document.documentElement.classList.add("is-chrome");document.addEventListener("click",function(e){if(window.innerWidth>900)return;var a=e.target.closest&&e.target.closest(".nav-dropdown > a");if(!a){document.querySelectorAll(".nav-dropdown.open").forEach(function(d){d.classList.remove("open");});return;}var p=a.parentElement;if(!p.classList.contains("open")){e.preventDefault();document.querySelectorAll(".nav-dropdown.open").forEach(function(d){if(d!==p)d.classList.remove("open");});p.classList.add("open");}});})();</script>
+<script src="js/nav-dropdown.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WonderfulCrew   커리큘럼</title>
@@ -72,12 +72,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 @media(max-width:760px){
   #app{padding-top:130px;}
   /* 모바일: 좌(외항사) | 우(국내) 2 컬럼 유지, 각 컬럼 내부는 1개씩 세로 쌓기 */
-  .airline-wrap{grid-template-columns:1fr 1fr;gap:10px;align-items:stretch;}
-  /* 양쪽 컬럼이 카드 개수가 달라도 같은 높이가 되도록 row 를 1fr 로 stretch */
-  .airline-group{grid-template-columns:1fr;gap:8px;grid-auto-rows:1fr;}
+  .airline-wrap{grid-template-columns:1fr 1fr;gap:10px;align-items:start;}
+  /* 모든 카드 동일 높이 — grid-auto-rows:1fr 제거 (카드 수 차이로 높이 불균일 현상 방지) */
+  .airline-group{grid-template-columns:1fr;gap:8px;}
   .airline-grid{grid-template-columns:repeat(2,1fr);}
-  /* 카드 크기 — 최소 높이 고정, 컬럼 stretch 에 맞춰 자동 확장 */
-  .airline-card{padding:10px 8px;min-height:78px;height:auto;overflow:hidden;}
+  /* 카드 크기 — 고정 높이로 양쪽 컬럼 카드 크기 통일 */
+  .airline-card{padding:10px 8px;height:78px;min-height:78px;overflow:hidden;}
   .airline-name-en{font-size:0.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .airline-name-ko{font-size:0.68rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .airline-region{font-size:0.56rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}

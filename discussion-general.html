@@ -245,8 +245,8 @@ async function stopAnswer(){
       messages:chatHistory
     })});
     var data=await res.json();
-    var aiText=((data&&data.content&&data.content[0]&&data.content[0].text)||'I agree with that approach.').replace(/\*\*/g,'').replace(/\[END\]/g,'').trim();
-    chatHistory.push({role:'assistant',content:'[B] '+aiText});
+    var aiText=((data&&data.content&&data.content[0]&&data.content[0].text)||'I agree with that approach.').replace(/\*\*/g,'').replace(/\[END\]/g,'').replace(/\[B\]\s*/gi,'').replace(/^Candidate B:\s*/i,'').trim();
+    chatHistory.push({role:'assistant',content:aiText});
     aiTurnB(aiText);
     document.getElementById('btn-answer').style.display='inline-flex';
     document.getElementById('btn-answer').disabled=false;

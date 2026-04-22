@@ -265,7 +265,12 @@ async function stopAnswer(){
       messages:chatHistory
     })});
     var data=await res.json();
-    var aiText=((data&&data.content&&data.content[0]&&data.content[0].text)||'I agree with that approach.').replace(/\*\*/g,'').replace(/\[END\]/g,'').replace(/\[B\]\s*/gi,'').replace(/^Candidate B:\s*/i,'').trim();
+    var aiText=((data&&data.content&&data.content[0]&&data.content[0].text)||'I agree with that approach.')
+      .replace(/\*\*/g,'')
+      .replace(/\[END\]/gi,'')
+      .replace(/\[[A-Za-z ]+\]\s*/g,'')  // [B], [A], [Candidate B] 등 모든 대괄호 라벨 제거
+      .replace(/^(Candidate\s*[A-Z]\s*:|[A-Z]\s*:)\s*/i,'')  // "Candidate B:" 또는 "B:" prefix 제거
+      .trim();
     chatHistory.push({role:'assistant',content:aiText});
     aiTurnB(aiText);
     // 다시 본인 차례 + 종료 버튼 노출 (사용자가 직접 종료)

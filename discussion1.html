@@ -161,7 +161,7 @@ async function startRec(){
     setTimeout(function(){
       if(window._manualStop)return;
       try{var SR2=window.SpeechRecognition||window.webkitSpeechRecognition;var r2=new SR2();r2.lang='en-US';r2.interimResults=true;r2.continuous=true;r2.onresult=recognition.onresult;r2.onerror=recognition.onerror;r2.onend=recognition.onend;recognition=r2;r2.start();}catch(e){}
-    },1500);
+    },400);
   };
   try{recognition.start();}catch(e){document.getElementById('transcript').textContent='⚠ 시작 실패: '+(e.message||e);}
 }

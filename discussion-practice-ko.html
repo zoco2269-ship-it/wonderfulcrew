@@ -352,7 +352,7 @@ function startMyTurn(){
     setTimeout(function(){
       if(roundEnding||!userTurnActive)return;
       try{recognition.start();}catch(e){}
-    },1500);
+    },400);
   };
   recognition.start();
 }

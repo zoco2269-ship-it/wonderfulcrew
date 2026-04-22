@@ -203,7 +203,7 @@ function startRound(){
           if(document.getElementById('btn-stop').style.display!=='none'){
             try{recognition.start();}catch(e){}
           }
-        },1500);
+        },400);
       }
     };
     recognition.onerror=function(e){

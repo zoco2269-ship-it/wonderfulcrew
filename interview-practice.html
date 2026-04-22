@@ -585,7 +585,7 @@ function toggleRec(){
             if(mediaRecorder && mediaRecorder.state==='recording'){
               try{recognition.start();}catch(e){}
             }
-          },1500);
+          },400);
         }
       };
       recognition.onerror=function(e){console.warn('[interview] recognition error',e.error);};

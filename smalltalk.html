@@ -294,7 +294,7 @@ async function startAnswer(){
         recognition=r2;
         r2.start();
       }catch(e){}
-    },1500);
+    },400);
   };
   try{recognition.start();}catch(e){document.getElementById('transcript').textContent='마이크 시작 실패';}
 }

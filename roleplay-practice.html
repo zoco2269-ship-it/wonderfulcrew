@@ -680,20 +680,9 @@ function startListening(){
     if(endingRoleplay) return;
     // 사용자가 ⏹ 누르기 전엔 자동 재시작 (Android Chrome 은 5~8초마다 auto-stop)
     if(window._manualStop){
-      // fullText 비어도 transcript 에 interim 잡혔으면 그것도 사용
-      var _tr=document.getElementById('transcript').textContent||'';
-      var _hasInterim=_tr && _tr.indexOf('🎙')!==0 && _tr.indexOf('듣고 있어요')!==0 && _tr.indexOf('목소리가')!==0;
-      if(fullText.trim() || _hasInterim){
-        if(fullText.trim()) document.getElementById('transcript').textContent=fullText.trim();
-        processAnswer();
-      } else {
-        document.getElementById('btn-stop').style.display='none';
-        document.getElementById('rec-dot').classList.remove('on');
-        document.getElementById('waveform').classList.remove('active');
-        document.getElementById('rec-label').textContent='대기';
-        var bA3=document.getElementById('btn-answer');if(bA3) bA3.style.display='inline-flex';
-        document.getElementById('transcript').textContent='목소리가 없어요. 🎙 답변하기 버튼을 누르고 말해 주세요.';
-      }
+      // fullText 있으면 transcript 에 반영, 없어도 processAnswer 는 무조건 호출 (내부에서 빈 경우 startListening 로 복귀)
+      if(fullText.trim()) document.getElementById('transcript').textContent=fullText.trim();
+      processAnswer();
     } else {
       // 새 인스턴스로 재시작 (Android Chrome auto-stop 대응)
       setTimeout(function(){

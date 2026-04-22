@@ -829,11 +829,16 @@ async function processAnswer(){
   var turnInstr=turnCount<3
     ?'\n- Keep the exchange going. Either push back with a new concern or ask a natural follow-up question like "But what about...?" / "Could you also...?". DO NOT end the conversation.'
     :'\n- After '+turnCount+' exchanges you may wrap up with a brief grateful closing (1 sentence).';
+  // Claude API 는 messages 가 user 로 시작해야 함 — opener 가 assistant 로 시작하므로 placeholder user 추가
+  var apiMessages = chatHistory.slice();
+  if(apiMessages.length>0 && apiMessages[0].role==='assistant'){
+    apiMessages = [{role:'user',content:'(Begin the roleplay. You are the passenger. Open with your complaint.)'}].concat(apiMessages);
+  }
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:80,
-      system:'You are a passenger on an airplane. Situation: "'+scenario+'"\n\nRules:\n- Reply to what the crew member ACTUALLY said\n- If they asked a question, ANSWER it\n- If they offered a solution, react to it\n- 1-2 sentences only\n- Natural English\n- Do NOT use asterisks or stage directions. Only speak dialogue\n- This is turn '+turnCount+' — multi-turn roleplay, keep going for at least 3 exchanges.'+turnInstr,
-      messages:chatHistory
+      system:'You are the PASSENGER (customer) in this scenario: "'+scenario+'"\n\nThe user speaking to you is the CABIN CREW (service person). You are NOT the crew. Do NOT say crew lines like "I apologize", "Let me help you", "Right away, sir" — those are the user\'s job.\n\nRules:\n- Stay IN CHARACTER as the passenger with a problem/request.\n- React to what the crew said: answer their questions as passenger, accept/pushback on their solutions, express passenger feelings.\n- Use first-person passenger perspective ("I", "my seat", "my bag", "I need", "I want").\n- 1-2 sentences only. Natural English. No stage directions or asterisks.\n- This is turn '+turnCount+' — keep exchange going for at least 3 turns.'+turnInstr,
+      messages:apiMessages
     })});
     var data=await res.json();
     var aiText=(data&&data.content&&data.content[0]&&data.content[0].text)||'I see.';

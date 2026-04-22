@@ -680,8 +680,11 @@ function startListening(){
     if(endingRoleplay) return;
     // 사용자가 ⏹ 누르기 전엔 자동 재시작 (Android Chrome 은 5~8초마다 auto-stop)
     if(window._manualStop){
-      if(fullText.trim()){
-        document.getElementById('transcript').textContent=fullText.trim();
+      // fullText 비어도 transcript 에 interim 잡혔으면 그것도 사용
+      var _tr=document.getElementById('transcript').textContent||'';
+      var _hasInterim=_tr && _tr.indexOf('🎙')!==0 && _tr.indexOf('듣고 있어요')!==0 && _tr.indexOf('목소리가')!==0;
+      if(fullText.trim() || _hasInterim){
+        if(fullText.trim()) document.getElementById('transcript').textContent=fullText.trim();
         processAnswer();
       } else {
         document.getElementById('btn-stop').style.display='none';

@@ -787,15 +787,14 @@ function startMic(){
     window._finalSeen={};window._finalList=[];
     var norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
     recognition.onresult=function(e){
-      var interimSeen={}, interim='';
+      var interim='';
       for(var i=0;i<e.results.length;i++){
-        var t=(e.results[i][0].transcript||'').trim();
-        if(!t) continue;
-        var k=norm(t); if(!k) continue;
         if(e.results[i].isFinal){
-          if(!window._finalSeen[k]){window._finalSeen[k]=1;window._finalList.push(t);}
+          var t=(e.results[i][0].transcript||'').trim();
+          var k=norm(t);
+          if(k && !window._finalSeen[k]){window._finalSeen[k]=1;window._finalList.push(t);}
         }else{
-          if(!window._finalSeen[k] && !interimSeen[k]){interimSeen[k]=1;interim+=(interim?' ':'')+t;}
+          interim+=e.results[i][0].transcript;
         }
       }
       finalTranscript=window._finalList.join(' ');

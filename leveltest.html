@@ -82,6 +82,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 .res-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px;}
 .res-text{font-size:0.87rem;color:var(--text-mid);line-height:1.6;}
 .airline-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
+@media(max-width:640px){.airline-grid{grid-template-columns:1fr;gap:10px;}.airline-grid .airline-card{padding:14px 14px;}}
 .airline-card{background:#fff;border:1.5px solid rgba(201,168,76,0.2);padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
 .airline-card:hover{border-color:var(--gold);transform:translateY(-2px);}
 .airline-card.top{border-color:var(--gold);}

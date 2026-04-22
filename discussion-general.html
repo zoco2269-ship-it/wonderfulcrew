@@ -214,16 +214,13 @@ function startAnswer(){
   document.getElementById('waveform').classList.add('active');
   var norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
   recognition.onresult=function(ev){
-    var interimSeen={}, interim='';
+    var interim='';
     for(var r=0;r<ev.results.length;r++){
-      var t=(ev.results[r][0].transcript||'').trim();
-      if(!t) continue;
-      var k=norm(t); if(!k) continue;
       if(ev.results[r].isFinal){
-        if(!window._finalSeen[k]){window._finalSeen[k]=1;window._finalList.push(t);}
-      }else{
-        if(!window._finalSeen[k] && !interimSeen[k]){interimSeen[k]=1;interim+=(interim?' ':'')+t;}
-      }
+        var t=(ev.results[r][0].transcript||'').trim();
+        var k=norm(t);
+        if(k && !window._finalSeen[k]){window._finalSeen[k]=1;window._finalList.push(t);}
+      }else{interim+=ev.results[r][0].transcript;}
     }
     fullText=window._finalList.join(' ');
     document.getElementById('transcript').textContent=(fullText+(interim?' '+interim:'')).trim();

@@ -677,11 +677,9 @@ function startListening(){
   recognition.onend=function(){
     console.log('[rp-dbg] onend fire, manualStop=', window._manualStop, 'fullText=', JSON.stringify(fullText));
     if(endingRoleplay) return;
-    // 사용자가 ⏹ 누르기 전엔 자동 재시작 (Android Chrome 은 5~8초마다 auto-stop)
+    // 스몰톡 패턴: manualStop 이면 stopAnswer 가 처리하므로 여기선 아무 것도 안 함
     if(window._manualStop){
-      // fullText 있으면 transcript 에 반영, 없어도 processAnswer 는 무조건 호출 (내부에서 빈 경우 startListening 로 복귀)
-      if(fullText.trim()) document.getElementById('transcript').textContent=fullText.trim();
-      processAnswer();
+      return;
     } else {
       // 새 인스턴스로 재시작 (Android Chrome auto-stop 대응)
       setTimeout(function(){
@@ -783,13 +781,31 @@ async function showSuggestedResponse(){
 
 var endingRoleplay=false;
 
-function stopAnswer(){
+async function stopAnswer(){
   window._manualStop=true;
-  if(recognition)try{recognition.stop();}catch(e){}
+  // 스몰톡과 동일 패턴: onend 를 nullify 하고 stop (데스크톱) / onend Promise 대기 (모바일)
+  if(recognition){
+    if(window._mobileSRActive){
+      try{
+        await new Promise(function(resolve){
+          var done=false;
+          var finish=function(){ if(done) return; done=true; resolve(); };
+          recognition.onend=finish;
+          try{ recognition.stop(); }catch(e){ finish(); }
+          setTimeout(finish, 8000);
+        });
+      }catch(e){}
+      recognition=null;
+    } else {
+      try{ recognition.onend=null; recognition.stop(); }catch(e){}
+    }
+  }
   document.getElementById('btn-stop').style.display='none';
   document.getElementById('rec-dot').classList.remove('on');
   document.getElementById('rec-label').textContent='처리 중';
   document.getElementById('waveform').classList.remove('active');
+  // AI 호출 트리거 — onend 에서 processAnswer 호출하던 로직을 여기로 이동 (스몰톡 패턴)
+  await processAnswer();
 }
 
 function stopAndFeedback(){
@@ -812,7 +828,7 @@ function stopAndFeedback(){
 }
 
 async function processAnswer(){
-  stopAnswer();
+  // stopAnswer 에서 이미 recognition 정리함 (스몰톡 패턴). 여기서 중복 호출 제거.
 
   var _rawTr=document.getElementById('transcript').textContent.trim();
   var _isPlaceholder=/^🎙|^듣고 있어요|^지금 답변하세요|^목소리가 없어요|^고객이 먼저 말합니다|^🔴 버튼/.test(_rawTr);

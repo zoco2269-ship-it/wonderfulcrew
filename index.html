@@ -1054,8 +1054,8 @@ document.addEventListener('DOMContentLoaded',function(){
 @media(max-width:900px){.side-btns{display:none;}}
 </style>
 <div class="side-btns hero-mode" id="side-btns">
+  <a href="roleplay-practice.html" class="side-btn">면접 연습<br>시작</a>
   <a href="community.html" class="side-btn">스터디원<br>찾기</a>
-  <a href="roleplay-practice.html" class="side-btn">롤플레이<br>하기</a>
   <a href="contact.html#fb" class="side-btn">피드백<br>남기기</a>
 </div>
 
@@ -1144,17 +1144,16 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 reveals.forEach(el => observer.observe(el));
 
-// 플로팅 버튼: 히어로 섹션에서는 반투명 크림, 스크롤 내리면 흰색
-// 플로팅 버튼: 히어로 섹션에만 표시, 스크롤 내리면 사라짐
+// 플로팅 버튼: 항상 표시. 히어로 위에선 투명/흰색 스타일, 스크롤 내리면 크림/네이비 스타일.
 var sideBtns=document.getElementById('side-btns');
 var heroSection=document.getElementById('hero');
 if(sideBtns&&heroSection){
   window.addEventListener('scroll',function(){
     var heroBottom=heroSection.getBoundingClientRect().bottom;
     if(heroBottom>0){
-      sideBtns.style.opacity='1';sideBtns.style.pointerEvents='auto';
+      sideBtns.classList.add('hero-mode');
     } else {
-      sideBtns.style.opacity='0';sideBtns.style.pointerEvents='none';
+      sideBtns.classList.remove('hero-mode');
     }
   });
 }

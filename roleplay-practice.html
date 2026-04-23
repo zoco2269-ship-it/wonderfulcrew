@@ -684,14 +684,19 @@ function startListening(){
     if(window._manualStop){
       return;
     } else {
-      // 파이널 패턴: 같은 recognition 인스턴스 재사용 (Chrome SR 인스턴스 연속 생성 시 오디오 캡처 실패 현상 회피)
+      // 스몰톡 패턴: 새 인스턴스 생성 후 핸들러 복사 (Chrome 이 끝난 instance 에 start() 금지하는 버전 대응)
       setTimeout(function(){
         if(endingRoleplay||window._manualStop) return;
-        try{ recognition.start(); }catch(e){
-          document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 인식 중단. 🎙 답변하기 다시 눌러 주세요.</span>';
-          var bA5=document.getElementById('btn-answer');if(bA5) bA5.style.display='inline-flex';
-          document.getElementById('btn-stop').style.display='none';
-        }
+        try{
+          var SR2=window.SpeechRecognition||window.webkitSpeechRecognition;
+          var r2=new SR2();
+          r2.lang='en-US';r2.interimResults=true;r2.continuous=true;
+          r2.onresult=recognition.onresult;
+          r2.onerror=recognition.onerror;
+          r2.onend=recognition.onend;
+          recognition=r2;
+          r2.start();
+        }catch(e){}
       },400);
     }
   };

@@ -817,12 +817,16 @@ async function processAnswer(){
   var _isPlaceholder=/^🎙|^듣고 있어요|^지금 답변하세요|^목소리가 없어요|^고객이 먼저 말합니다|^🔴 버튼/.test(_rawTr);
   var ans=fullText.trim()||(_isPlaceholder?'':_rawTr);
   if(!ans){
-    // 음성 인식 실패 — 재시작 루프 대신 명확한 안내 + 수동 재탭
-    document.getElementById('transcript').textContent='음성이 감지되지 않았어요. 🎙 답변하기를 다시 눌러 주세요.';
-    var bA0=document.getElementById('btn-answer');if(bA0) bA0.style.display='inline-flex';
-    document.getElementById('btn-stop').style.display='none';
-    document.getElementById('rec-label').textContent='대기';
-    return;
+    if(window._mobileSRActive){
+      // 모바일: 재시작 루프 대신 명확한 안내 + 수동 재탭
+      document.getElementById('transcript').textContent='음성이 감지되지 않았어요. 🎙 답변하기를 다시 눌러 주세요.';
+      var bA0=document.getElementById('btn-answer');if(bA0) bA0.style.display='inline-flex';
+      document.getElementById('btn-stop').style.display='none';
+      document.getElementById('rec-label').textContent='대기';
+      return;
+    }
+    // 데스크톱: 원래 동작 — 자동 재시작으로 대화 흐름 유지
+    startListening();return;
   }
 
   chatHistory.push({role:'user',content:ans});

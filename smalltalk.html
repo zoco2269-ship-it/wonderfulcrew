@@ -302,18 +302,23 @@ async function startAnswer(){
 
 async function stopAnswer(){
   window._manualStop=true;
-  // recognition.stop() → onresult(final) → onend 순서. 비동기 SR(모바일 shim)과 동기 SR(데스크톱 native) 모두 대응.
-  if(recognition){
-    try{
-      await new Promise(function(resolve){
-        var done=false;
-        var finish=function(){ if(done) return; done=true; resolve(); };
-        recognition.onend=finish;
-        try{ recognition.stop(); }catch(e){ finish(); }
-        setTimeout(finish, 8000); // 타임아웃 — STT 최대 8초 대기
-      });
-    }catch(e){}
-    recognition=null;
+  if(window._mobileSRActive){
+    // 모바일 shim: transcribe 비동기 — onend 까지 대기
+    if(recognition){
+      try{
+        await new Promise(function(resolve){
+          var done=false;
+          var finish=function(){ if(done) return; done=true; resolve(); };
+          recognition.onend=finish;
+          try{ recognition.stop(); }catch(e){ finish(); }
+          setTimeout(finish, 8000);
+        });
+      }catch(e){}
+      recognition=null;
+    }
+  } else {
+    // 데스크톱 native SR: 원래 동작 — 동기 경로
+    if(recognition)try{recognition.onend=null;recognition.stop();}catch(e){}
   }
   // 현 세션 최종문 커밋
   fullText+=(window._sessionFinal||'');window._sessionFinal='';

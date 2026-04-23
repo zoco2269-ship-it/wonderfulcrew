@@ -1,4 +1,4 @@
-// 모바일 SpeechRecognition shim
+// 모바일 SpeechRecognition shim v2
 // Android/iOS Chrome 의 Web Speech API 는 불안정 (텍스트 누락·중복·auto-stop).
 // 모바일에서는 MediaRecorder 로 녹음 → /api/stt (Google Cloud STT) 로 전사.
 // 데스크톱은 네이티브 Web Speech API 그대로 사용.
@@ -6,6 +6,13 @@
   if(!window.MediaRecorder || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
   var isMobile = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent);
   if(!isMobile) return;
+
+  // 모든 onend 호출 전에 _manualStop=true 강제 — 페이지의 auto-restart 로직 차단
+  // (모바일에선 MediaRecorder 가 gap 없이 연속 녹음하므로 재시작 불필요)
+  function fireEnd(self){
+    try { window._manualStop = true; } catch(e) {}
+    if(self.onend) self.onend({});
+  }
 
   function MobileSR(){
     this.lang = 'en-US';
@@ -37,8 +44,9 @@
       try {
         self._rec = mimeType ? new MediaRecorder(stream, {mimeType:mimeType}) : new MediaRecorder(stream);
       } catch(e) {
+        try { stream.getTracks().forEach(function(t){t.stop();}); } catch(_){}
         if(self.onerror) self.onerror({error:'audio-capture', message:e.message});
-        if(self.onend) self.onend({});
+        fireEnd(self);
         return;
       }
       self._mimeType = self._rec.mimeType || 'audio/webm';
@@ -46,7 +54,7 @@
       self._rec.onstop = function(){
         try { stream.getTracks().forEach(function(t){t.stop();}); } catch(e){}
         if(self._aborted){
-          if(self.onend) self.onend({});
+          fireEnd(self);
           return;
         }
         self._transcribe();
@@ -63,7 +71,7 @@
                : (err && err.name === 'NotFoundError') ? 'audio-capture'
                : 'service-not-allowed';
       if(self.onerror) self.onerror({error:code, message:(err && err.message) || ''});
-      if(self.onend) self.onend({});
+      fireEnd(self);
     });
   };
 
@@ -82,7 +90,7 @@
     var self = this;
     try {
       if(!self._chunks.length){
-        if(self.onend) self.onend({});
+        fireEnd(self);
         return;
       }
       var blob = new Blob(self._chunks, {type: self._mimeType});
@@ -122,7 +130,7 @@
     } catch(e) {
       if(self.onerror) self.onerror({error:'network', message:(e && e.message) || 'transcribe failed'});
     } finally {
-      if(self.onend) self.onend({});
+      fireEnd(self);
     }
   };
 

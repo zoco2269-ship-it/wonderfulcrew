@@ -574,16 +574,7 @@ function startListening(){
   document.getElementById('waveform').classList.add('active');
   document.getElementById('transcript').textContent='🎙 듣고 있어요… 말이 끝나면 ⏹ 답변 종료를 눌러주세요';
 
-  var isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-  if(!isMobile && !mediaRecorder && stream){
-    try{
-      recordStartTime=Date.now();
-      recordChunks=[];
-      mediaRecorder=new MediaRecorder(stream,{mimeType:'video/webm'});
-      mediaRecorder.ondataavailable=function(e){if(e.data.size>0)recordChunks.push(e.data);};
-      mediaRecorder.start();
-    }catch(e){}
-  }
+  // 녹화 없음 — 프라이버시 정책상 영상은 어디에도 저장/전송하지 않음
 
   var norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
   recognition.onresult=function(ev){

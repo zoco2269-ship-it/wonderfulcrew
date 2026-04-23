@@ -578,6 +578,7 @@ function customerFirstSpeak(openerText){
 // 모바일 호환: SR 을 시작하기 전에 마이크 권한을 명시적으로 받고 시작
 // window. 에 붙여서 inline onclick 이 확실히 찾도록 보장
 window.requestMicAndListen = async function requestMicAndListen(){
+  console.log('[rp-dbg] requestMicAndListen called, mobileSR=', window._mobileSRActive);
   var tx=document.getElementById('transcript');
   // 클릭 감지 즉시 시각 피드백 (마이크 실패 여부와 무관하게 '눌렀음'을 확인)
   if(tx) tx.innerHTML='<span style="color:#E8C96A;">🔴 버튼 감지됨 — 마이크 권한 확인 중...</span>';

@@ -616,6 +616,9 @@ document.addEventListener('click', function(e){
 
 function startListening(){
   console.log('[rp-dbg] startListening() called, mobileSR=', window._mobileSRActive);
+  // 잔여 TTS 오디오 해제 — Chrome 오디오 파이프라인 점유 해제 시 SR mic capture 안정화
+  try{ if(typeof gcStop==='function') gcStop(); }catch(e){}
+  try{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }catch(e){}
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){
     document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 이 브라우저는 음성 인식을 지원하지 않습니다. Chrome/Edge 에서 이용해 주세요.</span>';

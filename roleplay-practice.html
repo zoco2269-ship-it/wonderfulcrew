@@ -575,25 +575,31 @@ function customerFirstSpeak(openerText){
   },200);
 }
 
-// 모바일 호환: SR 을 시작하기 전에 마이크 권한을 명시적으로 받고 시작
-// window. 에 붙여서 inline onclick 이 확실히 찾도록 보장
-window.requestMicAndListen = async function requestMicAndListen(){
-  console.log('[rp-dbg] requestMicAndListen called, mobileSR=', window._mobileSRActive);
-  var tx=document.getElementById('transcript');
-  // 클릭 감지 즉시 시각 피드백 (마이크 실패 여부와 무관하게 '눌렀음'을 확인)
-  if(tx) tx.innerHTML='<span style="color:#E8C96A;">🔴 버튼 감지됨 — 마이크 권한 확인 중...</span>';
-  // 게이트 블러 해제 (어드민은 풀어두는 안전망)
+// 스몰톡 startAnswer 와 동일 구조 — 단일 async 함수. 순서: gcStop → SR 체크 → mic 권한 → SR 빌드.
+async function startListening(){
+  console.log('[rp-dbg] startListening() enter, mobileSR=', window._mobileSRActive);
+  // 1. 잔여 TTS 먼저 해제 — Chrome 오디오 파이프라인이 SR 마이크 캡처를 막지 않도록 최우선
+  try{ if(typeof gcStop==='function') gcStop(); }catch(e){}
+  // 2. SR 지원 체크
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 이 브라우저는 음성 인식을 지원하지 않습니다. Chrome/Edge 에서 이용해 주세요.</span>';
+    return;
+  }
+  // 3. 포인터 이벤트 해제 (어드민 안전망)
   try{ if(document.body.style.pointerEvents==='none') document.body.style.pointerEvents=''; }catch(e){}
+  // 4. 클릭 감지 피드백
+  var tx=document.getElementById('transcript');
+  if(tx) tx.innerHTML='<span style="color:#E8C96A;">🔴 마이크 권한 확인 중...</span>';
+  // 5. 마이크 권한 요청 후 즉시 해제 (SR 이 단독 점유하도록)
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
     tx.innerHTML='<span style="color:#E74C3C;">⚠ 이 브라우저는 마이크 접근을 지원하지 않아요. 최신 Chrome 에서 접속해 주세요. (HTTPS 필수)</span>';
     var bA0=document.getElementById('btn-answer');if(bA0) bA0.style.display='inline-flex';
     return;
   }
   try{
-    var micStream=await navigator.mediaDevices.getUserMedia({audio:true});
-    // 권한 확인만 하고 바로 트랙 해제 → SR 이 마이크를 단독 점유
-    micStream.getTracks().forEach(function(t){t.stop();});
-    startListening();
+    var tmpStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    tmpStream.getTracks().forEach(function(t){t.stop();});
   }catch(err){
     var name=err&&err.name||'unknown';
     var msg='';
@@ -606,25 +612,9 @@ window.requestMicAndListen = async function requestMicAndListen(){
     else msg='마이크 접근 실패: '+name+' — '+(err&&err.message||'');
     tx.innerHTML='<span style="color:#E74C3C;">⚠ '+msg+'</span>';
     var bA=document.getElementById('btn-answer');if(bA) bA.style.display='inline-flex';
-  }
-};
-// 백업 이벤트 바인딩 — onclick 속성이 어떤 이유로 안 먹어도 동작
-document.addEventListener('click', function(e){
-  var b = e.target && e.target.closest && e.target.closest('#btn-answer');
-  if(b){ e.preventDefault(); window.requestMicAndListen(); }
-}, true);
-
-function startListening(){
-  console.log('[rp-dbg] startListening() called, mobileSR=', window._mobileSRActive);
-  // 잔여 TTS 오디오 해제 — Chrome 오디오 파이프라인 점유 해제 시 SR mic capture 안정화
-  try{ if(typeof gcStop==='function') gcStop(); }catch(e){}
-  try{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }catch(e){}
-  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){
-    document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 이 브라우저는 음성 인식을 지원하지 않습니다. Chrome/Edge 에서 이용해 주세요.</span>';
     return;
   }
-  // 모바일 Android Chrome: continuous=true 는 불안정 — 한 번에 한 발화만 받고 자동 재시작
+  // 6. SR 빌드
   recognition=new SR();
   recognition.lang='en-US';
   recognition.interimResults=true;
@@ -632,6 +622,7 @@ function startListening(){
   fullText='';
   window._manualStop=false;
   window._finalSeen={};window._finalList=[];
+  // 7. UI
   var bA=document.getElementById('btn-answer');if(bA) bA.style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('rec-dot').classList.add('on');
@@ -711,6 +702,14 @@ function startListening(){
     var bA4=document.getElementById('btn-answer');if(bA4) bA4.style.display='inline-flex';
   }
 }
+// inline onclick 이 찾도록 window 에도 노출 + 이전 호출부(requestMicAndListen) 호환 유지
+window.requestMicAndListen = startListening;
+window.startListening = startListening;
+// 백업 이벤트 바인딩 — onclick 속성이 어떤 이유로 안 먹어도 동작
+document.addEventListener('click', function(e){
+  var b = e.target && e.target.closest && e.target.closest('#btn-answer');
+  if(b){ e.preventDefault(); startListening(); }
+}, true);
 
 // 음성 목록 미리 로드
 if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}

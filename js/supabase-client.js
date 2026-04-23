@@ -270,18 +270,27 @@ function getPublicUrl(path) {
   return data?.publicUrl || '#';
 }
 
-// 로그인 상태에 따라 nav 버튼 변경
+// 로그인 상태에 따라 nav 버튼 변경 (양방향: 로그인 → MY, 로그아웃 → 로그인)
+// EN 과 동일한 outline 스타일 강제 적용 — HTML 개별 수정 없이 한 곳에서 통제
 function updateNavLoginBtn() {
   var user = JSON.parse(localStorage.getItem('wc_user') || 'null');
-  if (!user) return;
-  var loginBtns = document.querySelectorAll('a[href="login.html"], a[href="login-en.html"]');
-  loginBtns.forEach(function(btn) {
-    var txt = btn.textContent.trim();
-    if (txt === '로그인' || txt === 'Sign In') {
+  var loggedIn = !!user;
+  var isEn = /-en\.html$/.test(location.pathname) || location.pathname.indexOf('index-en') !== -1;
+  var OUTLINE_STYLE = 'display:inline-flex;align-items:center;padding:6px 12px;border-radius:16px;background:rgba(26,35,64,0.06);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-family:inherit;font-size:0.72rem;font-weight:600;text-decoration:none;';
+  // nav 내부의 로그인/MY 버튼만 타깃 (본문 inline 링크 제외)
+  var btns = document.querySelectorAll('nav a[href="login.html"], nav a[href="login-en.html"], nav a[href="my-progress.html"], nav a[href="my-progress-en.html"]');
+  btns.forEach(function(btn) {
+    var txt = (btn.textContent || '').trim();
+    // 우리가 관리하는 버튼만 (로그인/Sign In/MY)
+    if (txt !== '로그인' && txt !== 'Sign In' && txt !== 'MY') return;
+    btn.style.cssText = OUTLINE_STYLE;
+    btn.classList.add('wc-my-btn');
+    if (loggedIn) {
       btn.textContent = 'MY';
-      btn.href = 'my-progress.html';
-      btn.classList.add('wc-my-btn');
-      // 텍스트만 MY 로 바꾸고 크기·스타일은 원래 로그인 버튼 스타일 그대로 유지
+      btn.setAttribute('href', isEn ? 'my-progress-en.html' : 'my-progress.html');
+    } else {
+      btn.textContent = isEn ? 'Sign In' : '로그인';
+      btn.setAttribute('href', isEn ? 'login-en.html' : 'login.html');
     }
   });
 }

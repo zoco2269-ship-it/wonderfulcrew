@@ -703,13 +703,9 @@ async function startListening(){
   }
 }
 // inline onclick 이 찾도록 window 에도 노출 + 이전 호출부(requestMicAndListen) 호환 유지
+// 주의: 백업 click 리스너는 붙이지 않음 — onclick 속성과 중복 fire 되어 SR 인스턴스 2개 생성 → 두 번째가 첫 번째를 aborted 로 죽임
 window.requestMicAndListen = startListening;
 window.startListening = startListening;
-// 백업 이벤트 바인딩 — onclick 속성이 어떤 이유로 안 먹어도 동작
-document.addEventListener('click', function(e){
-  var b = e.target && e.target.closest && e.target.closest('#btn-answer');
-  if(b){ e.preventDefault(); startListening(); }
-}, true);
 
 // 음성 목록 미리 로드
 if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}

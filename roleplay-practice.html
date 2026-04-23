@@ -614,6 +614,7 @@ document.addEventListener('click', function(e){
 }, true);
 
 function startListening(){
+  console.log('[rp-dbg] startListening() called, mobileSR=', window._mobileSRActive);
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){
     document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 이 브라우저는 음성 인식을 지원하지 않습니다. Chrome/Edge 에서 이용해 주세요.</span>';
@@ -639,18 +640,22 @@ function startListening(){
   // 전역 dedupe — 모든 세션의 final 을 정규화 키로 한 번씩만 수집
   var norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
   recognition.onresult=function(ev){
+    console.log('[rp-dbg] onresult fire, results.length=', ev.results.length);
     var interim='';
     for(var r=0;r<ev.results.length;r++){
       if(ev.results[r].isFinal){
         var t=(ev.results[r][0].transcript||'').trim();
+        console.log('[rp-dbg]   final:', JSON.stringify(t));
         var k=norm(t);
         if(k && !window._finalSeen[k]){window._finalSeen[k]=1;window._finalList.push(t);}
       }else{interim+=ev.results[r][0].transcript;}
     }
+    if(interim) console.log('[rp-dbg]   interim:', JSON.stringify(interim));
     fullText=window._finalList.join(' ');
     document.getElementById('transcript').textContent=(fullText+(interim?' '+interim:'')).trim()||'🎙 듣고 있어요…';
   };
   recognition.onerror=function(ev){
+    console.log('[rp-dbg] onerror fire, code=', ev.error);
     var code=ev.error||'unknown';
     // no-speech / aborted 는 onend 재시작에 맡기고 UI 변경 없이 조용히 무시
     if(code==='no-speech'||code==='aborted')return;
@@ -669,6 +674,7 @@ function startListening(){
     document.getElementById('waveform').classList.remove('active');
   };
   recognition.onend=function(){
+    console.log('[rp-dbg] onend fire, manualStop=', window._manualStop, 'fullText=', JSON.stringify(fullText));
     if(endingRoleplay) return;
     // 사용자가 ⏹ 누르기 전엔 자동 재시작 (Android Chrome 은 5~8초마다 auto-stop)
     if(window._manualStop){
@@ -704,8 +710,11 @@ function startListening(){
     }
   };
   try{
+    console.log('[rp-dbg] calling recognition.start()');
     recognition.start();
+    console.log('[rp-dbg] recognition.start() returned OK');
   }catch(err){
+    console.log('[rp-dbg] recognition.start() threw:', err.message);
     document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 음성 인식 시작 실패: '+err.message+'</span>';
     var bA4=document.getElementById('btn-answer');if(bA4) bA4.style.display='inline-flex';
   }

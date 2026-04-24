@@ -7,6 +7,22 @@
   var isMobile = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent);
   if(!isMobile) return;
 
+  // ===== TEMP 진단 배지 — 모바일 전용, 원인 파악 후 제거 예정 =====
+  var _dbgBadge = null;
+  function dbg(msg){
+    try{
+      if(!_dbgBadge){
+        _dbgBadge = document.createElement('div');
+        _dbgBadge.id = '_msr_dbg';
+        _dbgBadge.style.cssText = 'position:fixed;right:8px;bottom:8px;z-index:99999;max-width:92vw;padding:6px 8px;background:rgba(0,0,0,.82);color:#7CFFB2;font:11px/1.35 monospace;border-radius:6px;white-space:pre-wrap;pointer-events:none;';
+        (document.body||document.documentElement).appendChild(_dbgBadge);
+      }
+      var t = new Date().toISOString().slice(14,19);
+      _dbgBadge.textContent = '['+t+'] '+msg+'\n'+(_dbgBadge.textContent||'').split('\n').slice(0,5).join('\n');
+    }catch(e){}
+  }
+  // ================================================================
+
   // 모든 onend 호출 전에 _manualStop=true 강제 — 페이지의 auto-restart 로직 차단
   // (모바일에선 MediaRecorder 가 gap 없이 연속 녹음하므로 재시작 불필요)
   function fireEnd(self){
@@ -34,8 +50,12 @@
     var self = this;
     self._aborted = false;
     self._chunks = [];
+    dbg('start() → getUserMedia...');
     navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
       self._stream = stream;
+      var tracks = stream.getAudioTracks();
+      var tk = tracks[0];
+      dbg('gUM ok: tracks='+tracks.length+' live='+(tk&&tk.readyState)+' muted='+(tk&&tk.muted));
       var mimeType = '';
       var candidates = ['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4'];
       for(var i=0;i<candidates.length;i++){
@@ -44,15 +64,25 @@
       try {
         self._rec = mimeType ? new MediaRecorder(stream, {mimeType:mimeType}) : new MediaRecorder(stream);
       } catch(e) {
+        dbg('MR ctor FAIL: '+e.message);
         try { stream.getTracks().forEach(function(t){t.stop();}); } catch(_){}
         if(self.onerror) self.onerror({error:'audio-capture', message:e.message});
         fireEnd(self);
         return;
       }
       self._mimeType = self._rec.mimeType || 'audio/webm';
-      self._rec.ondataavailable = function(e){ if(e.data && e.data.size > 0) self._chunks.push(e.data); };
+      dbg('MR ok mime='+self._mimeType);
+      self._rec.ondataavailable = function(e){
+        if(e.data && e.data.size > 0){
+          self._chunks.push(e.data);
+          dbg('data ev size='+e.data.size+' total='+self._chunks.length);
+        } else {
+          dbg('data ev EMPTY');
+        }
+      };
       self._rec.onstop = function(){
         try { stream.getTracks().forEach(function(t){t.stop();}); } catch(e){}
+        dbg('onstop chunks='+self._chunks.length);
         if(self._aborted){
           fireEnd(self);
           return;
@@ -60,13 +90,16 @@
         self._transcribe();
       };
       self._rec.onerror = function(e){
+        dbg('MR onerror '+((e&&e.error&&e.error.name)||'?'));
         if(self.onerror) self.onerror({error:'audio-capture', message:(e && e.error && e.error.message) || 'recorder error'});
       };
-      self._rec.start();
+      self._rec.start(1000);
+      dbg('MR start(1000) called, state='+self._rec.state);
       if(self.onstart) self.onstart({});
       if(self.onaudiostart) self.onaudiostart({});
       if(self.onspeechstart) self.onspeechstart({});
     }).catch(function(err){
+      dbg('gUM FAIL '+(err&&err.name)+' '+(err&&err.message));
       var code = (err && err.name === 'NotAllowedError') ? 'not-allowed'
                : (err && err.name === 'NotFoundError') ? 'audio-capture'
                : 'service-not-allowed';
@@ -90,10 +123,12 @@
     var self = this;
     try {
       if(!self._chunks.length){
+        dbg('_transcribe: NO chunks → no-speech');
         fireEnd(self);
         return;
       }
       var blob = new Blob(self._chunks, {type: self._mimeType});
+      dbg('_transcribe: blob='+blob.size+'B type='+self._mimeType);
       // Blob → base64 (strip data-url prefix)
       var base64 = await new Promise(function(resolve, reject){
         var r = new FileReader();
@@ -106,6 +141,7 @@
       if(self._mimeType.indexOf('ogg') >= 0) encoding = 'OGG_OPUS';
       else if(self._mimeType.indexOf('mp4') >= 0) encoding = 'MP3'; // 근사 — Google 은 MP4/AAC 직접 지원 안 하지만 MP3 로 시도
 
+      dbg('fetch /api/stt enc='+encoding+' b64='+base64.length);
       var res = await fetch('/api/stt', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -117,6 +153,7 @@
         })
       });
       var data = await res.json();
+      dbg('/api/stt '+res.status+' tx.len='+((data&&data.transcript||'').length)+(data&&data.error?' err='+String(data.error).slice(0,40):''));
       var transcript = (data && data.transcript) ? String(data.transcript).trim() : '';
       if(transcript && self.onresult){
         // 가짜 SpeechRecognitionEvent — 페이지의 onresult 로직 호환
@@ -128,6 +165,7 @@
         self.onerror({error:'no-speech', message:'No speech detected'});
       }
     } catch(e) {
+      dbg('_transcribe EXC '+((e&&e.message)||e));
       if(self.onerror) self.onerror({error:'network', message:(e && e.message) || 'transcribe failed'});
     } finally {
       fireEnd(self);

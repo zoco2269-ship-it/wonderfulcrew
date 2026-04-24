@@ -11,8 +11,8 @@
   var isMobile = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent);
   if(!isMobile) return;
 
-  var PARTIAL_INTERVAL_MS = 3000;   // 3초마다 부분 전사
-  var PARTIAL_MIN_CHUNKS = 2;        // 최소 2초 녹음된 뒤 시작 (1s timeslice 기준)
+  var PARTIAL_INTERVAL_MS = 2000;   // 2초마다 부분 전사
+  var PARTIAL_MIN_CHUNKS = 1;        // requestData() 로 강제 flush 하므로 1 청크면 충분
 
   function fireEnd(self){
     try { window._manualStop = true; } catch(e) {}
@@ -59,18 +59,29 @@
     if(self._partialsDisabled) return;
     self._partialTimer = setTimeout(function(){
       if(self._partialsDisabled) return;
-      if(self._chunks.length < PARTIAL_MIN_CHUNKS || self._partialInFlight){
-        self._schedulePartial();
-        return;
-      }
-      self._partialInFlight = true;
-      self._partialTranscribe().then(function(){
-        self._partialInFlight = false;
-        self._schedulePartial();
-      }).catch(function(){
-        self._partialInFlight = false;
-        self._schedulePartial();
-      });
+      // Android Chrome 의 MediaRecorder 가 timeslice 무시하고 stop 까지 데이터 안 뱉는 버그 대응
+      // requestData() 로 강제 flush — 호출 직후 ondataavailable 이 동기적으로 발화함
+      try {
+        if(self._rec && self._rec.state === 'recording'){
+          self._rec.requestData();
+        }
+      } catch(_){}
+      // requestData 의 ondataavailable 이 큐잉되므로 미세 대기
+      setTimeout(function(){
+        if(self._partialsDisabled) return;
+        if(self._chunks.length < PARTIAL_MIN_CHUNKS || self._partialInFlight){
+          self._schedulePartial();
+          return;
+        }
+        self._partialInFlight = true;
+        self._partialTranscribe().then(function(){
+          self._partialInFlight = false;
+          self._schedulePartial();
+        }).catch(function(){
+          self._partialInFlight = false;
+          self._schedulePartial();
+        });
+      }, 150);
     }, PARTIAL_INTERVAL_MS);
   };
 

@@ -117,7 +117,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script src="js/sr-dedupe.js?v=3"></script>
-<script src="js/mobile-sr.js?v=5-dbg"></script>
+<script src="js/mobile-sr.js?v=6-dbg"></script>
 </head>
 <body>
 
@@ -770,9 +770,10 @@ async function showSuggestedResponse(){
 var endingRoleplay=false;
 
 function stopAnswer(){
+  try{ if(window._msrDbg) window._msrDbg('★ stopAnswer() ENTRY, rec='+(recognition?'YES':'NO')); }catch(_){}
   window._manualStop=true;
   // stop() 만 호출 — processAnswer 는 onend 가 처리 (데스크톱 native SR, 모바일 MobileSR shim 둘 다 onend 가 안정적으로 firing)
-  if(recognition)try{ recognition.stop(); }catch(e){}
+  if(recognition)try{ recognition.stop(); }catch(e){ try{window._msrDbg&&window._msrDbg('stopAnswer recog.stop THREW '+e.message);}catch(_){} }
   document.getElementById('btn-stop').style.display='none';
   document.getElementById('rec-dot').classList.remove('on');
   document.getElementById('rec-label').textContent='처리 중';

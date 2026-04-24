@@ -118,9 +118,10 @@
   };
 
   MobileSR.prototype.stop = function(){
+    dbg('MobileSR.stop() called, rec.state='+(this._rec?this._rec.state:'null'));
     try {
       if(this._rec && this._rec.state !== 'inactive') this._rec.stop();
-    } catch(e) {}
+    } catch(e) { dbg('MR.stop THREW '+e.message); }
   };
 
   MobileSR.prototype.abort = function(){
@@ -197,4 +198,5 @@
   window.SpeechRecognition = MobileSR;
   window.webkitSpeechRecognition = MobileSR;
   window._mobileSRActive = true;
+  window._msrDbg = dbg;  // 외부(roleplay-practice.html)에서 호출 가능하도록 노출
 })();

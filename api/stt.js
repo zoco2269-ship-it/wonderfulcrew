@@ -29,7 +29,7 @@ module.exports = async function(req, res) {
             sampleRateHertz: rate,
             languageCode: langCode,
             enableAutomaticPunctuation: true,
-            model: 'latest_long'
+            model: 'latest_short'
           },
           audio: { content: audio }
         })

@@ -537,15 +537,15 @@ async function loadMembersTable(){
   var d=await fetchAdmin('members');
   var t=document.querySelector('#page-members table');
   if(!t||!d||!d.ok)return;
-  var rows='<tr><th>이름</th><th>이메일</th><th>가입일</th><th>플랜</th><th>구독상태</th><th>만료일</th></tr>';
+  var rows='<tr><th>이름</th><th>이메일</th><th>연락처</th><th>가입일</th><th>플랜</th><th>구독상태</th><th>만료일</th></tr>';
   if(!d.members.length){
-    rows+='<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">회원이 없습니다.</td></tr>';
+    rows+='<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">회원이 없습니다.</td></tr>';
   } else {
     d.members.forEach(function(m){
       var sub=m.subscription;
       var status=sub?(sub.status==='active'?'<span class="badge green">'+sub.plan+'</span>':'<span class="badge yellow">'+sub.status+'</span>'):'<span class="badge red">무료</span>';
       var exp=sub?fmtDate(sub.expires_at):'-';
-      rows+='<tr><td>'+(m.name||'-')+'</td><td>'+(m.email||'-')+'</td><td>'+fmtDate(m.created_at)+'</td><td>'+(m.plan||'free')+'</td><td>'+status+'</td><td>'+exp+'</td></tr>';
+      rows+='<tr><td>'+(m.name||'-')+'</td><td>'+(m.email||'-')+'</td><td>'+(m.phone||'-')+'</td><td>'+fmtDate(m.created_at)+'</td><td>'+(m.plan||'free')+'</td><td>'+status+'</td><td>'+exp+'</td></tr>';
     });
   }
   t.innerHTML=rows;

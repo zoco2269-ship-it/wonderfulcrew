@@ -117,7 +117,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script src="js/sr-dedupe.js?v=3"></script>
-<script src="js/mobile-sr.js?v=13"></script>
+<script src="js/mobile-sr.js?v=14"></script>
 </head>
 <body>
 
@@ -837,10 +837,15 @@ async function processAnswer(){
   if(apiMessages.length>0 && apiMessages[0].role==='assistant'){
     apiMessages = [{role:'user',content:'(Begin the roleplay. You are the customer. Open with your complaint.)'}].concat(apiMessages);
   }
+  // 첫 assistant 발화 추출 — 이후 모든 턴에서 같은 영어 수준 강제 유지용
+  var firstOpener='';
+  for(var _i=0;_i<chatHistory.length;_i++){
+    if(chatHistory[_i].role==='assistant'){ firstOpener=chatHistory[_i].content; break; }
+  }
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:80,
-      system:'You are the CUSTOMER in this roleplay scenario: "'+scenario+'"\n\nThe user is the SERVICE STAFF (cabin crew / hotel staff / restaurant server / etc.) helping you. NEVER break character. NEVER give meta-instructions. NEVER say things like "please respond as crew" or "let me start over" or "I\'m waiting for you". Just stay in character as an impatient or concerned customer no matter what the staff says.\n\nAbsolute rules:\n- You are the CUSTOMER, not the staff. NEVER say staff phrases ("I apologize", "Let me help", "Right away", "How can I assist", "I\'ll look into that").\n- Even if the staff\'s reply is unclear/short/silent, push back AS A CUSTOMER: "Excuse me?", "What are you going to do about this?", "Sorry, I didn\'t catch that — could you explain?"\n- First-person customer voice only: "I", "my", "I need", "I want", "I\'m upset".\n- 1-2 short sentences. Natural English. No stage directions, asterisks, square brackets, or speaker labels.\n- Turn '+turnCount+' — keep exchange going for at least 3 turns.'+turnInstr,
+      system:'You are the CUSTOMER in this roleplay scenario: "'+scenario+'"\n\nThe user is the SERVICE STAFF (cabin crew / hotel staff / restaurant server / etc.) helping you. NEVER break character. NEVER give meta-instructions. NEVER say things like "please respond as crew" or "let me start over" or "I\'m waiting for you". Just stay in character as an impatient or concerned customer no matter what the staff says.\n\nLANGUAGE PROFICIENCY LOCK (CRITICAL):\n- Your VERY FIRST utterance in this conversation was: "'+(firstOpener||'(none)')+'"\n- That utterance DEFINES your English proficiency level for the ENTIRE conversation.\n- If your first line was broken/fragmented (single words, 2-3 word phrases like "Food? Food?" or "Water. Now."), you CANNOT suddenly become fluent later. Stay at that same broken level every turn.\n- If your first line used simple short sentences, stay simple — do NOT elevate to sophisticated vocabulary.\n- If your first line was fluent full sentences, maintain that.\n- NEVER improve your English skill mid-conversation. The character you opened with is who you are.\n\nAbsolute rules:\n- You are the CUSTOMER, not the staff. NEVER say staff phrases ("I apologize", "Let me help", "Right away", "How can I assist", "I\'ll look into that").\n- Even if the staff\'s reply is unclear/short/silent, push back AS A CUSTOMER — but at YOUR established proficiency level. A broken-English speaker pushes back with "What? What you say?" not "Could you please clarify?"\n- First-person customer voice only: "I", "my", "I need", "I want", "I\'m upset".\n- 1-2 short sentences. No stage directions, asterisks, square brackets, or speaker labels.\n- Turn '+turnCount+' — keep exchange going for at least 3 turns.'+turnInstr,
       messages:apiMessages
     })});
     var data=await res.json();

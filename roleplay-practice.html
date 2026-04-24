@@ -94,7 +94,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   .setup{padding:22px 16px;overflow-y:auto;max-height:calc(100dvh - 56px);}
   .setup h1{font-size:1.55rem;}
   .setup p{font-size:0.95rem;margin-bottom:18px;}
-  .card-frame{width:45vw;max-width:220px;aspect-ratio:9/16;height:auto;max-height:calc(100dvh - 220px);}
+  .card-frame{width:48vw;max-width:240px;aspect-ratio:9/16;height:auto;max-height:calc(100dvh - 220px);}
   .video-area{gap:10px;padding:10px;min-height:0;flex:1;align-items:center;}
   .q-banner{padding:8px 14px;}
   .q-banner .label{font-size:0.72rem;margin-bottom:3px;}
@@ -195,7 +195,7 @@ window.addEventListener('popstate',function(){
     <!-- 면접관 아바타 -->
     <div class="card-frame" id="interviewer-card">
       <div class="avatar-display">
-        <img id="avatar-img" src="" alt="Interviewer" style="width:100%;height:100%;object-fit:cover;object-position:center 15%;display:none;">
+        <img id="avatar-img" src="" alt="Interviewer" style="width:100%;height:100%;object-fit:cover;object-position:center top;transform:scale(1.35);transform-origin:center top;display:none;">
         <div class="avatar-face" id="avatar-face-fallback">
           <div class="face" id="avatar-emoji">👨🏻</div>
         </div>

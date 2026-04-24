@@ -24,6 +24,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;text-align:left;}
 .setup-label{font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:6px;}
 .setup-select{width:100%;padding:10px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.3);border-radius:8px;color:#fff;font-family:inherit;font-size:0.85rem;}
+.avatar-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:340px;margin:0 auto 24px;}
+.avatar-opt{padding:14px 8px;background:rgba(255,255,255,0.04);border:2px solid rgba(201,168,76,0.15);border-radius:10px;text-align:center;cursor:pointer;transition:all 0.2s;font-size:0.82rem;color:rgba(255,255,255,0.8);}
+.avatar-opt:hover,.avatar-opt.sel{border-color:var(--gold);background:rgba(201,168,76,0.1);color:#fff;}
+.avatar-opt img{width:64px;height:64px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 6px;}
 .setup-select option{background:var(--navy);color:#fff;}
 .toggle-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;justify-content:center;}
 .toggle-row label{font-size:0.84rem;color:rgba(255,255,255,0.7);}
@@ -35,7 +39,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 .q-banner .label{font-size:0.7rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px;}
 .q-banner .question{font-size:0.95rem;color:#fff;font-weight:500;line-height:1.5;}
 .video-area{flex:1;display:flex;align-items:center;justify-content:center;gap:20px;padding:14px;min-height:0;overflow:hidden;}
-.card-frame{width:200px;aspect-ratio:9/16;max-height:100%;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:1;}
+.card-frame{width:230px;aspect-ratio:9/16;max-height:100%;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:1;}
 .card-frame video{width:100%;height:100%;object-fit:cover;}
 .card-frame.speaking{border-color:var(--gold);animation:goldGlow 1.5s infinite;}
 @keyframes goldGlow{0%,100%{border-color:rgba(201,168,76,0.4);}50%{border-color:rgba(201,168,76,1);}}
@@ -64,7 +68,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 @media(max-width:600px){
   body{height:100dvh;overflow:hidden;}
   .setup{overflow-y:auto;max-height:calc(100dvh - 56px);}
-  .card-frame{width:45vw;max-width:220px;height:auto;max-height:calc(100dvh - 220px);}
+  .card-frame{width:48vw;max-width:240px;height:auto;max-height:calc(100dvh - 220px);}
   .video-area{gap:10px;padding:10px;min-height:0;flex:1;align-items:center;}
   .setup-grid{grid-template-columns:1fr;}
   .q-banner{padding:8px 14px;}
@@ -84,7 +88,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="js/google-tts.js"></script>
 <script src="js/free-trial.js"></script>
 <script src="js/sr-dedupe.js?v=3"></script>
-<script src="js/mobile-sr.js?v=11"></script>
+<script src="js/mobile-sr.js?v=13"></script>
 </head>
 <body>
 <nav>
@@ -97,7 +101,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   <h1>파이널 인터뷰 <em>연습</em></h1>
   <p>면접관과 실시간으로 대화하며 파이널 면접을 연습하세요.<br>내 이야기, 내 경험으로 자연스럽게 답변하는 것이 핵심입니다.</p>
 
-  <div class="setup-grid" style="grid-template-columns:1fr 1fr 1fr;">
+  <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.06em;text-align:left;">면접관 선택</div>
+  <div class="avatar-grid" id="avatar-grid">
+    <div class="avatar-opt sel" data-avatar="male" data-img="images/man-interviewer.png" onclick="selAvatar(this)"><img src="images/man-interviewer.png" alt="남성">남성 면접관</div>
+    <div class="avatar-opt" data-avatar="female" data-img="images/woman-interviewer.png" onclick="selAvatar(this)"><img src="images/woman-interviewer.png" alt="여성">여성 면접관</div>
+  </div>
+
+  <div class="setup-grid" style="grid-template-columns:1fr 1fr;">
     <div>
       <div class="setup-label">항공사</div>
       <select class="setup-select" id="s-airline">
@@ -124,13 +134,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
         <option value="es-ES">Spanish Accent</option>
       </select>
     </div>
-    <div>
-      <div class="setup-label">면접관</div>
-      <select class="setup-select" id="s-avatar">
-        <option value="male">👨🏻 남성</option>
-        <option value="female">👩🏻 여성</option>
-      </select>
-    </div>
   </div>
 
   <div class="toggle-row">
@@ -149,7 +152,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   <div class="video-area">
     <div class="card-frame" id="interviewer-card">
       <div class="avatar-display">
-        <div class="avatar-face"><div class="face" id="avatar-emoji">👨🏻</div><div class="mouth" id="avatar-mouth"></div></div>
+        <img id="avatar-img" src="" alt="Interviewer" style="width:100%;height:100%;object-fit:cover;object-position:center top;transform:scale(1.35);transform-origin:center top;display:none;">
+        <div class="avatar-face" id="avatar-face-fallback"><div class="face" id="avatar-emoji">👨🏻</div></div>
       </div>
       <div class="card-label"><div class="name" id="interviewer-name">Interviewer</div><div class="role">WonderfulCrew AI</div></div>
     </div>
@@ -334,10 +338,29 @@ if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speech
 
 window.addEventListener('beforeunload',function(){if('speechSynthesis' in window)window.speechSynthesis.cancel();if(stream)stream.getTracks().forEach(function(t){t.stop();});});
 
+var chosenImg='images/man-interviewer.png';
+function selAvatar(el){
+  document.querySelectorAll('.avatar-opt').forEach(function(a){a.classList.remove('sel');});
+  el.classList.add('sel');
+  chosenAvatar=el.dataset.avatar;
+  chosenImg=el.dataset.img||'';
+}
+
 function startInterview(){
   var airline=document.getElementById('s-airline').value;
   QS=AIRLINE_QS[airline]||AIRLINE_QS.general;
-  chosenAvatar=document.getElementById('s-avatar').value;
+  var selAv=document.querySelector('.avatar-opt.sel');
+  chosenAvatar=(selAv&&selAv.dataset.avatar)||'male';
+  chosenImg=(selAv&&selAv.dataset.img)||'images/man-interviewer.png';
+  // 인터뷰 카드에 선택 이미지 반영
+  var avatarImg=document.getElementById('avatar-img');
+  var avatarFallback=document.getElementById('avatar-face-fallback');
+  if(chosenImg && avatarImg){
+    avatarImg.src=chosenImg;
+    avatarImg.style.display='block';
+    if(avatarFallback) avatarFallback.style.display='none';
+    avatarImg.onerror=function(){avatarImg.style.display='none';if(avatarFallback)avatarFallback.style.display='flex';};
+  }
   document.getElementById('avatar-emoji').textContent=chosenAvatar==='male'?'👨🏻':'👩🏻';
   document.getElementById('q-total').textContent=QS.length;
   document.getElementById('setup').style.display='none';
@@ -377,11 +400,10 @@ function showQuestion(){
 
 function speakQ(text,lang){
   var iCard=document.getElementById('interviewer-card');
-  var mouth=document.getElementById('avatar-mouth');
-  iCard.classList.add('speaking');mouth.classList.add('talking');
+  iCard.classList.add('speaking');
   var isMale=(chosenAvatar==='male');
   gcSpeak(text,lang||'en-GB',isMale?'male':'female',function(){
-    iCard.classList.remove('speaking');mouth.classList.remove('talking');
+    iCard.classList.remove('speaking');
   });
 }
 

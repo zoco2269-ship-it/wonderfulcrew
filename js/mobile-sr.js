@@ -20,7 +20,7 @@
       if(!_dbgBadge){
         _dbgBadge = document.createElement('div');
         _dbgBadge.id = '_msr_dbg';
-        _dbgBadge.style.cssText = 'position:fixed;right:8px;bottom:8px;z-index:99999;max-width:92vw;max-height:60vh;overflow:auto;padding:6px 8px;background:rgba(0,0,0,.88);color:#7CFFB2;font:11px/1.35 monospace;border-radius:6px;white-space:pre-wrap;pointer-events:auto;';
+        _dbgBadge.style.cssText = 'position:fixed;right:8px;top:60px;z-index:99999;max-width:60vw;max-height:40vh;overflow:hidden;padding:6px 8px;background:rgba(0,0,0,.82);color:#7CFFB2;font:10px/1.3 monospace;border-radius:6px;white-space:pre-wrap;pointer-events:none;';
         _dbgBadge._log = [];
         (document.body||document.documentElement).appendChild(_dbgBadge);
       }

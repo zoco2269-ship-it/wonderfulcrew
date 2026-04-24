@@ -199,4 +199,16 @@
   window.webkitSpeechRecognition = MobileSR;
   window._mobileSRActive = true;
   window._msrDbg = dbg;  // 외부(roleplay-practice.html)에서 호출 가능하도록 노출
+  // 버전 식별용 — 어느 빌드가 로드됐는지 배지 초기화 시 즉시 확인
+  dbg('mobile-sr v7 loaded ('+(new Date().toISOString().slice(11,19))+')');
+  // 문서 click 캡처로 답변 완료 버튼 감지 — stopAnswer 가 호출되지 않는지 확인
+  try {
+    document.addEventListener('click', function(ev){
+      var t = ev.target;
+      while(t && t !== document.body){
+        if(t.id === 'btn-stop'){ dbg('★ btn-stop CLICK captured (global)'); break; }
+        t = t.parentElement;
+      }
+    }, true);
+  } catch(_){}
 })();

@@ -11,7 +11,7 @@
   var isMobile = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent);
   if(!isMobile) return;
 
-  var PARTIAL_INTERVAL_MS = 2000;   // 2초마다 부분 전사
+  var PARTIAL_INTERVAL_MS = 5000;   // 5초마다 부분 전사 (비용·UX 균형)
   var PARTIAL_MIN_CHUNKS = 1;        // requestData() 로 강제 flush 하므로 1 청크면 충분
 
   function fireEnd(self){

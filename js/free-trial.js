@@ -130,12 +130,6 @@ function showSubscribePopup() {
 function renderTrialBadge(containerId) {
   var el = document.getElementById(containerId);
   if (!el) return;
-  // 테스트 모드는 실제 일반 사용자 상태로 보여주기
-  var testMode = localStorage.getItem('wc_test_mode') === 'true';
-  if (!testMode && typeof isAdmin === 'function' && isAdmin()) {
-    el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">🔑 관리자 모드 · 무제한</span>';
-    return;
-  }
   if (localStorage.getItem('wc_paid') === 'true' || isSubscribed()) {
     el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">구독 중 ✓</span>';
     return;

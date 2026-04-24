@@ -84,7 +84,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="js/google-tts.js"></script>
 <script src="js/free-trial.js"></script>
 <script src="js/sr-dedupe.js?v=3"></script>
-<script src="js/mobile-sr.js?v=2"></script>
+<script src="js/mobile-sr.js?v=11"></script>
 </head>
 <body>
 <nav>
@@ -185,14 +185,14 @@ var AIRLINE_QS={
     {q:"Tell me about a time you went above and beyond for someone."},
     {q:"What does luxury service mean to you?"},
     {q:"You're on a flight with a crew member who isn't doing their share of work. How would you handle it?"},
-    {q:"You have meat meals and fish meals left, but a passenger doesn't speak English at all. How would you communicate and serve the meal?"}
+    {q:"You have meat meals and fish meals left, but a customer doesn't speak English at all. How would you communicate and serve the meal?"}
   ],
   qatar:[
     {q:"Why Qatar Airways?"},
     {q:"What motivates you at work?"},
     {q:"Tell me about your best service experience."},
     {q:"What do you know about Doha and Qatar?"},
-    {q:"How would you handle a difficult passenger?"},
+    {q:"How would you handle a difficult customer?"},
     {q:"Describe a time you worked in a team."},
     {q:"Are you ready to relocate to Doha?"},
     {q:"What challenges do you expect living abroad?"},
@@ -200,7 +200,7 @@ var AIRLINE_QS={
     {q:"How do you handle stress and long working hours?"},
     {q:"What makes you the ideal cabin crew candidate?"},
     {q:"You're on a flight with a crew member who isn't doing their share of work. How would you handle it?"},
-    {q:"You have meat meals and fish meals left, but a passenger doesn't speak English at all. How would you communicate and serve the meal?"}
+    {q:"You have meat meals and fish meals left, but a customer doesn't speak English at all. How would you communicate and serve the meal?"}
   ],
   singapore:[
     // 실제 기출 (합격자 제보 기반)
@@ -229,7 +229,7 @@ var AIRLINE_QS={
     {q:"Tell me about a time you provided excellent service."},
     {q:"Tell me about a time you handled a difficult customer."},
     {q:"Can you tell me about a time you turned a bad customer situation into a good one?"},
-    {q:"How would you handle a difficult passenger?"},
+    {q:"How would you handle a difficult customer?"},
     {q:"Can you tell us how you handle unexpected or challenging situations, especially under pressure?"},
     {q:"What are some differences between Korea and Singapore?"},
     {q:"How is Korean culture different from Singaporean culture?"},
@@ -242,7 +242,7 @@ var AIRLINE_QS={
     {q:"Why Cathay Pacific?"},
     {q:"What do you know about Hong Kong?"},
     {q:"Describe your best customer service experience."},
-    {q:"How would you deal with a passenger complaint?"},
+    {q:"How would you deal with a customer complaint?"},
     {q:"Tell me about a time you showed initiative."},
     {q:"How do you handle working with people from different backgrounds?"},
     {q:"What does Move Beyond mean to you?"},
@@ -272,7 +272,7 @@ var AIRLINE_QS={
     {q:"Why Lufthansa?"},
     {q:"What do you know about German work culture?"},
     {q:"Describe a time you handled a stressful situation."},
-    {q:"How do you ensure passenger safety?"},
+    {q:"How do you ensure customer safety?"},
     {q:"Tell me about your experience working in teams."},
     {q:"What does quality mean to you?"},
     {q:"How would you handle a language barrier?"},
@@ -295,7 +295,7 @@ var AIRLINE_QS={
     {q:"How do you handle stress?"},
     {q:"Tell me about a time you worked in a team."},
     {q:"What is your greatest strength?"},
-    {q:"How would you deal with a difficult passenger?"},
+    {q:"How would you deal with a difficult customer?"},
     {q:"Where do you see yourself in 5 years?"},
     {q:"What makes you unique?"},
     {q:"Do you have any questions for us?"}
@@ -488,7 +488,7 @@ async function stopAnswer(){
     var airlineName={emirates:'Emirates',qatar:'Qatar Airways',etihad:'Etihad Airways',singapore:'Singapore Airlines',cathay:'Cathay Pacific',finnair:'Finnair',klm:'KLM',lufthansa:'Lufthansa',airasia:'AirAsia',flydubai:'Flydubai',riyadh:'Riyadh Air',general:'a major airline'}[airlineKey]||'a major airline';
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:300,
-      system:'You are a senior cabin crew interviewer conducting a FINAL INTERVIEW for '+airlineName+'. Question being asked: "'+QS[qIdx].q+'"\n\nRules:\n- Reply in ENGLISH only.\n- Keep responses VERY SHORT: 1 sentence max. Just a brief follow-up question or acknowledgment.\n- Examples: "Can you give me a specific example?" / "How did that make you feel?" / "What did you learn from that?" / "Interesting. And what happened next?"\n- Real interviewers are concise. No long responses.\n- The candidate is interviewing for '+airlineName+'. Do NOT mention or compare any other airline. Do NOT assume the candidate applied elsewhere or ask "why this airline instead of X". If the candidate happens to mention another airline name in their answer, ignore it gracefully — do not bring it up again.\n- After 2-3 exchanges, just say "Thank you." and add [END].\n- Turn '+turnCount,
+      system:'You are a senior cabin crew interviewer conducting a FINAL INTERVIEW for '+airlineName+'. Question being asked: "'+QS[qIdx].q+'"\n\nRules:\n- Reply in ENGLISH only.\n- Keep responses VERY SHORT: 1 sentence max. Just a brief follow-up question or acknowledgment.\n- Examples: "Can you give me a specific example?" / "How did that make you feel?" / "What did you learn from that?" / "Interesting. And what happened next?"\n- Real interviewers are concise. No long responses.\n- ALWAYS use the word "customer" — NEVER "passenger", "guest", or "client". Even if the candidate worked in cafe/hotel/retail, refer to the people they served as "customers".\n- The candidate is interviewing for '+airlineName+'. Do NOT mention or compare any other airline. Do NOT assume the candidate applied elsewhere or ask "why this airline instead of X". If the candidate happens to mention another airline name in their answer, ignore it gracefully — do not bring it up again.\n- After 2-3 exchanges, just say "Thank you." and add [END].\n- Turn '+turnCount,
       messages:chatHistory
     })});
     var data=await res.json();
@@ -548,7 +548,6 @@ async function showModel(){
     var data=await res.json();
     var answer=((data&&data.content&&data.content[0]&&data.content[0].text)||'Unable to generate a model answer. Please try again.').replace(/\*\*/g,'').trim();
     fb.innerHTML+='<br><br><b style="color:var(--gold);">모범 답변:</b><br><div style="white-space:pre-line;background:rgba(201,168,76,0.08);padding:16px;border-left:3px solid var(--gold);margin-top:8px;line-height:1.8;">'+answer+'</div>';
-    speakQ(answer,document.getElementById('s-accent').value);
     btn.style.display='none';
   }catch(e){
     fb.innerHTML+='<br><br><span style="color:#E74C3C;">모범답변 생성 실패. 다시 시도해 주세요.</span>';

@@ -11,7 +11,7 @@
   var isMobile = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent);
   if(!isMobile) return;
 
-  var PARTIAL_INTERVAL_MS = 5000;   // 5초마다 부분 전사 (비용·UX 균형)
+  var PARTIAL_INTERVAL_MS = 3000;   // 3초마다 부분 전사
   var PARTIAL_MIN_CHUNKS = 1;        // requestData() 로 강제 flush 하므로 1 청크면 충분
 
   function fireEnd(self){
@@ -203,6 +203,11 @@
       });
       var data = await res.json();
       var transcript = (data && data.transcript) ? String(data.transcript).trim() : '';
+      // 폴백: 최종이 빈 결과라도 부분 전사가 텍스트를 잡았으면 그걸 final 로 사용
+      // (Google 이 가끔 긴 오디오에 빈 응답 주는 경우 + 부분에서 이미 인식 성공한 케이스)
+      if(!transcript && self._lastPartial){
+        transcript = self._lastPartial;
+      }
       if(transcript && self.onresult){
         var fakeResult = { isFinal: true, length: 1, 0: { transcript: transcript, confidence: 0.9 } };
         var fakeResults = [fakeResult];

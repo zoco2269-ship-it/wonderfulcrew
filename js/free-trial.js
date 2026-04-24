@@ -130,6 +130,11 @@ function showSubscribePopup() {
 function renderTrialBadge(containerId) {
   var el = document.getElementById(containerId);
   if (!el) return;
+  // 관리자는 뱃지 자체 숨김 (체험 종료·관리자 표기 둘 다 안 보임)
+  if (typeof isAdmin === 'function' && isAdmin()) {
+    el.innerHTML = '';
+    return;
+  }
   if (localStorage.getItem('wc_paid') === 'true' || isSubscribed()) {
     el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">구독 중 ✓</span>';
     return;

@@ -9,16 +9,25 @@
 
   // ===== TEMP 진단 배지 — 모바일 전용, 원인 파악 후 제거 예정 =====
   var _dbgBadge = null;
-  function dbg(msg){
+  var _dbgPin = '';  // 중요 에러는 상단에 고정
+  function _render(){
+    if(!_dbgBadge) return;
+    var body = (_dbgBadge._log||[]).slice(0,18).join('\n');
+    _dbgBadge.textContent = (_dbgPin ? '★ '+_dbgPin+'\n---\n' : '') + body;
+  }
+  function dbg(msg, pin){
     try{
       if(!_dbgBadge){
         _dbgBadge = document.createElement('div');
         _dbgBadge.id = '_msr_dbg';
-        _dbgBadge.style.cssText = 'position:fixed;right:8px;bottom:8px;z-index:99999;max-width:92vw;padding:6px 8px;background:rgba(0,0,0,.82);color:#7CFFB2;font:11px/1.35 monospace;border-radius:6px;white-space:pre-wrap;pointer-events:none;';
+        _dbgBadge.style.cssText = 'position:fixed;right:8px;bottom:8px;z-index:99999;max-width:92vw;max-height:60vh;overflow:auto;padding:6px 8px;background:rgba(0,0,0,.88);color:#7CFFB2;font:11px/1.35 monospace;border-radius:6px;white-space:pre-wrap;pointer-events:auto;';
+        _dbgBadge._log = [];
         (document.body||document.documentElement).appendChild(_dbgBadge);
       }
       var t = new Date().toISOString().slice(14,19);
-      _dbgBadge.textContent = '['+t+'] '+msg+'\n'+(_dbgBadge.textContent||'').split('\n').slice(0,5).join('\n');
+      _dbgBadge._log.unshift('['+t+'] '+msg);
+      if(pin) _dbgPin = msg;
+      _render();
     }catch(e){}
   }
   // ================================================================
@@ -142,21 +151,33 @@
       else if(self._mimeType.indexOf('mp4') >= 0) encoding = 'MP3'; // 근사 — Google 은 MP4/AAC 직접 지원 안 하지만 MP3 로 시도
 
       dbg('fetch /api/stt enc='+encoding+' b64='+base64.length);
-      var res = await fetch('/api/stt', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          audio: base64,
-          lang: self.lang || 'en-US',
-          encoding: encoding,
-          sampleRate: 48000
-        })
-      });
-      var data = await res.json();
-      dbg('/api/stt '+res.status+' tx.len='+((data&&data.transcript||'').length)+(data&&data.error?' err='+String(data.error).slice(0,40):''));
+      var t0 = Date.now();
+      var res, rawText = '', data = null;
+      try {
+        res = await fetch('/api/stt', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            audio: base64,
+            lang: self.lang || 'en-US',
+            encoding: encoding,
+            sampleRate: 48000
+          })
+        });
+      } catch(fe) {
+        dbg('fetch THREW '+((fe&&fe.message)||fe)+' ('+(Date.now()-t0)+'ms)', true);
+        throw fe;
+      }
+      var dt = Date.now()-t0;
+      try { rawText = await res.text(); } catch(_){}
+      try { data = rawText ? JSON.parse(rawText) : null; } catch(_){}
+      if(data){
+        dbg('/api/stt '+res.status+' '+dt+'ms tx.len='+((data.transcript||'').length)+(data.error?' err='+String(data.error).slice(0,80):''), res.status!==200);
+      } else {
+        dbg('/api/stt '+res.status+' '+dt+'ms RAW='+rawText.slice(0,120), true);
+      }
       var transcript = (data && data.transcript) ? String(data.transcript).trim() : '';
       if(transcript && self.onresult){
-        // 가짜 SpeechRecognitionEvent — 페이지의 onresult 로직 호환
         var fakeResult = { isFinal: true, length: 1, 0: { transcript: transcript, confidence: 0.9 } };
         var fakeResults = [fakeResult];
         fakeResults.length = 1;
@@ -165,7 +186,7 @@
         self.onerror({error:'no-speech', message:'No speech detected'});
       }
     } catch(e) {
-      dbg('_transcribe EXC '+((e&&e.message)||e));
+      dbg('_transcribe EXC '+((e&&e.message)||e), true);
       if(self.onerror) self.onerror({error:'network', message:(e && e.message) || 'transcribe failed'});
     } finally {
       fireEnd(self);

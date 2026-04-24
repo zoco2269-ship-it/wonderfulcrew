@@ -860,7 +860,8 @@ async function processAnswer(){
     }
 
     chatHistory.push({role:'assistant',content:aiText});
-    fb.innerHTML='<b style="color:var(--gold);">Customer:</b> '+aiText;
+    var _escHtml=function(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;};
+    fb.innerHTML='<div style="margin-bottom:10px;color:#E8E8E8;line-height:1.5;"><b style="color:#7CFFB2;">You:</b> '+_escHtml(ans)+'</div><div style="line-height:1.5;"><b style="color:var(--gold);">Customer:</b> '+_escHtml(aiText)+'</div>';
 
     var accent=document.getElementById('s-accent').value;
     speakQuestion(aiText,accent);

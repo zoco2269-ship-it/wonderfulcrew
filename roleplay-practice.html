@@ -44,7 +44,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 
 /* Video area */
 .video-area{flex:1;display:flex;align-items:center;justify-content:center;gap:24px;padding:12px 24px;min-height:0;overflow:hidden;}
-.card-frame{width:160px;aspect-ratio:9/16;max-height:100%;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:1;}
+.card-frame{width:190px;aspect-ratio:9/16;max-height:100%;border-radius:12px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(255,255,255,0.08);flex-shrink:1;}
 .card-frame.speaking{border-color:var(--gold);animation:goldGlow 1.5s infinite;}
 @keyframes goldGlow{0%,100%{border-color:rgba(201,168,76,0.4);}50%{border-color:rgba(201,168,76,1);}}
 .card-label{position:absolute;bottom:0;left:0;right:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,0.8));text-align:center;}
@@ -117,7 +117,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script src="js/sr-dedupe.js?v=3"></script>
-<script src="js/mobile-sr.js?v=12"></script>
+<script src="js/mobile-sr.js?v=13"></script>
 </head>
 <body>
 
@@ -195,10 +195,9 @@ window.addEventListener('popstate',function(){
     <!-- 면접관 아바타 -->
     <div class="card-frame" id="interviewer-card">
       <div class="avatar-display">
-        <img id="avatar-img" src="" alt="Interviewer" style="width:100%;height:100%;object-fit:cover;display:none;">
+        <img id="avatar-img" src="" alt="Interviewer" style="width:100%;height:100%;object-fit:cover;object-position:center 15%;display:none;">
         <div class="avatar-face" id="avatar-face-fallback">
           <div class="face" id="avatar-emoji">👨🏻</div>
-          <div class="mouth" id="avatar-mouth"></div>
         </div>
       </div>
       <div class="card-label">
@@ -724,12 +723,10 @@ document.addEventListener('visibilitychange',function(){if(document.hidden)_stop
 
 function speakQuestion(text,lang){
   var iCard=document.getElementById('interviewer-card');
-  var mouth=document.getElementById('avatar-mouth');
   iCard.classList.add('speaking');
-  mouth.classList.add('talking');
   var isMale=(chosenAvatar==='👨🏻');
   gcSpeak(text,lang||'en-GB',isMale?'male':'female',function(){
-    iCard.classList.remove('speaking');mouth.classList.remove('talking');
+    iCard.classList.remove('speaking');
   });
 }
 
@@ -895,12 +892,19 @@ async function generateFeedback(scenario){
     var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Crew':'Customer')+': '+m.content;}).join('\n');
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:500,
-      system:'You are a cabin crew interview coach. Evaluate the following roleplay conversation. The scenario was: "'+scenario+'"\n\nIMPORTANT SCORING GUIDELINES:\n- The student\'s answers come from SPEECH RECOGNITION, so ignore grammar mistakes, broken sentences, capitalization issues. Focus on the CONTENT and INTENT.\n- If the student apologized, offered solutions, showed empathy, or asked good questions → that deserves 70+ points\n- If the student covered most key points (apology + solution + alternative + service recovery) → 80+ points\n- Only give below 50 if the student said almost nothing useful\n- Be ENCOURAGING. These are students practicing. Highlight what they did RIGHT.\n\nProvide feedback in EXACTLY this format:\n\nOverall Score: X/100\n\nStrengths:\n- (2-3 bullet points about what they did well)\n\nAreas to Improve:\n- (1-2 gentle suggestions)\n\n---SUGGESTED---\n(Write a short ideal response for this scenario. 3-4 sentences. This helps the student learn.)\n\nWrite in English. Keep it concise and encouraging.',
+      system:'You are a cabin crew interview coach. Evaluate the following roleplay conversation. The scenario was: "'+scenario+'"\n\nIMPORTANT SCORING GUIDELINES:\n- The student\'s answers come from SPEECH RECOGNITION, so ignore grammar mistakes, broken sentences, capitalization issues. Focus on the CONTENT and INTENT.\n- If the student apologized, offered solutions, showed empathy, or asked good questions → that deserves 70+ points\n- If the student covered most key points (apology + solution + alternative + service recovery) → 80+ points\n- Only give below 50 if the student said almost nothing useful\n- Be ENCOURAGING. These are students practicing. Highlight what they did RIGHT.\n\nCabin service operational knowledge (reflect in feedback & model answer):\n- Cold passenger: Cabin temperature must NOT be adjusted by crew. Offer a blanket, a warm drink, or suggest wearing a jacket. If the student said "I\'ll raise the temperature" or similar, do NOT praise that — gently redirect to blanket/warm-drink solutions. Do NOT mention the reason (low temperature is maintained because warm cabins can cause fainting). Only mention the correct solution.\n- Hot passenger: Offer cold water/drinks, cold towel, mention checking airflow.\n- Meal issues: Check available options, offer alternative meal, provide extra snacks.\n\nFORMATTING RULES (STRICT):\n- NO markdown syntax: no #, ##, ###, ---, **, code blocks\n- NO horizontal rule lines\n- NO emoji icons (📌 📷 ✓ 💪 etc.)\n- Plain text only\n\nProvide feedback in EXACTLY this format:\n\nOverall Score: X/100\n\nStrengths:\n- (2-3 bullet points about what they did well)\n\nAreas to Improve:\n- (1-2 gentle suggestions)\n\n---SUGGESTED---\n(Write a short ideal response for this scenario. 3-4 sentences. This helps the student learn.)\n\nWrite in English. Keep it concise and encouraging.',
       messages:[{role:'user',content:'Here is the full roleplay conversation:\n\n'+convoSummary+'\n\nPlease give feedback.'}]
     })});
     var data=await res.json();
     var feedbackText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Good effort!';
-    feedbackText=feedbackText.replace(/\*\*/g,'');
+    // 마크다운·이모티콘 문법 제거 (AI 가 프롬프트 무시하고 추가하는 경우 방어)
+    feedbackText=feedbackText
+      .replace(/\*\*/g,'')
+      .replace(/^#{1,6}\s*/gm,'')
+      .replace(/^\s*---+\s*$/gm,'')
+      .replace(/📌|📷|💪|✓|✅|🎯|⭐/g,'')
+      .replace(/\n{3,}/g,'\n\n')
+      .trim();
 
     var parts=feedbackText.split('---SUGGESTED---');
     var mainFeedback=parts[0].trim();

@@ -117,7 +117,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script src="js/sr-dedupe.js?v=3"></script>
-<script src="js/mobile-sr.js?v=7-dbg"></script>
+<script src="js/mobile-sr.js?v=8"></script>
 </head>
 <body>
 
@@ -770,10 +770,9 @@ async function showSuggestedResponse(){
 var endingRoleplay=false;
 
 function stopAnswer(){
-  try{ if(window._msrDbg) window._msrDbg('★ stopAnswer() ENTRY, rec='+(recognition?'YES':'NO')); }catch(_){}
   window._manualStop=true;
   // stop() 만 호출 — processAnswer 는 onend 가 처리 (데스크톱 native SR, 모바일 MobileSR shim 둘 다 onend 가 안정적으로 firing)
-  if(recognition)try{ recognition.stop(); }catch(e){ try{window._msrDbg&&window._msrDbg('stopAnswer recog.stop THREW '+e.message);}catch(_){} }
+  if(recognition)try{ recognition.stop(); }catch(e){}
   document.getElementById('btn-stop').style.display='none';
   document.getElementById('rec-dot').classList.remove('on');
   document.getElementById('rec-label').textContent='처리 중';
@@ -860,8 +859,7 @@ async function processAnswer(){
     }
 
     chatHistory.push({role:'assistant',content:aiText});
-    var _escHtml=function(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;};
-    fb.innerHTML='<div style="margin-bottom:10px;color:#E8E8E8;line-height:1.5;"><b style="color:#7CFFB2;">You:</b> '+_escHtml(ans)+'</div><div style="line-height:1.5;"><b style="color:var(--gold);">Customer:</b> '+_escHtml(aiText)+'</div>';
+    fb.innerHTML='<b style="color:var(--gold);">Customer:</b> '+aiText;
 
     var accent=document.getElementById('s-accent').value;
     speakQuestion(aiText,accent);

@@ -117,7 +117,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script src="js/sr-dedupe.js?v=3"></script>
-<script src="js/mobile-sr.js?v=11"></script>
+<script src="js/mobile-sr.js?v=12"></script>
 </head>
 <body>
 
@@ -155,8 +155,8 @@ window.addEventListener('popstate',function(){
 
   <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.06em;">면접관 아바타</div>
   <div class="avatar-grid" style="grid-template-columns:1fr 1fr;max-width:300px;margin:0 auto 20px;" id="avatar-grid">
-    <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/avatar-male.png" onclick="selAvatar(this)"><span class="emoji">👨🏻</span>남성 면접관</div>
-    <div class="avatar-opt" data-avatar="👩🏻" data-img="images/avatar-female.png" onclick="selAvatar(this)"><span class="emoji">👩🏻</span>여성 면접관</div>
+    <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/man-interviewer.png" onclick="selAvatar(this)"><img src="images/man-interviewer.png" alt="남성" style="width:60px;height:60px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 4px;">남성 면접관</div>
+    <div class="avatar-opt" data-avatar="👩🏻" data-img="images/woman-interviewer.png" onclick="selAvatar(this)"><img src="images/woman-interviewer.png" alt="여성" style="width:60px;height:60px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 4px;">여성 면접관</div>
   </div>
 
   <div class="setup-grid" style="grid-template-columns:1fr 1fr;max-width:440px;margin:0 auto 24px;">

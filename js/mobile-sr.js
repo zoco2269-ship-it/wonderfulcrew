@@ -10,6 +10,11 @@
   if(!window.MediaRecorder || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
   var isMobile = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent);
   if(!isMobile) return;
+  // ?native=1 URL 파라미터: 네이티브 Web Speech API 테스트용 (안드로이드 크롬 최신 안정성 재확인)
+  // shim 로딩 자체를 건너뛰어 브라우저 내장 API 를 그대로 사용 — 실시간 전사 + 무료
+  try {
+    if(/[?&]native=1\b/.test(location.search)) return;
+  } catch(_){}
 
   var PARTIAL_INTERVAL_MS = 3000;   // 3초마다 부분 전사
   var PARTIAL_MIN_CHUNKS = 1;        // requestData() 로 강제 flush 하므로 1 청크면 충분

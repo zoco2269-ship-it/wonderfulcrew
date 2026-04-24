@@ -500,8 +500,7 @@ async function stopAnswer(){
     speakQ(displayText,document.getElementById('s-accent').value);
     if(isEnd){
       setTimeout(function(){
-        var s=[r(),r(),r(),r()];
-        fb.innerHTML+='<br><br><b>Score: '+Math.round((s[0]+s[1]+s[2]+s[3])/4)+'/100</b> (내용: '+s[0]+' | 구체성: '+s[1]+' | 서비스: '+s[2]+' | 자기다움: '+s[3]+')';
+        generateFinalFeedback(fb,airlineName);
         document.getElementById('btn-model').disabled=false;document.getElementById('btn-next').disabled=false;
         document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=true;
         document.getElementById('rec-label').textContent='완료';
@@ -513,22 +512,49 @@ async function stopAnswer(){
   }catch(e){fb.innerHTML='<span style="color:#E74C3C;">오류. 다시 시도해주세요.</span>';document.getElementById('btn-answer').style.display='inline-flex';document.getElementById('btn-answer').disabled=false;}
 }
 
-function showModel(){
-  var models={
-    emirates:[
-      "When I worked at a five-star hotel, a couple checked in very late looking completely exhausted after a long journey. I could tell they had been traveling all day. Without them asking, I arranged a room upgrade to a suite with a view, placed a handwritten welcome note on the pillow, and had warm herbal tea and fresh fruit delivered to their room. The next morning, the wife came to the front desk specifically to thank me, saying it was the most thoughtful gesture they had ever experienced at any hotel. That moment taught me that real service is about reading people — noticing what they need before they even realize it themselves. It is not about following a checklist. It is about making someone feel genuinely cared for.",
-      "I was working at a busy restaurant when an elderly gentleman came in alone on his birthday. He mentioned it casually to the host. I noticed he seemed a little lonely, so I arranged a small dessert with a candle, and I asked the kitchen to write 'Happy Birthday' on the plate. When I brought it to his table, he was genuinely touched and told me that his family lived overseas and he had not expected anyone to notice. He held my hand and said, 'You made an old man's day.' I learned that sometimes the smallest gestures have the biggest impact, and that being observant is the foundation of great service.",
-      "During my time working at a luxury retail store, a customer came in looking for a specific gift for his wife's anniversary. The item he wanted was sold out. Instead of simply saying it was unavailable, I called three other branches, found the item at a store an hour away, arranged for it to be couriered to our location, and personally gift-wrapped it with a handwritten card. The customer was so grateful that he became a regular and always asked for me by name. This experience showed me that going the extra mile — especially when the answer could easily have been 'no' — is what separates good service from unforgettable service.",
-      "While volunteering at a community center, I noticed a mother struggling with two young children while trying to fill out paperwork. Without being asked, I gently offered to watch her children at the play area while she completed the forms. She was hesitant at first, but once she saw her kids were happy and safe, she relaxed and thanked me multiple times. When she finished, she told me she had been stressed all week and that my small act of help made her entire day better. I realized that service is not always about grand gestures. Sometimes it is simply about being present and noticing when someone needs help.",
-      "At a café where I worked, a regular customer always ordered the same drink every morning. One day, she came in looking visibly upset. Instead of just taking her order, I asked if she was okay. She told me she was going through a difficult time. I made her usual drink, added a small cookie on the house, and wrote a short encouraging note on a napkin. She came back the next day with a bright smile and said that one small moment of kindness from a stranger had changed her entire perspective that week. From that experience, I understood that service is not just about the product — it is about how you make people feel."
-    ]
-  };
-  var airline=document.getElementById('s-airline').value;
-  var pool=models[airline]||models.emirates;
-  var answer=pool[qIdx%pool.length];
+async function generateFinalFeedback(fb,airlineName){
+  fb.innerHTML+='<br><br><span style="color:var(--gold);">피드백을 작성하고 있어요...</span>';
+  try{
+    var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Candidate':'Interviewer')+': '+m.content;}).join('\n');
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:500,
+      system:'You are a senior cabin crew interviewer for '+airlineName+' evaluating a mock final interview answer.\n\nQuestion: "'+QS[qIdx].q+'"\n\nIMPORTANT SCORING RULES:\n- The candidate answer comes from SPEECH RECOGNITION — ignore grammar/broken sentences/capitalization. Focus on CONTENT and INTENT.\n- Concrete example + specific details (place, moment, what was done) + customer-oriented outcome + self-reflection → 80+\n- Question is answered with a clear example but lacks specifics → 70-79\n- Too generic / too short / off-topic → 50-65\n- Be fair and concrete. Cite SPECIFIC phrases the candidate used in your feedback.\n\nRespond in EXACTLY this Korean format (plain text, no markdown, no asterisks):\n\n점수: X/100\n\n잘한 점:\n- (2-3 줄, 후보자가 실제로 말한 내용을 인용하며)\n\n개선할 점:\n- (1-2 줄, 구체적으로 무엇을 더하면 좋을지)',
+      messages:[{role:'user',content:'Question: '+QS[qIdx].q+'\n\nInterview conversation:\n'+convoSummary+'\n\nPlease evaluate the candidate\'s answer.'}]
+    })});
+    var data=await res.json();
+    var txt=((data&&data.content&&data.content[0]&&data.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'').trim();
+    fb.innerHTML='<b style="color:var(--gold);">피드백</b><br><div style="white-space:pre-line;margin-top:10px;line-height:1.8;">'+txt+'</div>';
+  }catch(e){
+    fb.innerHTML='<span style="color:#E74C3C;">피드백 생성 실패. 다시 시도해 주세요.</span>';
+  }
+}
+
+async function showModel(){
   var fb=document.getElementById('feedback');
-  fb.innerHTML+='<br><br><b style="color:var(--gold);">모범 답변:</b><br>'+answer;
-  speakQ(models[qIdx],document.getElementById('s-accent').value);
+  var btn=document.getElementById('btn-model');
+  btn.disabled=true;
+  var origText=btn.textContent;
+  btn.textContent='생성 중...';
+  try{
+    var airlineKey=document.getElementById('s-airline').value;
+    var airlineName={emirates:'Emirates',qatar:'Qatar Airways',etihad:'Etihad Airways',singapore:'Singapore Airlines',cathay:'Cathay Pacific',finnair:'Finnair',klm:'KLM',lufthansa:'Lufthansa',airasia:'AirAsia',flydubai:'Flydubai',riyadh:'Riyadh Air',general:'a major airline'}[airlineKey]||'a major airline';
+    var lastUser='';
+    for(var i=chatHistory.length-1;i>=0;i--){if(chatHistory[i].role==='user'){lastUser=chatHistory[i].content;break;}}
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:400,
+      system:'You are a senior cabin crew coach preparing a candidate for a '+airlineName+' final interview.\n\nQuestion: "'+QS[qIdx].q+'"\n\nCandidate answered: "'+(lastUser||'(no answer yet)')+'"\n\nWrite an IDEAL model answer tailored to THIS question and THIS candidate.\n\nCritical rules:\n- If the candidate already described a specific context (e.g., cafe, restaurant, hotel, retail, airline), BUILD on that same context. Do NOT switch to a different setting.\n- 5-7 sentences. Concrete, specific, service-oriented.\n- STAR structure implicit (situation → action → outcome → reflection).\n- English only. No markdown, no preamble, no "Model Answer:" label — just the answer text.\n- Natural spoken English that sounds like a real person speaking in an interview.',
+      messages:[{role:'user',content:'Write the ideal model answer.'}]
+    })});
+    var data=await res.json();
+    var answer=((data&&data.content&&data.content[0]&&data.content[0].text)||'Unable to generate a model answer. Please try again.').replace(/\*\*/g,'').trim();
+    fb.innerHTML+='<br><br><b style="color:var(--gold);">모범 답변:</b><br><div style="white-space:pre-line;background:rgba(201,168,76,0.08);padding:16px;border-left:3px solid var(--gold);margin-top:8px;line-height:1.8;">'+answer+'</div>';
+    speakQ(answer,document.getElementById('s-accent').value);
+    btn.style.display='none';
+  }catch(e){
+    fb.innerHTML+='<br><br><span style="color:#E74C3C;">모범답변 생성 실패. 다시 시도해 주세요.</span>';
+    btn.disabled=false;
+    btn.textContent=origText;
+  }
 }
 
 function nextQuestion(){
@@ -542,7 +568,6 @@ function nextQuestion(){
   }
   showQuestion();
 }
-function r(){return Math.floor(Math.random()*36)+50;}
 </script>
 </body>
 </html>

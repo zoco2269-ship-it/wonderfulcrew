@@ -171,10 +171,24 @@ async function showUser(user) {
       // 첫 가입 (서버에 phone 없음) → "나에 대해 알려주세요"
       if (!hasProfile) {
         location.href = 'profile-setup.html';
-      } else {
-        var levelDone = localStorage.getItem('wc_level_result');
-        location.href = levelDone ? 'curriculum.html' : 'leveltest.html';
+        return;
       }
+      var levelDone = localStorage.getItem('wc_level_result');
+      if (!levelDone) {
+        location.href = 'leveltest.html';
+        return;
+      }
+      // 2번째 이상 로그인 — 직전 선택 항공사가 있으면 practice hub 로 직행
+      // (목표 항공사 선택 → 항공사 페이지 → 면접 시작 3단계 스킵)
+      var savedAirline = localStorage.getItem('wc_airline');
+      if (savedAirline) {
+        var DOMESTIC_KEYS = ['koreanair','asiana','jeju','jinair','tway','airpremia','airseoul','airbusan','eastar','aerok','domestic-other'];
+        var isDomestic = DOMESTIC_KEYS.indexOf(savedAirline) >= 0;
+        location.href = isDomestic ? 'practice-domestic.html' : 'practice-foreign.html';
+        return;
+      }
+      // 처음 로그인 (항공사 미선택) → 목표 항공사 선택 페이지
+      location.href = 'curriculum.html';
     }, 3000);
   }, 1500);
 }

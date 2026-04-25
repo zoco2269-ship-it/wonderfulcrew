@@ -105,6 +105,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 }
 .btn-outline:hover{border-color:var(--gold);color:var(--gold);}
 
+.mobile-only{display:none;}
 @media(max-width:600px){
   .timeline-wrap{padding:60px 14px;}
   .tl-step:not(:last-child)::after{display:none;}
@@ -114,6 +115,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   /* 준비 포인트 박스: 왼쪽으로 더 당기고, 오른쪽은 끝이 보이도록 여백 둠 */
   .tl-point,.tl-warn{padding:12px 14px;margin-left:-26px;margin-right:4px;}
   .btn-outline{margin-left:0;margin-top:12px;}
+  .mobile-hide{display:none!important;}
+  .mobile-only{display:inline!important;}
 }
 
 .nav-dropdown{position:relative;}
@@ -156,7 +159,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 <div class="hero">
   <div class="hero-eyebrow">Emirates Interview Process</div>
   <h1 class="hero-title">에미레이트 항공<br><em>전체 면접 프로세스</em></h1>
-  <p class="hero-sub">서류 제출부터 최종 합격까지   단계별 흐름과 핵심 포인트를 확인하세요.</p>
+  <p class="hero-sub mobile-hide">서류 제출부터 최종 합격까지   단계별 흐름과 핵심 포인트를 확인하세요.</p>
   <div class="gold-bar"></div>
 </div>
 
@@ -258,8 +261,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
         <div class="tl-point">
           <div class="tl-point-label">준비 포인트</div>
           • 내 경험을 바탕으로 나만의 답변으로 승무원의 자질을 어필해야 합니다<br>
-          • 즉석에서 에피소드를 생각하려 하지 마세요 — 최고의 에피소드들을 미리 준비해 두세요<br>
-          • 마지막 관문입니다 — 정말 잘 준비해야 합니다
+          <span class="mobile-hide">• 즉석에서 에피소드를 생각하려 하지 마세요 — 최고의 에피소드들을 미리 준비해 두세요<br></span>
+          <span class="mobile-only">• 최고의 에피소드들을 미리 준비해 두세요<br></span>
+          <span class="mobile-hide">• 마지막 관문입니다 — 정말 잘 준비해야 합니다</span>
+          <span class="mobile-only">• 마지막 관문입니다</span>
         </div>
       </div>
     </div>

@@ -327,6 +327,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
 console.log('WonderfulCrew Supabase Client v4 loaded');
 
+// ===== 페이지 방문 추적 — 로그인 사용자만, 환불 분쟁 시 '이용 시작' 입증용 =====
+// 같은 페이지 5분 내 중복 기록 방지 (sessionStorage 캐시)
+function _wcTrackPageVisit() {
+  try {
+    var user = JSON.parse(localStorage.getItem('wc_user') || 'null');
+    if (!user || !user.id) return; // 로그인 안 한 경우 추적 X
+    var page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    if (!page || page === 'admin.html') return; // admin 자기자신은 제외
+    var key = 'wc_visit_' + page;
+    var last = sessionStorage.getItem(key);
+    if (last && (Date.now() - parseInt(last, 10)) < 300000) return; // 5분 내 중복 X
+    sessionStorage.setItem(key, String(Date.now()));
+    fetch('/api/track-visit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: user.id, email: user.email || '', page: page })
+    }).catch(function(){});
+  } catch (e) {}
+}
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(_wcTrackPageVisit, 1200);
+});
+
 // ===== 모바일 네비 드롭다운 탭 토글 =====
 // 모바일에서 .nav-dropdown 의 첫 링크를 탭하면 서브메뉴 열기 (한 번 더 탭하면 이동)
 (function(){

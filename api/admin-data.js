@@ -55,28 +55,47 @@ module.exports = async function(req, res) {
         : { data: [] };
       const subMap = {};
       (subs || []).forEach(s => { subMap[s.user_id] = s; });
-      // 사용 활동 집계 — practice_records / ai_feedback / video_records 의 마지막 활동 시각·총 건수
-      const [prRes, fbRes, vrRes] = userIds.length ? await Promise.all([
+      // 사용 활동 집계 — practice/ai/video + page_visits (페이지 방문 — 환불 분쟁용 '이용 시작' 입증)
+      const [prRes, fbRes, vrRes, pvRes] = userIds.length ? await Promise.all([
         sb.from('practice_records').select('user_id, created_at').in('user_id', userIds),
         sb.from('ai_feedback').select('user_id, created_at').in('user_id', userIds),
-        sb.from('video_records').select('user_id, created_at').in('user_id', userIds)
-      ]) : [{ data: [] }, { data: [] }, { data: [] }];
+        sb.from('video_records').select('user_id, created_at').in('user_id', userIds),
+        sb.from('page_visits').select('user_id, page, visited_at').in('user_id', userIds).order('visited_at', { ascending: false }).limit(2000)
+      ]) : [{ data: [] }, { data: [] }, { data: [] }, { data: [] }];
       const usage = {};
       function bump(uid, ts) {
         if (!uid) return;
-        const u = usage[uid] = usage[uid] || { count: 0, last: null };
+        const u = usage[uid] = usage[uid] || { count: 0, last: null, visits: 0, last_visit: null, last_page: null };
         u.count += 1;
         if (!u.last || new Date(ts) > new Date(u.last)) u.last = ts;
+      }
+      function bumpVisit(uid, ts, page) {
+        if (!uid) return;
+        const u = usage[uid] = usage[uid] || { count: 0, last: null, visits: 0, last_visit: null, last_page: null };
+        u.visits += 1;
+        if (!u.last_visit || new Date(ts) > new Date(u.last_visit)) {
+          u.last_visit = ts;
+          u.last_page = page;
+        }
       }
       (prRes.data || []).forEach(r => bump(r.user_id, r.created_at));
       (fbRes.data || []).forEach(r => bump(r.user_id, r.created_at));
       (vrRes.data || []).forEach(r => bump(r.user_id, r.created_at));
-      const enriched = (users || []).map(u => ({
-        ...u,
-        subscription: subMap[u.auth_id] || null,
-        usage_count: (usage[u.auth_id] || {}).count || 0,
-        last_active_at: (usage[u.auth_id] || {}).last || null
-      }));
+      (pvRes.data || []).forEach(r => bumpVisit(r.user_id, r.visited_at, r.page));
+      const enriched = (users || []).map(u => {
+        const v = usage[u.auth_id] || {};
+        // 마지막 활동 = 콘텐츠 사용·페이지 방문 중 최근것
+        let lastAny = v.last || null;
+        if (v.last_visit && (!lastAny || new Date(v.last_visit) > new Date(lastAny))) lastAny = v.last_visit;
+        return {
+          ...u,
+          subscription: subMap[u.auth_id] || null,
+          usage_count: v.count || 0,
+          page_visits: v.visits || 0,
+          last_page: v.last_page || null,
+          last_active_at: lastAny
+        };
+      });
       return res.json({ ok: true, members: enriched });
     }
 

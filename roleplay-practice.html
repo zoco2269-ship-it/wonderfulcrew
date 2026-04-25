@@ -155,8 +155,8 @@ window.addEventListener('popstate',function(){
 
   <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.06em;">면접관 아바타</div>
   <div class="avatar-grid" style="grid-template-columns:1fr 1fr;max-width:300px;margin:0 auto 20px;" id="avatar-grid">
-    <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/man-interviewer.png" onclick="selAvatar(this)"><img src="images/man-interviewer.png" alt="남성" style="width:60px;height:60px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 4px;">남성 면접관</div>
-    <div class="avatar-opt" data-avatar="👩🏻" data-img="images/woman-interviewer.png" onclick="selAvatar(this)"><img src="images/woman-interviewer.png" alt="여성" style="width:60px;height:60px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 4px;">여성 면접관</div>
+    <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/man-interviewer.png" onclick="selAvatar(this)"><img src="images/man-interviewer.png" alt="남성" style="width:110px;height:110px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 8px;border:2px solid rgba(201,168,76,0.3);">남성 면접관</div>
+    <div class="avatar-opt" data-avatar="👩🏻" data-img="images/woman-interviewer.png" onclick="selAvatar(this)"><img src="images/woman-interviewer.png" alt="여성" style="width:110px;height:110px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 8px;border:2px solid rgba(201,168,76,0.3);">여성 면접관</div>
   </div>
 
   <div class="setup-grid" style="grid-template-columns:1fr 1fr;max-width:440px;margin:0 auto 24px;">
@@ -182,6 +182,23 @@ window.addEventListener('popstate',function(){
       </select>
     </div>
   </div>
+  <script>
+  // ?mode= 으로 진입 시 해당 배경을 드롭다운 첫 옵션 + 자동 선택
+  // (cruise.html → ?mode=cruise, hotel.html → ?mode=hotel 등)
+  (function(){
+    try{
+      var m=new URLSearchParams(location.search).get('mode');
+      if(!m) return;
+      var allowed=['flight','hotel','restaurant','cafe','cruise'];
+      if(allowed.indexOf(m)===-1) return;
+      var sel=document.getElementById('s-setting');
+      if(!sel) return;
+      var target=sel.querySelector('option[value="'+m+'"]');
+      if(target){sel.insertBefore(target,sel.firstChild);}
+      sel.value=m;
+    }catch(e){}
+  })();
+  </script>
   <button class="btn-start" onclick="startInterview()">면접 시작하기</button>
 </div>
 

@@ -24,7 +24,10 @@ section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
 .brand-card{background:#fff;border:2px solid var(--gold);padding:20px 16px;text-align:center;box-shadow:0 4px 12px rgba(201,168,76,0.12);}
 .brand-name{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);margin-bottom:2px;}.brand-sub{font-size:0.74rem;color:var(--text-muted);}
 .card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:28px;margin-bottom:20px;}.card h3{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:12px;}.card li{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-bottom:4px;}.card ul{padding-left:18px;margin:8px 0;}.card li strong{color:var(--navy);}
-.step-btn{display:inline-block;margin-top:14px;padding:10px 22px;background:var(--navy);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}.step-btn:hover{background:var(--gold);}
+.step-btn{display:inline-block;margin-top:14px;padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.86rem;font-weight:700;cursor:pointer;text-decoration:none;letter-spacing:0.04em;box-shadow:0 4px 14px rgba(201,168,76,0.25);}
+.step-btn:hover{filter:brightness(1.05);box-shadow:0 6px 18px rgba(201,168,76,0.35);}
+.card-row{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;}
+.card-row .card-body{flex:1;min-width:240px;}
 .tip{padding:14px 18px;background:rgba(201,168,76,0.06);border-left:3px solid var(--gold);font-size:0.84rem;color:var(--text-mid);line-height:1.7;margin-bottom:28px;}
 footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
 @media(max-width:900px){.nav-links{display:none;}.nav-cta{font-size:0.78rem!important;padding:6px 12px!important;}nav a[href*="login"]{font-size:0.78rem!important;padding:6px 12px!important;}.brand-grid{grid-template-columns:1fr 1fr;}}
@@ -58,9 +61,11 @@ var LINES=[
   {name:'Princess Cruises',en:'Princess Cruises'},{name:'Norwegian',en:'Norwegian Cruise Line'}
 ];
 var STEPS=[
-  {title:'CV 작성하기',items:['영문 CV 양식 (크루즈 표준)','증명사진·복장 가이드','서비스 경력·언어능력 정리','승선 가능 기간 명시'],btns:'<a class="step-btn" href="resume-guide.html">CV 작성 시작 →</a>'},
-  {title:'에이전시 면접 (영어)',items:['English self-introduction','Why do you want to work on a cruise ship?','Tell me about your service experience','How do you handle difficult guests?','What languages do you speak?','이미지 피드백 (카메라 ON)'],btns:'<a class="step-btn" href="interview-practice.html?type=cruise">면접 연습 →</a><a class="step-btn" href="daily-english.html">영어 쉐도잉 →</a>'},
-  {title:'본사 면접 (영어)',items:['Why this cruise line?','Describe a time you worked as a team','How do you handle working away from home for months?','What would you do if a guest complained?','롤플레이: 고객 컴플레인 상황 (영어)'],btns:'<a class="step-btn" href="interview-practice.html?type=cruise">면접 연습 →</a><a class="step-btn" href="roleplay-practice.html?mode=cruise">롤플레이 연습 →</a>'}
+  {title:'CV 작성하기',items:['영문 CV 양식 (크루즈 표준)','증명사진·복장 가이드','서비스 경력·언어능력 정리','승선 가능 기간 명시'],href:'resume-guide.html',btnLabel:'CV 작성 시작 →'},
+  {title:'에이전시 면접 (영어)',items:['English self-introduction','Why do you want to work on a cruise ship?','Tell me about your service experience','How do you handle difficult guests?','What languages do you speak?'],href:'interview-practice.html?type=cruise',btnLabel:'면접 시작하기 →'},
+  {title:'본사 면접 (영어)',items:['Why this cruise line?','Describe a time you worked as a team','How do you handle working away from home for months?','What would you do if a guest complained?'],href:'interview-practice.html?type=cruise',btnLabel:'면접 시작하기 →'},
+  {title:'영어 쉐도잉',items:['일상 영어 쉐도잉','기내·서비스 영어 표현','발음·인토네이션 교정','매일 5분 루틴'],href:'daily-english.html',btnLabel:'쉐도잉 시작하기 →'},
+  {title:'롤플레이',items:['고객 컴플레인 상황 (영어)','다국적 게스트 응대','진입 시 크루즈 배경 자동 선택','사과·해결책·대안·팔로업'],href:'roleplay-practice.html?mode=cruise',btnLabel:'롤플레이 시작하기 →'}
 ];
 var bg=document.getElementById('brands'),pa=document.getElementById('process-area');
 // 크루즈 선사 카드 — 클릭 없이 항상 골드 강조
@@ -69,11 +74,11 @@ LINES.forEach(function(h){
   d.innerHTML='<div class="brand-name">'+h.en+'</div><div class="brand-sub">'+h.name+'</div>';
   bg.appendChild(d);
 });
-// 페이지 진입 즉시 크루즈 면접 프로세스 자동 노출 (CV 작성하기 카드 포함)
-pa.innerHTML='<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;">크루즈 면접 프로세스</h2><p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:24px;">CV 제출 → 에이전시 면접 → 본사 면접 → 서류 준비 → 안전교육 → 승선</p>';
+// 페이지 진입 즉시 크루즈 면접 프로세스 자동 노출 (5개 카드 + 우측 골드 버튼)
+pa.innerHTML='<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;">크루즈 면접 프로세스</h2><p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:24px;">CV 제출 → 에이전시 면접 → 본사 면접 → 영어 쉐도잉 → 롤플레이</p>';
 STEPS.forEach(function(s){
   var c=document.createElement('div');c.className='card';
-  c.innerHTML='<h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>'+(s.btns||'');
+  c.innerHTML='<div class="card-row"><div class="card-body"><h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul></div><a class="step-btn" href="'+s.href+'">'+s.btnLabel+'</a></div>';
   pa.appendChild(c);
 });
 </script>

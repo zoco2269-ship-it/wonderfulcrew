@@ -56,10 +56,14 @@ var HOTELS=[
   {name:'JW메리어트',en:'JW Marriott'},{name:'포시즌스',en:'Four Seasons'},{name:'인터컨티넨탈',en:'InterContinental'},{name:'힐튼',en:'Hilton'}
 ];
 var STEPS=[
-  {title:'이력서 쓰기',items:['영문 CV 양식','증명사진 가이드','경력·서비스 경험 정리','호텔리어 지원동기 작성'],href:'resume-guide.html'},
-  {title:'1차 면접 (HR)',items:['1분 자기소개 (한국어)','English self-introduction','호텔 지원 이유','서비스란 무엇인가','본인의 강점','이미지 피드백 (카메라 ON)'],href:'interview-practice.html?type=hotel'},
-  {title:'2차 면접 (부서장 1:1)',items:['입사 후 어떤 계획이 있는가','어려운 고객 대응 경험','팀워크 경험','호텔리어로서 본인의 자질','롤플레이: 컴플레인 고객 대응'],href:'interview-practice.html?type=hotel2'},
-  {title:'임원면접',items:['입사 후 포부','5년 후 모습','마지막으로 하고 싶은 말'],href:'interview-practice.html?type=hotel-exec'}
+  {title:'이력서 쓰기',items:['영문 CV 양식','증명사진 가이드','경력·서비스 경험 정리','호텔리어 지원동기 작성'],href:'resume-guide.html',btnLabel:'이력서 쓰기 시작하기 →'},
+  {title:'호텔 면접 연습',items:['1차 — 1분 자기소개·지원 이유·서비스 마인드·강점','2차 — 어려운 고객 대응·팀워크·롤플레이','임원 — 입사 후 포부·5년 후 모습·마지막 인사'],dropdown:[
+    {value:'interview-practice.html?type=hotel',label:'1차 면접 (HR)'},
+    {value:'interview-practice.html?type=hotel2',label:'2차 면접 (부서장 1:1)'},
+    {value:'interview-practice.html?type=hotel-exec',label:'임원 면접'}
+  ],btnLabel:'면접 시작하기 →'},
+  {title:'영어 면접',items:['English self-introduction','Why this hotel? · Service mind','한·영 전환 자유 답변','발음·톤·자신감 분석'],href:'video-practice.html?lang=en',btnLabel:'영어 면접 시작하기 →'},
+  {title:'롤플레이',items:['컴플레인 고객 응대','VIP·다국적 고객 응대','기내·호텔·레스토랑 상황','한국어/영어 자유 선택'],href:'roleplay-practice-ko.html?mode=hotel',btnLabel:'롤플레이 시작하기 →'}
 ];
 var bg=document.getElementById('brands'),pa=document.getElementById('process-area');
 // 호텔 브랜드 카드 — 클릭 없이 항상 골드 강조 표기
@@ -69,12 +73,26 @@ HOTELS.forEach(function(h){
   bg.appendChild(d);
 });
 // 페이지 진입 즉시 호텔 면접 프로세스 자동 노출 — 이 페이지 자체가 허브
-pa.innerHTML='<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;">호텔 면접 프로세스</h2><p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:24px;">이력서 → 1차 면접 → 2차 면접 (부서장) → 임원면접</p>';
-STEPS.forEach(function(s){
+pa.innerHTML='<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;">호텔 면접 프로세스</h2><p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:24px;">이력서 → 호텔 면접 (1차/2차/임원) → 영어 면접 → 롤플레이</p>';
+STEPS.forEach(function(s,idx){
   var c=document.createElement('div');c.className='card';
-  var btnLabel=(s.title==='이력서 쓰기')?'이력서 쓰기 시작하기 →':'면접 시작하기 →';
-  c.innerHTML='<div class="card-row"><div class="card-body"><h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul></div><a class="step-btn" href="'+s.href+'">'+btnLabel+'</a></div>';
-  pa.appendChild(c);
+  if(s.dropdown){
+    // 드롭다운 카드 — 1차/2차/임원 셀렉트 후 골드 버튼이 해당 URL 로 이동
+    var selId='hotel-iv-select-'+idx;
+    var btnId='hotel-iv-btn-'+idx;
+    var opts=s.dropdown.map(function(o){return '<option value="'+o.value+'">'+o.label+'</option>';}).join('');
+    c.innerHTML='<div class="card-row"><div class="card-body"><h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul><div style="margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><span style="font-size:0.84rem;color:var(--text-mid);font-weight:600;">단계 선택:</span><select id="'+selId+'" style="padding:9px 14px;border:1.5px solid rgba(201,168,76,0.4);border-radius:8px;background:#fff;font-family:inherit;font-size:0.86rem;color:var(--navy);font-weight:600;cursor:pointer;">'+opts+'</select></div></div><a class="step-btn" id="'+btnId+'" href="'+s.dropdown[0].value+'">'+s.btnLabel+'</a></div>';
+    pa.appendChild(c);
+    // 드롭다운 변경 시 버튼 href 동기화
+    setTimeout(function(){
+      var sel=document.getElementById(selId);
+      var btn=document.getElementById(btnId);
+      if(sel&&btn){sel.addEventListener('change',function(){btn.setAttribute('href',sel.value);});}
+    },0);
+  } else {
+    c.innerHTML='<div class="card-row"><div class="card-body"><h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul></div><a class="step-btn" href="'+s.href+'">'+s.btnLabel+'</a></div>';
+    pa.appendChild(c);
+  }
 });
 </script>
 </body>

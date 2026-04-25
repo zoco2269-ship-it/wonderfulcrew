@@ -61,12 +61,16 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   .setup h1{font-size:1.5rem;}
   .setup p{font-size:0.94rem;margin-bottom:14px;}
   .setup .tag{font-size:0.72rem;padding:5px 12px;margin-bottom:10px;}
-  body{height:100dvh;}
+  body{height:auto!important;min-height:100dvh;overflow:visible!important;}
   .setup{overflow-y:auto;max-height:calc(100dvh - 56px);}
-  .session.active{height:calc(100dvh - 56px);}
+  /* 모바일: 콘텐츠가 화면을 넘치면 페이지 스크롤로 버튼 보게 — 카메라는 절대 줄이지 않음 */
+  .session.active{height:auto!important;min-height:calc(100dvh - 56px);overflow:visible!important;}
+  .video-area{flex-shrink:0!important;}
+  .card-frame{flex-shrink:0!important;}
+  .chat{flex:1 0 auto!important;overflow-y:visible!important;}
   .chat{font-size:0.94rem;}
-  .transcript-bar{padding:8px 14px;font-size:0.9rem;min-height:30px;max-height:90px;overflow-y:auto;}
-  .controls{gap:8px;padding:10px 12px env(safe-area-inset-bottom,10px);position:sticky;bottom:0;z-index:10;}
+  .transcript-bar{padding:8px 14px;font-size:0.9rem;min-height:30px;max-height:none;overflow-y:visible;}
+  .controls{gap:8px;padding:10px 12px env(safe-area-inset-bottom,10px);position:static;}
   .ctrl-btn{padding:11px 18px;font-size:0.9rem;}
 }
 </style>
@@ -143,7 +147,7 @@ var SYS_CLOSING='You are an airline CV Drop interviewer. The small talk is wrapp
 // interviewer 카드 회사명도 반영
 try{var roleLbl=document.querySelector('#card-ai .card-label .role, #card-ai [style*="var(--gold-light)"]');}catch(e){}
 
-function goBack(){fullCleanup();var s=document.getElementById('session');if(s&&s.classList.contains('active')){s.classList.remove('active');document.getElementById('setup').style.display='block';}else{history.back();}}
+function goBack(){fullCleanup();if(history.length>1){history.back();}else{location.href='practice-foreign.html';}}
 function fullCleanup(){
   if('speechSynthesis' in window)try{window.speechSynthesis.cancel();}catch(e){}
   if(typeof gcStop==='function')try{gcStop();}catch(e){}

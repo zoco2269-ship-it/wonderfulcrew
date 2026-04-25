@@ -52,7 +52,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   <h1 class="step-title">먼저 <em>나에 대해</em><br>알려주세요</h1>
   <p class="step-sub">맞춤형 레벨 평가와 항공사 추천을 위해<br>간단한 정보를 입력해주세요.</p>
   <div class="gold-bar"></div>
-  <div class="field"><label class="field-label">이름 <em>*</em></label><input class="field-input" id="f-name" type="text" placeholder="홍길동"></div>
+  <div class="field"><label class="field-label">이름 <em>*</em></label><input class="field-input" id="f-name" type="text" placeholder="홍길동" autocomplete="off"></div>
+  <div class="field"><label class="field-label">나이 <em>*</em></label><input class="field-input" id="f-age" type="number" inputmode="numeric" min="15" max="80" placeholder="예: 25"></div>
+  <div class="field"><label class="field-label">사는 지역 <em>*</em></label><input class="field-input" id="f-region" type="text" placeholder="예: 서울 마포구"></div>
   <div class="field"><label class="field-label">전화번호 <em>*</em></label><input class="field-input" id="f-phone" type="tel" placeholder="010-0000-0000"></div>
   <div class="field"><label class="field-label">이메일 <em>*</em></label><input class="field-input" id="f-email" type="email" placeholder="example@email.com"></div>
   <div class="field" style="margin-top:24px;">
@@ -70,15 +72,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
       <label class="radio-opt"><input type="radio" name="apply" value="없음"><span class="radio-text">아직 지원한 적 없어요</span></label>
       <label class="radio-opt"><input type="radio" name="apply" value="서류탈락"><span class="radio-text">지원했지만 서류에서 탈락했어요</span></label>
       <label class="radio-opt"><input type="radio" name="apply" value="면접탈락"><span class="radio-text">면접까지 갔다가 탈락했어요</span></label>
-      <label class="radio-opt"><input type="radio" name="apply" value="재도전"><span class="radio-text">합격 후 재도전 중이에요</span></label>
+      <label class="radio-opt"><input type="radio" name="apply" value="다수재도전"><span class="radio-text">다수 탈락 후 재도전 중이에요</span></label>
     </div>
   </div>
   <div class="field" style="margin-top:20px;">
     <label class="field-label">영어 수준 <em>*</em></label>
     <div class="radio-group">
       <label class="radio-opt"><input type="radio" name="eng" value="기초"><span class="radio-text">기초   간단한 인사 정도예요</span></label>
+      <label class="radio-opt"><input type="radio" name="eng" value="초중급"><span class="radio-text">말은 하지만 자유롭게는 안 나와요</span></label>
       <label class="radio-opt"><input type="radio" name="eng" value="일상회화"><span class="radio-text">일상회화   불편하지 않게 대화해요</span></label>
-      <label class="radio-opt"><input type="radio" name="eng" value="비즈니스"><span class="radio-text">비즈니스   면접도 자신 있어요</span></label>
       <label class="radio-opt"><input type="radio" name="eng" value="원어민급"><span class="radio-text">원어민급</span></label>
     </div>
   </div>
@@ -119,10 +121,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
     }
   }catch(e){}
 
-  // 로그인 사용자 정보 자동 채우기 (이메일은 변경 불가능)
+  // 이메일만 자동 채우기 (구글 닉네임 자동입력 방지 — 본명을 직접 입력받기 위함)
   try{
     var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
-    if(u.name) document.getElementById('f-name').value=u.name;
     if(u.email){
       var em=document.getElementById('f-email');
       em.value=u.email;
@@ -144,15 +145,20 @@ document.querySelectorAll('.radio-opt input').forEach(function(r){
 });
 
 // 텍스트 입력 변경 시 버튼 활성화 갱신
-['f-name','f-phone','f-email'].forEach(function(id){
+['f-name','f-age','f-region','f-phone','f-email'].forEach(function(id){
   document.getElementById(id).addEventListener('input',refreshSubmit);
 });
 
 function isValid(){
   var name=document.getElementById('f-name').value.trim();
+  var age=document.getElementById('f-age').value.trim();
+  var region=document.getElementById('f-region').value.trim();
   var phone=document.getElementById('f-phone').value.trim();
   var email=document.getElementById('f-email').value.trim();
   if(!name) return false;
+  var ageNum=parseInt(age,10);
+  if(!age||isNaN(ageNum)||ageNum<15||ageNum>80) return false;
+  if(!region) return false;
   if(!phone||phone.replace(/\D/g,'').length<10) return false;
   if(!email||email.indexOf('@')<0) return false;
   if(!document.querySelector('input[name=edu]:checked')) return false;
@@ -175,9 +181,14 @@ function refreshSubmit(){
 async function submitProfile(){
   if(!isValid()){
     var name=document.getElementById('f-name').value.trim();
+    var age=document.getElementById('f-age').value.trim();
+    var region=document.getElementById('f-region').value.trim();
     var phone=document.getElementById('f-phone').value.trim();
     var email=document.getElementById('f-email').value.trim();
     if(!name){alert('이름을 입력해주세요.');document.getElementById('f-name').focus();return;}
+    var ageNum=parseInt(age,10);
+    if(!age||isNaN(ageNum)||ageNum<15||ageNum>80){alert('나이를 정확히 입력해주세요 (15~80).');document.getElementById('f-age').focus();return;}
+    if(!region){alert('사는 지역을 입력해주세요.');document.getElementById('f-region').focus();return;}
     if(!phone||phone.replace(/\D/g,'').length<10){alert('전화번호를 정확히 입력해주세요.');document.getElementById('f-phone').focus();return;}
     if(!email||email.indexOf('@')<0){alert('이메일을 정확히 입력해주세요.');document.getElementById('f-email').focus();return;}
     if(!document.querySelector('input[name=edu]:checked')){alert('승무원 교육 경험을 선택해주세요.');return;}
@@ -190,6 +201,8 @@ async function submitProfile(){
 
   var profile={
     name:document.getElementById('f-name').value.trim(),
+    age:parseInt(document.getElementById('f-age').value.trim(),10),
+    region:document.getElementById('f-region').value.trim(),
     phone:document.getElementById('f-phone').value.trim(),
     email:document.getElementById('f-email').value.trim(),
     edu:document.querySelector('input[name=edu]:checked').value,
@@ -197,14 +210,20 @@ async function submitProfile(){
     eng:document.querySelector('input[name=eng]:checked').value
   };
 
-  // Supabase users 테이블에 이름·전화 저장 (관리자 페이지 노출용)
+  // Supabase users 테이블에 이름·전화·나이·지역 저장 (관리자 페이지 노출용)
+  // age/region 컬럼이 아직 추가 안 됐으면 update 가 일부 실패하므로 1차 시도 → 실패 시 name/phone 만 재시도
   try{
     var sb=(typeof getSupabase==='function')?getSupabase():null;
     if(sb){
       var sess=await sb.auth.getSession();
       var authId=sess&&sess.data&&sess.data.session&&sess.data.session.user&&sess.data.session.user.id;
       if(authId){
-        await sb.from('users').update({name:profile.name,phone:profile.phone,updated_at:new Date().toISOString()}).eq('auth_id',authId);
+        var fullPayload={name:profile.name,phone:profile.phone,age:profile.age,region:profile.region,updated_at:new Date().toISOString()};
+        var res=await sb.from('users').update(fullPayload).eq('auth_id',authId);
+        if(res&&res.error){
+          // age/region 컬럼 없으면 name/phone 만 저장
+          await sb.from('users').update({name:profile.name,phone:profile.phone,updated_at:new Date().toISOString()}).eq('auth_id',authId);
+        }
       }
     }
   }catch(e){console.error('profile save error:',e);}

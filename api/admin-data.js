@@ -55,9 +55,27 @@ module.exports = async function(req, res) {
         : { data: [] };
       const subMap = {};
       (subs || []).forEach(s => { subMap[s.user_id] = s; });
+      // 사용 활동 집계 — practice_records / ai_feedback / video_records 의 마지막 활동 시각·총 건수
+      const [prRes, fbRes, vrRes] = userIds.length ? await Promise.all([
+        sb.from('practice_records').select('user_id, created_at').in('user_id', userIds),
+        sb.from('ai_feedback').select('user_id, created_at').in('user_id', userIds),
+        sb.from('video_records').select('user_id, created_at').in('user_id', userIds)
+      ]) : [{ data: [] }, { data: [] }, { data: [] }];
+      const usage = {};
+      function bump(uid, ts) {
+        if (!uid) return;
+        const u = usage[uid] = usage[uid] || { count: 0, last: null };
+        u.count += 1;
+        if (!u.last || new Date(ts) > new Date(u.last)) u.last = ts;
+      }
+      (prRes.data || []).forEach(r => bump(r.user_id, r.created_at));
+      (fbRes.data || []).forEach(r => bump(r.user_id, r.created_at));
+      (vrRes.data || []).forEach(r => bump(r.user_id, r.created_at));
       const enriched = (users || []).map(u => ({
         ...u,
-        subscription: subMap[u.auth_id] || null
+        subscription: subMap[u.auth_id] || null,
+        usage_count: (usage[u.auth_id] || {}).count || 0,
+        last_active_at: (usage[u.auth_id] || {}).last || null
       }));
       return res.json({ ok: true, members: enriched });
     }

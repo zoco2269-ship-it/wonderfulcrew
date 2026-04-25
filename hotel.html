@@ -21,7 +21,10 @@ section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
 .brand-card{background:#fff;border:2px solid var(--gold);padding:20px 16px;text-align:center;box-shadow:0 4px 12px rgba(201,168,76,0.12);}
 .brand-name{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);margin-bottom:2px;}.brand-sub{font-size:0.74rem;color:var(--text-muted);}
 .card{background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:28px;margin-bottom:20px;}.card h3{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:12px;}.card li{font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-bottom:4px;}.card ul{padding-left:18px;margin:8px 0;}.card li strong{color:var(--navy);}
-.step-btn{display:inline-block;margin-top:14px;padding:10px 22px;background:var(--navy);color:#fff;border:none;border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;}.step-btn:hover{background:var(--gold);}
+.step-btn{display:inline-block;margin-top:14px;padding:12px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.86rem;font-weight:700;cursor:pointer;text-decoration:none;letter-spacing:0.04em;box-shadow:0 4px 14px rgba(201,168,76,0.25);}
+.step-btn:hover{filter:brightness(1.05);box-shadow:0 6px 18px rgba(201,168,76,0.35);}
+.card-row{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;}
+.card-row .card-body{flex:1;min-width:240px;}
 footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
 @media(max-width:900px){.nav-links{display:none;}.nav-cta{font-size:0.78rem!important;padding:6px 12px!important;}nav a[href*="login"]{font-size:0.78rem!important;padding:6px 12px!important;}.brand-grid{grid-template-columns:1fr 1fr;}}
 
@@ -53,9 +56,10 @@ var HOTELS=[
   {name:'JW메리어트',en:'JW Marriott'},{name:'포시즌스',en:'Four Seasons'},{name:'인터컨티넨탈',en:'InterContinental'},{name:'힐튼',en:'Hilton'}
 ];
 var STEPS=[
-  {title:'1차 면접 (HR)',items:['1분 자기소개 (한국어)','English self-introduction','호텔 지원 이유','서비스란 무엇인가','본인의 강점','이미지 피드백 (카메라 ON)']},
-  {title:'2차 면접 (부서장 1:1)',items:['입사 후 어떤 계획이 있는가','어려운 고객 대응 경험','팀워크 경험','호텔리어로서 본인의 자질','롤플레이: 컴플레인 고객 대응']},
-  {title:'임원면접',items:['입사 후 포부','5년 후 모습','마지막으로 하고 싶은 말']}
+  {title:'이력서 쓰기',items:['영문 CV 양식','증명사진 가이드','경력·서비스 경험 정리','호텔리어 지원동기 작성'],href:'resume-guide.html'},
+  {title:'1차 면접 (HR)',items:['1분 자기소개 (한국어)','English self-introduction','호텔 지원 이유','서비스란 무엇인가','본인의 강점','이미지 피드백 (카메라 ON)'],href:'interview-practice.html?type=hotel'},
+  {title:'2차 면접 (부서장 1:1)',items:['입사 후 어떤 계획이 있는가','어려운 고객 대응 경험','팀워크 경험','호텔리어로서 본인의 자질','롤플레이: 컴플레인 고객 대응'],href:'interview-practice.html?type=hotel2'},
+  {title:'임원면접',items:['입사 후 포부','5년 후 모습','마지막으로 하고 싶은 말'],href:'interview-practice.html?type=hotel-exec'}
 ];
 var bg=document.getElementById('brands'),pa=document.getElementById('process-area');
 // 호텔 브랜드 카드 — 클릭 없이 항상 골드 강조 표기
@@ -64,18 +68,14 @@ HOTELS.forEach(function(h){
   d.innerHTML='<div class="brand-name">'+h.en+'</div><div class="brand-sub">'+h.name+'</div>';
   bg.appendChild(d);
 });
-// 페이지 진입 즉시 호텔 면접 프로세스 자동 노출 (브랜드 클릭 불필요)
-pa.innerHTML='<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;">호텔 면접 프로세스</h2><p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:24px;">서류전형 → 1차 면접 → 2차 면접 (부서장) → 임원면접 → 건강검진</p>';
+// 페이지 진입 즉시 호텔 면접 프로세스 자동 노출 — 이 페이지 자체가 허브
+pa.innerHTML='<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;">호텔 면접 프로세스</h2><p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:24px;">이력서 → 1차 면접 → 2차 면접 (부서장) → 임원면접</p>';
 STEPS.forEach(function(s){
   var c=document.createElement('div');c.className='card';
-  c.innerHTML='<h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>';
+  var btnLabel=(s.title==='이력서 쓰기')?'이력서 쓰기 시작하기 →':'면접 시작하기 →';
+  c.innerHTML='<div class="card-row"><div class="card-body"><h3>'+s.title+'</h3><ul>'+s.items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul></div><a class="step-btn" href="'+s.href+'">'+btnLabel+'</a></div>';
   pa.appendChild(c);
 });
-// 하단 — 호텔 면접 허브로 가는 단일 CTA
-var hubWrap=document.createElement('div');
-hubWrap.style.cssText='text-align:center;margin:36px 0 12px;';
-hubWrap.innerHTML='<a href="interview-practice.html?type=hotel" style="display:inline-block;padding:16px 44px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:32px;font-family:DM Serif Display,serif;font-size:1.05rem;font-weight:700;text-decoration:none;box-shadow:0 8px 24px rgba(201,168,76,0.3);letter-spacing:0.04em;">호텔 면접 시작하기 →</a>';
-pa.appendChild(hubWrap);
 </script>
 </body>
 </html>

@@ -142,8 +142,8 @@ textarea{min-height:80px;resize:vertical;}
   <div class="sub">실제 가입자 (Supabase users 테이블)</div>
   <div class="card">
     <table>
-      <tr><th>이름</th><th>이메일</th><th>가입일</th><th>플랜</th><th>구독상태</th><th>만료일</th></tr>
-      <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px;">불러오는 중...</td></tr>
+      <tr><th>이름</th><th>이메일</th><th>연락처</th><th>가입일</th><th>플랜</th><th>구독상태</th><th>만료일</th><th>무료체험</th><th>활동</th><th>마지막 활동</th></tr>
+      <tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:20px;">불러오는 중...</td></tr>
     </table>
   </div>
 </div>
@@ -539,15 +539,18 @@ async function loadMembersTable(){
   var d=await fetchAdmin('members');
   var t=document.querySelector('#page-members table');
   if(!t||!d||!d.ok)return;
-  var rows='<tr><th>이름</th><th>이메일</th><th>연락처</th><th>가입일</th><th>플랜</th><th>구독상태</th><th>만료일</th></tr>';
+  var rows='<tr><th>이름</th><th>이메일</th><th>연락처</th><th>가입일</th><th>플랜</th><th>구독상태</th><th>만료일</th><th>무료체험</th><th>활동</th><th>마지막 활동</th></tr>';
   if(!d.members.length){
-    rows+='<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">회원이 없습니다.</td></tr>';
+    rows+='<tr><td colspan="10" style="text-align:center;color:var(--text-muted);">회원이 없습니다.</td></tr>';
   } else {
     d.members.forEach(function(m){
       var sub=m.subscription;
       var status=sub?(sub.status==='active'?'<span class="badge green">'+sub.plan+'</span>':'<span class="badge yellow">'+sub.status+'</span>'):'<span class="badge red">무료</span>';
       var exp=sub?fmtDate(sub.expires_at):'-';
-      rows+='<tr><td>'+(m.name||'-')+'</td><td>'+(m.email||'-')+'</td><td>'+(m.phone||'-')+'</td><td>'+fmtDate(m.created_at)+'</td><td>'+(m.plan||'free')+'</td><td>'+status+'</td><td>'+exp+'</td></tr>';
+      var trial=(typeof m.free_trial_used==='number')?(m.free_trial_used+'/10'):'0/10';
+      var usage=(m.usage_count||0)+'건';
+      var lastAct=m.last_active_at?fmtDate(m.last_active_at):'<span style="color:var(--text-muted);">미사용</span>';
+      rows+='<tr><td>'+(m.name||'-')+'</td><td>'+(m.email||'-')+'</td><td>'+(m.phone||'-')+'</td><td>'+fmtDate(m.created_at)+'</td><td>'+(m.plan||'free')+'</td><td>'+status+'</td><td>'+exp+'</td><td>'+trial+'</td><td>'+usage+'</td><td>'+lastAct+'</td></tr>';
     });
   }
   t.innerHTML=rows;

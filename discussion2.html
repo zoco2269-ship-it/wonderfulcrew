@@ -66,8 +66,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   .topic-card h3{font-size:1rem;}
   .topic-card p{font-size:0.86rem;}
   .interview.active{flex:none;height:auto;overflow:visible;}
-  .video-area{flex:none;gap:14px;padding:16px;flex-direction:column;}
-  .card-frame{width:80vw;max-width:300px;aspect-ratio:9/16;height:auto;flex-shrink:0;}
+  /* 모바일에서도 면접관·내 카메라 좌우 배치 (다른 페이지와 통일) */
+  .video-area{flex:none;gap:10px;padding:14px 12px;flex-direction:row;justify-content:center;align-items:center;}
+  .card-frame{width:42vw;max-width:200px;aspect-ratio:9/16;height:auto;flex-shrink:1;}
   .q-banner{padding:12px 14px;}
   .q-banner .question{font-size:0.98rem;line-height:1.45;}
   .waveform{height:24px;}

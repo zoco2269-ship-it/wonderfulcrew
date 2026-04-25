@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script src="js/nav-dropdown.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나에 대해 알려주세요   WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+html,body{overflow-x:hidden;max-width:100vw;}
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--cream-dark:#F0EAD8;--navy:#1A2340;--navy-light:#2A3455;--text-dark:#1A1A1A;--text-mid:#3A3430;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"Noto Sans KR",sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:0 5%;height:68px;background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.5rem;font-weight:400;color:var(--navy);text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+#app{padding-top:68px;animation:fadeUp 0.4s ease;}
+.wrap{max-width:660px;margin:0 auto;padding:60px 24px;}
+.step-title{font-family:"Noto Serif KR",serif;font-size:clamp(1.7rem,3vw,2.3rem);font-weight:400;color:var(--navy);line-height:1.35;margin-bottom:10px;}
+.step-title em{font-style:normal;color:var(--gold);}
+.step-sub{font-size:0.9rem;color:var(--text-muted);line-height:1.75;font-weight:400;margin-bottom:36px;}
+.gold-bar{width:36px;height:2px;background:var(--gold);margin-bottom:36px;}
+.trial-msg{background:linear-gradient(135deg,#1A2340,#2A3455);color:#fff;padding:16px 20px;border-radius:12px;margin-bottom:24px;text-align:center;font-size:0.88rem;line-height:1.6;}
+.trial-msg b{color:var(--gold-light);font-weight:700;}
+.field{margin-bottom:18px;}
+.field-label{display:block;font-size:0.8rem;font-weight:700;color:var(--text-mid);margin-bottom:7px;}
+.field-label em{color:var(--gold);font-style:normal;}
+.field-input{width:100%;background:#fff;border:1.5px solid rgba(201,168,76,0.3);padding:11px 15px;color:var(--text-dark);font-size:0.9rem;font-family:inherit;outline:none;transition:border-color 0.2s;}
+.field-input:focus{border-color:var(--gold);}
+.radio-group{display:flex;flex-direction:column;gap:8px;}
+.radio-opt{display:flex;align-items:center;gap:12px;padding:11px 16px;background:#fff;border:1.5px solid rgba(201,168,76,0.25);cursor:pointer;transition:all 0.2s;}
+.radio-opt:hover{border-color:rgba(201,168,76,0.5);}
+.radio-opt.sel{border-color:var(--gold);background:rgba(201,168,76,0.05);}
+.radio-opt input{accent-color:var(--gold);width:15px;height:15px;flex-shrink:0;}
+.radio-text{font-size:0.87rem;color:var(--text-mid);}
+.radio-opt.sel .radio-text{color:var(--navy);font-weight:600;}
+.btn-gold{width:100%;padding:14px;background:var(--gold);color:#fff;font-size:0.9rem;font-weight:700;letter-spacing:0.08em;border:none;cursor:pointer;font-family:inherit;transition:all 0.2s;margin-top:4px;}
+.btn-gold:hover:not(:disabled){background:var(--gold-light);}
+.btn-gold:disabled{background:#D9D2C0;color:rgba(255,255,255,0.85);cursor:not-allowed;opacity:0.7;}
+.notice{font-size:0.78rem;color:var(--text-muted);text-align:center;margin-top:14px;line-height:1.6;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+</head>
+<body>
+<nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a></nav>
+<div id="app">
+<div class="wrap">
+  <div class="trial-msg"><b>무료체험 10회</b>를 드립니다 — 아래 정보를 입력하시면 바로 시작됩니다.</div>
+  <h1 class="step-title">먼저 <em>나에 대해</em><br>알려주세요</h1>
+  <p class="step-sub">맞춤형 레벨 평가와 항공사 추천을 위해<br>간단한 정보를 입력해주세요.</p>
+  <div class="gold-bar"></div>
+  <div class="field"><label class="field-label">이름 <em>*</em></label><input class="field-input" id="f-name" type="text" placeholder="홍길동"></div>
+  <div class="field"><label class="field-label">전화번호 <em>*</em></label><input class="field-input" id="f-phone" type="tel" placeholder="010-0000-0000"></div>
+  <div class="field"><label class="field-label">이메일 <em>*</em></label><input class="field-input" id="f-email" type="email" placeholder="example@email.com"></div>
+  <div class="field" style="margin-top:24px;">
+    <label class="field-label">승무원 교육 경험 <em>*</em></label>
+    <div class="radio-group">
+      <label class="radio-opt"><input type="radio" name="edu" value="없음"><span class="radio-text">없음   처음 준비해요</span></label>
+      <label class="radio-opt"><input type="radio" name="edu" value="독학"><span class="radio-text">독학으로 준비 중이에요</span></label>
+      <label class="radio-opt"><input type="radio" name="edu" value="학원"><span class="radio-text">학원 수강 경험 있어요</span></label>
+      <label class="radio-opt"><input type="radio" name="edu" value="코칭"><span class="radio-text">1:1 코칭 받은 적 있어요</span></label>
+    </div>
+  </div>
+  <div class="field" style="margin-top:20px;">
+    <label class="field-label">승무원 지원 경험 <em>*</em></label>
+    <div class="radio-group">
+      <label class="radio-opt"><input type="radio" name="apply" value="없음"><span class="radio-text">아직 지원한 적 없어요</span></label>
+      <label class="radio-opt"><input type="radio" name="apply" value="서류탈락"><span class="radio-text">지원했지만 서류에서 탈락했어요</span></label>
+      <label class="radio-opt"><input type="radio" name="apply" value="면접탈락"><span class="radio-text">면접까지 갔다가 탈락했어요</span></label>
+      <label class="radio-opt"><input type="radio" name="apply" value="재도전"><span class="radio-text">합격 후 재도전 중이에요</span></label>
+    </div>
+  </div>
+  <div class="field" style="margin-top:20px;">
+    <label class="field-label">영어 수준 <em>*</em></label>
+    <div class="radio-group">
+      <label class="radio-opt"><input type="radio" name="eng" value="기초"><span class="radio-text">기초   간단한 인사 정도예요</span></label>
+      <label class="radio-opt"><input type="radio" name="eng" value="일상회화"><span class="radio-text">일상회화   불편하지 않게 대화해요</span></label>
+      <label class="radio-opt"><input type="radio" name="eng" value="비즈니스"><span class="radio-text">비즈니스   면접도 자신 있어요</span></label>
+      <label class="radio-opt"><input type="radio" name="eng" value="원어민급"><span class="radio-text">원어민급</span></label>
+    </div>
+  </div>
+  <div style="margin-top:32px;"><button class="btn-gold" id="btn-submit" disabled onclick="submitProfile()">모든 항목을 입력해주세요</button></div>
+  <div class="notice">모든 항목은 필수입니다. 다음 단계로 넘어가려면 빠짐없이 입력해주세요.</div>
+</div>
+</div>
+<script>
+// 로그인 안 된 상태면 로그인 페이지로 + 서버 기준으로 프로필 입력 여부 확인
+(async function(){
+  if(!localStorage.getItem('wc_user')){
+    location.replace('login.html');
+    return;
+  }
+  // Supabase 로딩 대기 후 서버에서 phone 컬럼 확인 (localStorage 플래그보다 우선)
+  try{
+    var sb=null;
+    for(var i=0;i<30;i++){
+      sb=(typeof getSupabase==='function')?getSupabase():null;
+      if(sb) break;
+      await new Promise(function(r){setTimeout(r,100);});
+    }
+    if(sb){
+      var sess=await sb.auth.getSession();
+      var authId=sess&&sess.data&&sess.data.session&&sess.data.session.user&&sess.data.session.user.id;
+      if(authId){
+        var res=await sb.from('users').select('phone').eq('auth_id',authId).maybeSingle();
+        if(res&&res.data&&res.data.phone){
+          // 서버에 이미 프로필 있음 → leveltest 로
+          localStorage.setItem('wc_profile_done','1');
+          var levelDone=localStorage.getItem('wc_level_result');
+          location.replace(levelDone?'curriculum.html':'leveltest.html');
+          return;
+        }
+        // 서버에 프로필 없음 → 잔재 플래그 강제 제거하고 폼 노출
+        localStorage.removeItem('wc_profile_done');
+      }
+    }
+  }catch(e){}
+
+  // 로그인 사용자 정보 자동 채우기 (이메일은 변경 불가능)
+  try{
+    var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+    if(u.name) document.getElementById('f-name').value=u.name;
+    if(u.email){
+      var em=document.getElementById('f-email');
+      em.value=u.email;
+      em.readOnly=true;
+      em.style.background='#F5F2EA';
+      em.style.color='#8A8070';
+    }
+  }catch(e){}
+  refreshSubmit();
+})();
+
+// 라디오 선택 표시
+document.querySelectorAll('.radio-opt input').forEach(function(r){
+  r.addEventListener('change',function(){
+    document.querySelectorAll('input[name="'+this.name+'"]').forEach(function(x){x.closest('.radio-opt').classList.remove('sel');});
+    this.closest('.radio-opt').classList.add('sel');
+    refreshSubmit();
+  });
+});
+
+// 텍스트 입력 변경 시 버튼 활성화 갱신
+['f-name','f-phone','f-email'].forEach(function(id){
+  document.getElementById(id).addEventListener('input',refreshSubmit);
+});
+
+function isValid(){
+  var name=document.getElementById('f-name').value.trim();
+  var phone=document.getElementById('f-phone').value.trim();
+  var email=document.getElementById('f-email').value.trim();
+  if(!name) return false;
+  if(!phone||phone.replace(/\D/g,'').length<10) return false;
+  if(!email||email.indexOf('@')<0) return false;
+  if(!document.querySelector('input[name=edu]:checked')) return false;
+  if(!document.querySelector('input[name=apply]:checked')) return false;
+  if(!document.querySelector('input[name=eng]:checked')) return false;
+  return true;
+}
+
+function refreshSubmit(){
+  var btn=document.getElementById('btn-submit');
+  if(isValid()){
+    btn.disabled=false;
+    btn.textContent='시작하기 →';
+  } else {
+    btn.disabled=true;
+    btn.textContent='모든 항목을 입력해주세요';
+  }
+}
+
+async function submitProfile(){
+  if(!isValid()){
+    var name=document.getElementById('f-name').value.trim();
+    var phone=document.getElementById('f-phone').value.trim();
+    var email=document.getElementById('f-email').value.trim();
+    if(!name){alert('이름을 입력해주세요.');document.getElementById('f-name').focus();return;}
+    if(!phone||phone.replace(/\D/g,'').length<10){alert('전화번호를 정확히 입력해주세요.');document.getElementById('f-phone').focus();return;}
+    if(!email||email.indexOf('@')<0){alert('이메일을 정확히 입력해주세요.');document.getElementById('f-email').focus();return;}
+    if(!document.querySelector('input[name=edu]:checked')){alert('승무원 교육 경험을 선택해주세요.');return;}
+    if(!document.querySelector('input[name=apply]:checked')){alert('승무원 지원 경험을 선택해주세요.');return;}
+    if(!document.querySelector('input[name=eng]:checked')){alert('영어 수준을 선택해주세요.');return;}
+    return;
+  }
+  var btn=document.getElementById('btn-submit');
+  btn.disabled=true;btn.textContent='저장 중...';
+
+  var profile={
+    name:document.getElementById('f-name').value.trim(),
+    phone:document.getElementById('f-phone').value.trim(),
+    email:document.getElementById('f-email').value.trim(),
+    edu:document.querySelector('input[name=edu]:checked').value,
+    apply:document.querySelector('input[name=apply]:checked').value,
+    eng:document.querySelector('input[name=eng]:checked').value
+  };
+
+  // Supabase users 테이블에 이름·전화 저장 (관리자 페이지 노출용)
+  try{
+    var sb=(typeof getSupabase==='function')?getSupabase():null;
+    if(sb){
+      var sess=await sb.auth.getSession();
+      var authId=sess&&sess.data&&sess.data.session&&sess.data.session.user&&sess.data.session.user.id;
+      if(authId){
+        await sb.from('users').update({name:profile.name,phone:profile.phone,updated_at:new Date().toISOString()}).eq('auth_id',authId);
+      }
+    }
+  }catch(e){console.error('profile save error:',e);}
+
+  // localStorage 보존 + 1회 노출 플래그
+  localStorage.setItem('wc_profile',JSON.stringify(profile));
+  localStorage.setItem('wc_profile_done','1');
+
+  // 환영 + leveltest 이동
+  var ov=document.createElement('div');
+  ov.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;';
+  ov.innerHTML='<div style="background:#fff;border-radius:16px;padding:40px 32px;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">'+
+    '<div style="font-size:2.4rem;margin-bottom:14px;">🎉</div>'+
+    '<h2 style="font-family:DM Serif Display,serif;font-size:1.3rem;color:#1A2340;margin-bottom:10px;">'+profile.name+'님, 환영합니다!</h2>'+
+    '<p style="font-size:0.9rem;color:#5A5048;line-height:1.7;margin-bottom:6px;"><b style="color:#C9A84C;">무료체험 10회</b>가 지급되었습니다.</p>'+
+    '<p style="font-size:0.82rem;color:#8A8070;line-height:1.6;margin-bottom:24px;">AI 면접 연습, 롤플레이, 디스커션 등<br>모든 기능을 10회까지 무료로 체험하세요.</p>'+
+    '<button onclick="location.href=\'leveltest.html\'" style="padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:28px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;">레벨 테스트 시작하기</button>'+
+    '<div style="margin-top:12px;"><a href="curriculum.html" style="color:#8A8070;font-size:0.82rem;text-decoration:none;">건너뛰고 바로 면접 연습하기 →</a></div>'+
+    '</div>';
+  document.body.appendChild(ov);
+}
+</script>
+</body>
+</html>

@@ -18,9 +18,26 @@ var ADMIN_EMAILS = ['zoco2269@gmail.com', 'guswn5164@gmail.com'];
       });
       _supabaseReady = true;
 
+      // 다른 계정으로 전환 시 이전 사용자의 localStorage 상태 청소
+      // (무료체험 카운트·프로필 입력 플래그·레벨테스트 결과 등이 새 계정에 새도록)
+      function _wcClearStaleStateIfUserChanged(newUserId) {
+        try {
+          var prev = JSON.parse(localStorage.getItem('wc_user') || 'null');
+          if (prev && prev.id && prev.id !== newUserId) {
+            localStorage.removeItem('wc_free_trial');
+            localStorage.removeItem('wc_profile_done');
+            localStorage.removeItem('wc_profile');
+            localStorage.removeItem('wc_level_result');
+            localStorage.removeItem('wc_paid');
+            localStorage.removeItem('wc_anon_id');
+          }
+        } catch(e) {}
+      }
+
       // 세션 변경 감지
       _supabase.auth.onAuthStateChange(function(event, session) {
         if (session && session.user) {
+          _wcClearStaleStateIfUserChanged(session.user.id);
           _currentUser = session.user;
           localStorage.setItem('wc_user', JSON.stringify({
             id: session.user.id,
@@ -32,12 +49,19 @@ var ADMIN_EMAILS = ['zoco2269@gmail.com', 'guswn5164@gmail.com'];
         } else if (event === 'SIGNED_OUT') {
           _currentUser = null;
           localStorage.removeItem('wc_user');
+          // 로그아웃 시에도 사용자별 상태 청소 (다음 사용자 영향 차단)
+          localStorage.removeItem('wc_free_trial');
+          localStorage.removeItem('wc_profile_done');
+          localStorage.removeItem('wc_profile');
+          localStorage.removeItem('wc_level_result');
+          localStorage.removeItem('wc_paid');
         }
       });
 
       // 초기 세션 체크
       var { data } = await _supabase.auth.getSession();
       if (data && data.session && data.session.user) {
+        _wcClearStaleStateIfUserChanged(data.session.user.id);
         _currentUser = data.session.user;
         localStorage.setItem('wc_user', JSON.stringify({
           id: data.session.user.id,

@@ -139,6 +139,21 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <option value="emirates">Emirates</option>
     <option value="singapore">Singapore Airlines</option>
   </select>
+  <script>
+  // ?mode=domestic 으로 진입 시 국내 항공사 공통을 드롭다운 첫 옵션으로 + 기본 선택
+  (function(){
+    try{
+      var p=new URLSearchParams(location.search);
+      var m=p.get('mode');
+      if(m==='domestic'){
+        var sel=document.getElementById('vp-mode');
+        var dom=sel.querySelector('option[value="domestic"]');
+        if(dom){sel.insertBefore(dom,sel.firstChild);}
+        sel.value='domestic';
+      }
+    }catch(e){}
+  })();
+  </script>
 </div>
 
 <div class="q-card" id="single-q">
@@ -318,7 +333,10 @@ function buildPool(mode){
   // general — 외항사 공통 기출 풀 (영어)
   return flattenPool(QUESTIONS_EN,EXTRA_EN,ROLEPLAY_QS,'Roleplay — Include apology, solution, alternative, and service recovery.');
 }
-var POOL=buildPool('general');
+// URL ?mode= 으로 들어오면 그 모드 풀로 시작 (practice-domestic → mode=domestic)
+var _initMode=(function(){try{var m=new URLSearchParams(location.search).get('mode');return (m==='domestic'||m==='emirates'||m==='singapore')?m:'general';}catch(e){return 'general';}})();
+if(_initMode==='domestic'){window._vpLangOverride='ko-KR';lang='ko';}
+var POOL=buildPool(_initMode);
 window.onVpModeChange=function(){
   var mode=document.getElementById('vp-mode').value||'general';
   POOL=buildPool(mode);

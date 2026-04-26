@@ -105,10 +105,17 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <div>
   <div class="card" style="margin-bottom:20px;">
     <h3>구독 현황</h3>
-    <div style="display:flex;gap:20px;align-items:center;">
+    <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
       <div style="text-align:center;"><div class="stat-num" id="p-tokens">무료체험</div><div class="stat-lbl">구독 상태</div></div>
       <div style="text-align:center;"><div class="stat-num" id="p-expiry">-</div><div class="stat-lbl">만료일</div></div>
       <div style="text-align:center;"><div class="stat-num" id="p-used">0</div><div class="stat-lbl">이번 달 사용</div></div>
+    </div>
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--gold-pale);">
+      <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;margin-bottom:10px;">
+        <b style="color:var(--text-mid);">환불 정책:</b> 결제 후 7일 이내 + 콘텐츠 미사용 상태인 경우에 한해 자동 환불됩니다. (이용 시작 후 환불 불가 — 디지털 콘텐츠 약관)
+      </div>
+      <button id="refund-btn" onclick="requestAutoRefund()" style="padding:10px 22px;background:#fff;color:var(--text-mid);border:1.5px solid rgba(201,168,76,0.5);border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;">환불 신청 (자동 판정)</button>
+      <div id="refund-result" style="margin-top:14px;font-size:0.84rem;line-height:1.7;"></div>
     </div>
   </div>
 
@@ -316,6 +323,40 @@ if(daily){
     });
   }catch(e){}
 })();
+
+// 자동 환불 신청 — 시스템이 자동 판정 (7일 + 사용 여부)
+async function requestAutoRefund(){
+  var user=JSON.parse(localStorage.getItem('wc_user')||'null');
+  if(!user||!user.id){alert('로그인 후 이용해주세요.');return;}
+  if(!confirm('환불 신청은 자동 판정됩니다.\n\n• 결제 후 7일 이내 + 콘텐츠 미사용 → 자동 승인\n• 그 외 (기간 만료 또는 이미 사용) → 자동 거부\n\n진행하시겠어요?'))return;
+  var btn=document.getElementById('refund-btn');
+  var box=document.getElementById('refund-result');
+  btn.disabled=true;btn.textContent='판정 중...';
+  box.innerHTML='';
+  try{
+    var r=await fetch('/api/request-refund',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({userId:user.id,email:user.email||''})});
+    var d=await r.json();
+    btn.disabled=false;btn.textContent='환불 신청 (자동 판정)';
+    if(d.decision==='APPROVED'){
+      box.innerHTML='<div style="padding:14px 16px;background:rgba(46,125,50,0.08);border-left:3px solid #2E7D32;color:#2E7D32;border-radius:4px;"><b>✓ 자동 승인</b><br>'+(d.message||'')+'<br><span style="color:#558B5A;font-size:0.78rem;">금액 '+(d.amount?d.amount.toLocaleString()+'원':'-')+' · 카드 환급은 영업일 3~5일 소요</span></div>';
+      // 로컬 상태도 갱신
+      localStorage.removeItem('wc_paid');
+      localStorage.removeItem('wc_subscription_expires');
+    } else if(d.decision==='DENIED_EXPIRED'){
+      box.innerHTML='<div style="padding:14px 16px;background:rgba(198,40,40,0.06);border-left:3px solid #C62828;color:#C62828;border-radius:4px;"><b>✗ 환불 불가 — 기간 만료</b><br>'+(d.message||'')+'</div>';
+    } else if(d.decision==='DENIED_USED'){
+      var ev=d.evidence||{};
+      var detail='연습 '+(ev.practice||0)+'건 · AI 피드백 '+(ev.feedback||0)+'건 · 영상 '+(ev.video||0)+'건 · 페이지 방문 '+(ev.page_visits||0)+'회';
+      box.innerHTML='<div style="padding:14px 16px;background:rgba(198,40,40,0.06);border-left:3px solid #C62828;color:#C62828;border-radius:4px;"><b>✗ 환불 불가 — 이미 이용 시작</b><br>'+(d.message||'')+'<br><span style="color:#7A4040;font-size:0.78rem;">사용 증거: '+detail+'</span></div>';
+    } else {
+      box.innerHTML='<div style="padding:14px 16px;background:rgba(255,243,224,0.5);border-left:3px solid #E65100;color:#E65100;border-radius:4px;">'+(d.message||'환불 신청 처리 중 오류')+'</div>';
+    }
+  }catch(e){
+    btn.disabled=false;btn.textContent='환불 신청 (자동 판정)';
+    box.innerHTML='<div style="padding:14px 16px;color:#C62828;">서버 연결 오류 — 잠시 후 다시 시도해주세요.</div>';
+  }
+}
 </script>
 <div style="text-align:center;padding:40px 20px 20px;">
   <button onclick="if(confirm('로그아웃 하시겠습니까?')){localStorage.removeItem('wc_user');localStorage.removeItem('wc_paid');if(typeof signOut==='function')signOut();else location.href='index.html';}" style="padding:10px 24px;background:none;border:1px solid #ddd;border-radius:20px;color:#999;font-size:0.82rem;cursor:pointer;font-family:inherit;">로그아웃</button>

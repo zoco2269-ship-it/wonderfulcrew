@@ -146,8 +146,8 @@ window.addEventListener('popstate',function(){
   <script>if(new URLSearchParams(location.search).get('mode')==='hotel'){document.getElementById('rp-desc').innerHTML='호텔 서비스 상황을 한국어로 연습합니다.<br>실제 면접처럼 카메라 앞에서 답변해보세요.';}</script>
 
   <div class="avatar-grid" style="grid-template-columns:1fr 1fr;max-width:300px;margin:0 auto 20px;" id="avatar-grid">
-    <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/avatar-male.png" onclick="selAvatar(this)"><span class="emoji">👨🏻</span>남성</div>
-    <div class="avatar-opt" data-avatar="👩🏻" data-img="images/avatar-female.png" onclick="selAvatar(this)"><span class="emoji">👩🏻</span>여성</div>
+    <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/avatar-male.png" onclick="selAvatar(this)"><span class="emoji">👨🏻</span>남성 면접관</div>
+    <div class="avatar-opt" data-avatar="👩🏻" data-img="images/avatar-female.png" onclick="selAvatar(this)"><span class="emoji">👩🏻</span>여성 면접관</div>
   </div>
   <button class="btn-start" onclick="startInterview()">면접 시작하기</button>
 </div>
@@ -619,13 +619,15 @@ function startListening(){
         document.getElementById('transcript').textContent='목소리가 없어요. 🎙 답변하기 버튼을 누르고 말해 주세요.';
       }
     } else {
-      // 자동 재시작 — 1500ms 지연 (마이크 아이콘 깜빡임 방지)
+      // 자동 재시작 — 1차: 400ms, 실패 시 2차: 1200ms 추가 시도 (사용자에게 경고 표시 X)
       setTimeout(function(){
         if(window._manualStop) return;
         try{ recognition.start(); }catch(e){
-          document.getElementById('transcript').innerHTML='<span style="color:#E74C3C;">⚠ 인식 중단. 🎙 답변하기 다시 눌러 주세요.</span>';
-          var bA5=document.getElementById('btn-answer');if(bA5) bA5.style.display='inline-flex';
-          document.getElementById('btn-stop').style.display='none';
+          // 재시작 실패 — 800ms 후 한 번 더 조용히 재시도
+          setTimeout(function(){
+            if(window._manualStop) return;
+            try{ recognition.start(); }catch(e2){ /* 두 번째도 실패 시 그냥 현재 상태 유지 (인식 결과 텍스트 보존) */ }
+          },800);
         }
       },400);
     }

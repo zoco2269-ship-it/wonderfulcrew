@@ -27,7 +27,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 .avatar-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:340px;margin:0 auto 24px;}
 .avatar-opt{padding:14px 8px;background:rgba(255,255,255,0.04);border:2px solid rgba(201,168,76,0.15);border-radius:10px;text-align:center;cursor:pointer;transition:all 0.2s;font-size:0.82rem;color:rgba(255,255,255,0.8);}
 .avatar-opt:hover,.avatar-opt.sel{border-color:var(--gold);background:rgba(201,168,76,0.1);color:#fff;}
-.avatar-opt img{width:64px;height:64px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 6px;}
+.avatar-opt img{width:110px;height:110px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 8px;border:2px solid rgba(201,168,76,0.3);}
 .setup-select option{background:var(--navy);color:#fff;}
 .toggle-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;justify-content:center;}
 .toggle-row label{font-size:0.84rem;color:rgba(255,255,255,0.7);}
@@ -353,15 +353,11 @@ function startInterview(){
   var selAv=document.querySelector('.avatar-opt.sel');
   chosenAvatar=(selAv&&selAv.dataset.avatar)||'male';
   chosenImg=(selAv&&selAv.dataset.img)||'images/man-interviewer.png';
-  // 인터뷰 카드에 선택 이미지 반영
+  // 진행 화면은 이모티콘만 노출 (롤플레이와 통일) — 사진은 선택 화면에서만
   var avatarImg=document.getElementById('avatar-img');
   var avatarFallback=document.getElementById('avatar-face-fallback');
-  if(chosenImg && avatarImg){
-    avatarImg.src=chosenImg;
-    avatarImg.style.display='block';
-    if(avatarFallback) avatarFallback.style.display='none';
-    avatarImg.onerror=function(){avatarImg.style.display='none';if(avatarFallback)avatarFallback.style.display='flex';};
-  }
+  if(avatarImg) avatarImg.style.display='none';
+  if(avatarFallback) avatarFallback.style.display='flex';
   document.getElementById('avatar-emoji').textContent=chosenAvatar==='male'?'👨🏻':'👩🏻';
   document.getElementById('q-total').textContent=QS.length;
   document.getElementById('setup').style.display='none';

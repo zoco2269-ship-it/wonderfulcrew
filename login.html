@@ -138,11 +138,11 @@ async function showUser(user) {
   if (user.user_metadata?.avatar_url) {
     document.getElementById('user-avatar').innerHTML = '<img src="' + user.user_metadata.avatar_url + '">';
   }
-  // 다른 계정으로 로그인했으면 이전 사용자 상태 청소 (무료체험·프로필 플래그 등)
+  // 다른 계정으로 로그인했으면 이전 사용자 상태 청소 (무료체험·프로필 플래그·테스트모드 등)
   try {
     var prev = JSON.parse(localStorage.getItem('wc_user') || 'null');
     if (prev && prev.id && prev.id !== user.id) {
-      ['wc_free_trial','wc_profile_done','wc_profile','wc_level_result','wc_paid','wc_anon_id'].forEach(function(k){localStorage.removeItem(k);});
+      ['wc_free_trial','wc_profile_done','wc_profile','wc_level_result','wc_paid','wc_anon_id','wc_test_mode'].forEach(function(k){localStorage.removeItem(k);});
     }
   } catch(e) {}
   localStorage.setItem('wc_user', JSON.stringify({ id: user.id, email: user.email, name: user.user_metadata?.full_name }));

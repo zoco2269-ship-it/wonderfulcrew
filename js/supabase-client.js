@@ -30,6 +30,7 @@ var ADMIN_EMAILS = ['zoco2269@gmail.com', 'guswn5164@gmail.com'];
             localStorage.removeItem('wc_level_result');
             localStorage.removeItem('wc_paid');
             localStorage.removeItem('wc_anon_id');
+            localStorage.removeItem('wc_test_mode');
           }
         } catch(e) {}
       }
@@ -55,6 +56,7 @@ var ADMIN_EMAILS = ['zoco2269@gmail.com', 'guswn5164@gmail.com'];
           localStorage.removeItem('wc_profile');
           localStorage.removeItem('wc_level_result');
           localStorage.removeItem('wc_paid');
+          localStorage.removeItem('wc_test_mode');
         }
       });
 

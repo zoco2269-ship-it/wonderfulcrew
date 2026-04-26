@@ -219,13 +219,23 @@ function renderTrialBadge(containerId) {
     '</div>';
     document.body.appendChild(g);
   }
+  // 페이지 로드 시 — 서버 동기화 먼저, 그 다음 게이트 체크 1회만 (이중 증가 방지)
   document.addEventListener('DOMContentLoaded', function(){
-    gateCheck();
-    // 서버와 동기화 후 재확인
-    setTimeout(function(){
-      if (typeof syncTrialFromServer === 'function') {
-        syncTrialFromServer().then(gateCheck);
+    var ranOnce=false;
+    function runGateOnce(){if(ranOnce) return; ranOnce=true; gateCheck();}
+    // Supabase 클라이언트 준비될 때까지 최대 2초 대기, 그 후 sync → gate
+    var waited=0;
+    var tick=setInterval(function(){
+      waited+=200;
+      var sbReady = (typeof getSupabase==='function') && getSupabase();
+      if(sbReady || waited>=2000){
+        clearInterval(tick);
+        if(sbReady && typeof syncTrialFromServer==='function'){
+          syncTrialFromServer().then(runGateOnce).catch(runGateOnce);
+        } else {
+          runGateOnce();
+        }
       }
-    }, 1500);
+    },200);
   });
 })();

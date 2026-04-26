@@ -598,7 +598,7 @@ var CACHED_ANSWERS={
   '기내 서비스 상황 대처법':'기내 상황 대처는 LEAP(Listen-Empathise-Ask-Paraphrase)가 기본이에요. <a href="customer-service.html" style="color:#C5A55A;font-weight:700;">고객 응대 스킬</a>에서 LEAP와 4Ds를 학습해보세요.',
   '영어 면접 표현 코칭':'영어 면접 표현은 <a href="english-interview.html" style="color:#C5A55A;font-weight:700;">면접 표현</a> 페이지에서 상황별로 정리되어 있어요. 면접에서 자주 쓰는 표현들을 상황별로 익혀두시면 큰 도움이 됩니다. <a href="daily-english.html" style="color:#C5A55A;font-weight:700;">영어 쉐도잉</a>으로 매일 10분씩 따라 읽으면 발음과 유창함이 빠르게 늘어요.',
   '대한항공 자기소개서 작성 도와줘':'대한항공 자소서는 서비스 경험과 지원동기가 핵심이에요. "어릴 때부터 꿈이었다"는 수천 명이 쓰는 표현이니 피하세요. <a href="resume-guide.html" style="color:#C5A55A;font-weight:700;">자기소개서 가이드</a>에서 자세히 확인해보세요.',
-  '2차 디스커션에서 주의할 점':'고객 리스트의 모든 인물은 우리의 고객이에요. 한 명도 소중하지 않은 고객이 없어요. 모든 고객을 어떻게 케어할 수 있는지가 핵심이에요. 면접관이 보는 건 결론이 아니라 과정이에요. 디스커션 연습에서 직접 체험해보세요.',
+  '2차 디스커션에서 주의할 점':'고객 리스트의 모든 인물은 우리의 고객이에요. 한 명도 소중하지 않은 고객이 없어요. 모든 고객을 어떻게 케어할 수 있는지가 핵심이에요. 면접관이 보는 건 결론이 아니라 과정이에요. <a href="discussion2.html" style="color:#C5A55A;font-weight:700;">디스커션 연습</a>에서 직접 체험해보세요.',
   '기내 서비스 영어 표현 알려줘':'기내 서비스 영어는 <a href="english-interview.html" style="color:#C5A55A;font-weight:700;">면접 표현</a> 페이지에 상황별로 정리되어 있어요. "May I~", "Would you like~" 같은 정중한 표현이 기본이에요. <a href="english-interview.html" style="color:#C5A55A;font-weight:700;">격식 있는 영어 표현</a>도 확인해보세요.',
   '항공사별 스펙 정보 알려줘':'항공사별 지원 자격은 <a href="curriculum.html" style="color:#C5A55A;font-weight:700;">커리큘럼</a> 페이지에서 확인하실 수 있어요. 항공사를 선택하시면 면접 프로세스와 요건이 상세하게 나와 있어요.',
   '파이널 면접 준비 방법 알려줘':'파이널 면접은 나만의 에피소드를 미리 준비하는 게 핵심이에요. 즉석에서 생각하려 하지 마세요. <a href="final.html" style="color:#C5A55A;font-weight:700;">파이널 면접 연습</a>에서 항공사별로 연습해보세요.'
@@ -618,7 +618,10 @@ async function send(text){
   const msg=text||inp.value.trim();
   if(!msg||loading)return;
   if(!text){inp.value='';inp.style.height='auto';}
-  // 챗봇은 안내용이라 무료체험 카운트 안 함
+  // 3회 한도 — 어드민이거나 unlimited 가 아니면 차단
+  if(!st.unlimited && !((typeof isAdmin==='function')&&isAdmin()) && st.used>=3){
+    return;
+  }
   loading=true;btn.disabled=true;
   addMsg('user',msg);history.push({role:'user',content:msg});showTyping();
   try{
@@ -629,7 +632,9 @@ async function send(text){
       addMsg('ai',cached);
       history.push({role:'assistant',content:cached});
       if(typeof savePracticeRecord==='function') savePracticeRecord({stage:'chatbot',question:msg,answer:'',feedback:cached});
-      renderDots();
+      st.used++;saveSt();renderDots();
+      // 캐시 답변도 3회 한도 적용
+      checkChatbotLimit();
       loading=false;btn.disabled=false;
       return;
     }
@@ -642,34 +647,39 @@ async function send(text){
     if(typeof savePracticeRecord==='function') savePracticeRecord({stage:'chatbot',question:msg,answer:'',feedback:reply});
     st.used++;saveSt();renderDots();
     // 챗봇 3회 도달 — 입력 차단 + 홈 화면으로 자동 이동
-    if(!st.unlimited && st.used>=3){
-      setTimeout(function(){
-        var guideDiv=document.createElement('div');
-        guideDiv.style.cssText='background:linear-gradient(135deg,#1A2340,#2A3455);border-radius:14px;padding:20px 22px;margin:14px 0;text-align:center;';
-        guideDiv.innerHTML='<div style="color:#E8C96A;font-size:0.92rem;font-weight:700;margin-bottom:10px;">챗봇 체험 3회를 모두 사용하셨어요</div>'+
-          '<div style="color:rgba(255,255,255,0.78);font-size:0.82rem;line-height:1.65;margin-bottom:14px;">다양한 면접 연습 콘텐츠는 홈 화면에서 만나보세요.<br>곧 자동으로 이동합니다 (<span id="wc-home-cd">5</span>초)</div>'+
-          '<a href="index.html" style="display:inline-block;padding:10px 22px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:22px;font-size:0.84rem;font-weight:700;text-decoration:none;">홈 화면으로 →</a>';
-        chat.appendChild(guideDiv);
-        chat.scrollTop=chat.scrollHeight;
-        // 입력 영역 차단
-        try{
-          var inputEl=document.getElementById('wc-input');
-          var sendEl=document.getElementById('wc-send');
-          if(inputEl){inputEl.disabled=true;inputEl.placeholder='챗봇 체험 3회 종료 — 홈으로 이동합니다';inputEl.style.opacity='0.5';}
-          if(sendEl){sendEl.disabled=true;sendEl.style.opacity='0.5';sendEl.style.cursor='not-allowed';}
-        }catch(e){}
-        // 5초 카운트다운 후 홈으로
-        var cd=5;
-        var cdTimer=setInterval(function(){
-          cd--;
-          var cdEl=document.getElementById('wc-home-cd');
-          if(cdEl) cdEl.textContent=cd;
-          if(cd<=0){clearInterval(cdTimer);location.href='index.html';}
-        },1000);
-      },800);
-    }
+    checkChatbotLimit();
   }catch(e){document.getElementById('wc-typing')?.remove();addMsg('ai','연결에 문제가 생겼어요. 잠시 후 다시 시도해 주세요.');}
   loading=false;btn.disabled=false;
+}
+
+// 챗봇 3회 한도 도달 시 입력 차단 + 홈 화면으로 카운트다운 이동
+function checkChatbotLimit(){
+  if(st.unlimited) return;
+  if((typeof isAdmin==='function')&&isAdmin()) return;
+  if(st.used<3) return;
+  if(document.getElementById('wc-home-cd')) return; // 이미 표시중
+  setTimeout(function(){
+    var guideDiv=document.createElement('div');
+    guideDiv.style.cssText='background:linear-gradient(135deg,#1A2340,#2A3455);border-radius:14px;padding:20px 22px;margin:14px 0;text-align:center;';
+    guideDiv.innerHTML='<div style="color:#E8C96A;font-size:0.92rem;font-weight:700;margin-bottom:10px;">챗봇 체험 3회를 모두 사용하셨어요</div>'+
+      '<div style="color:rgba(255,255,255,0.78);font-size:0.82rem;line-height:1.65;margin-bottom:14px;">다양한 면접 연습 콘텐츠는 홈 화면에서 만나보세요.<br>곧 자동으로 이동합니다 (<span id="wc-home-cd">5</span>초)</div>'+
+      '<a href="index.html" style="display:inline-block;padding:10px 22px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:22px;font-size:0.84rem;font-weight:700;text-decoration:none;">홈 화면으로 →</a>';
+    chat.appendChild(guideDiv);
+    chat.scrollTop=chat.scrollHeight;
+    try{
+      var inputEl=document.getElementById('wc-input');
+      var sendEl=document.getElementById('wc-send');
+      if(inputEl){inputEl.disabled=true;inputEl.placeholder='챗봇 체험 3회 종료 — 홈으로 이동합니다';inputEl.style.opacity='0.5';}
+      if(sendEl){sendEl.disabled=true;sendEl.style.opacity='0.5';sendEl.style.cursor='not-allowed';}
+    }catch(e){}
+    var cd=5;
+    var cdTimer=setInterval(function(){
+      cd--;
+      var cdEl=document.getElementById('wc-home-cd');
+      if(cdEl) cdEl.textContent=cd;
+      if(cd<=0){clearInterval(cdTimer);location.href='index.html';}
+    },1000);
+  },800);
 }
 
 // 멤버십 등록 확인 후 무제한 해제

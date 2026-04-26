@@ -152,8 +152,8 @@ body{background:#FAF7F0;font-family:'Noto Sans KR','Inter','Apple SD Gothic Neo'
 
   <!-- 입력창 -->
   <div style="padding:16px 20px;border-top:1px solid rgba(197,165,90,0.25);background:rgba(250,247,240,0.97);flex-shrink:0;">
-    <div style="display:flex;gap:10px;align-items:flex-end;background:#fff;border:1px solid #C5A55A;border-radius:14px;padding:10px 14px;">
-      <textarea id="wc-input" rows="1" placeholder="궁금한 것을 무엇이든 물어보세요..." style="flex:1;background:none;border:none;outline:none;color:#1A2340;font-size:0.92rem;resize:none;max-height:120px;line-height:1.5;font-family:inherit;"></textarea>
+    <div style="display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #C5A55A;border-radius:14px;padding:8px 14px;">
+      <textarea id="wc-input" rows="1" placeholder="궁금한 것을 무엇이든 물어보세요..." style="flex:1;background:none;border:none;outline:none;color:#1A2340;font-size:0.92rem;resize:none;max-height:120px;line-height:1.5;font-family:inherit;padding:6px 0;display:block;"></textarea>
       <button id="wc-send" style="width:36px;height:36px;border-radius:10px;background:#C5A55A;border:none;color:#1A2340;cursor:pointer;flex-shrink:0;font-size:1.1rem;">➤</button>
     </div>
     <div style="font-size:0.72rem;color:#8A7E6E;margin-top:8px;text-align:center;letter-spacing:0.03em;" id="wc-bottom-label">WonderfulCrew · 승무원 면접 전용 코치</div>
@@ -641,20 +641,32 @@ async function send(text){
     addMsg('ai',fmt(reply));
     if(typeof savePracticeRecord==='function') savePracticeRecord({stage:'chatbot',question:msg,answer:'',feedback:reply});
     st.used++;saveSt();renderDots();
-    // 챗봇에서 3회 대화 후 다른 연습 유도 (자동 이동 아닌 버튼)
+    // 챗봇 3회 도달 — 입력 차단 + 홈 화면으로 자동 이동
     if(!st.unlimited && st.used>=3){
       setTimeout(function(){
         var guideDiv=document.createElement('div');
-        guideDiv.style.cssText='background:linear-gradient(135deg,#1A2340,#2A3455);border-radius:14px;padding:18px 20px;margin:12px 0;text-align:center;';
-        guideDiv.innerHTML='<div style="color:#E8C96A;font-size:0.86rem;font-weight:700;margin-bottom:8px;">다양한 면접 연습도 체험해보세요</div>'+
-          '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">'+
-          '<a href="curriculum.html" style="padding:8px 16px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:20px;font-size:0.78rem;font-weight:600;text-decoration:none;">면접 연습</a>'+
-          '<a href="roleplay-practice-ko.html" style="padding:8px 16px;background:rgba(255,255,255,0.15);color:#fff;border-radius:20px;font-size:0.78rem;text-decoration:none;">롤플레이</a>'+
-          '<a href="discussion-practice-ko.html" style="padding:8px 16px;background:rgba(255,255,255,0.15);color:#fff;border-radius:20px;font-size:0.78rem;text-decoration:none;">디스커션</a>'+
-          '</div>';
+        guideDiv.style.cssText='background:linear-gradient(135deg,#1A2340,#2A3455);border-radius:14px;padding:20px 22px;margin:14px 0;text-align:center;';
+        guideDiv.innerHTML='<div style="color:#E8C96A;font-size:0.92rem;font-weight:700;margin-bottom:10px;">챗봇 체험 3회를 모두 사용하셨어요</div>'+
+          '<div style="color:rgba(255,255,255,0.78);font-size:0.82rem;line-height:1.65;margin-bottom:14px;">다양한 면접 연습 콘텐츠는 홈 화면에서 만나보세요.<br>곧 자동으로 이동합니다 (<span id="wc-home-cd">5</span>초)</div>'+
+          '<a href="index.html" style="display:inline-block;padding:10px 22px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:22px;font-size:0.84rem;font-weight:700;text-decoration:none;">홈 화면으로 →</a>';
         chat.appendChild(guideDiv);
         chat.scrollTop=chat.scrollHeight;
-      },1000);
+        // 입력 영역 차단
+        try{
+          var inputEl=document.getElementById('wc-input');
+          var sendEl=document.getElementById('wc-send');
+          if(inputEl){inputEl.disabled=true;inputEl.placeholder='챗봇 체험 3회 종료 — 홈으로 이동합니다';inputEl.style.opacity='0.5';}
+          if(sendEl){sendEl.disabled=true;sendEl.style.opacity='0.5';sendEl.style.cursor='not-allowed';}
+        }catch(e){}
+        // 5초 카운트다운 후 홈으로
+        var cd=5;
+        var cdTimer=setInterval(function(){
+          cd--;
+          var cdEl=document.getElementById('wc-home-cd');
+          if(cdEl) cdEl.textContent=cd;
+          if(cd<=0){clearInterval(cdTimer);location.href='index.html';}
+        },1000);
+      },800);
     }
   }catch(e){document.getElementById('wc-typing')?.remove();addMsg('ai','연결에 문제가 생겼어요. 잠시 후 다시 시도해 주세요.');}
   loading=false;btn.disabled=false;

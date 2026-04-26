@@ -159,15 +159,27 @@ function renderTrialBadge(containerId) {
     'live-booking.html','lecture.html'
   ];
   if (gatedPages.indexOf(page) === -1) return;
-  // 테스트 모드는 즉시 리다이렉트 (DOM 기다리지 않음)
-  if (localStorage.getItem('wc_test_mode') === 'true') {
+  // wc_test_mode 는 어드민 전용 시뮬레이션 플래그 — 일반 사용자에게 잘못 박혀있으면 자동 청소
+  // (이전에 어드민이 토글하고 비어드민으로 로그인 전환하면 잔재 → 환불 카운트 안 깎이는 버그 방지)
+  function _isAdminSync(){
+    try {
+      var u = JSON.parse(localStorage.getItem('wc_user') || 'null');
+      var ADMIN = ['zoco2269@gmail.com','guswn5164@gmail.com'];
+      return u && ADMIN.indexOf(u.email) !== -1;
+    } catch(e) { return false; }
+  }
+  if (localStorage.getItem('wc_test_mode') === 'true' && !_isAdminSync()) {
+    localStorage.removeItem('wc_test_mode');
+  }
+  // 테스트 모드는 어드민일 때만 즉시 리다이렉트 (DOM 기다리지 않음)
+  if (localStorage.getItem('wc_test_mode') === 'true' && _isAdminSync()) {
     location.replace('plans.html?blocked=' + encodeURIComponent(page));
     return;
   }
   // 즉시 체크 (어드민이나 유료는 통과)
   function gateCheck(){
-    // 테스트 모드는 무조건 잠금 — 관리자가 결제 플로우 검증 중
-    if (localStorage.getItem('wc_test_mode') === 'true') {
+    // 테스트 모드는 어드민일 때만 잠금 (어드민이 결제 플로우 검증 중)
+    if (localStorage.getItem('wc_test_mode') === 'true' && _isAdminSync()) {
       document.body.style.pointerEvents = 'none';
       document.body.style.filter = 'blur(4px)';
       showLockedGate();

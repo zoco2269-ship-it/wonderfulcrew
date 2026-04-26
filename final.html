@@ -533,12 +533,37 @@ async function stopAnswer(){
 
 async function generateFinalFeedback(fb,airlineName){
   fb.innerHTML+='<br><br><span style="color:var(--gold);">피드백을 작성하고 있어요...</span>';
+  // 카메라 영상 프레임 캡처 — 이미지 피드백용
+  var capturedImg=null;
+  try{
+    var v=document.getElementById('cam-video');
+    if(v && v.videoWidth>0){
+      var cv=document.createElement('canvas');
+      cv.width=Math.min(v.videoWidth,640);
+      cv.height=Math.round(cv.width*v.videoHeight/v.videoWidth);
+      var ctx=cv.getContext('2d');
+      ctx.translate(cv.width,0);ctx.scale(-1,1);
+      ctx.drawImage(v,0,0,cv.width,cv.height);
+      capturedImg=cv.toDataURL('image/jpeg',0.7);
+    }
+  }catch(e){}
   try{
     var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Candidate':'Interviewer')+': '+m.content;}).join('\n');
+    var sysPrompt='You are a senior cabin crew interviewer for '+airlineName+' evaluating a mock final interview answer.\n\nQuestion: "'+QS[qIdx].q+'"\n\nIMPORTANT SCORING RULES:\n- The candidate answer comes from SPEECH RECOGNITION — ignore grammar/broken sentences/capitalization. Focus on CONTENT and INTENT.\n- Concrete example + specific details (place, moment, what was done) + customer-oriented outcome + self-reflection → 80+\n- Question is answered with a clear example but lacks specifics → 70-79\n- Too generic / too short / off-topic → 50-65\n- Be fair and concrete. Cite SPECIFIC phrases the candidate used in your feedback.\n'+(capturedImg?'- An image of the candidate (camera capture) is attached. Analyze appearance: smile, facial expression, eye contact, posture, professional grooming. Include this in feedback.\n':'')+'\nRespond in EXACTLY this Korean format (plain text, no markdown, no asterisks):\n\n점수: X/100\n\n'+(capturedImg?'이미지 피드백 (미소·표정·시선·자세):\n- (2 줄, 카메라 캡처에서 보이는 첫인상·미소·시선·자세)\n\n':'')+'잘한 점:\n- (2-3 줄, 후보자가 실제로 말한 내용을 인용하며)\n\n개선할 점:\n- (1-2 줄, 구체적으로 무엇을 더하면 좋을지)';
+    var userMsg;
+    if(capturedImg && capturedImg.indexOf('base64,')>-1){
+      var base64=capturedImg.split('base64,')[1];
+      userMsg=[
+        {type:'image',source:{type:'base64',media_type:'image/jpeg',data:base64}},
+        {type:'text',text:'Question: '+QS[qIdx].q+'\n\nInterview conversation:\n'+convoSummary+'\n\nPlease evaluate the candidate\'s answer + image.'}
+      ];
+    } else {
+      userMsg='Question: '+QS[qIdx].q+'\n\nInterview conversation:\n'+convoSummary+'\n\nPlease evaluate the candidate\'s answer.';
+    }
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:500,
-      system:'You are a senior cabin crew interviewer for '+airlineName+' evaluating a mock final interview answer.\n\nQuestion: "'+QS[qIdx].q+'"\n\nIMPORTANT SCORING RULES:\n- The candidate answer comes from SPEECH RECOGNITION — ignore grammar/broken sentences/capitalization. Focus on CONTENT and INTENT.\n- Concrete example + specific details (place, moment, what was done) + customer-oriented outcome + self-reflection → 80+\n- Question is answered with a clear example but lacks specifics → 70-79\n- Too generic / too short / off-topic → 50-65\n- Be fair and concrete. Cite SPECIFIC phrases the candidate used in your feedback.\n\nRespond in EXACTLY this Korean format (plain text, no markdown, no asterisks):\n\n점수: X/100\n\n잘한 점:\n- (2-3 줄, 후보자가 실제로 말한 내용을 인용하며)\n\n개선할 점:\n- (1-2 줄, 구체적으로 무엇을 더하면 좋을지)',
-      messages:[{role:'user',content:'Question: '+QS[qIdx].q+'\n\nInterview conversation:\n'+convoSummary+'\n\nPlease evaluate the candidate\'s answer.'}]
+      model:'claude-haiku-4-5-20251001',max_tokens:800,
+      system:sysPrompt,
+      messages:[{role:'user',content:userMsg}]
     })});
     var data=await res.json();
     var txt=((data&&data.content&&data.content[0]&&data.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'').trim();

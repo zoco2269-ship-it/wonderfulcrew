@@ -92,6 +92,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   </div>
   <div class="topic-card sel" onclick="selTopic(0,this)"><h3>Topic 1</h3><p>서비스 경험을 포함한 자기소개 + 가장 좋아하는 여행지 (Favorite Destination)</p></div>
   <div class="topic-card" onclick="selTopic(1,this)"><h3>Topic 2</h3><p>서비스 경험을 포함한 자기소개 + 기내에서 옆자리에 유명인(Celebrity)을 앉힌다면 누구?</p></div>
+  <div class="topic-card" onclick="selTopic(2,this)"><h3>Topic 3</h3><p>이름·나이·서비스 경험 + Emirates 합류 후 먹어보고 싶은 음식 (Food after Joining Emirates)</p></div>
   <div class="toggle-row"><input type="checkbox" id="cam-toggle" checked><label for="cam-toggle">카메라 ON (이미지 면접 필수)</label></div>
   <button class="btn-start" onclick="startPresentation()">발표 시작</button>
 </div>
@@ -111,7 +112,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 </div>
 
 <script>
-var TOPICS=['Introduce yourself including your service experience, and tell us about your favorite travel destination and why.','Introduce yourself including your service experience. If you could sit next to any celebrity on a flight, who would it be and why?'];
+var TOPICS=['Introduce yourself including your service experience, and tell us about your favorite travel destination and why.','Introduce yourself including your service experience. If you could sit next to any celebrity on a flight, who would it be and why?','Tell me your name, age, customer service experience, and food you\'d want to try after joining Emirates.'];
 var selectedTopic=0,stream=null,recognition=null,fullText='';
 function selTopic(i,el){selectedTopic=i;document.querySelectorAll('.topic-card').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');}
 window.addEventListener('beforeunload',function(){if('speechSynthesis' in window)window.speechSynthesis.cancel();if(stream)stream.getTracks().forEach(function(t){t.stop();});});

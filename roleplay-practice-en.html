@@ -112,10 +112,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   .waveform{height:20px;padding:0 12px;}
   .transcript-bar{padding:8px 14px;font-size:0.92rem;min-height:30px;}
   .feedback-panel{max-height:24dvh;padding:12px 16px;font-size:0.92rem;}
-  .controls{gap:6px;padding:8px 10px env(safe-area-inset-bottom,8px);flex-wrap:nowrap;overflow-x:auto;}
-  .controls::-webkit-scrollbar{display:none;}
+  /* 모바일 한정 — 컨트롤 버튼 2열 그리드 */
+  .controls{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;padding:8px 10px env(safe-area-inset-bottom,8px)!important;overflow:visible!important;}
   /* Samsung Internet 폰트 부스트 보호 — px 강제로 버튼 커짐 방지 */
-  .ctrl-btn{padding:8px 12px!important;font-size:13px!important;line-height:1.15!important;flex-shrink:0;white-space:nowrap;}
+  .ctrl-btn{padding:9px 8px!important;font-size:12.5px!important;line-height:1.2!important;width:100%!important;justify-content:center!important;white-space:nowrap!important;}
   .card-frame{min-height:38dvh!important;width:44vw!important;}
   .q-banner .question{font-size:15px!important;line-height:1.45!important;}
   .q-banner .label{font-size:11px!important;}
@@ -164,9 +164,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <!-- SETUP SCREEN -->
 <div class="setup" id="setup">
   <h1>Roleplay <em>Interview Practice</em></h1>
-  <p>The AI will present hospitality scenarios — in-flight, hotel, restaurant, café &amp; more.<br>Answer as if you were in a real interview.</p>
+  <p>Talk with your interviewer as if you were in a real interview.</p>
 
-  <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.06em;">Interviewer Avatar</div>
+  <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.06em;">Choose Interviewer</div>
   <div class="avatar-grid" style="grid-template-columns:1fr 1fr;max-width:300px;margin:0 auto 20px;" id="avatar-grid">
     <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/avatar-male.png" onclick="selAvatar(this)"><span class="emoji">👨🏻</span>Male</div>
     <div class="avatar-opt" data-avatar="👩🏻" data-img="images/avatar-female.png" onclick="selAvatar(this)"><span class="emoji">👩🏻</span>Female</div>

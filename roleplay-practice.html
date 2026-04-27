@@ -102,10 +102,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   .waveform{height:20px;padding:0 12px;}
   .transcript-bar{padding:8px 14px;font-size:0.92rem;min-height:30px;max-height:90px;overflow-y:auto;}
   .feedback-panel{max-height:24dvh;padding:12px 16px;font-size:0.92rem;}
-  .controls{gap:6px;padding:8px 10px env(safe-area-inset-bottom,8px);flex-wrap:nowrap;overflow-x:auto;position:sticky;bottom:0;z-index:10;}
-  .controls::-webkit-scrollbar{display:none;}
+  /* 모바일 한정 — 컨트롤 버튼 2열 그리드 (위 2개 / 아래 2개) */
+  .controls{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;padding:8px 10px env(safe-area-inset-bottom,8px)!important;position:sticky;bottom:0;z-index:10;overflow:visible!important;}
   /* Samsung Internet 폰트 부스트 보호 — px 강제로 버튼 커짐 방지 → 카메라 영역 보존 */
-  .ctrl-btn{padding:8px 12px!important;font-size:13px!important;line-height:1.15!important;flex-shrink:0;white-space:nowrap;}
+  .ctrl-btn{padding:9px 8px!important;font-size:12.5px!important;line-height:1.2!important;width:100%!important;justify-content:center!important;white-space:nowrap!important;}
   .card-frame{min-height:38dvh!important;width:44vw!important;}
   .q-banner .question{font-size:15px!important;line-height:1.45!important;}
   .q-banner .label{font-size:11px!important;}
@@ -156,10 +156,10 @@ window.addEventListener('popstate',function(){
 
 <!-- SETUP SCREEN -->
 <div class="setup" id="setup">
-  <h1>롤플레이<br><em>면접연습</em></h1>
-  <p>면접관 아바타가 기내 상황 질문을 읽어드립니다.<br>카메라 앞에서 실전처럼 답변하세요.</p>
+  <h1>롤플레이 <em>면접연습</em></h1>
+  <p>면접관과 실전처럼 대화하세요.</p>
 
-  <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.06em;">면접관 아바타</div>
+  <div style="font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.06em;">면접관 선택</div>
   <div class="avatar-grid" style="grid-template-columns:1fr 1fr;max-width:300px;margin:0 auto 20px;" id="avatar-grid">
     <div class="avatar-opt sel" data-avatar="👨🏻" data-img="images/man-interviewer.png" onclick="selAvatar(this)"><img src="images/man-interviewer.png" alt="남성" style="width:110px;height:110px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 8px;border:2px solid rgba(201,168,76,0.3);">남성 면접관</div>
     <div class="avatar-opt" data-avatar="👩🏻" data-img="images/woman-interviewer.png" onclick="selAvatar(this)"><img src="images/woman-interviewer.png" alt="여성" style="width:110px;height:110px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 8px;border:2px solid rgba(201,168,76,0.3);">여성 면접관</div>

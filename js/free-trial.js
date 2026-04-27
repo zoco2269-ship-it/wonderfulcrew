@@ -290,10 +290,8 @@ function renderTrialBadge(containerId) {
       if (document.body) _showToast();
       else document.addEventListener('DOMContentLoaded', _showToast);
     } else {
-      // 게이트 화면은 DOM 준비된 후
-      var _lock = function(){ try{ document.body.style.pointerEvents='none'; document.body.style.filter='blur(4px)'; showLockedGate(); }catch(e){} };
-      if (document.body) _lock();
-      else document.addEventListener('DOMContentLoaded', _lock);
+      // 무료체험 소진 → 모자이크 처리 X, 즉시 요금제 페이지로 이동
+      try{ location.replace('plans.html?blocked=' + encodeURIComponent(page)); }catch(e){}
     }
   }
   // 즉시 실행 — 페이지 진입 순간 카운트 차감

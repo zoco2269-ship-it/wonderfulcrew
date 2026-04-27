@@ -144,9 +144,19 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 </nav>
 <div id="app">
 
-<!-- 레벨테스트 완료 시 커리큘럼으로 -->
+<!-- 레벨테스트 완료 시 / 어드민 / 결제 사용자 → 커리큘럼으로 -->
 <script>
 (function(){
+  // 어드민·결제 사용자는 레벨테스트 우회
+  try {
+    var u = JSON.parse(localStorage.getItem('wc_user') || 'null');
+    var ADMIN = ['zoco2269@gmail.com','guswn5164@gmail.com'];
+    var isAdminLocal = u && ADMIN.indexOf(u.email) !== -1;
+    if (isAdminLocal || localStorage.getItem('wc_paid') === 'true') {
+      location.href='curriculum.html';
+      return;
+    }
+  } catch(e) {}
   var levelDone=localStorage.getItem('wc_level_result');
   if(levelDone){
     location.href='curriculum.html';

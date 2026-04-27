@@ -15,9 +15,20 @@ module.exports = async function(req, res) {
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
   try {
-    // 중복 저장 방지: 같은 moid 이미 있으면 skip
+    // 중복 저장 방지: 같은 moid 이미 있으면 skip — 다만 users.plan_active 동기화는 한 번 더
     const { data: existing } = await sb.from('payments').select('id').eq('moid', moid).maybeSingle();
     if (existing) {
+      if (userId) {
+        try {
+          await sb.from('users').upsert({
+            auth_id: userId,
+            email: email || '',
+            plan: plan || 'basic',
+            plan_active: true,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'auth_id' });
+        } catch(e) {}
+      }
       return res.json({ ok: true, alreadyRecorded: true, paymentId: existing.id });
     }
 
@@ -50,13 +61,15 @@ module.exports = async function(req, res) {
       }, { onConflict: 'user_id' });
       if (subErr) console.warn('[save-payment] upsert subscription error:', subErr.message);
 
-      // public.users 프로필도 plan 업데이트
+      // public.users 프로필 — row 없으면 생성, 있으면 업데이트 (upsert)
       try {
-        await sb.from('users').update({
+        await sb.from('users').upsert({
+          auth_id: userId,
+          email: email || '',
           plan: plan || 'basic',
           plan_active: true,
           updated_at: now.toISOString()
-        }).eq('auth_id', userId);
+        }, { onConflict: 'auth_id' });
       } catch(e) {}
     }
 

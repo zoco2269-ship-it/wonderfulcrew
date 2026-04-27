@@ -533,17 +533,21 @@ async function stopAnswer(){
 
 async function generateFinalFeedback(fb,airlineName){
   fb.innerHTML+='<br><br><span style="color:var(--gold);">피드백을 작성하고 있어요...</span>';
-  // 카메라 영상 프레임 캡처 — 이미지 피드백용
+  // 카메라 영상 프레임 캡처 — 양 차원 1024px 캡 (Claude API 2000px 제한 안전)
   var capturedImg=null;
   try{
     var v=document.getElementById('cam-video');
-    if(v && v.videoWidth>0){
+    if(v && v.videoWidth>0 && v.videoHeight>0){
+      var MAX=1024;
+      var vw=v.videoWidth, vh=v.videoHeight;
+      var w=vw, h=vh;
+      if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}
+      else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}
       var cv=document.createElement('canvas');
-      cv.width=Math.min(v.videoWidth,640);
-      cv.height=Math.round(cv.width*v.videoHeight/v.videoWidth);
+      cv.width=w;cv.height=h;
       var ctx=cv.getContext('2d');
-      ctx.translate(cv.width,0);ctx.scale(-1,1);
-      ctx.drawImage(v,0,0,cv.width,cv.height);
+      ctx.translate(w,0);ctx.scale(-1,1);
+      ctx.drawImage(v,0,0,w,h);
       capturedImg=cv.toDataURL('image/jpeg',0.7);
     }
   }catch(e){}

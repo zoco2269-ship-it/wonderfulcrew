@@ -494,6 +494,15 @@ function showTab(tab){
 }
 var SYS='당신은 에미레이트항공 일등석 승무원 7년, 20년 코칭 경력, 22개국 1,000명 이상 합격생을 배출한 WonderfulCrew의 전문 코칭 AI입니다. 승무원/하이엔드 서비스직 면접에 최적화된 자소서와 CV를 작성해주세요. 서비스 마인드, 공감 능력, 팀워크, 진정성을 중심으로 작성하세요. plain text only, no markdown.';
 async function callAI(prompt,resultId,noteId){
+  // 월정액 이용자 전용 — 무료체험·미결제 사용자 차단
+  var isAdminUser = (typeof isAdmin === 'function' && isAdmin());
+  var isPaid = localStorage.getItem('wc_paid') === 'true';
+  if (!isAdminUser && !isPaid) {
+    if (confirm('AI 자소서·CV 생성은 월정액 이용자 전용입니다.\n\n요금제 페이지로 이동할까요?')) {
+      location.href = 'plans.html?blocked=resume-guide';
+    }
+    return;
+  }
   var r=document.getElementById(resultId);var n=document.getElementById(noteId);
   r.style.display='block';r.textContent='생성 중...';
   try{

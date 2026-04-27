@@ -263,7 +263,6 @@ function renderTrialBadge(containerId) {
       '<p style="font-size:0.9rem;color:#5A5048;line-height:1.75;margin-bottom:26px;">무료체험 10회를 모두 사용하셨습니다.<br>요금제를 결제하시면 바로 이용 가능합니다.</p>' +
       '<div style="display:flex;flex-direction:column;gap:10px;">' +
         '<a href="plans.html" style="display:block;padding:15px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.94rem;font-weight:700;text-decoration:none;pointer-events:auto;">요금제 보러가기 →</a>' +
-        '<a href="pricing.html" style="display:block;padding:12px;background:#1A2340;color:#fff;border-radius:28px;font-size:0.86rem;font-weight:600;text-decoration:none;pointer-events:auto;">🏆 프리미엄 250만원 패키지</a>' +
         '<a href="index.html" style="display:block;padding:10px;color:#5A5048;font-size:0.82rem;text-decoration:underline;pointer-events:auto;">홈으로 돌아가기</a>' +
       '</div>' +
     '</div>';

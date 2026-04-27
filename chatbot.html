@@ -170,12 +170,12 @@ body{background:#FAF7F0;font-family:'Noto Sans KR','Inter','Apple SD Gothic Neo'
     </div>
   </div>
 
-  <!-- ②-A 10회 체험 요약 리포트 (10회 소진 후 먼저 노출) -->
+  <!-- ②-A 챗봇 3회 체험 요약 리포트 (3회 소진 후 먼저 노출) -->
   <div class="wc-overlay" id="wc-report-overlay">
     <div class="wc-card" style="max-width:500px;border:1px solid rgba(197,165,90,0.4);max-height:90vh;overflow-y:auto;">
       <div style="text-align:center;margin-bottom:18px;">
-        <div class="wc-badge">FREE TRIAL · 10회 체험 완료</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;color:#1A2340;line-height:1.45;margin-bottom:6px;">당신의 10회 체험<br><span style="color:#C5A55A;">요약 리포트</span></div>
+        <div class="wc-badge">AI 코치 챗봇 · 3회 체험 종료</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;color:#1A2340;line-height:1.45;margin-bottom:6px;">당신의 챗봇 3회 체험<br><span style="color:#C5A55A;">요약 리포트</span></div>
         <div style="font-size:0.78rem;color:#8A7E6E;line-height:1.6;">AI 코치와 나눈 대화를 바탕으로 분석했어요.</div>
       </div>
 
@@ -564,9 +564,9 @@ function renderDots(){
   }
   const max=st.bonusUnlocked?7:(st.formDone?5:2);
   const rem=Math.max(0,max-st.used);
-  if(rem===0){labelEl.textContent='체험 완료';labelEl.className='wc-counter-label warn';}
-  else if(rem===1){labelEl.textContent='마지막 1회';labelEl.className='wc-counter-label warn';}
-  else{labelEl.textContent=`${rem}회 남음`;labelEl.className='wc-counter-label';}
+  // 한도 노출 X — 도트·라벨 모두 숨김 (사용자가 횟수 인지 못하게)
+  if(dotsEl) dotsEl.style.display='none';
+  if(labelEl){ labelEl.textContent=''; labelEl.style.display='none'; }
 }
 
 function renderReport(){
@@ -662,8 +662,9 @@ async function send(text){
   const msg=text||inp.value.trim();
   if(!msg||loading)return;
   if(!text){inp.value='';inp.style.height='auto';}
-  // 3회 한도 — 어드민이거나 unlimited 가 아니면 차단
+  // 4번째 입력 시도 — 어드민/유료 아니면 답변 없이 즉시 홈 이동
   if(!st.unlimited && !((typeof isAdmin==='function')&&isAdmin()) && st.used>=3){
+    try{ location.href='index.html'; }catch(e){}
     return;
   }
   loading=true;btn.disabled=true;
@@ -705,18 +706,18 @@ function checkChatbotLimit(){
   setTimeout(function(){
     var guideDiv=document.createElement('div');
     guideDiv.style.cssText='background:linear-gradient(135deg,#1A2340,#2A3455);border-radius:14px;padding:20px 22px;margin:14px 0;text-align:center;';
-    guideDiv.innerHTML='<div style="color:#E8C96A;font-size:0.92rem;font-weight:700;margin-bottom:10px;">챗봇 체험 3회를 모두 사용하셨어요</div>'+
-      '<div style="color:rgba(255,255,255,0.78);font-size:0.82rem;line-height:1.65;margin-bottom:14px;">다양한 면접 연습 콘텐츠는 홈 화면에서 만나보세요.<br>곧 자동으로 이동합니다 (<span id="wc-home-cd">5</span>초)</div>'+
+    guideDiv.innerHTML='<div style="color:#E8C96A;font-size:0.92rem;font-weight:700;margin-bottom:10px;">대화를 잘 마쳤어요</div>'+
+      '<div style="color:rgba(255,255,255,0.78);font-size:0.82rem;line-height:1.65;margin-bottom:14px;">다양한 면접 연습 콘텐츠는 홈 화면에서 만나보세요.<br>잠시 후 홈으로 이동합니다 (<span id="wc-home-cd">12</span>초)</div>'+
       '<a href="index.html" style="display:inline-block;padding:10px 22px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:22px;font-size:0.84rem;font-weight:700;text-decoration:none;">홈 화면으로 →</a>';
     chat.appendChild(guideDiv);
     chat.scrollTop=chat.scrollHeight;
     try{
       var inputEl=document.getElementById('wc-input');
       var sendEl=document.getElementById('wc-send');
-      if(inputEl){inputEl.disabled=true;inputEl.placeholder='챗봇 체험 3회 종료 — 홈으로 이동합니다';inputEl.style.opacity='0.5';}
+      if(inputEl){inputEl.disabled=true;inputEl.placeholder='대화를 마쳤어요 — 홈으로 이동합니다';inputEl.style.opacity='0.5';}
       if(sendEl){sendEl.disabled=true;sendEl.style.opacity='0.5';sendEl.style.cursor='not-allowed';}
     }catch(e){}
-    var cd=5;
+    var cd=12;
     var cdTimer=setInterval(function(){
       cd--;
       var cdEl=document.getElementById('wc-home-cd');
@@ -731,6 +732,8 @@ function checkChatbotLimit(){
 window.wcUnlock=function(){st.unlimited=true;saveSt();document.getElementById('wc-membership-overlay').classList.remove('show');renderDots();addMsg('ai','멤버십 등록이 확인되었어요.<br><strong style="color:#C5A55A;">이제 챗봇을 무제한으로 이용하실 수 있어요.</strong><br>합격할 때까지 함께해요.');};
 
 renderDots();
+// 페이지 진입 시 이미 3회 다 썼으면 자동 홈 이동 카운트다운
+checkChatbotLimit();
 })();
 </script>
 </body>

@@ -267,23 +267,18 @@ function renderTrialBadge(containerId) {
     '</div>';
     document.body.appendChild(g);
   }
-  // 페이지 로드 시 — 서버 동기화 먼저, 그 다음 게이트 체크 1회만 (이중 증가 방지)
+  // 페이지 로드 시 — gateCheck 즉시 실행 (server 응답 대기 X — race condition 차단)
+  // server sync 는 백그라운드에서 별도 진행
   document.addEventListener('DOMContentLoaded', function(){
     var ranOnce=false;
     function runGateOnce(){if(ranOnce) return; ranOnce=true; gateCheck();}
-    // Supabase 클라이언트 준비될 때까지 최대 2초 대기, 그 후 sync → gate
-    var waited=0;
-    var tick=setInterval(function(){
-      waited+=200;
-      var sbReady = (typeof getSupabase==='function') && getSupabase();
-      if(sbReady || waited>=2000){
-        clearInterval(tick);
-        if(sbReady && typeof syncTrialFromServer==='function'){
-          syncTrialFromServer().then(runGateOnce).catch(runGateOnce);
-        } else {
-          runGateOnce();
-        }
+    // 즉시 gateCheck (잔재 기반으로 동기 +1 — 100ms 내 보장)
+    runGateOnce();
+    // server sync 는 백그라운드 (잔재 청소·plan_active 검증)
+    setTimeout(function(){
+      if(typeof syncTrialFromServer==='function'){
+        try{ syncTrialFromServer().catch(function(){}); }catch(e){}
       }
-    },200);
+    },300);
   });
 })();

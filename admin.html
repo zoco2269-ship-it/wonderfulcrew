@@ -518,6 +518,16 @@ async function fetchAdmin(scope){
 function fmtAmt(n){return (n||0).toLocaleString('ko-KR');}
 function fmtDate(s){if(!s)return '-';return s.slice(0,10);}
 
+// 매출 정확 표시 — 199000 → '19.9만원', 200000 → '20만원'
+function _wcFmtRev(v){
+  v = parseInt(v, 10) || 0;
+  if (v === 0) return '0원';
+  if (v < 10000) return v.toLocaleString() + '원';
+  var man = v / 10000;
+  if (man === Math.floor(man)) return Math.floor(man).toLocaleString() + '만원';
+  return man.toFixed(1) + '만원';
+}
+
 async function loadOverview(){
   var d=await fetchAdmin('overview');
   if(!d||!d.ok)return;
@@ -526,12 +536,12 @@ async function loadOverview(){
     statBoxes[0].textContent=d.totalMembers;
     statBoxes[1].textContent=d.todayJoined;
     statBoxes[2].textContent=d.monthPaymentCount+'건';
-    statBoxes[3].textContent=Math.round((d.monthRevenue||0)/10000).toLocaleString()+'만';
+    statBoxes[3].textContent=_wcFmtRev(d.monthRevenue);
   }
   if(statBoxes.length>=8){
     statBoxes[4].textContent=d.activeSubscriptions;
     statBoxes[5].textContent=d.totalPayments+'건';
-    statBoxes[6].textContent=Math.round((d.allTimeRevenue||0)/10000).toLocaleString()+'만';
+    statBoxes[6].textContent=_wcFmtRev(d.allTimeRevenue);
   }
 }
 
@@ -569,7 +579,7 @@ async function loadPaymentsTable(){
   var card=d.payments.filter(function(p){return p.status==='completed'&&p.method==='innopay';}).length;
   if(stats.length>=4){
     stats[0].textContent=monthPay.length+'건';
-    stats[1].textContent=Math.round(monthRev/10000).toLocaleString()+'만';
+    stats[1].textContent=_wcFmtRev(monthRev);
     stats[2].textContent=card+'건';
     stats[3].textContent=(d.payments.length-card)+'건';
   }

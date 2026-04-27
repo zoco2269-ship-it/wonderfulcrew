@@ -1,5 +1,6 @@
-// 자동 환불 신청 API — MY 페이지에서 사용자가 직접 호출
-// 7일 이내 + 사용 기록 0건이면 자동 승인, 그 외엔 자동 거부 (운영자 손 안 거침)
+// 환불 신청 API — MY 페이지에서 사용자가 직접 호출
+// 자동 거부 조건(7일 초과 / 사용 기록 있음)은 그대로 자동 거부.
+// 정상 요청은 PENDING 으로 기록만 남기고 운영자가 admin 에서 검토 후 이노페이 어드민에서 수동 환불 처리.
 const { createClient } = require('@supabase/supabase-js');
 
 module.exports = async function(req, res) {
@@ -94,30 +95,22 @@ module.exports = async function(req, res) {
       });
     }
 
-    // 4) 자동 승인 — 환불 처리
-    // payments 상태 변경
-    await sb.from('payments').update({ status: 'refunded' }).eq('id', payment.id);
-    // 구독 비활성화
-    await sb.from('subscriptions').update({ status: 'cancelled', updated_at: now.toISOString() }).eq('user_id', userId);
-    // users 플랜 비활성
-    await sb.from('users').update({ plan_active: false, updated_at: now.toISOString() }).eq('auth_id', userId);
-    // 신청 기록
+    // 4) 자동 거부 조건 통과 — PENDING 으로 기록만 (DB 환불 처리·구독 해지 X)
+    // 운영자가 admin 에서 검토 후 이노페이 어드민에서 수동 환불 → 그 시점에 admin/approve API 로 DB 동기화
     await sb.from('refund_requests').insert({
       user_id: userId,
       email: email || '',
       payment_id: payment.id,
-      decision: 'APPROVED',
-      reason: '7일 이내 + 사용 기록 0건 — 자동 승인',
+      decision: 'PENDING',
+      reason: '7일 이내 + 사용 기록 0건 — 운영자 수동 승인 대기',
       amount: payment.amount || 0,
       tid: payment.tid || ''
     });
 
-    // InnoPay 환불 API 호출은 별도 단계 — 일단 admin 알림으로 폴백
-    // (TID 가 있으면 추후 자동 호출 가능)
     return res.json({
       ok: true,
-      decision: 'APPROVED',
-      message: '환불이 자동 승인되었습니다. 결제 카드로 영업일 기준 3~5일 내 환급 처리됩니다.',
+      decision: 'PENDING',
+      message: '환불 요청이 접수되었습니다. 운영자가 검토 후 영업일 기준 1~2일 내에 카드 취소 처리됩니다.',
       amount: payment.amount || 0,
       tid: payment.tid || '',
       paidAt: payment.created_at

@@ -337,10 +337,13 @@ async function requestAutoRefund(){
     var r=await fetch('/api/request-refund',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({userId:user.id,email:user.email||''})});
     var d=await r.json();
-    btn.disabled=false;btn.textContent='환불 신청 (자동 판정)';
-    if(d.decision==='APPROVED'){
-      box.innerHTML='<div style="padding:14px 16px;background:rgba(46,125,50,0.08);border-left:3px solid #2E7D32;color:#2E7D32;border-radius:4px;"><b>✓ 자동 승인</b><br>'+(d.message||'')+'<br><span style="color:#558B5A;font-size:0.78rem;">금액 '+(d.amount?d.amount.toLocaleString()+'원':'-')+' · 카드 환급은 영업일 3~5일 소요</span></div>';
-      // 로컬 상태도 갱신
+    btn.disabled=false;btn.textContent='환불 신청';
+    if(d.decision==='PENDING'){
+      box.innerHTML='<div style="padding:14px 16px;background:rgba(46,125,50,0.08);border-left:3px solid #2E7D32;color:#2E7D32;border-radius:4px;"><b>✓ 환불 요청 접수</b><br>'+(d.message||'')+'<br><span style="color:#558B5A;font-size:0.78rem;">금액 '+(d.amount?d.amount.toLocaleString()+'원':'-')+' · 운영자 검토 후 카드 취소 처리</span></div>';
+      // 구독 상태는 운영자 승인 시점에 해지됨 — 여기서는 로컬 플래그 유지
+    } else if(d.decision==='APPROVED'){
+      // 구버전 응답 호환 — 운영자가 수동 승인한 후 별도 endpoint 통해 들어올 수 있음
+      box.innerHTML='<div style="padding:14px 16px;background:rgba(46,125,50,0.08);border-left:3px solid #2E7D32;color:#2E7D32;border-radius:4px;"><b>✓ 환불 승인</b><br>'+(d.message||'')+'<br><span style="color:#558B5A;font-size:0.78rem;">금액 '+(d.amount?d.amount.toLocaleString()+'원':'-')+' · 카드 환급은 영업일 3~5일 소요</span></div>';
       localStorage.removeItem('wc_paid');
       localStorage.removeItem('wc_subscription_expires');
     } else if(d.decision==='DENIED_EXPIRED'){
@@ -353,7 +356,7 @@ async function requestAutoRefund(){
       box.innerHTML='<div style="padding:14px 16px;background:rgba(255,243,224,0.5);border-left:3px solid #E65100;color:#E65100;border-radius:4px;">'+(d.message||'환불 신청 처리 중 오류')+'</div>';
     }
   }catch(e){
-    btn.disabled=false;btn.textContent='환불 신청 (자동 판정)';
+    btn.disabled=false;btn.textContent='환불 신청';
     box.innerHTML='<div style="padding:14px 16px;color:#C62828;">서버 연결 오류 — 잠시 후 다시 시도해주세요.</div>';
   }
 }

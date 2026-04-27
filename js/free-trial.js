@@ -166,14 +166,16 @@ function renderTrialBadge(containerId) {
 
 // 연습·유료 페이지 진입 시 게이트
 (function(){
-  var page = location.pathname.split('/').pop() || '';
+  // Vercel 등에서 .html 없이 라우팅되어도 매칭되도록 확장자 제거 후 비교
+  var rawPage = location.pathname.split('/').pop() || '';
+  var page = rawPage.replace(/\.html$/i, '');
   var gatedPages = [
-    'interview-practice.html','roleplay-practice-ko.html','roleplay-practice-en.html',
-    'roleplay-practice.html','discussion-practice-ko.html','discussion-practice.html',
-    'discussion1.html','discussion2.html','video-practice.html','final.html',
-    'chatbot.html','chatbot-en.html','word-shooting.html','ai-coach.html','ai-coach-en.html',
-    'debate-practice.html','smalltalk.html','walking-analysis.html','coach-feedback.html',
-    'live-booking.html','lecture.html'
+    'interview-practice','roleplay-practice-ko','roleplay-practice-en',
+    'roleplay-practice','discussion-practice-ko','discussion-practice',
+    'discussion1','discussion2','video-practice','final',
+    'chatbot','chatbot-en','word-shooting','ai-coach','ai-coach-en',
+    'debate-practice','smalltalk','walking-analysis','coach-feedback',
+    'live-booking','lecture'
   ];
   if (gatedPages.indexOf(page) === -1) return;
   // wc_test_mode 는 어드민 전용 시뮬레이션 플래그 — 일반 사용자에게 잘못 박혀있으면 자동 청소

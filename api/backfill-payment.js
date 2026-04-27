@@ -20,10 +20,25 @@ module.exports = async function(req, res) {
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
   try {
-    // 대상 사용자 찾기
-    const { data: targetUser } = await sb.from('users').select('auth_id, email, name').eq('email', targetEmail).maybeSingle();
+    // 대상 사용자 찾기 — public.users 에 없으면 auth.users 에서 찾아 자동 생성
+    let { data: targetUser } = await sb.from('users').select('auth_id, email, name').eq('email', targetEmail).maybeSingle();
     if (!targetUser) {
-      return res.status(404).json({ error: 'user not found in users table. 먼저 그 이메일로 로그인해야 users 테이블에 자동 등록됩니다.' });
+      try {
+        const { data: authData } = await sb.auth.admin.listUsers();
+        const authUser = (authData && authData.users || []).find(u => (u.email || '').toLowerCase() === targetEmail.toLowerCase());
+        if (!authUser) {
+          return res.status(404).json({ error: '해당 이메일로 가입된 사용자가 없습니다. 사용자가 먼저 회원가입해야 합니다.' });
+        }
+        // public.users 자동 생성
+        await sb.from('users').upsert({
+          auth_id: authUser.id,
+          email: targetEmail,
+          name: authUser.user_metadata?.full_name || ''
+        }, { onConflict: 'auth_id' });
+        targetUser = { auth_id: authUser.id, email: targetEmail, name: authUser.user_metadata?.full_name || '' };
+      } catch (e) {
+        return res.status(500).json({ error: 'auth lookup failed: ' + e.message });
+      }
     }
 
     const moid = 'BACKFILL_' + Date.now();
@@ -54,12 +69,14 @@ module.exports = async function(req, res) {
       updated_at: now.toISOString()
     }, { onConflict: 'user_id' });
 
-    // 사용자 프로필 plan 업데이트
-    await sb.from('users').update({
+    // 사용자 프로필 plan 업데이트 — row 없으면 생성, 있으면 업데이트
+    await sb.from('users').upsert({
+      auth_id: targetUser.auth_id,
+      email: targetUser.email,
       plan: plan,
       plan_active: true,
       updated_at: now.toISOString()
-    }).eq('auth_id', targetUser.auth_id);
+    }, { onConflict: 'auth_id' });
 
     res.json({ ok: true, user: targetUser, expiresAt: expiresAt.toISOString() });
   } catch (e) {

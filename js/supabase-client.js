@@ -44,6 +44,23 @@ var ADMIN_EMAILS = ['zoco2269@gmail.com', 'guswn5164@gmail.com'];
             .select('plan_active, free_trial_used')
             .eq('auth_id', user.id)
             .maybeSingle();
+          // users 테이블에 row 없거나 plan_active=false 인데 결제 기록 있으면 자동 복구
+          if (!res || !res.data || res.data.plan_active !== true) {
+            try {
+              var healRes = await fetch('/api/heal-plan-active', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ userId: user.id, email: user.email || '' })
+              });
+              var healData = await healRes.json();
+              if (healData && healData.planActive === true) {
+                // 복구 성공 → users 다시 조회해서 진실 반영
+                res = await _supabase.from('users')
+                  .select('plan_active, free_trial_used')
+                  .eq('auth_id', user.id)
+                  .maybeSingle();
+              }
+            } catch(e) {}
+          }
           if (!res || !res.data) return;
           var planActive = res.data.plan_active === true;
           var serverUsed = (typeof res.data.free_trial_used === 'number') ? res.data.free_trial_used : 0;

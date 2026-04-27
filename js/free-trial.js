@@ -193,8 +193,8 @@ function renderTrialBadge(containerId) {
     location.replace('plans.html?blocked=' + encodeURIComponent(page));
     return;
   }
-  // 즉시 체크 (어드민이나 유료는 통과)
-  function gateCheck(){
+  // server 진실원 직접 조회 — wc_paid·subscribed 잔재 무시
+  async function gateCheck(){
     // 테스트 모드는 어드민일 때만 잠금 (어드민이 결제 플로우 검증 중)
     if (localStorage.getItem('wc_test_mode') === 'true' && _isAdminSync()) {
       document.body.style.pointerEvents = 'none';
@@ -203,9 +203,38 @@ function renderTrialBadge(containerId) {
       return;
     }
     if (typeof isAdmin === 'function' && isAdmin()) return;
-    if (localStorage.getItem('wc_paid') === 'true') return;
+
+    // server users.plan_active 직접 조회 — localStorage 잔재 무시
+    var planActive = false;
+    try {
+      var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+      if (sb) {
+        var { data: udata } = await sb.auth.getUser();
+        if (udata && udata.user) {
+          var res = await sb.from('users').select('plan_active, free_trial_used').eq('auth_id', udata.user.id).maybeSingle();
+          planActive = !!(res && res.data && res.data.plan_active === true);
+          // server free_trial_used 도 함께 머지
+          var serverUsed = (res && res.data && typeof res.data.free_trial_used === 'number') ? res.data.free_trial_used : 0;
+          var existing = getTrialData();
+          var localUsed = existing.used || 0;
+          if (serverUsed > localUsed) {
+            existing.used = serverUsed;
+            saveTrialData(existing);
+          }
+        }
+      }
+    } catch(e) {}
+
+    // server 진실 기준으로 wc_paid · subscribed 동기화
+    if (planActive) {
+      localStorage.setItem('wc_paid', 'true');
+      var d2 = getTrialData(); d2.subscribed = true; saveTrialData(d2);
+      return; // 결제 사용자 통과
+    }
+    localStorage.removeItem('wc_paid');
     var data = getTrialData();
-    if (data.subscribed === true) return;
+    data.subscribed = false;
+
     var used = data.used || 0;
     if (used < FREE_TRIAL_MAX) {
       data.used = used + 1;

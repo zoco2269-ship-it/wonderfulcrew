@@ -35,6 +35,38 @@ var ADMIN_EMAILS = ['zoco2269@gmail.com', 'guswn5164@gmail.com'];
         } catch(e) {}
       }
 
+      // 모든 페이지 로드 시 server users 테이블 진실원으로 wc_paid·wc_free_trial 강제 동기화
+      // (어드민·이전 결제 시뮬 잔재가 새 계정에 흘러들어 카운트 깎임 안 되는 버그 차단)
+      async function _wcSyncFromServer(user) {
+        try {
+          if (!_supabase || !user || !user.id) return;
+          var res = await _supabase.from('users')
+            .select('plan_active, free_trial_used')
+            .eq('auth_id', user.id)
+            .maybeSingle();
+          if (!res || !res.data) return;
+          var planActive = res.data.plan_active === true;
+          var serverUsed = (typeof res.data.free_trial_used === 'number') ? res.data.free_trial_used : 0;
+          // wc_paid 강제 동기화 (잔재 자동 청소)
+          if (planActive) localStorage.setItem('wc_paid', 'true');
+          else localStorage.removeItem('wc_paid');
+          // wc_free_trial 머지 (절대 회복 X) + subscribed 도 plan_active 진실원
+          var existing = {};
+          try { existing = JSON.parse(localStorage.getItem('wc_free_trial') || '{}'); } catch(e) {}
+          var localUsed = (typeof existing.used === 'number') ? existing.used : 0;
+          var merged = Math.max(localUsed, serverUsed);
+          localStorage.setItem('wc_free_trial', JSON.stringify({ used: merged, subscribed: planActive }));
+          if (localUsed > serverUsed) {
+            try { await _supabase.from('users').update({ free_trial_used: merged }).eq('auth_id', user.id); } catch(e) {}
+          }
+          // 어드민 아니면 wc_test_mode 잔재 강제 청소
+          var ADMIN = ['zoco2269@gmail.com','guswn5164@gmail.com'];
+          if (ADMIN.indexOf(user.email) === -1) {
+            localStorage.removeItem('wc_test_mode');
+          }
+        } catch(e) {}
+      }
+
       // 세션 변경 감지
       _supabase.auth.onAuthStateChange(function(event, session) {
         if (session && session.user) {
@@ -46,6 +78,8 @@ var ADMIN_EMAILS = ['zoco2269@gmail.com', 'guswn5164@gmail.com'];
             name: session.user.user_metadata?.full_name || '',
             avatar: session.user.user_metadata?.avatar_url || ''
           }));
+          // server 진실원으로 wc_paid·wc_free_trial 동기화 (모든 페이지에서 잔재 자동 청소)
+          _wcSyncFromServer(session.user);
           if (typeof updateNavLoginBtn === 'function') updateNavLoginBtn();
         } else if (event === 'SIGNED_OUT') {
           _currentUser = null;
@@ -71,6 +105,8 @@ var ADMIN_EMAILS = ['zoco2269@gmail.com', 'guswn5164@gmail.com'];
           name: data.session.user.user_metadata?.full_name || '',
           avatar: data.session.user.user_metadata?.avatar_url || ''
         }));
+        // server 진실원 동기화 (모든 페이지에서 잔재 자동 청소 — 새 로그인 없이 새로고침 1회로 정상화)
+        _wcSyncFromServer(data.session.user);
         if (typeof updateNavLoginBtn === 'function') updateNavLoginBtn();
       }
       console.log('Supabase connected:', cfg.url);

@@ -23,39 +23,48 @@ function saveTrialData(data) {
   localStorage.setItem(FREE_TRIAL_KEY, JSON.stringify(data));
 }
 
-// 서버(Supabase user_metadata)에 사용 횟수 저장 — 브라우저간 공유
+// 서버 users 테이블에 사용 횟수 저장 — 브라우저간 공유
 async function saveTrialToServer(used) {
   if (localStorage.getItem('wc_test_mode') === 'true') return;
   try {
     var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
     if (!sb) return;
-    await sb.auth.updateUser({ data: { free_trial_used: used } });
+    var { data: udata } = await sb.auth.getUser();
+    if (!udata || !udata.user) return;
+    await sb.from('users').update({ free_trial_used: used }).eq('auth_id', udata.user.id);
   } catch(e) {}
 }
 
-// Supabase에서 사용 횟수 동기화 — 서버·로컬 중 큰 값 사용 (절대 감소 불가)
-// user_metadata.free_trial_used 를 소스로 사용 → 브라우저 바꿔도 카운트 유지
+// Supabase users 테이블에서 plan_active + free_trial_used 동기화 (단일 진실원)
+// gateCheck 직전 호출되어 wc_paid 잔재 청소 + 카운트 머지까지 한 번에 처리
 async function syncTrialFromServer() {
   if (_trialSynced) return;
   if (localStorage.getItem('wc_test_mode') === 'true') return;
   try {
     var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
     if (!sb) return;
-    var { data } = await sb.auth.getUser();
-    if (!data || !data.user) return;
-    var serverUsed = 0;
-    if (data.user.user_metadata && typeof data.user.user_metadata.free_trial_used === 'number') {
-      serverUsed = data.user.user_metadata.free_trial_used;
-    }
+    var { data: udata } = await sb.auth.getUser();
+    if (!udata || !udata.user) return;
+    var res = await sb.from('users')
+      .select('plan_active, free_trial_used')
+      .eq('auth_id', udata.user.id)
+      .maybeSingle();
+    var planActive = !!(res && res.data && res.data.plan_active === true);
+    var serverUsed = (res && res.data && typeof res.data.free_trial_used === 'number') ? res.data.free_trial_used : 0;
+    // wc_paid 강제 동기화 — 어드민/이전 결제 시뮬 잔재 자동 청소
+    if (planActive) localStorage.setItem('wc_paid', 'true');
+    else localStorage.removeItem('wc_paid');
+    // 카운트 머지 (절대 감소 X) + subscribed 도 plan_active 진실원
     var localData = getTrialData();
     var localUsed = localData.used || 0;
     var merged = Math.max(localUsed, serverUsed);
     localData.used = merged;
+    localData.subscribed = planActive;
     saveTrialData(localData);
     _trialSynced = true;
-    // 로컬이 서버보다 크면 서버에 업로드 (다른 브라우저에서 공유되도록)
+    // 로컬이 서버보다 크면 서버에 업로드
     if (localUsed > serverUsed) {
-      try { await sb.auth.updateUser({ data: { free_trial_used: merged } }); } catch(e) {}
+      try { await sb.from('users').update({ free_trial_used: merged }).eq('auth_id', udata.user.id); } catch(e) {}
     }
   } catch(e) { /* fallback to localStorage */ }
 }

@@ -267,18 +267,39 @@ function renderTrialBadge(containerId) {
     '</div>';
     document.body.appendChild(g);
   }
-  // 페이지 로드 시 — gateCheck 즉시 실행 (server 응답 대기 X — race condition 차단)
-  // server sync 는 백그라운드에서 별도 진행
-  document.addEventListener('DOMContentLoaded', function(){
-    var ranOnce=false;
-    function runGateOnce(){if(ranOnce) return; ranOnce=true; gateCheck();}
-    // 즉시 gateCheck (잔재 기반으로 동기 +1 — 100ms 내 보장)
-    runGateOnce();
-    // server sync 는 백그라운드 (잔재 청소·plan_active 검증)
-    setTimeout(function(){
-      if(typeof syncTrialFromServer==='function'){
-        try{ syncTrialFromServer().catch(function(){}); }catch(e){}
-      }
-    },300);
-  });
+  // ★ 페이지 스크립트 로드 즉시 카운트 차감 — DOM 대기 X
+  // 사용자가 페이지 진입 직후 답변 시작/페이지 이동해도 +1 보장
+  var _ranOnce = false;
+  function _doCountNow(){
+    if (_ranOnce) return; _ranOnce = true;
+    // 어드민·결제·구독 사용자는 통과 (localStorage 만 의존, 즉시 동기 판정)
+    if (typeof isAdmin === 'function' && isAdmin()) return;
+    if (localStorage.getItem('wc_paid') === 'true') return;
+    var data = getTrialData();
+    if (data.subscribed === true) return;
+    var used = data.used || 0;
+    if (used < FREE_TRIAL_MAX) {
+      // 즉시 카운트 +1 + server 저장 (fire-and-forget)
+      data.used = used + 1;
+      saveTrialData(data);
+      saveTrialToServer(data.used);
+      // 토스트는 DOM 준비된 후 표시
+      var _showToast = function(){ try{ showTrialToast(FREE_TRIAL_MAX - data.used); }catch(e){} };
+      if (document.body) _showToast();
+      else document.addEventListener('DOMContentLoaded', _showToast);
+    } else {
+      // 게이트 화면은 DOM 준비된 후
+      var _lock = function(){ try{ document.body.style.pointerEvents='none'; document.body.style.filter='blur(4px)'; showLockedGate(); }catch(e){} };
+      if (document.body) _lock();
+      else document.addEventListener('DOMContentLoaded', _lock);
+    }
+  }
+  // 즉시 실행 — 페이지 진입 순간 카운트 차감
+  _doCountNow();
+  // server sync 는 별도 백그라운드 (잔재 청소·plan_active 검증)
+  setTimeout(function(){
+    if(typeof syncTrialFromServer==='function'){
+      try{ syncTrialFromServer().catch(function(){}); }catch(e){}
+    }
+  },300);
 })();

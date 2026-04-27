@@ -163,7 +163,7 @@ async function showUser(user) {
       var localUsed = (typeof existing.used === 'number') ? existing.used : 0;
       var serverUsed = (typeof user.user_metadata?.free_trial_used === 'number') ? user.user_metadata.free_trial_used : 0;
       var merged = Math.max(localUsed, serverUsed);
-      localStorage.setItem('wc_free_trial', JSON.stringify({used: merged, subscribed: existing.subscribed === true}));
+      localStorage.setItem('wc_free_trial', JSON.stringify({used: merged, subscribed: planActive}));
       if (localUsed > serverUsed && sb) {
         try { await sb.auth.updateUser({ data: { free_trial_used: merged } }); } catch(e) {}
       }

@@ -79,7 +79,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="js/supabase-client.js"></script>
 <script src="js/auth-gate.js"></script>
 <script src="js/google-tts.js"></script>
-<script src="js/free-trial.js"></script>
+<script src="js/free-trial.js?v=2"></script>
 <script src="js/sr-dedupe.js?v=3"></script>
 <script src="js/mobile-sr.js?v=11"></script>
 </head>
@@ -171,7 +171,7 @@ function appendChat(who,text,isTmp){
 
 var camStream=null;
 // MediaPipe 얼굴 분석
-var faceStats={smileFrames:0,totalFrames:0};
+var faceStats={smileFrames:0,totalFrames:0,baselineLift:null,baselineWidth:null,baselineFrames:0};
 var faceMeshInstance=null, faceActive=false, faceInterval=null;
 function initFaceMesh(videoEl){
   if(!window.FaceMesh)return;
@@ -180,7 +180,6 @@ function initFaceMesh(videoEl){
     faceMeshInstance.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
     faceMeshInstance.onResults(function(r){
       if(!faceActive)return;
-      faceStats.totalFrames++;
       if(r.multiFaceLandmarks&&r.multiFaceLandmarks.length>0){
         var lm=r.multiFaceLandmarks[0];
         var lipL=lm[61],lipR=lm[291],lipTop=lm[13],lipBot=lm[14];
@@ -191,7 +190,24 @@ function initFaceMesh(videoEl){
         var mouthW=Math.abs(lipR.x-lipL.x);
         var faceW=Math.abs(faceR.x-faceL.x);
         var widthRatio=faceW>0?(mouthW/faceW):0;
-        if(cornerLift>0.003 || widthRatio>0.44) faceStats.smileFrames++;
+        // 첫 10프레임은 평상 표정 baseline 측정 (smile 카운트 X)
+        if(faceStats.baselineFrames<10){
+          faceStats.baselineFrames++;
+          faceStats.baselineLift=(faceStats.baselineLift==null)?cornerLift:(faceStats.baselineLift*0.8+cornerLift*0.2);
+          faceStats.baselineWidth=(faceStats.baselineWidth==null)?widthRatio:(faceStats.baselineWidth*0.8+widthRatio*0.2);
+          return;
+        }
+        faceStats.totalFrames++;
+        // baseline 대비 의미있는 변화량으로만 미소 판정 (개인차 보정)
+        var liftDelta=cornerLift-(faceStats.baselineLift||0);
+        var widthDelta=widthRatio-(faceStats.baselineWidth||0);
+        // 강한 미소: 둘 중 하나만 명확히 커도 OK / 약한 미소: 둘 다 동시에 커야
+        var strongSmile = liftDelta>0.012 || widthDelta>0.025;
+        var moderateSmile = liftDelta>0.006 && widthDelta>0.012;
+        if(strongSmile || moderateSmile) faceStats.smileFrames++;
+      } else {
+        // 얼굴 미감지도 baseline 단계 후엔 totalFrames 만 증가
+        if(faceStats.baselineFrames>=10) faceStats.totalFrames++;
       }
     });
     faceInterval=setInterval(function(){
@@ -214,7 +230,7 @@ async function startCamera(){
       v.srcObject=camStream;v.style.display='block';
       document.getElementById('cam-ph').style.display='none';
       // 얼굴 분석 시작
-      faceStats={smileFrames:0,totalFrames:0};
+      faceStats={smileFrames:0,totalFrames:0,baselineLift:null,baselineWidth:null,baselineFrames:0};
       faceActive=true;
       initFaceMesh(v);
       return;

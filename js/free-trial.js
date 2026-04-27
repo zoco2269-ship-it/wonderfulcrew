@@ -13,6 +13,13 @@ function getTrialData() {
 }
 
 function saveTrialData(data) {
+  // 단조성 보장 — used 값이 기존보다 작은 write 는 차단 (카운트 회복 방지)
+  try {
+    var prev = JSON.parse(localStorage.getItem(FREE_TRIAL_KEY) || '{}');
+    if (typeof prev.used === 'number' && typeof data.used === 'number' && data.used < prev.used) {
+      data.used = prev.used;
+    }
+  } catch(e) {}
   localStorage.setItem(FREE_TRIAL_KEY, JSON.stringify(data));
 }
 

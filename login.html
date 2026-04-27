@@ -153,9 +153,16 @@ async function showUser(user) {
     if (sb) {
       var profileRes = await sb.from('users').select('phone').eq('auth_id', user.id).maybeSingle();
       hasProfile = !!(profileRes && profileRes.data && profileRes.data.phone);
-      // 서버 user_metadata 의 free_trial_used 를 로컬에 강제 덮어쓰기
+      // 서버·로컬 used 중 큰 값으로 머지 (절대 회복 불가) — server 미저장(0) 시 local 보존, 동시에 server 에 push
+      var existing = {};
+      try { existing = JSON.parse(localStorage.getItem('wc_free_trial') || '{}'); } catch(e) {}
+      var localUsed = (typeof existing.used === 'number') ? existing.used : 0;
       var serverUsed = (typeof user.user_metadata?.free_trial_used === 'number') ? user.user_metadata.free_trial_used : 0;
-      localStorage.setItem('wc_free_trial', JSON.stringify({used: serverUsed}));
+      var merged = Math.max(localUsed, serverUsed);
+      localStorage.setItem('wc_free_trial', JSON.stringify({used: merged, subscribed: existing.subscribed === true}));
+      if (localUsed > serverUsed && sb) {
+        try { await sb.auth.updateUser({ data: { free_trial_used: merged } }); } catch(e) {}
+      }
     }
   } catch(e) { console.error('login sync error:', e); }
 

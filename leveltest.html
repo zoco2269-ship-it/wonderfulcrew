@@ -131,7 +131,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
-<script src="js/free-trial.js?v=2"></script>
+<script src="js/free-trial.js?v=3"></script>
 <script src="js/auth-gate.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 <script src="js/sr-dedupe.js?v=3"></script>
@@ -458,7 +458,34 @@ async function doAnalyze(textOnly){
   var langLabel=U.lang==='en'?'영어':U.lang==='both'?'한국어 + 영어':'한국어';
   var smilePct=getSmilePct();
   var gazePct=getGazePct();
-  var sys='당신은 승무원 면접 레벨테스트 분석가입니다. 지원자의 자기소개 발화 + 얼굴 분석 결과로 현재 레벨을 평가하세요.\n\n평가 기준 (각 20점, 총 100점):\n1. 서비스 마인드 (service_mind) — 따뜻함·배려·지원동기의 진정성\n2. 영어 수준 (english) — 언어 구사력. 한국어만 녹음했으면 프로필(eng)의 자기평가 참고\n3. 면접 준비도 (interview_readiness) — 답변 구조·자신감·명료함\n4. 성장 잠재력 (growth_potential) — 자세·태도·개선 의지\n5. 미소·표정 (smile) — 실측 미소 퍼센트 기반 (주어진 smile_pct 값 활용)\n\n미소 점수 환산 가이드:\n- smile_pct 70%+ → 18~20점 (아주 환하고 지속적)\n- smile_pct 50-69% → 14~17점 (양호)\n- smile_pct 30-49% → 9~13점 (부족)\n- smile_pct 30% 미만 → 5~8점 (심각)\n- smile_pct 0 (측정 불가) → 10점 기본값\n\n반드시 다음 JSON 한 개만 응답 (다른 텍스트 절대 금지):\n{"score":총점, "level":"Beginner|Intermediate|Upper-Intermediate|Advanced", "level_ko":"초급|중급|중상급|상급", "score_breakdown":{"service_mind":X, "english":X, "interview_readiness":X, "growth_potential":X, "smile":X}, "strengths":["...","...","..."], "improvements":["...","..."], "airlines":[{"name":"...","match":숫자,"reason":"...","top":true/false}], "coaching_priority":"우선순위 1가지 한 줄", "message":"격려 메시지 1문장"}\n\n항공사 추천 규칙:\n- 점수 90+ : 에미레이트·카타르·싱가포르 등 최상위 외항사\n- 점수 70-89 : 중하위 외항사(KLM·핀에어·캐세이) + 대한항공·아시아나\n- 점수 50-69 : 국내 LCC (제주·진에어·에어프레미아)\n- 점수 50 미만 : 국내 LCC 중심, 준비 보완 필요\n- 3개 추천, 가장 적합한 것 top:true';
+  var isKo=(U.lang==='ko');
+  var langKey=isKo?'korean_delivery':'english';
+  var langItemDesc=isKo
+    ?'2. 한국어 전달력 (korean_delivery) — 한국어 발화 톤·전달력·자연스러움 (영어 평가 금지)'
+    :'2. 영어 수준 (english) — 언어 구사력. 한국어만 녹음했으면 프로필(eng)의 자기평가 참고';
+  var sys='당신은 승무원 면접 레벨테스트 분석가입니다. 지원자의 자기소개 발화 + 얼굴 분석 결과로 현재 레벨을 평가하세요.\n\n'
+    +'평가 기준 (각 20점, 총 100점):\n'
+    +'1. 서비스 마인드 (service_mind) — 따뜻함·배려·지원동기의 진정성\n'
+    +langItemDesc+'\n'
+    +'3. 면접 준비도 (interview_readiness) — 답변 구조·자신감·명료함\n'
+    +'4. 성장 잠재력 (growth_potential) — 자세·태도·개선 의지\n'
+    +'5. 미소·표정 (smile) — 실측 미소 퍼센트 기반 (주어진 smile_pct 값 활용)\n\n'
+    +'미소 점수 환산 가이드:\n- smile_pct 70%+ → 18~20점 (아주 환하고 지속적)\n- smile_pct 50-69% → 14~17점 (양호)\n- smile_pct 30-49% → 9~13점 (부족)\n- smile_pct 30% 미만 → 5~8점 (심각)\n- smile_pct 0 (측정 불가) → 10점 기본값\n\n'
+    +'★ improvements 와 coaching_priority 에 절대 쓰면 안 되는 항목:\n'
+    +'- 카메라/시선/정면 응시 관련 피드백 (사용자가 이미 카메라를 보고 있음)\n'
+    +'- 음성 인식·재녹음·다시 녹음·마이크·녹음 품질·STT 같은 기술적 지적\n'
+    +'- "명확한 발음", "또렷한 음성", "언어 배경 검증 불가" 같은 녹음 품질·시스템 한계 언급\n'
+    +'발화가 비어있거나 짧아도 프로필+얼굴 분석으로 평가하세요. 위 금지 항목은 결과에 절대 쓰지 마세요.\n\n'
+    +'★ improvements 와 coaching_priority 는 반드시 아래 승무원 면접 코칭 범주에서만 작성:\n'
+    +'- 자기소개·답변 구조 (두괄식, STAR, 30초 압축, 결론 → 근거 → 마무리)\n'
+    +'- 본인 강점·서비스 경험 어필 방법\n'
+    +'- 미소·표정·바디랭귀지의 자연스러움 (단 "카메라 응시"는 절대 금지)\n'
+    +'- 지원 항공사별 핵심 가치(서비스 철학)와 본인 매칭 포인트 연결\n'
+    +'- 면접관에게 신뢰감을 주는 톤·페이스·끝맺음·복장 인상\n'
+    +'- 원더풀크루 면접 커리큘럼·디스커션·롤플레이로 보완할 부분\n\n'
+    +'반드시 다음 JSON 한 개만 응답 (다른 텍스트 절대 금지):\n'
+    +'{"score":총점, "level":"Beginner|Intermediate|Upper-Intermediate|Advanced", "level_ko":"초급|중급|중상급|상급", "score_breakdown":{"service_mind":X, "'+langKey+'":X, "interview_readiness":X, "growth_potential":X, "smile":X}, "strengths":["...","...","..."], "improvements":["...","..."], "airlines":[{"name":"...","match":숫자,"reason":"...","top":true/false}], "coaching_priority":"우선순위 1가지 한 줄", "message":"격려 메시지 1문장"}\n\n'
+    +'※ airlines 필드는 클라이언트가 덮어쓰므로 임의로 작성해도 됩니다.';
   var userContent='지원자 프로필:\n- 이름: '+(U.name||'지원자')+'\n- 교육: '+(U.edu||'미입력')+'\n- 지원 경험: '+(U.apply||'미입력')+'\n- 자기평가 영어 레벨: '+(U.eng||'미입력')+'\n- 테스트 언어: '+langLabel+'\n\n얼굴 분석 (MediaPipe 실측):\n- smile_pct: '+smilePct+'% (프레임 중 미소 비율)\n- gaze_center_pct: '+gazePct+'% (카메라 정면 응시 비율)\n\n자기소개 발화 (음성인식):\n"'+(transcript||'(음성 인식 불가 — 프로필 + 얼굴 분석만으로 평가)')+'"';
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},
@@ -470,13 +497,62 @@ async function doAnalyze(textOnly){
     var r=null;
     try{r=JSON.parse(raw);}catch(e){
       // JSON 파싱 실패 시 최소 결과
+      var _bd=isKo
+        ?{service_mind:16,korean_delivery:16,interview_readiness:16,growth_potential:17,smile:14}
+        :{service_mind:16,english:16,interview_readiness:16,growth_potential:17,smile:14};
       r={score:65,level:'Intermediate',level_ko:'중급',
-         score_breakdown:{service_mind:16,english:16,interview_readiness:16,growth_potential:17},
-         strengths:['응시 의지가 좋아요'],improvements:['발화 내용을 더 구체적으로 준비해보세요'],
-         airlines:[{name:'제주항공',match:75,reason:'국내 LCC부터 시작 추천',top:true}],
+         score_breakdown:_bd,
+         strengths:['응시 의지가 좋아요','단정한 인상이 면접관에게 호감을 줘요','성장 잠재력이 보여요'],
+         improvements:['자기소개 30초 안에 결론 → 근거 → 마무리 순서로 정리해 보세요.','지원 항공사 가치와 본인 강점을 한 줄로 연결해 보세요.'],
+         airlines:[],
          coaching_priority:'자기소개 30초 스크립트를 먼저 완성하세요.',
-         message:'꾸준히 연습하면 충분히 가능합니다.'};
+         message:'꾸준히 연습하면 충분히 합격권 안에 들어갈 수 있어요.'};
     }
+    // ★ 클라이언트 검열 — 카메라/재녹음/음성인식 같은 기술적 지적 제거
+    var _bad=/(카메라|응시|시선|정면|재녹음|다시\s*녹음|음성\s*인식|음성인식|마이크|STT|녹음\s*품질|발음\s*명료|명확한\s*음성|또렷한\s*발음|언어\s*배경\s*검증)/i;
+    var _coachPool=[
+      '자기소개를 30초 안에 결론 → 근거 → 마무리 순서로 구조화해 보세요.',
+      '지원 항공사 핵심 가치(서비스 철학)와 본인 강점을 한 줄로 연결해 보세요.',
+      '미소가 자연스럽게 유지되도록 답변 끝마다 살짝 톤을 올려 마무리해 보세요.',
+      '본인 강점을 서비스 경험 일화 한 가지로 풀어내는 연습을 추가해 보세요.',
+      '원더풀크루 면접 커리큘럼의 모범답변·롤플레이로 답변 톤을 다듬어 보세요.',
+      '답변 끝에 항공사·직무 지원 의지를 한 문장으로 정리해 신뢰감을 더해 보세요.',
+      '자기소개 두괄식으로 강점 한 가지를 또렷하게 어필해 보세요.'
+    ];
+    function _shuf(a){return a.slice().sort(function(){return Math.random()-0.5;});}
+    function _safe(s){return (s&&typeof s==='string'&&!_bad.test(s))?s:null;}
+    var _imps=(r.improvements||[]).map(_safe).filter(function(x){return x;});
+    if(_imps.length<2){
+      var _used=_imps.slice();
+      var _fill=_shuf(_coachPool).filter(function(x){return _used.indexOf(x)===-1;}).slice(0,2-_imps.length);
+      _imps=_imps.concat(_fill);
+    }
+    r.improvements=_imps.slice(0,3);
+    var _cp=_safe(r.coaching_priority);
+    if(!_cp){ _cp=_shuf(_coachPool)[0]; }
+    r.coaching_priority=_cp;
+    // ★ 항공사 강제 — 베스트 매치는 대한항공/아시아나 랜덤, 나머지 2개는 국내 LCC 랜덤
+    var _bigTwo=['대한항공','아시아나항공'];
+    var _lcc=['제주항공','진에어','티웨이항공','에어부산','에어프레미아','이스타항공','에어서울'];
+    var _best=_bigTwo[Math.floor(Math.random()*_bigTwo.length)];
+    var _lccPick=_shuf(_lcc).slice(0,2);
+    var _bestReasons=[
+      '한국 풀서비스 캐리어의 정중한 톤·서비스 마인드와 잘 어울려요.',
+      '밝은 표정과 단정한 인상이 메이저 항공사 분위기에 맞아요.',
+      '안정감 있는 답변과 전달력이 한국 양대 항공사에 적합해요.'
+    ];
+    var _lccReasons=[
+      '활기찬 인상과 친근한 응대 톤이 LCC 객실 분위기에 잘 맞아요.',
+      '성장 잠재력이 보여 LCC에서 빠르게 자리 잡을 수 있어요.',
+      '솔직한 자기 표현이 LCC 면접관에게 호감을 줄 수 있어요.',
+      '에너지와 적응력이 LCC 운영 환경과 잘 맞아요.'
+    ];
+    function _pick(a){return a[Math.floor(Math.random()*a.length)];}
+    r.airlines=[
+      {name:_best, match:88+Math.floor(Math.random()*8), reason:_pick(_bestReasons), top:true},
+      {name:_lccPick[0], match:78+Math.floor(Math.random()*8), reason:_pick(_lccReasons), top:false},
+      {name:_lccPick[1], match:74+Math.floor(Math.random()*7), reason:_pick(_lccReasons), top:false}
+    ];
     renderResult(r);
   }catch(e){
     alert('분석 실패: '+e.message+'\n다시 시도해주세요.');
@@ -494,7 +570,9 @@ function renderResult(r){
   if(r.score_breakdown){
     var sb=r.score_breakdown;
     var breakdown='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">';
-    var labels={service_mind:'서비스 마인드',english:'영어 수준',interview_readiness:'면접 준비도',growth_potential:'성장 잠재력',smile:'😊 미소·표정'};
+    var labels=(U.lang==='ko')
+      ?{service_mind:'서비스 마인드',korean_delivery:'한국어 전달력',interview_readiness:'면접 준비도',growth_potential:'성장 잠재력',smile:'😊 미소·표정'}
+      :{service_mind:'서비스 마인드',english:'영어 수준',interview_readiness:'면접 준비도',growth_potential:'성장 잠재력',smile:'😊 미소·표정'};
     Object.keys(labels).forEach(function(k){
       if(sb[k]===undefined)return;
       var pct=Math.round((sb[k]/20)*100);
@@ -505,10 +583,10 @@ function renderResult(r){
       breakdown+='</div>';
     });
     breakdown+='</div>';
-    // 실측 미소·시선 퍼센트도 함께 표시
-    var sp=getSmilePct(),gp=getGazePct();
-    if(sp>0||gp>0){
-      breakdown+='<div style="margin-top:10px;padding:10px 14px;background:rgba(201,168,76,0.08);border-left:3px solid var(--gold);font-size:0.82rem;color:var(--text-mid);">📷 실측: 미소 유지 <b>'+sp+'%</b> · 카메라 정면 <b>'+gp+'%</b></div>';
+    // 실측 미소 퍼센트 (시선/카메라 응시는 표시 안 함 — 코칭 포인트로 부적절)
+    var sp=getSmilePct();
+    if(sp>0){
+      breakdown+='<div style="margin-top:10px;padding:10px 14px;background:rgba(201,168,76,0.08);border-left:3px solid var(--gold);font-size:0.82rem;color:var(--text-mid);">😊 실측 미소 유지 <b>'+sp+'%</b></div>';
     }
     var secBD=document.createElement('div');
     secBD.className='res-section';

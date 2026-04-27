@@ -217,7 +217,8 @@ function initFaceMesh(videoEl){
 }
 function getSmilePct(){
   if(faceStats.totalFrames<5)return null;
-  return Math.round((faceStats.smileFrames/faceStats.totalFrames)*100);
+  // 점수 상한 80점 — 면접관 시각의 엄격 채점 (만점 쉽게 안 줌)
+  return Math.round((faceStats.smileFrames/faceStats.totalFrames)*80);
 }
 
 async function startCamera(){

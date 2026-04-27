@@ -32,6 +32,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 .level-banner{display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:#fff;padding:8px 18px;font-size:0.78rem;letter-spacing:0.1em;margin-bottom:24px;}
 .level-banner b{color:var(--gold-light);font-weight:700;}
 
+/* 빠른 진입 버튼 — 외항사 / 국내 항공사 면접 허브 직행 */
+.quick-launch{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px;}
+.quick-btn{display:flex;align-items:center;justify-content:center;padding:20px 22px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.96rem;font-weight:700;letter-spacing:0.03em;border-radius:14px;text-decoration:none;transition:all 0.25s;box-shadow:0 4px 18px rgba(201,168,76,0.28);text-align:center;line-height:1.4;border:none;cursor:pointer;}
+.quick-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(201,168,76,0.4);}
+.quick-btn .quick-arrow{margin-left:8px;font-weight:400;opacity:0.85;}
+@media(max-width:520px){
+  .quick-launch{grid-template-columns:1fr;gap:10px;margin-bottom:22px;}
+  .quick-btn{padding:16px 18px;font-size:0.92rem;}
+}
+
 /* 항공사 카드 */
 .airline-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px;}
 .airline-group{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start;}
@@ -137,6 +147,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
     <div class="eyebrow">Choose Airline</div>
     <h1 class="title">목표 항공사를<br><em>선택하세요</em></h1>
     <div class="gold-bar"></div>
+    <div class="quick-launch">
+      <a href="practice-foreign.html" class="quick-btn">외항사 면접 시작하기 <span class="quick-arrow">→</span></a>
+      <a href="practice-domestic.html" class="quick-btn">국내 항공사 면접 시작하기 <span class="quick-arrow">→</span></a>
+    </div>
     <div id="level-banner-wrap"></div>
     <p class="sub"><span class="mobile-hide">레벨 결과를 바탕으로 매칭률이 높은 항공사가 강조 표시되어 있어요.<br></span>지원하고 싶은 항공사를 선택하면 맞춤 커리큘럼이 시작됩니다.</p>
     <div class="airline-wrap" id="airline-wrap">
@@ -239,14 +253,9 @@ if(LEVEL&&LEVEL.airlines){
   });
 }
 
-// ─── 레벨 배너 (점수는 표시하지 않음 — 더미 점수 제거됨) ───
-if(LEVEL&&LEVEL.completed){
-  // 레벨테스트 완료 — 환영 배너만 표시
-  document.getElementById('level-banner-wrap').innerHTML='<div class="level-banner">'+(LEVEL.name||'지원자')+'님, 지원하실 항공사를 선택하세요</div>';
-}else if(LEVEL&&LEVEL.score){
-  // 구버전 호환 (이전에 점수 저장된 경우)
-  document.getElementById('level-banner-wrap').innerHTML='<div class="level-banner">'+(LEVEL.name||'지원자')+'님, 지원하실 항공사를 선택하세요</div>';
-}else{
+// ─── 레벨 배너 (환영 메시지는 빠른 진입 버튼으로 대체됨) ───
+// 레벨테스트 미완료 시에만 안내 표시
+if(!(LEVEL&&(LEVEL.completed||LEVEL.score))){
   document.getElementById('airline-empty').style.display='block';
 }
 

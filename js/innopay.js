@@ -19,14 +19,18 @@ async function payWithVbank(plan, buyerInfo) {
 
 async function payWithInnopay(plan, buyerInfo, payMethod) {
   try {
+    // 로그인된 사용자 정보 자동 추출 — 어드민이 직접 입력할 필요 X
+    var wcUser = {};
+    try { wcUser = JSON.parse(localStorage.getItem('wc_user') || '{}'); } catch(e) {}
     // 1. 서버에서 결제 파라미터 준비
     var res = await fetch('/api/innopay-prepare', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         plan: plan || 'basic',
-        buyerName: (buyerInfo && buyerInfo.buyerName) || '',
-        buyerEmail: (buyerInfo && buyerInfo.buyerEmail) || '',
+        userId: wcUser.id || '',
+        buyerName: (buyerInfo && buyerInfo.buyerName) || wcUser.name || '',
+        buyerEmail: (buyerInfo && buyerInfo.buyerEmail) || wcUser.email || '',
         buyerTel: (buyerInfo && buyerInfo.buyerTel) || '',
       }),
     });

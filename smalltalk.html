@@ -217,8 +217,9 @@ function initFaceMesh(videoEl){
 }
 function getSmilePct(){
   if(faceStats.totalFrames<5)return null;
-  // 점수 상한 80점 — 면접관 시각의 엄격 채점 (만점 쉽게 안 줌)
-  return Math.round((faceStats.smileFrames/faceStats.totalFrames)*80);
+  // 동기부여 차원 — 하한 20 / 상한 80 (raw 0% → 20, raw 100% → 80 선형 매핑)
+  var pct=faceStats.smileFrames/faceStats.totalFrames;
+  return Math.round(20+pct*60);
 }
 
 async function startCamera(){
@@ -407,20 +408,20 @@ async function stopAnswer(){
   }
 }
 
-// 미소 강조 멘트 (매 세션 랜덤 선택해서 반복 방지)
+// 미소 강조 멘트 — 첫인상 첫관문, 무조건 더 환하게 웃으라는 메시지를 일관되게 전달
 var SMILE_EMPHASIS_POOL=[
-  {high:"😊 미소가 CV Drop의 시작이자 끝이에요. 지금 리듬 그대로, 면접장에서도 자연스럽게 유지하세요.",
-   mid:"😊 CV Drop에서는 웃음이 첫인상을 결정합니다. 조금 더 활짝 — 이 한 가지만 더 챙기면 확 달라져요.",
-   low:"😊 CV Drop은 미소 하나로 합격이 갈립니다. 첫 문장부터 끝 인사까지 절대 표정을 놓치지 마세요."},
-  {high:"🌟 면접관이 가장 먼저 보는 건 미소예요. 이 톤을 끝까지 유지하면 그게 바로 합격의 키입니다.",
-   mid:"🌟 미소는 연습으로 늘어요. 거울 앞에서 말하면서 웃는 훈련을 매일 5분씩, 그게 핵심이에요.",
-   low:"🌟 CV Drop에서 미소 없는 답변은 내용이 아무리 좋아도 기억에 안 남습니다. 무조건 미소 먼저."},
-  {high:"✨ 지금처럼 자연스러운 웃음이 CV Drop의 90%예요. 이 에너지가 합격을 만듭니다.",
-   mid:"✨ 웃으면서 말하는 연습, 집에서도 녹화하면서 확인해보세요. 영어 잘하는 것보다 이게 훨씬 중요해요.",
-   low:"✨ 에미레이트·카타르·싱가포르 모두 '미소가 없으면 탈락'이 기본 원칙. 여기서 면접이 결정됩니다."},
-  {high:"💫 표정의 일관성이 대단해요. 첫인상도 마무리도 똑같이 환하게 — 이게 CV Drop 합격 DNA입니다.",
-   mid:"💫 '말 + 미소'를 동시에 — 둘 중 하나라도 놓치면 감점이에요. 웃으면서 말하는 훈련 꾸준히.",
-   low:"💫 심사관은 1초 안에 판단합니다. 10초도 안 걸려요. 다음엔 '이미 웃고 들어간다'는 생각으로."}
+  {high:"😊 잘하고 있어요. 다만 CV Drop은 첫인상 첫관문 — 면접장에서는 지금보다 한 단계 더 환하게 웃어야 합격으로 이어집니다. 무조건 더 활짝.",
+   mid:"😊 첫관문에서 미소가 부족하면 답변이 아무리 좋아도 인상에 안 남아요. 입꼬리·눈웃음 의식적으로 끌어올려서 더 환하게 — 좋은 이미지가 무조건 우선입니다.",
+   low:"😊 CV Drop은 미소 하나로 합격이 갈립니다. 첫인상 첫관문, 어색해도 무조건 활짝 웃어주세요. 많이 웃는 사람만 다음 단계로 갑니다."},
+  {high:"🌟 이 톤 그대로 유지하면서 면접장에서는 한 번 더 활짝 — 첫인상은 과할 만큼 웃는 게 정답입니다. 좋은 이미지가 합격을 만듭니다.",
+   mid:"🌟 면접관은 1초 안에 첫인상을 결정해요. 지금보다 더 환하게, 답변 처음·중간·끝 모두 미소가 끊기지 않게 의식적으로 더 활짝.",
+   low:"🌟 합격자들은 본인이 어색해도 무조건 활짝 웃습니다. 첫관문에서 미소 없으면 다음은 없어요 — 무조건 더 많이, 더 환하게."},
+  {high:"✨ 자연스러운 웃음이 나와요. 면접장에서는 여기서 한 단계 더 — 인상이 흐릿한 합격자는 없습니다. 더 활짝 웃어 좋은 이미지를 확실히 남기세요.",
+   mid:"✨ 미소가 합격의 80%입니다. 답변 내용보다 표정이 먼저 — 입꼬리·눈웃음 의식적으로, 의도적으로 더 활짝 웃어주세요.",
+   low:"✨ 에미레이트·카타르·싱가포르 모두 '미소 없으면 탈락'이 첫 원칙. 첫관문 통과는 무조건 환한 미소부터 — 많이 웃는 게 합격의 시작입니다."},
+  {high:"💫 일관된 표정이 강점이에요. 면접장에서는 평소보다 과할 정도로 웃는 게 정답 — 첫인상 첫관문에 한 번 더 활짝, 좋은 이미지로 확실히 각인시키세요.",
+   mid:"💫 '말 + 미소' 동시에. 한 가지라도 놓치면 첫인상에서 감점이에요. 거울 앞에서 웃으면서 말하는 연습 매일 5분 — 미소가 무조건 우선입니다.",
+   low:"💫 첫관문은 1초 안에 끝납니다. 미소 없는 답변은 합격으로 안 가요 — '이미 웃고 들어간다'는 생각으로 무조건 더 환하게, 더 많이 웃어주세요."}
 ];
 
 async function endSession(){
@@ -444,7 +445,7 @@ async function endSession(){
   if(smilePct===null){
     smileBlock='<div style="margin-top:10px;padding:10px 14px;background:rgba(201,168,76,0.12);border-left:3px solid var(--gold);font-size:0.84rem;line-height:1.7;">'+smileSet.low+'</div>';
   } else {
-    var lvl=smilePct>=60?'high':smilePct>=30?'mid':'low';
+    var lvl=smilePct>=65?'high':smilePct>=45?'mid':'low';
     var msg=smileSet[lvl];
     var color=lvl==='high'?'#2E7D32':lvl==='mid'?'#E65100':'#C62828';
     smileBlock='<div style="margin-top:10px;padding:12px 14px;background:rgba(201,168,76,0.12);border-left:3px solid var(--gold);font-size:0.86rem;line-height:1.75;">'+

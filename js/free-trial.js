@@ -290,8 +290,10 @@ function renderTrialBadge(containerId) {
       if (document.body) _showToast();
       else document.addEventListener('DOMContentLoaded', _showToast);
     } else {
-      // 무료체험 소진 → 모자이크 처리 X, 즉시 요금제 페이지로 이동
-      try{ location.replace('plans.html?blocked=' + encodeURIComponent(page)); }catch(e){}
+      // 무료체험 소진 → 모자이크 X, 팝업창 선명하게 표시 (사용자가 직접 결정)
+      var _showGate = function(){ try{ document.body.style.pointerEvents='none'; showLockedGate(); }catch(e){} };
+      if (document.body) _showGate();
+      else document.addEventListener('DOMContentLoaded', _showGate);
     }
   }
   // 즉시 실행 — 페이지 진입 순간 카운트 차감

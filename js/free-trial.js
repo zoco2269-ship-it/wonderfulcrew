@@ -193,8 +193,8 @@ function renderTrialBadge(containerId) {
     location.replace('plans.html?blocked=' + encodeURIComponent(page));
     return;
   }
-  // server 진실원 직접 조회 — wc_paid·subscribed 잔재 무시
-  async function gateCheck(){
+  // 즉시 동기 +1 (race condition 방지) + server 검증은 비동기 별도
+  function gateCheck(){
     // 테스트 모드는 어드민일 때만 잠금 (어드민이 결제 플로우 검증 중)
     if (localStorage.getItem('wc_test_mode') === 'true' && _isAdminSync()) {
       document.body.style.pointerEvents = 'none';
@@ -203,50 +203,52 @@ function renderTrialBadge(containerId) {
       return;
     }
     if (typeof isAdmin === 'function' && isAdmin()) return;
-
-    // server users.plan_active 직접 조회 — localStorage 잔재 무시
-    var planActive = false;
-    try {
-      var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
-      if (sb) {
-        var { data: udata } = await sb.auth.getUser();
-        if (udata && udata.user) {
-          var res = await sb.from('users').select('plan_active, free_trial_used').eq('auth_id', udata.user.id).maybeSingle();
-          planActive = !!(res && res.data && res.data.plan_active === true);
-          // server free_trial_used 도 함께 머지
-          var serverUsed = (res && res.data && typeof res.data.free_trial_used === 'number') ? res.data.free_trial_used : 0;
-          var existing = getTrialData();
-          var localUsed = existing.used || 0;
-          if (serverUsed > localUsed) {
-            existing.used = serverUsed;
-            saveTrialData(existing);
-          }
-        }
-      }
-    } catch(e) {}
-
-    // server 진실 기준으로 wc_paid · subscribed 동기화
-    if (planActive) {
-      localStorage.setItem('wc_paid', 'true');
-      var d2 = getTrialData(); d2.subscribed = true; saveTrialData(d2);
-      return; // 결제 사용자 통과
-    }
-    localStorage.removeItem('wc_paid');
+    if (localStorage.getItem('wc_paid') === 'true') return;
     var data = getTrialData();
-    data.subscribed = false;
+    if (data.subscribed === true) return;
 
+    // ★ 즉시 동기 +1 — 페이지 진입한 시점에 무조건 카운트 차감 (server 응답 대기 X)
     var used = data.used || 0;
     if (used < FREE_TRIAL_MAX) {
       data.used = used + 1;
       saveTrialData(data);
-      saveTrialToServer(data.used);
       showTrialToast(FREE_TRIAL_MAX - data.used);
+      // server 저장은 fire-and-forget (실패해도 다음 sync 때 머지됨)
+      saveTrialToServer(data.used);
+      // server 진실 검증은 비동기로 별도 — 잔재 청소 + plan_active 결제 사용자면 통과 처리
+      _verifyAndCleanupAsync();
       return;
     }
     // 무료체험 소진 + 미결제 → 강제 게이트
     document.body.style.pointerEvents = 'none';
     document.body.style.filter = 'blur(4px)';
     showLockedGate();
+  }
+
+  // server users.plan_active 비동기 검증 — gateCheck 와 분리되어 race condition 영향 X
+  async function _verifyAndCleanupAsync(){
+    try {
+      var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+      if (!sb) return;
+      var { data: udata } = await sb.auth.getUser();
+      if (!udata || !udata.user) return;
+      var res = await sb.from('users').select('plan_active, free_trial_used').eq('auth_id', udata.user.id).maybeSingle();
+      var planActive = !!(res && res.data && res.data.plan_active === true);
+      var serverUsed = (res && res.data && typeof res.data.free_trial_used === 'number') ? res.data.free_trial_used : 0;
+      // 결제 사용자면 wc_paid 셋 + subscribed 동기화 (다음 페이지부터 통과)
+      if (planActive) {
+        localStorage.setItem('wc_paid', 'true');
+        var d = getTrialData(); d.subscribed = true; saveTrialData(d);
+      } else {
+        localStorage.removeItem('wc_paid');
+      }
+      // server used 가 더 크면 머지 (다른 디바이스 동기화)
+      var current = getTrialData();
+      if (serverUsed > (current.used || 0)) {
+        current.used = serverUsed;
+        saveTrialData(current);
+      }
+    } catch(e) {}
   }
   function showLockedGate(){
     if (document.getElementById('wc-locked-gate')) return;

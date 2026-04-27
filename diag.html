@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>진단 · WonderfulCrew</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR','SF Mono',monospace;background:#0A0F1E;color:#E8E8E8;padding:20px;line-height:1.6;font-size:14px;}
+h1{color:#C9A84C;font-size:1.2rem;margin-bottom:10px;}
+.note{background:rgba(255,200,0,0.1);border-left:3px solid #FFC800;padding:12px;margin-bottom:20px;font-size:13px;}
+.row{background:rgba(255,255,255,0.04);border:1px solid rgba(201,168,76,0.2);border-radius:6px;padding:12px;margin-bottom:10px;}
+.row .key{color:#C9A84C;font-weight:700;font-size:13px;}
+.row .val{color:#fff;font-family:monospace;word-break:break-all;font-size:14px;margin-top:4px;}
+.row.bad .val{color:#FF6B6B;}
+.row.good .val{color:#6BCB77;}
+.section-title{color:#C9A84C;font-size:1rem;margin:20px 0 10px;border-bottom:1px solid rgba(201,168,76,0.3);padding-bottom:6px;}
+button{margin-top:20px;padding:14px 24px;background:#E74C3C;color:#fff;border:none;border-radius:8px;font-size:0.95rem;cursor:pointer;font-family:inherit;width:100%;font-weight:700;}
+.btn-secondary{background:#1A2340;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<h1>🔍 카운트 진단 페이지</h1>
+<div class="note">이 화면을 스크린샷 찍어서 보내주세요. 모든 값을 보고 정확한 원인을 잡습니다.</div>
+
+<div class="section-title">📦 localStorage</div>
+<div id="local-section"></div>
+
+<div class="section-title">☁ Supabase Auth</div>
+<div id="auth-section">로딩 중...</div>
+
+<div class="section-title">🗄 Supabase users 테이블</div>
+<div id="users-section">로딩 중...</div>
+
+<div class="section-title">⚙ 판정 결과</div>
+<div id="verdict-section">로딩 중...</div>
+
+<button onclick="if(confirm('localStorage 모두 삭제? (wc_user, wc_paid, wc_free_trial, wc_test_mode 등)')){['wc_user','wc_paid','wc_free_trial','wc_profile_done','wc_profile','wc_level_result','wc_test_mode','wc_anon_id','wc_subscription_expires'].forEach(k=>localStorage.removeItem(k));alert('삭제 완료. 새로고침합니다.');location.reload();}">🗑 모든 잔재 삭제 후 새로고침</button>
+<button class="btn-secondary" onclick="location.href='login.html'">로그인 페이지로</button>
+
+<script>
+function row(key,val,cls){
+  cls=cls||'';
+  return '<div class="row '+cls+'"><div class="key">'+key+'</div><div class="val">'+val+'</div></div>';
+}
+function safeStr(v){
+  if(v===null) return '(null)';
+  if(v===undefined) return '(undefined)';
+  if(typeof v==='string') return v;
+  try{ return JSON.stringify(v); }catch(e){ return String(v); }
+}
+
+// localStorage
+var keys=['wc_user','wc_paid','wc_free_trial','wc_profile_done','wc_test_mode','wc_subscription_expires','wc_anon_id','wc_level_result'];
+var localHtml='';
+keys.forEach(function(k){
+  var v=localStorage.getItem(k);
+  var cls = (k==='wc_paid'&&v==='true')||(k==='wc_test_mode'&&v==='true') ? 'bad' : (v?'':'good');
+  localHtml += row(k, v===null?'(없음)':v, cls);
+});
+document.getElementById('local-section').innerHTML=localHtml;
+
+// Supabase
+(async function(){
+  try{
+    var cfg=await (await fetch('/api/supabase-config')).json();
+    var sb=window.supabase.createClient(cfg.url,cfg.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+
+    // Auth
+    var { data: udata, error: uerr } = await sb.auth.getUser();
+    var authHtml='';
+    if(uerr){ authHtml=row('error', uerr.message, 'bad'); }
+    else if(!udata||!udata.user){ authHtml=row('상태', '로그아웃 상태', 'bad'); }
+    else {
+      authHtml += row('email', udata.user.email||'(없음)');
+      authHtml += row('user.id', udata.user.id);
+      authHtml += row('user_metadata.free_trial_used', safeStr(udata.user.user_metadata && udata.user.user_metadata.free_trial_used));
+      var ADMIN=['zoco2269@gmail.com','guswn5164@gmail.com'];
+      var isAdmin = ADMIN.indexOf(udata.user.email)!==-1;
+      authHtml += row('어드민?', isAdmin?'YES (카운트 자동 우회)':'NO', isAdmin?'bad':'good');
+    }
+    document.getElementById('auth-section').innerHTML=authHtml;
+
+    // users 테이블
+    var usersHtml='';
+    if(udata&&udata.user){
+      try{
+        var ures = await sb.from('users').select('*').eq('auth_id', udata.user.id).maybeSingle();
+        if(ures.error){ usersHtml += row('select error', ures.error.message, 'bad'); }
+        else if(!ures.data){ usersHtml += row('row', '(users 테이블에 row 없음 — 신규 가입자)', 'bad'); }
+        else {
+          var d=ures.data;
+          var paCls = d.plan_active===true?'bad':'good';
+          usersHtml += row('plan_active', safeStr(d.plan_active), paCls);
+          usersHtml += row('free_trial_used', safeStr(d.free_trial_used));
+          usersHtml += row('plan', safeStr(d.plan));
+          usersHtml += row('phone', safeStr(d.phone));
+          usersHtml += row('email', safeStr(d.email));
+        }
+      }catch(e){ usersHtml += row('exception', e.message, 'bad'); }
+    } else {
+      usersHtml = row('상태', '로그인 안되어 조회 불가', 'bad');
+    }
+    document.getElementById('users-section').innerHTML=usersHtml;
+
+    // 판정
+    var v='';
+    var wcPaid = localStorage.getItem('wc_paid');
+    var wcTestMode = localStorage.getItem('wc_test_mode');
+    var wcUser = JSON.parse(localStorage.getItem('wc_user')||'null');
+    var ADMIN=['zoco2269@gmail.com','guswn5164@gmail.com'];
+    var isAdminLocal = wcUser && ADMIN.indexOf(wcUser.email)!==-1;
+
+    if(isAdminLocal){
+      v += row('판정', '어드민 계정 — 모든 카운트 자동 통과 (정상)', 'bad');
+    } else if(wcPaid==='true'){
+      v += row('판정', 'wc_paid=true 잔재로 카운트 차감 안됨!!!', 'bad');
+    } else if(wcTestMode==='true'){
+      v += row('판정', 'wc_test_mode=true — 결제 시뮬 모드', 'bad');
+    } else {
+      v += row('판정', '잔재 없음 — 카운트 정상 차감되어야 함', 'good');
+    }
+    document.getElementById('verdict-section').innerHTML=v;
+  }catch(e){
+    document.getElementById('auth-section').innerHTML=row('exception',e.message,'bad');
+  }
+})();
+</script>
+</body>
+</html>

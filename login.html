@@ -151,8 +151,12 @@ async function showUser(user) {
   var hasProfile = false;
   try {
     if (sb) {
-      var profileRes = await sb.from('users').select('phone').eq('auth_id', user.id).maybeSingle();
+      var profileRes = await sb.from('users').select('phone, plan_active').eq('auth_id', user.id).maybeSingle();
       hasProfile = !!(profileRes && profileRes.data && profileRes.data.phone);
+      // server plan_active 진실원으로 wc_paid 강제 동기화 — 어드민/이전 사용자 잔재 청소
+      var planActive = !!(profileRes && profileRes.data && profileRes.data.plan_active === true);
+      if (planActive) localStorage.setItem('wc_paid', 'true');
+      else localStorage.removeItem('wc_paid');
       // 서버·로컬 used 중 큰 값으로 머지 (절대 회복 불가) — server 미저장(0) 시 local 보존, 동시에 server 에 push
       var existing = {};
       try { existing = JSON.parse(localStorage.getItem('wc_free_trial') || '{}'); } catch(e) {}

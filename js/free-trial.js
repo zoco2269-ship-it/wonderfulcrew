@@ -79,6 +79,7 @@ function isSubscribed() {
 
 function useFreeTrialOrCheck() {
   if (typeof isAdmin === 'function' && isAdmin()) return true;
+  if (localStorage.getItem('wc_paid') === 'true') return true;
 
   var data = getTrialData();
   if (data.subscribed) return true;

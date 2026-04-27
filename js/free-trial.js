@@ -289,10 +289,28 @@ function renderTrialBadge(containerId) {
       if (document.body) _showToast();
       else document.addEventListener('DOMContentLoaded', _showToast);
     } else {
-      // 무료체험 소진 → 모자이크 X, 팝업창 선명하게 표시 (사용자가 직접 결정)
-      var _showGate = function(){ try{ document.body.style.pointerEvents='none'; showLockedGate(); }catch(e){} };
-      if (document.body) _showGate();
-      else document.addEventListener('DOMContentLoaded', _showGate);
+      // 카운트 소진 — server 결제 기록 검증 후 결정 (결제 사용자 보호)
+      (async function(){
+        try {
+          var u = JSON.parse(localStorage.getItem('wc_user') || 'null');
+          if (u && u.id) {
+            var hr = await fetch('/api/heal-plan-active', {
+              method:'POST', headers:{'Content-Type':'application/json'},
+              body: JSON.stringify({userId: u.id, email: u.email || ''})
+            });
+            var hd = await hr.json();
+            if (hd && hd.planActive === true) {
+              localStorage.setItem('wc_paid', 'true');
+              var d = getTrialData(); d.subscribed = true; saveTrialData(d);
+              return; // 결제 사용자 — 게이트 표시 X 통과
+            }
+          }
+        } catch(e) {}
+        // 결제 기록 없음 → 게이트 표시
+        var _showGate = function(){ try{ document.body.style.pointerEvents='none'; showLockedGate(); }catch(e){} };
+        if (document.body) _showGate();
+        else document.addEventListener('DOMContentLoaded', _showGate);
+      })();
     }
   }
   // 즉시 실행 — 페이지 진입 순간 카운트 차감

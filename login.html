@@ -157,6 +157,25 @@ async function showUser(user) {
       var planActive = !!(profileRes && profileRes.data && profileRes.data.plan_active === true);
       if (planActive) localStorage.setItem('wc_paid', 'true');
       else localStorage.removeItem('wc_paid');
+      // server level_results 가장 최근 1건을 localStorage 에 동기화 — 다시 로그인 시 레벨테스트 다시 안 하도록
+      try {
+        var lvlRes = await sb.from('level_results')
+          .select('score, level, recommended_airlines, created_at')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (lvlRes && lvlRes.data) {
+          localStorage.setItem('wc_level_result', JSON.stringify({
+            completed: true,
+            score: lvlRes.data.score,
+            level: lvlRes.data.level,
+            airlines: lvlRes.data.recommended_airlines || [],
+            name: user.user_metadata?.full_name || user.email?.split('@')[0] || '지원자',
+            savedAt: lvlRes.data.created_at
+          }));
+        }
+      } catch(e) {}
       // 서버·로컬 used 중 큰 값으로 머지 (절대 회복 불가) — server 미저장(0) 시 local 보존, 동시에 server 에 push
       var existing = {};
       try { existing = JSON.parse(localStorage.getItem('wc_free_trial') || '{}'); } catch(e) {}

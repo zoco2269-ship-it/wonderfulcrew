@@ -132,39 +132,72 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 var recognition=null, fullText='', dialogue=[];
 var BACK_URL='practice-foreign.html';
 
-// 첫 질문 랜덤 — 기본 인사·이력서 기반·동기·취미·여행·영어·자기관찰 27종
-var FIRST_QUESTIONS=[
-  'How did you get here today?',
-  'How was your morning so far?',
-  'Have you eaten yet?',
-  'So, what are you doing these days?',
-  'Tell me a little about yourself.',
-  "What's your current job?",
-  'Why do you want to apply for cabin crew?',
-  'Why do you want to join our airline?',
-  'Why this airline?',
-  'What made you interested in cabin crew?',
-  'What do you know about our airline?',
-  'Why do you want to work abroad?',
-  'What do you do in your free time?',
-  'Do you have any hobbies?',
-  'What kind of food do you like?',
-  "What's your favorite way to relax?",
-  'Do you exercise regularly?',
-  "What's the last book or movie you enjoyed?",
-  "What's your favorite city you've visited?",
-  'Where would you like to travel next?',
-  'How do you practice your English?',
-  'Have you ever lived abroad?',
-  'What are you good at?',
-  'What do people say about you?',
-  'How would your friends describe you?',
-  'What makes you smile?',
-  "What's something you're proud of recently?"
-];
-var firstQ=FIRST_QUESTIONS[Math.floor(Math.random()*FIRST_QUESTIONS.length)];
+// 카테고리별 질문 풀 — 같은 카테고리 연이어 안 나오게 매 턴마다 다른 카테고리에서 추출
+var QUESTIONS_BY_CAT={
+  greeting:[
+    'How did you get here today?',
+    'How was your morning so far?',
+    'Have you eaten yet?'
+  ],
+  cv:[
+    'So, what are you doing these days?',
+    'Tell me a little about yourself.',
+    "What's your current job?"
+  ],
+  motivation:[
+    'Why do you want to apply for cabin crew?',
+    'Why do you want to join our airline?',
+    'Why this airline?',
+    'What made you interested in cabin crew?',
+    'What do you know about our airline?',
+    'Why do you want to work abroad?'
+  ],
+  hobby:[
+    'What do you do in your free time?',
+    'Do you have any hobbies?',
+    'What kind of food do you like?',
+    "What's your favorite way to relax?",
+    'Do you exercise regularly?',
+    "What's the last book or movie you enjoyed?"
+  ],
+  travel:[
+    "What's your favorite city you've visited?",
+    'Where would you like to travel next?',
+    'How do you practice your English?',
+    'Have you ever lived abroad?'
+  ],
+  self:[
+    'What are you good at?',
+    'What do people say about you?',
+    'How would your friends describe you?',
+    'What makes you smile?',
+    "What's something you're proud of recently?"
+  ]
+};
+var usedCats=[];
+function pickNextQuestion(){
+  var allCats=Object.keys(QUESTIONS_BY_CAT);
+  // 1) 아직 안 쓴 카테고리 우선
+  var fresh=allCats.filter(function(c){return usedCats.indexOf(c)===-1;});
+  var pool=fresh.length?fresh:allCats.slice();
+  // 2) 직전 카테고리 제외 (인접 중복 방지)
+  if(usedCats.length){
+    var last=usedCats[usedCats.length-1];
+    var filtered=pool.filter(function(c){return c!==last;});
+    if(filtered.length)pool=filtered;
+  }
+  var cat=pool[Math.floor(Math.random()*pool.length)];
+  var qs=QUESTIONS_BY_CAT[cat];
+  var q=qs[Math.floor(Math.random()*qs.length)];
+  usedCats.push(cat);
+  return q;
+}
+// 첫 질문 (usedCats 에 첫 카테고리 push)
+var firstQ=pickNextQuestion();
 var SYS_FIRSTTURN='You are an airline CV Drop interviewer. Candidate just greeted you. Respond with ONE very short acknowledgment (e.g., "Good morning!" or "Nice to meet you too.") + ask "'+firstQ+'" in the same message. Under 15 words total. English only. No quotation marks.';
-var SYS_FOLLOWUP='You are an airline CV Drop interviewer. ONE short line, under 15 words. Brief reaction + one natural follow-up question based on what the candidate just said. Casual, warm. No "Tell me about a time" style. English only.';
+function buildFollowupSys(nextQ){
+  return 'You are an airline CV Drop interviewer. ONE short line, under 18 words. Brief warm reaction to what the candidate just said (e.g., "That sounds great!" / "Oh, interesting!"), then ask this exact question: "'+nextQ+'". You may rephrase the question slightly to flow naturally, but keep the meaning. Casual, warm. English only. No quotation marks.';
+}
 var SYS_CLOSING='You are an airline CV Drop interviewer. The small talk is wrapping up. Give a warm natural closing in ONE short line (under 15 words). Example: "Thank you for coming today, nice meeting you!" / "Great talking with you, all the best!" No question. English only.';
 
 // 제목에 항공사명 반영
@@ -386,7 +419,14 @@ async function stopAnswer(){
   var userTurns=dialogue.filter(function(d){return d.who==='user';}).length;
   var isFirst=userTurns===1;
   var isClosing=userTurns>=4;
-  var sys=isFirst?SYS_FIRSTTURN:(isClosing?SYS_CLOSING:SYS_FOLLOWUP);
+  var sys;
+  if(isFirst){sys=SYS_FIRSTTURN;}
+  else if(isClosing){sys=SYS_CLOSING;}
+  else{
+    // Q2, Q3 — 카테고리 분산 다음 질문 추출
+    var nextQ=pickNextQuestion();
+    sys=buildFollowupSys(nextQ);
+  }
   var recent=isFirst
     ?'Candidate greeted: '+ans
     :dialogue.slice(-6).filter(function(d){return d.text.indexOf('(Please start')!==0;}).map(function(d){return (d.who==='ai'?'Interviewer: ':'You: ')+d.text;}).join('\n');

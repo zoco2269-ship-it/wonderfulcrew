@@ -19,6 +19,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 .hero{background:var(--navy);color:#fff;padding:130px 5% 60px;text-align:center;}.hero .label{font-family:'DM Serif Display',serif;font-size:0.8rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:14px;}.hero h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;margin-bottom:10px;}.hero h1 em{font-style:normal;color:var(--gold-light);font-weight:600;}.hero p{color:rgba(255,255,255,0.7);font-size:0.92rem;max-width:500px;margin:0 auto;line-height:1.8;}
 section{padding:50px 5%;}.wrap{max-width:900px;margin:0 auto;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:24px;}
+@media(max-width:900px){.grid-3{grid-template-columns:1fr;}}
 .card{background:#fff;border:1px solid var(--gold-pale);padding:24px;margin-bottom:20px;}
 .card h3{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:14px;}
 
@@ -31,13 +33,49 @@ section{padding:50px 5%;}.wrap{max-width:900px;margin:0 auto;}
 .radar-wrap{position:relative;width:280px;height:280px;margin:0 auto 16px;}
 .radar-wrap canvas{width:100%;height:100%;}
 
+/* 종합 실력 분석 — 확대판 */
+.analysis-card{padding:36px 32px;background:linear-gradient(180deg,#fff,#FBF8F0);border:1px solid var(--gold-pale);border-radius:6px;margin-bottom:24px;}
+.analysis-card>h3{font-size:1.4rem;margin-bottom:24px;display:flex;align-items:center;gap:14px;}
+.analysis-card>h3::before{content:'';display:inline-block;width:6px;height:24px;background:linear-gradient(180deg,var(--gold-light),var(--gold));border-radius:3px;}
+.analysis-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:36px;align-items:start;}
+.analysis-left{display:flex;flex-direction:column;align-items:center;gap:18px;}
+.overall-score{text-align:center;padding:22px 28px;background:linear-gradient(135deg,var(--navy),#2A3455);color:#fff;border-radius:14px;width:100%;max-width:380px;box-shadow:0 8px 24px rgba(26,35,64,0.12);}
+.overall-num{font-family:'DM Serif Display',serif;font-size:3.4rem;color:var(--gold-light);line-height:1;letter-spacing:-0.02em;}
+.overall-num small{font-size:1.2rem;opacity:0.55;margin-left:4px;}
+.overall-lbl{font-size:0.74rem;color:rgba(255,255,255,0.55);margin-top:8px;letter-spacing:0.18em;text-transform:uppercase;}
+.overall-grade{display:inline-block;margin-top:14px;padding:6px 22px;background:var(--gold);color:var(--navy);border-radius:20px;font-family:'DM Serif Display',serif;font-size:1rem;letter-spacing:0.18em;font-weight:600;}
+.radar-wrap-big{position:relative;width:100%;max-width:480px;aspect-ratio:1;}
+.radar-wrap-big canvas{width:100%;height:100%;display:block;}
+.analysis-table{width:100%;margin-top:20px;border-collapse:separate;border-spacing:0;border:1px solid var(--gold-pale);border-radius:8px;overflow:hidden;}
+.analysis-table th{background:var(--navy);color:var(--gold-light);font-size:0.72rem;padding:11px 12px;letter-spacing:0.08em;font-weight:600;text-align:left;}
+.analysis-table td{padding:11px 12px;font-size:0.84rem;border-bottom:1px solid rgba(201,168,76,0.18);color:var(--text-mid);}
+.analysis-table tr:last-child td{border-bottom:none;}
+.analysis-table tr:hover td{background:rgba(245,233,200,0.25);}
+.analysis-table .name-cell{font-weight:500;color:var(--text-dark);}
+.analysis-table .score-cell{font-family:'DM Serif Display',serif;color:var(--gold);font-size:1.05rem;text-align:center;width:64px;}
+.analysis-table .status-cell{text-align:center;width:90px;}
+.status-pill{display:inline-block;padding:3px 11px;border-radius:14px;font-size:0.7rem;font-weight:700;letter-spacing:0.04em;}
+.status-excellent{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}
+.status-good{background:#D4E5CC;color:#2D5C25;}
+.status-average{background:#F5E9C8;color:#7A6A2C;}
+.status-need{background:#F5D4D4;color:#8C2C2C;}
+.strength-weakness{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px;}
+.sw-card{padding:16px 18px;border-radius:10px;}
+.sw-card.strength{background:linear-gradient(135deg,rgba(168,200,160,0.22),rgba(168,200,160,0.08));border-left:4px solid #5A8C50;}
+.sw-card.weakness{background:linear-gradient(135deg,rgba(245,200,200,0.22),rgba(245,200,200,0.08));border-left:4px solid #C66060;}
+.sw-lbl{font-size:0.7rem;color:var(--text-muted);margin-bottom:6px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;}
+.sw-card.strength .sw-lbl{color:#3F6F37;}
+.sw-card.weakness .sw-lbl{color:#8C4040;}
+.sw-val{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--text-dark);}
+.sw-val small{font-size:0.78rem;color:var(--text-muted);font-family:'Noto Serif KR',serif;margin-left:6px;}
+
 /* 스코어 바 */
 .score-bars{margin-top:16px;}
 .score-bar{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
 .score-bar .lbl{width:90px;font-size:0.82rem;color:var(--text-mid);text-align:right;}
-.score-bar .bar{flex:1;height:8px;background:var(--gold-pale);border-radius:4px;overflow:hidden;}
-.score-bar .fill{height:100%;background:linear-gradient(90deg,var(--gold-light),var(--gold));border-radius:4px;transition:width 0.8s;}
-.score-bar .val{width:32px;font-family:'DM Serif Display',serif;font-size:0.88rem;color:var(--gold);}
+.score-bar .bar{flex:1;height:10px;background:var(--gold-pale);border-radius:5px;overflow:hidden;position:relative;}
+.score-bar .fill{height:100%;background:linear-gradient(90deg,var(--gold-light),var(--gold));border-radius:5px;transition:width 0.8s;box-shadow:0 0 6px rgba(201,168,76,0.4);}
+.score-bar .val{width:32px;font-family:'DM Serif Display',serif;font-size:0.92rem;color:var(--gold);text-align:right;}
 
 .stat-num{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);}
 .stat-lbl{font-size:0.76rem;color:var(--text-muted);margin-top:2px;}
@@ -48,6 +86,14 @@ section{padding:50px 5%;}.wrap{max-width:900px;margin:0 auto;}
 .cal-mini .day{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;border-radius:50%;color:var(--text-dark);margin:0 auto;}
 .cal-mini .day.done{background:var(--gold);color:#fff;font-weight:600;}
 .cal-mini .day.today{border:2px solid var(--navy);}
+
+@media(max-width:900px){
+  .analysis-grid{grid-template-columns:1fr;gap:24px;}
+  .analysis-card{padding:24px 18px;}
+  .analysis-card>h3{font-size:1.2rem;}
+  .overall-num{font-size:2.8rem;}
+  .strength-weakness{grid-template-columns:1fr;}
+}
 
 /* 진행바 */
 .progress-bar{height:12px;background:var(--gold-pale);border-radius:6px;overflow:hidden;margin:10px 0;}
@@ -99,57 +145,79 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="text" id="daily-comment"></div>
 </div>
 
-<div class="grid-2">
-
-<!-- 레이더 차트 + 스코어 -->
-<div class="card">
+<!-- 종합 실력 분석 (풀폭 확대판) -->
+<div class="card analysis-card">
   <h3>종합 실력 분석</h3>
-  <div class="radar-wrap"><canvas id="radar" width="280" height="280"></canvas></div>
-  <div class="score-bars">
-    <div class="score-bar"><div class="lbl">유창성</div><div class="bar"><div class="fill" id="bar-fluency"></div></div><div class="val" id="val-fluency">0</div></div>
-    <div class="score-bar"><div class="lbl">자신감</div><div class="bar"><div class="fill" id="bar-confidence"></div></div><div class="val" id="val-confidence">0</div></div>
-    <div class="score-bar"><div class="lbl">내용 구성</div><div class="bar"><div class="fill" id="bar-structure"></div></div><div class="val" id="val-structure">0</div></div>
-    <div class="score-bar"><div class="lbl">발음</div><div class="bar"><div class="fill" id="bar-pronunciation"></div></div><div class="val" id="val-pronunciation">0</div></div>
-    <div class="score-bar"><div class="lbl">서비스 마인드</div><div class="bar"><div class="fill" id="bar-service"></div></div><div class="val" id="val-service">0</div></div>
-    <div style="height:1px;background:var(--gold-pale);margin:14px 0 10px;"></div>
-    <div class="score-bar"><div class="lbl">한국어 말하기</div><div class="bar"><div class="fill" id="bar-korean"></div></div><div class="val" id="val-korean">0</div></div>
-    <div class="score-bar"><div class="lbl">영어 말하기</div><div class="bar"><div class="fill" id="bar-english"></div></div><div class="val" id="val-english">0</div></div>
-    <div class="score-bar"><div class="lbl">이미지·표정</div><div class="bar"><div class="fill" id="bar-image"></div></div><div class="val" id="val-image">0</div></div>
+  <div class="analysis-grid">
+    <div class="analysis-left">
+      <div class="overall-score">
+        <div class="overall-num"><span id="overall-score">0</span><small>/100</small></div>
+        <div class="overall-lbl">Overall Score</div>
+        <div class="overall-grade" id="overall-grade">평가 대기</div>
+      </div>
+      <div class="radar-wrap-big"><canvas id="radar" width="720" height="720"></canvas></div>
+    </div>
+    <div class="analysis-right">
+      <div class="score-bars">
+        <div class="score-bar"><div class="lbl">유창성</div><div class="bar"><div class="fill" id="bar-fluency"></div></div><div class="val" id="val-fluency">0</div></div>
+        <div class="score-bar"><div class="lbl">자신감</div><div class="bar"><div class="fill" id="bar-confidence"></div></div><div class="val" id="val-confidence">0</div></div>
+        <div class="score-bar"><div class="lbl">내용 구성</div><div class="bar"><div class="fill" id="bar-structure"></div></div><div class="val" id="val-structure">0</div></div>
+        <div class="score-bar"><div class="lbl">발음</div><div class="bar"><div class="fill" id="bar-pronunciation"></div></div><div class="val" id="val-pronunciation">0</div></div>
+        <div class="score-bar"><div class="lbl">서비스 마인드</div><div class="bar"><div class="fill" id="bar-service"></div></div><div class="val" id="val-service">0</div></div>
+        <div style="height:1px;background:var(--gold-pale);margin:14px 0 10px;"></div>
+        <div class="score-bar"><div class="lbl">한국어 말하기</div><div class="bar"><div class="fill" id="bar-korean"></div></div><div class="val" id="val-korean">0</div></div>
+        <div class="score-bar"><div class="lbl">영어 말하기</div><div class="bar"><div class="fill" id="bar-english"></div></div><div class="val" id="val-english">0</div></div>
+        <div class="score-bar"><div class="lbl">이미지·표정</div><div class="bar"><div class="fill" id="bar-image"></div></div><div class="val" id="val-image">0</div></div>
+      </div>
+      <table class="analysis-table">
+        <thead><tr><th>역량</th><th style="text-align:center;">점수</th><th style="text-align:center;">상태</th></tr></thead>
+        <tbody id="analysis-tbody"></tbody>
+      </table>
+      <div class="strength-weakness">
+        <div class="sw-card strength">
+          <div class="sw-lbl">▲ 강점</div>
+          <div class="sw-val" id="strength-val">- <small>연습 기록 후 표시</small></div>
+        </div>
+        <div class="sw-card weakness">
+          <div class="sw-lbl">▼ 보완 영역</div>
+          <div class="sw-val" id="weakness-val">- <small>연습 기록 후 표시</small></div>
+        </div>
+      </div>
+      <p style="font-size:0.74rem;color:var(--text-muted);margin-top:14px;line-height:1.6;">한국어·영어·이미지 점수는 레벨테스트 결과 기반입니다. 레벨테스트를 다시 진행하면 갱신됩니다.</p>
+    </div>
   </div>
-  <p style="font-size:0.74rem;color:var(--text-muted);margin-top:12px;line-height:1.6;">한국어·영어·이미지 점수는 레벨테스트 결과 기반입니다. 레벨테스트를 다시 진행하면 갱신됩니다.</p>
 </div>
 
-<!-- 토큰 + 출석 + 목표 -->
-<div>
-  <div class="card" style="margin-bottom:20px;">
-    <h3>구독 현황</h3>
-    <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
-      <div style="text-align:center;"><div class="stat-num" id="p-tokens">무료체험</div><div class="stat-lbl">구독 상태</div></div>
-      <div style="text-align:center;"><div class="stat-num" id="p-expiry">-</div><div class="stat-lbl">만료일</div></div>
-      <div style="text-align:center;"><div class="stat-num" id="p-used">0</div><div class="stat-lbl">이번 달 사용</div></div>
-    </div>
-  </div>
+<div class="grid-3">
 
-  <div class="card" style="margin-bottom:20px;">
-    <h3>출석 현황</h3>
-    <div style="display:flex;gap:16px;margin-bottom:12px;">
-      <div style="text-align:center;"><div class="stat-num" id="p-streak">0</div><div class="stat-lbl">연속 출석</div></div>
-      <div style="text-align:center;"><div class="stat-num" id="p-total">0</div><div class="stat-lbl">총 출석</div></div>
-      <div style="text-align:center;"><div class="stat-num" id="p-best">0</div><div class="stat-lbl">최장 연속</div></div>
-    </div>
-    <div class="cal-mini" id="p-cal"></div>
+<div class="card">
+  <h3>구독 현황</h3>
+  <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+    <div style="text-align:center;"><div class="stat-num" id="p-tokens">무료체험</div><div class="stat-lbl">구독 상태</div></div>
+    <div style="text-align:center;"><div class="stat-num" id="p-expiry">-</div><div class="stat-lbl">만료일</div></div>
+    <div style="text-align:center;"><div class="stat-num" id="p-used">0</div><div class="stat-lbl">이번 달 사용</div></div>
   </div>
+</div>
 
-  <div class="card">
-    <h3>목표 항공사</h3>
-    <select id="target-airline" onchange="localStorage.setItem('wc_target',this.value);updateTarget();" style="width:100%;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;margin-bottom:10px;">
-      <option value="">목표 항공사 선택</option>
-      <option value="에미레이트">에미레이트</option><option value="카타르">카타르</option><option value="싱가포르">싱가포르</option><option value="캐세이">캐세이퍼시픽</option>
-      <option value="대한항공">대한항공</option><option value="아시아나">아시아나</option><option value="제주항공">제주항공</option><option value="진에어">진에어</option>
-    </select>
-    <div id="target-text" style="font-size:0.84rem;color:var(--text-mid);margin-bottom:6px;">목표 항공사를 선택해주세요</div>
-    <div class="progress-bar"><div class="fill" id="target-fill" style="width:0%;"></div></div>
+<div class="card">
+  <h3>출석 현황</h3>
+  <div style="display:flex;gap:16px;margin-bottom:12px;">
+    <div style="text-align:center;"><div class="stat-num" id="p-streak">0</div><div class="stat-lbl">연속 출석</div></div>
+    <div style="text-align:center;"><div class="stat-num" id="p-total">0</div><div class="stat-lbl">총 출석</div></div>
+    <div style="text-align:center;"><div class="stat-num" id="p-best">0</div><div class="stat-lbl">최장 연속</div></div>
   </div>
+  <div class="cal-mini" id="p-cal"></div>
+</div>
+
+<div class="card">
+  <h3>목표 항공사</h3>
+  <select id="target-airline" onchange="localStorage.setItem('wc_target',this.value);updateTarget();" style="width:100%;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;margin-bottom:10px;">
+    <option value="">목표 항공사 선택</option>
+    <option value="에미레이트">에미레이트</option><option value="카타르">카타르</option><option value="싱가포르">싱가포르</option><option value="캐세이">캐세이퍼시픽</option>
+    <option value="대한항공">대한항공</option><option value="아시아나">아시아나</option><option value="제주항공">제주항공</option><option value="진에어">진에어</option>
+  </select>
+  <div id="target-text" style="font-size:0.84rem;color:var(--text-mid);margin-bottom:6px;">목표 항공사를 선택해주세요</div>
+  <div class="progress-bar"><div class="fill" id="target-fill" style="width:0%;"></div></div>
 </div>
 
 </div>
@@ -190,71 +258,196 @@ try{
   if(_saved.fluency!==undefined)SCORES=_saved;
 }catch(e){}
 
+// 레벨테스트 기반 추가 점수
+var EXTRA={korean:0,english:0,image:0};
+try{
+  var _lr=JSON.parse(localStorage.getItem('wc_level_result')||'{}');
+  if(typeof _lr.korean==='number')EXTRA.korean=_lr.korean;
+  if(typeof _lr.english==='number')EXTRA.english=_lr.english;
+  if(typeof _lr.image==='number')EXTRA.image=_lr.image;
+}catch(e){}
+
 // 스코어 바 애니메이션
-Object.keys(SCORES).forEach(function(k){
-  var v=SCORES[k];
-  document.getElementById('bar-'+k).style.width=v+'%';
-  document.getElementById('val-'+k).textContent=v;
+['fluency','confidence','structure','pronunciation','service'].forEach(function(k){
+  var v=SCORES[k]||0;
+  var bar=document.getElementById('bar-'+k),val=document.getElementById('val-'+k);
+  if(bar)bar.style.width=v+'%';
+  if(val)val.textContent=v;
+});
+['korean','english','image'].forEach(function(k){
+  var v=EXTRA[k]||0;
+  var bar=document.getElementById('bar-'+k),val=document.getElementById('val-'+k);
+  if(bar)bar.style.width=v+'%';
+  if(val)val.textContent=v;
 });
 
-// 레이더 차트 (Canvas)
+// 종합 점수 + 등급
+var coreVals=[SCORES.fluency,SCORES.confidence,SCORES.structure,SCORES.pronunciation,SCORES.service];
+var hasAnyScore=coreVals.some(function(v){return v>0;});
+var overall=hasAnyScore?Math.round(coreVals.reduce(function(a,b){return a+b;},0)/coreVals.length):0;
+document.getElementById('overall-score').textContent=overall;
+var gradeBox=document.getElementById('overall-grade');
+if(!hasAnyScore){gradeBox.textContent='평가 대기';gradeBox.style.background='rgba(255,255,255,0.18)';gradeBox.style.color='var(--gold-light)';}
+else if(overall>=90){gradeBox.textContent='S · EXCELLENT';}
+else if(overall>=80){gradeBox.textContent='A · 우수';}
+else if(overall>=70){gradeBox.textContent='B · 양호';}
+else if(overall>=60){gradeBox.textContent='C · 보통';}
+else{gradeBox.textContent='D · 노력 필요';gradeBox.style.background='#C66060';gradeBox.style.color='#fff';}
+
+// 강점·약점
+function statusOf(v){
+  if(v>=80)return{cls:'status-excellent',text:'우수'};
+  if(v>=60)return{cls:'status-good',text:'양호'};
+  if(v>=40)return{cls:'status-average',text:'보통'};
+  return{cls:'status-need',text:'노력 필요'};
+}
+var coreLabels=['유창성','자신감','내용 구성','발음','서비스 마인드'];
+if(hasAnyScore){
+  var maxIdx=0,minIdx=0;
+  for(var i=1;i<coreVals.length;i++){
+    if(coreVals[i]>coreVals[maxIdx])maxIdx=i;
+    if(coreVals[i]<coreVals[minIdx])minIdx=i;
+  }
+  document.getElementById('strength-val').innerHTML=coreLabels[maxIdx]+' <small>'+coreVals[maxIdx]+'점 · 가장 안정적인 영역</small>';
+  document.getElementById('weakness-val').innerHTML=coreLabels[minIdx]+' <small>'+coreVals[minIdx]+'점 · 집중 보완 권장</small>';
+}
+
+// 분석 테이블 채우기
+(function(){
+  var rows=[
+    {n:'유창성',v:SCORES.fluency,h:'말의 흐름·끊김 없는 전달'},
+    {n:'자신감',v:SCORES.confidence,h:'목소리 톤·태도'},
+    {n:'내용 구성',v:SCORES.structure,h:'논리·답변 짜임새'},
+    {n:'발음',v:SCORES.pronunciation,h:'정확성·명료도'},
+    {n:'서비스 마인드',v:SCORES.service,h:'고객·승객 응대 자세'},
+    {n:'한국어 말하기',v:EXTRA.korean,h:'레벨테스트 기반'},
+    {n:'영어 말하기',v:EXTRA.english,h:'레벨테스트 기반'},
+    {n:'이미지·표정',v:EXTRA.image,h:'레벨테스트 기반'}
+  ];
+  var tb=document.getElementById('analysis-tbody');
+  if(!tb)return;
+  tb.innerHTML=rows.map(function(r){
+    var s=statusOf(r.v);
+    return '<tr><td class="name-cell">'+r.n+'<div style="font-size:0.7rem;color:var(--text-muted);font-weight:400;margin-top:2px;">'+r.h+'</div></td><td class="score-cell">'+r.v+'</td><td class="status-cell"><span class="status-pill '+s.cls+'">'+s.text+'</span></td></tr>';
+  }).join('');
+})();
+
+// 레이더 차트 (Canvas) — 고해상도 + 강조 렌더
 (function(){
   var c=document.getElementById('radar');
+  if(!c)return;
   var ctx=c.getContext('2d');
-  var cx=140,cy=140,r=110;
+  var W=c.width,H=c.height;
+  var cx=W/2,cy=H/2,r=W*0.36;
   var labels=['유창성','자신감','내용구성','발음','서비스'];
   var vals=[SCORES.fluency,SCORES.confidence,SCORES.structure,SCORES.pronunciation,SCORES.service];
   var n=5;
 
-  // 배경 그리드
-  [1,0.75,0.5,0.25].forEach(function(s){
+  ctx.clearRect(0,0,W,H);
+
+  // 배경 원형 그라데이션
+  var bgGrad=ctx.createRadialGradient(cx,cy,0,cx,cy,r*1.05);
+  bgGrad.addColorStop(0,'rgba(245,233,200,0.35)');
+  bgGrad.addColorStop(1,'rgba(250,247,240,0)');
+  ctx.fillStyle=bgGrad;
+  ctx.beginPath();ctx.arc(cx,cy,r*1.05,0,Math.PI*2);ctx.fill();
+
+  // 그리드 (5단계)
+  [1,0.8,0.6,0.4,0.2].forEach(function(s,idx){
     ctx.beginPath();
     for(var i=0;i<n;i++){
-      var angle=Math.PI*2/n*i-Math.PI/2;
-      var x=cx+Math.cos(angle)*r*s;
-      var y=cy+Math.sin(angle)*r*s;
+      var a=Math.PI*2/n*i-Math.PI/2;
+      var x=cx+Math.cos(a)*r*s;
+      var y=cy+Math.sin(a)*r*s;
       if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
     }
-    ctx.closePath();ctx.strokeStyle='rgba(201,168,76,0.15)';ctx.stroke();
+    ctx.closePath();
+    ctx.strokeStyle=idx===0?'rgba(201,168,76,0.55)':'rgba(201,168,76,0.22)';
+    ctx.lineWidth=idx===0?2:1;
+    ctx.stroke();
   });
 
   // 축선
   for(var i=0;i<n;i++){
-    var angle=Math.PI*2/n*i-Math.PI/2;
+    var a=Math.PI*2/n*i-Math.PI/2;
     ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.lineTo(cx+Math.cos(angle)*r,cy+Math.sin(angle)*r);
-    ctx.strokeStyle='rgba(201,168,76,0.1)';ctx.stroke();
+    ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
+    ctx.strokeStyle='rgba(201,168,76,0.28)';
+    ctx.lineWidth=1;
+    ctx.stroke();
   }
 
-  // 데이터 ��역
-  ctx.beginPath();
-  for(var i=0;i<n;i++){
-    var angle=Math.PI*2/n*i-Math.PI/2;
-    var v=vals[i]/100;
-    var x=cx+Math.cos(angle)*r*v;
-    var y=cy+Math.sin(angle)*r*v;
-    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
-  }
-  ctx.closePath();
-  ctx.fillStyle='rgba(201,168,76,0.2)';ctx.fill();
-  ctx.strokeStyle='#C9A84C';ctx.lineWidth=2;ctx.stroke();
+  // 그리드 점수 라벨 (20/40/60/80/100)
+  ctx.fillStyle='rgba(74,68,56,0.45)';
+  ctx.font='600 16px "DM Serif Display"';
+  ctx.textAlign='left';
+  [20,40,60,80,100].forEach(function(g){
+    var y=cy-r*(g/100);
+    ctx.fillText(g,cx+4,y-2);
+  });
 
-  // 점
-  for(var i=0;i<n;i++){
-    var angle=Math.PI*2/n*i-Math.PI/2;
-    var v=vals[i]/100;
+  // 데이터 영역
+  var hasData=vals.some(function(v){return v>0;});
+  if(hasData){
+    var dataPoints=[];
+    for(var i=0;i<n;i++){
+      var a=Math.PI*2/n*i-Math.PI/2;
+      var v=vals[i]/100;
+      dataPoints.push({x:cx+Math.cos(a)*r*v,y:cy+Math.sin(a)*r*v});
+    }
+
+    // 글로우 (얇은 외곽 흐림)
+    ctx.save();
+    ctx.shadowColor='rgba(201,168,76,0.55)';
+    ctx.shadowBlur=24;
     ctx.beginPath();
-    ctx.arc(cx+Math.cos(angle)*r*v,cy+Math.sin(angle)*r*v,4,0,Math.PI*2);
-    ctx.fillStyle='#C9A84C';ctx.fill();
+    dataPoints.forEach(function(p,i){if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);});
+    ctx.closePath();
+    var fillGrad=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+    fillGrad.addColorStop(0,'rgba(232,201,106,0.55)');
+    fillGrad.addColorStop(1,'rgba(201,168,76,0.18)');
+    ctx.fillStyle=fillGrad;
+    ctx.fill();
+    ctx.restore();
+
+    // 윤곽선 (굵게)
+    ctx.beginPath();
+    dataPoints.forEach(function(p,i){if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);});
+    ctx.closePath();
+    ctx.strokeStyle='#C9A84C';
+    ctx.lineWidth=4;
+    ctx.lineJoin='round';
+    ctx.stroke();
+
+    // 꼭짓점 + 점수 라벨
+    dataPoints.forEach(function(p,i){
+      // outer ring
+      ctx.beginPath();ctx.arc(p.x,p.y,12,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,255,255,0.95)';ctx.fill();
+      ctx.strokeStyle='#C9A84C';ctx.lineWidth=3;ctx.stroke();
+      // inner dot
+      ctx.beginPath();ctx.arc(p.x,p.y,5,0,Math.PI*2);
+      ctx.fillStyle='#C9A84C';ctx.fill();
+      // value text
+      ctx.fillStyle='#1A2340';
+      ctx.font='700 18px "DM Serif Display"';
+      ctx.textAlign='center';
+      var a=Math.PI*2/n*i-Math.PI/2;
+      var lx=cx+Math.cos(a)*(r*(vals[i]/100)+30);
+      var ly=cy+Math.sin(a)*(r*(vals[i]/100)+30);
+      ctx.fillText(vals[i],lx,ly+6);
+    });
   }
 
-  // 라벨
-  ctx.fillStyle='#4A4438';ctx.font='11px Noto Sans KR';ctx.textAlign='center';
+  // 외곽 라벨 (역량 이름)
+  ctx.fillStyle='#1A2340';
+  ctx.font='600 22px "Noto Sans KR"';
+  ctx.textAlign='center';
   for(var i=0;i<n;i++){
-    var angle=Math.PI*2/n*i-Math.PI/2;
-    var x=cx+Math.cos(angle)*(r+18);
-    var y=cy+Math.sin(angle)*(r+18);
-    ctx.fillText(labels[i]+' '+vals[i],x,y+4);
+    var a=Math.PI*2/n*i-Math.PI/2;
+    var x=cx+Math.cos(a)*(r+58);
+    var y=cy+Math.sin(a)*(r+58);
+    ctx.fillText(labels[i],x,y+8);
   }
 })();
 

@@ -38,7 +38,19 @@ section{padding:50px 5%;}.wrap{max-width:900px;margin:0 auto;}
 .analysis-card>h3{font-size:1.4rem;margin-bottom:24px;display:flex;align-items:center;gap:14px;}
 .analysis-card>h3::before{content:'';display:inline-block;width:6px;height:24px;background:linear-gradient(180deg,var(--gold-light),var(--gold));border-radius:3px;}
 .analysis-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:36px;align-items:start;}
-.analysis-left{display:flex;flex-direction:column;align-items:center;gap:18px;}
+.analysis-left{display:flex;flex-direction:column;align-items:center;gap:18px;align-self:stretch;}
+.insight-box{width:100%;max-width:480px;padding:20px 24px;background:linear-gradient(135deg,#FAF7F0,#F5E9C8);border:1px solid var(--gold-pale);border-radius:14px;}
+.insight-title{font-family:'DM Serif Display',serif;color:var(--navy);font-size:1.02rem;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.insight-title::before{content:'';display:inline-block;width:4px;height:18px;background:linear-gradient(180deg,var(--gold-light),var(--gold));border-radius:2px;}
+.insight-text{font-size:0.86rem;color:var(--text-mid);line-height:1.75;}
+.insight-text b{color:var(--navy);}
+.insight-action{display:inline-block;margin-top:12px;padding:9px 18px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:22px;font-size:0.82rem;font-weight:700;text-decoration:none;letter-spacing:0.02em;}
+.next-step-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:480px;}
+.next-step-card{padding:14px 16px;background:#fff;border:1px solid var(--gold-pale);border-radius:10px;text-align:center;text-decoration:none;color:var(--navy);transition:transform 0.18s,box-shadow 0.18s;}
+.next-step-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(201,168,76,0.18);}
+.next-step-card .ns-icon{font-size:1.4rem;margin-bottom:4px;}
+.next-step-card .ns-label{font-size:0.78rem;color:var(--text-mid);}
+.next-step-card .ns-title{font-family:'DM Serif Display',serif;font-size:0.92rem;color:var(--navy);}
 .overall-score{text-align:center;padding:22px 28px;background:linear-gradient(135deg,var(--navy),#2A3455);color:#fff;border-radius:14px;width:100%;max-width:380px;box-shadow:0 8px 24px rgba(26,35,64,0.12);}
 .overall-num{font-family:'DM Serif Display',serif;font-size:3.4rem;color:var(--gold-light);line-height:1;letter-spacing:-0.02em;}
 .overall-num small{font-size:1.2rem;opacity:0.55;margin-left:4px;}
@@ -156,6 +168,14 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
         <div class="overall-grade" id="overall-grade">평가 대기</div>
       </div>
       <div class="radar-wrap-big"><canvas id="radar" width="720" height="720"></canvas></div>
+      <div class="insight-box">
+        <div class="insight-title">코칭 인사이트</div>
+        <div class="insight-text" id="insight-text">레벨테스트와 연습 기록이 쌓이면 본인만의 합격 패턴이 자동 분석됩니다.</div>
+      </div>
+      <div class="next-step-row">
+        <a href="leveltest.html" class="next-step-card"><div class="ns-icon">🎯</div><div class="ns-title">레벨테스트</div><div class="ns-label">한국어·영어·이미지 진단</div></a>
+        <a href="curriculum.html" class="next-step-card"><div class="ns-icon">✈️</div><div class="ns-title">커리큘럼</div><div class="ns-label">단계별 면접 연습</div></a>
+      </div>
     </div>
     <div class="analysis-right">
       <div class="score-bars">
@@ -293,6 +313,24 @@ else if(overall>=80){gradeBox.textContent='A · 우수';}
 else if(overall>=70){gradeBox.textContent='B · 양호';}
 else if(overall>=60){gradeBox.textContent='C · 보통';}
 else{gradeBox.textContent='D · 노력 필요';gradeBox.style.background='#C66060';gradeBox.style.color='#fff';}
+
+// 코칭 인사이트 텍스트 (점수 상태 기반)
+(function(){
+  var ins=document.getElementById('insight-text');
+  if(!ins)return;
+  var hasLevel=EXTRA.korean>0||EXTRA.english>0||EXTRA.image>0;
+  if(!hasAnyScore && !hasLevel){
+    ins.innerHTML='👋 <b>아직 분석 데이터가 없습니다.</b><br>레벨테스트로 출발 점수를 진단하고, 커리큘럼에서 첫 연습을 시작하면 본인만의 합격 패턴이 그래프로 그려져요.';
+  } else if(!hasAnyScore && hasLevel){
+    ins.innerHTML='✨ <b>레벨테스트 완료!</b> 이제 커리큘럼에서 면접 연습을 진행하면 5개 핵심 역량(유창성·자신감·내용 구성·발음·서비스 마인드) 점수가 누적됩니다.';
+  } else if(overall<60){
+    ins.innerHTML='🌱 <b>지금이 가장 빠르게 오를 구간이에요.</b> 약점 영역에 집중하면 평균 점수가 빠르게 상승합니다. 매일 한 단계씩 — 꾸준함이 합격의 비밀입니다.';
+  } else if(overall<80){
+    ins.innerHTML='📈 <b>안정 궤도 진입.</b> 보완 영역만 끌어올리면 평균 80+ 진입이 보입니다. 약한 항목 위주로 추가 연습을 권장해요.';
+  } else {
+    ins.innerHTML='🏆 <b>합격권 진입.</b> 강점은 유지하면서 디테일(말의 흐름·답변 짜임새)만 다듬으면 외항사 파이널까지 충분합니다.';
+  }
+})();
 
 // 강점·약점
 function statusOf(v){

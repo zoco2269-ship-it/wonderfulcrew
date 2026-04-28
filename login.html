@@ -206,18 +206,8 @@ async function showUser(user) {
         location.href = 'profile-setup.html';
         return;
       }
-      // 어드민·결제 사용자·기존 사용자는 레벨테스트 우회
-      // 신규 가입자(가입 5분 이내) 만 레벨테스트로. 그 외엔 결과 없어도 우회 (사용자가 직접 진입 가능)
-      var ADMIN_EMAILS_LOGIN = ['zoco2269@gmail.com','guswn5164@gmail.com'];
-      var isAdminUser = ADMIN_EMAILS_LOGIN.indexOf(user.email) !== -1;
-      var isPaidUser = (localStorage.getItem('wc_paid') === 'true') || planActive;
-      var levelDone = localStorage.getItem('wc_level_result');
-      var createdAt = user.created_at ? new Date(user.created_at).getTime() : 0;
-      var isFreshUser = createdAt > 0 && (Date.now() - createdAt < 5 * 60 * 1000);
-      if (!levelDone && !isAdminUser && !isPaidUser && isFreshUser) {
-        location.href = 'leveltest.html';
-        return;
-      }
+      // 레벨테스트 강제 redirect 제거 — 누구든 로그인 시 leveltest 자동으로 뜨지 않음.
+      // 사용자가 직접 메뉴 또는 curriculum 빠른 진입 버튼에서 leveltest 진입.
       // 2번째 이상 로그인 — 직전 선택 항공사가 있으면 practice hub 로 직행
       // (목표 항공사 선택 → 항공사 페이지 → 면접 시작 3단계 스킵)
       var savedAirline = localStorage.getItem('wc_airline');

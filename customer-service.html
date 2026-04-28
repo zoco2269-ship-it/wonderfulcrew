@@ -29,6 +29,7 @@ section{padding:50px 5% 80px;}.wrap{max-width:1000px;margin:0 auto;}
 .skill-desc{font-family:'Noto Sans KR',sans-serif;font-size:0.82rem;color:var(--text-mid);line-height:1.7;}
 .tip-gold{background:var(--gold-pale);border-left:4px solid var(--gold);padding:18px 22px;font-size:0.86rem;color:var(--text-mid);line-height:1.75;margin-top:24px;}.tip-gold b{color:var(--navy);}
 .lock-overlay{position:relative;}.lock-content{filter:blur(4px);pointer-events:none;}.lock-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:14px 28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border:none;border-radius:24px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;z-index:10;box-shadow:0 4px 16px rgba(201,168,76,0.3);}
+html.is-paid .lock-btn{display:none!important;}html.is-paid .lock-content{filter:none!important;pointer-events:auto!important;}
 .placeholder{text-align:center;padding:60px 20px;color:var(--text-muted);font-size:0.9rem;background:#fff;border:1px solid var(--gold-pale);}
 footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
 @media(max-width:900px){.nav-links{display:none;}.nav-cta{font-size:0.78rem!important;padding:6px 12px!important;}nav a[href*="login"]{font-size:0.78rem!important;padding:6px 12px!important;}.skill-grid{grid-template-columns:1fr 1fr;}}.
@@ -171,6 +172,20 @@ function unlock(section){
   document.getElementById(section+'-locked').style.display='none';
   document.getElementById(section+'-unlocked').style.display='block';
 }
+
+// 구독 사용자 자동 unlock — wc_paid='true' 면 모든 lock 즉시 해제
+(function(){
+  try{
+    if(localStorage.getItem('wc_paid')!=='true')return;
+    document.documentElement.classList.add('is-paid');
+    ['leap','4ds'].forEach(function(s){
+      var L=document.getElementById(s+'-locked');
+      var U=document.getElementById(s+'-unlocked');
+      if(L)L.style.display='none';
+      if(U)U.style.display='block';
+    });
+  }catch(e){}
+})();
 </script>
 </body>
 </html>

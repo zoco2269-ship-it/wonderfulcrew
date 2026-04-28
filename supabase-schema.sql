@@ -132,3 +132,23 @@ CREATE TABLE IF NOT EXISTS public.level_results (
 
 ALTER TABLE public.level_results ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can manage own results" ON public.level_results FOR ALL USING (true);
+
+-- 8. pending_deposits 무통장 입금 신청
+CREATE TABLE IF NOT EXISTS public.pending_deposits (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id TEXT,
+  email TEXT NOT NULL,
+  name TEXT,
+  plan TEXT NOT NULL,
+  amount INTEGER NOT NULL DEFAULT 0,
+  depositor_name TEXT NOT NULL,
+  phone TEXT,
+  memo TEXT,
+  status TEXT NOT NULL DEFAULT 'pending',
+  approved_at TIMESTAMPTZ,
+  approved_by TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.pending_deposits ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Service can manage pending_deposits" ON public.pending_deposits FOR ALL USING (auth.role() = 'service_role');

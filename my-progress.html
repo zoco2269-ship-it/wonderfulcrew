@@ -111,7 +111,12 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <div class="score-bar"><div class="lbl">내용 구성</div><div class="bar"><div class="fill" id="bar-structure"></div></div><div class="val" id="val-structure">0</div></div>
     <div class="score-bar"><div class="lbl">발음</div><div class="bar"><div class="fill" id="bar-pronunciation"></div></div><div class="val" id="val-pronunciation">0</div></div>
     <div class="score-bar"><div class="lbl">서비스 마인드</div><div class="bar"><div class="fill" id="bar-service"></div></div><div class="val" id="val-service">0</div></div>
+    <div style="height:1px;background:var(--gold-pale);margin:14px 0 10px;"></div>
+    <div class="score-bar"><div class="lbl">한국어 말하기</div><div class="bar"><div class="fill" id="bar-korean"></div></div><div class="val" id="val-korean">0</div></div>
+    <div class="score-bar"><div class="lbl">영어 말하기</div><div class="bar"><div class="fill" id="bar-english"></div></div><div class="val" id="val-english">0</div></div>
+    <div class="score-bar"><div class="lbl">이미지·표정</div><div class="bar"><div class="fill" id="bar-image"></div></div><div class="val" id="val-image">0</div></div>
   </div>
+  <p style="font-size:0.74rem;color:var(--text-muted);margin-top:12px;line-height:1.6;">한국어·영어·이미지 점수는 레벨테스트 결과 기반입니다. 레벨테스트를 다시 진행하면 갱신됩니다.</p>
 </div>
 
 <!-- 토큰 + 출석 + 목표 -->
@@ -122,13 +127,6 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
       <div style="text-align:center;"><div class="stat-num" id="p-tokens">무료체험</div><div class="stat-lbl">구독 상태</div></div>
       <div style="text-align:center;"><div class="stat-num" id="p-expiry">-</div><div class="stat-lbl">만료일</div></div>
       <div style="text-align:center;"><div class="stat-num" id="p-used">0</div><div class="stat-lbl">이번 달 사용</div></div>
-    </div>
-    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--gold-pale);">
-      <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;margin-bottom:10px;">
-        <b style="color:var(--text-mid);">환불 정책:</b> 결제 후 7일 이내 + 콘텐츠 미사용 상태인 경우에 한해 자동 환불됩니다. (이용 시작 후 환불 불가 — 디지털 콘텐츠 약관)
-      </div>
-      <button id="refund-btn" onclick="requestAutoRefund()" style="padding:10px 22px;background:#fff;color:var(--text-mid);border:1.5px solid rgba(201,168,76,0.5);border-radius:22px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;">환불 신청 (자동 판정)</button>
-      <div id="refund-result" style="margin-top:14px;font-size:0.84rem;line-height:1.7;"></div>
     </div>
   </div>
 

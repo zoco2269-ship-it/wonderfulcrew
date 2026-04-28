@@ -77,6 +77,19 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div class="label">My Progress</div>
   <h1>내 성장 <em>기록</em></h1>
   <p>연습할수록 올라가는 내 실력을 확인하세요.</p>
+  <div id="wc-loggedin-as" style="display:none;align-items:center;gap:10px;margin-top:18px;padding:8px 18px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);border-radius:24px;font-size:0.84rem;color:#E8C96A;font-family:'Noto Sans KR',sans-serif;"></div>
+  <script>
+    (function(){
+      try{
+        var u=JSON.parse(localStorage.getItem('wc_user')||'null');
+        var box=document.getElementById('wc-loggedin-as');
+        if(u&&u.email&&box){
+          box.style.display='inline-flex';
+          box.innerHTML='<span style="font-weight:700;">'+(u.name||'')+'</span><span style="opacity:0.75;">'+u.email+'</span>';
+        }
+      }catch(e){}
+    })();
+  </script>
 </div>
 
 <section><div class="wrap">

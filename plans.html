@@ -174,8 +174,28 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <script src="js/free-trial.js?v=15"></script>
 <script>
-// 무료체험 상태 표시
-renderTrialBadge('trial-status');
+// 결제 사용자 자동 활성화 — 진입 즉시 server 결제 기록 검증 후 wc_paid 셋팅
+(async function(){
+  try {
+    var u = JSON.parse(localStorage.getItem('wc_user') || 'null');
+    if (!u || !u.id) { renderTrialBadge('trial-status'); return; }
+    if (localStorage.getItem('wc_paid') === 'true') { renderTrialBadge('trial-status'); return; }
+    var hr = await fetch('/api/heal-plan-active', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({userId: u.id, email: u.email || ''})
+    });
+    var hd = await hr.json();
+    if (hd && hd.planActive === true) {
+      localStorage.setItem('wc_paid', 'true');
+      var d = {}; try { d = JSON.parse(localStorage.getItem('wc_free_trial')||'{}'); } catch(e){}
+      d.subscribed = true;
+      localStorage.setItem('wc_free_trial', JSON.stringify(d));
+      location.reload();
+      return;
+    }
+  } catch(e) {}
+  renderTrialBadge('trial-status');
+})();
 // 결제 전 로그인 체크
 function _requireLoginThen(fn){
   if(localStorage.getItem('wc_user')){fn();return;}

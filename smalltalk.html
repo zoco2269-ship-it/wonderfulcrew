@@ -132,12 +132,35 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 var recognition=null, fullText='', dialogue=[];
 var BACK_URL='practice-foreign.html';
 
-// 첫 질문 랜덤 — Cabin Crew 동기 또는 Why this airline 중 하나
+// 첫 질문 랜덤 — 기본 인사·이력서 기반·동기·취미·여행·영어·자기관찰 27종
 var FIRST_QUESTIONS=[
+  'How did you get here today?',
+  'How was your morning so far?',
+  'Have you eaten yet?',
+  'So, what are you doing these days?',
+  'Tell me a little about yourself.',
+  "What's your current job?",
   'Why do you want to apply for cabin crew?',
   'Why do you want to join our airline?',
   'Why this airline?',
-  'What made you interested in cabin crew?'
+  'What made you interested in cabin crew?',
+  'What do you know about our airline?',
+  'Why do you want to work abroad?',
+  'What do you do in your free time?',
+  'Do you have any hobbies?',
+  'What kind of food do you like?',
+  "What's your favorite way to relax?",
+  'Do you exercise regularly?',
+  "What's the last book or movie you enjoyed?",
+  "What's your favorite city you've visited?",
+  'Where would you like to travel next?',
+  'How do you practice your English?',
+  'Have you ever lived abroad?',
+  'What are you good at?',
+  'What do people say about you?',
+  'How would your friends describe you?',
+  'What makes you smile?',
+  "What's something you're proud of recently?"
 ];
 var firstQ=FIRST_QUESTIONS[Math.floor(Math.random()*FIRST_QUESTIONS.length)];
 var SYS_FIRSTTURN='You are an airline CV Drop interviewer. Candidate just greeted you. Respond with ONE very short acknowledgment (e.g., "Good morning!" or "Nice to meet you too.") + ask "'+firstQ+'" in the same message. Under 15 words total. English only. No quotation marks.';

@@ -28,12 +28,28 @@ module.exports = async function handler(req, res) {
 
     const selected = plans[plan] || plans.basic;
     const timestamp = Date.now().toString();
-    // moid 에 userId·email·plan 포함 → confirm 단계에서 server-side 자동 저장 가능
-    // 형식: WC|userId|email|plan|timestamp (구분자 |)
-    const safeUid = (userId || 'anon').replace(/\|/g,'');
-    const safeEmail = (buyerEmail || '').replace(/\|/g,'');
-    const safePlan = (plan || 'basic').replace(/\|/g,'');
-    const moid = ['WC', safeUid, safeEmail, safePlan, timestamp].join('|').slice(0, 100); // 이노페이 moid 길이 제한 대비
+    // 이노페이 moid 는 영숫자만 허용 — 특수문자 X. WC + timestamp 단순 형식.
+    const moid = 'WC' + timestamp;
+
+    // prepare 시점에 supabase 에 pending payment 미리 기록 (moid 를 key 로)
+    // confirm.js 가 moid 로 조회해 user 정보 복원 → server-side 자동 INSERT 가능
+    try {
+      const sbUrl = process.env.SUPABASE_URL;
+      const sbKey = process.env.SUPABASE_SERVICE_KEY;
+      if (sbUrl && sbKey) {
+        const { createClient } = require('@supabase/supabase-js');
+        const sb = createClient(sbUrl, sbKey);
+        await sb.from('payments').insert({
+          user_id: userId || ('anonymous_' + (buyerEmail || moid)),
+          plan: plan || 'basic',
+          amount: selected.amount,
+          method: 'innopay',
+          tid: '',
+          moid: moid,
+          status: 'pending'
+        });
+      }
+    } catch(e) { console.warn('[prepare] pending insert:', e.message); }
 
     // 서명 생성: SHA256(MID + moid + amount + API_KEY)
     const signData = MID + moid + selected.amount + API_KEY;

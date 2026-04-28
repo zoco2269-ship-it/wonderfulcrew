@@ -41,53 +41,43 @@ module.exports = async function handler(req, res) {
     const approveData = await approveRes.json();
 
     if (approveData.resultCode === '0000') {
-      // ★ server-side 자동 저장 — success.html fetch 실패에 의존하지 X
+      // ★ server-side 자동 저장 — prepare 시 미리 박은 pending payment 를 completed 로 update + users 활성화
       try {
         const sbUrl = process.env.SUPABASE_URL;
         const sbKey = process.env.SUPABASE_SERVICE_KEY;
         if (sbUrl && sbKey) {
           const sb = createClient(sbUrl, sbKey);
-          // moid 형식: WC|userId|email|plan|timestamp
-          const parts = String(moid).split('|');
-          const userId = parts[1] && parts[1] !== 'anon' ? parts[1] : null;
-          const email = parts[2] || '';
-          const plan = parts[3] || 'basic';
-          const amount = parseInt(amt, 10) || 0;
-          // 중복 저장 방지
-          const { data: existing } = await sb.from('payments').select('id').eq('moid', moid).maybeSingle();
-          if (!existing) {
-            await sb.from('payments').insert({
-              user_id: userId || ('anonymous_' + (email || moid)),
-              plan: plan,
-              amount: amount,
-              method: 'innopay',
-              tid: tid || '',
-              moid: moid,
-              status: 'completed'
-            });
-          }
-          // users.upsert(plan_active=true)
-          if (userId) {
-            const now = new Date();
-            try {
-              await sb.from('users').upsert({
-                auth_id: userId, email: email, plan: plan,
-                plan_active: true, updated_at: now.toISOString()
-              }, { onConflict: 'auth_id' });
+          // prepare 단계에서 박힌 pending row 조회 → user_id/plan 복원
+          const { data: pending } = await sb.from('payments')
+            .select('user_id, plan, amount').eq('moid', moid).maybeSingle();
+          const amount = parseInt(amt, 10) || (pending && pending.amount) || 0;
+          if (pending) {
+            // pending → completed 업데이트
+            await sb.from('payments').update({ status: 'completed', tid: tid || '' }).eq('moid', moid);
+            const userId = pending.user_id && !pending.user_id.startsWith('anonymous_') ? pending.user_id : null;
+            const plan = pending.plan || 'basic';
+            if (userId) {
+              const now = new Date();
               const expiresAt = new Date(now);
               if (plan === 'premium') expiresAt.setFullYear(expiresAt.getFullYear() + 1);
               else expiresAt.setMonth(expiresAt.getMonth() + 1);
-              await sb.from('subscriptions').upsert({
-                user_id: userId, plan: plan, status: 'active',
-                started_at: now.toISOString(), expires_at: expiresAt.toISOString(),
-                updated_at: now.toISOString()
-              }, { onConflict: 'user_id' });
-            } catch(e) { console.warn('[innopay-confirm] users/subs upsert:', e.message); }
+              try {
+                await sb.from('users').upsert({
+                  auth_id: userId, plan: plan,
+                  plan_active: true, updated_at: now.toISOString()
+                }, { onConflict: 'auth_id' });
+                await sb.from('subscriptions').upsert({
+                  user_id: userId, plan: plan, status: 'active',
+                  started_at: now.toISOString(), expires_at: expiresAt.toISOString(),
+                  updated_at: now.toISOString()
+                }, { onConflict: 'user_id' });
+              } catch(e) { console.warn('[innopay-confirm] users/subs:', e.message); }
+            }
           }
         }
-      } catch(e) { console.warn('[innopay-confirm] server save error:', e.message); }
+      } catch(e) { console.warn('[innopay-confirm] server save:', e.message); }
       // 결제 성공 → success 페이지로 리다이렉트
-      return res.redirect(`/success.html?pay=innopay&tid=${tid}&moid=${encodeURIComponent(moid)}&amount=${amt}`);
+      return res.redirect(`/success.html?pay=innopay&tid=${tid}&moid=${moid}&amount=${amt}`);
     } else {
       return res.redirect(`/plans.html?pay=fail&msg=${encodeURIComponent(approveData.resultMsg || 'approve_failed')}`);
     }

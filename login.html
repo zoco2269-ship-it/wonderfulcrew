@@ -155,6 +155,17 @@ async function showUser(user) {
       hasProfile = !!(profileRes && profileRes.data && profileRes.data.phone);
       // server plan_active 진실원으로 wc_paid 강제 동기화 — 어드민/이전 사용자 잔재 청소
       var planActive = !!(profileRes && profileRes.data && profileRes.data.plan_active === true);
+      // plan_active=false 면 heal-plan-active 강제 호출 — payments 에 결제 있으면 자동 복구 (anonymous_<email> 도 검색)
+      if (!planActive) {
+        try {
+          var healRes = await fetch('/api/heal-plan-active', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id, email: user.email || '' })
+          });
+          var healData = await healRes.json();
+          if (healData && healData.planActive) planActive = true;
+        } catch(e) { console.warn('[login heal] failed:', e); }
+      }
       if (planActive) localStorage.setItem('wc_paid', 'true');
       else localStorage.removeItem('wc_paid');
       // server level_results 가장 최근 1건을 localStorage 에 동기화 — 다시 로그인 시 레벨테스트 다시 안 하도록

@@ -15,14 +15,33 @@ module.exports = async function(req, res) {
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
   try {
-    // 1) 가장 최근 completed 결제 1건 조회
-    const { data: payment } = await sb.from('payments')
-      .select('plan, created_at, amount')
+    // 1) auth_id 로 결제 조회
+    let { data: payment } = await sb.from('payments')
+      .select('id, plan, created_at, amount, user_id')
       .eq('user_id', userId)
       .eq('status', 'completed')
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
+
+    // 2) auth_id 로 못 찾으면 anonymous_<email> 패턴으로 재검색 — 비로그인 결제 자동 복구
+    if (!payment && email) {
+      const anonId = 'anonymous_' + email;
+      const { data: anonPay } = await sb.from('payments')
+        .select('id, plan, created_at, amount, user_id')
+        .eq('user_id', anonId)
+        .eq('status', 'completed')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (anonPay) {
+        payment = anonPay;
+        // 결제 user_id 를 실제 auth_id 로 migrate (이후 healing 에서 직접 매칭)
+        try {
+          await sb.from('payments').update({ user_id: userId }).eq('user_id', anonId);
+        } catch(e) {}
+      }
+    }
 
     if (!payment) {
       return res.json({ ok: true, planActive: false, reason: 'no_payment' });

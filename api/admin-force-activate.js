@@ -49,6 +49,25 @@ module.exports = async function(req, res) {
       });
     }
 
+    // deactivate — 환불·구독 취소 처리 (plan_active=false + subscriptions cancelled + payments refunded)
+    if (action === 'deactivate') {
+      const now = new Date().toISOString();
+      await sb.from('users').update({
+        plan_active: false, updated_at: now
+      }).eq('auth_id', authId);
+      try {
+        await sb.from('subscriptions').update({
+          status: 'cancelled', updated_at: now
+        }).eq('user_id', authId);
+      } catch(e) {}
+      try {
+        await sb.from('payments').update({
+          status: 'refunded'
+        }).eq('user_id', authId).eq('status', 'completed');
+      } catch(e) {}
+      return res.json({ ok: true, deactivated: true, authId, targetEmail });
+    }
+
     // activate — 강제 plan_active=true (action==='activate' 또는 미지정 시 기본)
     const now = new Date();
     const expiresAt = new Date(now);

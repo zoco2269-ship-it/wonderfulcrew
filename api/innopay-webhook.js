@@ -1,72 +1,83 @@
-// 이노페이 가상계좌 입금 확인 Webhook
-// 이노페이 관리자에서 Webhook URL을 이 엔드포인트로 설정:
+// 이노페이 Webhook — 결제/환불/취소 자동 처리
+// 이노페이 가맹점 admin 에서 webhook URL 등록:
 //   https://wonderfulcrew.com/api/innopay-webhook
-//
-// 환경변수: INNOPAY_MID, INNOPAY_API_KEY, KAKAO_ALIMTALK_KEY (선택)
+const { createClient } = require('@supabase/supabase-js');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
 
-  const { resultCode, resultMsg, tid, mid, moid, amt, payMethod } = req.body || {};
+  const body = req.body || {};
+  const { resultCode, tid, moid, amt, payMethod, tradeStatus, payStatus, cancelYN } = body;
+  console.log('[Webhook] received:', JSON.stringify(body));
 
-  // 가상계좌 입금 완료 확인 (resultCode 0000)
-  if (resultCode !== '0000') {
-    console.log('[Webhook] Non-success:', resultCode, resultMsg);
-    return res.status(200).json({ result: 'ignored', reason: resultCode });
+  if (!moid) return res.status(200).json({ result: 'no_moid' });
+
+  const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+
+  // 상태 판정
+  const status = String(payStatus || tradeStatus || '').toLowerCase();
+  let newStatus;
+  if (resultCode === '0000' || resultCode === '00') {
+    if (cancelYN === 'Y' || status.includes('cancel') || status.includes('취소')) newStatus = 'cancelled';
+    else if (status.includes('refund') || status.includes('환불')) newStatus = 'refunded';
+    else newStatus = 'completed';
+  } else {
+    newStatus = 'cancelled';
   }
 
-  console.log('[Webhook] Payment confirmed:', { tid, moid, amt, payMethod });
+  // 기존 payment row 조회
+  const { data: payment } = await sb.from('payments').select('*').eq('moid', moid).maybeSingle();
 
-  // 주문번호에서 플랜 추출 (WC_basic_timestamp 형태)
-  const parts = (moid || '').split('_');
-  const plan = parts[1] || 'basic';
+  if (!payment) {
+    // payments 에 row 없음 → 새로 INSERT (이노페이 직접 결제 / prepare 누락)
+    await sb.from('payments').insert({
+      user_id: 'anonymous_webhook_' + moid,
+      plan: 'basic',
+      amount: parseInt(amt, 10) || 0,
+      method: payMethod || 'innopay',
+      tid: tid || '',
+      moid: moid,
+      status: newStatus
+    });
+    return res.status(200).json({ result: 'created', status: newStatus });
+  }
 
-  // ---- 1. 플랜 액세스 활성화 ----
-  // Supabase에 저장 (DB 연동 후 활성화)
-  // 현재는 로그만 남김
-  const activationData = {
-    tid: tid,
-    moid: moid,
-    plan: plan,
-    amount: amt,
-    activatedAt: new Date().toISOString(),
-    status: 'active',
-  };
-  console.log('[Webhook] Plan activated:', activationData);
+  // 기존 payment update
+  await sb.from('payments').update({
+    status: newStatus,
+    tid: tid || payment.tid
+  }).eq('moid', moid);
 
-  // TODO: Supabase DB에 결제 기록 저장
-  // const { createClient } = require('@supabase/supabase-js');
-  // const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-  // await supabase.from('payments').insert(activationData);
-  // await supabase.from('users').update({ plan: plan, plan_active: true }).eq('moid', moid);
-
-  // ---- 2. 카카오 알림톡 웰컴 메시지 발송 ----
-  if (process.env.KAKAO_ALIMTALK_KEY) {
-    try {
-      const planNames = { basic: '베이직', elite: '엘리트', premium: '프리미엄 합격 완성' };
-      const planName = planNames[plan] || plan;
-
-      // 알리고 API (카카오 알림톡 대행 서비스) 예시
-      // 실제 사용 시 알리고(aligo.in) 또는 NHN Cloud 등 알림톡 발송 서비스 가입 필요
-      await fetch('https://kakaoapi.aligo.in/akv10/alimtalk/send/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          apikey: process.env.KAKAO_ALIMTALK_KEY,
-          userid: process.env.KAKAO_ALIMTALK_ID || '',
-          senderkey: process.env.KAKAO_SENDER_KEY || '',
-          tpl_code: process.env.KAKAO_WELCOME_TPL || 'TW_0001',
-          sender: process.env.KAKAO_SENDER_PHONE || '',
-          receiver_1: '',  // TODO: 주문자 전화번호 (DB에서 조회)
-          subject_1: 'WonderfulCrew 가입 완료',
-          message_1: `[WonderfulCrew]\n\n${planName} 플랜 결제가 완료되었습니다!\n\n지금 바로 면접 연습을 시작하세요.\nhttps://wonderfulcrew.com\n\n문의: 카카오톡 @wonderfulcrew`,
-        }),
-      });
-      console.log('[Webhook] Alimtalk sent for plan:', planName);
-    } catch (e) {
-      console.error('[Webhook] Alimtalk error:', e.message);
+  // users.plan_active 자동 토글 (실 user_id 인 경우만)
+  const userId = payment.user_id;
+  if (userId && !userId.startsWith('anonymous_')) {
+    const now = new Date().toISOString();
+    if (newStatus === 'completed') {
+      const plan = payment.plan || 'basic';
+      const expiresAt = new Date();
+      if (plan === 'premium') expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+      else expiresAt.setMonth(expiresAt.getMonth() + 1);
+      try {
+        await sb.from('users').upsert({
+          auth_id: userId, plan: plan, plan_active: true, updated_at: now
+        }, { onConflict: 'auth_id' });
+        await sb.from('subscriptions').upsert({
+          user_id: userId, plan: plan, status: 'active',
+          started_at: now, expires_at: expiresAt.toISOString(), updated_at: now
+        }, { onConflict: 'user_id' });
+      } catch(e) { console.warn('[Webhook] activate error:', e.message); }
+    } else if (newStatus === 'cancelled' || newStatus === 'refunded') {
+      // 자동 비활성화 — 환불·취소 시 즉시 plan_active=false
+      try {
+        await sb.from('users').update({
+          plan_active: false, updated_at: now
+        }).eq('auth_id', userId);
+        await sb.from('subscriptions').update({
+          status: 'cancelled', updated_at: now
+        }).eq('user_id', userId);
+      } catch(e) { console.warn('[Webhook] deactivate error:', e.message); }
     }
   }
 
-  res.status(200).json({ result: 'success', moid: moid, plan: plan });
-}
+  res.status(200).json({ result: 'updated', moid, status: newStatus });
+};

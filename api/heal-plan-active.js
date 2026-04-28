@@ -43,6 +43,44 @@ module.exports = async function(req, res) {
       }
     }
 
+    // 3) completed 결제 없음 + pending 결제 있으면 자동 completed 로 변환
+    //    (innopay-confirm 콜백 누락 보상 — 결제창은 통과했지만 ReturnURL 콜백이 안 옴)
+    let pendingHealed = false;
+    if (!payment) {
+      const { data: pendingPay } = await sb.from('payments')
+        .select('id, plan, created_at, amount, user_id, moid')
+        .eq('user_id', userId)
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (pendingPay) {
+        try {
+          await sb.from('payments').update({ status: 'completed' }).eq('id', pendingPay.id);
+          payment = pendingPay;
+          pendingHealed = true;
+        } catch(e) { console.warn('[heal] pending→completed update failed:', e.message); }
+      }
+      // anonymous_<email> 의 pending 도 동일 처리
+      if (!payment && email) {
+        const anonId = 'anonymous_' + email;
+        const { data: anonPending } = await sb.from('payments')
+          .select('id, plan, created_at, amount, user_id, moid')
+          .eq('user_id', anonId)
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (anonPending) {
+          try {
+            await sb.from('payments').update({ status: 'completed', user_id: userId }).eq('id', anonPending.id);
+            payment = { ...anonPending, user_id: userId };
+            pendingHealed = true;
+          } catch(e) {}
+        }
+      }
+    }
+
     if (!payment) {
       return res.json({ ok: true, planActive: false, reason: 'no_payment' });
     }
@@ -73,7 +111,7 @@ module.exports = async function(req, res) {
       }, { onConflict: 'user_id' });
     } catch(e) {}
 
-    res.json({ ok: true, planActive: true, plan: plan, healedAt: now.toISOString() });
+    res.json({ ok: true, planActive: true, plan: plan, healedAt: now.toISOString(), pendingHealed: pendingHealed });
   } catch (e) {
     console.error('[heal-plan-active] exception:', e);
     res.status(500).json({ error: e.message });

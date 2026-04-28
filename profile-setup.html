@@ -109,10 +109,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
       if(authId){
         var res=await sb.from('users').select('phone').eq('auth_id',authId).maybeSingle();
         if(res&&res.data&&res.data.phone){
-          // 서버에 이미 프로필 있음 → leveltest 로
+          // 서버에 이미 프로필 있음 → leveltest 로 (단, 결제 사용자는 curriculum 직행)
           localStorage.setItem('wc_profile_done','1');
           var levelDone=localStorage.getItem('wc_level_result');
-          location.replace(levelDone?'curriculum.html':'leveltest.html');
+          var paidUser=localStorage.getItem('wc_paid')==='true';
+          location.replace((paidUser||levelDone)?'curriculum.html':'leveltest.html');
           return;
         }
         // 서버에 프로필 없음 → 잔재 플래그 강제 제거하고 폼 노출

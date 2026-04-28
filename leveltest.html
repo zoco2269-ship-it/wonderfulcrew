@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script>
+// 결제 사용자는 leveltest 우회 — 즉시 curriculum 으로
+(function(){
+  try{
+    if(localStorage.getItem('wc_paid')==='true'){
+      location.replace('curriculum.html');
+    }
+  }catch(e){}
+})();
+</script>
 <script src="js/nav-dropdown.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">

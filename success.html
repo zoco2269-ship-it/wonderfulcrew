@@ -34,33 +34,43 @@ a.btn{display:inline-block;margin-top:20px;padding:14px 32px;background:linear-g
   <a href="index.html" class="btn">홈으로 돌아가기 →</a>
 </div>
 <script>
-// 결제 완료 시 localStorage에 기록
+// 결제 완료 → 즉시 활성화 (다음 페이지 leveltest gate 우회 보장)
 localStorage.setItem('wc_paid','true');
 localStorage.setItem('wc_paid_date',new Date().toISOString());
 var t=JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');
 t.tokens=99999;t.unlimited=true;
 localStorage.setItem('wc_eng_tokens',JSON.stringify(t));
 
-// Supabase에 결제 기록 + 구독 활성화 (서버에 영구 저장)
-(function(){
+// Supabase 결제 기록 + 구독 활성화 + plan_active 즉시 healing
+(async function(){
   try{
     var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
     var qp=new URLSearchParams(location.search);
     var tid=qp.get('tid')||'';
     var moid=qp.get('moid')||'';
     var amount=qp.get('amount')||'';
-    if(!moid)return; // 결제 콜백 없이 직접 진입한 경우
-    // plan 추정: amount로 판단
+    if(!moid)return;
     var plan='basic';
     var amt=parseInt(amount,10)||0;
     if(amt>=2000000)plan='premium';
     else if(amt>=290000)plan='elite';
-    fetch('/api/save-payment',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({userId:u.id||'',email:u.email||'',name:u.name||'',plan:plan,tid:tid,moid:moid,amount:amount})
-    }).then(function(r){return r.json();}).then(function(d){
+    // 1) save-payment — payments INSERT + users.plan_active=true
+    try{
+      var r=await fetch('/api/save-payment',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({userId:u.id||'',email:u.email||'',name:u.name||'',plan:plan,tid:tid,moid:moid,amount:amount})});
+      var d=await r.json();
       console.log('[wc-payment] saved:',d);
-      if(d&&d.expiresAt){localStorage.setItem('wc_subscription_expires',d.expiresAt);}
-    }).catch(function(e){console.warn('[wc-payment] save failed:',e);});
+      if(d&&d.expiresAt)localStorage.setItem('wc_subscription_expires',d.expiresAt);
+    }catch(e){console.warn('[wc-payment] save failed:',e);}
+    // 2) heal-plan-active — userId 있을 때 한 번 더 강제 (save-payment 가 user_id 못 잡았을 경우 대비)
+    if(u.id){
+      try{
+        var hr=await fetch('/api/heal-plan-active',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({userId:u.id,email:u.email||''})});
+        var hd=await hr.json();
+        console.log('[wc-payment] healed:',hd);
+      }catch(e){console.warn('[wc-payment] heal failed:',e);}
+    }
   }catch(e){console.warn('[wc-payment] error:',e);}
 })();
 </script>

@@ -483,10 +483,11 @@ nav{
 
 <script>
 (function(){
-  var hasLevel=false,hasAirline=false;
+  var hasLevel=false,hasAirline=false,paid=false;
   try{hasLevel=!!localStorage.getItem('wc_level_result');}catch(e){}
   try{hasAirline=!!localStorage.getItem('wc_airline');}catch(e){}
-  if(!hasLevel&&!hasAirline){location.replace('leveltest.html');return;}
+  try{paid=localStorage.getItem('wc_paid')==='true';}catch(e){}
+  if(!paid&&!hasLevel&&!hasAirline){location.replace('leveltest.html');return;}
 })();
 var URL_PARAMS=new URLSearchParams(location.search);
 var PAGE_MODE=URL_PARAMS.get('mode')||'roleplay';

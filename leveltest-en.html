@@ -158,11 +158,59 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 <div id="app">
 
 <!-- 레벨테스트 이미 Complete 시 바로 항공사 선택으로 -->
+<script src="js/supabase-client.js?v=2"></script>
 <script>
-(function(){
-  var done=localStorage.getItem('wc_level_result');
-  if(done){
+(async function(){
+  // 1) 어드민·결제 사용자는 레벨테스트 우회
+  try {
+    var u = JSON.parse(localStorage.getItem('wc_user') || 'null');
+    var ADMIN = ['zoco2269@gmail.com','guswn5164@gmail.com'];
+    var isAdminLocal = u && ADMIN.indexOf(u.email) !== -1;
+    if (isAdminLocal || localStorage.getItem('wc_paid') === 'true') {
+      location.href='curriculum.html';
+      return;
+    }
+  } catch(e) {}
+  // 2) localStorage 에 결과 있음
+  if (localStorage.getItem('wc_level_result')) {
     location.href='curriculum.html';
+    return;
+  }
+  // 3) server 직접 조회 — localStorage 잔재 무시되어도 server 에 결과 row 있으면 자동 복구
+  try {
+    var u2 = JSON.parse(localStorage.getItem('wc_user') || 'null');
+    if (u2 && u2.id) {
+      var sb = null;
+      for (var i=0; i<30; i++) {
+        sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+        if (sb) break;
+        await new Promise(function(r){setTimeout(r,100);});
+      }
+      if (sb) {
+        var lvl = await sb.from('level_results')
+          .select('score,level,recommended_airlines,created_at')
+          .eq('user_id', u2.id)
+          .order('created_at',{ascending:false})
+          .limit(1)
+          .maybeSingle();
+        if (lvl && lvl.data) {
+          localStorage.setItem('wc_level_result', JSON.stringify({
+            completed: true,
+            score: lvl.data.score,
+            level: lvl.data.level,
+            airlines: lvl.data.recommended_airlines || [],
+            name: u2.name || (u2.email||'').split('@')[0] || 'Applicant',
+            savedAt: lvl.data.created_at
+          }));
+          location.href = 'curriculum.html';
+          return;
+        }
+      }
+    }
+  } catch(e) { console.warn('[leveltest guard] server check failed:', e); }
+  // 4) server 에도 없음 — wc_airline 이 있으면(이미 항공사 선택한 사용자) curriculum 으로 우회
+  if (localStorage.getItem('wc_airline')) {
+    location.href = 'curriculum.html';
     return;
   }
 })();

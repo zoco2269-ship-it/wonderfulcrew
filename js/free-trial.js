@@ -223,12 +223,13 @@ function renderTrialBadge(containerId) {
             sb = (typeof getSupabase === 'function') ? getSupabase() : null;
           }
           if (!sb) return;
-          var res = await sb.from('users').select('phone').eq('auth_id', u.id).maybeSingle();
+          var res = await sb.from('users').select('phone, name').eq('auth_id', u.id).maybeSingle();
           var hasPhone = !!(res && res.data && res.data.phone);
-          if (hasPhone) {
+          var hasName = !!(res && res.data && res.data.name);
+          if (hasPhone && hasName) {
             localStorage.setItem('wc_profile_done', '1');
           } else {
-            // phone 미입력 → profile-setup 으로 redirect
+            // phone/name 미입력 → profile-setup 으로 redirect (모든 항목 채워야만 통과)
             location.replace('profile-setup.html?from=' + encodeURIComponent(page));
           }
         } catch(e) {}

@@ -253,22 +253,63 @@ function renderTrialBadge(containerId) {
     showLockedGate();
   }
 
-  // server users.plan_active 비동기 검증 — gateCheck 와 분리되어 race condition 영향 X
-  async function _verifyAndCleanupAsync(){
+  // server users.plan_active 비동기 검증 — heal-plan-active 사용해서 최근 payment status 까지 검증
+  // opts.lockOnFalse=true 면 planActive=false 일 때 즉시 lock gate 강제 (환불·취소 액세스 차단 핵심)
+  async function _verifyAndCleanupAsync(opts){
+    opts = opts || {};
     try {
+      var u = null;
+      try { u = JSON.parse(localStorage.getItem('wc_user') || 'null'); } catch(e) {}
       var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
-      if (!sb) return;
-      var { data: udata } = await sb.auth.getUser();
-      if (!udata || !udata.user) return;
-      var res = await sb.from('users').select('plan_active, free_trial_used').eq('auth_id', udata.user.id).maybeSingle();
-      var planActive = !!(res && res.data && res.data.plan_active === true);
-      var serverUsed = (res && res.data && typeof res.data.free_trial_used === 'number') ? res.data.free_trial_used : 0;
-      // 결제 사용자면 wc_paid 셋 + subscribed 동기화 (다음 페이지부터 통과)
+      if (sb && (!u || !u.id)) {
+        try {
+          var { data: udata } = await sb.auth.getUser();
+          if (udata && udata.user) u = { id: udata.user.id, email: udata.user.email };
+        } catch(e) {}
+      }
+      // 비로그인 사용자: 캐시만 정리하고 종료 (lock 은 free trial 소진 시에만)
+      if (!u || !u.id) return;
+      // heal-plan-active: 최근 payment status 가 refunded/cancelled 면 planActive=false 반환 (자동복구 X)
+      var planActive = false;
+      var serverUsed = 0;
+      try {
+        var hr = await fetch('/api/heal-plan-active', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ userId: u.id, email: u.email || '' })
+        });
+        var hd = await hr.json();
+        planActive = !!(hd && hd.planActive === true);
+      } catch(e) {}
+      // 추가로 free_trial_used 동기화 (다른 디바이스 카운트 머지)
+      if (sb) {
+        try {
+          var res = await sb.from('users').select('free_trial_used').eq('auth_id', u.id).maybeSingle();
+          if (res && res.data && typeof res.data.free_trial_used === 'number') serverUsed = res.data.free_trial_used;
+        } catch(e) {}
+      }
+      // 동기화: planActive=true → wc_paid 셋, false → wc_paid 제거 + (조건부) lock gate
       if (planActive) {
         localStorage.setItem('wc_paid', 'true');
         var d = getTrialData(); d.subscribed = true; saveTrialData(d);
       } else {
         localStorage.removeItem('wc_paid');
+        var d2 = getTrialData(); d2.subscribed = false; saveTrialData(d2);
+        // ★ 환불·취소 즉시 액세스 차단 — 캐시 기반으로 통과시켰던 사용자도 게이트 강제
+        // 단, 어드민 + 무료체험 잔여자는 제외 (자기 흐름 유지)
+        if (opts.lockOnFalse) {
+          var _showGateNow = function(){
+            try {
+              if (typeof isAdmin === 'function' && isAdmin()) return;
+              var td = getTrialData();
+              if ((td.used || 0) < FREE_TRIAL_MAX) return; // 무료체험 카운트 남으면 사용 허용
+              document.body.style.pointerEvents = 'none';
+              document.body.style.filter = 'blur(4px)';
+              showLockedGate();
+            } catch(e) {}
+          };
+          if (document.body) _showGateNow();
+          else document.addEventListener('DOMContentLoaded', _showGateNow);
+        }
       }
       // server used 가 더 크면 머지 (다른 디바이스 동기화)
       var current = getTrialData();
@@ -299,11 +340,17 @@ function renderTrialBadge(containerId) {
   var _ranOnce = false;
   function _doCountNow(){
     if (_ranOnce) return; _ranOnce = true;
-    // 어드민·결제·구독 사용자는 통과 (localStorage 만 의존, 즉시 동기 판정)
+    // 어드민은 즉시 통과 (서버 검증 X)
     if (typeof isAdmin === 'function' && isAdmin()) return;
-    if (localStorage.getItem('wc_paid') === 'true') return;
+    // ★ 결제·구독 캐시가 보여도 항상 서버 검증 (환불·취소 즉시 반영)
+    //   캐시는 즉시 통과 허용하되, 서버 결과 false 면 백그라운드에서 lock gate 강제
+    var hasPaidCache = (localStorage.getItem('wc_paid') === 'true');
     var data = getTrialData();
-    if (data.subscribed === true) return;
+    var hasSubscribedCache = (data.subscribed === true);
+    if (hasPaidCache || hasSubscribedCache) {
+      _verifyAndCleanupAsync({ lockOnFalse: true });
+      return;
+    }
     var used = data.used || 0;
     if (used < FREE_TRIAL_MAX) {
       // 즉시 카운트 +1 + server 저장 (fire-and-forget)

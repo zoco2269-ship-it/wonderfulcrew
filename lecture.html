@@ -46,25 +46,21 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <script src="js/supabase-client.js?v=5"></script>
 <script src="js/auth-gate.js"></script>
 <script>
-// 강의 페이지 액세스 — 대표 + 결제/구독 사용자 + 페이지별 화이트리스트 학생 통과
+// 강의 페이지 액세스 — 대표 + 결제 사용자 + 페이지별 화이트리스트 학생 통과
+// 보안 핵심: 로그인 사용자는 항상 server heal-plan-active 검증 (캐시 통과 X — 환불 즉시 차단)
 window.LECTURE_WHITELIST = ['zoco2269@gmail.com','eunchae850@gmail.com'];
 document.addEventListener('DOMContentLoaded',function(){
   setTimeout(async function(){
+    var blocked=false;
     try{
       var user=JSON.parse(localStorage.getItem('wc_user')||'{}');
       var em=(user.email||'').toLowerCase();
-      // 1) 화이트리스트 이메일 통과
+      // 1) 화이트리스트 이메일 통과 (서버 검증 X)
       if(window.LECTURE_WHITELIST.indexOf(em)!==-1) return;
-      // 2) 어드민 통과
+      // 2) 어드민 통과 (서버 검증 X)
       if(typeof isAdmin==='function'&&isAdmin()) return;
-      // 3) 결제·구독 사용자 통과 (localStorage 즉시 판정)
-      if(localStorage.getItem('wc_paid')==='true') return;
-      try{
-        var td=JSON.parse(localStorage.getItem('wc_free_trial')||'{}');
-        if(td&&td.subscribed===true) return;
-      }catch(e){}
-      // 4) localStorage 잔재 청소된 직후일 수 있어 server 재검증 (heal-plan-active)
-      //    결제 직후 sync 늦어서 wc_paid 가 아직 안 박혔을 때 보호
+      // 3) 로그인 사용자: 무조건 server heal-plan-active 검증 — 캐시 통과 절대 안 함
+      //    환불·취소 시 즉시 액세스 차단되도록 (localStorage.wc_paid 무시)
       if(user&&user.id){
         try{
           var hr=await fetch('/api/heal-plan-active',{
@@ -73,15 +69,29 @@ document.addEventListener('DOMContentLoaded',function(){
           });
           var hd=await hr.json();
           if(hd&&hd.planActive===true){
+            // 결제 활성 사용자 — wc_paid 동기화하고 통과
             localStorage.setItem('wc_paid','true');
             try{var d=JSON.parse(localStorage.getItem('wc_free_trial')||'{}');d.subscribed=true;localStorage.setItem('wc_free_trial',JSON.stringify(d));}catch(e){}
             return;
           }
-        }catch(e){}
+          // server 가 false 반환 → 환불·취소 사용자 → wc_paid 캐시 즉시 청소 + 차단
+          localStorage.removeItem('wc_paid');
+          try{var d2=JSON.parse(localStorage.getItem('wc_free_trial')||'{}');d2.subscribed=false;localStorage.setItem('wc_free_trial',JSON.stringify(d2));}catch(e){}
+          blocked=true;
+        }catch(e){
+          // server 응답 실패: 캐시 fallback (장애 시에도 결제자 보호)
+          if(localStorage.getItem('wc_paid')==='true') return;
+          blocked=true;
+        }
+      } else {
+        // 4) 비로그인 사용자 → 차단
+        blocked=true;
       }
-    }catch(e){}
-    document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#FAF7F0;"><div style="text-align:center;padding:40px;"><div style="font-size:2rem;margin-bottom:16px;">🔒</div><h2 style="font-family:DM Serif Display,serif;color:#1A2340;margin-bottom:12px;">프리미엄 전용 콘텐츠</h2><p style="color:#5A5048;font-size:0.9rem;line-height:1.7;margin-bottom:24px;">강의 영상은 프리미엄 패키지 구매 후<br>시청하실 수 있습니다.</p><a href="plans.html" style="padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.9rem;font-weight:700;text-decoration:none;">요금제 보기</a><br><a href="index.html" style="display:inline-block;margin-top:14px;color:#999;font-size:0.82rem;text-decoration:none;">홈으로</a></div></div>';
-  },1000);
+    }catch(e){blocked=true;}
+    if(blocked){
+      document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#FAF7F0;"><div style="text-align:center;padding:40px;"><div style="font-size:2rem;margin-bottom:16px;">🔒</div><h2 style="font-family:DM Serif Display,serif;color:#1A2340;margin-bottom:12px;">프리미엄 전용 콘텐츠</h2><p style="color:#5A5048;font-size:0.9rem;line-height:1.7;margin-bottom:24px;">강의 영상은 프리미엄 패키지 구매 후<br>시청하실 수 있습니다.</p><a href="plans.html" style="padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.9rem;font-weight:700;text-decoration:none;">요금제 보기</a><br><a href="index.html" style="display:inline-block;margin-top:14px;color:#999;font-size:0.82rem;text-decoration:none;">홈으로</a></div></div>';
+    }
+  },300);
 });
 </script>
 </head>

@@ -46,11 +46,40 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <script src="js/supabase-client.js?v=5"></script>
 <script src="js/auth-gate.js"></script>
 <script>
-// 강의 페이지는 대표(zoco2269)만 접근 가능
+// 강의 페이지 액세스 — 대표 + 결제/구독 사용자 + 페이지별 화이트리스트 학생 통과
+window.LECTURE_WHITELIST = ['zoco2269@gmail.com','eunchae850@gmail.com'];
 document.addEventListener('DOMContentLoaded',function(){
-  setTimeout(function(){
-    var user=JSON.parse(localStorage.getItem('wc_user')||'{}');
-    if(user.email==='zoco2269@gmail.com') return;
+  setTimeout(async function(){
+    try{
+      var user=JSON.parse(localStorage.getItem('wc_user')||'{}');
+      var em=(user.email||'').toLowerCase();
+      // 1) 화이트리스트 이메일 통과
+      if(window.LECTURE_WHITELIST.indexOf(em)!==-1) return;
+      // 2) 어드민 통과
+      if(typeof isAdmin==='function'&&isAdmin()) return;
+      // 3) 결제·구독 사용자 통과 (localStorage 즉시 판정)
+      if(localStorage.getItem('wc_paid')==='true') return;
+      try{
+        var td=JSON.parse(localStorage.getItem('wc_free_trial')||'{}');
+        if(td&&td.subscribed===true) return;
+      }catch(e){}
+      // 4) localStorage 잔재 청소된 직후일 수 있어 server 재검증 (heal-plan-active)
+      //    결제 직후 sync 늦어서 wc_paid 가 아직 안 박혔을 때 보호
+      if(user&&user.id){
+        try{
+          var hr=await fetch('/api/heal-plan-active',{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({userId:user.id,email:user.email||''})
+          });
+          var hd=await hr.json();
+          if(hd&&hd.planActive===true){
+            localStorage.setItem('wc_paid','true');
+            try{var d=JSON.parse(localStorage.getItem('wc_free_trial')||'{}');d.subscribed=true;localStorage.setItem('wc_free_trial',JSON.stringify(d));}catch(e){}
+            return;
+          }
+        }catch(e){}
+      }
+    }catch(e){}
     document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#FAF7F0;"><div style="text-align:center;padding:40px;"><div style="font-size:2rem;margin-bottom:16px;">🔒</div><h2 style="font-family:DM Serif Display,serif;color:#1A2340;margin-bottom:12px;">프리미엄 전용 콘텐츠</h2><p style="color:#5A5048;font-size:0.9rem;line-height:1.7;margin-bottom:24px;">강의 영상은 프리미엄 패키지 구매 후<br>시청하실 수 있습니다.</p><a href="plans.html" style="padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.9rem;font-weight:700;text-decoration:none;">요금제 보기</a><br><a href="index.html" style="display:inline-block;margin-top:14px;color:#999;font-size:0.82rem;text-decoration:none;">홈으로</a></div></div>';
   },1000);
 });
@@ -193,6 +222,11 @@ document.addEventListener('click',function(e){
   if(localStorage.getItem('wc_test_mode')!=='true'){
     if(localStorage.getItem('wc_paid')==='true') paid=true;
     if(typeof isAdmin==='function'&&isAdmin()) paid=true;
+    try{
+      var _u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+      var _em=(_u.email||'').toLowerCase();
+      if((window.LECTURE_WHITELIST||[]).indexOf(_em)!==-1) paid=true;
+    }catch(e){}
   }
   if(paid){
     window.open(card.getAttribute('data-url'),'_blank');

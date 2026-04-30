@@ -14,11 +14,25 @@ module.exports = async function handler(req, res) {
 
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
-  // 상태 판정 — 보수적 로직. 'completed' 결제건은 명시적 cancelYN='Y' 신호 있을 때만 다운그레이드.
-  // (이전 버그: substring 'cancel' 만 있어도 정상 결제를 cancelled 로 마킹하던 문제 — 정상 결제 보호)
-  const statusStr = String(payStatus || tradeStatus || '').toLowerCase();
-  const isExplicitCancel = cancelYN === 'Y';
-  const isExplicitRefund = statusStr === 'refund' || statusStr === 'refunded' || statusStr === '환불';
+  // 상태 판정 — 명시적 신호 다양한 형태 모두 인식. substring 매칭은 절대 X (이전 'CancelApprove' 오인식 버그 방지)
+  // 이노페이 payload 가 한국어/영어/필드명 변형 케이스 다 커버하되, 정확한 값/단어 일치만 인정.
+  const statusStr = String(payStatus || tradeStatus || '').trim().toLowerCase();
+  const cancelFlag = String(cancelYN || body.cancelYn || body.cancel_yn || body.CancelYN || body.CANCEL_YN || '').trim().toUpperCase();
+  const isExplicitCancel = (
+    cancelFlag === 'Y' ||
+    cancelFlag === '1' ||
+    statusStr === 'cancel' ||
+    statusStr === 'cancelled' ||
+    statusStr === 'canceled' ||
+    statusStr === '취소' ||
+    statusStr === '결제취소'
+  );
+  const isExplicitRefund = (
+    statusStr === 'refund' ||
+    statusStr === 'refunded' ||
+    statusStr === '환불' ||
+    statusStr === '환불완료'
+  );
 
   // 기존 payment row 조회 (newStatus 판정 전에 먼저 조회 — 상태 보호 위해)
   const { data: payment } = await sb.from('payments').select('*').eq('moid', moid).maybeSingle();

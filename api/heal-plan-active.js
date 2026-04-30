@@ -15,6 +15,41 @@ module.exports = async function(req, res) {
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
   try {
+    // ★ 환불·취소 우선 보호 — 가장 최근 payment row 의 status 가 refunded/cancelled 면 plan_active=false 강제
+    //   (이전 버그: 환불 후에도 과거 completed row 보고 자동복구 → 환불 무효화)
+    {
+      const { data: latestAny } = await sb.from('payments')
+        .select('id, status, created_at, user_id')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      let latest = latestAny;
+      if (!latest && email) {
+        const anonId = 'anonymous_' + email;
+        const { data: latestAnon } = await sb.from('payments')
+          .select('id, status, created_at, user_id')
+          .eq('user_id', anonId)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        latest = latestAnon;
+      }
+      if (latest && (latest.status === 'refunded' || latest.status === 'cancelled')) {
+        const now = new Date().toISOString();
+        try {
+          await sb.from('users').upsert({
+            auth_id: userId, email: email || '',
+            plan: 'free', plan_active: false, updated_at: now
+          }, { onConflict: 'auth_id' });
+          await sb.from('subscriptions').upsert({
+            user_id: userId, plan: 'free', status: 'cancelled', updated_at: now
+          }, { onConflict: 'user_id' });
+        } catch(e) {}
+        return res.json({ ok: true, planActive: false, reason: 'most_recent_payment_' + latest.status });
+      }
+    }
+
     // 1) auth_id 로 결제 조회
     let { data: payment } = await sb.from('payments')
       .select('id, plan, created_at, amount, user_id')

@@ -156,18 +156,21 @@ async function signInWith(provider) {
     alert('Cannot connect to server. Please check your internet and try again.');
     return;
   }
-  if (provider === 'kakao' || provider === 'naver') {
-    alert(provider + ' login coming soon.\nPlease use Google login for now.');
+  if (provider === 'naver') {
+    alert('Naver login coming soon.\nPlease use Google or Kakao login for now.');
     return;
   }
   try {
-    var { error } = await sb.auth.signInWithOAuth({
+    var oauthOpts = {
       provider: provider,
       options: {
-        redirectTo: window.location.origin + '/login-en.html',
-        queryParams: { prompt: 'select_account' }
+        redirectTo: window.location.origin + '/login-en.html'
       }
-    });
+    };
+    if (provider === 'google') {
+      oauthOpts.options.queryParams = { prompt: 'select_account' };
+    }
+    var { error } = await sb.auth.signInWithOAuth(oauthOpts);
     if (error) alert('Login failed: ' + error.message);
   } catch(e) { alert('Login error: ' + e.message); }
 }

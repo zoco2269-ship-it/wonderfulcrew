@@ -48,9 +48,9 @@ nav{display:flex;align-items:center;justify-content:center;padding:0 5%;height:7
         Google 계정으로 로그인
       </button>
 
-      <button class="login-btn" disabled style="background:#FEE500;border-color:#FEE500;color:#3C1E1E;opacity:0.5;cursor:not-allowed;">
+      <button class="login-btn" onclick="signInWith('kakao')" style="background:#FEE500;border-color:#FEE500;color:#3C1E1E;">
         <svg viewBox="0 0 24 24" width="22" height="22"><path fill="#3C1E1E" d="M12 3C6.48 3 2 6.36 2 10.44c0 2.6 1.72 4.88 4.33 6.2l-1.1 4.07c-.08.3.26.54.52.37l4.84-3.2c.46.05.93.08 1.41.08 5.52 0 10-3.36 10-7.52S17.52 3 12 3z"/></svg>
-        카카오 로그인 (추후 업데이트)
+        카카오 계정으로 로그인
       </button>
 
       <button class="login-btn" disabled style="background:#03C75A;border-color:#03C75A;color:#fff;opacity:0.5;cursor:not-allowed;">
@@ -240,18 +240,22 @@ async function signInWith(provider) {
     alert('서버에 연결할 수 없습니다. 인터넷 연결을 확인하고 다시 시도해주세요.');
     return;
   }
-  if (provider === 'kakao' || provider === 'naver') {
-    alert(provider + ' 로그인은 추후 업데이트 예정입니다.\n우선 Google 로그인을 사용해주세요.');
+  if (provider === 'naver') {
+    alert('네이버 로그인은 추후 업데이트 예정입니다.\n우선 Google 또는 카카오 로그인을 사용해주세요.');
     return;
   }
   try {
-    var { error } = await sb.auth.signInWithOAuth({
+    // prompt: select_account 는 Google 만 적용 — 카카오는 무시되거나 에러 가능성 있어 분기
+    var oauthOpts = {
       provider: provider,
       options: {
-        redirectTo: window.location.origin + '/login.html',
-        queryParams: { prompt: 'select_account' }
+        redirectTo: window.location.origin + '/login.html'
       }
-    });
+    };
+    if (provider === 'google') {
+      oauthOpts.options.queryParams = { prompt: 'select_account' };
+    }
+    var { error } = await sb.auth.signInWithOAuth(oauthOpts);
     if (error) alert('로그인 실패: ' + error.message);
   } catch(e) { alert('로그인 오류: ' + e.message); }
 }

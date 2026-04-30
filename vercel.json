@@ -17,6 +17,15 @@
     },
     "api/stt.js": {
       "maxDuration": 30
+    },
+    "api/reconcile-subscriptions.js": {
+      "maxDuration": 60
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/reconcile-subscriptions",
+      "schedule": "0 * * * *"
+    }
+  ]
 }

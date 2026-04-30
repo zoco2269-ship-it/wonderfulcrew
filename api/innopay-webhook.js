@@ -14,6 +14,18 @@ module.exports = async function handler(req, res) {
 
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
+  // ★ payload raw log 저장 — webhook 미스/오인식 시 admin 이 audit + reconcile cron 으로 재처리 가능
+  // 테이블 없거나 insert 실패해도 본 흐름에는 영향 없음 (try/catch fail-safe)
+  try {
+    await sb.from('webhook_logs').insert({
+      source: 'innopay',
+      moid: moid,
+      tid: tid || '',
+      payload: body,
+      received_at: new Date().toISOString()
+    });
+  } catch(e) { console.warn('[Webhook] log insert failed (table may not exist):', e.message); }
+
   // 상태 판정 — 명시적 신호 다양한 형태 모두 인식. substring 매칭은 절대 X (이전 'CancelApprove' 오인식 버그 방지)
   // 이노페이 payload 가 한국어/영어/필드명 변형 케이스 다 커버하되, 정확한 값/단어 일치만 인정.
   const statusStr = String(payStatus || tradeStatus || '').trim().toLowerCase();

@@ -68,7 +68,7 @@ module.exports = async function(req, res) {
 
     // 3) subscriptions.status mismatch 도 같이 정리 — users.plan_active=false 인데 subscriptions=active 인 경우
     const { data: subs } = await sb.from('subscriptions')
-      .select('user_id, status')
+      .select('user_id, status, expires_at')
       .eq('status', 'active');
     for (const sub of (subs || [])) {
       try {
@@ -88,6 +88,31 @@ module.exports = async function(req, res) {
         }
       } catch (e) {
         errors.push({ userId: sub.user_id, error: e.message });
+      }
+    }
+
+    // 4) ★ expires_at 자동 만료 — 결제 기간 끝난 사용자 자동 비활성화
+    //    환불 누락(webhook miss)시 최후의 안전망. basic 30일/premium 1년 지나면 무조건 정리.
+    const nowIso = new Date().toISOString();
+    const { data: expired } = await sb.from('subscriptions')
+      .select('user_id, expires_at')
+      .eq('status', 'active')
+      .lt('expires_at', nowIso);
+    for (const exp of (expired || [])) {
+      try {
+        await sb.from('users').update({
+          plan_active: false, plan: 'free', updated_at: nowIso
+        }).eq('auth_id', exp.user_id);
+        await sb.from('subscriptions').update({
+          status: 'expired', updated_at: nowIso
+        }).eq('user_id', exp.user_id);
+        fixes.push({
+          userId: exp.user_id,
+          reason: 'expired_at_passed',
+          expiresAt: exp.expires_at
+        });
+      } catch (e) {
+        errors.push({ userId: exp.user_id, error: e.message });
       }
     }
 

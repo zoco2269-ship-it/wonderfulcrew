@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded',function(){
       // 2) 어드민 통과 (서버 검증 X)
       if(typeof isAdmin==='function'&&isAdmin()) return;
       // 3) 로그인 사용자: 무조건 server heal-plan-active 검증 — 캐시 통과 절대 안 함
-      //    환불·취소 시 즉시 액세스 차단되도록 (localStorage.wc_paid 무시)
+      //    강의 페이지는 premium 플랜 전용. basic/elite 결제자도 차단.
       if(user&&user.id){
         try{
           var hr=await fetch('/api/heal-plan-active',{
@@ -68,19 +68,29 @@ document.addEventListener('DOMContentLoaded',function(){
             body:JSON.stringify({userId:user.id,email:user.email||''})
           });
           var hd=await hr.json();
-          if(hd&&hd.planActive===true){
-            // 결제 활성 사용자 — wc_paid 동기화하고 통과
+          var serverPlan=(hd&&hd.plan?String(hd.plan).toLowerCase():'');
+          if(hd&&hd.planActive===true && serverPlan==='premium'){
+            // premium 결제 사용자 — wc_paid + wc_plan 동기화하고 통과
             localStorage.setItem('wc_paid','true');
+            localStorage.setItem('wc_plan',serverPlan);
             try{var d=JSON.parse(localStorage.getItem('wc_free_trial')||'{}');d.subscribed=true;localStorage.setItem('wc_free_trial',JSON.stringify(d));}catch(e){}
             return;
           }
-          // server 가 false 반환 → 환불·취소 사용자 → wc_paid 캐시 즉시 청소 + 차단
-          localStorage.removeItem('wc_paid');
-          try{var d2=JSON.parse(localStorage.getItem('wc_free_trial')||'{}');d2.subscribed=false;localStorage.setItem('wc_free_trial',JSON.stringify(d2));}catch(e){}
+          // 결제 안됐거나 premium 미달 → 차단
+          if(!hd||hd.planActive!==true){
+            // 환불·취소 케이스: 캐시 청소
+            localStorage.removeItem('wc_paid');
+            localStorage.removeItem('wc_plan');
+            try{var d2=JSON.parse(localStorage.getItem('wc_free_trial')||'{}');d2.subscribed=false;localStorage.setItem('wc_free_trial',JSON.stringify(d2));}catch(e){}
+          } else {
+            // basic/elite 결제됨 → wc_plan 만 갱신 (wc_paid 유지)
+            localStorage.setItem('wc_plan',serverPlan||'basic');
+          }
           blocked=true;
         }catch(e){
-          // server 응답 실패: 캐시 fallback (장애 시에도 결제자 보호)
-          if(localStorage.getItem('wc_paid')==='true') return;
+          // server 응답 실패: premium 캐시만 통과 (장애 시에도 보안 우선)
+          var cachedPlan=(localStorage.getItem('wc_plan')||'').toLowerCase();
+          if(localStorage.getItem('wc_paid')==='true' && cachedPlan==='premium') return;
           blocked=true;
         }
       } else {

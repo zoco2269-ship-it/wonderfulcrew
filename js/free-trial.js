@@ -186,10 +186,28 @@ function renderTrialBadge(containerId) {
     'roleplay-practice','discussion-practice-ko','discussion-practice',
     'discussion1','discussion2','video-practice','final',
     'chatbot','chatbot-en','word-shooting','ai-coach','ai-coach-en',
-    'debate-practice','smalltalk','walking-analysis','coach-feedback',
+    'debate-practice','smalltalk','walking-analysis','coach-feedback','coach-feedback-en',
     'live-booking','lecture','lecture-en'
   ];
   if (gatedPages.indexOf(page) === -1) return;
+  // ★ 플랜별 페이지 접근 제어 — basic(199K) / elite(299K) / premium(2.5M)
+  //   기본 매핑: 명시 안 된 페이지는 'basic' 플랜으로 OK (모든 결제자 통과)
+  var PLAN_REQUIREMENTS = {
+    'ai-coach': 'elite',
+    'ai-coach-en': 'elite',
+    'coach-feedback': 'premium',
+    'coach-feedback-en': 'premium',
+    'lecture': 'premium',
+    'lecture-en': 'premium'
+  };
+  var PLAN_LEVEL = { 'basic': 1, 'elite': 2, 'premium': 3 };
+  var PLAN_LABEL_KO = { 'basic': '베이직', 'elite': '엘리트', 'premium': '프리미엄' };
+  function _requiredPlan(){ return PLAN_REQUIREMENTS[page] || 'basic'; }
+  function _planMeets(userPlan){
+    var u = PLAN_LEVEL[userPlan] || 0;
+    var r = PLAN_LEVEL[_requiredPlan()] || 1;
+    return u >= r;
+  }
   // 페이지별 화이트리스트 — 특정 학생에게 특정 페이지만 무상 액세스 허용
   // (결제·구독 무관하게 통과. 다른 페이지·다른 사용자에게 영향 없음)
   var PAGE_WHITELIST = {
@@ -291,8 +309,24 @@ function renderTrialBadge(containerId) {
       if (planActive) {
         localStorage.setItem('wc_paid', 'true');
         var d = getTrialData(); d.subscribed = true; saveTrialData(d);
+        // 플랜 캐시 + 티어 부족 시 tier gate 강제 (결제는 했지만 페이지 요구 플랜 미달)
+        var serverPlan = (hd && hd.plan) ? String(hd.plan).toLowerCase() : 'basic';
+        localStorage.setItem('wc_plan', serverPlan);
+        if (!_planMeets(serverPlan) && opts.lockOnFalse) {
+          var _showTierNow = function(){
+            try {
+              if (typeof isAdmin === 'function' && isAdmin()) return;
+              document.body.style.pointerEvents = 'none';
+              document.body.style.filter = 'blur(4px)';
+              showTierGate(serverPlan);
+            } catch(e) {}
+          };
+          if (document.body) _showTierNow();
+          else document.addEventListener('DOMContentLoaded', _showTierNow);
+        }
       } else {
         localStorage.removeItem('wc_paid');
+        localStorage.removeItem('wc_plan');
         var d2 = getTrialData(); d2.subscribed = false; saveTrialData(d2);
         // ★ 환불·취소 즉시 액세스 차단 — 캐시 기반으로 통과시켰던 사용자도 게이트 강제
         // 단, 어드민 + 무료체험 잔여자는 제외 (자기 흐름 유지)
@@ -335,6 +369,26 @@ function renderTrialBadge(containerId) {
     '</div>';
     document.body.appendChild(g);
   }
+  // 플랜 부족 게이트 — 결제는 했지만 요청 페이지가 더 높은 플랜 필요
+  function showTierGate(currentPlan){
+    if (document.getElementById('wc-tier-gate')) return;
+    var req = _requiredPlan();
+    var reqLabel = PLAN_LABEL_KO[req] || req;
+    var curLabel = PLAN_LABEL_KO[currentPlan] || (currentPlan ? currentPlan : '-');
+    var g = document.createElement('div');
+    g.id = 'wc-tier-gate';
+    g.style.cssText = 'position:fixed;inset:0;background:rgba(10,15,30,0.88);z-index:99999;display:flex;align-items:center;justify-content:center;pointer-events:auto;';
+    g.innerHTML = '<div style="background:#fff;border-radius:20px;padding:44px 36px;max-width:440px;width:90%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.5);pointer-events:auto;filter:none;">' +
+      '<div style="font-size:2.4rem;margin-bottom:14px;">⭐</div>' +
+      '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.5rem;color:#1A2340;margin-bottom:10px;">' + reqLabel + ' 플랜 전용</h2>' +
+      '<p style="font-size:0.9rem;color:#5A5048;line-height:1.75;margin-bottom:26px;">이 기능은 ' + reqLabel + ' 플랜에서 이용 가능합니다.<br>현재 플랜: <b>' + curLabel + '</b></p>' +
+      '<div style="display:flex;flex-direction:column;gap:10px;">' +
+        '<a href="plans.html" style="display:block;padding:15px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.94rem;font-weight:700;text-decoration:none;pointer-events:auto;">' + reqLabel + ' 플랜 업그레이드 →</a>' +
+        '<a href="index.html" style="display:block;padding:10px;color:#5A5048;font-size:0.82rem;text-decoration:underline;pointer-events:auto;">홈으로 돌아가기</a>' +
+      '</div>' +
+    '</div>';
+    document.body.appendChild(g);
+  }
   // ★ 페이지 스크립트 로드 즉시 카운트 차감 — DOM 대기 X
   // 사용자가 페이지 진입 직후 답변 시작/페이지 이동해도 +1 보장
   var _ranOnce = false;
@@ -348,6 +402,23 @@ function renderTrialBadge(containerId) {
     var data = getTrialData();
     var hasSubscribedCache = (data.subscribed === true);
     if (hasPaidCache || hasSubscribedCache) {
+      // 플랜 캐시 즉시 티어 체크 — 베이직 사용자가 프리미엄 페이지 진입 시 즉시 차단
+      var cachedPlan = (localStorage.getItem('wc_plan') || 'basic').toLowerCase();
+      if (!_planMeets(cachedPlan)) {
+        var _tierGateNow = function(){
+          try {
+            document.body.style.pointerEvents = 'none';
+            document.body.style.filter = 'blur(4px)';
+            showTierGate(cachedPlan);
+          } catch(e) {}
+        };
+        if (document.body) _tierGateNow();
+        else document.addEventListener('DOMContentLoaded', _tierGateNow);
+        // 백그라운드에서 서버 재검증 (플랜 업그레이드 케이스 캐시 stale 방지)
+        _verifyAndCleanupAsync({ lockOnFalse: true });
+        return;
+      }
+      // 플랜 OK: 통과 + 백그라운드 서버 검증
       _verifyAndCleanupAsync({ lockOnFalse: true });
       return;
     }
@@ -362,7 +433,7 @@ function renderTrialBadge(containerId) {
       if (document.body) _showToast();
       else document.addEventListener('DOMContentLoaded', _showToast);
     } else {
-      // 카운트 소진 — server 결제 기록 검증 후 결정 (결제 사용자 보호)
+      // 카운트 소진 — server 결제 기록 검증 후 결정 (결제 사용자 보호 + 플랜 티어 체크)
       (async function(){
         try {
           var u = JSON.parse(localStorage.getItem('wc_user') || 'null');
@@ -374,8 +445,17 @@ function renderTrialBadge(containerId) {
             var hd = await hr.json();
             if (hd && hd.planActive === true) {
               localStorage.setItem('wc_paid', 'true');
+              var serverPlan = (hd.plan ? String(hd.plan).toLowerCase() : 'basic');
+              localStorage.setItem('wc_plan', serverPlan);
               var d = getTrialData(); d.subscribed = true; saveTrialData(d);
-              return; // 결제 사용자 — 게이트 표시 X 통과
+              // 플랜 티어 부족: 결제는 됐지만 이 페이지는 더 높은 플랜 필요 → tier gate
+              if (!_planMeets(serverPlan)) {
+                var _tierGate = function(){ try{ document.body.style.pointerEvents='none'; document.body.style.filter='blur(4px)'; showTierGate(serverPlan); }catch(e){} };
+                if (document.body) _tierGate();
+                else document.addEventListener('DOMContentLoaded', _tierGate);
+                return;
+              }
+              return; // 결제 + 플랜 OK — 통과
             }
           }
         } catch(e) {}

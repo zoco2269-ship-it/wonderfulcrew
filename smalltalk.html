@@ -431,11 +431,15 @@ async function stopAnswer(){
     ?'Candidate greeted: '+ans
     :dialogue.slice(-6).filter(function(d){return d.text.indexOf('(Please start')!==0;}).map(function(d){return (d.who==='ai'?'Interviewer: ':'You: ')+d.text;}).join('\n');
   try{
-    var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    var ctrl=new AbortController();
+    var tid=setTimeout(function(){ctrl.abort();},30000);
+    var r=await fetch('/api/ai',{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:60,system:sys,
       messages:[{role:'user',content:recent}]
     })});
+    clearTimeout(tid);
     var data=await r.json();
+    if(data && data.error){console.error('[smalltalk AI error]',data.error);throw new Error(typeof data.error==='string'?data.error:(data.error.message||'AI error'));}
     var txt=((data&&data.content&&data.content[0]&&data.content[0].text)||(isClosing?'Thank you for coming today, nice meeting you!':'That sounds nice! And how did you get here today?')).replace(/\*\*/g,'').replace(/^Interviewer:\s*/i,'').trim();
     dialogue.push({who:'ai',text:txt});
     var tmp=document.getElementById('tmp-turn');if(tmp)tmp.remove();
@@ -464,10 +468,13 @@ async function stopAnswer(){
     document.getElementById('btn-answer').style.display='inline-flex';
     document.getElementById('transcript').textContent='Your turn — press 🎙 to answer.';
   }catch(e){
+    console.error('[smalltalk AI fetch failed]',e);
     var tmp=document.getElementById('tmp-turn');if(tmp)tmp.remove();
-    appendChat('ai','Sorry, could you say that again?');
+    var msg=e&&e.name==='AbortError'?'(timeout - 30s 초과)':'(error: '+((e&&e.message)||'unknown')+')';
+    appendChat('ai','Sorry, could you say that again? '+msg);
     dialogue.push({who:'ai',text:'Sorry, could you say that again?'});
     document.getElementById('btn-answer').style.display='inline-flex';
+    document.getElementById('transcript').textContent='연결 오류 — 다시 시도하세요.';
   }
 }
 
@@ -518,12 +525,16 @@ async function endSession(){
   }
 
   try{
-    var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    var ctrl2=new AbortController();
+    var tid2=setTimeout(function(){ctrl2.abort();},45000);
+    var r=await fetch('/api/ai',{method:'POST',signal:ctrl2.signal,headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:220,
       system:'CV Drop 스몰톡 코치. 본인 답변만 평가. 한국어로 매우 짧게.\n\n규칙:\n- 점수·칭찬·팁 3줄만.\n- 팁은 내용 전달력·발음·표현 등 답변 관련만. 미소 관련 코멘트는 절대 넣지 말 것 (시스템이 따로 표시함).\n\n출력 형식:\n점수: X/100\n한 줄 칭찬: (답변 중 한 구절 인용)\n한 줄 팁: (가장 중요한 개선 1개. 없으면 "지금 흐름 유지하세요.")',
       messages:[{role:'user',content:'본인 답변:\n'+userAnswers}]
     })});
+    clearTimeout(tid2);
     var d=await r.json();
+    if(d && d.error){console.error('[smalltalk feedback error]',d.error);throw new Error(typeof d.error==='string'?d.error:(d.error.message||'AI error'));}
     var fbText=((d&&d.content&&d.content[0]&&d.content[0].text)||'피드백 생성 실패').replace(/\*\*/g,'');
     fb.innerHTML='<b style="color:var(--gold);">스몰톡 피드백</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>'+
       smileBlock+
@@ -531,7 +542,11 @@ async function endSession(){
       '<button onclick="startSmalltalk()" style="padding:10px 22px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:22px;font-family:inherit;font-size:0.84rem;font-weight:700;cursor:pointer;">🔄 더 연습하기</button>'+
       '<a href="'+BACK_URL+'" style="color:var(--gold);font-size:0.82rem;">← 커리큘럼으로</a>'+
       '</div>';
-  }catch(e){fb.innerHTML='<b style="color:#E74C3C;">피드백 생성 실패.</b>';}
+  }catch(e){
+    console.error('[smalltalk feedback fetch failed]',e);
+    var msg=e&&e.name==='AbortError'?'(timeout)':'('+((e&&e.message)||'unknown')+')';
+    fb.innerHTML='<b style="color:#E74C3C;">피드백 생성 실패. '+msg+'</b>';
+  }
 }
 </script>
 </body>

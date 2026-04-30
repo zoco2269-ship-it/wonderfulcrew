@@ -51,6 +51,18 @@ async function syncTrialFromServer() {
       .maybeSingle();
     var planActive = !!(res && res.data && res.data.plan_active === true);
     var serverUsed = (res && res.data && typeof res.data.free_trial_used === 'number') ? res.data.free_trial_used : 0;
+    // ★ race condition 보호: server plan_active=false 라도 payments 테이블에 결제 기록 있으면 heal-plan-active 가 자동 복구
+    // 결제 직후 save-payment 처리 중에 sync 가 먼저 fire 되어도 wc_paid 가 부당하게 제거되지 않도록.
+    if (!planActive) {
+      try {
+        var hr = await fetch('/api/heal-plan-active', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({userId: udata.user.id, email: udata.user.email || ''})
+        });
+        var hd = await hr.json();
+        if (hd && hd.planActive === true) planActive = true;
+      } catch(e) {}
+    }
     // wc_paid 강제 동기화 — 어드민/이전 결제 시뮬 잔재 자동 청소
     if (planActive) localStorage.setItem('wc_paid', 'true');
     else localStorage.removeItem('wc_paid');

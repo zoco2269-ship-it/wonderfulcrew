@@ -187,9 +187,23 @@ function renderTrialBadge(containerId) {
     'discussion1','discussion2','video-practice','final',
     'chatbot','chatbot-en','word-shooting','ai-coach','ai-coach-en',
     'debate-practice','smalltalk','walking-analysis','coach-feedback',
-    'live-booking','lecture'
+    'live-booking','lecture','lecture-en'
   ];
   if (gatedPages.indexOf(page) === -1) return;
+  // 페이지별 화이트리스트 — 특정 학생에게 특정 페이지만 무상 액세스 허용
+  // (결제·구독 무관하게 통과. 다른 페이지·다른 사용자에게 영향 없음)
+  var PAGE_WHITELIST = {
+    'lecture':    ['eunchae850@gmail.com'],
+    'lecture-en': ['eunchae850@gmail.com']
+  };
+  try {
+    var _wlEmails = PAGE_WHITELIST[page];
+    if (_wlEmails) {
+      var _wlUser = JSON.parse(localStorage.getItem('wc_user') || 'null');
+      var _wlEmail = (_wlUser && _wlUser.email) ? String(_wlUser.email).toLowerCase() : '';
+      if (_wlEmail && _wlEmails.indexOf(_wlEmail) !== -1) return;
+    }
+  } catch(e) {}
   // wc_test_mode 는 어드민 전용 시뮬레이션 플래그 — 일반 사용자에게 잘못 박혀있으면 자동 청소
   // (이전에 어드민이 토글하고 비어드민으로 로그인 전환하면 잔재 → 환불 카운트 안 깎이는 버그 방지)
   function _isAdminSync(){

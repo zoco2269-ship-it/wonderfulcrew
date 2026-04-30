@@ -204,6 +204,37 @@ function renderTrialBadge(containerId) {
       if (_wlEmail && _wlEmails.indexOf(_wlEmail) !== -1) return;
     }
   } catch(e) {}
+  // 연락처(phone) 미입력 사용자는 profile-setup 으로 강제 redirect — 무료체험 카운트도 안 깎이게
+  // (어드민·결제 사용자는 phone 검증 면제)
+  (function _enforcePhone(){
+    try {
+      var u = JSON.parse(localStorage.getItem('wc_user') || 'null');
+      if (!u || !u.id) return; // 비로그인 사용자는 별도 흐름
+      var ADMIN = ['zoco2269@gmail.com','guswn5164@gmail.com'];
+      if (ADMIN.indexOf(u.email) !== -1) return; // 어드민 면제
+      if (localStorage.getItem('wc_paid') === 'true') return; // 결제 사용자 면제
+      if (localStorage.getItem('wc_profile_done') === '1') return; // 프로필 완료 캐시 통과
+      // server 검증 — phone 있으면 통과, 없으면 redirect
+      (async function(){
+        try {
+          var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+          for (var i=0; i<30 && !sb; i++) {
+            await new Promise(function(r){setTimeout(r,100);});
+            sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+          }
+          if (!sb) return;
+          var res = await sb.from('users').select('phone').eq('auth_id', u.id).maybeSingle();
+          var hasPhone = !!(res && res.data && res.data.phone);
+          if (hasPhone) {
+            localStorage.setItem('wc_profile_done', '1');
+          } else {
+            // phone 미입력 → profile-setup 으로 redirect
+            location.replace('profile-setup.html?from=' + encodeURIComponent(page));
+          }
+        } catch(e) {}
+      })();
+    } catch(e) {}
+  })();
   // wc_test_mode 는 어드민 전용 시뮬레이션 플래그 — 일반 사용자에게 잘못 박혀있으면 자동 청소
   // (이전에 어드민이 토글하고 비어드민으로 로그인 전환하면 잔재 → 환불 카운트 안 깎이는 버그 방지)
   function _isAdminSync(){

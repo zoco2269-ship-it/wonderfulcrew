@@ -187,18 +187,21 @@ function renderTrialBadge(containerId) {
     'discussion1','discussion2','video-practice','final',
     'chatbot','chatbot-en','word-shooting','ai-coach','ai-coach-en',
     'debate-practice','smalltalk','walking-analysis','coach-feedback','coach-feedback-en',
-    'live-booking','lecture','lecture-en'
+    'live-booking','live-booking-en','lecture','lecture-en'
   ];
   if (gatedPages.indexOf(page) === -1) return;
   // ★ 플랜별 페이지 접근 제어 — basic(199K) / elite(299K) / premium(2.5M)
-  //   기본 매핑: 명시 안 된 페이지는 'basic' 플랜으로 OK (모든 결제자 통과)
+  //   정책: basic 은 [AI 코치 / 1:1 코치 피드백 / 강의 영상 / 직접 강의 신청] 4가지 빼고 모두 허용
+  //   elite = basic + AI 코치, premium = elite + 1:1 코치 + 강의 + 라이브북킹
   var PLAN_REQUIREMENTS = {
     'ai-coach': 'elite',
     'ai-coach-en': 'elite',
     'coach-feedback': 'premium',
     'coach-feedback-en': 'premium',
     'lecture': 'premium',
-    'lecture-en': 'premium'
+    'lecture-en': 'premium',
+    'live-booking': 'premium',
+    'live-booking-en': 'premium'
   };
   var PLAN_LEVEL = { 'basic': 1, 'elite': 2, 'premium': 3 };
   var PLAN_LABEL_KO = { 'basic': '베이직', 'elite': '엘리트', 'premium': '프리미엄' };

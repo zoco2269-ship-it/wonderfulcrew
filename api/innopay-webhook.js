@@ -14,19 +14,40 @@ module.exports = async function handler(req, res) {
 
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
-  // 상태 판정
-  const status = String(payStatus || tradeStatus || '').toLowerCase();
+  // 상태 판정 — 보수적 로직. 'completed' 결제건은 명시적 cancelYN='Y' 신호 있을 때만 다운그레이드.
+  // (이전 버그: substring 'cancel' 만 있어도 정상 결제를 cancelled 로 마킹하던 문제 — 정상 결제 보호)
+  const statusStr = String(payStatus || tradeStatus || '').toLowerCase();
+  const isExplicitCancel = cancelYN === 'Y';
+  const isExplicitRefund = statusStr === 'refund' || statusStr === 'refunded' || statusStr === '환불';
+
+  // 기존 payment row 조회 (newStatus 판정 전에 먼저 조회 — 상태 보호 위해)
+  const { data: payment } = await sb.from('payments').select('*').eq('moid', moid).maybeSingle();
+  const currentStatus = payment ? payment.status : null;
+
   let newStatus;
-  if (resultCode === '0000' || resultCode === '00') {
-    if (cancelYN === 'Y' || status.includes('cancel') || status.includes('취소')) newStatus = 'cancelled';
-    else if (status.includes('refund') || status.includes('환불')) newStatus = 'refunded';
-    else newStatus = 'completed';
-  } else {
+  if (isExplicitCancel) {
     newStatus = 'cancelled';
+  } else if (isExplicitRefund) {
+    newStatus = 'refunded';
+  } else if (resultCode === '0000' || resultCode === '00') {
+    // 명시적 cancel/refund 신호 없는 success 통보 — 신규 또는 pending → completed 로만 허용
+    // 이미 completed 인 결제는 그대로 둠 (덮어쓰기 X)
+    if (currentStatus === 'completed') {
+      console.log('[Webhook] skip — already completed:', moid);
+      return res.status(200).json({ result: 'noop_already_completed', moid });
+    }
+    newStatus = 'completed';
+  } else {
+    // resultCode 가 success 아니고 명시적 cancel/refund 신호도 없음 → 함부로 cancelled 처리하지 않음
+    console.log('[Webhook] skip — unclear signal. resultCode:', resultCode, 'moid:', moid, 'body:', JSON.stringify(body));
+    return res.status(200).json({ result: 'skipped_unclear', moid, resultCode: resultCode });
   }
 
-  // 기존 payment row 조회
-  const { data: payment } = await sb.from('payments').select('*').eq('moid', moid).maybeSingle();
+  // 'completed' 결제건은 명시적 cancel/refund 신호 있을 때만 다운그레이드 가능 (정상 결제 보호 핵심 가드)
+  if (currentStatus === 'completed' && newStatus !== 'completed' && !isExplicitCancel && !isExplicitRefund) {
+    console.log('[Webhook] skip downgrade — completed protected:', moid, 'incoming:', JSON.stringify(body));
+    return res.status(200).json({ result: 'skipped_downgrade_protected', moid });
+  }
 
   if (!payment) {
     // payments 에 row 없음 → 새로 INSERT (이노페이 직접 결제 / prepare 누락)

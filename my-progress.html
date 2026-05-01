@@ -640,7 +640,15 @@ async function requestAutoRefund(){
 
       if (paid || subscribed) {
         $plan.innerHTML = '<span style="color:#C9A84C;">' + (planLabel[plan]||'결제') + ' 플랜</span> 사용 중';
-        $trial.textContent = '연습 무제한';
+        // 플랜별 사용량 안내 (베이직·엘리트는 월 한도 적용, 프리미엄만 무제한)
+        if (plan === 'premium') {
+          $trial.textContent = '모든 기능 무제한';
+        } else if (plan === 'elite') {
+          $trial.innerHTML = '월 한도 내 사용 가능 · <a href="plans.html" style="color:#C9A84C;font-weight:600;">한도 보기</a>';
+        } else {
+          // basic
+          $trial.innerHTML = '월 한도 내 사용 가능 · <a href="plans.html" style="color:#C9A84C;font-weight:600;">한도 보기</a>';
+        }
         $cta.textContent = '플랜 변경 →';
         // 만료일 (있으면)
         var expIso = localStorage.getItem('wc_subscription_expires');

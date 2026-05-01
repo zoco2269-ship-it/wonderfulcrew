@@ -654,8 +654,10 @@ async function generateFeedback(){
     var faceReport=typeof getFaceReport==='function'?getFaceReport():'';
     faceAnalysisActive=false;
     fb.innerHTML='<b>피드백</b><br><br>'+text.replace(/\*\*/g,'').replace(/\*[^*]+\*/g,'')+(faceReport?'<br>'+faceReport.replace(/\n/g,'<br>'):'');
-    // Supabase에 연습 기록 저장
-    if(typeof savePracticeRecord==='function') savePracticeRecord({airline:airlineName,stage:type,question:question,answer:fullText.trim(),feedback:text});
+    // Supabase에 연습 기록 저장 (점수 파싱 추가 — 마이페이지 점수 컬럼 반영)
+    var _scMatch=text.match(/점수[:\s]*(\d+)/);
+    var _parsedScore=_scMatch?parseInt(_scMatch[1],10):null;
+    if(typeof savePracticeRecord==='function') savePracticeRecord({airline:airlineName,stage:type,question:question,answer:fullText.trim(),feedback:text,score:_parsedScore});
   }catch(e){
     fb.innerHTML='피드백 생성 실패: '+e.message+'<br>다시 시도해주세요.';
   }

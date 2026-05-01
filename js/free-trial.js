@@ -247,7 +247,7 @@ function renderTrialBadge(containerId) {
     // 테스트 모드는 어드민일 때만 잠금 (어드민이 결제 플로우 검증 중)
     if (localStorage.getItem('wc_test_mode') === 'true' && _isAdminSync()) {
       document.body.style.pointerEvents = 'none';
-      document.body.style.filter = 'blur(4px)';
+      
       showLockedGate();
       return;
     }
@@ -270,7 +270,7 @@ function renderTrialBadge(containerId) {
     }
     // 무료체험 소진 + 미결제 → 강제 게이트
     document.body.style.pointerEvents = 'none';
-    document.body.style.filter = 'blur(4px)';
+    
     showLockedGate();
   }
 
@@ -320,7 +320,7 @@ function renderTrialBadge(containerId) {
             try {
               if (typeof isAdmin === 'function' && isAdmin()) return;
               document.body.style.pointerEvents = 'none';
-              document.body.style.filter = 'blur(4px)';
+              
               showTierGate(serverPlan);
             } catch(e) {}
           };
@@ -340,7 +340,7 @@ function renderTrialBadge(containerId) {
               var td = getTrialData();
               if ((td.used || 0) < FREE_TRIAL_MAX) return; // 무료체험 카운트 남으면 사용 허용
               document.body.style.pointerEvents = 'none';
-              document.body.style.filter = 'blur(4px)';
+              
               showLockedGate();
             } catch(e) {}
           };
@@ -411,7 +411,7 @@ function renderTrialBadge(containerId) {
         var _tierGateNow = function(){
           try {
             document.body.style.pointerEvents = 'none';
-            document.body.style.filter = 'blur(4px)';
+            
             showTierGate(cachedPlan);
           } catch(e) {}
         };
@@ -453,7 +453,7 @@ function renderTrialBadge(containerId) {
               var d = getTrialData(); d.subscribed = true; saveTrialData(d);
               // 플랜 티어 부족: 결제는 됐지만 이 페이지는 더 높은 플랜 필요 → tier gate
               if (!_planMeets(serverPlan)) {
-                var _tierGate = function(){ try{ document.body.style.pointerEvents='none'; document.body.style.filter='blur(4px)'; showTierGate(serverPlan); }catch(e){} };
+                var _tierGate = function(){ try{ document.body.style.pointerEvents='none';  showTierGate(serverPlan); }catch(e){} };
                 if (document.body) _tierGate();
                 else document.addEventListener('DOMContentLoaded', _tierGate);
                 return;

@@ -563,6 +563,21 @@ async function endSession(){
       '<button onclick="startSmalltalk()" style="padding:10px 22px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:22px;font-family:inherit;font-size:0.84rem;font-weight:700;cursor:pointer;">🔄 더 연습하기</button>'+
       '<a href="'+BACK_URL+'" style="color:var(--gold);font-size:0.82rem;">← 커리큘럼으로</a>'+
       '</div>';
+    // ★ 연습 기록 supabase practice_records 저장 → 마이페이지 반영 (fire-and-forget)
+    try{
+      var _scMatch=fbText.match(/점수[:\s]*(\d+)/);
+      var _parsedScore=_scMatch?parseInt(_scMatch[1],10):null;
+      if(typeof savePracticeRecord==='function'){
+        savePracticeRecord({
+          airline:'',
+          stage:'CV Drop 스몰톡',
+          question:'CV Drop 자기소개 스몰톡 ('+(faceStats.totalFrames||0)+'프레임)',
+          answer:userAnswers,
+          score:_parsedScore,
+          feedback:fbText+(smilePct?'\n\n[미소 점수 '+smilePct+'%]':'')
+        });
+      }
+    }catch(e){console.warn('[smalltalk] practice_records save failed:',e);}
   }catch(e){
     console.error('[smalltalk feedback fetch failed]',e);
     var msg=e&&e.name==='AbortError'?'(timeout)':'('+((e&&e.message)||'unknown')+')';

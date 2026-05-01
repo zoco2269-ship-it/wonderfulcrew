@@ -263,6 +263,22 @@ async function forceActivate(action){
     <button class="btn-sm navy" onclick="loadLiveApplications()">신청자 불러오기</button>
     <div id="live-apps-list" style="margin-top:14px;"></div>
   </div>
+
+  <div class="card" style="margin-top:24px;border-left:4px solid #C9A84C;">
+    <h3>📱 SNS 마케팅 자동화 — 콘텐츠 큐</h3>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:12px;">
+      Claude 가 자동 생성한 SNS 콘텐츠 (Threads / Facebook / Instagram / X 발행 대기). 매일 04:00 자동 생성 + 매 2시간 자동 발행.<br>
+      <span style="color:#C9A84C;">⚠ Supabase 에 sns_content_queue 테이블 필요. Meta·X 토큰 환경변수 등록 시 실제 발행 작동.</span>
+    </p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+      <button class="btn-sm navy" onclick="snsLoadQueue()">큐 새로고침</button>
+      <button class="btn-sm navy" onclick="snsGenerate(5)" style="background:#C9A84C;">지금 5개 생성</button>
+      <button class="btn-sm navy" onclick="snsGenerate(20)" style="background:#C9A84C;">20개 생성</button>
+      <button class="btn-sm navy" onclick="snsPreviewCard(0,'외항사 면접 첫인상의 비밀','coach')" style="background:#1A2340;">카드 디자인 미리보기</button>
+    </div>
+    <div id="sns-action-result" style="font-size:0.86rem;margin-bottom:14px;padding:8px 12px;background:#FAF7F0;border-radius:6px;min-height:36px;color:#5A5048;">대기 중...</div>
+    <div id="sns-queue-list" style="margin-top:14px;max-height:600px;overflow-y:auto;"></div>
+  </div>
 </div>
 
 <!-- 사용 통계 -->
@@ -863,6 +879,69 @@ function sendEmail(){
   });
   result.innerHTML='✅ '+sent+'명에게 이메일 발송 시도 완료. (브라우저 mailto 사용)<br><span style="font-size:0.78rem;color:var(--text-muted);">대량 발송은 EmailJS 또는 서버 API 연동 후 자동화됩니다.</span>';
 }
+
+// ────────── SNS 콘텐츠 큐 관리 ──────────
+async function snsLoadQueue(){
+  var box=document.getElementById('sns-queue-list');
+  box.innerHTML='<div style="padding:14px;color:#888;">불러오는 중...</div>';
+  try{
+    var sb=getSupabase();
+    if(!sb){box.innerHTML='<div style="color:#C66060;padding:14px;">Supabase 연결 실패</div>';return;}
+    var {data,error}=await sb.from('sns_content_queue').select('*').order('created_at',{ascending:false}).limit(20);
+    if(error){box.innerHTML='<div style="color:#C66060;padding:14px;">에러: '+error.message+'<br><br>SQL 실행 필요:<pre style="font-size:0.7rem;background:#f5f5f5;padding:10px;margin-top:6px;">create table if not exists sns_content_queue (id bigserial primary key, text text not null, title_short text, hashtags text, topic text, persona text, lang text default \'ko\', status text default \'pending\', posted_at timestamptz, result jsonb, created_at timestamptz default now());</pre></div>';return;}
+    if(!data||!data.length){box.innerHTML='<div style="padding:14px;color:#888;">큐가 비어있습니다. 우측 "지금 5개 생성" 버튼을 눌러주세요.</div>';return;}
+    var rows=data.map(function(r){
+      var statusBadge='<span style="padding:2px 8px;border-radius:8px;font-size:0.7rem;font-weight:700;background:'+(r.status==='posted'?'#E8F5E9;color:#2E7D32':r.status==='failed'?'#FCE7E7;color:#C62828':'#FFF3DC;color:#8A6D1A')+'">'+r.status+'</span>';
+      var personaLabel={'coach':'코치','mentor':'멘토','success':'합격생','data':'데이터'}[r.persona]||r.persona;
+      var preview=(r.text||'').substring(0,180).replace(/</g,'&lt;');
+      return '<div style="background:#fff;border:1px solid #F5E9C8;border-left:3px solid '+(r.status==='posted'?'#2E7D32':r.status==='failed'?'#C62828':'#C9A84C')+';padding:14px 16px;margin-bottom:10px;border-radius:6px;">'+
+        '<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">'+statusBadge+'<span style="font-size:0.74rem;color:#888;">#'+r.id+' · '+personaLabel+' · '+r.lang+'</span><span style="font-size:0.7rem;color:#aaa;margin-left:auto;">'+(r.created_at||'').substring(0,16).replace('T',' ')+'</span></div>'+
+        '<div style="font-size:0.78rem;color:#666;margin-bottom:6px;font-weight:600;">📌 '+(r.topic||'')+'</div>'+
+        '<div style="font-size:0.86rem;color:#333;line-height:1.6;white-space:pre-wrap;">'+preview+(r.text&&r.text.length>180?'...':'')+'</div>'+
+        '<div style="font-size:0.72rem;color:#C9A84C;margin-top:6px;">'+(r.hashtags||'')+'</div>'+
+        '<div style="display:flex;gap:6px;margin-top:10px;">'+
+          (r.status==='pending'?'<button onclick="snsPublishNow('+r.id+')" style="padding:5px 14px;background:#2E7D32;color:#fff;border:none;border-radius:14px;font-size:0.74rem;font-weight:600;cursor:pointer;">즉시 발행</button>':'')+
+          '<button onclick="snsPreviewCard('+r.id+',\''+(r.title_short||'').replace(/\'/g,'')+'\',\''+r.persona+'\')" style="padding:5px 14px;background:#1A2340;color:#fff;border:none;border-radius:14px;font-size:0.74rem;font-weight:600;cursor:pointer;">카드 미리보기</button>'+
+          '<button onclick="snsDelete('+r.id+')" style="padding:5px 14px;background:#fff;color:#C66060;border:1px solid #C66060;border-radius:14px;font-size:0.74rem;font-weight:600;cursor:pointer;">삭제</button>'+
+        '</div></div>';
+    }).join('');
+    box.innerHTML=rows;
+  }catch(e){box.innerHTML='<div style="color:#C66060;padding:14px;">에러: '+e.message+'</div>';}
+}
+async function snsGenerate(count){
+  var box=document.getElementById('sns-action-result');
+  box.innerHTML='<span style="color:#C9A84C;">⏳ Claude 가 '+count+'개 콘텐츠 생성 중... (10~30초 소요)</span>';
+  var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+  try{
+    var r=await fetch('/api/generate-sns-content?count='+count+'&adminEmail='+encodeURIComponent(u.email||''));
+    var d=await r.json();
+    if(d.ok){box.innerHTML='✅ '+d.generated_count+'개 생성 완료. 에러 '+d.error_count+'개.';snsLoadQueue();}
+    else box.innerHTML='❌ 실패: '+(d.error||JSON.stringify(d).substring(0,200));
+  }catch(e){box.innerHTML='❌ 에러: '+e.message;}
+}
+async function snsPublishNow(id){
+  if(!confirm('이 콘텐츠를 지금 SNS 에 발행할까요?\n(환경변수 토큰 등록된 채널만 실제 발행)')) return;
+  var box=document.getElementById('sns-action-result');
+  box.innerHTML='<span style="color:#C9A84C;">⏳ 발행 중...</span>';
+  var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+  try{
+    var r=await fetch('/api/sns-publish?adminEmail='+encodeURIComponent(u.email||''),{method:'POST'});
+    var d=await r.json();
+    box.innerHTML='✅ '+JSON.stringify(d.results||d).substring(0,400);
+    snsLoadQueue();
+  }catch(e){box.innerHTML='❌ 에러: '+e.message;}
+}
+function snsPreviewCard(id,title,persona){
+  var subtitle={'coach':'7년차 에미레이트 출신 코치','mentor':'13년 경력 면접 멘토','success':'합격생 후기','data':'데이터 인사이트'}[persona]||'원더풀크루';
+  var url='/api/og-card?title='+encodeURIComponent(title)+'&subtitle='+encodeURIComponent(subtitle);
+  window.open(url,'_blank','width=600,height=600');
+}
+async function snsDelete(id){
+  if(!confirm('정말 삭제할까요?')) return;
+  try{var sb=getSupabase();await sb.from('sns_content_queue').delete().eq('id',id);snsLoadQueue();}catch(e){alert('에러: '+e.message);}
+}
+// admin 로드 시 자동
+setTimeout(function(){if(typeof snsLoadQueue==='function')snsLoadQueue();},1500);
 </script>
 </body>
 </html>

@@ -194,6 +194,49 @@ async function generateFeedback(){
     fb.innerHTML='피드백 생성 실패. 다시 시도해주세요.';
   }
 }
+
+// ★ practice_records save - AI 피드백 응답 후 자동 저장 (fire-and-forget)
+(function(){
+  if(typeof window==='undefined')return;
+  if(window.__wcAutoSaveInstalled)return;
+  window.__wcAutoSaveInstalled=true;
+  var _origFetch=window.fetch.bind(window);
+  var _lastUserText='';
+  // input/textarea 변경시 마지막 사용자 입력 추적
+  document.addEventListener('input',function(e){
+    var t=e.target;if(t&&(t.tagName==='TEXTAREA'||t.tagName==='INPUT')){var v=t.value||'';if(v.length>5)_lastUserText=v;}
+  },true);
+  window.fetch=function(url,opts){
+    var u=(typeof url==='string')?url:(url&&url.url);
+    var p=_origFetch(url,opts);
+    if(u&&u.indexOf('/api/ai')!==-1&&opts&&opts.method==='POST'){
+      // 사용자 답변 — fetch body 의 messages 마지막 user content
+      var ua='';try{var b=JSON.parse(opts.body||'{}');if(b.messages){for(var i=b.messages.length-1;i>=0;i--){if(b.messages[i].role==='user'){ua=String(b.messages[i].content||'').slice(0,2000);break;}}}}catch(e){}
+      if(!ua)ua=_lastUserText.slice(0,2000);
+      p.then(function(r){return r.clone().json().catch(function(){return null;});}).then(function(d){
+        try{
+          var fbText='';
+          if(d&&d.content&&d.content[0]&&d.content[0].text)fbText=d.content[0].text;
+          else if(d&&d.feedback)fbText=d.feedback;
+          if(!fbText||fbText.length<10)return;
+          var sm=fbText.match(/점수[:\s]*(\d+)/);
+          var score=sm?parseInt(sm[1],10):null;
+          if(typeof savePracticeRecord==='function'){
+            savePracticeRecord({
+              airline:'',
+              stage:"이미지 메이킹",
+              question:"이미지 메이킹" + ' 연습',
+              answer:ua,
+              score:score,
+              feedback:fbText.slice(0,1000)
+            });
+          }
+        }catch(e){console.warn('[wc auto-save] failed:',e);}
+      }).catch(function(){});
+    }
+    return p;
+  };
+})();
 </script>
 <section class="seo-tips" style="background:#fff;padding:40px 5%;border-top:1px solid #F5E9C8;">
   <details style="max-width:900px;margin:0 auto;background:#FAF7F0;border:1px solid #F5E9C8;border-radius:14px;padding:22px 28px;">

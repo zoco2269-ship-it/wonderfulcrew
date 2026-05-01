@@ -267,6 +267,17 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <div style="text-align:center;margin-top:14px;font-size:0.78rem;color:var(--text-muted);">학습 기록은 연습할수록 자동으로 업데이트됩니다.</div>
 </div>
 
+<!-- 사용량 미니 카드 (작게, 하단) -->
+<div id="usage-mini" style="margin-top:18px;padding:14px 18px;background:#fff;border:1px solid var(--gold-pale);border-radius:10px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;font-size:0.84rem;">
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+    <span style="color:var(--text-muted);">📊 사용량</span>
+    <span id="usage-plan" style="color:var(--navy);font-weight:600;">로딩 중…</span>
+    <span id="usage-trial" style="color:var(--text-mid);"></span>
+    <span id="usage-expires" style="color:var(--text-muted);font-size:0.78rem;"></span>
+  </div>
+  <a id="usage-cta" href="plans.html" style="font-size:0.78rem;color:var(--gold);font-weight:600;">요금제 보기 →</a>
+</div>
+
 </div></section>
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">사업자등록번호 : 441-87-03214 | 통신판매업번호 : 제 2024-서울마포-3057 호</span></footer>
 
@@ -607,5 +618,55 @@ async function requestAutoRefund(){
   <button onclick="if(confirm('로그아웃 하시겠습니까?')){localStorage.removeItem('wc_user');localStorage.removeItem('wc_paid');if(typeof signOut==='function')signOut();else location.href='index.html';}" style="padding:10px 24px;background:none;border:1.5px solid #888;border-radius:20px;color:#444;font-size:0.86rem;font-weight:600;cursor:pointer;font-family:inherit;">로그아웃</button>
   <div style="margin-top:14px;"><a href="cancel.html" style="font-size:0.84rem;color:#5A5048;font-weight:600;text-decoration:underline;text-underline-offset:3px;">구독 관리 →</a></div>
 </div>
+<script>
+// 사용량 미니 카드 채우기 — 무료체험 잔여 + 구독 플랜 + 만료일
+(function(){
+  function fillUsage(){
+    try {
+      var planLabel = { basic:'베이직', elite:'엘리트', premium:'프리미엄' };
+      var paid = localStorage.getItem('wc_paid')==='true';
+      var plan = (localStorage.getItem('wc_plan')||'basic').toLowerCase();
+      var trialData = JSON.parse(localStorage.getItem('wc_free_trial')||'{}');
+      var trialUsed = trialData.used || 0;
+      var trialMax = 10;
+      var trialLeft = Math.max(0, trialMax - trialUsed);
+      var subscribed = trialData.subscribed===true;
+
+      var $plan = document.getElementById('usage-plan');
+      var $trial = document.getElementById('usage-trial');
+      var $exp = document.getElementById('usage-expires');
+      var $cta = document.getElementById('usage-cta');
+      if (!$plan) return;
+
+      if (paid || subscribed) {
+        $plan.innerHTML = '<span style="color:#C9A84C;">' + (planLabel[plan]||'결제') + ' 플랜</span> 사용 중';
+        $trial.textContent = '연습 무제한';
+        $cta.textContent = '플랜 변경 →';
+        // 만료일 (있으면)
+        var expIso = localStorage.getItem('wc_subscription_expires');
+        if (expIso) {
+          var d = new Date(expIso);
+          if (!isNaN(d.getTime())) {
+            $exp.textContent = '만료 ' + d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0');
+          }
+        }
+      } else {
+        $plan.textContent = '무료 체험';
+        if (trialLeft > 0) {
+          $trial.innerHTML = '연습 <b style="color:#C9A84C;">' + trialLeft + '회</b> 남음 (' + trialUsed + '/' + trialMax + ' 사용)';
+        } else {
+          $trial.innerHTML = '<b style="color:#C62828;">무료체험 종료</b>';
+        }
+        $cta.textContent = '요금제 보기 →';
+      }
+    } catch(e) { console.warn('[usage-mini]', e); }
+  }
+  // DOM ready 또는 즉시 실행
+  if (document.readyState !== 'loading') fillUsage();
+  else document.addEventListener('DOMContentLoaded', fillUsage);
+  // 1.5초 후 server sync 끝났을 때 다시 한 번
+  setTimeout(fillUsage, 1800);
+})();
+</script>
 </body>
 </html>

@@ -98,6 +98,17 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   .ctrl-btn{padding:11px 18px!important;font-size:0.9rem!important;}
 }
 
+
+/* ★ practice 페이지 스크롤 fix - body scrollable + .session.active 만 fixed (카메라 fix + SEO 노출) */
+body{height:auto!important;min-height:100vh!important;overflow-y:auto!important;overflow-x:hidden!important;}
+.session.active{position:fixed!important;top:56px!important;left:0!important;right:0!important;bottom:0!important;z-index:50;background:var(--navy-dark,#111B2E);}
+.seo-tips{background:#fff!important;color:#1A1A1A!important;}
+.seo-tips details{color:#4A4438!important;}
+.seo-tips summary{color:#1A2340!important;}
+@media(max-width:768px){
+  body{min-height:100dvh!important;}
+  .session.active{top:56px!important;bottom:0!important;}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js?v=5"></script>

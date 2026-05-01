@@ -20,12 +20,26 @@
     },
     "api/reconcile-subscriptions.js": {
       "maxDuration": 60
+    },
+    "api/generate-sns-content.js": {
+      "maxDuration": 60
+    },
+    "api/sns-publish.js": {
+      "maxDuration": 60
     }
   },
   "crons": [
     {
       "path": "/api/reconcile-subscriptions",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/generate-sns-content?count=10",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/sns-publish",
+      "schedule": "0 */2 * * *"
     }
   ]
 }

@@ -272,9 +272,17 @@ async function forceActivate(action){
     </p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
       <button class="btn-sm navy" onclick="snsLoadQueue()">큐 새로고침</button>
-      <button class="btn-sm navy" onclick="snsGenerate(5)" style="background:#C9A84C;">지금 5개 생성</button>
-      <button class="btn-sm navy" onclick="snsGenerate(20)" style="background:#C9A84C;">20개 생성</button>
+      <button class="btn-sm navy" onclick="snsGenerate(5,'thread')" style="background:#C9A84C;">스레드 5개</button>
+      <button class="btn-sm navy" onclick="snsGenerate(5,'tweet')" style="background:#C9A84C;">트윗 5개</button>
+      <button class="btn-sm navy" onclick="snsGenerate(3,'card_series')" style="background:#C9A84C;">카드뉴스 3개</button>
+      <button class="btn-sm navy" onclick="snsGenerate(3,'reel_script')" style="background:#C9A84C;">릴스/쇼츠 3개</button>
+      <button class="btn-sm navy" onclick="snsGenerate(20,'thread')" style="background:#1A2340;">대량 20개</button>
       <button class="btn-sm navy" onclick="snsPreviewCard(0,'외항사 면접 첫인상의 비밀','coach')" style="background:#1A2340;">카드 디자인 미리보기</button>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:#FAF7F0;border-radius:6px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+      <span style="font-size:0.78rem;color:#888;">📣 마케팅 자동화:</span>
+      <button class="btn-sm navy" onclick="runMarketingPush()" style="background:#2E7D32;">📲 푸시 캠페인 즉시 실행</button>
+      <button class="btn-sm navy" onclick="runSeoPing()" style="background:#1A2340;">🔍 SEO ping (검색엔진 알림)</button>
     </div>
     <div id="sns-action-result" style="font-size:0.86rem;margin-bottom:14px;padding:8px 12px;background:#FAF7F0;border-radius:6px;min-height:36px;color:#5A5048;">대기 중...</div>
     <div id="sns-queue-list" style="margin-top:14px;max-height:600px;overflow-y:auto;"></div>
@@ -908,15 +916,39 @@ async function snsLoadQueue(){
     box.innerHTML=rows;
   }catch(e){box.innerHTML='<div style="color:#C66060;padding:14px;">에러: '+e.message+'</div>';}
 }
-async function snsGenerate(count){
+async function snsGenerate(count,format){
+  format=format||'thread';
   var box=document.getElementById('sns-action-result');
-  box.innerHTML='<span style="color:#C9A84C;">⏳ Claude 가 '+count+'개 콘텐츠 생성 중... (10~30초 소요)</span>';
+  box.innerHTML='<span style="color:#C9A84C;">⏳ Claude 가 '+format+' 형식 '+count+'개 생성 중... (10~30초 소요)</span>';
   var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
   try{
-    var r=await fetch('/api/generate-sns-content?count='+count+'&adminEmail='+encodeURIComponent(u.email||''));
+    var r=await fetch('/api/generate-sns-content?count='+count+'&format='+format+'&adminEmail='+encodeURIComponent(u.email||''));
     var d=await r.json();
-    if(d.ok){box.innerHTML='✅ '+d.generated_count+'개 생성 완료. 에러 '+d.error_count+'개.';snsLoadQueue();}
+    if(d.ok){box.innerHTML='✅ '+format+' '+d.generated_count+'개 생성 완료. 에러 '+d.error_count+'개.';snsLoadQueue();}
     else box.innerHTML='❌ 실패: '+(d.error||JSON.stringify(d).substring(0,200));
+  }catch(e){box.innerHTML='❌ 에러: '+e.message;}
+}
+async function runMarketingPush(){
+  if(!confirm('마케팅 푸시 캠페인 3종 즉시 발송할까요?\n\n1. 무료체험 거의 끝난 사용자 → 결제 유도\n2. 구독 만료 7일 전 → 갱신 안내\n3. 비활성 7일 사용자 → 재참여 유도')) return;
+  var box=document.getElementById('sns-action-result');
+  box.innerHTML='<span style="color:#C9A84C;">⏳ 푸시 발송 중...</span>';
+  var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+  try{
+    var r=await fetch('/api/marketing-push-cron?adminEmail='+encodeURIComponent(u.email||''));
+    var d=await r.json();
+    var lines=(d.campaigns||[]).map(function(c){return '• '+c.name+': '+c.target_count+'명 타겟, '+c.sent+'명 발송 (실패 '+c.failed+')';}).join('<br>');
+    box.innerHTML='✅ 캠페인 실행 완료<br>'+lines;
+  }catch(e){box.innerHTML='❌ 에러: '+e.message;}
+}
+async function runSeoPing(){
+  var box=document.getElementById('sns-action-result');
+  box.innerHTML='<span style="color:#C9A84C;">⏳ 검색엔진 ping 중...</span>';
+  var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+  try{
+    var r=await fetch('/api/seo-ping?adminEmail='+encodeURIComponent(u.email||''));
+    var d=await r.json();
+    var lines=(d.results||[]).map(function(s){return '• '+s.name+': '+(s.ok?'✓ '+s.status:'✗ '+(s.error||s.status));}).join('<br>');
+    box.innerHTML='✅ ping 완료<br>'+lines;
   }catch(e){box.innerHTML='❌ 에러: '+e.message;}
 }
 async function snsPublishNow(id){

@@ -26,6 +26,12 @@
     },
     "api/sns-publish.js": {
       "maxDuration": 60
+    },
+    "api/marketing-push-cron.js": {
+      "maxDuration": 60
+    },
+    "api/seo-ping.js": {
+      "maxDuration": 30
     }
   },
   "crons": [
@@ -40,6 +46,14 @@
     {
       "path": "/api/sns-publish",
       "schedule": "0 */2 * * *"
+    },
+    {
+      "path": "/api/marketing-push-cron",
+      "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/seo-ping",
+      "schedule": "0 5 * * *"
     }
   ]
 }

@@ -73,6 +73,14 @@ module.exports = async function handler(req, res) {
 
   const count = parseInt((req.body && req.body.count) || (req.query && req.query.count) || '5', 10);
   const lang = (req.body && req.body.lang) || (req.query && req.query.lang) || 'ko'; // ko or en
+  const format = (req.body && req.body.format) || (req.query && req.query.format) || 'thread'; // thread | tweet | card_series | reel_script
+  const FORMAT_SPECS = {
+    thread:       { name: 'Threads/Facebook', maxLen: 500, structure: '후킹 첫줄 + 본문 3~5줄 + 링크 + 해시태그' },
+    tweet:        { name: 'X/Twitter',         maxLen: 240, structure: '강한 후킹 + 핵심 1줄 + 링크 + 해시태그 (한 트윗)' },
+    card_series:  { name: '인스타 카드뉴스 5장', maxLen: 800, structure: '5장 슬라이드 (각 슬라이드 1줄 큰 제목 + 1~2줄 본문). JSON 의 text 안에 [SLIDE 1], [SLIDE 2]... 마커로 분리' },
+    reel_script:  { name: '인스타 릴스/유튜브 쇼츠 30초 스크립트', maxLen: 600, structure: '0~3초 후킹 + 4~25초 본문 + 26~30초 CTA. 시각·자막·말투 가이드 포함' }
+  };
+  const spec = FORMAT_SPECS[format] || FORMAT_SPECS.thread;
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY missing' });
 
@@ -94,17 +102,21 @@ module.exports = async function handler(req, res) {
         : `너는 한국 외항사·국내항공사 승무원 면접 전문 코치다. 페르소나: ${persona.name}. 톤: ${persona.voice}. 출력은 반드시 STRICT JSON.`;
 
       const userPrompt = lang === 'en'
-        ? `Write 1 SNS post about: "${topic}". Hook word: "${hook}". 280 chars max. Include emoji. End with: "👉 Try free AI mock interview: wonderfulcrew.com"
+        ? `Format: ${spec.name}. Max length: ${spec.maxLen} chars. Structure: ${spec.structure}.
+Topic: "${topic}". Hook word: "${hook}". Include emoji. End with: "👉 Try free AI mock interview: wonderfulcrew.com"
 
 JSON only:
 {"text":"...","title_short":"...","hashtags":["..."]}`
-        : `주제: "${topic}". 후킹 단어: "${hook}". 280자 이내 SNS 글. 이모지 포함. 끝에: "👉 무료 AI 모의면접: wonderfulcrew.com"
+        : `포맷: ${spec.name}. 최대 길이: ${spec.maxLen}자. 구조: ${spec.structure}
+주제: "${topic}". 후킹 단어: "${hook}". 이모지 포함. 끝에: "👉 무료 AI 모의면접: wonderfulcrew.com"
 
 규칙:
-- 첫 줄 후킹 (이모지 + 충격 멘트)
-- 본문 3~5줄 핵심 가치
+- 외운 티 안 나는 자연스러운 톤
+- 면접관/합격생 시각의 인사이트 (뻔한 정보 X)
 - 끝에 wonderfulcrew.com 링크
 - 해시태그 4-6개 (#승무원 #외항사 등)
+${format === 'card_series' ? '- 카드 5장: [SLIDE 1] ~ [SLIDE 5] 마커로 구분. 각 슬라이드 1줄 굵은 제목 + 1~2줄 본문' : ''}
+${format === 'reel_script' ? '- 30초 쇼츠 스크립트: 시간 마커 + 멘트 + (시각 가이드)' : ''}
 
 JSON 만:
 {"text":"...","title_short":"카드뉴스용 짧은 제목 20자","hashtags":["승무원","외항사"]}`;
@@ -134,10 +146,11 @@ JSON 만:
       const record = {
         text: parsed.text || '',
         title_short: parsed.title_short || topic.slice(0, 30),
-        hashtags: Array.isArray(parsed.hashtags) ? parsed.hashtags.join(' ') : '',
+        hashtags: Array.isArray(parsed.hashtags) ? parsed.hashtags.map(h => h.startsWith('#') ? h : '#' + h).join(' ') : '',
         topic: topic,
         persona: persona.id,
         lang: lang,
+        format: format,
         status: 'pending',
         created_at: new Date().toISOString(),
       };

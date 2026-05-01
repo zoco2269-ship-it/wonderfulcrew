@@ -903,12 +903,12 @@ async function snsLoadQueue(){
     var rows=data.map(function(r){
       var statusBadge='<span style="padding:2px 8px;border-radius:8px;font-size:0.7rem;font-weight:700;background:'+(r.status==='posted'?'#E8F5E9;color:#2E7D32':r.status==='failed'?'#FCE7E7;color:#C62828':'#FFF3DC;color:#8A6D1A')+'">'+r.status+'</span>';
       var personaLabel={'coach':'코치','mentor':'멘토','success':'합격생','data':'데이터'}[r.persona]||r.persona;
-      var preview=(r.text||'').substring(0,180).replace(/</g,'&lt;');
+      var fullText=(r.text||'').replace(/</g,'&lt;');
       return '<div style="background:#fff;border:1px solid #F5E9C8;border-left:3px solid '+(r.status==='posted'?'#2E7D32':r.status==='failed'?'#C62828':'#C9A84C')+';padding:14px 16px;margin-bottom:10px;border-radius:6px;">'+
         '<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">'+statusBadge+'<span style="font-size:0.74rem;color:#888;">#'+r.id+' · '+personaLabel+' · '+r.lang+'</span><span style="font-size:0.7rem;color:#aaa;margin-left:auto;">'+(r.created_at||'').substring(0,16).replace('T',' ')+'</span></div>'+
         '<div style="font-size:0.78rem;color:#666;margin-bottom:6px;font-weight:600;">📌 '+(r.topic||'')+'</div>'+
-        '<div style="font-size:0.86rem;color:#333;line-height:1.6;white-space:pre-wrap;">'+preview+(r.text&&r.text.length>180?'...':'')+'</div>'+
-        '<div style="font-size:0.72rem;color:#C9A84C;margin-top:6px;">'+(r.hashtags||'')+'</div>'+
+        '<div style="font-size:0.86rem;color:#333;line-height:1.65;white-space:pre-wrap;background:#FAF7F0;padding:12px 14px;border-radius:6px;border:1px solid #F5E9C8;">'+fullText+'</div>'+
+        '<div style="font-size:0.74rem;color:#C9A84C;margin-top:8px;">'+(r.hashtags||'')+'</div>'+
         '<div style="display:flex;gap:6px;margin-top:10px;">'+
           (r.status==='pending'?'<button onclick="snsPublishNow('+r.id+')" style="padding:5px 14px;background:#2E7D32;color:#fff;border:none;border-radius:14px;font-size:0.74rem;font-weight:600;cursor:pointer;">즉시 발행</button>':'')+
           '<button onclick="snsPreviewCard('+r.id+',\''+(r.title_short||'').replace(/\'/g,'')+'\',\''+r.persona+'\')" style="padding:5px 14px;background:#1A2340;color:#fff;border:none;border-radius:14px;font-size:0.74rem;font-weight:600;cursor:pointer;">카드 미리보기</button>'+
@@ -979,8 +979,7 @@ async function snsPublishNow(id){
   }catch(e){box.innerHTML='❌ 에러: '+e.message;}
 }
 function snsPreviewCard(id,title,persona){
-  var subtitle={'coach':'7년차 에미레이트 출신 코치','mentor':'13년 경력 면접 멘토','success':'합격생 후기','data':'데이터 인사이트'}[persona]||'원더풀크루';
-  var url='/api/og-card?title='+encodeURIComponent(title)+'&subtitle='+encodeURIComponent(subtitle);
+  var url='/api/og-card?title='+encodeURIComponent(title||'외항사 승무원 합격 가이드')+'&persona='+encodeURIComponent(persona||'coach');
   window.open(url,'_blank','width=600,height=600');
 }
 async function snsDelete(id){

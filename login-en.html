@@ -144,7 +144,7 @@ function showUser(user) {
   document.getElementById('user-name').textContent = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
   document.getElementById('user-email').textContent = user.email || '';
   if (user.user_metadata?.avatar_url) {
-    document.getElementById('user-avatar').innerHTML = '<img src="' + user.user_metadata.avatar_url + '">';
+    document.getElementById('user-avatar').innerHTML = '<img src="' + user.user_metadata.avatar_url + '" alt="User profile image">';
   }
   localStorage.setItem('wc_user', JSON.stringify({ id: user.id, email: user.email, name: user.user_metadata?.full_name }));
   localStorage.setItem('wc_paid', 'true');

@@ -136,6 +136,9 @@ body{background:#FAF7F0;font-family:'Noto Sans KR','Inter','Apple SD Gothic Neo'
 <script src="js/supabase-client.js?v=5"></script>
 <script src="js/auth-gate.js"></script>
 <script src="js/free-trial.js?v=15"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"원더풀크루","item":"https://wonderfulcrew.com/"},{"@type":"ListItem","position":2,"name":"연습"},{"@type":"ListItem","position":3,"name":"AI Chatbot (English)","item":"https://wonderfulcrew.com/chatbot-en"}]}
+</script>
 </head>
 <body>
 <div id="wc-wrap">
@@ -166,7 +169,7 @@ body{background:#FAF7F0;font-family:'Noto Sans KR','Inter','Apple SD Gothic Neo'
   <!-- 채팅 -->
   <div id="wc-chat" style="flex:1;overflow-y:auto;padding:24px 20px;display:flex;flex-direction:column;gap:16px;">
     <div style="text-align:center;padding:20px 0 8px;">
-      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#C5A55A,#D4B96E);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;overflow:hidden;"><img src="images/logo.png" onerror="this.style.display='none'" style="width:72px;height:72px;object-fit:contain;filter:brightness(0) invert(1);"></div>
+      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#C5A55A,#D4B96E);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;overflow:hidden;"><img src="images/logo.png" alt="WonderfulCrew AI Interview Coach Logo" onerror="this.style.display='none'" style="width:72px;height:72px;object-fit:contain;filter:brightness(0) invert(1);"></div>
       <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:700;margin-bottom:8px;color:#C5A55A;letter-spacing:0.02em;">Welcome to WonderfulCrew</h2>
       <p style="color:#8A7E6E;font-size:0.85rem;line-height:1.7;">자기소개서, 면접, 디스커션, 기내 상황 대처까지 도와드려요.</p>
       <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px;" id="wc-qs"></div>

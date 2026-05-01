@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://wonderfulcrew.com/about-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/about"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/about-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/about</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/about"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/about-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/ai-coach-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/ai-coach"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/ai-coach-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/ai-coach</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/ai-coach"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/ai-coach-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/asiana-process</loc>
@@ -41,48 +49,64 @@
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/chatbot"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/chatbot-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/chatbot</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/chatbot"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/chatbot-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/coach-feedback-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/coach-feedback"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/coach-feedback-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/coach-feedback</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/coach-feedback"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/coach-feedback-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/column-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/column"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/column-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/column</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/column"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/column-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/community-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/community"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/community-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/community</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/community"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/community-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/contact</loc>
@@ -101,24 +125,32 @@
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/cruise"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/cruise-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/cruise</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/cruise"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/cruise-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/culture-difference-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/culture-difference"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/culture-difference-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/culture-difference</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/culture-difference"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/culture-difference-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/curriculum-aerok</loc>
@@ -263,24 +295,32 @@
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/customer-service"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/customer-service-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/customer-service</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/customer-service"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/customer-service-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/daily-english-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/daily-english"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/daily-english-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/daily-english</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/daily-english"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/daily-english-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/debate-practice</loc>
@@ -335,12 +375,16 @@
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/english-interview"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/english-interview-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/english-interview</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/english-interview"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/english-interview-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/english-test</loc>
@@ -353,12 +397,16 @@
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/feedback"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/feedback-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/feedback</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/feedback"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/feedback-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/final-interview</loc>
@@ -383,24 +431,32 @@
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/grooming-guide"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/grooming-guide-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/grooming-guide</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/grooming-guide"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/grooming-guide-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/hotel-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/hotel"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/hotel-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/hotel</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/hotel"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/hotel-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/image-practice</loc>
@@ -412,13 +468,16 @@
     <loc>https://wonderfulcrew.com/index-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/index-en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wonderfulcrew.com/"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/inquiry</loc>
@@ -431,12 +490,16 @@
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/interview-guide"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/interview-guide-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/interview-guide</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/interview-guide"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/interview-guide-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/interview-practice</loc>
@@ -449,12 +512,16 @@
     <lastmod>2026-05-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/jobs"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/jobs-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/jobs</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/jobs"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/jobs-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/koreanair-process</loc>
@@ -467,72 +534,96 @@
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/lecture"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/lecture-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/lecture</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/lecture"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/lecture-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/leveltest-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/leveltest"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/leveltest-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/leveltest</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/leveltest"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/leveltest-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/live-booking-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/live-booking"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/live-booking-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/live-booking</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/live-booking"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/live-booking-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/login-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/login"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/login-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/login</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/login"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/login-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/my-progress-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/my-progress"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/my-progress-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/my-progress</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/my-progress"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/my-progress-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/plans-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/plans"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/plans-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/plans</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/plans"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/plans-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/practice-domestic</loc>
@@ -563,12 +654,16 @@
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/pricing"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/pricing-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/pricing</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/pricing"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/pricing-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/privacy</loc>
@@ -587,18 +682,24 @@
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/resume-guide"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/resume-guide-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/resume-guide</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/resume-guide"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/resume-guide-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/roleplay-practice-en</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/roleplay-practice"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/roleplay-practice-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/roleplay-practice-ko</loc>
@@ -611,6 +712,8 @@
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/roleplay-practice"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/roleplay-practice-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/roleplay</loc>
@@ -653,12 +756,16 @@
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/walking-analysis"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/walking-analysis-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/walking-analysis</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/walking-analysis"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/walking-analysis-en"/>
   </url>
   <url>
     <loc>https://wonderfulcrew.com/word-shooting</loc>

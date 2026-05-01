@@ -136,7 +136,7 @@ async function showUser(user) {
   document.getElementById('user-name').textContent = user.user_metadata?.full_name || user.email?.split('@')[0] || '사용자';
   document.getElementById('user-email').textContent = user.email || '';
   if (user.user_metadata?.avatar_url) {
-    document.getElementById('user-avatar').innerHTML = '<img src="' + user.user_metadata.avatar_url + '">';
+    document.getElementById('user-avatar').innerHTML = '<img src="' + user.user_metadata.avatar_url + '" alt="사용자 프로필 이미지">';
   }
   // 다른 계정으로 로그인했으면 이전 사용자 상태 청소 (무료체험·프로필 플래그·테스트모드 등)
   try {

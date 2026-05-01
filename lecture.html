@@ -129,6 +129,9 @@ document.addEventListener('DOMContentLoaded',function(){
   },300);
 });
 </script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"원더풀크루","item":"https://wonderfulcrew.com/"},{"@type":"ListItem","position":2,"name":"학습 자료"},{"@type":"ListItem","position":3,"name":"합격 강의 영상","item":"https://wonderfulcrew.com/lecture"}]}
+</script>
 </head>
 <body>
 <nav>
@@ -227,7 +230,7 @@ LECTURES.forEach(function(ch){
     card.setAttribute('data-url',s.url);
     card.style.cursor='pointer';
     var thumbHtml=s.thumb?
-      '<div class="lec-thumb" style="background:none;"><img src="'+s.thumb+'" style="width:100%;height:100%;object-fit:cover;"><div class="play" style="position:absolute;width:28px;height:28px;font-size:0.7rem;background:rgba(201,168,76,0.7);opacity:0;transition:opacity 0.2s;">▶</div></div>':
+      '<div class="lec-thumb" style="background:none;"><img src="'+s.thumb+'" alt="'+s.title+' 강의 영상 - 원더풀크루" style="width:100%;height:100%;object-fit:cover;"><div class="play" style="position:absolute;width:28px;height:28px;font-size:0.7rem;background:rgba(201,168,76,0.7);opacity:0;transition:opacity 0.2s;">▶</div></div>':
       '<div class="lec-thumb"><div class="num">'+s.num+'</div><div class="play">▶</div></div>';
     card.innerHTML=thumbHtml+
       '<div class="lec-body">'+

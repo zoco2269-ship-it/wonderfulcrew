@@ -91,14 +91,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   .controls{gap:8px;padding:10px 12px env(safe-area-inset-bottom,10px);position:sticky;bottom:0;z-index:10;flex-shrink:0;}
   .ctrl-btn{padding:11px 18px;font-size:0.9rem;}
 }
-/* ★ SEO 콘텐츠 노출 위해 body 스크롤 활성화 — practice 영역은 기존 100vh 유지 */
-body{height:auto!important;min-height:100vh;overflow:visible!important;overflow-x:hidden;}
-.session.active{min-height:calc(100vh - 56px)!important;height:auto!important;}
-@media(max-width:768px){
-  body{height:auto!important;min-height:100dvh;overflow:visible!important;overflow-x:hidden;}
-  .session.active{min-height:calc(100dvh - 56px)!important;height:auto!important;}
-}
-.seo-tips{background:#fff;color:#1A1A1A;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

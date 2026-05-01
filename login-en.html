@@ -68,9 +68,9 @@ nav{display:flex;align-items:center;justify-content:center;padding:0 5%;height:7
         Sign in with Google
       </button>
 
-      <button class="login-btn" onclick="signInWith('kakao')" style="background:#FEE500;border-color:#FEE500;color:#3C1E1E;">
+      <button class="login-btn" disabled style="background:#FEE500;border-color:#FEE500;color:#3C1E1E;opacity:0.5;cursor:not-allowed;">
         <svg viewBox="0 0 24 24" width="22" height="22"><path fill="#3C1E1E" d="M12 3C6.48 3 2 6.36 2 10.44c0 2.6 1.72 4.88 4.33 6.2l-1.1 4.07c-.08.3.26.54.52.37l4.84-3.2c.46.05.93.08 1.41.08 5.52 0 10-3.36 10-7.52S17.52 3 12 3z"/></svg>
-        Sign in with Kakao
+        Sign in with Kakao (Coming soon)
       </button>
 
       <button class="login-btn" onclick="signInWith('naver')" style="background:#03C75A;border-color:#03C75A;color:#fff;">
@@ -156,8 +156,8 @@ async function signInWith(provider) {
     alert('Cannot connect to server. Please check your internet and try again.');
     return;
   }
-  if (provider === 'naver') {
-    alert('Naver login coming soon.\nPlease use Google or Kakao login for now.');
+  if (provider === 'naver' || provider === 'kakao') {
+    alert(provider + ' login coming soon.\nPlease use Google login for now.');
     return;
   }
   try {

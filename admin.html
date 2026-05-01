@@ -894,11 +894,12 @@ async function snsLoadQueue(){
   var box=document.getElementById('sns-queue-list');
   box.innerHTML='<div style="padding:14px;color:#888;">불러오는 중...</div>';
   try{
-    var sb=getSupabase();
-    if(!sb){box.innerHTML='<div style="color:#C66060;padding:14px;">Supabase 연결 실패</div>';return;}
-    var {data,error}=await sb.from('sns_content_queue').select('*').order('created_at',{ascending:false}).limit(20);
-    if(error){box.innerHTML='<div style="color:#C66060;padding:14px;">에러: '+error.message+'<br><br>SQL 실행 필요:<pre style="font-size:0.7rem;background:#f5f5f5;padding:10px;margin-top:6px;">create table if not exists sns_content_queue (id bigserial primary key, text text not null, title_short text, hashtags text, topic text, persona text, lang text default \'ko\', status text default \'pending\', posted_at timestamptz, result jsonb, created_at timestamptz default now());</pre></div>';return;}
-    if(!data||!data.length){box.innerHTML='<div style="padding:14px;color:#888;">큐가 비어있습니다. 우측 "지금 5개 생성" 버튼을 눌러주세요.</div>';return;}
+    var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+    var r=await fetch('/api/sns-queue-list?adminEmail='+encodeURIComponent(u.email||''));
+    var resp=await r.json();
+    if(resp.error){box.innerHTML='<div style="color:#C66060;padding:14px;">에러: '+resp.error+'</div>';return;}
+    var data=resp.items||[];
+    if(!data.length){box.innerHTML='<div style="padding:14px;color:#888;">큐가 비어있습니다. 우측 "스레드 5개" 버튼을 눌러주세요.</div>';return;}
     var rows=data.map(function(r){
       var statusBadge='<span style="padding:2px 8px;border-radius:8px;font-size:0.7rem;font-weight:700;background:'+(r.status==='posted'?'#E8F5E9;color:#2E7D32':r.status==='failed'?'#FCE7E7;color:#C62828':'#FFF3DC;color:#8A6D1A')+'">'+r.status+'</span>';
       var personaLabel={'coach':'코치','mentor':'멘토','success':'합격생','data':'데이터'}[r.persona]||r.persona;
@@ -984,7 +985,11 @@ function snsPreviewCard(id,title,persona){
 }
 async function snsDelete(id){
   if(!confirm('정말 삭제할까요?')) return;
-  try{var sb=getSupabase();await sb.from('sns_content_queue').delete().eq('id',id);snsLoadQueue();}catch(e){alert('에러: '+e.message);}
+  try{
+    var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+    await fetch('/api/sns-queue-list?action=delete&id='+id+'&adminEmail='+encodeURIComponent(u.email||''),{method:'POST'});
+    snsLoadQueue();
+  }catch(e){alert('에러: '+e.message);}
 }
 // admin 로드 시 자동
 setTimeout(function(){if(typeof snsLoadQueue==='function')snsLoadQueue();},1500);

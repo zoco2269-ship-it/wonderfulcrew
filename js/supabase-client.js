@@ -355,7 +355,7 @@ function updateNavLoginBtn() {
   var user = JSON.parse(localStorage.getItem('wc_user') || 'null');
   var loggedIn = !!user;
   var isEn = /-en\.html$/.test(location.pathname) || location.pathname.indexOf('index-en') !== -1;
-  var OUTLINE_STYLE = 'display:inline-flex;align-items:center;padding:6px 12px;border-radius:16px;background:rgba(26,35,64,0.06);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-family:inherit;font-size:0.72rem;font-weight:600;text-decoration:none;';
+  var OUTLINE_STYLE = 'display:inline-flex;align-items:center;padding:6px 14px;border-radius:16px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.72rem;font-weight:700;text-decoration:none;border:none;letter-spacing:0.04em;';
   // nav 내부의 로그인/MY 버튼만 타깃 (본문 inline 링크 제외)
   var btns = document.querySelectorAll('nav a[href="login.html"], nav a[href="login-en.html"], nav a[href="my-progress.html"], nav a[href="my-progress-en.html"]');
   btns.forEach(function(btn) {

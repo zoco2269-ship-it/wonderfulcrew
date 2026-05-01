@@ -97,6 +97,15 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   .controls{flex-wrap:wrap;gap:8px;padding:10px 12px env(safe-area-inset-bottom,10px);}
   .ctrl-btn{padding:11px 18px!important;font-size:0.9rem!important;}
 }
+
+/* ★ SEO 콘텐츠 스크롤 가능 — body height/overflow 오버라이드 (직전 ruleset 보다 늦게 적용되어 우선) */
+body{height:auto!important;min-height:100vh;overflow:visible!important;overflow-x:hidden;}
+.session.active{min-height:calc(100vh - 56px)!important;height:auto!important;}
+@media(max-width:768px){
+  body{height:auto!important;min-height:100dvh;overflow:visible!important;overflow-x:hidden;}
+  .session.active{min-height:calc(100dvh - 56px)!important;height:auto!important;}
+}
+.seo-tips{background:#fff;color:#1A1A1A;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js?v=5"></script>

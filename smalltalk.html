@@ -91,6 +91,14 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
   .controls{gap:8px;padding:10px 12px env(safe-area-inset-bottom,10px);position:sticky;bottom:0;z-index:10;flex-shrink:0;}
   .ctrl-btn{padding:11px 18px;font-size:0.9rem;}
 }
+/* ★ SEO 콘텐츠 노출 위해 body 스크롤 활성화 — practice 영역은 기존 100vh 유지 */
+body{height:auto!important;min-height:100vh;overflow:visible!important;overflow-x:hidden;}
+.session.active{min-height:calc(100vh - 56px)!important;height:auto!important;}
+@media(max-width:768px){
+  body{height:auto!important;min-height:100dvh;overflow:visible!important;overflow-x:hidden;}
+  .session.active{min-height:calc(100dvh - 56px)!important;height:auto!important;}
+}
+.seo-tips{background:#fff;color:#1A1A1A;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -574,7 +582,7 @@ async function endSession(){
   <details style="max-width:900px;margin:0 auto;background:#FAF7F0;border:1px solid #F5E9C8;border-radius:14px;padding:22px 28px;">
     <summary style="cursor:pointer;font-family:'DM Serif Display',serif;font-size:1.2rem;color:#1A2340;font-weight:600;list-style:none;display:flex;align-items:center;gap:10px;"><span style="color:#C9A84C;">✨</span> 원더풀크루가 드리는 CV Drop 스몰톡 합격 팁 <span style="font-size:0.7em;color:#5A5048;font-weight:400;margin-left:auto;">▼ 펼쳐서 읽기</span></summary>
     <div style="margin-top:22px;color:#4A4438;line-height:1.9;font-size:0.94rem;">
-      <p>외항사 승무원 면접의 첫 30초가 합격을 결정합니다. 에미레이트·카타르·싱가폴항공 면접관은 CV Drop 행사장에서 지원자가 다가와 인사하는 그 순간 합격 여부의 70% 를 판단합니다. 단순히 영어를 잘하는 것이 아니라, <b>자연스러운 영어 스몰톡으로 자신감과 서비스 마인드를 동시에 전달</b>하는 능력이 핵심입니다.</p>
+      <p>CV Drop 스몰톡은 면접관과 지원자가 처음 마주하는 30초 남짓의 짧은 영어 회화입니다. 외항사(에미레이트·카타르·싱가폴) 면접관은 이 30초 안에서 지원자의 영어 자연스러움·자신감·서비스 마인드를 동시에 봅니다. <b>외운 티가 나지 않는 자연스러운 첫 인사</b> 가 핵심입니다.</p>
 <h2 style="font-family:'DM Serif Display',serif;font-size:1.15rem;color:#1A2340;margin:24px 0 10px;">면접관이 좋아하는 스몰톡 주제 TOP 5</h2>
 <ol style="margin:8px 0 16px 18px;line-height:1.9;">
   <li><b>날씨와 행사장</b> — "Beautiful weather today, isn't it? How is the event going so far?"</li>
@@ -591,8 +599,8 @@ async function endSession(){
   <li>"I want to be a flight attendant because..." 같은 뻔한 시작</li>
 </ul>
 <h2 style="font-family:'DM Serif Display',serif;font-size:1.15rem;color:#1A2340;margin:24px 0 10px;">합격 답변 예시</h2>
-<p style="background:#fff;padding:16px 20px;border-left:3px solid #C9A84C;border-radius:8px;font-style:italic;">"Good morning, my name is Kate, nice to meet you. How is your day going so far? I love your scarf, by the way — Emirates' uniform is so iconic."</p>
-<p style="margin-top:16px;">위 답변은 인사 → 자연스러운 질문 → 칭찬으로 연결되어 면접관에게 호감을 주는 구조입니다. 30초 안에 끝나고, 외운 티가 안 나며, 자신감 있게 들립니다.</p>
+<p style="background:#fff;padding:16px 20px;border-left:3px solid #C9A84C;border-radius:8px;font-style:italic;">"Good morning, my name is Kate, nice to meet you."</p>
+<p style="margin-top:16px;">짧고 자신감 있게 인사하고 CV 를 건네면, 면접관이 자연스럽게 다음 질문을 시작합니다. 길게 외운 스크립트보다 <b>짧고 진정성 있는 첫 인사</b> 가 외항사 면접관 호감을 얻습니다.</p>
 <h2 style="font-family:'DM Serif Display',serif;font-size:1.15rem;color:#1A2340;margin:24px 0 10px;">함께 보면 좋은 자료</h2>
 <ul style="margin:8px 0 16px 18px;line-height:1.9;">
   <li><a href="english-interview.html" style="color:#C9A84C;font-weight:600;">외항사 영어 면접 전체 가이드 →</a></li>

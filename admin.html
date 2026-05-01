@@ -282,6 +282,7 @@ async function forceActivate(action){
     <div style="margin-top:12px;padding:10px 14px;background:#FAF7F0;border-radius:6px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
       <span style="font-size:0.78rem;color:#888;">📣 마케팅 자동화:</span>
       <button class="btn-sm navy" onclick="runMarketingPush()" style="background:#2E7D32;">📲 푸시 캠페인 즉시 실행</button>
+      <button class="btn-sm navy" onclick="runEmailCampaign()" style="background:#1976D2;">📧 이메일 캠페인 즉시 실행</button>
       <button class="btn-sm navy" onclick="runSeoPing()" style="background:#1A2340;">🔍 SEO ping (검색엔진 알림)</button>
     </div>
     <div id="sns-action-result" style="font-size:0.86rem;margin-bottom:14px;padding:8px 12px;background:#FAF7F0;border-radius:6px;min-height:36px;color:#5A5048;">대기 중...</div>
@@ -949,6 +950,19 @@ async function runSeoPing(){
     var d=await r.json();
     var lines=(d.results||[]).map(function(s){return '• '+s.name+': '+(s.ok?'✓ '+s.status:'✗ '+(s.error||s.status));}).join('<br>');
     box.innerHTML='✅ ping 완료<br>'+lines;
+  }catch(e){box.innerHTML='❌ 에러: '+e.message;}
+}
+async function runEmailCampaign(){
+  if(!confirm('이메일 캠페인 4종 즉시 실행할까요?\n\n1. D+1 환영\n2. D+3 추천 가이드\n3. D+7 결제 유도\n4. 비활성 14일 재참여\n\nResend API 키 미등록 시 에러 표시.')) return;
+  var box=document.getElementById('sns-action-result');
+  box.innerHTML='<span style="color:#C9A84C;">⏳ 이메일 발송 중...</span>';
+  var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+  try{
+    var r=await fetch('/api/email-campaign-cron?adminEmail='+encodeURIComponent(u.email||''));
+    var d=await r.json();
+    if(d.error){box.innerHTML='❌ '+d.error+'<br><span style="font-size:0.78rem;color:#888;">'+(d.setup||'')+'</span>';return;}
+    var lines=(d.summary||[]).map(function(s){return '• '+s.name+': '+s.target+'명 타겟, '+s.sent+'명 발송 (실패 '+s.failed+', skip '+s.skipped+')';}).join('<br>');
+    box.innerHTML='✅ 이메일 캠페인 완료<br>'+lines;
   }catch(e){box.innerHTML='❌ 에러: '+e.message;}
 }
 async function snsPublishNow(id){

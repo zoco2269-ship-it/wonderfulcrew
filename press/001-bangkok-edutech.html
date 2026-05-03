@@ -92,6 +92,9 @@ article.body .contact-card p b{color:var(--navy);}
 .inline-image img{display:block;width:100%;height:auto;}
 .inline-image figcaption{padding:12px 20px 14px;font-size:0.8rem;color:var(--text-muted);background:#fff;border-top:1px solid var(--gold-pale);line-height:1.7;}
 .inline-image figcaption b{color:var(--navy);font-weight:600;}
+.inline-image .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--gold-pale);}
+.inline-image .grid-2 img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:4/3;}
+@media(max-width:600px){.inline-image .grid-2{grid-template-columns:1fr;}.inline-image .grid-2 img{aspect-ratio:auto;}}
 
 .cta-band{background:#fff;border-top:1px solid rgba(201,168,76,0.18);border-bottom:1px solid rgba(201,168,76,0.18);padding:60px 5%;text-align:center;}
 .cta-band .label{font-family:'DM Serif Display',serif;font-size:0.72rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;font-weight:700;}
@@ -205,8 +208,11 @@ footer{background:var(--navy);color:#fff;padding:60px 5% 30px;}
     원더풀크루는 본 KOTRA 방콕 진출에 앞서, 국내 최대 규모의 에듀테크·AI 박람회인 <strong>「소프트웨이브(Softwave)」 코엑스 전시</strong>에 참가해 국내 직업훈련·교육 시장의 관계자들과 적극적으로 교류한 이력을 보유하고 있다. 당시 부스에서는 외항사 면접 AI 코칭 시스템의 실시간 데모와 합격생 데이터 기반의 코칭 사례가 공개되어, 직업훈련 기관·중·고등학교 항공 관련 학과·기업 인사 담당자들로부터 실질적인 도입 문의가 이어졌다.
   </p>
 
-  <figure class="inline-image">
-    <img src="../images/press-coex-softwave.png" alt="원더풀크루 소프트웨이브 코엑스 에듀테크 전시 부스" loading="lazy">
+  <figure class="inline-image inline-image-grid">
+    <div class="grid-2">
+      <img src="../images/press-coex-softwave.png" alt="원더풀크루 소프트웨이브 코엑스 에듀테크 전시 부스 1" loading="lazy">
+      <img src="../images/press-coex-softwave2.jpg" alt="원더풀크루 소프트웨이브 코엑스 전시 부스 2" loading="lazy">
+    </div>
     <figcaption><b>지난 소프트웨이브 코엑스 전시 부스 현장.</b> 외항사 면접 AI 코칭 시스템과 합격생 데이터 기반 코칭 사례를 국내 직업훈련 관계자들에게 공개했다.</figcaption>
   </figure>
   <p>

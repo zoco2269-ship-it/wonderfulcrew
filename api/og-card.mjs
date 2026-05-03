@@ -4,11 +4,82 @@ import { ImageResponse } from '@vercel/og';
 
 export const config = { runtime: 'edge' };
 
-const PERSONA_BG = {
-  coach:   'https://wonderfulcrew.com/images/ceo-profile.jpg',
-  mentor:  'https://wonderfulcrew.com/images/coach-lecture.png',
-  success: 'https://wonderfulcrew.com/images/advisor-emirates.jpg',
-  data:    'https://wonderfulcrew.com/images/advisor-cathay.jpg',
+// 페르소나별 배경 이미지 풀 — 같은 페르소나라도 제목 해시로 매번 다른 사진 사용
+// 풀 안에서 원하는 사진 강제하려면 ?img=별칭 파라미터로 override 가능
+const BASE = 'https://wonderfulcrew.com/images';
+const PERSONA_BG_POOL = {
+  // 7년차 에미레이트 출신 코치 — 대표 본인 + 강의 장면
+  coach: [
+    `${BASE}/ceo-profile.jpg`,
+    `${BASE}/coach-lecture.png`,
+    `${BASE}/lecture1-1.png`,
+    `${BASE}/lecture1-2.png`,
+    `${BASE}/lecture1-3.png`,
+    `${BASE}/lecture-ch7.png`,
+    `${BASE}/img1.jpg`,
+    `${BASE}/img7.jpg`,
+  ],
+  // 13년 경력 면접 멘토 — 인터뷰 코칭·면접관 톤
+  mentor: [
+    `${BASE}/man-interviewer.png`,
+    `${BASE}/woman-interviewer.png`,
+    `${BASE}/lecture2-1.png`,
+    `${BASE}/lecture2-2.png`,
+    `${BASE}/lecture2-3.png`,
+    `${BASE}/lecture2-4.png`,
+    `${BASE}/lecture2-5.png`,
+    `${BASE}/lecture6-1.png`,
+    `${BASE}/lecture6-2.png`,
+    `${BASE}/lecture6-3.png`,
+    `${BASE}/lecture6-4.png`,
+    `${BASE}/img2.jpg`,
+    `${BASE}/img5.jpg`,
+  ],
+  // 합격생 후기 — 어드바이저(에미레이트·카타르·캐세이) + 합격 후 강의 장면
+  success: [
+    `${BASE}/advisor-emirates.jpg`,
+    `${BASE}/advisor-cathay.jpg`,
+    `${BASE}/advisor-qatar.jpg`,
+    `${BASE}/lecture3-1.jpg`,
+    `${BASE}/lecture3-2.jpg`,
+    `${BASE}/lecture3-3.png`,
+    `${BASE}/lecture3-4.png`,
+    `${BASE}/lecture3-5.jpg`,
+    `${BASE}/lecture3-6.png`,
+    `${BASE}/lecture4-1.jpg`,
+    `${BASE}/lecture4-2.jpg`,
+    `${BASE}/lecture4-3.jpg`,
+    `${BASE}/lecture4-4.jpg`,
+    `${BASE}/lecture4-5.jpg`,
+    `${BASE}/img3.jpg`,
+    `${BASE}/img6.jpg`,
+  ],
+  // 데이터 인사이트 — 강의 자료·분석 장면
+  data: [
+    `${BASE}/lecture5-1.jpg`,
+    `${BASE}/lecture5-2.jpg`,
+    `${BASE}/lecture5-3.jpg`,
+    `${BASE}/lecture5-4.jpg`,
+    `${BASE}/lecture7-1.jpg`,
+    `${BASE}/lecture7-2.jpg`,
+    `${BASE}/lecture7-3.jpg`,
+    `${BASE}/lecture7-4.jpg`,
+    `${BASE}/lecture7-5.jpg`,
+    `${BASE}/lecture7-6.jpg`,
+    `${BASE}/lecture7-7.jpg`,
+    `${BASE}/img4.jpg`,
+  ],
+};
+
+// 카드 미리보기에서 특정 사진 강제하고 싶을 때 쓰는 별칭
+const IMG_ALIAS = {
+  'ceo-profile':       `${BASE}/ceo-profile.jpg`,
+  'coach-lecture':     `${BASE}/coach-lecture.png`,
+  'advisor-emirates':  `${BASE}/advisor-emirates.jpg`,
+  'advisor-cathay':    `${BASE}/advisor-cathay.jpg`,
+  'advisor-qatar':     `${BASE}/advisor-qatar.jpg`,
+  'man-interviewer':   `${BASE}/man-interviewer.png`,
+  'woman-interviewer': `${BASE}/woman-interviewer.png`,
 };
 
 const PERSONA_LABEL = {
@@ -18,6 +89,16 @@ const PERSONA_LABEL = {
   data:    '데이터 인사이트',
 };
 
+// 제목 → 풀 인덱스 결정론적 매핑 (같은 제목이면 항상 같은 사진, 다른 제목이면 분산)
+function hashPick(title, len) {
+  let h = 0;
+  for (let i = 0; i < title.length; i++) {
+    h = ((h << 5) - h) + title.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h) % Math.max(1, len);
+}
+
 export default function handler(req) {
   try {
     const url = new URL(req.url);
@@ -25,7 +106,17 @@ export default function handler(req) {
     const personaKey = url.searchParams.get('persona') || 'coach';
     const subtitle = url.searchParams.get('subtitle') || PERSONA_LABEL[personaKey] || '원더풀크루';
     const tag = url.searchParams.get('tag') || 'WONDERFULCREW';
-    const bgUrl = PERSONA_BG[personaKey] || PERSONA_BG.coach;
+    const imgAlias = url.searchParams.get('img');
+
+    // 1순위: ?img=별칭 직접 지정
+    // 2순위: 페르소나 풀에서 제목 해시로 결정론적 선택
+    let bgUrl;
+    if (imgAlias && IMG_ALIAS[imgAlias]) {
+      bgUrl = IMG_ALIAS[imgAlias];
+    } else {
+      const pool = PERSONA_BG_POOL[personaKey] || PERSONA_BG_POOL.coach;
+      bgUrl = pool[hashPick(title, pool.length)];
+    }
 
     return new ImageResponse(
       {

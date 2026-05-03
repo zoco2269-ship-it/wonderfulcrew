@@ -16,6 +16,8 @@ const PERSONA_BG_POOL = {
     `${BASE}/lecture1-2.png`,
     `${BASE}/lecture1-3.png`,
     `${BASE}/lecture-ch7.png`,
+    `${BASE}/img1.jpg`,
+    `${BASE}/img7.jpg`,
   ],
   // 13년 경력 면접 멘토 — 인터뷰 코칭·면접관 톤
   mentor: [
@@ -30,6 +32,8 @@ const PERSONA_BG_POOL = {
     `${BASE}/lecture6-2.png`,
     `${BASE}/lecture6-3.png`,
     `${BASE}/lecture6-4.png`,
+    `${BASE}/img2.jpg`,
+    `${BASE}/img5.jpg`,
   ],
   // 합격생 후기 — 어드바이저(에미레이트·카타르·캐세이) + 합격 후 강의 장면
   success: [
@@ -47,6 +51,8 @@ const PERSONA_BG_POOL = {
     `${BASE}/lecture4-3.jpg`,
     `${BASE}/lecture4-4.jpg`,
     `${BASE}/lecture4-5.jpg`,
+    `${BASE}/img3.jpg`,
+    `${BASE}/img6.jpg`,
   ],
   // 데이터 인사이트 — 강의 자료·분석 장면
   data: [
@@ -61,6 +67,7 @@ const PERSONA_BG_POOL = {
     `${BASE}/lecture7-5.jpg`,
     `${BASE}/lecture7-6.jpg`,
     `${BASE}/lecture7-7.jpg`,
+    `${BASE}/img4.jpg`,
   ],
 };
 

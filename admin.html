@@ -289,10 +289,13 @@ async function forceActivate(action){
     </div>
     <div style="margin-top:12px;padding:10px 14px;background:#FAF7F0;border-radius:6px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
       <span style="font-size:0.78rem;color:#888;">📣 마케팅 자동화:</span>
+      <button class="btn-sm navy" onclick="checkMarketingChannels()" style="background:#6A1B9A;">🩺 채널 토큰 점검</button>
       <button class="btn-sm navy" onclick="runMarketingPush()" style="background:#2E7D32;">📲 푸시 캠페인 즉시 실행</button>
       <button class="btn-sm navy" onclick="runEmailCampaign()" style="background:#1976D2;">📧 이메일 캠페인 즉시 실행</button>
       <button class="btn-sm navy" onclick="runSeoPing()" style="background:#1A2340;">🔍 SEO ping (검색엔진 알림)</button>
+      <button class="btn-sm navy" onclick="snsPublishNow()" style="background:#C9A84C;color:#1A2340;font-weight:700;">▶ SNS 큐 1개 즉시 발행</button>
     </div>
+    <div id="channel-status-panel" style="margin-top:8px;display:none;background:#fff;border:1px solid #F5E9C8;border-radius:6px;padding:14px 16px;font-size:0.84rem;line-height:1.7;"></div>
     <div id="sns-action-result" style="font-size:0.86rem;margin-bottom:14px;padding:8px 12px;background:#FAF7F0;border-radius:6px;min-height:36px;color:#5A5048;">대기 중...</div>
     <div id="sns-queue-list" style="margin-top:14px;max-height:600px;overflow-y:auto;"></div>
   </div>
@@ -937,6 +940,44 @@ async function snsGenerate(count,format){
     if(d.ok){box.innerHTML='✅ '+format+' '+d.generated_count+'개 생성 완료. 에러 '+d.error_count+'개.';snsLoadQueue();}
     else box.innerHTML='❌ 실패: '+(d.error||JSON.stringify(d).substring(0,200));
   }catch(e){box.innerHTML='❌ 에러: '+e.message;}
+}
+async function checkMarketingChannels(){
+  var panel=document.getElementById('channel-status-panel');
+  panel.style.display='block';
+  panel.innerHTML='<span style="color:#C9A84C;">⏳ 환경변수 점검 중...</span>';
+  var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+  try{
+    var r=await fetch('/api/env-check',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({adminEmail:u.email||''})
+    });
+    var d=await r.json();
+    if(d.error){panel.innerHTML='❌ '+d.error;return;}
+    var cs=d.channelStatus||{};
+    var dot=function(b){return b?'<span style="color:#2E7D32;font-size:1.1rem;">●</span>':'<span style="color:#C62828;font-size:1.1rem;">●</span>';};
+    var rows=[
+      ['📧 이메일 (Resend)',     cs.email_resend,  'RESEND_API_KEY'],
+      ['🧵 Threads',              cs.threads,       'THREADS_ACCESS_TOKEN + THREADS_USER_ID'],
+      ['📘 Facebook 페이지',      cs.facebook,      'FB_PAGE_ACCESS_TOKEN + FB_PAGE_ID'],
+      ['📷 Instagram',            cs.instagram,     'IG_ACCESS_TOKEN + IG_USER_ID'],
+      ['🐦 X(Twitter)',           cs.x_twitter,     'X_API_KEY + X_ACCESS_TOKEN (+ Secrets)'],
+      ['📲 웹푸시',               cs.push_webpush,  'VAPID_PUBLIC_KEY + VAPID_PRIVATE_KEY'],
+    ];
+    var ok=rows.filter(function(r){return r[1];}).length;
+    var html='<div style="font-weight:700;color:#1A2340;margin-bottom:10px;">📊 마케팅 채널 활성 상태 — '+ok+'/'+rows.length+' 채널 가동중</div>';
+    html+='<table style="width:100%;border-collapse:collapse;font-size:0.84rem;">';
+    rows.forEach(function(r){
+      html+='<tr style="border-bottom:1px solid #F5E9C8;"><td style="padding:6px 8px;">'+dot(r[1])+' '+r[0]+'</td><td style="padding:6px 8px;color:'+(r[1]?'#2E7D32':'#C62828')+';font-weight:600;">'+(r[1]?'활성':'토큰 없음')+'</td><td style="padding:6px 8px;font-size:0.78rem;color:#888;">'+r[2]+'</td></tr>';
+    });
+    html+='</table>';
+    if(ok<rows.length){
+      html+='<div style="margin-top:12px;padding:10px;background:#FFF8E1;border-left:3px solid #C9A84C;font-size:0.82rem;color:#5A5048;line-height:1.6;">⚠ 미활성 채널은 발행해도 자동으로 skip 됩니다. Vercel → Settings → Environment Variables 에서 키 등록 후 재배포 하세요.</div>';
+    }else{
+      html+='<div style="margin-top:12px;padding:10px;background:#E8F5E9;border-left:3px solid #2E7D32;font-size:0.82rem;color:#1B5E20;">✓ 모든 채널 가동 준비 완료. 즉시 발행해도 안전합니다.</div>';
+    }
+    panel.innerHTML=html;
+  }catch(e){panel.innerHTML='❌ 에러: '+e.message;}
 }
 async function runMarketingPush(){
   if(!confirm('마케팅 푸시 캠페인 3종 즉시 발송할까요?\n\n1. 무료체험 거의 끝난 사용자 → 결제 유도\n2. 구독 만료 7일 전 → 갱신 안내\n3. 비활성 7일 사용자 → 재참여 유도')) return;

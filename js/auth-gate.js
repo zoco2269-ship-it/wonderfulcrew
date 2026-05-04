@@ -21,17 +21,24 @@
   ];
   if (publicPages.indexOf(page) !== -1) return;
 
-  // 프로필 완료 체크 (phone 필수) — 매 페이지마다 서버 진실 기준 1회
+  // 프로필 완료 체크 (phone 필수) — 30분마다 서버 강제 재검증
+  // 이전 사용자가 wc_profile_done=1 캐시를 가지고 있어도 서버 진실로 다시 점검
   async function ensureProfileComplete(userObj){
     if (page === 'profile-setup.html') return; // 프로필 페이지 자체는 통과
     if (ADMIN_EMAILS_GATE.indexOf(userObj.email) !== -1) return; // 어드민 우회
-    if (localStorage.getItem('wc_profile_done') === '1') return; // 로컬 캐시 통과
+
+    // 30분 이내 검증 캐시 통과
+    var lastCheck = parseInt(localStorage.getItem('wc_profile_check_at')||'0',10);
+    var FRESH_MS = 30*60*1000;
+    if (localStorage.getItem('wc_profile_done')==='1' && (Date.now()-lastCheck)<FRESH_MS) return;
+
     try{
       if (typeof getSupabase !== 'function') return;
       var sb = getSupabase();
       if (!sb) return;
       var res = await sb.from('users').select('phone').eq('auth_id', userObj.id).maybeSingle();
-      var hasPhone = !!(res && res.data && res.data.phone && res.data.phone.replace(/\D/g,'').length >= 10);
+      var hasPhone = !!(res && res.data && res.data.phone && String(res.data.phone).replace(/\D/g,'').length >= 10);
+      localStorage.setItem('wc_profile_check_at', String(Date.now()));
       if (hasPhone) {
         localStorage.setItem('wc_profile_done','1');
       } else {

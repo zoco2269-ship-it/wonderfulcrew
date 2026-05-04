@@ -20,19 +20,25 @@ module.exports = async function(req, res) {
 
   try {
     if (scope === 'overview') {
-      const [usersRes, paymentsRes, subsRes] = await Promise.all([
-        sb.from('users').select('id, created_at, plan_active', { count: 'exact' }),
-        sb.from('payments').select('id, amount, created_at, status'),
-        sb.from('subscriptions').select('id, status').eq('status', 'active')
-      ]);
-
       const today = new Date(); today.setHours(0,0,0,0);
       const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      const weekAgo = new Date(today.getTime() - 7*24*60*60*1000);
+
+      const [usersRes, paymentsRes, subsRes, visitsRes] = await Promise.all([
+        sb.from('users').select('id, created_at, plan_active', { count: 'exact' }),
+        sb.from('payments').select('id, amount, created_at, status'),
+        sb.from('subscriptions').select('id, status').eq('status', 'active'),
+        sb.from('page_visits').select('user_id, visited_at').gte('visited_at', weekAgo.toISOString())
+      ]);
 
       const allUsers = usersRes.data || [];
       const allPayments = (paymentsRes.data || []).filter(p => p.status === 'completed');
       const monthPayments = allPayments.filter(p => new Date(p.created_at) >= monthStart);
       const todayUsers = allUsers.filter(u => new Date(u.created_at) >= today);
+      const allVisits = visitsRes.data || [];
+      const todayVisits = allVisits.filter(v => new Date(v.visited_at) >= today);
+      const uniqueVisitorsToday = new Set(todayVisits.map(v => v.user_id)).size;
+      const uniqueVisitorsWeek = new Set(allVisits.map(v => v.user_id)).size;
 
       return res.json({
         ok: true,
@@ -42,7 +48,12 @@ module.exports = async function(req, res) {
         monthRevenue: monthPayments.reduce((s, p) => s + (p.amount || 0), 0),
         activeSubscriptions: (subsRes.data || []).length,
         totalPayments: allPayments.length,
-        allTimeRevenue: allPayments.reduce((s, p) => s + (p.amount || 0), 0)
+        allTimeRevenue: allPayments.reduce((s, p) => s + (p.amount || 0), 0),
+        // 방문자 통계 (page_visits 기반 — 로그인 사용자만)
+        visitsToday: todayVisits.length,
+        visitsWeek: allVisits.length,
+        uniqueVisitorsToday,
+        uniqueVisitorsWeek
       });
     }
 

@@ -101,6 +101,12 @@ textarea{min-height:80px;resize:vertical;}
     <div class="stat-box clickable" onclick="showPage('payments')"><div class="num">-</div><div class="lbl">누적 매출</div></div>
     <div class="stat-box clickable" onclick="showPage('stats')"><div class="num" style="font-size:0.86rem;color:var(--text-muted);line-height:2.4;">실데이터</div><div class="lbl">상태</div></div>
   </div>
+  <div class="stat-grid">
+    <div class="stat-box clickable" onclick="showPage('members')" style="background:linear-gradient(135deg,#fff,rgba(46,125,50,0.05));"><div class="num">-</div><div class="lbl">오늘 방문자 (고유)</div></div>
+    <div class="stat-box clickable" onclick="showPage('members')" style="background:linear-gradient(135deg,#fff,rgba(46,125,50,0.05));"><div class="num">-</div><div class="lbl">오늘 페이지뷰</div></div>
+    <div class="stat-box clickable" onclick="showPage('members')" style="background:linear-gradient(135deg,#fff,rgba(46,125,50,0.05));"><div class="num">-</div><div class="lbl">7일 방문자 (고유)</div></div>
+    <div class="stat-box clickable" onclick="showPage('members')" style="background:linear-gradient(135deg,#fff,rgba(46,125,50,0.05));"><div class="num">-</div><div class="lbl">7일 페이지뷰</div></div>
+  </div>
   <div class="card" style="background:#fff;border-left:4px solid #2E7D32;margin-top:24px;">
     <h3 style="color:#2E7D32;">🚀 론칭 환경변수 체크</h3>
     <p style="font-size:0.86rem;color:var(--text-mid);line-height:1.7;margin-bottom:12px;">
@@ -637,6 +643,13 @@ async function loadOverview(){
     statBoxes[4].textContent=d.activeSubscriptions;
     statBoxes[5].textContent=d.totalPayments+'건';
     statBoxes[6].textContent=_wcFmtRev(d.allTimeRevenue);
+  }
+  // 방문자 통계 (page_visits 기반)
+  if(statBoxes.length>=12){
+    statBoxes[8].textContent=(d.uniqueVisitorsToday||0)+'명';
+    statBoxes[9].textContent=(d.visitsToday||0)+'회';
+    statBoxes[10].textContent=(d.uniqueVisitorsWeek||0)+'명';
+    statBoxes[11].textContent=(d.visitsWeek||0)+'회';
   }
 }
 

@@ -253,12 +253,6 @@ export default function handler(req) {
                         {
                           type: 'div',
                           props: {
-                            style: { width: '32px', height: '2px', background: '#E8C96A' }
-                          }
-                        },
-                        {
-                          type: 'div',
-                          props: {
                             style: {
                               fontSize: '24px',
                               color: '#E8C96A',

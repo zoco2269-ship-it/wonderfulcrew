@@ -13,14 +13,14 @@
 <meta property="og:url" content="https://wonderfulcrew.com/insights/001-platform-intro">
 <meta property="og:title" content="승무원 및 하이엔드 서비스 직업 훈련 플랫폼 — 원더풀크루 소개">
 <meta property="og:description" content="국내·외항사 승무원과 하이엔드 서비스직(호텔·크루즈·럭셔리) 취업을 만드는 AI 직업 훈련 플랫폼. 롤플레이·디스커션·면접 허브를 한 곳에서.">
-<meta property="og:image" content="https://wonderfulcrew.com/api/og-card?title=%EC%8A%B9%EB%AC%B4%EC%9B%90%20%EB%B0%8F%20%ED%95%98%EC%9D%B4%EC%97%94%EB%93%9C%20%EC%84%9C%EB%B9%84%EC%8A%A4%20%EC%A7%81%EC%97%85%20%ED%9B%88%EB%A0%A8%20%ED%94%8C%EB%9E%AB%ED%8F%BC&persona=coach&tag=WONDERFULCREW&subtitle=%ED%94%8C%EB%9E%AB%ED%8F%BC%20%EC%86%8C%EA%B0%9C">
+<meta property="og:image" content="https://wonderfulcrew.com/images/logo.png">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:site_name" content="원더풀크루">
 <meta property="article:published_time" content="2026-05-04T09:00:00+09:00">
 <meta property="article:section" content="인사이트">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":"승무원 및 하이엔드 서비스 직업 훈련 플랫폼 — 원더풀크루 소개","datePublished":"2026-05-04T09:00:00+09:00","dateModified":"2026-05-04T09:00:00+09:00","author":{"@type":"Organization","name":"원더풀크루","url":"https://wonderfulcrew.com"},"publisher":{"@type":"Organization","name":"원더풀크루","url":"https://wonderfulcrew.com","logo":{"@type":"ImageObject","url":"https://wonderfulcrew.com/images/logo.png"}},"image":"https://wonderfulcrew.com/api/og-card?title=%EC%8A%B9%EB%AC%B4%EC%9B%90%20%EB%B0%8F%20%ED%95%98%EC%9D%B4%EC%97%94%EB%93%9C%20%EC%84%9C%EB%B9%84%EC%8A%A4%20%EC%A7%81%EC%97%85%20%ED%9B%88%EB%A0%A8%20%ED%94%8C%EB%9E%AB%ED%8F%BC&persona=coach&tag=WONDERFULCREW&subtitle=%ED%94%8C%EB%9E%AB%ED%8F%BC%20%EC%86%8C%EA%B0%9C","description":"국내·외항사 승무원과 하이엔드 서비스직 취업을 만드는 AI 직업 훈련 플랫폼.","mainEntityOfPage":{"@type":"WebPage","@id":"https://wonderfulcrew.com/insights/001-platform-intro"},"inLanguage":"ko-KR"}
+{"@context":"https://schema.org","@type":"Article","headline":"승무원 및 하이엔드 서비스 직업 훈련 플랫폼 — 원더풀크루 소개","datePublished":"2026-05-04T09:00:00+09:00","dateModified":"2026-05-04T09:00:00+09:00","author":{"@type":"Organization","name":"원더풀크루","url":"https://wonderfulcrew.com"},"publisher":{"@type":"Organization","name":"원더풀크루","url":"https://wonderfulcrew.com","logo":{"@type":"ImageObject","url":"https://wonderfulcrew.com/images/logo.png"}},"image":"https://wonderfulcrew.com/images/logo.png","description":"국내·외항사 승무원과 하이엔드 서비스직 취업을 만드는 AI 직업 훈련 플랫폼.","mainEntityOfPage":{"@type":"WebPage","@id":"https://wonderfulcrew.com/insights/001-platform-intro"},"inLanguage":"ko-KR"}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"원더풀크루","item":"https://wonderfulcrew.com/"},{"@type":"ListItem","position":2,"name":"인사이트","item":"https://wonderfulcrew.com/insights"},{"@type":"ListItem","position":3,"name":"플랫폼 소개"}]}
@@ -91,9 +91,14 @@ footer{background:var(--navy);color:#fff;padding:60px 5% 30px;}
 @media(max-width:900px){.footer-inner{grid-template-columns:1fr 1fr;}}
 @media(max-width:600px){.footer-inner{grid-template-columns:1fr;}}
 
-.hero-image-wrap{max-width:780px;margin:-40px auto 0;padding:0 5%;position:relative;z-index:2;}
-.hero-image-wrap figure{margin:0;background:#fff;border:1px solid var(--gold-pale);border-radius:16px;overflow:hidden;box-shadow:0 18px 48px rgba(26,35,64,0.18);}
-.hero-image-wrap figure img{display:block;width:100%;height:auto;}
+
+.article-hero{position:relative;overflow:hidden;}
+.article-hero::before{content:'';position:absolute;top:0;right:-100px;width:380px;height:380px;background:radial-gradient(circle,rgba(232,201,106,0.18) 0%,transparent 65%);pointer-events:none;}
+.article-hero::after{content:'';position:absolute;bottom:-60px;left:-80px;width:260px;height:260px;background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 60%);pointer-events:none;}
+.article-hero .deco-line{position:absolute;left:50%;top:90px;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,#E8C96A,transparent);}
+.article-hero h1{position:relative;z-index:1;}
+.article-hero .subtitle{position:relative;z-index:1;}
+.article-hero .breadcrumb{position:relative;z-index:1;}
 </style>
 </head>
 <body>
@@ -116,16 +121,11 @@ footer{background:var(--navy);color:#fff;padding:60px 5% 30px;}
 </nav>
 
 <section class="article-hero">
+  <span class="deco-line hero-deco-pattern"></span>
   <div class="breadcrumb"><a href="../index.html">Home</a> &nbsp;&middot;&nbsp; <a href="../insights.html">Insights</a> &nbsp;&middot;&nbsp; Platform</div>
   <h1>승무원 및 하이엔드 서비스 직업 훈련 플랫폼 — 원더풀크루의 정수</h1>
   <p class="subtitle">대한항공·아시아나·제주항공·외항사 면접부터 호텔·크루즈·럭셔리 서비스 면접까지 — AI가 코칭하는 실전 합격 시스템.</p>
 </section>
-
-<div class="hero-image-wrap">
-  <figure>
-    <img src="https://wonderfulcrew.com/api/og-card?title=%EC%8A%B9%EB%AC%B4%EC%9B%90%20%EB%B0%8F%20%ED%95%98%EC%9D%B4%EC%97%94%EB%93%9C%20%EC%84%9C%EB%B9%84%EC%8A%A4%20%EC%A7%81%EC%97%85%20%ED%9B%88%EB%A0%A8%20%ED%94%8C%EB%9E%AB%ED%8F%BC&persona=coach&tag=WONDERFULCREW&subtitle=%ED%94%8C%EB%9E%AB%ED%8F%BC%20%EC%86%8C%EA%B0%9C" alt="승무원 및 하이엔드 서비스 직업 훈련 플랫폼 — 원더풀크루의 정수" loading="lazy">
-  </figure>
-</div>
 
 <article class="body">
 

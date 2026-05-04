@@ -43,8 +43,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 section{padding:80px 5%;}
 .wrap{max-width:1080px;margin:0 auto;}
 .press-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:28px;}
-.press-card{background:#fff;border:1px solid rgba(201,168,76,0.18);border-left:4px solid var(--gold);border-radius:16px;padding:32px 30px;transition:all 0.3s;display:block;text-decoration:none;color:inherit;}
+.press-card{background:#fff;border:1px solid rgba(201,168,76,0.18);border-radius:16px;overflow:hidden;transition:all 0.3s;display:block;text-decoration:none;color:inherit;}
 .press-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(201,168,76,0.16);border-color:rgba(201,168,76,0.45);}
+.press-card .thumb{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:linear-gradient(135deg,#1A2340,#2a3560);border-bottom:4px solid var(--gold);}
+.press-card .body{padding:28px 30px 24px;}
 .press-tag{display:inline-block;font-family:'DM Serif Display',serif;font-size:0.7rem;letter-spacing:0.25em;color:var(--gold);background:rgba(201,168,76,0.08);padding:5px 14px;border-radius:14px;margin-bottom:18px;text-transform:uppercase;font-weight:700;}
 .press-card h2{font-family:'Noto Serif KR',serif;font-size:1.18rem;font-weight:600;color:var(--navy);line-height:1.5;margin-bottom:14px;}
 .press-card .summary{font-family:'Noto Sans KR',sans-serif;font-size:0.9rem;color:var(--text-mid);line-height:1.85;font-weight:300;margin-bottom:20px;}
@@ -109,12 +111,15 @@ footer{background:var(--navy);color:#fff;padding:60px 5% 30px;}
     <div class="press-grid">
 
       <a class="press-card" href="press/001-bangkok-edutech.html">
-        <span class="press-tag">KOTRA &middot; 글로벌 진출</span>
-        <h2>원더풀크루, 2026 한-아세안 AI시티·에듀테크 데이 참가기업 선정</h2>
-        <p class="summary">KOTRA AI융복합팀·서비스산업팀이 주관하는 태국 진출 사업에 원더풀크루가 참가기업으로 최종 선정되었습니다. 2026년 6월 16~17일 방콕 현지 바이어·투자자 대상 전시·상담매칭이 진행됩니다.</p>
-        <div class="meta">
-          <span class="date">2026.05.03</span>
-          <span class="more">자세히 보기 →</span>
+        <img class="thumb" src="images/press-bangkok-booth.png" alt="원더풀크루 방콕 한-아세안 AI시티·에듀테크 데이 부스" loading="lazy">
+        <div class="body">
+          <span class="press-tag">KOTRA &middot; 글로벌 진출</span>
+          <h2>원더풀크루, 2026 한-아세안 AI시티·에듀테크 데이 참가기업 선정</h2>
+          <p class="summary">KOTRA AI융복합팀·서비스산업팀이 주관하는 태국 진출 사업에 원더풀크루가 참가기업으로 최종 선정되었습니다. 2026년 6월 16~17일 방콕 현지 바이어·투자자 대상 전시·상담매칭이 진행됩니다.</p>
+          <div class="meta">
+            <span class="date">2026.05.03</span>
+            <span class="more">자세히 보기 →</span>
+          </div>
         </div>
       </a>
 

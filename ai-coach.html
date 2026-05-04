@@ -56,6 +56,21 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 .nav-dd-grid{min-width:auto;width:max-content;display:none;grid-template-columns:1fr;gap:0!important;padding:0!important;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border-radius:20px;}
 .nav-dropdown:hover .nav-dd-grid{display:grid!important;}
+
+.rel-pages-wrap{margin:40px 0 0;}
+.rel-pages-wrap h3{font-family:'Noto Serif KR',serif;font-size:1.15rem;color:#1A2340;margin-bottom:20px;font-weight:600;letter-spacing:-0.01em;}
+.rel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+.rel-card{display:flex;align-items:flex-start;gap:16px;padding:22px 24px;background:#fff;border:1px solid rgba(201,168,76,0.18);border-radius:16px;text-decoration:none;color:inherit;position:relative;overflow:hidden;transition:all 0.25s;}
+.rel-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#E8C96A,#C9A84C);opacity:0;transition:opacity 0.25s;}
+.rel-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(201,168,76,0.18);border-color:rgba(201,168,76,0.45);}
+.rel-card:hover::after{opacity:1;}
+.rel-card-icon{font-size:1.6rem;line-height:1;flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#FAF7F0,#F5E9C8);border-radius:12px;}
+.rel-card-body{flex:1;min-width:0;}
+.rel-card-title{font-family:'Noto Serif KR',serif;font-size:0.98rem;font-weight:700;color:#1A2340;margin-bottom:4px;line-height:1.4;}
+.rel-card-desc{font-family:'Noto Sans KR',sans-serif;font-size:0.78rem;color:#5A5048;line-height:1.6;font-weight:300;}
+.rel-card-arrow{flex-shrink:0;font-size:1rem;color:#C9A84C;font-weight:700;align-self:center;transition:transform 0.25s;}
+.rel-card:hover .rel-card-arrow{transform:translateX(4px);}
+@media(max-width:600px){.rel-grid{grid-template-columns:1fr;gap:10px;}.rel-card{padding:18px 20px;}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js?v=5"></script>
@@ -126,16 +141,67 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <details style="border-bottom:1px solid #F5E9C8;padding:14px 0;"><summary style="cursor:pointer;font-weight:600;color:#1A2340;">1:1 사람 코치와 차이가 뭔가요?</summary><div style="padding:12px 0 4px;color:#5A5048;line-height:1.85;font-size:0.92rem;">AI 코치는 24시간 무한 반복·즉각 피드백·낮은 비용이 강점입니다. 1:1 코치 피드백은 워킹·표정·세부 톤 등 영상 분석이 필요한 디테일을 잡아줍니다. 두 가지 병행이 가장 효과적이며, <a href="plans.html" style="color:#C9A84C;font-weight:600;">프리미엄 플랜</a>에서 모두 이용 가능합니다.</div></details>
     <details style="border-bottom:1px solid #F5E9C8;padding:14px 0;"><summary style="cursor:pointer;font-weight:600;color:#1A2340;">어떤 요금제부터 사용 가능한가요?</summary><div style="padding:12px 0 4px;color:#5A5048;line-height:1.85;font-size:0.92rem;">AI 면접 코치는 엘리트 플랜(월 299,000원) 부터 무제한 사용 가능합니다. 베이직 플랜은 면접 연습·롤플레이·디스커션 등 다른 핵심 기능을 제공합니다.</div></details>
 
-    <h3 style="font-size:1.15rem;color:#1A2340;margin:40px 0 14px;font-weight:600;">관련 페이지</h3>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
-      <a href="interview-practice.html" style="display:block;padding:18px 20px;background:#FAF7F0;border:1px solid #F5E9C8;border-radius:12px;color:#1A2340;font-weight:600;font-size:0.92rem;text-decoration:none;">면접 연습 →</a>
-      <a href="roleplay-practice.html" style="display:block;padding:18px 20px;background:#FAF7F0;border:1px solid #F5E9C8;border-radius:12px;color:#1A2340;font-weight:600;font-size:0.92rem;text-decoration:none;">롤플레이 연습 →</a>
-      <a href="coach-feedback.html" style="display:block;padding:18px 20px;background:#FAF7F0;border:1px solid #F5E9C8;border-radius:12px;color:#1A2340;font-weight:600;font-size:0.92rem;text-decoration:none;">1:1 코치 피드백 →</a>
-      <a href="plans.html" style="display:block;padding:18px 20px;background:#FAF7F0;border:1px solid #F5E9C8;border-radius:12px;color:#1A2340;font-weight:600;font-size:0.92rem;text-decoration:none;">요금제 안내 →</a>
-      <a href="practice-foreign.html" style="display:block;padding:18px 20px;background:#FAF7F0;border:1px solid #F5E9C8;border-radius:12px;color:#1A2340;font-weight:600;font-size:0.92rem;text-decoration:none;">외항사 면접 허브 →</a>
-      <a href="practice-domestic.html" style="display:block;padding:18px 20px;background:#FAF7F0;border:1px solid #F5E9C8;border-radius:12px;color:#1A2340;font-weight:600;font-size:0.92rem;text-decoration:none;">국내항공사 면접 허브 →</a>
-      <a href="curriculum.html" style="display:block;padding:18px 20px;background:#FAF7F0;border:1px solid #F5E9C8;border-radius:12px;color:#1A2340;font-weight:600;font-size:0.92rem;text-decoration:none;">항공사 커리큘럼 →</a>
+    <div class="rel-pages-wrap">
+    <h3>관련 페이지</h3>
+    <div class="rel-grid">
+      <a class="rel-card" href="interview-practice.html">
+        <div class="rel-card-icon">🎤</div>
+        <div class="rel-card-body">
+          <div class="rel-card-title">면접 연습</div>
+          <div class="rel-card-desc">면접 1분 자기소개 연습</div>
+        </div>
+        <div class="rel-card-arrow">→</div>
+      </a>
+      <a class="rel-card" href="roleplay-practice.html">
+        <div class="rel-card-icon">🎭</div>
+        <div class="rel-card-body">
+          <div class="rel-card-title">롤플레이 연습</div>
+          <div class="rel-card-desc">한국어·영어 롤플레이</div>
+        </div>
+        <div class="rel-card-arrow">→</div>
+      </a>
+      <a class="rel-card" href="coach-feedback.html">
+        <div class="rel-card-icon">🎯</div>
+        <div class="rel-card-body">
+          <div class="rel-card-title">1:1 코치 피드백</div>
+          <div class="rel-card-desc">대표 영상 1:1 정밀 분석</div>
+        </div>
+        <div class="rel-card-arrow">→</div>
+      </a>
+      <a class="rel-card" href="plans.html">
+        <div class="rel-card-icon">💼</div>
+        <div class="rel-card-body">
+          <div class="rel-card-title">요금제 안내</div>
+          <div class="rel-card-desc">베이직·엘리트·프리미엄 패키지</div>
+        </div>
+        <div class="rel-card-arrow">→</div>
+      </a>
+      <a class="rel-card" href="practice-foreign.html">
+        <div class="rel-card-icon">🌐</div>
+        <div class="rel-card-body">
+          <div class="rel-card-title">외항사 면접 허브</div>
+          <div class="rel-card-desc">카타르·에미레이트·싱가폴</div>
+        </div>
+        <div class="rel-card-arrow">→</div>
+      </a>
+      <a class="rel-card" href="practice-domestic.html">
+        <div class="rel-card-icon">🇰🇷</div>
+        <div class="rel-card-body">
+          <div class="rel-card-title">국내항공사 면접 허브</div>
+          <div class="rel-card-desc">대한항공·아시아나·LCC 10개사</div>
+        </div>
+        <div class="rel-card-arrow">→</div>
+      </a>
+      <a class="rel-card" href="curriculum.html">
+        <div class="rel-card-icon">📚</div>
+        <div class="rel-card-body">
+          <div class="rel-card-title">항공사 커리큘럼</div>
+          <div class="rel-card-desc">항공사별 전용 합격 커리큘럼</div>
+        </div>
+        <div class="rel-card-arrow">→</div>
+      </a>
     </div>
+  </div>
   </div>
 </section>
 <script type="application/ld+json">

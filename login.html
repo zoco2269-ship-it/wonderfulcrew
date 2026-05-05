@@ -211,7 +211,7 @@ async function showUser(user) {
     setTimeout(function() {
       // 첫 가입 (서버에 phone 없음) → "나에 대해 알려주세요"
       // 단 어드민은 우회 (어드민이 사용자 입력 화면 거치지 않도록)
-      var ADMIN_EMAILS_PROFILE = ['69@gmail.com','guswn5164@gmail.com'];
+      var ADMIN_EMAILS_PROFILE = ['zoco2269@gmail.com','guswn5164@gmail.com'];
       var isAdminProfile = ADMIN_EMAILS_PROFILE.indexOf(user.email) !== -1;
       if (!hasProfile && !isAdminProfile) {
         location.href = 'profile-setup.html';

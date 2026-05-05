@@ -164,7 +164,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   // 1) 어드민·결제 사용자는 레벨테스트 우회
   try {
     var u = JSON.parse(localStorage.getItem('wc_user') || 'null');
-    var ADMIN = ['69@gmail.com','guswn5164@gmail.com'];
+    var ADMIN = ['zoco2269@gmail.com','guswn5164@gmail.com'];
     var isAdminLocal = u && ADMIN.indexOf(u.email) !== -1;
     if (isAdminLocal || localStorage.getItem('wc_paid') === 'true') {
       location.href='curriculum.html';

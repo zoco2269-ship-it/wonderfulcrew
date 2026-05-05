@@ -76,7 +76,7 @@ document.getElementById('local-section').innerHTML=localHtml;
       authHtml += row('email', udata.user.email||'(없음)');
       authHtml += row('user.id', udata.user.id);
       authHtml += row('user_metadata.free_trial_used', safeStr(udata.user.user_metadata && udata.user.user_metadata.free_trial_used));
-      var ADMIN=['69@gmail.com','guswn5164@gmail.com'];
+      var ADMIN=['zoco2269@gmail.com','guswn5164@gmail.com'];
       var isAdmin = ADMIN.indexOf(udata.user.email)!==-1;
       authHtml += row('어드민?', isAdmin?'YES (카운트 자동 우회)':'NO', isAdmin?'bad':'good');
     }
@@ -109,7 +109,7 @@ document.getElementById('local-section').innerHTML=localHtml;
     var wcPaid = localStorage.getItem('wc_paid');
     var wcTestMode = localStorage.getItem('wc_test_mode');
     var wcUser = JSON.parse(localStorage.getItem('wc_user')||'null');
-    var ADMIN=['69@gmail.com','guswn5164@gmail.com'];
+    var ADMIN=['zoco2269@gmail.com','guswn5164@gmail.com'];
     var isAdminLocal = wcUser && ADMIN.indexOf(wcUser.email)!==-1;
 
     if(isAdminLocal){

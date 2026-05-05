@@ -88,7 +88,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <script>
 // 강의 페이지 액세스 — 대표 + 결제 사용자 + 페이지별 화이트리스트 학생 통과
 // 보안 핵심: 로그인 사용자는 항상 server heal-plan-active 검증 (캐시 통과 X — 환불 즉시 차단)
-window.LECTURE_WHITELIST = ['69@gmail.com','eunchae850@gmail.com'];
+window.LECTURE_WHITELIST = ['zoco2269@gmail.com','eunchae850@gmail.com'];
 document.addEventListener('DOMContentLoaded',function(){
   setTimeout(async function(){
     var blocked=false;
@@ -349,7 +349,7 @@ LECTURES.forEach(function(ch){
 <script>
 // 영상 보기 클릭 시 결제 체크
 // URL에 ?admin=1 + 테스트 모드 아닐 때만 관리자 세팅
-try{if(new URLSearchParams(location.search).get('admin')==='1'&&localStorage.getItem('wc_test_mode')!=='true'){localStorage.setItem('wc_user','{"id":"admin","email":"69@gmail.com","name":"Admin"}');localStorage.setItem('wc_paid','true');}}catch(e){}
+try{if(new URLSearchParams(location.search).get('admin')==='1'&&localStorage.getItem('wc_test_mode')!=='true'){localStorage.setItem('wc_user','{"id":"admin","email":"zoco2269@gmail.com","name":"Admin"}');localStorage.setItem('wc_paid','true');}}catch(e){}
 
 // 프리미엄 안내 모달
 var _modal=document.createElement('div');

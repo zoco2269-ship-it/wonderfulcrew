@@ -156,16 +156,69 @@ function showSubscribePopup() {
   overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
 }
 
+// 플랜별 월 사용 한도
+var PLAN_USAGE_CAP = {
+  basic: 500,
+  elite: 1200,
+  premium: 5000
+};
+var PLAN_LABEL = { basic: '베이직', elite: '엘리트', premium: '프리미엄' };
+
+// 이번 달 practice_records 카운트 — 5분 캐시
+var _usageCache = { value: null, plan: null, ts: 0 };
+async function getMonthlyUsage() {
+  if (_usageCache.value !== null && (Date.now() - _usageCache.ts) < 5*60*1000) {
+    return _usageCache;
+  }
+  try {
+    var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+    if (!sb) return { value: null, plan: null };
+    var { data: udata } = await sb.auth.getUser();
+    if (!udata || !udata.user) return { value: null, plan: null };
+    var monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
+    var [{ data: ur }, { data: prs }, { data: fbs }, { data: vrs }] = await Promise.all([
+      sb.from('users').select('plan').eq('auth_id', udata.user.id).maybeSingle(),
+      sb.from('practice_records').select('id', { count:'exact', head:true }).eq('user_id', udata.user.id).gte('created_at', monthStart.toISOString()),
+      sb.from('ai_feedback').select('id', { count:'exact', head:true }).eq('user_id', udata.user.id).gte('created_at', monthStart.toISOString()),
+      sb.from('video_records').select('id', { count:'exact', head:true }).eq('user_id', udata.user.id).gte('created_at', monthStart.toISOString())
+    ]);
+    var prCount = (prs && prs.length !== undefined) ? prs.length : 0;
+    var fbCount = (fbs && fbs.length !== undefined) ? fbs.length : 0;
+    var vrCount = (vrs && vrs.length !== undefined) ? vrs.length : 0;
+    // count: 'exact', head: true 사용 시 .count 또는 length 둘 다 시도
+    var totalUsed = prCount + fbCount + vrCount;
+    var plan = (ur && ur.plan) || 'basic';
+    _usageCache = { value: totalUsed, plan: plan, ts: Date.now() };
+    return _usageCache;
+  } catch(e) { return { value: null, plan: null }; }
+}
+
 function renderTrialBadge(containerId) {
   var el = document.getElementById(containerId);
   if (!el) return;
-  // 관리자는 뱃지 자체 숨김 (체험 종료·관리자 표기 둘 다 안 보임)
+  // 관리자는 뱃지 자체 숨김
   if (typeof isAdmin === 'function' && isAdmin()) {
     el.innerHTML = '';
     return;
   }
   if (localStorage.getItem('wc_paid') === 'true' || isSubscribed()) {
-    el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">구독 중 ✓</span>';
+    // 1차 즉시 표시 (캐시 사용)
+    var planName = (_usageCache.plan && PLAN_LABEL[_usageCache.plan]) || '프리미엄';
+    if (_usageCache.value !== null && _usageCache.plan) {
+      var cap = PLAN_USAGE_CAP[_usageCache.plan] || 500;
+      var rem = Math.max(0, cap - _usageCache.value);
+      el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">구독 중 ('+planName+') ✓ <span style="color:#5A5048;font-weight:400;">· 이번 달 <b style="color:#C9A84C;">'+rem+'</b> / '+cap+' 회 남음</span></span>';
+    } else {
+      el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">구독 중 ✓</span>';
+    }
+    // 2차 서버에서 실 사용량 fetch 후 갱신
+    getMonthlyUsage().then(function(u){
+      if (u.value === null || !u.plan) return;
+      var cap2 = PLAN_USAGE_CAP[u.plan] || 500;
+      var rem2 = Math.max(0, cap2 - u.value);
+      var label = PLAN_LABEL[u.plan] || u.plan;
+      el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">구독 중 ('+label+') ✓ <span style="color:#5A5048;font-weight:400;">· 이번 달 <b style="color:#C9A84C;">'+rem2+'</b> / '+cap2+' 회 남음</span></span>';
+    });
     return;
   }
   var left = getFreeTrialLeft();

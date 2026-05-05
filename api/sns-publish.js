@@ -2,6 +2,8 @@
 // sns_content_queue 에서 status='pending' 1개 fetch → 채널별 발행 → status='posted'
 // 환경변수로 채널 토큰 관리. 토큰 없는 채널은 자동 skip.
 const { createClient } = require('@supabase/supabase-js');
+const crypto = require('crypto');
+const OAuth = require('oauth-1.0a');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -119,39 +121,39 @@ module.exports = async function handler(req, res) {
     results.skipped.push({ channel: 'instagram', reason: 'token missing' });
   }
 
-  // ─── 4) X (Twitter) ───
-  // X v2 free tier: 1500 트윗/월
-  // 인증: OAuth 1.0a User Context 또는 Bearer (App-only 는 트윗 작성 불가)
-  // 간소화: API 키 + Secret + Access Token + Token Secret 4종 환경변수 사용
+  // ─── 4) X (Twitter) — OAuth 1.0a User Context ───
+  // X v2 free tier: 1,500 트윗/월. App-only Bearer 는 read-only 라 트윗 작성 불가.
+  // 필요 환경변수 4종: X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET
+  // (X Developer Portal → 앱 → Keys and tokens 에서 모두 발급)
   const xKey = process.env.X_API_KEY;
   const xSecret = process.env.X_API_SECRET;
   const xToken = process.env.X_ACCESS_TOKEN;
   const xTokenSecret = process.env.X_ACCESS_TOKEN_SECRET;
   if (xKey && xSecret && xToken && xTokenSecret) {
     try {
-      // OAuth 1.0a 서명 생성 (간소화 - 별도 모듈 사용 권장)
-      // 우선 Bearer 토큰만 있으면 호출 가능한 v2 endpoint 시도
-      // 실제 운영에선 oauth-1.0a + crypto-js 모듈 추가 필요
-      // 여기선 placeholder — Bearer 만 있을 때 시도
-      const xBearer = process.env.X_BEARER_TOKEN;
-      if (xBearer) {
-        const r = await fetch('https://api.twitter.com/2/tweets', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + xBearer,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ text: fullText.slice(0, 280) })
-        });
-        const d = await r.json();
-        if (d.data && d.data.id) results.posted.push({ channel: 'x', id: d.data.id });
-        else results.errors.push({ channel: 'x', error: d, hint: 'Bearer 토큰은 read-only 일 수 있음. OAuth 1.0a User Context 필요.' });
-      } else {
-        results.skipped.push({ channel: 'x', reason: 'Bearer 토큰 또는 OAuth 1.0a 모듈 필요' });
-      }
+      const oauth = OAuth({
+        consumer: { key: xKey, secret: xSecret },
+        signature_method: 'HMAC-SHA1',
+        hash_function(base_string, key) {
+          return crypto.createHmac('sha1', key).update(base_string).digest('base64');
+        }
+      });
+      const reqData = { url: 'https://api.twitter.com/2/tweets', method: 'POST' };
+      const authHeader = oauth.toHeader(oauth.authorize(reqData, { key: xToken, secret: xTokenSecret }));
+      const r = await fetch(reqData.url, {
+        method: 'POST',
+        headers: {
+          'Authorization': authHeader.Authorization,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ text: fullText.slice(0, 280) })
+      });
+      const d = await r.json();
+      if (d.data && d.data.id) results.posted.push({ channel: 'x', id: d.data.id });
+      else results.errors.push({ channel: 'x', error: d });
     } catch (e) { results.errors.push({ channel: 'x', exception: e.message }); }
   } else {
-    results.skipped.push({ channel: 'x', reason: 'token missing' });
+    results.skipped.push({ channel: 'x', reason: 'token missing (X_API_KEY/SECRET, X_ACCESS_TOKEN/SECRET 4종 필요)' });
   }
 
   // 큐 상태 업데이트

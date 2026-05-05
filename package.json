@@ -5,6 +5,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
     "@vercel/og": "^0.6.4",
+    "oauth-1.0a": "^2.2.6",
     "web-push": "^3.6.7"
   }
 }

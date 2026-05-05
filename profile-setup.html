@@ -211,27 +211,45 @@ async function submitProfile(){
     eng:document.querySelector('input[name=eng]:checked').value
   };
 
-  // Supabase users 테이블에 이름·전화·나이·지역 저장 (관리자 페이지 노출용)
-  // age/region 컬럼이 아직 추가 안 됐으면 update 가 일부 실패하므로 1차 시도 → 실패 시 name/phone 만 재시도
+  // 서버 API 로 모든 필드 upsert (service_role) — silent fail 차단, 응답 검증 후만 통과
+  var savedOk=false;
   try{
     var sb=(typeof getSupabase==='function')?getSupabase():null;
+    var token='';
     if(sb){
       var sess=await sb.auth.getSession();
-      var authId=sess&&sess.data&&sess.data.session&&sess.data.session.user&&sess.data.session.user.id;
-      if(authId){
-        var fullPayload={name:profile.name,phone:profile.phone,age:profile.age,region:profile.region,updated_at:new Date().toISOString()};
-        var res=await sb.from('users').update(fullPayload).eq('auth_id',authId);
-        if(res&&res.error){
-          // age/region 컬럼 없으면 name/phone 만 저장
-          await sb.from('users').update({name:profile.name,phone:profile.phone,updated_at:new Date().toISOString()}).eq('auth_id',authId);
-        }
-      }
+      token=(sess&&sess.data&&sess.data.session&&sess.data.session.access_token)||'';
     }
-  }catch(e){console.error('profile save error:',e);}
+    if(!token){
+      alert('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
+      btn.disabled=false;btn.textContent='시작하기 →';
+      return;
+    }
+    var apiRes=await fetch('/api/save-profile',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify(profile)
+    });
+    var apiData=await apiRes.json().catch(function(){return {ok:false,error:'parse'};});
+    if(apiRes.ok&&apiData&&apiData.ok&&apiData.savedPhone){
+      savedOk=true;
+    } else {
+      console.error('[save-profile] failed:',apiRes.status,apiData);
+      alert('프로필 저장에 실패했습니다. 잠시 후 다시 시도해주세요.\n('+(apiData&&apiData.error||apiRes.status)+')');
+      btn.disabled=false;btn.textContent='시작하기 →';
+      return;
+    }
+  }catch(e){
+    console.error('profile save error:',e);
+    alert('네트워크 오류로 저장에 실패했습니다. 다시 시도해주세요.');
+    btn.disabled=false;btn.textContent='시작하기 →';
+    return;
+  }
 
-  // localStorage 보존 + 1회 노출 플래그
+  // 서버 저장 성공한 경우에만 로컬 플래그 + localStorage 보존
   localStorage.setItem('wc_profile',JSON.stringify(profile));
   localStorage.setItem('wc_profile_done','1');
+  localStorage.setItem('wc_profile_check_at',String(Date.now()));
 
   // 환영 + leveltest 이동
   var ov=document.createElement('div');

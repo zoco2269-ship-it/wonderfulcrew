@@ -58,7 +58,7 @@ module.exports = async function(req, res) {
     }
 
     if (scope === 'members') {
-      const { data: users } = await sb.from('users').select('id, auth_id, email, name, phone, plan, plan_active, free_trial_used, created_at').order('created_at', { ascending: false }).limit(200);
+      const { data: users } = await sb.from('users').select('id, auth_id, email, name, phone, age, region, edu, apply_exp, eng_level, plan, plan_active, free_trial_used, created_at').order('created_at', { ascending: false }).limit(200);
       // 구독 정보 조인
       const userIds = (users || []).map(u => u.auth_id).filter(Boolean);
       const { data: subs } = userIds.length

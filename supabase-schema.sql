@@ -8,6 +8,11 @@ CREATE TABLE IF NOT EXISTS public.users (
   email TEXT,
   name TEXT,
   phone TEXT,
+  age INTEGER,
+  region TEXT,
+  edu TEXT,
+  apply_exp TEXT,
+  eng_level TEXT,
   avatar_url TEXT,
   plan TEXT DEFAULT 'free',
   plan_active BOOLEAN DEFAULT false,
@@ -15,6 +20,13 @@ CREATE TABLE IF NOT EXISTS public.users (
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
 );
+
+-- 기존 테이블에 새 컬럼 추가 (이미 운영 중일 때 — 한 번만 실행)
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS age INTEGER;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS region TEXT;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS edu TEXT;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS apply_exp TEXT;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS eng_level TEXT;
 
 -- RLS (Row Level Security)
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;

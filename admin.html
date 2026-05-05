@@ -119,7 +119,7 @@ textarea{min-height:80px;resize:vertical;}
   <div class="card" style="background:rgba(255,243,224,0.5);border-left:4px solid #E65100;margin-top:24px;">
     <h3 style="color:#E65100;">🧪 결제 플로우 테스트</h3>
     <p style="font-size:0.86rem;color:var(--text-mid);line-height:1.7;margin-bottom:12px;">
-      관리자 계정(<b>zoco2269@gmail.com</b>)은 <b>isAdmin() 자동 우회</b>로 유료 기능 전부 접근 가능. 실제 일반 사용자 경험을 검증하려면 아래 <b>①번이 가장 확실한 방법</b>입니다.
+      관리자 계정(<b>69@gmail.com</b>)은 <b>isAdmin() 자동 우회</b>로 유료 기능 전부 접근 가능. 실제 일반 사용자 경험을 검증하려면 아래 <b>①번이 가장 확실한 방법</b>입니다.
     </p>
     <div id="test-mode-status" style="margin-bottom:14px;font-size:0.84rem;"></div>
     <div style="display:flex;flex-direction:column;gap:10px;">
@@ -218,7 +218,7 @@ async function forceActivate(action){
     <h3 style="color:#E65100;">⚠️ 누락 결제 수동 추가</h3>
     <p style="font-size:0.84rem;color:var(--text-mid);margin-bottom:14px;">save-payment API 추가 이전에 결제된 건이 있다면 아래에서 수동으로 등록하세요.</p>
     <div class="form-row">
-      <div><label>이메일</label><input type="email" id="bf-email" placeholder="zoco2269@gmail.com"></div>
+      <div><label>이메일</label><input type="email" id="bf-email" placeholder="69@gmail.com"></div>
       <div><label>플랜</label><select id="bf-plan"><option value="premium">premium (250만원/1년)</option><option value="elite">elite (29.9만원/월)</option><option value="basic">basic (19.9만원/월)</option></select></div>
       <div><label>금액 (원)</label><input type="number" id="bf-amount" placeholder="2500000"></div>
       <div><label>이노페이 TID (선택)</label><input type="text" id="bf-tid" placeholder=""></div>
@@ -568,7 +568,7 @@ async function sendPushNoti(){
 
 // 관리자 접근 체크 (이메일 기반)
 (function(){
-  var ADMIN_EMAILS=['zoco2269@gmail.com','guswn5164@gmail.com'];
+  var ADMIN_EMAILS=['69@gmail.com','guswn5164@gmail.com'];
   var user=JSON.parse(localStorage.getItem('wc_user')||'{}');
   if(ADMIN_EMAILS.indexOf(user.email)!==-1)return;
   // wc_user 비어있을 수 있음 — Supabase 세션 복원 잠깐 기다린 후 재확인

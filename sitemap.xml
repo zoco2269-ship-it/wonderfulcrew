@@ -986,4 +986,36 @@
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
+  <url>
+    <loc>https://wonderfulcrew.com/contact-en</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/contact-en"/>
+  </url>
+  <url>
+    <loc>https://wonderfulcrew.com/insights-en</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/insights"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/insights-en"/>
+  </url>
+  <url>
+    <loc>https://wonderfulcrew.com/press-en</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/press"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/press-en"/>
+  </url>
+  <url>
+    <loc>https://wonderfulcrew.com/curriculum-en</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://wonderfulcrew.com/curriculum"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wonderfulcrew.com/curriculum-en"/>
+  </url>
 </urlset>

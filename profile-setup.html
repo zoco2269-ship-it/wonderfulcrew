@@ -84,8 +84,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
       <label class="radio-opt"><input type="radio" name="eng" value="원어민급"><span class="radio-text">원어민급</span></label>
     </div>
   </div>
-  <div style="margin-top:32px;"><button class="btn-gold" id="btn-submit" disabled onclick="submitProfile()">모든 항목을 입력해주세요</button></div>
-  <div class="notice">모든 항목은 필수입니다. 다음 단계로 넘어가려면 빠짐없이 입력해주세요.</div>
+  <div style="margin-top:32px;"><button class="btn-gold" id="btn-submit" onclick="submitProfile()">시작하기 →</button></div>
+  <div class="notice" id="submit-hint">모든 항목은 필수입니다. 다음 단계로 넘어가려면 빠짐없이 입력해주세요.</div>
 </div>
 </div>
 <script>
@@ -123,9 +123,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   }catch(e){}
 
   // 이메일만 자동 채우기 (구글 닉네임 자동입력 방지 — 본명을 직접 입력받기 위함)
+  // OAuth user 의 email 값이 빈 케이스 (예: 카카오 미동의)에서는 readonly 걸지 말 것 — 사용자가 직접 입력 가능해야 isValid 통과
   try{
     var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
-    if(u.email){
+    if(u && typeof u.email==='string' && u.email.trim().length>3 && u.email.indexOf('@')>0){
       var em=document.getElementById('f-email');
       em.value=u.email;
       em.readOnly=true;
@@ -169,13 +170,21 @@ function isValid(){
 }
 
 function refreshSubmit(){
+  // 버튼은 항상 활성 — 빠진 항목 안내만 동적으로 갱신.
+  // (모바일 자동완성/IME 케이스에서 input 이벤트가 누락되어도 사용자가 클릭 가능.
+  //  버튼이 disabled 로 영원히 갇혀 가입자가 profile-setup 마지막 화면으로 막히던 사고 차단.)
   var btn=document.getElementById('btn-submit');
-  if(isValid()){
-    btn.disabled=false;
-    btn.textContent='시작하기 →';
-  } else {
-    btn.disabled=true;
-    btn.textContent='모든 항목을 입력해주세요';
+  var hint=document.getElementById('submit-hint');
+  btn.disabled=false;
+  btn.textContent='시작하기 →';
+  if(hint){
+    if(isValid()){
+      hint.textContent='이 정보는 맞춤 항공사 추천에만 사용됩니다.';
+      hint.style.color='';
+    } else {
+      hint.textContent='모든 항목은 필수입니다. 빠짐없이 입력 후 시작하기를 눌러주세요.';
+      hint.style.color='';
+    }
   }
 }
 

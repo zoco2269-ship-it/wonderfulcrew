@@ -80,6 +80,7 @@ textarea{min-height:80px;resize:vertical;}
   <a onclick="showPage('videos')">🎬 영상 관리</a>
   <a onclick="showPage('noti')">🔔 푸시 알림</a>
   <a onclick="showPage('sms')">📱 문자/알림톡</a>
+  <a onclick="showPage('press')">📰 공개 통계 (더미)</a>
   <a href="index.html" style="margin-top:24px;color:var(--text-muted);font-size:0.8rem;">← 홈으로</a>
 </div>
 
@@ -434,6 +435,30 @@ WonderfulCrew 드림</textarea></div></div>
     </div>
     <button class="btn-sm gold" onclick="sendSolapi()">발송하기</button>
     <div id="sms-result" style="margin-top:14px;font-size:0.84rem;color:var(--text-mid);"></div>
+  </div>
+</div>
+
+<!-- 공개 통계 (더미) — 외부 자료 노출용. Supabase 실데이터와 무관. 가입 일자·회원 정보 비공개 -->
+<div class="page" id="page-press">
+  <h2>공개 통계 (더미)</h2>
+  <div class="sub">외부 자료용 — 누적 가입자·누적 매출만 노출 (가입 일자·회원 식별 정보 비공개)</div>
+  <div class="stat-grid">
+    <div class="stat-box"><div class="num">500</div><div class="lbl">누적 가입자</div></div>
+    <div class="stat-box"><div class="num" style="color:#C9A84C;">438만원</div><div class="lbl">누적 매출</div></div>
+    <div class="stat-box"><div class="num">18건</div><div class="lbl">유료 결제</div></div>
+    <div class="stat-box"><div class="num">3.6%</div><div class="lbl">유료 전환율</div></div>
+  </div>
+  <div class="card" style="background:#fff;">
+    <h3>매출 구성 — 199,000 / 299,000원 플랜 기준</h3>
+    <table>
+      <tr><th>플랜</th><th style="text-align:right;">건수</th><th style="text-align:right;">단가</th><th style="text-align:right;">소계</th></tr>
+      <tr><td>베이직</td><td style="text-align:right;">10건</td><td style="text-align:right;">199,000원</td><td style="text-align:right;">1,990,000원</td></tr>
+      <tr><td>엘리트</td><td style="text-align:right;">8건</td><td style="text-align:right;">299,000원</td><td style="text-align:right;">2,392,000원</td></tr>
+      <tr style="font-weight:700;background:#FAF7F0;"><td>합계</td><td style="text-align:right;">18건</td><td style="text-align:right;">-</td><td style="text-align:right;color:#C9A84C;">4,382,000원</td></tr>
+    </table>
+  </div>
+  <div style="margin-top:14px;padding:12px 14px;background:rgba(255,243,224,0.6);border-left:3px solid #E65100;border-radius:4px;font-size:0.82rem;color:var(--text-mid);line-height:1.6;">
+    ※ 본 화면은 외부 공개용 <b>더미 통계</b>입니다. Supabase 실데이터와 별개이며, 가입 일자·회원 식별 정보는 노출되지 않습니다. 실데이터는 좌측 [📊 대시보드]·[👥 회원 관리]·[💳 결제 현황]에서 확인하세요.
   </div>
 </div>
 

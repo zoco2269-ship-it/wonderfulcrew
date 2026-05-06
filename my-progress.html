@@ -286,83 +286,102 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 var SCORES={fluency:0,confidence:0,structure:0,pronunciation:0,service:0};
 try{
   var _saved=JSON.parse(localStorage.getItem('wc_skill_scores')||'{}');
-  if(_saved.fluency!==undefined)SCORES=_saved;
+  if(_saved.fluency!==undefined)SCORES={
+    fluency:_saved.fluency||0,
+    confidence:_saved.confidence||0,
+    structure:_saved.structure||0,
+    pronunciation:_saved.pronunciation||0,
+    service:_saved.service||0
+  };
 }catch(e){}
 
-// 레벨테스트 기반 추가 점수
+// 레벨테스트 기반 추가 점수 — score_breakdown 매핑 포함 (각 20점 → 100점 환산)
 var EXTRA={korean:0,english:0,image:0};
 try{
   var _lr=JSON.parse(localStorage.getItem('wc_level_result')||'{}');
   if(typeof _lr.korean==='number')EXTRA.korean=_lr.korean;
   if(typeof _lr.english==='number')EXTRA.english=_lr.english;
   if(typeof _lr.image==='number')EXTRA.image=_lr.image;
+  if(_lr.score_breakdown){
+    var _sb=_lr.score_breakdown;
+    if(!EXTRA.korean&&typeof _sb.korean==='number')EXTRA.korean=Math.min(100,Math.round(_sb.korean*5));
+    if(!EXTRA.english&&typeof _sb.english==='number')EXTRA.english=Math.min(100,Math.round(_sb.english*5));
+    if(!EXTRA.image&&typeof _sb.smile==='number')EXTRA.image=Math.min(100,Math.round(_sb.smile*5));
+  }
 }catch(e){}
 
-// 스코어 바 애니메이션
-['fluency','confidence','structure','pronunciation','service'].forEach(function(k){
-  var v=SCORES[k]||0;
-  var bar=document.getElementById('bar-'+k),val=document.getElementById('val-'+k);
-  if(bar)bar.style.width=v+'%';
-  if(val)val.textContent=v;
-});
-['korean','english','image'].forEach(function(k){
-  var v=EXTRA[k]||0;
-  var bar=document.getElementById('bar-'+k),val=document.getElementById('val-'+k);
-  if(bar)bar.style.width=v+'%';
-  if(val)val.textContent=v;
-});
-
-// 종합 점수 + 등급
-var coreVals=[SCORES.fluency,SCORES.confidence,SCORES.structure,SCORES.pronunciation,SCORES.service];
-var hasAnyScore=coreVals.some(function(v){return v>0;});
-var overall=hasAnyScore?Math.round(coreVals.reduce(function(a,b){return a+b;},0)/coreVals.length):0;
-document.getElementById('overall-score').textContent=overall;
-var gradeBox=document.getElementById('overall-grade');
-if(!hasAnyScore){gradeBox.textContent='평가 대기';gradeBox.style.background='rgba(255,255,255,0.18)';gradeBox.style.color='var(--gold-light)';}
-else if(overall>=90){gradeBox.textContent='S · EXCELLENT';}
-else if(overall>=80){gradeBox.textContent='A · 우수';}
-else if(overall>=70){gradeBox.textContent='B · 양호';}
-else if(overall>=60){gradeBox.textContent='C · 보통';}
-else{gradeBox.textContent='D · 노력 필요';gradeBox.style.background='#C66060';gradeBox.style.color='#fff';}
-
-// 코칭 인사이트 텍스트 (점수 상태 기반)
-(function(){
-  var ins=document.getElementById('insight-text');
-  if(!ins)return;
-  var hasLevel=EXTRA.korean>0||EXTRA.english>0||EXTRA.image>0;
-  if(!hasAnyScore && !hasLevel){
-    ins.innerHTML='👋 <b>아직 분석 데이터가 없습니다.</b><br>레벨테스트로 출발 점수를 진단하고, 커리큘럼에서 첫 연습을 시작하면 본인만의 합격 패턴이 그래프로 그려져요.';
-  } else if(!hasAnyScore && hasLevel){
-    ins.innerHTML='✨ <b>레벨테스트 완료!</b> 이제 커리큘럼에서 면접 연습을 진행하면 5개 핵심 역량(유창성·자신감·내용 구성·발음·서비스 마인드) 점수가 누적됩니다.';
-  } else if(overall<60){
-    ins.innerHTML='🌱 <b>지금이 가장 빠르게 오를 구간이에요.</b> 약점 영역에 집중하면 평균 점수가 빠르게 상승합니다. 매일 한 단계씩 — 꾸준함이 합격의 비밀입니다.';
-  } else if(overall<80){
-    ins.innerHTML='📈 <b>안정 궤도 진입.</b> 보완 영역만 끌어올리면 평균 80+ 진입이 보입니다. 약한 항목 위주로 추가 연습을 권장해요.';
-  } else {
-    ins.innerHTML='🏆 <b>합격권 진입.</b> 강점은 유지하면서 디테일(말의 흐름·답변 짜임새)만 다듬으면 외항사 파이널까지 충분합니다.';
-  }
-})();
-
-// 강점·약점
 function statusOf(v){
   if(v>=80)return{cls:'status-excellent',text:'우수'};
   if(v>=60)return{cls:'status-good',text:'양호'};
   if(v>=40)return{cls:'status-average',text:'보통'};
   return{cls:'status-need',text:'노력 필요'};
 }
-var coreLabels=['유창성','자신감','내용 구성','발음','서비스 마인드'];
-if(hasAnyScore){
-  var maxIdx=0,minIdx=0;
-  for(var i=1;i<coreVals.length;i++){
-    if(coreVals[i]>coreVals[maxIdx])maxIdx=i;
-    if(coreVals[i]<coreVals[minIdx])minIdx=i;
-  }
-  document.getElementById('strength-val').innerHTML=coreLabels[maxIdx]+' <small>'+coreVals[maxIdx]+'점 · 가장 안정적인 영역</small>';
-  document.getElementById('weakness-val').innerHTML=coreLabels[minIdx]+' <small>'+coreVals[minIdx]+'점 · 집중 보완 권장</small>';
-}
 
-// 분석 테이블 채우기
-(function(){
+function renderAll(){
+  // 스코어 바
+  ['fluency','confidence','structure','pronunciation','service'].forEach(function(k){
+    var v=SCORES[k]||0;
+    var bar=document.getElementById('bar-'+k),val=document.getElementById('val-'+k);
+    if(bar)bar.style.width=v+'%';
+    if(val)val.textContent=v;
+  });
+  ['korean','english','image'].forEach(function(k){
+    var v=EXTRA[k]||0;
+    var bar=document.getElementById('bar-'+k),val=document.getElementById('val-'+k);
+    if(bar)bar.style.width=v+'%';
+    if(val)val.textContent=v;
+  });
+
+  // 종합 점수 + 등급
+  var coreVals=[SCORES.fluency,SCORES.confidence,SCORES.structure,SCORES.pronunciation,SCORES.service];
+  var hasAnyScore=coreVals.some(function(v){return v>0;});
+  var overall=hasAnyScore?Math.round(coreVals.reduce(function(a,b){return a+b;},0)/coreVals.length):0;
+  var os=document.getElementById('overall-score');if(os)os.textContent=overall;
+  var gradeBox=document.getElementById('overall-grade');
+  if(gradeBox){
+    if(!hasAnyScore){gradeBox.textContent='평가 대기';gradeBox.style.background='rgba(255,255,255,0.18)';gradeBox.style.color='var(--gold-light)';}
+    else if(overall>=90){gradeBox.textContent='S · EXCELLENT';gradeBox.style.background='var(--gold)';gradeBox.style.color='var(--navy)';}
+    else if(overall>=80){gradeBox.textContent='A · 우수';gradeBox.style.background='var(--gold)';gradeBox.style.color='var(--navy)';}
+    else if(overall>=70){gradeBox.textContent='B · 양호';gradeBox.style.background='var(--gold)';gradeBox.style.color='var(--navy)';}
+    else if(overall>=60){gradeBox.textContent='C · 보통';gradeBox.style.background='var(--gold)';gradeBox.style.color='var(--navy)';}
+    else{gradeBox.textContent='D · 노력 필요';gradeBox.style.background='#C66060';gradeBox.style.color='#fff';}
+  }
+
+  // 코칭 인사이트
+  var ins=document.getElementById('insight-text');
+  if(ins){
+    var hasLevel=EXTRA.korean>0||EXTRA.english>0||EXTRA.image>0;
+    if(!hasAnyScore && !hasLevel){
+      ins.innerHTML='👋 <b>아직 분석 데이터가 없습니다.</b><br>레벨테스트로 출발 점수를 진단하고, 커리큘럼에서 첫 연습을 시작하면 본인만의 합격 패턴이 그래프로 그려져요.';
+    } else if(!hasAnyScore && hasLevel){
+      ins.innerHTML='✨ <b>레벨테스트 완료!</b> 이제 커리큘럼에서 면접 연습을 진행하면 5개 핵심 역량(유창성·자신감·내용 구성·발음·서비스 마인드) 점수가 누적됩니다.';
+    } else if(overall<60){
+      ins.innerHTML='🌱 <b>지금이 가장 빠르게 오를 구간이에요.</b> 약점 영역에 집중하면 평균 점수가 빠르게 상승합니다. 매일 한 단계씩 — 꾸준함이 합격의 비밀입니다.';
+    } else if(overall<80){
+      ins.innerHTML='📈 <b>안정 궤도 진입.</b> 보완 영역만 끌어올리면 평균 80+ 진입이 보입니다. 약한 항목 위주로 추가 연습을 권장해요.';
+    } else {
+      ins.innerHTML='🏆 <b>합격권 진입.</b> 강점은 유지하면서 디테일(말의 흐름·답변 짜임새)만 다듬으면 외항사 파이널까지 충분합니다.';
+    }
+  }
+
+  // 강점·약점
+  var coreLabels=['유창성','자신감','내용 구성','발음','서비스 마인드'];
+  var sV=document.getElementById('strength-val');
+  var wV=document.getElementById('weakness-val');
+  if(hasAnyScore){
+    var maxIdx=0,minIdx=0;
+    for(var i=1;i<coreVals.length;i++){
+      if(coreVals[i]>coreVals[maxIdx])maxIdx=i;
+      if(coreVals[i]<coreVals[minIdx])minIdx=i;
+    }
+    if(sV)sV.innerHTML=coreLabels[maxIdx]+' <small>'+coreVals[maxIdx]+'점 · 가장 안정적인 영역</small>';
+    if(wV)wV.innerHTML=coreLabels[minIdx]+' <small>'+coreVals[minIdx]+'점 · 집중 보완 권장</small>';
+  } else {
+    if(sV)sV.innerHTML='- <small>연습 기록 후 표시</small>';
+    if(wV)wV.innerHTML='- <small>연습 기록 후 표시</small>';
+  }
+
+  // 분석 테이블
   var rows=[
     {n:'유창성',v:SCORES.fluency,h:'말의 흐름·끊김 없는 전달'},
     {n:'자신감',v:SCORES.confidence,h:'목소리 톤·태도'},
@@ -374,15 +393,18 @@ if(hasAnyScore){
     {n:'이미지·표정',v:EXTRA.image,h:'레벨테스트 기반'}
   ];
   var tb=document.getElementById('analysis-tbody');
-  if(!tb)return;
-  tb.innerHTML=rows.map(function(r){
-    var s=statusOf(r.v);
-    return '<tr><td class="name-cell">'+r.n+'<div style="font-size:0.7rem;color:var(--text-muted);font-weight:400;margin-top:2px;">'+r.h+'</div></td><td class="score-cell">'+r.v+'</td><td class="status-cell"><span class="status-pill '+s.cls+'">'+s.text+'</span></td></tr>';
-  }).join('');
-})();
+  if(tb){
+    tb.innerHTML=rows.map(function(r){
+      var s=statusOf(r.v);
+      return '<tr><td class="name-cell">'+r.n+'<div style="font-size:0.7rem;color:var(--text-muted);font-weight:400;margin-top:2px;">'+r.h+'</div></td><td class="score-cell">'+r.v+'</td><td class="status-cell"><span class="status-pill '+s.cls+'">'+s.text+'</span></td></tr>';
+    }).join('');
+  }
 
-// 레이더 차트 (Canvas) — 고해상도 + 강조 렌더
-(function(){
+  // 레이더 차트
+  drawRadar();
+}
+
+function drawRadar(){
   var c=document.getElementById('radar');
   if(!c)return;
   var ctx=c.getContext('2d');
@@ -498,7 +520,10 @@ if(hasAnyScore){
     var y=cy+Math.sin(a)*(r+58);
     ctx.fillText(labels[i],x,y+8);
   }
-})();
+}
+
+// 초기 1회 렌더 (localStorage 기반) — supabase fetch 후 한 번 더 갱신됨
+renderAll();
 
 // 토큰/출석 로드
 var td=JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');
@@ -554,27 +579,53 @@ if(daily){
   }
 }
 
-// Supabase에서 실제 연습 기록 로드
+// Supabase에서 실제 연습 기록 로드 → 점수 평균 → SCORES 갱신
 (async function(){
   try{
     var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
     if(!u.id||typeof getSupabase!=='function')return;
-    var sb=getSupabase();
+    // supabase-client.js 비동기 초기화 대기 (최대 6초)
+    var sb=null;
+    for(var t=0;t<30&&!sb;t++){
+      sb=getSupabase();
+      if(!sb)await new Promise(function(r){setTimeout(r,200);});
+    }
     if(!sb)return;
-    var {data:records}=await sb.from('practice_records').select('*').eq('user_id',u.id).order('created_at',{ascending:false}).limit(10);
-    if(!records||!records.length)return;
+    var {data:records}=await sb.from('practice_records').select('*').eq('user_id',u.id).order('created_at',{ascending:false}).limit(50);
+    if(!records||!records.length){
+      // 레벨테스트만 있고 연습 기록 없는 경우 — level_results supabase 폴백
+      try{
+        var {data:lvl}=await sb.from('level_results').select('*').eq('user_id',u.id).order('created_at',{ascending:false}).limit(1).maybeSingle();
+        if(lvl&&typeof lvl.score==='number'&&lvl.score>0){
+          if(!EXTRA.korean&&!EXTRA.english&&!EXTRA.image){
+            // 한국어/영어/이미지 분리 데이터 없으면 종합 score 를 한국어 기준으로 표시 (모국어 가정)
+            EXTRA.korean=lvl.score;
+            renderAll();
+          }
+        }
+      }catch(e){}
+      return;
+    }
+    // 점수 평균 → SCORES (카테고리별 점수가 별도 저장되지 않으므로 균등 적용)
+    var scoresOnly=records.filter(function(r){return typeof r.score==='number'&&r.score>0;});
+    if(scoresOnly.length){
+      var avg=Math.round(scoresOnly.reduce(function(s,r){return s+r.score;},0)/scoresOnly.length);
+      SCORES={fluency:avg,confidence:avg,structure:avg,pronunciation:avg,service:avg};
+      try{localStorage.setItem('wc_skill_scores',JSON.stringify(SCORES));}catch(e){}
+      renderAll();
+    }
+    // 최근 10개 행만 테이블 표시
     var tbl=document.getElementById('practice-table');
-    // 기존 '기록 없음' 행 제거
     var empty=document.getElementById('practice-empty');if(empty)empty.remove();
-    records.forEach(function(r){
+    records.slice(0,10).forEach(function(r){
       var date=(r.created_at||'').slice(0,10);
       var fb=(r.feedback||'').replace(/\*\*/g,'').substring(0,60);
-      var score=r.score||'-';
+      var score=(typeof r.score==='number'&&r.score>0)?r.score:'-';
       var tr=document.createElement('tr');
       tr.innerHTML='<td>'+date+'</td><td>'+(r.airline||'-')+'</td><td>'+(r.stage||'-')+'</td><td style="color:var(--gold);font-weight:700;">'+score+'</td><td>'+fb+'</td>';
       tbl.appendChild(tr);
     });
-  }catch(e){}
+  }catch(e){console.warn('[my-progress fetch]',e);}
 })();
 
 // 자동 환불 신청 — 시스템이 자동 판정 (7일 + 사용 여부)

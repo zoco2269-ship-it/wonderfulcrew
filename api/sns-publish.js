@@ -39,7 +39,7 @@ module.exports = async function handler(req, res) {
   const fullText = `${item.text}\n\n${item.hashtags || ''}`.trim();
 
   // 카드 이미지 URL (인스타·페이스북용)
-  const cardUrl = `https://wonderfulcrew.com/api/og-card?title=${encodeURIComponent(item.title_short || item.topic.slice(0,30))}&subtitle=${encodeURIComponent(item.persona === 'coach' ? '7년차 에미레이트 출신 코치' : item.persona === 'mentor' ? '13년 경력 면접 멘토' : item.persona === 'success' ? '합격생 후기' : '데이터 인사이트')}&tag=${encodeURIComponent(item.lang === 'en' ? 'CABIN CREW INSIGHT' : '원더풀크루 인사이트')}`;
+  const cardUrl = `https://www.wonderfulcrew.com/api/og-card?title=${encodeURIComponent(item.title_short || item.topic.slice(0,30))}&subtitle=${encodeURIComponent(item.persona === 'coach' ? '7년차 에미레이트 출신 코치' : item.persona === 'mentor' ? '13년 경력 면접 멘토' : item.persona === 'success' ? '합격생 후기' : '데이터 인사이트')}&tag=${encodeURIComponent(item.lang === 'en' ? 'CABIN CREW INSIGHT' : '원더풀크루 인사이트')}`;
 
   // ─── 1) Threads (Meta) ───
   const threadsToken = process.env.THREADS_ACCESS_TOKEN;

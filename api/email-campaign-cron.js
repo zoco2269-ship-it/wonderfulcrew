@@ -26,13 +26,13 @@ const TEMPLATES = {
     지금 바로 <b>무료 모의면접 10회</b>를 시작하실 수 있어요.
   </p>
   <div style="margin:32px 0;text-align:center;">
-    <a href="https://wonderfulcrew.com/leveltest" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;text-decoration:none;border-radius:24px;font-weight:600;">무료 면접 시작하기 →</a>
+    <a href="https://www.wonderfulcrew.com/leveltest" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;text-decoration:none;border-radius:24px;font-weight:600;">무료 면접 시작하기 →</a>
   </div>
   <p style="font-size:0.86rem;color:#888;line-height:1.7;">
     💡 <b>오늘의 합격 팁</b>: 외항사 면접의 첫인상은 워킹·미소·시선 처리에서 결정됩니다. AI 면접 코치가 24시간 동안 귀찮을 만큼 연습시켜드려요.
   </p>
 </div>
-<div style="text-align:center;font-size:0.74rem;color:#888;margin-top:20px;">© 2026 WonderfulCrew · <a href="https://wonderfulcrew.com" style="color:#C9A84C;">wonderfulcrew.com</a></div>
+<div style="text-align:center;font-size:0.74rem;color:#888;margin-top:20px;">© 2026 WonderfulCrew · <a href="https://www.wonderfulcrew.com" style="color:#C9A84C;">wonderfulcrew.com</a></div>
 </body></html>
     `
   },
@@ -55,7 +55,7 @@ const TEMPLATES = {
     <p style="font-size:0.88rem;color:#4A4438;line-height:1.7;">한국 거주 / 가족 가까이 / 토익 700+ 영어</p>
   </div>
   <div style="margin:32px 0;text-align:center;">
-    <a href="https://wonderfulcrew.com/leveltest" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;text-decoration:none;border-radius:24px;font-weight:600;">맞춤 항공사 진단 →</a>
+    <a href="https://www.wonderfulcrew.com/leveltest" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;text-decoration:none;border-radius:24px;font-weight:600;">맞춤 항공사 진단 →</a>
   </div>
 </div></body></html>
     `
@@ -77,7 +77,7 @@ const TEMPLATES = {
     <tr><td style="padding:12px;background:rgba(201,168,76,0.06);"><b>프리미엄 ⭐</b></td><td>2,500,000원/년</td><td>+ 1:1 코치 + 강의 + 라이브</td></tr>
   </table>
   <div style="margin:32px 0;text-align:center;">
-    <a href="https://wonderfulcrew.com/plans" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;text-decoration:none;border-radius:24px;font-weight:600;">요금제 자세히 보기 →</a>
+    <a href="https://www.wonderfulcrew.com/plans" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;text-decoration:none;border-radius:24px;font-weight:600;">요금제 자세히 보기 →</a>
   </div>
 </div></body></html>
     `
@@ -98,7 +98,7 @@ const TEMPLATES = {
     <li>✨ AI 면접 코치 업데이트 (대답 분석 정확도 ↑)</li>
   </ul>
   <div style="margin:32px 0;text-align:center;">
-    <a href="https://wonderfulcrew.com/jobs" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;text-decoration:none;border-radius:24px;font-weight:600;">새 채용공고 확인 →</a>
+    <a href="https://www.wonderfulcrew.com/jobs" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;text-decoration:none;border-radius:24px;font-weight:600;">새 채용공고 확인 →</a>
   </div>
 </div></body></html>
     `

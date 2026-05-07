@@ -11,4 +11,4 @@ Disallow: /deposit-request
 Disallow: /emirates-step2-select
 Disallow: /api/
 
-Sitemap: https://wonderfulcrew.com/sitemap.xml
+Sitemap: https://www.wonderfulcrew.com/sitemap.xml

@@ -1,6 +1,6 @@
 // 이노페이 Webhook — 결제/환불/취소 자동 처리
 // 이노페이 가맹점 admin 에서 webhook URL 등록:
-//   https://wonderfulcrew.com/api/innopay-webhook
+//   https://www.wonderfulcrew.com/api/innopay-webhook
 const { createClient } = require('@supabase/supabase-js');
 
 module.exports = async function handler(req, res) {

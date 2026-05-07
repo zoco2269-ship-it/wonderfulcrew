@@ -14,12 +14,12 @@ module.exports = async function(req, res) {
     return res.status(403).json({ error: 'unauthorized' });
   }
 
-  const sitemapUrl = encodeURIComponent('https://wonderfulcrew.com/sitemap.xml');
+  const sitemapUrl = encodeURIComponent('https://www.wonderfulcrew.com/sitemap.xml');
   const pings = [
     // Google ping endpoint (deprecated 2023 — IndexNow 권장)
     { name: 'Google',     url: 'https://www.google.com/ping?sitemap=' + sitemapUrl },
     // Bing IndexNow (Bing·Yandex·Naver 등 IndexNow 지원 검색 엔진 모두 알림)
-    { name: 'IndexNow',   url: 'https://api.indexnow.org/indexnow?url=' + encodeURIComponent('https://wonderfulcrew.com/') + '&key=' + (process.env.INDEXNOW_KEY || 'wonderfulcrew2026') },
+    { name: 'IndexNow',   url: 'https://api.indexnow.org/indexnow?url=' + encodeURIComponent('https://www.wonderfulcrew.com/') + '&key=' + (process.env.INDEXNOW_KEY || 'wonderfulcrew2026') },
     // Yandex ping
     { name: 'Yandex',     url: 'https://webmaster.yandex.com/ping?sitemap=' + sitemapUrl },
   ];
@@ -36,7 +36,7 @@ module.exports = async function(req, res) {
 
   return res.json({
     ok: true,
-    sitemap: 'https://wonderfulcrew.com/sitemap.xml',
+    sitemap: 'https://www.wonderfulcrew.com/sitemap.xml',
     runAt: new Date().toISOString(),
     results: results,
     note: '구글은 ping endpoint deprecated. Search Console 자동 크롤 + IndexNow (Bing·Yandex·Naver) 가 핵심.'

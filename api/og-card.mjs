@@ -6,7 +6,7 @@ export const config = { runtime: 'edge' };
 
 // 페르소나별 배경 이미지 풀 — 같은 페르소나라도 제목 해시로 매번 다른 사진 사용
 // 풀 안에서 원하는 사진 강제하려면 ?img=별칭 파라미터로 override 가능
-const BASE = 'https://wonderfulcrew.com/images';
+const BASE = 'https://www.wonderfulcrew.com/images';
 const PERSONA_BG_POOL = {
   // 7년차 에미레이트 출신 코치 — 대표 본인 + 강의 장면
   coach: [

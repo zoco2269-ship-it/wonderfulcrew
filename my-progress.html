@@ -534,20 +534,43 @@ document.getElementById('p-streak').textContent=att.streak||0;
 document.getElementById('p-total').textContent=att.total||0;
 document.getElementById('p-best').textContent=att.bestStreak||att.streak||0;
 
-// 출석 캘린더
-var today=new Date();var y=today.getFullYear(),m=today.getMonth();
-var first=new Date(y,m,1).getDay();var last=new Date(y,m+1,0).getDate();
-var attDays=JSON.parse(localStorage.getItem('wc_att_days')||'[]');
-var cal=document.getElementById('p-cal');
-['일','월','화','수','목','금','토'].forEach(function(w){var e=document.createElement('div');e.className='dow';e.textContent=w;cal.appendChild(e);});
-for(var i=0;i<first;i++){var e=document.createElement('div');e.className='day';cal.appendChild(e);}
-for(var d=1;d<=last;d++){
-  var e=document.createElement('div');e.className='day';e.textContent=d;
-  var key=y+'-'+(m+1<10?'0':'')+(m+1)+'-'+(d<10?'0':'')+d;
-  if(attDays.indexOf(key)>-1)e.classList.add('done');
-  if(d===today.getDate())e.classList.add('today');
-  cal.appendChild(e);
+// 출석 캘린더 (KST 기준, Supabase practice_records 도착 시 갱신)
+function _kstKey(d){return new Date(d).toLocaleDateString('sv-SE',{timeZone:'Asia/Seoul'});}
+function _nextDay(k){var d=new Date(k+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+1);return d.toISOString().slice(0,10);}
+function _prevDay(k){var d=new Date(k+'T00:00:00Z');d.setUTCDate(d.getUTCDate()-1);return d.toISOString().slice(0,10);}
+function renderAttendance(attDays){
+  var today=new Date();var y=today.getFullYear(),m=today.getMonth();
+  var first=new Date(y,m,1).getDay();var last=new Date(y,m+1,0).getDate();
+  var cal=document.getElementById('p-cal');if(!cal)return;
+  cal.innerHTML='';
+  ['일','월','화','수','목','금','토'].forEach(function(w){var e=document.createElement('div');e.className='dow';e.textContent=w;cal.appendChild(e);});
+  for(var i=0;i<first;i++){var e=document.createElement('div');e.className='day';cal.appendChild(e);}
+  var todayK=_kstKey(today);
+  for(var d=1;d<=last;d++){
+    var e=document.createElement('div');e.className='day';e.textContent=d;
+    var key=y+'-'+(m+1<10?'0':'')+(m+1)+'-'+(d<10?'0':'')+d;
+    if(attDays.indexOf(key)>-1)e.classList.add('done');
+    if(key===todayK)e.classList.add('today');
+    cal.appendChild(e);
+  }
 }
+function computeStreakStats(attDaysSorted){
+  var total=attDaysSorted.length;
+  if(!total)return {streak:0,total:0,best:0};
+  var set={};attDaysSorted.forEach(function(x){set[x]=1;});
+  var best=1,cur=1;
+  for(var i=1;i<attDaysSorted.length;i++){
+    if(_nextDay(attDaysSorted[i-1])===attDaysSorted[i]){cur++;if(cur>best)best=cur;}
+    else cur=1;
+  }
+  var todayK=_kstKey(new Date());
+  var streak=0,k=todayK;
+  if(!set[k])k=_prevDay(k); // 오늘 없으면 어제부터 카운트
+  while(set[k]){streak++;k=_prevDay(k);}
+  return {streak:streak,total:total,best:best};
+}
+// 초기 1회 (localStorage 폴백)
+renderAttendance(JSON.parse(localStorage.getItem('wc_att_days')||'[]'));
 
 // 목표 항공사
 var saved=localStorage.getItem('wc_target');
@@ -614,6 +637,19 @@ if(daily){
       try{localStorage.setItem('wc_skill_scores',JSON.stringify(SCORES));}catch(e){}
       renderAll();
     }
+    // 출석 = 모든 practice_records 의 created_at unique 날짜 (KST)
+    try{
+      var allRecords=await sb.from('practice_records').select('created_at').eq('user_id',u.id);
+      var dates=(allRecords.data||[]).map(function(r){return _kstKey(r.created_at);});
+      var uniq={};dates.forEach(function(d){uniq[d]=1;});
+      var attDays=Object.keys(uniq).sort();
+      try{localStorage.setItem('wc_att_days',JSON.stringify(attDays));}catch(e){}
+      renderAttendance(attDays);
+      var st=computeStreakStats(attDays);
+      document.getElementById('p-streak').textContent=st.streak;
+      document.getElementById('p-total').textContent=st.total;
+      document.getElementById('p-best').textContent=st.best;
+    }catch(e){console.warn('[attendance]',e);}
     // 최근 10개 행만 테이블 표시
     var tbl=document.getElementById('practice-table');
     var empty=document.getElementById('practice-empty');if(empty)empty.remove();

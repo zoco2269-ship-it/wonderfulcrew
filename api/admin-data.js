@@ -126,6 +126,32 @@ module.exports = async function(req, res) {
       return res.json({ ok: true, payments: enriched });
     }
 
+    if (scope === 'user-history') {
+      // 특정 사용자의 페이지 방문 + AI 호출 시퀀스 — 어디 갔고 무엇을 시도했는지 진단
+      const targetEmail = String(req.body.targetEmail || '').trim().toLowerCase();
+      if (!targetEmail) return res.status(400).json({ error: 'targetEmail required' });
+      // 1) auth_id 찾기
+      const { data: u } = await sb.from('users').select('auth_id, email, name, phone, age, region, edu, apply_exp, eng_level, free_trial_used, plan, plan_active, created_at').ilike('email', targetEmail).maybeSingle();
+      if (!u || !u.auth_id) return res.json({ ok: true, found: false });
+      const since = new Date(Date.now() - 30*24*60*60*1000).toISOString();
+      const [{ data: visits }, { data: prs }, { data: fbs }, { data: vrs }, { data: lvls }] = await Promise.all([
+        sb.from('page_visits').select('page, visited_at').eq('user_id', u.auth_id).gte('visited_at', since).order('visited_at', { ascending: true }).limit(500),
+        sb.from('practice_records').select('id, airline, stage, score, created_at').eq('user_id', u.auth_id).order('created_at', { ascending: false }).limit(50),
+        sb.from('ai_feedback').select('id, page, created_at').eq('user_id', u.auth_id).order('created_at', { ascending: false }).limit(50),
+        sb.from('video_records').select('id, type, airline, created_at').eq('user_id', u.auth_id).order('created_at', { ascending: false }).limit(50),
+        sb.from('level_results').select('score, level, created_at').eq('user_id', u.auth_id).order('created_at', { ascending: false }).limit(10)
+      ]);
+      return res.json({
+        ok: true, found: true,
+        user: u,
+        visits: visits || [],
+        practice_records: prs || [],
+        ai_feedback: fbs || [],
+        video_records: vrs || [],
+        level_results: lvls || []
+      });
+    }
+
     if (scope === 'profile-funnel') {
       // profile-setup 흐름 비콘 — 최근 7일, 사용자별 단계 시퀀스 + 단계별 카운트
       const since = new Date(Date.now() - 7*24*60*60*1000).toISOString();

@@ -108,6 +108,18 @@ textarea{min-height:80px;resize:vertical;}
     <div class="stat-box clickable" onclick="showPage('members')" style="background:linear-gradient(135deg,#fff,rgba(46,125,50,0.05));"><div class="num">-</div><div class="lbl">7일 방문자 (고유)</div></div>
     <div class="stat-box clickable" onclick="showPage('members')" style="background:linear-gradient(135deg,#fff,rgba(46,125,50,0.05));"><div class="num">-</div><div class="lbl">7일 페이지뷰</div></div>
   </div>
+  <div class="card" style="background:#fff;border-left:4px solid #1565C0;margin-top:24px;">
+    <h3 style="color:#1565C0;">🔍 사용자 행동 추적 — 이메일로 전체 시퀀스 조회</h3>
+    <p style="font-size:0.84rem;color:var(--text-mid);line-height:1.7;margin-bottom:12px;">
+      특정 사용자가 어떤 페이지 방문했고, 실제 AI 연습/면접 했는지 — 페이지 시퀀스 + ai_feedback/practice_records/video_records/level_results 한 번에 조회. (예: 강수빈이 무료체험 0회인 이유)
+    </p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;">
+      <input id="uh-email" type="email" placeholder="대상 이메일 (예: a34411241@gmail.com)" style="flex:1;min-width:240px;padding:9px 12px;border:1px solid #1565C0;border-radius:6px;font-family:inherit;font-size:0.86rem;">
+      <button onclick="loadUserHistory()" class="btn-sm gold">조회</button>
+    </div>
+    <div id="uh-result" style="font-size:0.84rem;"></div>
+  </div>
+
   <div class="card" style="background:#fff;border-left:4px solid #C62828;margin-top:24px;">
     <h3 style="color:#C62828;">🩺 가입 흐름 진단 — profile-setup 막힘 추적</h3>
     <p style="font-size:0.84rem;color:var(--text-mid);line-height:1.7;margin-bottom:12px;">
@@ -661,6 +673,58 @@ function _wcFmtRev(v){
   var man = v / 10000;
   if (man === Math.floor(man)) return Math.floor(man).toLocaleString() + '만원';
   return man.toFixed(1) + '만원';
+}
+
+async function loadUserHistory(){
+  var email=document.getElementById('uh-email').value.trim();
+  var el=document.getElementById('uh-result');
+  if(!email){el.innerHTML='<span style="color:#C62828;">이메일 입력 필요</span>';return;}
+  el.innerHTML='<span style="color:var(--text-muted);">조회 중...</span>';
+  try{
+    var r=await fetch('/api/admin-data',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({adminEmail:_adminEmail(),scope:'user-history',targetEmail:email})});
+    var d=await r.json();
+    if(!d||!d.ok){el.innerHTML='<span style="color:#C62828;">로드 실패</span>';return;}
+    if(!d.found){el.innerHTML='<span style="color:var(--text-muted);">사용자 못 찾음 — 이메일 확인.</span>';return;}
+    var u=d.user;
+    var html='<div style="background:#F5F2EA;padding:10px 14px;border-radius:6px;margin-bottom:14px;">'
+      +'<b>'+(u.name||'-')+'</b> · '+(u.email||'-')+'<br>'
+      +'<span style="font-size:0.8rem;color:var(--text-mid);">'
+      +'전화: '+(u.phone||'-')+' · 나이: '+(u.age||'-')+' · 지역: '+(u.region||'-')+'<br>'
+      +'교육: '+(u.edu||'-')+' · 지원: '+(u.apply_exp||'-')+' · 영어: '+(u.eng_level||'-')+'<br>'
+      +'플랜: '+(u.plan||'free')+' (active='+u.plan_active+') · 무료체험 사용: <b>'+(u.free_trial_used||0)+'/10</b> · 가입: '+(u.created_at||'').slice(0,10)
+      +'</span></div>';
+    // page visits 시퀀스
+    html+='<div style="margin-bottom:14px;"><b>📍 페이지 방문 시퀀스 ('+d.visits.length+'건, 최근 30일):</b><div style="max-height:300px;overflow-y:auto;background:#fff;border:1px solid #eee;padding:10px;margin-top:6px;font-family:monospace;font-size:0.78rem;line-height:1.7;">';
+    if(!d.visits.length) html+='<span style="color:var(--text-muted);">방문 기록 없음</span>';
+    else d.visits.forEach(function(v){
+      var t=(v.visited_at||'').replace('T',' ').slice(0,16);
+      var p=v.page||'';
+      var color=p.indexOf('profile-setup:')===0?'#E65100':(['interview-practice','roleplay-practice','discussion','smalltalk','final','chatbot','word-shooting','ai-coach','debate-practice','walking-analysis','video-practice'].some(function(s){return p.indexOf(s)>=0;})?'#2E7D32':'#666');
+      html+='<div style="color:'+color+';">'+t+' &nbsp; '+p+'</div>';
+    });
+    html+='</div></div>';
+    // 실제 AI 연습 기록
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
+    html+='<div><b>🎯 practice_records ('+d.practice_records.length+'건)</b><div style="max-height:200px;overflow-y:auto;background:#fff;border:1px solid #eee;padding:8px;font-size:0.78rem;">';
+    if(!d.practice_records.length) html+='<span style="color:var(--text-muted);">없음</span>';
+    else d.practice_records.forEach(function(p){html+='<div>'+(p.created_at||'').slice(0,16).replace('T',' ')+' · '+(p.stage||'-')+' · '+(p.airline||'-')+' · '+(p.score!=null?p.score+'점':'-')+'</div>';});
+    html+='</div></div>';
+    html+='<div><b>💬 ai_feedback ('+d.ai_feedback.length+'건)</b><div style="max-height:200px;overflow-y:auto;background:#fff;border:1px solid #eee;padding:8px;font-size:0.78rem;">';
+    if(!d.ai_feedback.length) html+='<span style="color:var(--text-muted);">없음</span>';
+    else d.ai_feedback.forEach(function(f){html+='<div>'+(f.created_at||'').slice(0,16).replace('T',' ')+' · '+(f.page||'-')+'</div>';});
+    html+='</div></div>';
+    html+='<div><b>🎥 video_records ('+d.video_records.length+'건)</b><div style="max-height:200px;overflow-y:auto;background:#fff;border:1px solid #eee;padding:8px;font-size:0.78rem;">';
+    if(!d.video_records.length) html+='<span style="color:var(--text-muted);">없음</span>';
+    else d.video_records.forEach(function(v){html+='<div>'+(v.created_at||'').slice(0,16).replace('T',' ')+' · '+(v.type||'-')+' · '+(v.airline||'-')+'</div>';});
+    html+='</div></div>';
+    html+='<div><b>📊 level_results ('+d.level_results.length+'건)</b><div style="max-height:200px;overflow-y:auto;background:#fff;border:1px solid #eee;padding:8px;font-size:0.78rem;">';
+    if(!d.level_results.length) html+='<span style="color:var(--text-muted);">없음</span>';
+    else d.level_results.forEach(function(l){html+='<div>'+(l.created_at||'').slice(0,16).replace('T',' ')+' · '+(l.level||'-')+' · '+(l.score||'-')+'점</div>';});
+    html+='</div></div>';
+    html+='</div>';
+    el.innerHTML=html;
+  }catch(e){el.innerHTML='<span style="color:#C62828;">오류: '+e.message+'</span>';}
 }
 
 async function loadFunnel(){

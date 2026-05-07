@@ -126,6 +126,46 @@ module.exports = async function(req, res) {
       return res.json({ ok: true, payments: enriched });
     }
 
+    if (scope === 'profile-funnel') {
+      // profile-setup 흐름 비콘 — 최근 7일, 사용자별 단계 시퀀스 + 단계별 카운트
+      const since = new Date(Date.now() - 7*24*60*60*1000).toISOString();
+      const { data: visits } = await sb.from('page_visits')
+        .select('user_id, email, page, visited_at')
+        .like('page', 'profile-setup:%')
+        .gte('visited_at', since)
+        .order('visited_at', { ascending: false })
+        .limit(2000);
+      const all = visits || [];
+      // 단계별 고유 사용자 카운트
+      const stageUsers = {};
+      all.forEach(v => {
+        const stage = v.page.replace(/^profile-setup:/, '');
+        if (!stageUsers[stage]) stageUsers[stage] = new Set();
+        stageUsers[stage].add(v.user_id);
+      });
+      const funnel = {};
+      Object.keys(stageUsers).forEach(s => { funnel[s] = stageUsers[s].size; });
+      // 사용자별 시퀀스 (최근 30명)
+      const byUser = {};
+      all.forEach(v => {
+        if (!byUser[v.user_id]) byUser[v.user_id] = { email: v.email || '', steps: [] };
+        byUser[v.user_id].steps.push({ stage: v.page.replace(/^profile-setup:/, ''), at: v.visited_at });
+      });
+      const userList = Object.keys(byUser).map(uid => {
+        const u = byUser[uid];
+        u.steps.sort((a,b) => new Date(a.at) - new Date(b.at));
+        return {
+          user_id: uid,
+          email: u.email,
+          first_at: u.steps[0]?.at,
+          last_at: u.steps[u.steps.length-1]?.at,
+          last_stage: u.steps[u.steps.length-1]?.stage,
+          steps: u.steps.map(s => s.stage)
+        };
+      }).sort((a,b) => new Date(b.last_at) - new Date(a.last_at)).slice(0, 30);
+      return res.json({ ok: true, funnel, users: userList, totalEvents: all.length });
+    }
+
     if (scope === 'feedback-requests') {
       const { data: reqs } = await sb.from('coach_requests').select('*').order('created_at', { ascending: false }).limit(100);
       return res.json({ ok: true, requests: reqs || [] });

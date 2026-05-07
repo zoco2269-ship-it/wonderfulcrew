@@ -108,6 +108,15 @@ textarea{min-height:80px;resize:vertical;}
     <div class="stat-box clickable" onclick="showPage('members')" style="background:linear-gradient(135deg,#fff,rgba(46,125,50,0.05));"><div class="num">-</div><div class="lbl">7일 방문자 (고유)</div></div>
     <div class="stat-box clickable" onclick="showPage('members')" style="background:linear-gradient(135deg,#fff,rgba(46,125,50,0.05));"><div class="num">-</div><div class="lbl">7일 페이지뷰</div></div>
   </div>
+  <div class="card" style="background:#fff;border-left:4px solid #C62828;margin-top:24px;">
+    <h3 style="color:#C62828;">🩺 가입 흐름 진단 — profile-setup 막힘 추적</h3>
+    <p style="font-size:0.84rem;color:var(--text-mid);line-height:1.7;margin-bottom:12px;">
+      신규 가입자가 <code>profile-setup</code> 어디 단계에서 이탈하는지 실시간 추적. 단계별 사용자 수 + 사용자별 흐름 시퀀스. (최근 7일, page_visits 비콘)
+    </p>
+    <button class="btn-sm gold" onclick="loadFunnel()">새로고침</button>
+    <div id="funnel-result" style="margin-top:14px;font-size:0.84rem;"></div>
+  </div>
+
   <div class="card" style="background:#fff;border-left:4px solid #2E7D32;margin-top:24px;">
     <h3 style="color:#2E7D32;">🚀 론칭 환경변수 체크</h3>
     <p style="font-size:0.86rem;color:var(--text-mid);line-height:1.7;margin-bottom:12px;">
@@ -652,6 +661,42 @@ function _wcFmtRev(v){
   var man = v / 10000;
   if (man === Math.floor(man)) return Math.floor(man).toLocaleString() + '만원';
   return man.toFixed(1) + '만원';
+}
+
+async function loadFunnel(){
+  var el=document.getElementById('funnel-result');
+  el.innerHTML='<span style="color:var(--text-muted);">로드 중...</span>';
+  var d=await fetchAdmin('profile-funnel');
+  if(!d||!d.ok){el.innerHTML='<span style="color:#C62828;">로드 실패</span>';return;}
+  if(!d.totalEvents){
+    el.innerHTML='<div style="color:var(--text-muted);">아직 비콘 데이터가 없습니다 — 신규 가입자 1명 들어오면 표시됩니다.</div>';
+    return;
+  }
+  // 단계별 카운트 — 흐름 순서대로
+  var STAGE_ORDER=['script-init','iife-start','sb-not-ready-8s','draft-restored','form-shown','submit-click','submit-invalid','submit-no-token','submit-success','submit-network-err'];
+  var f=d.funnel||{};
+  var allStages=Object.keys(f);
+  var ordered=STAGE_ORDER.filter(function(s){return f[s];}).concat(allStages.filter(function(s){return STAGE_ORDER.indexOf(s)<0;}));
+  var funnelHtml='<div style="margin-bottom:14px;"><b>단계별 고유 사용자 (최근 7일, 총 '+d.totalEvents+'건):</b><br>';
+  ordered.forEach(function(s){
+    var n=f[s]||0;
+    var color=s.indexOf('success')>=0?'#2E7D32':(s.indexOf('fail')>=0||s.indexOf('no-token')>=0||s.indexOf('not-ready')>=0||s.indexOf('network-err')>=0||s.indexOf('invalid')>=0?'#C62828':'var(--text-mid)');
+    funnelHtml+='<div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #eee;"><code style="color:'+color+';min-width:200px;font-size:0.82rem;">'+s+'</code><b style="font-size:0.95rem;">'+n+'명</b></div>';
+  });
+  funnelHtml+='</div>';
+  // 사용자별 시퀀스
+  if(d.users&&d.users.length){
+    funnelHtml+='<div style="margin-top:18px;"><b>사용자별 흐름 (최근 30명):</b><table style="margin-top:8px;font-size:0.78rem;"><tr><th>이메일</th><th>마지막 단계</th><th>전체 흐름</th><th>마지막 시각</th></tr>';
+    d.users.forEach(function(u){
+      var last=u.last_stage||'';
+      var lastColor=last.indexOf('success')>=0?'#2E7D32':(last.indexOf('fail')>=0||last.indexOf('no-token')>=0||last.indexOf('network-err')>=0?'#C62828':'#E65100');
+      var seq=(u.steps||[]).join(' → ');
+      var when=(u.last_at||'').replace('T',' ').slice(0,16);
+      funnelHtml+='<tr><td>'+(u.email||'-')+'</td><td><code style="color:'+lastColor+';font-size:0.78rem;">'+last+'</code></td><td style="font-size:0.74rem;color:var(--text-muted);">'+seq+'</td><td>'+when+'</td></tr>';
+    });
+    funnelHtml+='</table></div>';
+  }
+  el.innerHTML=funnelHtml;
 }
 
 async function loadOverview(){

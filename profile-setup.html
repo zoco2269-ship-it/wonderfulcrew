@@ -89,20 +89,33 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 </div>
 </div>
 <script>
+// === 진단 비콘 — admin 에 흐름 추적 (page_visits 테이블) ===
+function wcTrace(label){
+  try{
+    var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+    if(!u||!u.id) return;
+    fetch('/api/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:u.id,email:u.email||'',page:'profile-setup:'+label})}).catch(function(){});
+  }catch(e){}
+}
+wcTrace('script-init');
+
 // 로그인 안 된 상태면 로그인 페이지로 + 서버 기준으로 프로필 입력 여부 확인
 (async function(){
   if(!localStorage.getItem('wc_user')){
     location.replace('login.html');
     return;
   }
+  wcTrace('iife-start');
   // Supabase 로딩 대기 후 서버에서 phone 컬럼 확인 (localStorage 플래그보다 우선)
+  // 모바일/저속망에서 supabase-client.js 초기화가 늦을 수 있어 8초까지 대기
   try{
     var sb=null;
-    for(var i=0;i<30;i++){
+    for(var i=0;i<80;i++){
       sb=(typeof getSupabase==='function')?getSupabase():null;
       if(sb) break;
       await new Promise(function(r){setTimeout(r,100);});
     }
+    if(!sb) wcTrace('sb-not-ready-8s');
     if(sb){
       var sess=await sb.auth.getSession();
       var authId=sess&&sess.data&&sess.data.session&&sess.data.session.user&&sess.data.session.user.id;
@@ -134,7 +147,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
       em.style.color='#8A8070';
     }
   }catch(e){}
+
+  // draft 복원 — 직전 시도에서 저장 실패한 사용자가 다시 들어왔을 때 입력 사라짐 방지
+  try{
+    var draft=JSON.parse(localStorage.getItem('wc_profile')||'null');
+    if(draft && typeof draft==='object'){
+      var setIf=function(id,val){var el=document.getElementById(id);if(el&&!el.value&&val) el.value=String(val);};
+      setIf('f-name',draft.name);
+      setIf('f-age',draft.age);
+      setIf('f-region',draft.region);
+      setIf('f-phone',draft.phone);
+      // email 은 readonly 가 아닐 때만
+      var emEl=document.getElementById('f-email');
+      if(emEl && !emEl.readOnly && !emEl.value && draft.email) emEl.value=draft.email;
+      // 라디오
+      ['edu','apply','eng'].forEach(function(group){
+        if(!draft[group]) return;
+        var r=document.querySelector('input[name="'+group+'"][value="'+draft[group]+'"]');
+        if(r){ r.checked=true; r.closest('.radio-opt').classList.add('sel'); }
+      });
+      wcTrace('draft-restored');
+    }
+  }catch(e){}
+
   refreshSubmit();
+  wcTrace('form-shown');
 })();
 
 // 라디오 선택 표시
@@ -189,7 +226,9 @@ function refreshSubmit(){
 }
 
 async function submitProfile(){
+  wcTrace('submit-click');
   if(!isValid()){
+    wcTrace('submit-invalid');
     var name=document.getElementById('f-name').value.trim();
     var age=document.getElementById('f-age').value.trim();
     var region=document.getElementById('f-region').value.trim();
@@ -219,19 +258,39 @@ async function submitProfile(){
     apply:document.querySelector('input[name=apply]:checked').value,
     eng:document.querySelector('input[name=eng]:checked').value
   };
+  // 입력 사라짐 방지 — 저장 시도 전에 localStorage 백업 (네트워크 실패 시 다음 진입 때 복구)
+  try{ localStorage.setItem('wc_profile',JSON.stringify(profile)); }catch(e){}
 
   // 서버 API 로 모든 필드 upsert (service_role) — silent fail 차단, 응답 검증 후만 통과
   var savedOk=false;
   try{
+    // supabase-client.js 늦게 초기화 케이스 — 8초까지 재시도하며 sb 대기
     var sb=(typeof getSupabase==='function')?getSupabase():null;
+    if(!sb){
+      for(var w=0;w<80;w++){
+        sb=(typeof getSupabase==='function')?getSupabase():null;
+        if(sb) break;
+        await new Promise(function(r){setTimeout(r,100);});
+      }
+    }
     var token='';
     if(sb){
-      var sess=await sb.auth.getSession();
-      token=(sess&&sess.data&&sess.data.session&&sess.data.session.access_token)||'';
+      // getSession 한번 실패해도 한 번 더 시도 (모바일 SDK 늦게 hydrate 케이스)
+      for(var s=0;s<3;s++){
+        try{
+          var sess=await sb.auth.getSession();
+          token=(sess&&sess.data&&sess.data.session&&sess.data.session.access_token)||'';
+          if(token) break;
+        }catch(e){}
+        await new Promise(function(r){setTimeout(r,400);});
+      }
     }
     if(!token){
-      alert('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
-      btn.disabled=false;btn.textContent='시작하기 →';
+      wcTrace('submit-no-token');
+      // 자동 로그아웃·재로그인 유도 — 사용자가 그냥 OK 누르고 끝나지 않게 location 강제
+      alert('로그인 세션을 다시 확인해야 합니다. 입력하신 내용은 임시 저장되었습니다.\n로그인 페이지로 이동합니다 — 다시 로그인 후 자동으로 이어집니다.');
+      try{ if(sb) await sb.auth.signOut(); }catch(e){}
+      location.replace('login.html');
       return;
     }
     var apiRes=await fetch('/api/save-profile',{
@@ -242,13 +301,16 @@ async function submitProfile(){
     var apiData=await apiRes.json().catch(function(){return {ok:false,error:'parse'};});
     if(apiRes.ok&&apiData&&apiData.ok&&apiData.savedPhone){
       savedOk=true;
+      wcTrace('submit-success');
     } else {
+      wcTrace('submit-fail-'+(apiRes.status||'x')+'-'+((apiData&&apiData.error)||'x').toString().slice(0,20));
       console.error('[save-profile] failed:',apiRes.status,apiData);
       alert('프로필 저장에 실패했습니다. 잠시 후 다시 시도해주세요.\n('+(apiData&&apiData.error||apiRes.status)+')');
       btn.disabled=false;btn.textContent='시작하기 →';
       return;
     }
   }catch(e){
+    wcTrace('submit-network-err');
     console.error('profile save error:',e);
     alert('네트워크 오류로 저장에 실패했습니다. 다시 시도해주세요.');
     btn.disabled=false;btn.textContent='시작하기 →';

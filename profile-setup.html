@@ -102,6 +102,7 @@ wcTrace('script-init');
 // 로그인 안 된 상태면 로그인 페이지로 + 서버 기준으로 프로필 입력 여부 확인
 (async function(){
   if(!localStorage.getItem('wc_user')){
+    wcTrace('redirect-no-user-to-login');
     location.replace('login.html');
     return;
   }
@@ -126,7 +127,9 @@ wcTrace('script-init');
           localStorage.setItem('wc_profile_done','1');
           var levelDone=localStorage.getItem('wc_level_result');
           var paidUser=localStorage.getItem('wc_paid')==='true';
-          location.replace((paidUser||levelDone)?'curriculum.html':'leveltest.html');
+          var dest=(paidUser||levelDone)?'curriculum.html':'leveltest.html';
+          wcTrace('redirect-phone-exists-to-'+dest.replace('.html',''));
+          location.replace(dest);
           return;
         }
         // 서버에 프로필 없음 → 잔재 플래그 강제 제거하고 폼 노출

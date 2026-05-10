@@ -5,7 +5,17 @@
 // 결제 사용자는 leveltest 우회 — 즉시 curriculum 으로
 (function(){
   try{
+    // 진단 비콘 — 어떤 가드로 redirect됐는지 admin에 명시 (1.2초 setTimeout 비콘보다 빠른 redirect 추적용)
+    var _wcGuardTrace=function(label){
+      try{
+        var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+        if(!u||!u.id) return;
+        fetch('/api/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:u.id,email:u.email||'',page:'leveltest:'+label})}).catch(function(){});
+      }catch(e){}
+    };
+    window._wcGuardTrace=_wcGuardTrace;
     if(localStorage.getItem('wc_paid')==='true'){
+      _wcGuardTrace('redirect-paid-to-curriculum');
       location.replace('curriculum.html');
     }
   }catch(e){}
@@ -179,18 +189,21 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 <script src="js/supabase-client.js?v=2"></script>
 <script>
 (async function(){
+  var T=window._wcGuardTrace||function(){};
   // 1) 어드민·결제 사용자는 레벨테스트 우회
   try {
     var u = JSON.parse(localStorage.getItem('wc_user') || 'null');
     var ADMIN = ['zoco2269@gmail.com','guswn5164@gmail.com'];
     var isAdminLocal = u && ADMIN.indexOf(u.email) !== -1;
     if (isAdminLocal || localStorage.getItem('wc_paid') === 'true') {
+      T(isAdminLocal?'redirect-admin-to-curriculum':'redirect-paid-to-curriculum');
       location.href='curriculum.html';
       return;
     }
   } catch(e) {}
   // 2) localStorage 에 결과 있음
   if (localStorage.getItem('wc_level_result')) {
+    T('redirect-localstorage-result-to-curriculum');
     location.href='curriculum.html';
     return;
   }
@@ -220,6 +233,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
             name: u2.name || (u2.email||'').split('@')[0] || '지원자',
             savedAt: lvl.data.created_at
           }));
+          T('redirect-server-result-to-curriculum');
           location.href = 'curriculum.html';
           return;
         }
@@ -229,9 +243,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   // 4) server 에도 없음 — wc_airline 이 있으면(이미 항공사 선택한 사용자) curriculum 으로 우회
   //    (처음 가입자가 아닌데 server sync 실패한 케이스 대비 fallback)
   if (localStorage.getItem('wc_airline')) {
+    T('redirect-airline-saved-to-curriculum');
     location.href = 'curriculum.html';
     return;
   }
+  T('show-leveltest-form');
 })();
 </script>
 <!-- STEP 0: 언어 선택 -->

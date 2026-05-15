@@ -167,13 +167,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
     var ADMIN = ['zoco2269@gmail.com','guswn5164@gmail.com'];
     var isAdminLocal = u && ADMIN.indexOf(u.email) !== -1;
     if (isAdminLocal || localStorage.getItem('wc_paid') === 'true') {
-      location.href='curriculum.html';
+      location.href='curriculum-en.html';
       return;
     }
   } catch(e) {}
   // 2) localStorage 에 결과 있음
   if (localStorage.getItem('wc_level_result')) {
-    location.href='curriculum.html';
+    location.href='curriculum-en.html';
     return;
   }
   // 3) server 직접 조회 — localStorage 잔재 무시되어도 server 에 결과 row 있으면 자동 복구
@@ -202,7 +202,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
             name: u2.name || (u2.email||'').split('@')[0] || 'Applicant',
             savedAt: lvl.data.created_at
           }));
-          location.href = 'curriculum.html';
+          location.href = 'curriculum-en.html';
           return;
         }
       }
@@ -210,7 +210,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   } catch(e) { console.warn('[leveltest guard] server check failed:', e); }
   // 4) server 에도 없음 — wc_airline 이 있으면(이미 항공사 선택한 사용자) curriculum 으로 우회
   if (localStorage.getItem('wc_airline')) {
-    location.href = 'curriculum.html';
+    location.href = 'curriculum-en.html';
     return;
   }
 })();
@@ -504,10 +504,10 @@ function renderResult(r){
   if(!document.getElementById('r-go-curriculum')){
     var goBtn=document.createElement('a');
     goBtn.id='r-go-curriculum';
-    goBtn.href='curriculum.html';goBtn.onclick=function(){try{localStorage.removeItem('wc_airline');localStorage.removeItem('wc_airline_name');}catch(e){}};
+    goBtn.href='curriculum-en.html';goBtn.onclick=function(){try{localStorage.removeItem('wc_airline');localStorage.removeItem('wc_airline_name');}catch(e){}};
     goBtn.className='btn-gold';
     goBtn.style.cssText='text-decoration:none;display:flex;align-items:center;justify-content:center;margin-top:12px;';
-    goBtn.textContent='내 레벨에 맞는 Start Practice하기 →';
+    goBtn.textContent='Start Practice at My Level →';
     document.getElementById('r-airlines').closest('.wrap').appendChild(goBtn);
   }
   showScreen('result');

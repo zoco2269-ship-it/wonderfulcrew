@@ -215,34 +215,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   }
 })();
 </script>
-<!-- STEP 0: 언어 선택 -->
-<div id="screen-lang" class="screen active">
-<div class="wrap">
-  <div class="step-eyebrow">Language Selection</div>
-  <h1 class="step-title">Which Language for<br>Your <em>Test</em>?</h1>
-  <p class="step-sub">Choose Korean for domestic airlines,<br>English for international airlines (Emirates, Qatar, etc.).<br>둘 다 선택하면 한국어 → 영어 순서로 진행됩니다.</p>
-  <div class="gold-bar"></div>
-  <div class="lang-select-wrap">
-    <button class="lang-btn" onclick="setLang('ko')">
-      <span class="lang-btn-flag">💁🏻‍♀️</span>
-      <span>
-        <span class="lang-btn-text-main">Test in Korean</span>
-        <span class="lang-btn-text-sub">Recommended for Korean airline applicants<br>Korean self-intro + AI evaluation</span>
-      </span>
-      <span class="lang-btn-arrow">→</span>
-    </button>
-    <button class="lang-btn" onclick="setLang('en')">
-      <span class="lang-btn-flag">🌍</span>
-      <span>
-        <span class="lang-btn-text-main">English Test</span>
-        <span class="lang-btn-text-sub">Emirates · Qatar · Singapore Airlines &amp; Global Carriers<br>English self-introduction + AI evaluation</span>
-      </span>
-      <span class="lang-btn-arrow">→</span>
-    </button>
-
-  </div>
-</div>
-</div>
+<!-- STEP 0: 언어 선택 화면 제거됨 — 영문판이므로 자동 EN 모드 (script 끝 setLang('en') 자동 호출) -->
 
 <!-- CAMERA -->
 <div id="screen-camera" class="screen">
@@ -524,6 +497,8 @@ function saveVideo(){
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+// 영문판: 언어선택 스킵, 자동으로 EN 모드로 진입
+try { setLang('en'); } catch(e) { console.warn('[leveltest-en] auto setLang failed:', e); }
 </script>
 </body>
 </html>

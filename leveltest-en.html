@@ -220,13 +220,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 <!-- CAMERA -->
 <div id="screen-camera" class="screen">
 <div class="wrap">
-  <h2 class="step-title">카메라 앞에서<br><em>자기소개</em>를 해주세요</h2>
-  <p class="step-sub" id="camera-sub">잠시 후 질문이 표시됩니다.</p>
+  <h2 class="step-title">Introduce Yourself<br><em>on Camera</em></h2>
+  <p class="step-sub" id="camera-sub">Your question will appear shortly.</p>
   <div class="gold-bar"></div>
   <div id="question-area"></div>
   <div class="video-box" id="video-box">
     <video id="preview" autoplay muted playsinline style="width:100%;display:block;max-height:360px;object-fit:cover;"></video>
-    <div class="vid-placeholder" id="vid-placeholder"><div>📷</div><div>Start Camera 버튼을 눌러주세요</div></div>
+    <div class="vid-placeholder" id="vid-placeholder"><div>📷</div><div>Press Start Camera to begin</div></div>
     <div class="rec-badge" id="rec-badge"><div class="rec-dot"></div> REC</div>
   </div>
   <div class="timer" id="timer"><div class="timer-fill" id="timer-fill"></div></div>
@@ -256,22 +256,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 <!-- RESULT -->
 <div id="screen-result" class="screen">
 <div class="wrap">
-  <h2 class="step-title"><em id="r-name">지원자</em>님의<br>레벨 분석 결과예요</h2>
+  <h2 class="step-title"><em id="r-name">Applicant</em>,<br>here is your level analysis</h2>
   <div class="gold-bar"></div>
   <div style="text-align:center;margin-bottom:32px;">
     <div class="result-score-big" id="r-score">74</div>
     <div style="font-size:0.82rem;color:var(--text-muted);margin-top:6px;letter-spacing:0.1em;">Overall Score / 100</div>
-    <div class="result-level-badge" id="r-level">중급 · Intermediate</div>
+    <div class="result-level-badge" id="r-level">Intermediate</div>
   </div>
   <div id="r-coach-msg"></div>
   <div class="res-section"><div class="res-section-title">💪 Strengths</div><div id="r-strengths"></div></div>
   <div class="res-section"><div class="res-section-title">📈 Areas to Improve</div><div id="r-improvements"></div></div>
   <div class="divider"></div>
   <div class="step-eyebrow" style="margin-bottom:12px;">Recommended Airlines</div>
-  <h3 style="font-family:'Noto Serif KR',serif;font-size:1.2rem;font-weight:400;color:var(--navy);margin-bottom:20px;"><em id="r-name2" style="font-style:normal;color:var(--gold);">지원자</em>님께 맞는 항공사예요</h3>
+  <h3 style="font-family:'Noto Serif KR',serif;font-size:1.2rem;font-weight:400;color:var(--navy);margin-bottom:20px;"><em id="r-name2" style="font-style:normal;color:var(--gold);">Applicant</em>, these airlines match you best</h3>
   <div class="airline-grid" id="r-airlines"></div>
   <div class="divider"></div>
-  <p style="font-size:0.88rem;color:var(--text-muted);text-align:center;margin-bottom:24px;line-height:1.7;">Recommended Airlines로 커리큘럼을 시작하세요.<br>원더풀크루가 합격까지 함께합니다.</p>
+  <p style="font-size:0.88rem;color:var(--text-muted);text-align:center;margin-bottom:24px;line-height:1.7;">Start your curriculum with one of your Recommended Airlines.<br>WonderfulCrew will be with you all the way to the hire.</p>
 </div>
 </div>
 
@@ -285,25 +285,12 @@ document.querySelectorAll('.radio-opt input').forEach(function(r){
   });
 });
 function showScreen(n){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById('screen-'+n).classList.add('active');window.scrollTo(0,0);}
-var LANG='ko';
+var LANG='en';
 var QUESTIONS={
-  ko:{
-    sub:'카메라 앞에서 한국어로 자기소개를 해주세요.<br>AI가 이미지·발화 톤·전달력을 종합 분석합니다.',
-    boxes:[
-      {badge:'🇰🇷 한국어 질문','ey':'QUESTION','q':'자기소개를 해주세요. 승무원이 되고 싶은 이유를 포함해서 말씀해 주세요.','hint':'💡 이름 → 지원 동기 → 나의 Strengths 순서로 말해보세요 (30~60초)','en':false}
-    ]
-  },
   en:{
     sub:'Please introduce yourself in English.<br>AI analyzes your image, tone, and delivery in real time.',
     boxes:[
       {badge:'🇺🇸 English Question','ey':'QUESTION','q':'Please introduce yourself. Why do you want to be a cabin crew member?','hint':'💡 Name → Motivation → Your Strength (30–60 seconds)','en':true}
-    ]
-  },
-  both:{
-    sub:'한국어 자기소개 → 영어 답변 순서로 말해주세요.<br>각 60초 이내, AI가 이미지·발화 톤·전달력을 함께 분석합니다.',
-    boxes:[
-      {badge:'🇰🇷 한국어 질문','ey':'QUESTION 1','q':'자기소개를 해주세요. 승무원이 되고 싶은 이유를 포함해서 말씀해 주세요.','hint':'💡 이름 → 지원 동기 → 나의 Strengths 순서로 말해보세요 (30~60초)','en':false},
-      {badge:'🇺🇸 English Question','ey':'QUESTION 2','q':'Why do you want to be a cabin crew member? What makes you the right person for this role?','hint':'💡 Answer in English   Name → Motivation → Your Strength (30~60 sec)','en':true}
     ]
   }
 };
@@ -335,16 +322,16 @@ function setLang(lang){
   document.getElementById('camera-sub').innerHTML=cfg.sub;
   try{
     var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
-    if(!U.name) U.name=u.name||'지원자';
+    if(!U.name) U.name=u.name||'Applicant';
     if(!U.email) U.email=u.email||'';
-  }catch(e){ if(!U.name) U.name='지원자'; }
+  }catch(e){ if(!U.name) U.name='Applicant'; }
   showScreen('camera');
 }
 async function startCam(){
   try{
     // 모바일 포함 안전 카메라 초기화
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-      document.getElementById('vid-placeholder').innerHTML='<div style="text-align:center;padding:20px 16px;"><div style="font-size:2rem;margin-bottom:10px;">🎤</div><div style="font-size:0.82rem;color:var(--text-muted);line-height:1.7;">카메라 없이도 AI 평가를 받을 수 있어요.<br>녹화 없이 Next Step 진행하세요.</div></div>';
+      document.getElementById('vid-placeholder').innerHTML='<div style="text-align:center;padding:20px 16px;"><div style="font-size:2rem;margin-bottom:10px;">🎤</div><div style="font-size:0.82rem;color:var(--text-muted);line-height:1.7;">You can still receive an AI evaluation without a camera.<br>Proceed to the next step without recording.</div></div>';
       document.getElementById('btn-start').style.display='none';
       document.getElementById('wrap-analyze').style.display='block';
     } else {
@@ -361,7 +348,7 @@ async function startCam(){
         }catch(_e){}
       }
       if(!camOk){
-        document.getElementById('vid-placeholder').innerHTML='<div style="text-align:center;padding:20px 16px;"><div style="font-size:2rem;margin-bottom:10px;">🎤</div><div style="font-size:0.82rem;color:var(--text-muted);line-height:1.7;">카메라 권한이 없어요.<br>녹화 없이 AI 평가를 진행할 수 있어요.</div></div>';
+        document.getElementById('vid-placeholder').innerHTML='<div style="text-align:center;padding:20px 16px;"><div style="font-size:2rem;margin-bottom:10px;">🎤</div><div style="font-size:0.82rem;color:var(--text-muted);line-height:1.7;">Camera permission is not available.<br>You can still receive an AI evaluation without recording.</div></div>';
         document.getElementById('btn-start').style.display='none';
         document.getElementById('wrap-analyze').style.display='block';
         return;
@@ -386,7 +373,7 @@ async function startCam(){
     var t=document.getElementById('timer');t.style.display='block';
     var f=document.getElementById('timer-fill');var el=0;
     ti=setInterval(function(){el++;f.style.width=Math.max(0,100-(el/60)*100)+'%';if(el>=60)stopRec();},1000);
-  }catch(e){alert('카메라 권한을 허용해주세요.\n브라우저 설정 > 카메라 > 허용');}
+  }catch(e){alert('Please allow camera permission.\nBrowser Settings > Camera > Allow');}
 }
 function stopRec(){
   if(mr&&mr.state!=='inactive')mr.stop();
@@ -400,7 +387,7 @@ function retryCam(){
   rc=[];document.getElementById('wrap-analyze').style.display='none';
   document.getElementById('btn-retry').style.display='none';
   document.getElementById('btn-start').style.display='flex';
-  document.getElementById('btn-start').textContent='📷 다시 시작';
+  document.getElementById('btn-start').textContent='📷 Restart';
   document.getElementById('timer-fill').style.width='100%';
   document.getElementById('vid-placeholder').style.display='flex';
   if(ms)ms.getTracks().forEach(function(t){t.stop();});
@@ -408,17 +395,17 @@ function retryCam(){
 async function doAnalyze(textOnly){
   if(ms)ms.getTracks().forEach(function(t){t.stop();});
   renderResult({
-    score:78,level:'Upper-Intermediate',level_ko:'중상급',
+    score:78,level:'Upper-Intermediate',level_ko:'Upper-Intermediate',
     score_breakdown:{service_mind:21,english:20,interview_readiness:18,growth_potential:19},
-    strengths:['Service Mindset가 뛰어나요','적극적인 도전 정신이 있어요','성장 잠재력이 높아요'],
-    improvements:['영어 표현력을 더 키워보세요','자기소개를 간결하게 정리해보세요','지원 동기를 경험과 연결해보세요'],
+    strengths:['Strong Service Mindset','Proactive and willing to take on challenges','High growth potential'],
+    improvements:['Sharpen your English expression','Tighten your self-introduction','Tie your motivation to a real experience'],
     airlines:[
-      {name:'에미레이트',match:88,reason:'영어 실력과 Service Mindset가 적합해요',top:true},
-      {name:'카타르항공',match:82,reason:'글로벌 마인드가 잘 맞아요',top:false},
-      {name:'싱가포르항공',match:76,reason:'서비스 수준이 높은 항공사에 적합해요',top:false}
+      {name:'Emirates',match:88,reason:'Your English and service mindset fit perfectly',top:true},
+      {name:'Qatar Airways',match:82,reason:'Your global mindset is a strong match',top:false},
+      {name:'Singapore Airlines',match:76,reason:'Well suited to a carrier with the highest service standards',top:false}
     ],
-    coaching_priority:'영어 자기소개 30초 스크립트를 먼저 완성하세요.',
-    message:(U.name||'Applicant')+'님, 지금 이 도전이 합격의 첫 걸음이에요. 원더풀크루와 함께라면 반드시 꿈을 이룰 수 있어요!'
+    coaching_priority:'First, complete a 30-second English self-introduction script.',
+    message:(U.name||'Applicant')+', this challenge is your first step toward the hire. With WonderfulCrew by your side, the dream is within reach.'
   });
 }
 function renderResult(r){
@@ -426,13 +413,13 @@ function renderResult(r){
   document.getElementById('r-name').textContent=U.name||'Applicant';
   document.getElementById('r-name2').textContent=U.name||'Applicant';
   document.getElementById('r-score').textContent=r.score;
-  document.getElementById('r-level').textContent=r.level_ko+' · '+r.level;
+  document.getElementById('r-level').textContent=r.level;
   if(r.message){document.getElementById('r-coach-msg').innerHTML='<div class="coach-msg"><div class="coach-msg-label">Coach Message</div><div class="coach-msg-text">'+r.message+'</div></div>';}
   // pts수 세부 항목
   if(r.score_breakdown){
     var sb=r.score_breakdown;
     var breakdown='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">';
-    var labels={service_mind:'Service Mindset',english:'English Level',interview_readiness:'면접 준비도',growth_potential:'성장 잠재력'};
+    var labels={service_mind:'Service Mindset',english:'English Level',interview_readiness:'Interview Readiness',growth_potential:'Growth Potential'};
     Object.keys(sb).forEach(function(k){
       var pct=Math.round((sb[k]/25)*100);
       breakdown+='<div style="background:#fff;border:1px solid rgba(201,168,76,0.2);padding:12px 14px;">';
@@ -451,13 +438,13 @@ function renderResult(r){
   if(r.coaching_priority){
     var cpEl=document.createElement('div');
     cpEl.style.cssText='background:var(--navy);padding:16px 20px;margin-bottom:14px;border-left:4px solid var(--gold);';
-    cpEl.innerHTML='<div style="font-size:0.7rem;font-weight:700;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;">지금 당장 해야 할 것</div><div style="font-size:0.9rem;color:rgba(255,255,255,0.9);line-height:1.7;">'+r.coaching_priority+'</div>';
+    cpEl.innerHTML='<div style="font-size:0.7rem;font-weight:700;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;">Do This Right Now</div><div style="font-size:0.9rem;color:rgba(255,255,255,0.9);line-height:1.7;">'+r.coaching_priority+'</div>';
     document.getElementById('r-strengths').closest('.res-section').before(cpEl);
   }
   document.getElementById('r-strengths').innerHTML=r.strengths.map(function(s){return '<div class="res-item"><div class="res-dot"></div><div class="res-text">'+s+'</div></div>';}).join('');
   document.getElementById('r-improvements').innerHTML=r.improvements.map(function(s){return '<div class="res-item"><div class="res-dot" style="opacity:0.5;"></div><div class="res-text">'+s+'</div></div>';}).join('');
   document.getElementById('r-airlines').innerHTML=r.airlines.map(function(a){return '<div class="airline-card'+(a.top?' top':'')+'">'+(a.top?'<div class="airline-best">BEST MATCH</div>':'')+
-    '<div class="airline-name">'+a.name+'</div><div class="airline-match">'+a.match+'% 매칭</div><div class="airline-reason">'+a.reason+'</div></div>';}).join('');
+    '<div class="airline-name">'+a.name+'</div><div class="airline-match">'+a.match+'% match</div><div class="airline-reason">'+a.reason+'</div></div>';}).join('');
   // 영상 저장 버튼 추가 (녹화한 경우)
   if(rc && rc.length>0){
     var saveBtn=document.getElementById('r-save-video');
@@ -466,7 +453,7 @@ function renderResult(r){
       saveBtnEl.id='r-save-video';
       saveBtnEl.className='btn-outline';
       saveBtnEl.style.cssText='margin-bottom:12px;';
-      saveBtnEl.innerHTML='⬇ 내 면접 영상 저장하기';
+      saveBtnEl.innerHTML='⬇ Save My Interview Video';
       saveBtnEl.onclick=saveVideo;
       var resWrap=document.querySelector('#screen-result .wrap');
       var firstDiv=resWrap?resWrap.querySelector('.divider'):null;
@@ -486,7 +473,7 @@ function renderResult(r){
   showScreen('result');
 }
 function saveVideo(){
-  if(!rc||rc.length===0){alert('저장할 영상이 없어요.');return;}
+  if(!rc||rc.length===0){alert('No recording to save.');return;}
   var blob=new Blob(rc,{type:'video/webm'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');

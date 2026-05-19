@@ -169,15 +169,15 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <!-- ===== Interview Reviews 패널 ===== -->
 <div class="panel" id="panel-review">
-  <div class="panel-header"><h2>📝 Interview Reviews</h2><button class="write-btn" onclick="openForm('review')">후기 작성</button></div>
+  <div class="panel-header"><h2>📝 Interview Reviews</h2><button class="write-btn" onclick="openForm('review')">Write Review</button></div>
   <div id="list-review"></div>
-  <div class="empty" id="empty-review">No interview reviews yet. 경험을 공유해주세요!</div>
+  <div class="empty" id="empty-review">No interview reviews yet. Share your experience!</div>
 </div>
 
 <!-- ===== Success Stories 패널 ===== -->
 <div class="panel" id="panel-pass">
-  <div class="panel-header"><h2>🏆 Success Stories</h2><button class="write-btn" onclick="alert('Available after verification. 관리자에게 문의해주세요.')">Success Stories 작성 (인증 필요)</button></div>
-  <div class="reward-box"><b>Success Stories 보상 안내</b><br>텍스트 후기 작성 → 스타벅스 기프티콘 지급<br>얼굴 공 items 후기 영상 제출 → 수강료 50% 환급</div>
+  <div class="panel-header"><h2>🏆 Success Stories</h2><button class="write-btn" onclick="alert('Available after verification. Please contact the admin.')">Write Success Story (verification required)</button></div>
+  <div class="reward-box"><b>Success Story Rewards</b><br>Written story → Starbucks gift card<br>Video story with your face shown → 50% tuition refund</div>
   <div id="list-pass"></div>
   <div class="empty" id="empty-pass">No success stories yet.</div>
 </div>
@@ -192,32 +192,32 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <h3>📚 Create Study Group</h3>
     <label>Airline</label>
     <div class="chip-group" id="chips-airline">
-      <div class="chip" onclick="selChip(this)">에미레이트</div><div class="chip" onclick="selChip(this)">카타르</div><div class="chip" onclick="selChip(this)">에티하드</div><div class="chip" onclick="selChip(this)">싱가포르항공</div><div class="chip" onclick="selChip(this)">캐세이퍼시픽</div><div class="chip" onclick="selChip(this)">핀에어</div><div class="chip" onclick="selChip(this)">KLM</div><div class="chip" onclick="selChip(this)">대한항공</div><div class="chip" onclick="selChip(this)">아시아나</div><div class="chip" onclick="selChip(this)">기타</div>
+      <div class="chip" onclick="selChip(this)">Emirates</div><div class="chip" onclick="selChip(this)">Qatar Airways</div><div class="chip" onclick="selChip(this)">Etihad</div><div class="chip" onclick="selChip(this)">Singapore Airlines</div><div class="chip" onclick="selChip(this)">Cathay Pacific</div><div class="chip" onclick="selChip(this)">Finnair</div><div class="chip" onclick="selChip(this)">KLM</div><div class="chip" onclick="selChip(this)">Lufthansa</div><div class="chip" onclick="selChip(this)">AirAsia</div><div class="chip" onclick="selChip(this)">Other</div>
     </div>
     <label>Region</label>
     <div class="chip-group" id="chips-loc">
-      <div class="chip" onclick="selChip(this)">서울</div><div class="chip" onclick="selChip(this)">부산</div><div class="chip" onclick="selChip(this)">대구</div><div class="chip" onclick="selChip(this)">인천</div><div class="chip" onclick="selChip(this)">광주</div><div class="chip" onclick="selChip(this)">대전</div><div class="chip" onclick="selChip(this)">제주</div><div class="chip" onclick="selChip(this)">온라인</div>
+      <div class="chip" onclick="selChip(this)">Dubai</div><div class="chip" onclick="selChip(this)">Doha</div><div class="chip" onclick="selChip(this)">Singapore</div><div class="chip" onclick="selChip(this)">Hong Kong</div><div class="chip" onclick="selChip(this)">Bangkok</div><div class="chip" onclick="selChip(this)">London</div><div class="chip" onclick="selChip(this)">Seoul</div><div class="chip" onclick="selChip(this)">Online</div>
     </div>
     <label>Members</label>
     <div class="chip-group" id="chips-ppl">
-      <div class="chip" onclick="selChip(this)">2명</div><div class="chip" onclick="selChip(this)">3명</div><div class="chip" onclick="selChip(this)">4명 이상</div>
+      <div class="chip" onclick="selChip(this)">2 people</div><div class="chip" onclick="selChip(this)">3 people</div><div class="chip" onclick="selChip(this)">4+ people</div>
     </div>
-    <label>일정</label>
+    <label>Schedule</label>
     <div class="chip-group" id="chips-sched">
-      <div class="chip" onclick="selChip(this)">주말</div><div class="chip" onclick="selChip(this)">평일</div><div class="chip" onclick="selChip(this)">온라인 가능</div>
+      <div class="chip" onclick="selChip(this)">Weekend</div><div class="chip" onclick="selChip(this)">Weekday</div><div class="chip" onclick="selChip(this)">Online OK</div>
     </div>
-    <label>닉네임</label><input type="text" id="s-author" placeholder="닉네임" maxlength="20">
-    <label>제목</label><input type="text" id="s-title" placeholder="예: 에미레이트 준비 Find Study Partners" maxlength="80">
-    <label>상세 내용</label><textarea id="s-body" placeholder="자기소 items, 현재 준비 단계, 원하는 스터디 방식, 연락처(카카오 오픈채팅 등)"></textarea>
+    <label>Nickname</label><input type="text" id="s-author" placeholder="Nickname" maxlength="20">
+    <label>Title</label><input type="text" id="s-title" placeholder="e.g. Emirates Prep — Find Study Partners" maxlength="80">
+    <label>Details</label><textarea id="s-body" placeholder="Self-intro, current preparation stage, preferred study style, contact (Kakao open chat etc.)"></textarea>
     <div class="error-msg" id="err-study"></div>
-    <div class="form-btns"><button class="submit" onclick="submitStudy()">올리기</button><button class="cancel" onclick="closeForm()">Cancel</button></div>
+    <div class="form-btns"><button class="submit" onclick="submitStudy()">Post</button><button class="cancel" onclick="closeForm()">Cancel</button></div>
   </div>
   <!-- 일반글 폼 -->
   <div class="form-box" id="form-talk" style="display:none;">
     <h3>Write</h3>
-    <label>닉네임</label><input type="text" id="t-author" placeholder="닉네임" maxlength="20">
-    <label>제목</label><input type="text" id="t-title" placeholder="제목" maxlength="100">
-    <label>내용</label><textarea id="t-body" placeholder="자유롭게 이야기하세요."></textarea>
+    <label>Nickname</label><input type="text" id="t-author" placeholder="Nickname" maxlength="20">
+    <label>Title</label><input type="text" id="t-title" placeholder="Title" maxlength="100">
+    <label>Content</label><textarea id="t-body" placeholder="Share what's on your mind."></textarea>
     <div class="error-msg" id="err-talk"></div>
     <div class="form-btns"><button class="submit" onclick="submitGeneral('talk')">Submit</button><button class="cancel" onclick="closeForm()">Cancel</button></div>
   </div>
@@ -226,15 +226,15 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <h3>📝 Interview Reviews</h3>
     <label>Airline</label>
     <div class="chip-group" id="chips-rv-air">
-      <div class="chip" onclick="selChip(this)">에미레이트</div><div class="chip" onclick="selChip(this)">카타르</div><div class="chip" onclick="selChip(this)">싱가포르항공</div><div class="chip" onclick="selChip(this)">캐세이퍼시픽</div><div class="chip" onclick="selChip(this)">대한항공</div><div class="chip" onclick="selChip(this)">아시아나</div><div class="chip" onclick="selChip(this)">기타</div>
+      <div class="chip" onclick="selChip(this)">Emirates</div><div class="chip" onclick="selChip(this)">Qatar Airways</div><div class="chip" onclick="selChip(this)">Singapore Airlines</div><div class="chip" onclick="selChip(this)">Cathay Pacific</div><div class="chip" onclick="selChip(this)">Etihad</div><div class="chip" onclick="selChip(this)">Riyadh Air</div><div class="chip" onclick="selChip(this)">Other</div>
     </div>
     <label>Interview Stage</label>
     <div class="chip-group" id="chips-rv-stage">
-      <div class="chip" onclick="selChip(this)">Application</div><div class="chip" onclick="selChip(this)">Video Interview</div><div class="chip" onclick="selChip(this)">1차 면접</div><div class="chip" onclick="selChip(this)">2차 면접</div><div class="chip" onclick="selChip(this)">Final</div>
+      <div class="chip" onclick="selChip(this)">Application</div><div class="chip" onclick="selChip(this)">Video Interview</div><div class="chip" onclick="selChip(this)">Round 1</div><div class="chip" onclick="selChip(this)">Round 2</div><div class="chip" onclick="selChip(this)">Final</div>
     </div>
-    <label>닉네임</label><input type="text" id="rv-author" placeholder="닉네임" maxlength="20">
-    <label>면접 날짜</label><input type="date" id="rv-date">
-    <label>후기 내용</label><textarea id="rv-body" placeholder="면접 분위기, 질문 내용, 팁 등을 공유해주세요."></textarea>
+    <label>Nickname</label><input type="text" id="rv-author" placeholder="Nickname" maxlength="20">
+    <label>Interview Date</label><input type="date" id="rv-date">
+    <label>Review</label><textarea id="rv-body" placeholder="Share the interview atmosphere, questions asked, tips, etc."></textarea>
     <div class="error-msg" id="err-review"></div>
     <div class="form-btns"><button class="submit" onclick="submitReview()">Submit Review</button><button class="cancel" onclick="closeForm()">Cancel</button></div>
   </div>
@@ -277,7 +277,7 @@ function submitStudy(){
   var body=document.getElementById('s-body').value.trim();
   var err=document.getElementById('err-study');err.style.display='none';
   if(!title||!body){err.textContent='Please enter title and content.';err.style.display='block';return;}
-  if(banned(title+body)){err.textContent='커뮤니티 정책에 의해 등록할 수 없는 내용입니다.';err.style.display='block';return;}
+  if(banned(title+body)){err.textContent='This content cannot be posted due to community policy.';err.style.display='block';return;}
   var arr=getB('study');
   arr.unshift({airline:airline[0]||'',loc:loc[0]||'',ppl:ppl[0]||'',sched:sched[0]||'',author:author,title:title,body:body,date:new Date().toISOString().slice(0,10)});
   setB('study',arr);closeForm();render('study');clearChips('chips-airline');clearChips('chips-loc');clearChips('chips-ppl');clearChips('chips-sched');
@@ -291,7 +291,7 @@ function submitGeneral(type){
   var body=document.getElementById('t-body').value.trim();
   var err=document.getElementById('err-talk');err.style.display='none';
   if(!title||!body){err.textContent='Please enter title and content.';err.style.display='block';return;}
-  if(banned(title+body)){err.textContent='커뮤니티 정책에 의해 등록할 수 없는 내용입니다.';err.style.display='block';return;}
+  if(banned(title+body)){err.textContent='This content cannot be posted due to community policy.';err.style.display='block';return;}
   var arr=getB('talk');arr.unshift({author:author,title:title,body:body,date:new Date().toISOString().slice(0,10)});
   setB('talk',arr);closeForm();render('talk');
   document.getElementById('t-title').value='';document.getElementById('t-body').value='';
@@ -305,7 +305,7 @@ function submitReview(){
   var body=document.getElementById('rv-body').value.trim();
   var err=document.getElementById('err-review');err.style.display='none';
   if(!body){err.textContent='후기 내용을 입력해주세요.';err.style.display='block';return;}
-  if(banned(body)){err.textContent='커뮤니티 정책에 의해 등록할 수 없는 내용입니다.';err.style.display='block';return;}
+  if(banned(body)){err.textContent='This content cannot be posted due to community policy.';err.style.display='block';return;}
   var arr=getB('review');
   arr.unshift({airline:airline[0]||'',stage:stage[0]||'',author:author,idate:idate,body:body,date:new Date().toISOString().slice(0,10)});
   setB('review',arr);closeForm();render('review');clearChips('chips-rv-air');clearChips('chips-rv-stage');
@@ -314,9 +314,9 @@ function submitReview(){
 
 // 더미 Success Stories
 var DUMMY_PASS=[
-  {author:'김서연',airline:'Emirates',body:'3번 탈락 후 원더풀크루와 함께 4번째 도전에서 합격했습니다. Roleplay 연습이 정말 큰 도움이 됐어요. 포기하지 마세요!',date:'2026-03-28',verified:true},
-  {author:'이하늘',airline:'카타르항공',body:'My English was lacking, but I practiced speaking confidently with simple words and passed through to the final. Thank you, coach!',date:'2026-03-15',verified:true},
-  {author:'박지민',airline:'싱가포르항공',body:'I changed my makeup after reading the grooming guide and passed the 1st round immediately! Image really matters.',date:'2026-02-20',verified:true}
+  {author:'Seoyeon K.',airline:'Emirates',body:'After three rejections, I passed on my fourth attempt with WonderfulCrew. The roleplay practice made all the difference. Never give up!',date:'2026-03-28',verified:true},
+  {author:'Haneul L.',airline:'Qatar Airways',body:'My English was lacking, but I practiced speaking confidently with simple words and passed through to the final. Thank you, coach!',date:'2026-03-15',verified:true},
+  {author:'Jimin P.',airline:'Singapore Airlines',body:'I changed my makeup after reading the grooming guide and passed the first round immediately. Image really matters.',date:'2026-02-20',verified:true}
 ];
 
 function render(name){
@@ -330,8 +330,8 @@ function render(name){
     empty.style.display=DUMMY_PASS.length?'none':'block';
     DUMMY_PASS.forEach(function(p){
       var d=document.createElement('div');d.className='post-item';
-      d.innerHTML='<div class="tags"><span class="study-tag air">'+p.airline+'</span><span class="verified">합격 인증</span></div>'+
-        '<div class="title">'+p.author+'님의 Success Stories</div>'+
+      d.innerHTML='<div class="tags"><span class="study-tag air">'+p.airline+'</span><span class="verified">Verified Hire</span></div>'+
+        '<div class="title">'+p.author+"'s Success Story</div>"+
         '<div class="preview">'+p.body+'</div>'+
         '<div class="meta">'+p.date+'</div>';
       list.appendChild(d);
@@ -363,7 +363,7 @@ function render(name){
         (p.airline?'<span class="study-tag air">'+p.airline+'</span>':'')+
         (p.stage?'<span class="study-tag loc">'+p.stage+'</span>':'')+
       '</div>'+
-      '<div class="title">'+p.author+'의 Interview Reviews'+(p.idate?' ('+p.idate+')':'')+'</div>'+
+      '<div class="title">'+p.author+"'s Interview Review"+(p.idate?' ('+p.idate+')':'')+'</div>'+
       '<div class="preview">'+p.body.substring(0,150)+(p.body.length>150?'...':'')+'</div>'+
       '<div class="meta">'+p.date+'</div>';
       d.onclick=function(){alert(p.body+'\n\n  '+p.author);};
@@ -384,9 +384,9 @@ function render(name){
 // 카운트 업데이트
 // GPS
 var userLoc=null;
-var LOC_MAP={서울:[37.5665,126.978],부산:[35.1796,129.0756],대구:[35.8714,128.6014],인천:[37.4563,126.7052],광주:[35.1595,126.8526],대전:[36.3504,127.3845],제주:[33.4996,126.5312]};
+var LOC_MAP={Dubai:[25.2048,55.2708],Doha:[25.2854,51.5310],Singapore:[1.3521,103.8198],'Hong Kong':[22.3193,114.1694],Bangkok:[13.7563,100.5018],London:[51.5074,-0.1278],Seoul:[37.5665,126.978]};
 function enableGPS(){
-  if(!navigator.geolocation){alert('위치 서비스를 지원하지 않는 브라우저입니다.');return;}
+  if(!navigator.geolocation){alert('This browser does not support geolocation.');return;}
   navigator.geolocation.getCurrentPosition(function(pos){
     userLoc={lat:pos.coords.latitude,lng:pos.coords.longitude};
     // 가장 가까운 도시 찾기
@@ -395,11 +395,11 @@ function enableGPS(){
       var d=Math.sqrt(Math.pow(LOC_MAP[city][0]-userLoc.lat,2)+Math.pow(LOC_MAP[city][1]-userLoc.lng,2));
       if(d<minDist){minDist=d;closest=city;}
     });
-    document.getElementById('gps-loc').textContent='📍 '+closest+' 근처';
+    document.getElementById('gps-loc').textContent='📍 Near '+closest;
     document.getElementById('gps-bar').style.display='flex';
     localStorage.setItem('wc_user_city',closest);
     sortByLocation();
-  },function(){alert('위치 권한을 허용해주세요.');});
+  },function(){alert('Please allow location permission.');});
 }
 function sortByLocation(){
   var city=localStorage.getItem('wc_user_city')||'';

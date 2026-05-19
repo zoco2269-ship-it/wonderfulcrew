@@ -313,7 +313,7 @@ function buildCards(questions,startIdx){
     '</div>'+
     '<div class="shadow-result" id="shadow-result-'+i+'"></div>'+
     // ⑥ Complete
-    '<div id="done-'+i+'" style="display:none;margin-top:14px;padding:12px 18px;background:var(--gold-pale);border-left:3px solid var(--gold);color:var(--navy);font-size:0.88rem;">이 문제 연습 Complete!</div>';
+    '<div id="done-'+i+'" style="display:none;margin-top:14px;padding:12px 18px;background:var(--gold-pale);border-left:3px solid var(--gold);color:var(--navy);font-size:0.88rem;">Practice complete for this question!</div>';
   qWrap.appendChild(card);
 
   var recBtn=card.querySelector('.q-record-btn');
@@ -341,7 +341,7 @@ function buildCards(questions,startIdx){
   // ② Record Answer
   recBtn.addEventListener('click',function(){
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){transcript.textContent='Chrome 브라우저에서 사용해 주세요.';return;}
+    if(!SR){transcript.textContent='Please use Chrome browser.';return;}
     if(recBtn.dataset.state==='recording'){
       if(recognition)recognition.stop();
       return;
@@ -350,7 +350,7 @@ function buildCards(questions,startIdx){
     var finalText='';
     var _seen={}, _list=[];
     var _norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
-    recBtn.dataset.state='recording';recBtn.classList.add('recording');recBtn.textContent='Answering... (클릭하여 중지)';
+    recBtn.dataset.state='recording';recBtn.classList.add('recording');recBtn.textContent='Answering... (click to stop)';
     transcript.textContent='';
     recognition.onresult=function(ev){
       var interimSeen={}, interim='';
@@ -376,7 +376,7 @@ function buildCards(questions,startIdx){
     };
     recognition.onerror=function(e){
       recBtn.dataset.state='idle';recBtn.classList.remove('recording');recBtn.textContent='Answer Again';
-      if(e.error!=='aborted')transcript.textContent='인식 실패   다시 시도해 주세요.';
+      if(e.error!=='aborted')transcript.textContent='Recognition failed. Please try again.';
     };
     recognition.start();
   });
@@ -387,23 +387,23 @@ function buildCards(questions,startIdx){
     if(!ans)return;
     // 토큰 체크 (최초 3문제 무료, 이후 토큰 차감)
     if(!useToken()){
-      alert('토큰이 부족합니다. 토큰을 구매해주세요.');
+      alert('Out of tokens. Please purchase more.');
       return;
     }
-    submitBtn.disabled=true;submitBtn.textContent='분석 중...';
-    fbArea.classList.add('visible');fbArea.innerHTML='피드백과 Model Answer을 생성하고 있어요...';
+    submitBtn.disabled=true;submitBtn.textContent='Analyzing...';
+    fbArea.classList.add('visible');fbArea.innerHTML='Generating feedback and Model Answer...';
     try{
       var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
         model:'claude-sonnet-4-20250514',max_tokens:900,
-        system:'You are an English interview coach for cabin crew candidates. The input is speech-to-text. Respond in plain text only (no markdown, no **, no asterisks). Use this exact format:\n\n[피드백]\n1) 잘한 점 - 구체적으로 어떤 내용/표현이 좋았는지\n2) 개선할 점 - 내용 깊이/구성만. 대소문자, 구두점은 음성인식이므로 절대 지적 금지. 말하기 속도에 대한 지적도 하지 마세요(천천히 하세요 같은 피드백 금지)\n3) 표현 교정 - 확실히 틀린 문법만. 대소문자/구두점 무시\n4) 목소리 & 톤 - 반드시 포함: 친절하고 밝은 목소리로 말하세요! 승무원은 고객이 환영받는 느낌을 받아야 합니다. 구체적 팁: 문장 끝을 살짝 올려서 부드럽게, 핵심 단어에 자연스러운 강세, 미소 띤 목소리가 면접에서 가장 중요합니다\n\n[나은 답변]\nIMPORTANT: 학생의 원래 답변을 기반으로 내용을 살리되 더 좋은 표현으로 다듬은 개선 버전을 제시하세요. 학생이 하고 싶은 말을 그대로 유지하면서 문법, 표현, 구조만 개선합니다. 완전히 새로운 답변을 만들지 마세요.\nAnswer Level: '+(document.getElementById('level-choice').value==='easy'?'Easy level - 쉬운 단어, 짧은 문장 3-4개 (초급자용)':'Advanced level - 자연스럽고 풍부한 표현, 5-6 sentences (중상급)')+'.\nWarm, friendly cabin crew tone. Then one blank line and brief Korean translation.\n\nKeep feedback under 350 Korean characters. Keep improved answer under 120 English words. IMPORTANT: 한국어 피드백에 오타 절대 금지. 특히 느낌/느림, 받다/밭다 등 흔한 오타 주의.',
+        system:'You are an English interview coach for cabin crew candidates. The input is speech-to-text. Respond in plain text only (no markdown, no **, no asterisks). Reply ONLY in English. Use this exact format:\n\n[Feedback]\n1) Strengths - what specifically worked in the content or phrasing\n2) Improvements - depth and structure only. NEVER critique capitalization or punctuation (this is speech-to-text). NEVER critique speaking speed.\n3) Expression correction - only clearly incorrect grammar. Ignore capitalization and punctuation.\n4) Voice & tone - always include: speak in a warm, bright voice. A passenger must feel welcomed. Specific tips: lift the end of each sentence gently, place natural stress on key words. A smiling voice matters most at the interview.\n\n[Better Answer]\nIMPORTANT: Take the candidate\'s original answer and polish it into an improved version. Preserve what they wanted to say — only improve grammar, expression and structure. Do NOT replace it with a brand new answer.\nAnswer Level: '+(document.getElementById('level-choice').value==='easy'?'Easy level - simple words, 3-4 short sentences (beginner)':'Advanced level - natural and rich expressions, 5-6 sentences (upper-intermediate)')+'.\nWarm, friendly cabin crew tone.\n\nKeep feedback concise (under 120 English words). Keep improved answer under 120 English words.',
         messages:[{role:'user',content:'Interview question: "'+q+'"\n\nCandidate spoken answer (speech-to-text, ignore capitalization/punctuation):\n'+ans}]
       })});
       var data=await res.json();
       var raw=(data&&data.content&&data.content[0]&&data.content[0].text)||data.text||JSON.stringify(data);
       raw=raw.replace(/\*\*/g,'');
       // 분리: [피드백] ... [모범답변] ...
-      var parts=raw.split(/\[나은 답변\]|\[모범답변\]/i);
-      var fbText=(parts[0]||'').replace(/\[피드백\]/i,'').trim();
+      var parts=raw.split(/\[Better Answer\]|\[Model Answer\]|\[나은 답변\]|\[모범답변\]/i);
+      var fbText=(parts[0]||'').replace(/\[Feedback\]|\[피드백\]/i,'').trim();
       var sampleRaw=(parts[1]||'').trim();
       // 피드백 표시
       fbArea.innerHTML=fbText.replace(/\n/g,'<br>');
@@ -416,7 +416,7 @@ function buildCards(questions,startIdx){
       // ④ 모범답변 보기 버튼 잠금해제
       step45.style.display='block';
     }catch(e){
-      fbArea.innerHTML='오류: 잠시 후 다시 시도해 주세요.';
+      fbArea.innerHTML='Error: please try again in a moment.';
     }
     submitBtn.disabled=false;submitBtn.textContent='Submit Answer';
   });
@@ -455,13 +455,13 @@ function buildCards(questions,startIdx){
     // 이미 Recording이면 중지
     if(activeShRec){activeShRec.stop();activeShRec=null;btn.textContent='Repeat After';return;}
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){shadowResult.textContent='Chrome 브라우저에서 사용해 주세요.';return;}
+    if(!SR){shadowResult.textContent='Please use Chrome browser.';return;}
     var rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;
     activeShRec=rec;
     var fullText='';
     var _seen={}, _list=[];
     var _norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
-    btn.textContent='Recording... (클릭하여 중지)';
+    btn.textContent='Recording... (click to stop)';
     shadowResult.textContent='듣고 있어요... 다 읽은 후 버튼을 눌러주세요.';
     rec.onresult=function(ev){
       var interimSeen={}, interim='';
@@ -563,14 +563,14 @@ function buildShadowCards(sentences){
     var activeRec=null;
     recBtn2.addEventListener('click',function(){
       var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-      if(!SR){result.textContent='Chrome 브라우저에서 사용해 주세요.';return;}
+      if(!SR){result.textContent='Please use Chrome browser.';return;}
       if(activeRec){activeRec.stop();activeRec=null;return;}
       var rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;
       activeRec=rec;
       var fullText='';
       var _seen={}, _list=[];
       var _norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
-      recBtn2.textContent='Recording... (클릭하여 중지)';
+      recBtn2.textContent='Recording... (click to stop)';
       result.textContent='듣고 있어요... 다 읽은 후 버튼을 클릭하세요.';
       rec.onresult=function(ev){
         var interimSeen={}, interim='';

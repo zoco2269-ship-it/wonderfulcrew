@@ -70,18 +70,18 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
 <div class="card">
   <h3>AI Coaching Feedback</h3>
-  <p style="font-size:0.86rem;color:var(--text-mid);line-height:1.7;margin-bottom:8px;">Enter your answer to get feedback on strengths, 개선할 점, 서비스 마인드 평가, Model Answer 예시를 즉시 받을 수 있습니다.</p>
+  <p style="font-size:0.86rem;color:var(--text-mid);line-height:1.7;margin-bottom:8px;">Enter your answer to get instant feedback on strengths, areas to improve, a service-mindset evaluation, and a Model Answer.</p>
 
   <label>Airline / Position</label>
   <select id="ai-airline">
-    <option>Emirates</option><option>Qatar</option><option>Singapore Airlines</option><option>Cathay Pacific</option>
-    <option>Korean Air</option><option>Asiana</option><option>Jeju Air</option><option>Jin Air</option>
+    <option>Emirates</option><option>Qatar Airways</option><option>Singapore Airlines</option><option>Cathay Pacific</option>
+    <option>Etihad</option><option>Riyadh Air</option><option>KLM</option><option>Lufthansa</option>
     <option>Hotel & Luxury</option><option>Cruise</option><option>Other</option>
   </select>
 
   <label>Interview Stage</label>
   <select id="ai-stage">
-    <option>Video Interview</option><option>1st Interview</option><option>2nd Interview</option><option>롤플레이</option><option>Discussion</option><option>파이널 인터뷰</option><option>Other</option>
+    <option>Video Interview</option><option>Round 1</option><option>Round 2</option><option>Roleplay</option><option>Discussion</option><option>Final Interview</option><option>Other</option>
   </select>
 
   <label>Question</label>
@@ -91,15 +91,15 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <textarea id="ai-answer" placeholder="Enter your answer in English. The more detailed, the better the feedback."></textarea>
 
   <button class="btn-gold" id="ai-btn" onclick="getAIFeedback()">Get AI Feedback</button>
-  <span style="font-size:0.78rem;color:var(--text-muted);margin-left:12px;">토큰 1개 소모 (테스트 기간 무료)</span>
+  <span style="font-size:0.78rem;color:var(--text-muted);margin-left:12px;">1 token (free during beta)</span>
 
   <div class="result" id="ai-result"></div>
 </div>
 
 <div class="card" style="background:var(--cream);border-color:var(--gold);">
-  <h3 style="font-size:1rem;">실제 코치에게 피드백 받으려면?</h3>
-  <p style="font-size:0.86rem;color:var(--text-mid);line-height:1.7;">AI보다 더 깊은 피드백이 필요하다면,<br>에미레이트 7년 일등석 출신 코치가 직접 피드백 띄우고 해드립니다.</p>
-  <a href="coach-feedback-en.html" style="display:inline-block;margin-top:12px;padding:10px 24px;background:var(--navy);color:#fff;border-radius:22px;font-size:0.84rem;font-weight:600;text-decoration:none;">1:1 코치 피드백 →</a>
+  <h3 style="font-size:1rem;">Want feedback from a real coach?</h3>
+  <p style="font-size:0.86rem;color:var(--text-mid);line-height:1.7;">If you need deeper feedback than AI can give,<br>a 7-year Emirates First Class veteran will review your answer in person.</p>
+  <a href="coach-feedback-en.html" style="display:inline-block;margin-top:12px;padding:10px 24px;background:var(--navy);color:#fff;border-radius:22px;font-size:0.84rem;font-weight:600;text-decoration:none;">1:1 Coach Feedback →</a>
 </div>
 
 </div></section>
@@ -110,21 +110,21 @@ async function getAIFeedback(){
   var a=document.getElementById('ai-answer').value.trim();
   var btn=document.getElementById('ai-btn');
   var r=document.getElementById('ai-result');
-  if(!q||!a){alert('질문과 답변을 모두 입력해주세요.');return;}
+  if(!q||!a){alert('Please enter both the question and your answer.');return;}
   btn.disabled=true;btn.textContent='Analyzing...';
-  r.classList.add('visible');r.innerHTML='AI 피드백을 생성하고 있어요...';
+  r.classList.add('visible');r.innerHTML='Generating AI feedback...';
   try{
     var airline=document.getElementById('ai-airline').value;
     var stage=document.getElementById('ai-stage').value;
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-sonnet-4-20250514',max_tokens:1000,
-      system:'You are WonderfulCrew AI coach with 20 years of Emirates First Class cabin crew coaching experience. Give feedback in Korean, plain text only (no **, no markdown, no asterisks). Structure:\n\n1) 잘한 점   구체적으로 어떤 내용/표현이 좋았는지 (2~3줄)\n2) 개선할 점   내용의 깊이, 구성, 서비스 마인드 관점에서 (2~3줄)\n3) 서비스 마인드 평가   WonderfulCrew 6가지 철학 기준 (유니폼의 본질, 일관된 신뢰, 원팀, 공감과 시각, 컴플레인은 선물, 면접관이 보는 것) 중 어떤 점이 잘 드러났고 어떤 점이 보완되어야 하는지 (2~3줄)\n4) Model Answer 예시   spoken English로 5~6문장. 따뜻하고 자연스러운 승무원 톤. 이어서 한국어 번역\n\nBe warm, professional, and specific. Not generic praise.',
-      messages:[{role:'user',content:'항공사: '+airline+'\n면접 단계: '+stage+'\n\n질문: '+q+'\n\n학생 답변:\n'+a}]
+      system:'You are WonderfulCrew AI coach with 20 years of Emirates First Class cabin crew coaching experience. Give feedback in English only, plain text (no **, no markdown, no asterisks). Structure:\n\n1) Strengths - what specifically worked in the content or phrasing (2-3 lines)\n2) Areas to improve - depth, structure, and service-mindset angles (2-3 lines)\n3) Service mindset evaluation - reference the WonderfulCrew philosophy (essence of the uniform, consistent trust, one team, empathy, complaints as gifts, what the interviewer is reading) - call out what came through and what is missing (2-3 lines)\n4) Model Answer - 5-6 sentences in natural spoken English, in a warm cabin crew tone.\n\nBe warm, professional, and specific. Not generic praise.',
+      messages:[{role:'user',content:'Airline: '+airline+'\nInterview stage: '+stage+'\n\nQuestion: '+q+'\n\nCandidate answer:\n'+a}]
     })});
     var data=await res.json();
-    var text=(data&&data.content&&data.content[0]&&data.content[0].text)||'피드백 생성 실패';
+    var text=(data&&data.content&&data.content[0]&&data.content[0].text)||'Feedback generation failed.';
     r.innerHTML=text.replace(/\*\*/g,'').replace(/\n/g,'<br>');
-  }catch(e){r.innerHTML='오류가 발생했습니다. 잠시 후 다시 시도해주세요.';}
+  }catch(e){r.innerHTML='An error occurred. Please try again in a moment.';}
   btn.disabled=false;btn.textContent='Get AI Feedback';
 }
 </script>

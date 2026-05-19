@@ -145,10 +145,10 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <h3>Target Airline</h3>
     <select id="target-airline" onchange="localStorage.setItem('wc_target',this.value);updateTarget();" style="width:100%;padding:10px;border:1px solid var(--gold-pale);border-radius:8px;font-family:inherit;font-size:0.88rem;margin-bottom:10px;">
       <option value="">Select Target Airline</option>
-      <option value="Emirates">Emirates</option><option value="Qatar">Qatar</option><option value="Singapore">Singapore</option><option value="캐세이">Cathay Pacific</option>
-      <option value="Korean Air">Korean Air</option><option value="Asiana">Asiana</option><option value="Jeju Air">Jeju Air</option><option value="Jin Air">Jin Air</option>
+      <option value="Emirates">Emirates</option><option value="Qatar">Qatar Airways</option><option value="Singapore">Singapore Airlines</option><option value="Cathay">Cathay Pacific</option>
+      <option value="Etihad">Etihad</option><option value="Riyadh">Riyadh Air</option><option value="KLM">KLM</option><option value="Lufthansa">Lufthansa</option>
     </select>
-    <div id="target-text" style="font-size:0.84rem;color:var(--text-mid);margin-bottom:6px;">Target Airline를 선택해주세요</div>
+    <div id="target-text" style="font-size:0.84rem;color:var(--text-mid);margin-bottom:6px;">Please select a target airline</div>
     <div class="progress-bar"><div class="fill" id="target-fill" style="width:0%;"></div></div>
   </div>
 </div>
@@ -166,7 +166,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <div class="badge">⭐ 10 Questions Done</div>
     <div class="badge">💎 30-Day Streak</div>
     <div class="badge">Final Interview Pass</div>
-    <div class="badge">👑 올 커리큘럼 ���료</div>
+    <div class="badge">👑 All Curriculum Complete</div>
   </div>
 </div>
 
@@ -175,11 +175,11 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   <h3>Recent Practice History</h3>
   <table>
     <tr><th>Date</th><th>Airline</th><th>Stage</th><th>Score</th><th>Feedback</th></tr>
-    <tr><td>2026-04-13</td><td>Emirates</td><td>파이널</td><td style="color:var(--gold);font-weight:700;">78</td><td>서비스 ���험 구체적���로 잘 표현</td></tr>
-    <tr><td>2026-04-12</td><td>Emirates</td><td>Roleplay</td><td style="color:var(--gold);font-weight:700;">72</td><td>사과 표현 양호. Recovery 보완</td></tr>
-    <tr><td>2026-04-12</td><td>영어쉐도잉</td><td>Q&A 3문제</td><td style="color:var(--gold);font-weight:700;">-</td><td>출석 Complete</td></tr>
-    <tr><td>2026-04-11</td><td>Emirates</td><td>디스커션</td><td style="color:var(--gold);font-weight:700;">65</td><td>우선순위 판단 양호</td></tr>
-    <tr><td>2026-04-10</td><td>Emirates</td><td>비디오면접</td><td style="color:var(--gold);font-weight:700;">70</td><td>미소 좋음. 톤 더 밝게</td></tr>
+    <tr><td>2026-04-13</td><td>Emirates</td><td>Final</td><td style="color:var(--gold);font-weight:700;">78</td><td>Service experience expressed with strong specifics</td></tr>
+    <tr><td>2026-04-12</td><td>Emirates</td><td>Roleplay</td><td style="color:var(--gold);font-weight:700;">72</td><td>Apology phrasing solid. Tighten the recovery</td></tr>
+    <tr><td>2026-04-12</td><td>English Shadowing</td><td>Q&A 3 items</td><td style="color:var(--gold);font-weight:700;">-</td><td>Attendance complete</td></tr>
+    <tr><td>2026-04-11</td><td>Emirates</td><td>Discussion</td><td style="color:var(--gold);font-weight:700;">65</td><td>Strong prioritization judgment</td></tr>
+    <tr><td>2026-04-10</td><td>Emirates</td><td>Video Interview</td><td style="color:var(--gold);font-weight:700;">70</td><td>Nice smile. Lift the tone a touch brighter</td></tr>
   </table>
   <div style="text-align:center;margin-top:14px;font-size:0.78rem;color:var(--text-muted);">Demo data (actual data after Supabase integration)</div>
 </div>
@@ -288,26 +288,26 @@ var saved=localStorage.getItem('wc_target');
 if(saved)document.getElementById('target-airline').value=saved;
 function updateTarget(){
   var v=document.getElementById('target-airline').value;
-  if(!v){document.getElementById('target-text').textContent='Target Airline를 선택해주세요';document.getElementById('target-fill').style.width='0%';return;}
-  var steps={Emirates:7,Qatar:5,싱가포르:6,캐세이:5,대한항공:5,아시아나:5,제주항공:4,진에어:3};
+  if(!v){document.getElementById('target-text').textContent='Please select a target airline';document.getElementById('target-fill').style.width='0%';return;}
+  var steps={Emirates:7,Qatar:5,Singapore:6,Cathay:5,Etihad:5,Riyadh:5,KLM:5,Lufthansa:5};
   var done=2;
   var total=steps[v]||5;
   var pct=Math.round((done/total)*100);
-  document.getElementById('target-text').textContent=v+' · Complete '+done+'/'+total+'단계 ('+pct+'%)';
+  document.getElementById('target-text').textContent=v+' · '+done+'/'+total+' stages complete ('+pct+'%)';
   document.getElementById('target-fill').style.width=pct+'%';
 }
 updateTarget();
 
 // ��더풀크루 한마디 (랜덤)
 var comments=[
-  '<b>지난주보다 유창���이 15% 올랐어요!</b> 계속 이 페이스로 가세요.',
-  '<b>3-Day Streak 중!</b> 꾸준함이 합격의 비밀입니다.',
-  '<b>Roleplay 점수가 올라가고 있어요.</b> Service Recovery를 좀 더 연습해볼까요?',
-  '<b>Shadowing을 매일 하고 계시네요!</b> 발음이 확실히 좋아지고 있어요.',
-  '<b>Target Airline까지 2단계 남았어요.</b> 조금만 더 힘내세요!',
-  '<b>오늘도 접속해주셨네요!</b> 하루 한 문제라도 연습하면 큰 차��가 납니다.',
-  '<b>Final Interview 답변이 점점 깊어지고 있어요.</b> 서비스 마인드가 느껴집니다.',
-  '<b>이번 주 5일 ���습했어요!</b> 이 습관이면 면접장에서 자신감이 넘칠 거예요.'
+  "<b>Your fluency is up 15% from last week!</b> Keep this pace going.",
+  "<b>3-Day Streak going strong!</b> Consistency is the secret to the hire.",
+  "<b>Your Roleplay score is climbing.</b> Want to sharpen Service Recovery a little more?",
+  "<b>Shadowing every day!</b> Your pronunciation is noticeably clearer.",
+  "<b>Two stages to go for your Target Airline.</b> A little more push!",
+  "<b>You showed up again today.</b> Even one question a day makes a real difference.",
+  "<b>Your Final Interview answers are getting deeper.</b> Service mindset is coming through.",
+  "<b>Five days of practice this week!</b> This habit will carry you into the interview room with confidence."
 ];
 document.getElementById('daily-comment').innerHTML=comments[Math.floor(Math.random()*comments.length)]+' ✈️';
 </script>

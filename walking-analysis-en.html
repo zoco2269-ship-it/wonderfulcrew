@@ -112,15 +112,15 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <div class="result" id="result">
   <h3>AI Analysis Results</h3>
   <div class="score-grid">
-    <div class="score-item"><span class="label">어깨 수평</span><span class="badge" id="r1"></span></div>
-    <div class="score-item"><span class="label">거북목 여부</span><span class="badge" id="r2"></span></div>
-    <div class="score-item"><span class="label">워킹 라인 (일자)</span><span class="badge" id="r3"></span></div>
-    <div class="score-item"><span class="label">무릎 붙는지</span><span class="badge" id="r4"></span></div>
-    <div class="score-item"><span class="label">Leg Line (O/X자)</span><span class="badge" id="r5"></span></div>
-    <div class="score-item"><span class="label">발끝 방향</span><span class="badge" id="r6"></span></div>
-    <div class="score-item"><span class="label">보폭</span><span class="badge" id="r7"></span></div>
-    <div class="score-item"><span class="label">시선 정면 유지</span><span class="badge" id="r8"></span></div>
-    <div class="score-item" style="grid-column:span 2;"><span class="label">All 인상 / 자신감</span><span class="badge" id="r9"></span></div>
+    <div class="score-item"><span class="label">Shoulder Level</span><span class="badge" id="r1"></span></div>
+    <div class="score-item"><span class="label">Forward Head Posture</span><span class="badge" id="r2"></span></div>
+    <div class="score-item"><span class="label">Walking Line (Straight)</span><span class="badge" id="r3"></span></div>
+    <div class="score-item"><span class="label">Knees Together</span><span class="badge" id="r4"></span></div>
+    <div class="score-item"><span class="label">Leg Line (O/X)</span><span class="badge" id="r5"></span></div>
+    <div class="score-item"><span class="label">Toe Direction</span><span class="badge" id="r6"></span></div>
+    <div class="score-item"><span class="label">Stride Length</span><span class="badge" id="r7"></span></div>
+    <div class="score-item"><span class="label">Forward Gaze</span><span class="badge" id="r8"></span></div>
+    <div class="score-item" style="grid-column:span 2;"><span class="label">Overall Impression / Confidence</span><span class="badge" id="r9"></span></div>
   </div>
   <div class="feedback-box" id="feedback-text"></div>
 </div>
@@ -150,15 +150,15 @@ function analyzeWalking(){
     result.classList.add('visible');
 
     var items=[
-      {id:'r1',scores:['양호','약간 기울어짐','기울어짐']},
-      {id:'r2',scores:['정상','약간 앞으로','거북목 주의']},
-      {id:'r3',scores:['일자 보행','약간 벗어남','흔들림']},
-      {id:'r4',scores:['무릎 밀착','약간 벌어짐','벌어짐']},
-      {id:'r5',scores:['정상','약간 O자','O자/X자 주의']},
-      {id:'r6',scores:['정면 향함','약간 바깥','바깥쪽']},
-      {id:'r7',scores:['적절','약간 넓음','보폭 조절 필요']},
-      {id:'r8',scores:['정면 유지','가끔 아래','시선 불안정']},
-      {id:'r9',scores:['자신감 있음','보통','개선 필요']}
+      {id:'r1',scores:['Level','Slightly Tilted','Tilted']},
+      {id:'r2',scores:['Normal','Slightly Forward','Forward Head — Watch Out']},
+      {id:'r3',scores:['Straight','Slight Drift','Wavering']},
+      {id:'r4',scores:['Knees Together','Slight Gap','Gap']},
+      {id:'r5',scores:['Normal','Slight O-shape','O / X Shape — Caution']},
+      {id:'r6',scores:['Forward','Slightly Out','Outward']},
+      {id:'r7',scores:['Right','Slightly Wide','Adjust Stride']},
+      {id:'r8',scores:['Forward','Sometimes Down','Unsteady Gaze']},
+      {id:'r9',scores:['Confident','Average','Needs Work']}
     ];
     items.forEach(function(item){
       var r=Math.floor(Math.random()*3);
@@ -168,14 +168,14 @@ function analyzeWalking(){
     });
 
     document.getElementById('feedback-text').innerHTML=
-      '<b>승무원 면접 기준 피드백:</b><br><br>'+
-      '현재는 간이 분석 결과입니다. 정밀 AI 분석 기능이 곧 업데이트됩니다.<br><br>'+
-      '<b>일반 Improvement Points:</b><br>'+
-      '· 어깨를 펴고 가슴을 살짝 열어주세요   자신감 있는 인상을 줍니다<br>'+
-      '· 턱을 살짝 당기면 거북목이 교정되고 목선이 길어 보입니다<br>'+
-      '· 무릎이 스치듯 걷는 연습을 하세요   Leg Line이 예뻐 보입니다<br>'+
-      '· 보폭은 어깨 넓이의 0.7배가 적당합니다<br>'+
-      '· 시선은 정면 약 3m 앞을 보세요   고개를 숙이지 않도록 주의';
+      '<b>Cabin Crew Interview Feedback:</b><br><br>'+
+      'This is a quick analysis preview. Full AI analysis is coming soon.<br><br>'+
+      '<b>General Improvement Points:</b><br>'+
+      '· Open your shoulders and lift your chest slightly — it conveys confidence<br>'+
+      '· A gentle chin tuck corrects forward head posture and lengthens the neck line<br>'+
+      '· Practice walking with your knees brushing past each other — it refines the leg line<br>'+
+      '· The ideal stride is about 0.7× your shoulder width<br>'+
+      '· Look about 3 metres straight ahead — never drop your gaze';
   },2500);
 }
 </script>

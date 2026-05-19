@@ -451,7 +451,7 @@ function buildCards(questions,startIdx){
   // ⑤ Repeat After (continuous + 수동 중지)
   card.querySelector('[data-act="shadow-rec"]').addEventListener('click',function(){
     var btn=card.querySelector('[data-act="shadow-rec"]');
-    if(!sampleText){shadowResult.textContent='먼저 Model Answer을 받아주세요.';return;}
+    if(!sampleText){shadowResult.textContent='Please get the Model Answer first.';return;}
     // 이미 Recording이면 중지
     if(activeShRec){activeShRec.stop();activeShRec=null;btn.textContent='Repeat After';return;}
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -462,7 +462,7 @@ function buildCards(questions,startIdx){
     var _seen={}, _list=[];
     var _norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
     btn.textContent='Recording... (click to stop)';
-    shadowResult.textContent='듣고 있어요... 다 읽은 후 버튼을 눌러주세요.';
+    shadowResult.textContent='Listening... press the button when you are done.';
     rec.onresult=function(ev){
       var interimSeen={}, interim='';
       for(var r=0;r<ev.results.length;r++){
@@ -476,19 +476,19 @@ function buildCards(questions,startIdx){
         }
       }
       fullText=(_list.join(' ')+(interim?' '+interim:'')).trim();
-      shadowResult.textContent='듣고 있어요: '+fullText;
+      shadowResult.textContent='Listening: '+fullText;
     };
     rec.onend=function(){
       activeShRec=null;btn.textContent='Repeat After';
-      if(!fullText.trim()){shadowResult.textContent='인식된 내용이 없어요. 다시 시도해 주세요.';return;}
+      if(!fullText.trim()){shadowResult.textContent='No speech detected. Please try again.';return;}
       var norm=function(x){return x.toLowerCase().replace(/[^a-z ]/g,'').trim();};
       var a=norm(fullText),b=norm(sampleText);
       var aw=a.split(/\s+/),bw=b.split(/\s+/);
       var match=aw.filter(function(w){return bw.indexOf(w)>-1;}).length;
       var pct=Math.round((match/Math.max(bw.length,1))*100);
-      shadowResult.innerHTML='내 발음: '+fullText.trim()+'<br>정확도: '+pct+'%';
+      shadowResult.innerHTML='Your pronunciation: '+fullText.trim()+'<br>Accuracy: '+pct+'%';
     };
-    rec.onerror=function(){activeShRec=null;btn.textContent='Repeat After';shadowResult.textContent='인식 실패. 다시 시도해 주세요.';};
+    rec.onerror=function(){activeShRec=null;btn.textContent='Repeat After';shadowResult.textContent='Recognition failed. Please try again.';};
     rec.start();
   });
   });
@@ -509,7 +509,7 @@ function checkShowMore(){
 function addMoreQuestions(){
   var t=loadTokens();
   if(!t.firstFree&&t.tokens<=0){
-    alert('토큰이 부족합니다. 토큰을 구매해주세요.');
+    alert('Out of tokens. Please purchase more.');
     return;
   }
   var newQs=pickN(3);
@@ -555,7 +555,7 @@ function buildShadowCards(sentences){
     sWrap.appendChild(card);
     var result=card.querySelector('.shadow-result');
     card.querySelector('[data-act="tts"]').addEventListener('click',function(){
-      if(!('speechSynthesis' in window)){result.textContent='이 브라우저는 음성 합성을 지원하지 않아요.';return;}
+      if(!('speechSynthesis' in window)){result.textContent='This browser does not support speech synthesis.';return;}
       var u=new SpeechSynthesisUtterance(s);u.lang=(document.getElementById('accent-choice')?document.getElementById('accent-choice').value:'en-GB');u.rate=0.85;u.pitch=1.1;
       window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
     });
@@ -571,7 +571,7 @@ function buildShadowCards(sentences){
       var _seen={}, _list=[];
       var _norm=function(s){return (s||'').toLowerCase().replace(/[^a-z0-9가-힣\s]+/g,'').replace(/\s+/g,' ').trim();};
       recBtn2.textContent='Recording... (click to stop)';
-      result.textContent='듣고 있어요... 다 읽은 후 버튼을 클릭하세요.';
+      result.textContent='Listening... click the button when you are done.';
       rec.onresult=function(ev){
         var interimSeen={}, interim='';
         for(var r=0;r<ev.results.length;r++){
@@ -585,19 +585,19 @@ function buildShadowCards(sentences){
           }
         }
         fullText=(_list.join(' ')+(interim?' '+interim:'')).trim();
-        result.textContent='듣고 있어요: '+fullText;
+        result.textContent='Listening: '+fullText;
       };
       rec.onend=function(){
         activeRec=null;recBtn2.textContent='Start Read-Along';
-        if(!fullText.trim()){result.textContent='인식된 내용이 없어요. 다시 시도해 주세요.';return;}
+        if(!fullText.trim()){result.textContent='No speech detected. Please try again.';return;}
         var norm=function(x){return x.toLowerCase().replace(/[^a-z ]/g,'').trim();};
         var a=norm(fullText),b=norm(s);
         var aw=a.split(/\s+/),bw=b.split(/\s+/);
         var match=aw.filter(function(w){return bw.indexOf(w)>-1;}).length;
         var pct=Math.round((match/Math.max(bw.length,1))*100);
-        result.innerHTML='들은 내용: '+fullText.trim()+'<br>정확도: '+pct+'%';
+        result.innerHTML='Heard: '+fullText.trim()+'<br>Accuracy: '+pct+'%';
       };
-      rec.onerror=function(){activeRec=null;recBtn2.textContent='Start Read-Along';result.textContent='인식 실패. 다시 시도해 주세요.';};
+      rec.onerror=function(){activeRec=null;recBtn2.textContent='Start Read-Along';result.textContent='Recognition failed. Please try again.';};
       rec.start();
     });
   });

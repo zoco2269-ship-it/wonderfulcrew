@@ -304,7 +304,7 @@ function submitReview(){
   var idate=document.getElementById('rv-date').value;
   var body=document.getElementById('rv-body').value.trim();
   var err=document.getElementById('err-review');err.style.display='none';
-  if(!body){err.textContent='후기 내용을 입력해주세요.';err.style.display='block';return;}
+  if(!body){err.textContent='Please enter the review content.';err.style.display='block';return;}
   if(banned(body)){err.textContent='This content cannot be posted due to community policy.';err.style.display='block';return;}
   var arr=getB('review');
   arr.unshift({airline:airline[0]||'',stage:stage[0]||'',author:author,idate:idate,body:body,date:new Date().toISOString().slice(0,10)});

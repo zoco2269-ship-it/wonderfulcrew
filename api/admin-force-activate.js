@@ -80,6 +80,7 @@ module.exports = async function(req, res) {
       email: targetEmail,
       plan: usePlan,
       plan_active: true,
+      free_trial_used: 0,
       updated_at: now.toISOString()
     }, { onConflict: 'auth_id' });
 

@@ -11,7 +11,7 @@ module.exports = async function(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
 
-  const { adminEmail, targetEmail, plan, action } = req.body || {};
+  const { adminEmail, targetEmail, plan, action, unlimited } = req.body || {};
   if (!adminEmail || ADMIN_EMAILS.indexOf(adminEmail) === -1) {
     return res.status(403).json({ error: 'unauthorized' });
   }
@@ -70,9 +70,10 @@ module.exports = async function(req, res) {
 
     // activate — 강제 plan_active=true (action==='activate' 또는 미지정 시 기본)
     const now = new Date();
-    const expiresAt = new Date(now);
+    let expiresAt = new Date(now);
     const usePlan = plan || (allPayments.find(p => p.status === 'completed')?.plan) || 'basic';
-    if (usePlan === 'premium') expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+    if (unlimited) expiresAt = new Date('2099-12-31T00:00:00Z');
+    else if (usePlan === 'premium') expiresAt.setFullYear(expiresAt.getFullYear() + 1);
     else expiresAt.setMonth(expiresAt.getMonth() + 1);
 
     await sb.from('users').upsert({

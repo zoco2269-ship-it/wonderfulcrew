@@ -62,7 +62,13 @@
       if (document.getElementById('wc-auth-overlay')) return;
       var o = document.createElement('div');
       o.id = 'wc-auth-overlay';
-      o.innerHTML = '<div class="ring"></div><div class="msg">계정 확인 중…</div>';
+      var _isEn = false;
+      try {
+        if (document.documentElement && document.documentElement.lang === 'en') _isEn = true;
+        else if (location.pathname && /-en(\.html)?$/.test(location.pathname)) _isEn = true;
+      } catch(e) {}
+      var _msg = _isEn ? 'Verifying account…' : '계정 확인 중…';
+      o.innerHTML = '<div class="ring"></div><div class="msg">' + _msg + '</div>';
       (document.body || document.documentElement).appendChild(o);
     }
     if (document.body) showOverlay();

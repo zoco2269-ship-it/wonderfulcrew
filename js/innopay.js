@@ -18,6 +18,24 @@ async function payWithVbank(plan, buyerInfo) {
 }
 
 async function payWithInnopay(plan, buyerInfo, payMethod) {
+  // ─── i18n: 페이지 lang 자동 감지 (영문판 / 한국어판) ───
+  var _isEn = (function(){
+    try {
+      if (document.documentElement && document.documentElement.lang === 'en') return true;
+      if (location.pathname && /-en(\.html)?$/.test(location.pathname)) return true;
+    } catch(e) {}
+    return false;
+  })();
+  var _msg = _isEn ? {
+    prepFail: 'Payment preparation failed: ',
+    moduleLoading: 'Payment module is loading. Please try again in 3 seconds.',
+    connectFail: 'Payment connection failed: '
+  } : {
+    prepFail: '결제 준비 실패: ',
+    moduleLoading: '결제 모듈 로드 중입니다. 3초 후 다시 시도해주세요.',
+    connectFail: '결제 연결 실패: '
+  };
+
   try {
     // 로그인된 사용자 정보 자동 추출 — 어드민이 직접 입력할 필요 X
     var wcUser = {};
@@ -37,13 +55,13 @@ async function payWithInnopay(plan, buyerInfo, payMethod) {
 
     var data = await res.json();
     if (data.error) {
-      alert('결제 준비 실패: ' + data.error);
+      alert(_msg.prepFail + data.error);
       return;
     }
 
     // 2. 이노페이 결제창 호출
     if (typeof innopay === 'undefined' || !innopay.goPay) {
-      alert('결제 모듈 로드 중입니다. 3초 후 다시 시도해주세요.');
+      alert(_msg.moduleLoading);
       return;
     }
 
@@ -96,7 +114,7 @@ async function payWithInnopay(plan, buyerInfo, payMethod) {
       }catch(e){console.warn('[innopay] modal style override failed',e);}
     }, 400);
   } catch (e) {
-    alert('결제 연결 실패: ' + e.message);
+    alert(_msg.connectFail + e.message);
     console.error('Innopay error:', e);
   }
 }

@@ -8,6 +8,17 @@ var FREE_TRIAL_KEY = 'wc_free_trial';
 var FREE_TRIAL_MAX = 10;
 var _trialSynced = false;
 
+// ─── i18n: 페이지 lang 자동 감지 + 메시지 헬퍼 ───
+function _wcIsEn(){
+  try {
+    if (document.documentElement && document.documentElement.lang === 'en') return true;
+    if (location.pathname && /-en(\.html)?$/.test(location.pathname)) return true;
+  } catch(e) {}
+  return false;
+}
+// 영문판이면 -en suffix 자동 추가
+function _wcPage(name){ return _wcIsEn() ? (name.replace(/\.html$/, '') + '-en.html') : name; }
+
 function getTrialData() {
   try { return JSON.parse(localStorage.getItem(FREE_TRIAL_KEY) || '{}'); } catch(e) { return {}; }
 }
@@ -128,9 +139,17 @@ function showTrialToast(remaining) {
   toast.id = 'wc-trial-toast';
   toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1A2340;color:#fff;padding:12px 24px;border-radius:28px;font-size:0.84rem;font-family:inherit;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.2);display:flex;align-items:center;gap:8px;';
   if (remaining > 0) {
-    toast.innerHTML = '<span style="color:#C9A84C;font-weight:700;">무료체험</span> ' + remaining + '회 남음';
+    if (_wcIsEn()) {
+      toast.innerHTML = '<span style="color:#C9A84C;font-weight:700;">Free Trial</span> ' + remaining + ' left';
+    } else {
+      toast.innerHTML = '<span style="color:#C9A84C;font-weight:700;">무료체험</span> ' + remaining + '회 남음';
+    }
   } else {
-    toast.innerHTML = '<span style="color:#C9A84C;font-weight:700;">무료체험</span> 모두 사용 완료';
+    if (_wcIsEn()) {
+      toast.innerHTML = '<span style="color:#C9A84C;font-weight:700;">Free Trial</span> all used';
+    } else {
+      toast.innerHTML = '<span style="color:#C9A84C;font-weight:700;">무료체험</span> 모두 사용 완료';
+    }
   }
   document.body.appendChild(toast);
   setTimeout(function() { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.5s'; }, 2500);
@@ -143,13 +162,24 @@ function showSubscribePopup() {
   var overlay = document.createElement('div');
   overlay.id = 'wc-subscribe-popup';
   overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;';
+  var _msgs = _wcIsEn() ? {
+    title: 'Your Free Trial Has Ended',
+    desc: 'Subscribe to a monthly plan to unlock<br>more content and AI coaching.',
+    cta: 'View Subscription Plans',
+    close: 'Close'
+  } : {
+    title: '무료체험이 끝났습니다',
+    desc: '더 많은 콘텐츠와 AI 코칭을 이용하려면<br>월정액을 구독해주세요.',
+    cta: '구독 플랜 보기',
+    close: '닫기'
+  };
   overlay.innerHTML = '<div style="background:#fff;border-radius:16px;padding:40px 32px;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">' +
     '<div style="font-size:2rem;margin-bottom:12px;">✨</div>' +
-    '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.4rem;color:#1A2340;margin-bottom:8px;">무료체험이 끝났습니다</h2>' +
-    '<p style="font-size:0.88rem;color:#5A5048;line-height:1.7;margin-bottom:24px;">더 많은 콘텐츠와 AI 코칭을 이용하려면<br>월정액을 구독해주세요.</p>' +
+    '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.4rem;color:#1A2340;margin-bottom:8px;">' + _msgs.title + '</h2>' +
+    '<p style="font-size:0.88rem;color:#5A5048;line-height:1.7;margin-bottom:24px;">' + _msgs.desc + '</p>' +
     '<div style="display:flex;flex-direction:column;gap:10px;">' +
-      '<a href="plans.html" style="display:block;padding:14px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.92rem;font-weight:700;text-decoration:none;">구독 플랜 보기</a>' +
-      '<button onclick="this.closest(\'#wc-subscribe-popup\').remove();" style="padding:10px;background:none;border:1px solid #e8e0d0;border-radius:28px;font-size:0.84rem;color:#5A5048;cursor:pointer;font-family:inherit;">닫기</button>' +
+      '<a href="' + _wcPage('plans.html') + '" style="display:block;padding:14px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.92rem;font-weight:700;text-decoration:none;">' + _msgs.cta + '</a>' +
+      '<button onclick="this.closest(\'#wc-subscribe-popup\').remove();" style="padding:10px;background:none;border:1px solid #e8e0d0;border-radius:28px;font-size:0.84rem;color:#5A5048;cursor:pointer;font-family:inherit;">' + _msgs.close + '</button>' +
     '</div>' +
   '</div>';
   document.body.appendChild(overlay);
@@ -162,7 +192,14 @@ var PLAN_USAGE_CAP = {
   elite: 1200,
   premium: 5000
 };
-var PLAN_LABEL = { basic: '베이직', elite: '엘리트', premium: '프리미엄' };
+var PLAN_LABEL_KO = { basic: '베이직', elite: '엘리트', premium: '프리미엄' };
+var PLAN_LABEL_EN = { basic: 'Basic', elite: 'Elite', premium: 'Premium' };
+var PLAN_LABEL = new Proxy({}, {
+  get: function(_, key){
+    var t = _wcIsEn() ? PLAN_LABEL_EN : PLAN_LABEL_KO;
+    return t[key];
+  }
+});
 
 // 이번 달 practice_records 카운트 — 5분 캐시
 var _usageCache = { value: null, plan: null, ts: 0 };
@@ -201,15 +238,22 @@ function renderTrialBadge(containerId) {
     el.innerHTML = '';
     return;
   }
+  var _en = _wcIsEn();
   if (localStorage.getItem('wc_paid') === 'true' || isSubscribed()) {
     // 1차 즉시 표시 (캐시 사용)
-    var planName = (_usageCache.plan && PLAN_LABEL[_usageCache.plan]) || '프리미엄';
+    var planName = (_usageCache.plan && PLAN_LABEL[_usageCache.plan]) || (_en ? 'Premium' : '프리미엄');
     if (_usageCache.value !== null && _usageCache.plan) {
       var cap = PLAN_USAGE_CAP[_usageCache.plan] || 500;
       var rem = Math.max(0, cap - _usageCache.value);
-      el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">구독 중 ('+planName+') ✓ <span style="color:#5A5048;font-weight:400;">· 이번 달 <b style="color:#C9A84C;">'+rem+'</b> / '+cap+' 회 남음</span></span>';
+      if (_en) {
+        el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">Subscribed ('+planName+') ✓ <span style="color:#5A5048;font-weight:400;">· <b style="color:#C9A84C;">'+rem+'</b> / '+cap+' uses left this month</span></span>';
+      } else {
+        el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">구독 중 ('+planName+') ✓ <span style="color:#5A5048;font-weight:400;">· 이번 달 <b style="color:#C9A84C;">'+rem+'</b> / '+cap+' 회 남음</span></span>';
+      }
     } else {
-      el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">구독 중 ✓</span>';
+      el.innerHTML = _en
+        ? '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">Subscribed ✓</span>'
+        : '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">구독 중 ✓</span>';
     }
     // 2차 서버에서 실 사용량 fetch 후 갱신
     getMonthlyUsage().then(function(u){
@@ -217,15 +261,23 @@ function renderTrialBadge(containerId) {
       var cap2 = PLAN_USAGE_CAP[u.plan] || 500;
       var rem2 = Math.max(0, cap2 - u.value);
       var label = PLAN_LABEL[u.plan] || u.plan;
-      el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">구독 중 ('+label+') ✓ <span style="color:#5A5048;font-weight:400;">· 이번 달 <b style="color:#C9A84C;">'+rem2+'</b> / '+cap2+' 회 남음</span></span>';
+      if (_en) {
+        el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">Subscribed ('+label+') ✓ <span style="color:#5A5048;font-weight:400;">· <b style="color:#C9A84C;">'+rem2+'</b> / '+cap2+' uses left this month</span></span>';
+      } else {
+        el.innerHTML = '<span style="color:#C9A84C;font-weight:600;font-size:0.82rem;">구독 중 ('+label+') ✓ <span style="color:#5A5048;font-weight:400;">· 이번 달 <b style="color:#C9A84C;">'+rem2+'</b> / '+cap2+' 회 남음</span></span>';
+      }
     });
     return;
   }
   var left = getFreeTrialLeft();
   if (left <= 0) {
-    el.innerHTML = '<span style="font-size:0.82rem;color:#C62828;font-weight:700;">무료체험 종료 · 요금제를 선택해주세요</span>';
+    el.innerHTML = _en
+      ? '<span style="font-size:0.82rem;color:#C62828;font-weight:700;">Free trial ended · Please choose a plan</span>'
+      : '<span style="font-size:0.82rem;color:#C62828;font-weight:700;">무료체험 종료 · 요금제를 선택해주세요</span>';
   } else {
-    el.innerHTML = '<span style="font-size:0.82rem;color:#5A5048;">무료체험 <b style="color:#C9A84C;">' + left + '회</b> 남음</span>';
+    el.innerHTML = _en
+      ? '<span style="font-size:0.82rem;color:#5A5048;">Free Trial <b style="color:#C9A84C;">' + left + '</b> left</span>'
+      : '<span style="font-size:0.82rem;color:#5A5048;">무료체험 <b style="color:#C9A84C;">' + left + '회</b> 남음</span>';
   }
 }
 
@@ -414,13 +466,24 @@ function renderTrialBadge(containerId) {
     var g = document.createElement('div');
     g.id = 'wc-locked-gate';
     g.style.cssText = 'position:fixed;inset:0;background:rgba(10,15,30,0.88);z-index:99999;display:flex;align-items:center;justify-content:center;pointer-events:auto;';
+    var _lg = _wcIsEn() ? {
+      title: 'Subscriber-Only Content',
+      desc: 'You have used all 10 free trials.<br>Subscribe to a plan to unlock instantly.',
+      cta: 'View Plans →',
+      home: 'Back to Home'
+    } : {
+      title: '유료 회원 전용 콘텐츠',
+      desc: '무료체험 10회를 모두 사용하셨습니다.<br>요금제를 결제하시면 바로 이용 가능합니다.',
+      cta: '요금제 보러가기 →',
+      home: '홈으로 돌아가기'
+    };
     g.innerHTML = '<div style="background:#fff;border-radius:20px;padding:44px 36px;max-width:420px;width:90%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.5);pointer-events:auto;filter:none;">' +
       '<div style="font-size:2.4rem;margin-bottom:14px;">🔒</div>' +
-      '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.5rem;color:#1A2340;margin-bottom:10px;">유료 회원 전용 콘텐츠</h2>' +
-      '<p style="font-size:0.9rem;color:#5A5048;line-height:1.75;margin-bottom:26px;">무료체험 10회를 모두 사용하셨습니다.<br>요금제를 결제하시면 바로 이용 가능합니다.</p>' +
+      '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.5rem;color:#1A2340;margin-bottom:10px;">' + _lg.title + '</h2>' +
+      '<p style="font-size:0.9rem;color:#5A5048;line-height:1.75;margin-bottom:26px;">' + _lg.desc + '</p>' +
       '<div style="display:flex;flex-direction:column;gap:10px;">' +
-        '<a href="plans.html" style="display:block;padding:15px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.94rem;font-weight:700;text-decoration:none;pointer-events:auto;">요금제 보러가기 →</a>' +
-        '<a href="index.html" style="display:block;padding:10px;color:#5A5048;font-size:0.82rem;text-decoration:underline;pointer-events:auto;">홈으로 돌아가기</a>' +
+        '<a href="' + _wcPage('plans.html') + '" style="display:block;padding:15px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.94rem;font-weight:700;text-decoration:none;pointer-events:auto;">' + _lg.cta + '</a>' +
+        '<a href="' + _wcPage('index.html') + '" style="display:block;padding:10px;color:#5A5048;font-size:0.82rem;text-decoration:underline;pointer-events:auto;">' + _lg.home + '</a>' +
       '</div>' +
     '</div>';
     document.body.appendChild(g);
@@ -429,18 +492,31 @@ function renderTrialBadge(containerId) {
   function showTierGate(currentPlan){
     if (document.getElementById('wc-tier-gate')) return;
     var req = _requiredPlan();
-    var reqLabel = PLAN_LABEL_KO[req] || req;
-    var curLabel = PLAN_LABEL_KO[currentPlan] || (currentPlan ? currentPlan : '-');
+    var _en = _wcIsEn();
+    var _LBL = _en ? PLAN_LABEL_EN : PLAN_LABEL_KO;
+    var reqLabel = _LBL[req] || req;
+    var curLabel = _LBL[currentPlan] || (currentPlan ? currentPlan : '-');
+    var _tg = _en ? {
+      title: reqLabel + ' Plan Only',
+      desc: 'This feature is available on the ' + reqLabel + ' plan.<br>Current plan: <b>' + curLabel + '</b>',
+      cta: 'Upgrade to ' + reqLabel + ' →',
+      home: 'Back to Home'
+    } : {
+      title: reqLabel + ' 플랜 전용',
+      desc: '이 기능은 ' + reqLabel + ' 플랜에서 이용 가능합니다.<br>현재 플랜: <b>' + curLabel + '</b>',
+      cta: reqLabel + ' 플랜 업그레이드 →',
+      home: '홈으로 돌아가기'
+    };
     var g = document.createElement('div');
     g.id = 'wc-tier-gate';
     g.style.cssText = 'position:fixed;inset:0;background:rgba(10,15,30,0.88);z-index:99999;display:flex;align-items:center;justify-content:center;pointer-events:auto;';
     g.innerHTML = '<div style="background:#fff;border-radius:20px;padding:44px 36px;max-width:440px;width:90%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.5);pointer-events:auto;filter:none;">' +
       '<div style="font-size:2.4rem;margin-bottom:14px;">⭐</div>' +
-      '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.5rem;color:#1A2340;margin-bottom:10px;">' + reqLabel + ' 플랜 전용</h2>' +
-      '<p style="font-size:0.9rem;color:#5A5048;line-height:1.75;margin-bottom:26px;">이 기능은 ' + reqLabel + ' 플랜에서 이용 가능합니다.<br>현재 플랜: <b>' + curLabel + '</b></p>' +
+      '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.5rem;color:#1A2340;margin-bottom:10px;">' + _tg.title + '</h2>' +
+      '<p style="font-size:0.9rem;color:#5A5048;line-height:1.75;margin-bottom:26px;">' + _tg.desc + '</p>' +
       '<div style="display:flex;flex-direction:column;gap:10px;">' +
-        '<a href="plans.html" style="display:block;padding:15px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.94rem;font-weight:700;text-decoration:none;pointer-events:auto;">' + reqLabel + ' 플랜 업그레이드 →</a>' +
-        '<a href="index.html" style="display:block;padding:10px;color:#5A5048;font-size:0.82rem;text-decoration:underline;pointer-events:auto;">홈으로 돌아가기</a>' +
+        '<a href="' + _wcPage('plans.html') + '" style="display:block;padding:15px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.94rem;font-weight:700;text-decoration:none;pointer-events:auto;">' + _tg.cta + '</a>' +
+        '<a href="' + _wcPage('index.html') + '" style="display:block;padding:10px;color:#5A5048;font-size:0.82rem;text-decoration:underline;pointer-events:auto;">' + _tg.home + '</a>' +
       '</div>' +
     '</div>';
     document.body.appendChild(g);

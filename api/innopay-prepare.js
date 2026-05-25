@@ -17,10 +17,15 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { plan, buyerName, buyerEmail, buyerTel, userId } = req.body || {};
+    const { plan, buyerName, buyerEmail, buyerTel, userId, lang } = req.body || {};
+    const isEn = lang === 'en';
 
-    // 플랜별 가격
-    const plans = {
+    // 플랜별 가격 + 영문/한글 goodsName 분기 (영문 사용자 결제창에 한국어 노출 차단)
+    const plans = isEn ? {
+      basic:   { name: 'WonderfulCrew Basic (Monthly, 30 days)', amount: 199000 },
+      elite:   { name: 'WonderfulCrew Elite (Monthly, 30 days)', amount: 299000 },
+      premium: { name: 'WonderfulCrew Premium (1 year)',          amount: 2500000 },
+    } : {
       basic:   { name: 'WonderfulCrew Basic (월정액 30일)',  amount: 199000 },
       elite:   { name: 'WonderfulCrew Elite (월정액 30일)',  amount: 299000 },
       premium: { name: 'WonderfulCrew Premium (1년)',         amount: 2500000 },
@@ -66,8 +71,8 @@ module.exports = async function handler(req, res) {
       buyerTel: buyerTel || '',
       timestamp: timestamp,
       signature: signature,
-      returnUrl: `${req.headers.origin || 'https://wonderfulcrew.vercel.app'}/api/innopay-confirm`,
-      closeUrl: `${req.headers.origin || 'https://wonderfulcrew.vercel.app'}/plans.html`,
+      returnUrl: `${req.headers.origin || 'https://wonderfulcrew.vercel.app'}/api/innopay-confirm?lang=${isEn ? 'en' : 'ko'}`,
+      closeUrl: `${req.headers.origin || 'https://wonderfulcrew.vercel.app'}/${isEn ? 'plans-en.html' : 'plans.html'}`,
     });
   } catch (e) {
     res.status(500).json({ error: e.message });

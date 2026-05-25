@@ -50,6 +50,7 @@ async function payWithInnopay(plan, buyerInfo, payMethod) {
         buyerName: (buyerInfo && buyerInfo.buyerName) || wcUser.name || '',
         buyerEmail: (buyerInfo && buyerInfo.buyerEmail) || wcUser.email || '',
         buyerTel: (buyerInfo && buyerInfo.buyerTel) || '',
+        lang: _isEn ? 'en' : 'ko',
       }),
     });
 

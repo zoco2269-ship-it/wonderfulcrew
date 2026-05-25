@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="js/nav-dropdown.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Complete — WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+html,body{overflow-x:hidden;max-width:100vw;-webkit-text-size-adjust:100%;text-size-adjust:100%;}@media(max-width:768px){html{font-size:17px!important;}html.is-chrome{font-size:20.5px!important;}}img,video,iframe{max-width:100%;height:auto;}
+:root{--gold:#C9A84C;--cream:#FAF7F0;--navy:#1A2340;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Serif KR',serif;background:var(--cream);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.card{background:#fff;padding:48px 40px;max-width:520px;width:100%;text-align:center;border:1px solid rgba(201,168,76,0.3);box-shadow:0 8px 40px rgba(0,0,0,0.06);}
+.icon{font-size:3rem;margin-bottom:16px;}
+h1{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--navy);margin-bottom:12px;}
+p{font-size:0.92rem;color:#4A4438;line-height:1.8;margin-bottom:8px;}
+.benefits{text-align:left;margin:24px 0;padding:20px;background:var(--cream);border-left:4px solid var(--gold);font-size:0.86rem;color:#4A4438;line-height:1.8;}
+a.btn{display:inline-block;margin-top:20px;padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.9rem;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">🎉</div>
+  <h1>Payment Complete!</h1>
+  <p>Your WonderfulCrew subscription is now active.<br>Start enjoying unlimited access right away.</p>
+  <div class="benefits">
+    <b>What's included:</b><br>
+    ✓ Unlimited platform access<br>
+    ✓ Unlimited lecture videos<br>
+    ✓ Live class enrollment<br>
+    ✓ 1:1 Coach feedback<br>
+    ✓ Unlimited AI coaching
+  </div>
+  <a href="index-en.html" class="btn">Back to Home →</a>
+</div>
+<script>
+// 결제 완료 → 즉시 활성화 (다음 페이지 leveltest gate 우회 보장)
+localStorage.setItem('wc_paid','true');
+localStorage.setItem('wc_paid_date',new Date().toISOString());
+// 결제 금액으로 플랜 즉시 추론·캐시 (다음 페이지에서 티어 체크 stale 방지)
+try{
+  var _qpInit=new URLSearchParams(location.search);
+  var _amtInit=parseInt(_qpInit.get('amount')||'0',10)||0;
+  var _planInit='basic';
+  if(_amtInit>=2000000)_planInit='premium';
+  else if(_amtInit>=290000)_planInit='elite';
+  localStorage.setItem('wc_plan',_planInit);
+}catch(e){}
+var t=JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');
+t.tokens=99999;t.unlimited=true;
+localStorage.setItem('wc_eng_tokens',JSON.stringify(t));
+
+// Supabase 결제 기록 + 구독 활성화 + plan_active 즉시 healing
+(async function(){
+  try{
+    var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+    var qp=new URLSearchParams(location.search);
+    var tid=qp.get('tid')||'';
+    var moid=qp.get('moid')||'';
+    var amount=qp.get('amount')||'';
+    if(!moid)return;
+    var plan='basic';
+    var amt=parseInt(amount,10)||0;
+    if(amt>=2000000)plan='premium';
+    else if(amt>=290000)plan='elite';
+    localStorage.setItem('wc_plan',plan);
+    // 1) save-payment — payments INSERT + users.plan_active=true
+    try{
+      var r=await fetch('/api/save-payment',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({userId:u.id||'',email:u.email||'',name:u.name||'',plan:plan,tid:tid,moid:moid,amount:amount})});
+      var d=await r.json();
+      console.log('[wc-payment] saved:',d);
+      if(d&&d.expiresAt)localStorage.setItem('wc_subscription_expires',d.expiresAt);
+    }catch(e){console.warn('[wc-payment] save failed:',e);}
+    // 2) heal-plan-active — userId 있을 때 한 번 더 강제 (save-payment 가 user_id 못 잡았을 경우 대비)
+    if(u.id){
+      try{
+        var hr=await fetch('/api/heal-plan-active',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({userId:u.id,email:u.email||''})});
+        var hd=await hr.json();
+        console.log('[wc-payment] healed:',hd);
+      }catch(e){console.warn('[wc-payment] heal failed:',e);}
+    }
+  }catch(e){console.warn('[wc-payment] error:',e);}
+})();
+</script>
+</body>
+</html>

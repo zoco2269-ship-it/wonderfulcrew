@@ -8,16 +8,22 @@ module.exports = async function handler(req, res) {
   const { resultCode, resultMsg, tid, mid, moid, amt, authToken, authUrl } =
     req.method === 'POST' ? (req.body || {}) : (req.query || {});
 
+  // returnUrl 에 ?lang=en 으로 전달됨 (prepare에서 설정) — POST/GET 모두 query 에서 추출
+  const langQ = (req.query && req.query.lang) || '';
+  const isEn = langQ === 'en';
+  const plansPage = isEn ? '/plans-en.html' : '/plans.html';
+  const successPage = isEn ? '/success-en.html' : '/success.html';
+
   const MID = process.env.INNOPAY_MID;
   const API_KEY = process.env.INNOPAY_API_KEY;
 
   if (!MID || !API_KEY) {
-    return res.redirect('/plans.html?pay=error&msg=server_config');
+    return res.redirect(`${plansPage}?pay=error&msg=server_config`);
   }
 
   // 인증 실패
   if (resultCode !== '0000') {
-    return res.redirect(`/plans.html?pay=fail&msg=${encodeURIComponent(resultMsg || 'auth_failed')}`);
+    return res.redirect(`${plansPage}?pay=fail&msg=${encodeURIComponent(resultMsg || 'auth_failed')}`);
   }
 
   try {
@@ -76,12 +82,12 @@ module.exports = async function handler(req, res) {
           }
         }
       } catch(e) { console.warn('[innopay-confirm] server save:', e.message); }
-      // 결제 성공 → success 페이지로 리다이렉트
-      return res.redirect(`/success.html?pay=innopay&tid=${tid}&moid=${moid}&amount=${amt}`);
+      // 결제 성공 → success 페이지로 리다이렉트 (영문/한글 분기)
+      return res.redirect(`${successPage}?pay=innopay&tid=${tid}&moid=${moid}&amount=${amt}`);
     } else {
-      return res.redirect(`/plans.html?pay=fail&msg=${encodeURIComponent(approveData.resultMsg || 'approve_failed')}`);
+      return res.redirect(`${plansPage}?pay=fail&msg=${encodeURIComponent(approveData.resultMsg || 'approve_failed')}`);
     }
   } catch (e) {
-    return res.redirect(`/plans.html?pay=error&msg=${encodeURIComponent(e.message)}`);
+    return res.redirect(`${plansPage}?pay=error&msg=${encodeURIComponent(e.message)}`);
   }
 }

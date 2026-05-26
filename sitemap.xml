@@ -1012,10 +1012,192 @@
   </url>
   <url>
     <loc>https://www.wonderfulcrew.com/curriculum-en</loc>
-    <lastmod>2026-05-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
     <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/curriculum"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/curriculum-en"/>
+  </url>
+  <!-- ===== 영문 항공사별 커리큘럼 페이지 (국제선) ===== -->
+  <url>
+    <loc>https://www.wonderfulcrew.com/curriculum-emirates-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/curriculum-qatar-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/curriculum-qatar"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/curriculum-qatar-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/curriculum-singapore-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/curriculum-singapore"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/curriculum-singapore-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/curriculum-cathay-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/curriculum-cathay"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/curriculum-cathay-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/curriculum-etihad-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/curriculum-etihad"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/curriculum-etihad-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/curriculum-riyadh-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/curriculum-riyadh"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/curriculum-riyadh-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/curriculum-flydubai-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/curriculum-flydubai"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/curriculum-flydubai-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/curriculum-airasia-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/curriculum-airasia"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/curriculum-airasia-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/curriculum-finnair-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/curriculum-finnair"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/curriculum-finnair-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/curriculum-klm-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/curriculum-klm"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/curriculum-klm-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/curriculum-lufthansa-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/curriculum-lufthansa"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/curriculum-lufthansa-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/curriculum-international-other-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/curriculum-international-other"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/curriculum-international-other-en"/>
+  </url>
+  <!-- ===== 영문 면접 허브 + 디스커션 + 실전 페이지 ===== -->
+  <url>
+    <loc>https://www.wonderfulcrew.com/practice-foreign-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/practice-foreign"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/practice-foreign-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/discussion-hub-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/discussion-hub"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/discussion-hub-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/discussion1-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/discussion1"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/discussion1-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/discussion2-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/discussion2"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/discussion2-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/debate-practice-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/debate-practice"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/debate-practice-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/discussion-general-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/discussion-general"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/discussion-general-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/smalltalk-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/smalltalk"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/smalltalk-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/video-practice-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/video-practice"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/video-practice-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/word-shooting-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/word-shooting"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/word-shooting-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/english-test-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/final-en</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/final"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/final-en"/>
   </url>
 </urlset>

@@ -1200,4 +1200,62 @@
     <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/final"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/final-en"/>
   </url>
+  <!-- ===== 영문 항공사 인터뷰 프로세스 페이지 ===== -->
+  <url>
+    <loc>https://www.wonderfulcrew.com/emirates-process-en</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/emirates-process"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/emirates-process-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/qatar-process-en</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/qatar-process"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/qatar-process-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/singapore-process-en</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/singapore-process"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/singapore-process-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/cathay-process-en</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/cathay-process"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/cathay-process-en"/>
+  </url>
+  <!-- ===== 영문 Legal 페이지 ===== -->
+  <url>
+    <loc>https://www.wonderfulcrew.com/privacy-en</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/privacy"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/privacy-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/terms-en</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/terms"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/terms-en"/>
+  </url>
+  <url>
+    <loc>https://www.wonderfulcrew.com/copyright-en</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/copyright"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/copyright-en"/>
+  </url>
 </urlset>

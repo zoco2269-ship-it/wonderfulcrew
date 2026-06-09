@@ -520,7 +520,7 @@ function startInterview(){
   window._curSetting=setting;
   var pool=[];
   if(setting==='flight'){
-    SCENARIOS.forEach(function(q,i){pool.push({q:q,origIdx:'f'+i,opener:OPENERS[i]||null});});
+    SCENARIOS.forEach(function(q,i){pool.push({q:q,origIdx:'f'+i,opener:null});});
   } else {
     (SCENARIO_SETS_EN[setting]||[]).forEach(function(it,i){pool.push({q:it.q,origIdx:setting[0]+i,opener:it.o});});
   }

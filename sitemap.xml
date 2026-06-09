@@ -1258,4 +1258,14 @@
     <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/copyright"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/copyright-en"/>
   </url>
+  <!-- ===== 태국어 홈 (방콕 전시회 표본) ===== -->
+  <url>
+    <loc>https://www.wonderfulcrew.com/index-th</loc>
+    <lastmod>2026-06-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="th" href="https://www.wonderfulcrew.com/index-th"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.wonderfulcrew.com/index-en"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.wonderfulcrew.com/"/>
+  </url>
 </urlset>

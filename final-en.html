@@ -586,18 +586,106 @@ async function generateFinalFeedback(fb,airlineName){
     } else {
       userMsg='Question: '+QS[qIdx].q+'\n\nInterview conversation:\n'+convoSummary+'\n\nPlease evaluate the candidate\'s answer.';
     }
+    // Override sysPrompt to demand JSON output for dashboard rendering
+    sysPrompt='You are a senior cabin crew interviewer for '+airlineName+' evaluating a Final Round answer.\n\nQuestion: "'+QS[qIdx].q+'"\n\nSCORING:\n- Input is speech-to-text — ignore grammar/punctuation. Focus on CONTENT only.\n- Concrete example + specific place/moment/action + customer outcome + reflection → 85+\n- Clear example but lacking specifics → 72-84\n- Generic / too short / off-topic → 55-70\n- Quote EXACT phrases the candidate used.\n'+(capturedImg?'- A camera capture is attached. Analyze: smile, eye contact, posture, professional grooming.\n':'')+'\nReturn ONLY a valid JSON object — no markdown, no preamble, no code fences. Use this EXACT schema:\n\n{\n  "overall_score": <0-100 integer>,\n  "level": "Excellent" | "Strong" | "Solid" | "Needs Work",\n  "confidence": <0-100 integer>,\n  "speech_pacing": <0-100 integer>,\n  "pronunciation": <0-100 integer>,\n  "eye_contact": <0-100 integer or null if no image>,\n  "voice_tone": <0-100 integer>,\n  "strengths": ["quoted phrase + why it worked", "...", "..."],\n  "improvements": ["specific suggestion 1", "specific suggestion 2"],\n  "phrasing_before": "exact weak line from transcript",\n  "phrasing_after": "rewritten as a top Final-round candidate would say it",\n  "coach_one_line": "single direct sentence to remember"\n}\n\nQuote real transcript phrases inside strengths. No generic praise. Reply ONLY the JSON.';
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:800,
+      model:'claude-haiku-4-5-20251001',max_tokens:1100,
       system:sysPrompt,
       messages:[{role:'user',content:userMsg}]
     })});
     var data=await res.json();
-    var txt=((data&&data.content&&data.content[0]&&data.content[0].text)||'Feedback generation failed').replace(/\*\*/g,'').trim();
-    fb.innerHTML='<b style="color:var(--gold);">Feedback</b><br><div style="white-space:pre-line;margin-top:10px;line-height:1.8;">'+txt+'</div>';
+    var txt=((data&&data.content&&data.content[0]&&data.content[0].text)||'').replace(/\*\*/g,'').trim();
+    // Try to parse JSON — extract first {...} block in case AI added stray text
+    var parsed=null;
+    try{
+      var jmatch=txt.match(/\{[\s\S]*\}/);
+      if(jmatch) parsed=JSON.parse(jmatch[0]);
+    }catch(e){console.warn('[final-en] JSON parse failed:',e);}
+    if(parsed && typeof parsed.overall_score==='number'){
+      fb.innerHTML=renderFeedbackDashboard(parsed);
+    } else {
+      // Fallback to plain text if AI failed to return JSON
+      fb.innerHTML='<b style="color:var(--gold);">Feedback</b><br><div style="white-space:pre-line;margin-top:10px;line-height:1.8;">'+(txt||'Feedback generation failed')+'</div>';
+    }
   }catch(e){
     fb.innerHTML='<span style="color:#E74C3C;">Feedback generation failed. Please try again.</span>';
   }
 }
+
+// Render the visual feedback dashboard (circular gauge + bar chart + cards)
+function renderFeedbackDashboard(d){
+  var score=Math.max(0,Math.min(100,d.overall_score||0));
+  var level=d.level||'Solid';
+  var lvlColor=score>=85?'#2E7D32':score>=72?'#C9A84C':score>=55?'#E65100':'#C62828';
+  // Circular gauge — radius 54, circumference 339.3, offset based on score
+  var circ=2*Math.PI*54;
+  var off=circ*(1-score/100);
+  var metrics=[
+    {key:'confidence',label:'Confidence',v:d.confidence},
+    {key:'speech_pacing',label:'Speech Pacing',v:d.speech_pacing},
+    {key:'pronunciation',label:'Pronunciation',v:d.pronunciation},
+    {key:'voice_tone',label:'Voice Tone',v:d.voice_tone}
+  ];
+  if(typeof d.eye_contact==='number') metrics.splice(3,0,{key:'eye_contact',label:'Eye Contact',v:d.eye_contact});
+  // Bar chart
+  var bars=metrics.map(function(m){
+    var v=Math.max(0,Math.min(100,m.v||0));
+    var c=v>=80?'#2E7D32':v>=65?'#C9A84C':v>=50?'#E65100':'#C62828';
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:54px;">'+
+      '<div style="width:100%;height:96px;background:rgba(255,255,255,0.05);border-radius:6px;position:relative;overflow:hidden;">'+
+        '<div style="position:absolute;bottom:0;left:0;right:0;height:'+v+'%;background:linear-gradient(180deg,'+c+',rgba('+(c.replace('#','').match(/.{2}/g).map(function(h){return parseInt(h,16);}).join(','))+',0.6));border-radius:6px 6px 0 0;transition:height 0.8s ease;"></div>'+
+        '<div style="position:absolute;top:6px;left:0;right:0;text-align:center;font-size:0.78rem;font-weight:700;color:#fff;">'+v+'</div>'+
+      '</div>'+
+      '<div style="font-size:0.66rem;color:rgba(255,255,255,0.65);letter-spacing:0.02em;text-align:center;line-height:1.2;">'+m.label+'</div>'+
+    '</div>';
+  }).join('');
+  // Strengths / improvements / coach
+  var strengths=(d.strengths||[]).map(function(s){return '<li style="padding:4px 0;color:rgba(255,255,255,0.85);">✓ '+escapeHtml(s)+'</li>';}).join('');
+  var improvements=(d.improvements||[]).map(function(s){return '<li style="padding:4px 0;color:rgba(255,255,255,0.85);">→ '+escapeHtml(s)+'</li>';}).join('');
+  var phrasing=(d.phrasing_before&&d.phrasing_after)?
+    '<div style="margin-top:14px;padding:12px 14px;background:rgba(255,255,255,0.04);border-left:3px solid #C9A84C;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#C9A84C;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Phrasing Upgrade</div>'+
+      '<div style="font-size:0.82rem;color:rgba(255,255,255,0.6);margin-bottom:4px;">Before: <i>"'+escapeHtml(d.phrasing_before)+'"</i></div>'+
+      '<div style="font-size:0.82rem;color:rgba(255,255,255,0.92);">After: <b>"'+escapeHtml(d.phrasing_after)+'"</b></div>'+
+    '</div>':'';
+  var coach=d.coach_one_line?
+    '<div style="margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(232,201,106,0.08));border-left:3px solid #E8C96A;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#E8C96A;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Coach\'s One Line</div>'+
+      '<div style="font-size:0.92rem;color:#fff;font-weight:500;">'+escapeHtml(d.coach_one_line)+'</div>'+
+    '</div>':'';
+  return '<div style="display:grid;grid-template-columns:180px 1fr;gap:24px;align-items:start;margin-top:6px;">'+
+    // Left: circular gauge
+    '<div style="display:flex;flex-direction:column;align-items:center;">'+
+      '<svg width="160" height="160" viewBox="0 0 140 140" style="transform:rotate(-90deg);">'+
+        '<circle cx="70" cy="70" r="54" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12"/>'+
+        '<circle cx="70" cy="70" r="54" fill="none" stroke="'+lvlColor+'" stroke-width="12" stroke-linecap="round" stroke-dasharray="'+circ.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" style="transition:stroke-dashoffset 1s ease;"/>'+
+      '</svg>'+
+      '<div style="margin-top:-110px;text-align:center;pointer-events:none;">'+
+        '<div style="font-family:DM Serif Display,serif;font-size:2.4rem;color:#fff;line-height:1;">'+score+'</div>'+
+        '<div style="font-size:0.7rem;letter-spacing:0.18em;color:rgba(255,255,255,0.5);margin-top:2px;text-transform:uppercase;">/ 100</div>'+
+      '</div>'+
+      '<div style="margin-top:62px;padding:4px 14px;background:'+lvlColor+';color:#fff;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;border-radius:12px;">'+escapeHtml(level)+'</div>'+
+    '</div>'+
+    // Right: bar chart
+    '<div>'+
+      '<div style="font-size:0.7rem;font-weight:700;color:#C9A84C;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">AI Skill Analysis</div>'+
+      '<div style="display:flex;gap:10px;align-items:flex-end;justify-content:space-between;">'+bars+'</div>'+
+    '</div>'+
+  '</div>'+
+  // Strengths + improvements row
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px;">'+
+    '<div style="padding:14px 16px;background:rgba(46,125,50,0.08);border-left:3px solid #4CAF50;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#81C784;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Strengths</div>'+
+      '<ul style="list-style:none;padding:0;margin:0;font-size:0.84rem;line-height:1.65;">'+strengths+'</ul>'+
+    '</div>'+
+    '<div style="padding:14px 16px;background:rgba(230,81,0,0.08);border-left:3px solid #FF9800;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#FFB74D;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Areas to Improve</div>'+
+      '<ul style="list-style:none;padding:0;margin:0;font-size:0.84rem;line-height:1.65;">'+improvements+'</ul>'+
+    '</div>'+
+  '</div>'+
+  phrasing+coach;
+}
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
 async function showModel(){
   var fb=document.getElementById('feedback');

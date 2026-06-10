@@ -625,7 +625,7 @@ async function generateFinalFeedback(fb,airlineName){
 function renderFeedbackDashboard(d){
   var score=Math.max(0,Math.min(100,d.overall_score||0));
   var level=d.level||'양호';
-  var lvlColor=score>=85?'#2E7D32':score>=72?'#C9A84C':score>=55?'#E65100':'#C62828';
+  var lvlColor=score>=85?'#2E7D32':score>=72?'#C9A84C':score>=55?'#5B86C5':'#7A8FB5';
   var circ=2*Math.PI*54;
   var off=circ*(1-score/100);
   var metrics=[
@@ -637,7 +637,7 @@ function renderFeedbackDashboard(d){
   if(typeof d.eye_contact==='number') metrics.splice(3,0,{label:'시선 처리',v:d.eye_contact});
   var bars=metrics.map(function(m){
     var v=Math.max(0,Math.min(100,m.v||0));
-    var c=v>=80?'#2E7D32':v>=65?'#C9A84C':v>=50?'#E65100':'#C62828';
+    var c=v>=80?'#2E7D32':v>=65?'#C9A84C':v>=50?'#5B86C5':'#7A8FB5';
     return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:54px;">'+
       '<div style="width:100%;height:96px;background:rgba(255,255,255,0.05);border-radius:6px;position:relative;overflow:hidden;">'+
         '<div style="position:absolute;bottom:0;left:0;right:0;height:'+v+'%;background:'+c+';border-radius:6px 6px 0 0;transition:height 0.8s ease;"></div>'+
@@ -681,8 +681,8 @@ function renderFeedbackDashboard(d){
       '<div style="font-size:0.68rem;font-weight:700;color:#81C784;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">강점</div>'+
       '<ul style="list-style:none;padding:0;margin:0;font-size:0.84rem;line-height:1.65;">'+strengths+'</ul>'+
     '</div>'+
-    '<div style="padding:14px 16px;background:rgba(230,81,0,0.08);border-left:3px solid #FF9800;border-radius:4px;">'+
-      '<div style="font-size:0.68rem;font-weight:700;color:#FFB74D;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">보완점</div>'+
+    '<div style="padding:14px 16px;background:rgba(91,134,197,0.10);border-left:3px solid #5B86C5;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#8FB4E0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">보완점</div>'+
       '<ul style="list-style:none;padding:0;margin:0;font-size:0.84rem;line-height:1.65;">'+improvements+'</ul>'+
     '</div>'+
   '</div>'+

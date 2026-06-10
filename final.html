@@ -598,7 +598,7 @@ async function generateFinalFeedback(fb,airlineName){
       userMsg='Question: '+QS[qIdx].q+'\n\nInterview conversation:\n'+convoSummary+'\n\nPlease evaluate the candidate\'s answer.';
     }
     // Override sysPrompt — JSON 출력 요구 (시각 대시보드 렌더링용)
-    sysPrompt='You are a senior cabin crew interviewer for '+airlineName+' evaluating a Final Round answer.\n\nQuestion: "'+QS[qIdx].q+'"\n\nSCORING:\n- Input is speech-to-text — ignore grammar/punctuation. Focus on CONTENT only.\n- Concrete example + specific place/moment/action + customer outcome + reflection → 85+\n- Clear example but lacking specifics → 72-84\n- Generic / too short / off-topic → 55-70\n- Quote EXACT phrases the candidate used (use the original language they spoke in).\n'+(capturedImg?'- A camera capture is attached. Analyze: smile, eye contact, posture, professional grooming.\n':'')+'\nReturn ONLY a valid JSON object — no markdown, no preamble, no code fences. All text fields must be in KOREAN. Use this EXACT schema:\n\n{\n  "overall_score": <0-100 integer>,\n  "level": "탁월" | "강함" | "양호" | "보완 필요",\n  "confidence": <0-100 integer>,\n  "speech_pacing": <0-100 integer>,\n  "pronunciation": <0-100 integer>,\n  "eye_contact": <0-100 integer or null if no image>,\n  "voice_tone": <0-100 integer>,\n  "strengths": ["인용 구절 + 왜 좋았는지", "...", "..."],\n  "improvements": ["구체적 보완점 1", "구체적 보완점 2"],\n  "phrasing_before": "transcript에서 약한 한 줄 그대로",\n  "phrasing_after": "상위 1% 파이널 후보자라면 어떻게 말했을지",\n  "coach_one_line": "다음 면접 전 반드시 기억할 한 문장"\n}\n\nstrengths 안에는 후보자가 실제 말한 구절을 한국어로 인용. 일반 칭찬 금지. JSON만 반환.';
+    sysPrompt='You are a senior cabin crew interviewer for '+airlineName+' evaluating a Final Round answer. Candidates who reach the Final have already passed image/grooming gates, so SERVICE MINDSET is the #1 deciding factor at this stage. Content depth matters more than delivery polish.\n\nQuestion: "'+QS[qIdx].q+'"\n\nSCORING:\n- Input is speech-to-text — ignore grammar/punctuation. Focus on CONTENT only.\n- Service mindset signals: empathy, anticipating needs, customer-first reasoning, reading the situation, ownership of outcome. THIS DRIVES THE OVERALL SCORE.\n- Concrete example + specific place/moment/action + customer outcome + reflection → 85+\n- Clear example but lacking specifics → 72-84\n- Generic / too short / off-topic → 55-70\n- Quote EXACT phrases the candidate used (use the original language they spoke in).\n'+(capturedImg?'- A camera capture is attached. Analyze SMILE specifically (open/half/closed + warmth) and voice/posture cues.\n':'')+'\nReturn ONLY a valid JSON object — no markdown, no preamble, no code fences. All text fields must be in KOREAN. Use this EXACT schema:\n\n{\n  "overall_score": <0-100 integer>,\n  "level": "탁월" | "강함" | "양호" | "보완 필요",\n  "content": <0-100 integer — 답변 내용의 깊이·구체성·구조>,\n  "service_mindset": <0-100 integer — 공감·고객 우선 사고·선제적 응대>,\n  "smile": <0-100 integer — 카메라 캡처 기반; 이미지 없으면 목소리 따뜻함 추정>,\n  "voice_tone": <0-100 integer — 따뜻함·에너지·친근함>,\n  "confidence": <0-100 integer — 안정감·답변 주도성>,\n  "strengths": ["인용 구절 + 왜 좋았는지", "...", "..."],\n  "improvements": ["구체적 보완점 1", "구체적 보완점 2"],\n  "phrasing_before": "transcript에서 약한 한 줄 그대로",\n  "phrasing_after": "상위 1% 파이널 후보자라면 어떻게 말했을지",\n  "coach_one_line": "다음 면접 전 반드시 기억할 한 문장"\n}\n\nstrengths 안에는 후보자가 실제 말한 구절을 한국어로 인용. 일반 칭찬 금지. JSON만 반환.';
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:1100,
       system:sysPrompt,
@@ -629,12 +629,12 @@ function renderFeedbackDashboard(d){
   var circ=2*Math.PI*54;
   var off=circ*(1-score/100);
   var metrics=[
-    {label:'자신감',v:d.confidence},
-    {label:'말 속도',v:d.speech_pacing},
-    {label:'발음',v:d.pronunciation},
-    {label:'목소리 톤',v:d.voice_tone}
+    {label:'말 내용',v:d.content},
+    {label:'서비스 마인드',v:d.service_mindset},
+    {label:'미소',v:d.smile},
+    {label:'목소리 톤',v:d.voice_tone},
+    {label:'자신감',v:d.confidence}
   ];
-  if(typeof d.eye_contact==='number') metrics.splice(3,0,{label:'시선 처리',v:d.eye_contact});
   var bars=metrics.map(function(m){
     var v=Math.max(0,Math.min(100,m.v||0));
     var c=v>=80?'#2E7D32':v>=65?'#C9A84C':v>=50?'#5B86C5':'#7A8FB5';

@@ -587,7 +587,7 @@ async function generateFinalFeedback(fb,airlineName){
       userMsg='Question: '+QS[qIdx].q+'\n\nInterview conversation:\n'+convoSummary+'\n\nPlease evaluate the candidate\'s answer.';
     }
     // Override sysPrompt to demand JSON output for dashboard rendering
-    sysPrompt='You are a senior cabin crew interviewer for '+airlineName+' evaluating a Final Round answer.\n\nQuestion: "'+QS[qIdx].q+'"\n\nSCORING:\n- Input is speech-to-text — ignore grammar/punctuation. Focus on CONTENT only.\n- Concrete example + specific place/moment/action + customer outcome + reflection → 85+\n- Clear example but lacking specifics → 72-84\n- Generic / too short / off-topic → 55-70\n- Quote EXACT phrases the candidate used.\n'+(capturedImg?'- A camera capture is attached. Analyze: smile, eye contact, posture, professional grooming.\n':'')+'\nReturn ONLY a valid JSON object — no markdown, no preamble, no code fences. Use this EXACT schema:\n\n{\n  "overall_score": <0-100 integer>,\n  "level": "Excellent" | "Strong" | "Solid" | "Needs Work",\n  "confidence": <0-100 integer>,\n  "speech_pacing": <0-100 integer>,\n  "pronunciation": <0-100 integer>,\n  "eye_contact": <0-100 integer or null if no image>,\n  "voice_tone": <0-100 integer>,\n  "strengths": ["quoted phrase + why it worked", "...", "..."],\n  "improvements": ["specific suggestion 1", "specific suggestion 2"],\n  "phrasing_before": "exact weak line from transcript",\n  "phrasing_after": "rewritten as a top Final-round candidate would say it",\n  "coach_one_line": "single direct sentence to remember"\n}\n\nQuote real transcript phrases inside strengths. No generic praise. Reply ONLY the JSON.';
+    sysPrompt='You are a senior cabin crew interviewer for '+airlineName+' evaluating a Final Round answer. Candidates who reach the Final have already passed image/grooming gates, so SERVICE MINDSET is the #1 deciding factor at this stage. Content depth matters more than delivery polish.\n\nQuestion: "'+QS[qIdx].q+'"\n\nSCORING:\n- Input is speech-to-text — ignore grammar/punctuation. Focus on CONTENT only.\n- Service mindset signals: empathy, anticipating needs, customer-first reasoning, reading the situation, ownership of outcome. THIS DRIVES THE OVERALL SCORE.\n- Concrete example + specific place/moment/action + customer outcome + reflection → 85+\n- Clear example but lacking specifics → 72-84\n- Generic / too short / off-topic → 55-70\n- Quote EXACT phrases the candidate used.\n'+(capturedImg?'- A camera capture is attached. Analyze SMILE specifically (open/half/closed + warmth) and voice/posture cues.\n':'')+'\nReturn ONLY a valid JSON object — no markdown, no preamble, no code fences. Use this EXACT schema:\n\n{\n  "overall_score": <0-100 integer>,\n  "level": "Excellent" | "Strong" | "Solid" | "Needs Work",\n  "content": <0-100 integer — depth, specificity, structure of what was said>,\n  "service_mindset": <0-100 integer — empathy, customer-first reasoning, anticipation>,\n  "smile": <0-100 integer — based on camera capture; if no image, estimate from voice warmth>,\n  "voice_tone": <0-100 integer — warmth, energy, friendliness>,\n  "confidence": <0-100 integer — steadiness, ownership of the answer>,\n  "strengths": ["quoted phrase + why it worked", "...", "..."],\n  "improvements": ["specific suggestion 1", "specific suggestion 2"],\n  "phrasing_before": "exact weak line from transcript",\n  "phrasing_after": "rewritten as a top Final-round candidate would say it",\n  "coach_one_line": "single direct sentence to remember"\n}\n\nQuote real transcript phrases inside strengths. No generic praise. Reply ONLY the JSON.';
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:1100,
       system:sysPrompt,
@@ -621,12 +621,12 @@ function renderFeedbackDashboard(d){
   var circ=2*Math.PI*54;
   var off=circ*(1-score/100);
   var metrics=[
-    {key:'confidence',label:'Confidence',v:d.confidence},
-    {key:'speech_pacing',label:'Speech Pacing',v:d.speech_pacing},
-    {key:'pronunciation',label:'Pronunciation',v:d.pronunciation},
-    {key:'voice_tone',label:'Voice Tone',v:d.voice_tone}
+    {key:'content',label:'Content',v:d.content},
+    {key:'service_mindset',label:'Service Mindset',v:d.service_mindset},
+    {key:'smile',label:'Smile',v:d.smile},
+    {key:'voice_tone',label:'Voice Tone',v:d.voice_tone},
+    {key:'confidence',label:'Confidence',v:d.confidence}
   ];
-  if(typeof d.eye_contact==='number') metrics.splice(3,0,{key:'eye_contact',label:'Eye Contact',v:d.eye_contact});
   // Bar chart
   var bars=metrics.map(function(m){
     var v=Math.max(0,Math.min(100,m.v||0));

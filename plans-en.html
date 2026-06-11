@@ -50,6 +50,20 @@ section{padding:60px 5%;}.wrap{max-width:900px;margin:0 auto;}
 .tip b{color:var(--navy);}
 footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
 @media(max-width:900px){.nav-links{display:none;}.nav-cta{font-size:0.78rem!important;padding:6px 12px!important;}nav a[href*="login"]{font-size:0.78rem!important;padding:6px 12px!important;}}
+@media(max-width:768px){
+  .hero{padding:170px 5% 50px!important;}
+  .hero h1{font-size:1.7rem!important;}
+  .hero p{font-size:0.9rem!important;}
+  section{padding:40px 5%;}
+  .wrap>div[style*="grid-template-columns:repeat(3"]{grid-template-columns:1fr!important;gap:14px!important;}
+  .wrap>div[style*="grid-template-columns:repeat(3"] .card{padding:24px 18px!important;}
+  .wrap>div[style*="background:var(--navy)"]{padding:28px 22px!important;}
+  .wrap>div[style*="background:var(--navy)"] div[style*="font-size:2.8rem"]{font-size:1.9rem!important;}
+  .wrap>div[style*="background:var(--navy)"] div[style*="font-size:1.5rem"]{font-size:1.15rem!important;}
+}
+@media(max-width:480px){
+  .hero h1{font-size:1.45rem!important;}
+}
 
 .nav-dropdown{position:relative;}
 .nav-dropdown>a::after{content:' ▾';font-size:0.7em;}

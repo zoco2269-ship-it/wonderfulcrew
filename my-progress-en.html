@@ -66,6 +66,28 @@ td{color:var(--text-mid);}
 
 footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:0.82rem;}
 @media(max-width:900px){.nav-links{display:none;}.nav-cta{font-size:0.78rem!important;padding:6px 12px!important;}nav a[href*="login"]{font-size:0.78rem!important;padding:6px 12px!important;}.grid-2{grid-template-columns:1fr;}}
+@media(max-width:768px){
+  section{padding:32px 5% 60px;}
+  .hero{padding:130px 5% 40px;}
+  .coach-msg{padding:18px 20px;}
+  .card{padding:22px 18px;}
+  .card h3{font-size:1rem;}
+  .stat-num{font-size:1.6rem!important;}
+  .stat-lbl{font-size:0.7rem!important;}
+  .badge-row{gap:6px;flex-wrap:wrap;}
+  .badge{font-size:0.72rem;padding:6px 10px;}
+  table{font-size:0.78rem;}
+  table td,table th{padding:6px 4px;}
+  .radar-wrap canvas{max-width:240px;}
+  .score-bar .lbl{font-size:0.72rem;}
+}
+@media(max-width:480px){
+  .stat-num{font-size:1.4rem!important;}
+  .badge{font-size:0.68rem;padding:5px 8px;}
+  table{font-size:0.72rem;}
+  /* 연습 기록 테이블 가로 스크롤 */
+  .card table{display:block;overflow-x:auto;white-space:nowrap;}
+}
 .nav-dropdown-menu.wide{min-width:260px;display:none;grid-template-columns:1fr 1fr;gap:0;padding:4px 0;}
 .nav-dropdown-menu.wide a{padding:5px 12px;font-size:0.76rem;}
 .nav-dropdown:hover .nav-dropdown-menu.wide{display:grid;}

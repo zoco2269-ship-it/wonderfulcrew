@@ -357,13 +357,20 @@ footer{
   .footer-inner{grid-template-columns:1fr 1fr;}
   .res-header{flex-direction:column;gap:12px;}
 }
+@media(max-width:900px){
+  /* hero-content를 모바일/태블릿에서 풀너비로 — 좌측 50% 컬럼 깨짐 차단 */
+  .hero-content{max-width:none!important;width:100%!important;padding:0 24px!important;box-sizing:border-box;}
+  .hero-sub{max-width:none!important;}
+  #hero{height:auto!important;min-height:auto!important;padding:140px 0 70px!important;}
+}
 @media(max-width:600px){
   .res-cards{grid-template-columns:1fr;}
   .hero-title{font-size:2.4rem;}
   .nav-links{display:none;}.nav-cta{font-size:0.78rem!important;padding:6px 12px!important;}nav a[href*="login"]{font-size:0.78rem!important;padding:6px 12px!important;}
-  #hero{min-height:auto!important;padding:160px 0 60px!important;height:auto!important;}
+  #hero{min-height:auto!important;padding:140px 0 60px!important;height:auto!important;}
   .hero-label{font-size:0.65rem!important;letter-spacing:0.15em!important;margin-bottom:14px!important;}
-  .hero-content{padding:0 18px;}
+  .hero-content{padding:0 18px!important;max-width:none!important;width:100%!important;}
+  .hero-sub{max-width:none!important;}
   .hero-btns{flex-direction:column;gap:12px;align-items:stretch;}
   .hero-btns .btn-gold,.hero-btns .btn-outline-white{width:100%;text-align:center;font-size:0.86rem;padding:14px 20px;}
   section{padding:60px 5%;}

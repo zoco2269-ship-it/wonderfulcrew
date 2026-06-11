@@ -6,6 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WonderfulCrew — Premium Cabin Crew Coaching</title>
 <meta name="description" content="AI-powered cabin crew interview coaching. Placed 1,000+ candidates in 22 countries. Practice Emirates, Qatar Airways interview anytime.">
+<!-- PWA -->
+<link rel="manifest" href="/manifest-en.json">
+<meta name="theme-color" content="#1A2340">
+<meta name="application-name" content="WonderfulCrew">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WonderfulCrew">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/images/icon-512.png">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}@media(max-width:768px){html{font-size:17px!important;}html.is-chrome{font-size:20.5px!important;}}
@@ -1129,5 +1139,78 @@ if(sideBtns&&heroSection){
 }
 </script>
 
+<!-- PWA: Service Worker registration + Install banner -->
+<script>
+(function(){
+  // 1) Register service worker (offline + push)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('/sw.js').catch(function(e){
+        console.warn('[PWA] SW register failed:', e);
+      });
+    });
+  }
+
+  // 2) Android Chrome / Edge: capture the install prompt and show our own banner
+  var deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferredPrompt = e;
+    // Suppress if already dismissed or installed
+    if (localStorage.getItem('wc_pwa_dismissed') === '1') return;
+    if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return;
+    showInstallBanner();
+  });
+  window.addEventListener('appinstalled', function(){
+    deferredPrompt = null;
+    var b = document.getElementById('wc-pwa-banner'); if (b) b.remove();
+    localStorage.setItem('wc_pwa_installed', '1');
+  });
+
+  function showInstallBanner(){
+    if (document.getElementById('wc-pwa-banner')) return;
+    var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    var bar = document.createElement('div');
+    bar.id = 'wc-pwa-banner';
+    bar.style.cssText = 'position:fixed;left:12px;right:12px;bottom:14px;z-index:10001;background:#1A2340;color:#fff;padding:14px 16px;border-radius:14px;box-shadow:0 12px 36px rgba(0,0,0,0.35);display:flex;align-items:center;gap:12px;font-family:inherit;border:1px solid rgba(201,168,76,0.4);';
+    bar.innerHTML =
+      '<img src="/images/icon-192.png" alt="" style="width:42px;height:42px;border-radius:10px;flex-shrink:0;background:#fff;">' +
+      '<div style="flex:1;line-height:1.4;">' +
+        '<div style="font-size:0.86rem;font-weight:700;color:#E8C96A;margin-bottom:2px;">Install WonderfulCrew App</div>' +
+        '<div style="font-size:0.74rem;color:rgba(255,255,255,0.78);">' +
+          (iOS ? 'Tap <b>Share</b> → <b>Add to Home Screen</b>.' : 'One tap to add an app icon to your home screen.') +
+        '</div>' +
+      '</div>' +
+      (iOS
+        ? '<button id="wc-pwa-close" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);border-radius:18px;padding:7px 12px;font-size:0.72rem;cursor:pointer;font-family:inherit;">Close</button>'
+        : '<button id="wc-pwa-install" style="background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:18px;padding:8px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Install</button>' +
+          '<button id="wc-pwa-close" style="background:transparent;color:rgba(255,255,255,0.6);border:none;font-size:1.2rem;cursor:pointer;padding:0 4px;line-height:1;">×</button>');
+    document.body.appendChild(bar);
+
+    var inst = document.getElementById('wc-pwa-install');
+    if (inst) inst.onclick = async function(){
+      if (!deferredPrompt) { bar.remove(); return; }
+      deferredPrompt.prompt();
+      try { await deferredPrompt.userChoice; } catch(e){}
+      deferredPrompt = null;
+      bar.remove();
+    };
+    document.getElementById('wc-pwa-close').onclick = function(){
+      bar.remove();
+      localStorage.setItem('wc_pwa_dismissed', '1');
+    };
+  }
+
+  // 3) iOS Safari fallback — show banner once if not already installed
+  try {
+    var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    var isStandalone = window.navigator.standalone === true ||
+      (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+    if (iOS && !isStandalone && localStorage.getItem('wc_pwa_dismissed') !== '1') {
+      setTimeout(showInstallBanner, 2500);
+    }
+  } catch(e){}
+})();
+</script>
 </body>
 </html>

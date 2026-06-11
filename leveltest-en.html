@@ -141,7 +141,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 .nav-dropdown-menu.wide{min-width:260px;display:none;grid-template-columns:1fr 1fr;gap:0;padding:4px 0;}
 .nav-dropdown-menu.wide a{padding:5px 12px;font-size:0.76rem;}
 .nav-dropdown:hover .nav-dropdown-menu.wide{display:grid;}
-</style>
+/* WC-EN-NAV-FIX */@media(max-width:700px){nav{padding:0 3%!important;gap:4px!important;}.nav-links{display:none!important;}nav>div:last-child{flex-shrink:0!important;gap:6px!important;margin-left:auto!important;}nav>div:last-child>a{font-size:0.72rem!important;padding:5px 10px!important;letter-spacing:0!important;white-space:nowrap!important;}nav>div:last-child>a.nav-cta,nav>div:last-child>a[href*="login"],nav>div:last-child>a[href*="my-progress"],nav>div:last-child>a.wc-my-btn{font-size:0.72rem!important;padding:5px 10px!important;}nav>div:last-child>a[href="index.html"]:not(.nav-logo),nav>div:last-child>a[href="resume-guide.html"],nav>div:last-child>a[href$=".html"]:not([href*="leveltest"]):not([href*="login"]):not([href*="my-progress"]){font-size:0.62rem!important;padding:3px 7px!important;}.nav-logo{font-size:1.1rem!important;flex-shrink:0!important;}}</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js?v=5"></script>
 <script src="js/auth-gate.js"></script>

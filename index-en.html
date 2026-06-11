@@ -1127,14 +1127,14 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 reveals.forEach(el => observer.observe(el));
 
-// Floating buttons: transparent on hero, solid when scrolled
+// Floating buttons: transparent style on hero, solid when scrolled — always visible
 var sideBtns=document.getElementById('side-btns');
 var heroSection=document.getElementById('hero');
 if(sideBtns&&heroSection){
   window.addEventListener('scroll',function(){
     var heroBottom=heroSection.getBoundingClientRect().bottom;
-    if(heroBottom>0){sideBtns.style.opacity='1';sideBtns.style.pointerEvents='auto';}
-    else{sideBtns.style.opacity='0';sideBtns.style.pointerEvents='none';}
+    if(heroBottom>0){sideBtns.classList.add('hero-mode');}
+    else{sideBtns.classList.remove('hero-mode');}
   });
 }
 </script>

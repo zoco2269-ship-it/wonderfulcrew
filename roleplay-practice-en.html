@@ -987,14 +987,22 @@ async function endRoleplay(){
       var convoSummary=chatHistory.map(function(m){return (m.role==='user'?'Staff':setting.role.charAt(0).toUpperCase()+setting.role.slice(1))+': '+m.content;}).join('\n');
 
       var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        model:'claude-haiku-4-5-20251001',max_tokens:900,
-        system:'You are a senior interview coach evaluating cabin crew / hospitality service roleplay for Emirates, Qatar Airways, Singapore Airlines, Cathay Pacific. The setting was '+setting.place+' and the scenario was: "'+scenario+'"\n\nEvaluate ONLY the staff (candidate) turns. Quote actual phrases from the transcript — never give generic praise. Reply in plain text English, no markdown, no asterisks.\n\nUse this EXACT structure:\n\nOverall Score: X/100\nLevel: (Excellent / Strong / Solid / Needs Work)\n\n[Strengths]\n- 2-3 specific bullets with EXACT phrases the candidate said in quotes ("...")\n\n[What Cost Points]\n- 2-3 specific moments where the response missed (quote the exact line + what was missing)\n\n[LEAP / 4Ds Framework Check]\n- Listen (acknowledged the complaint?): yes/no + evidence\n- Empathise (warm tone, validated feeling?): yes/no + evidence\n- Ask (clarifying question to understand root cause?): yes/no + evidence\n- Paraphrase / Solution (proposed a concrete fix, not a maybe?): yes/no + evidence\n\n[Phrasing Upgrade]\nTake ONE weak line from the transcript and rewrite it in the way a Final-round Emirates candidate would say it. Format:\nBefore: "..."\nAfter: "..."\n\n[Coach\'s One Line]\nA single direct sentence the candidate must remember next time.\n\nBe blunt and specific. Real transcript evidence only. No filler.',
-        messages:[{role:'user',content:'Here is the roleplay conversation:\n\n'+convoSummary+'\n\nGive me the structured evaluation.'}]
+        model:'claude-haiku-4-5-20251001',max_tokens:1100,
+        system:'You are a senior interview coach evaluating cabin crew / hospitality service roleplay for Emirates, Qatar Airways, Singapore Airlines, Cathay Pacific. The setting was '+setting.place+' and the scenario was: "'+scenario+'"\n\nEvaluate ONLY the staff (candidate) turns. Quote actual phrases from the transcript — never give generic praise.\n\nKey roleplay competencies (score each 0-100):\n- Service Mindset: customer-first reasoning, ownership, anticipating needs\n- Empathy: acknowledged the feeling, validated the frustration, warm language\n- Solution: concrete fix (not "I will check"), alternative, ownership of follow-up\n- Voice Tone: warmth, energy, friendliness inferred from word choice\n- Smile: inferred from word choice / warmth (no image in roleplay)\n\nReturn ONLY a valid JSON object — no markdown, no preamble, no code fences. Use this EXACT schema:\n\n{\n  "overall_score": <0-100 integer>,\n  "level": "Excellent" | "Strong" | "Solid" | "Needs Work",\n  "service_mindset": <0-100 integer>,\n  "empathy": <0-100 integer>,\n  "solution": <0-100 integer>,\n  "voice_tone": <0-100 integer>,\n  "smile": <0-100 integer>,\n  "strengths": ["quoted phrase + why it worked", "...", "..."],\n  "improvements": ["specific suggestion 1", "specific suggestion 2"],\n  "phrasing_before": "exact weak line from transcript",\n  "phrasing_after": "rewritten as a top Final-round candidate would say it",\n  "coach_one_line": "single direct sentence to remember"\n}\n\nQuote real transcript phrases inside strengths. No generic praise. Reply ONLY the JSON.',
+        messages:[{role:'user',content:'Here is the roleplay conversation:\n\n'+convoSummary+'\n\nReturn the JSON evaluation.'}]
       })});
       var data=await res.json();
-      var feedbackText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Good effort! Keep practicing.';
-      feedbackText=feedbackText.replace(/\*\*/g,'');
-      fb.innerHTML='<b style="color:var(--gold);">Feedback</b><br><br><div style="white-space:pre-line;">'+feedbackText+'</div>';
+      var txt=((data&&data.content&&data.content[0]&&data.content[0].text)||'').replace(/\*\*/g,'').trim();
+      var parsed=null;
+      try{
+        var jmatch=txt.match(/\{[\s\S]*\}/);
+        if(jmatch) parsed=JSON.parse(jmatch[0]);
+      }catch(e){console.warn('[roleplay-en] JSON parse failed:',e);}
+      if(parsed && typeof parsed.overall_score==='number'){
+        fb.innerHTML=renderRoleplayDashboard(parsed);
+      } else {
+        fb.innerHTML='<b style="color:var(--gold);">Feedback</b><br><br><div style="white-space:pre-line;">'+(txt||'Good effort! Keep practicing.')+'</div>';
+      }
     }catch(e){
       fb.innerHTML='<b style="color:var(--gold);">Roleplay Complete</b><br>The conversation has ended..';
     }
@@ -1006,6 +1014,75 @@ async function endRoleplay(){
   document.getElementById('btn-next').style.display='inline-flex';
   document.getElementById('rec-label').textContent='Complete';
 }
+
+// Visual feedback dashboard for roleplay
+function renderRoleplayDashboard(d){
+  var score=Math.max(0,Math.min(100,d.overall_score||0));
+  var level=d.level||'Solid';
+  var lvlColor=score>=85?'#2E7D32':score>=72?'#C9A84C':score>=55?'#5B86C5':'#7A8FB5';
+  var circ=2*Math.PI*54;
+  var off=circ*(1-score/100);
+  var metrics=[
+    {label:'Service Mindset',v:d.service_mindset},
+    {label:'Empathy',v:d.empathy},
+    {label:'Solution',v:d.solution},
+    {label:'Voice Tone',v:d.voice_tone},
+    {label:'Smile',v:d.smile}
+  ];
+  var bars=metrics.map(function(m){
+    var v=Math.max(0,Math.min(100,m.v||0));
+    var c=v>=80?'#2E7D32':v>=65?'#C9A84C':v>=50?'#5B86C5':'#7A8FB5';
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:54px;">'+
+      '<div style="width:100%;height:96px;background:rgba(255,255,255,0.05);border-radius:6px;position:relative;overflow:hidden;">'+
+        '<div style="position:absolute;bottom:0;left:0;right:0;height:'+v+'%;background:'+c+';border-radius:6px 6px 0 0;transition:height 0.8s ease;"></div>'+
+        '<div style="position:absolute;top:6px;left:0;right:0;text-align:center;font-size:0.78rem;font-weight:700;color:#fff;">'+v+'</div>'+
+      '</div>'+
+      '<div style="font-size:0.66rem;color:rgba(255,255,255,0.65);letter-spacing:0.02em;text-align:center;line-height:1.2;">'+m.label+'</div>'+
+    '</div>';
+  }).join('');
+  var strengths=(d.strengths||[]).map(function(s){return '<li style="padding:4px 0;color:rgba(255,255,255,0.85);">✓ '+rpEscape(s)+'</li>';}).join('');
+  var improvements=(d.improvements||[]).map(function(s){return '<li style="padding:4px 0;color:rgba(255,255,255,0.85);">→ '+rpEscape(s)+'</li>';}).join('');
+  var phrasing=(d.phrasing_before&&d.phrasing_after)?
+    '<div style="margin-top:14px;padding:12px 14px;background:rgba(255,255,255,0.04);border-left:3px solid #C9A84C;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#C9A84C;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Phrasing Upgrade</div>'+
+      '<div style="font-size:0.82rem;color:rgba(255,255,255,0.6);margin-bottom:4px;">Before: <i>"'+rpEscape(d.phrasing_before)+'"</i></div>'+
+      '<div style="font-size:0.82rem;color:rgba(255,255,255,0.92);">After: <b>"'+rpEscape(d.phrasing_after)+'"</b></div>'+
+    '</div>':'';
+  var coach=d.coach_one_line?
+    '<div style="margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(232,201,106,0.08));border-left:3px solid #E8C96A;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#E8C96A;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Coach\'s One Line</div>'+
+      '<div style="font-size:0.92rem;color:#fff;font-weight:500;">'+rpEscape(d.coach_one_line)+'</div>'+
+    '</div>':'';
+  return '<div style="display:grid;grid-template-columns:180px 1fr;gap:24px;align-items:start;margin-top:6px;">'+
+    '<div style="display:flex;flex-direction:column;align-items:center;">'+
+      '<svg width="160" height="160" viewBox="0 0 140 140" style="transform:rotate(-90deg);">'+
+        '<circle cx="70" cy="70" r="54" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12"/>'+
+        '<circle cx="70" cy="70" r="54" fill="none" stroke="'+lvlColor+'" stroke-width="12" stroke-linecap="round" stroke-dasharray="'+circ.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" style="transition:stroke-dashoffset 1s ease;"/>'+
+      '</svg>'+
+      '<div style="margin-top:-110px;text-align:center;pointer-events:none;">'+
+        '<div style="font-family:DM Serif Display,serif;font-size:2.4rem;color:#fff;line-height:1;">'+score+'</div>'+
+        '<div style="font-size:0.7rem;letter-spacing:0.18em;color:rgba(255,255,255,0.5);margin-top:2px;text-transform:uppercase;">/ 100</div>'+
+      '</div>'+
+      '<div style="margin-top:62px;padding:4px 14px;background:'+lvlColor+';color:#fff;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;border-radius:12px;">'+rpEscape(level)+'</div>'+
+    '</div>'+
+    '<div>'+
+      '<div style="font-size:0.7rem;font-weight:700;color:#C9A84C;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">AI Skill Analysis</div>'+
+      '<div style="display:flex;gap:10px;align-items:flex-end;justify-content:space-between;">'+bars+'</div>'+
+    '</div>'+
+  '</div>'+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px;">'+
+    '<div style="padding:14px 16px;background:rgba(46,125,50,0.08);border-left:3px solid #4CAF50;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#81C784;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Strengths</div>'+
+      '<ul style="list-style:none;padding:0;margin:0;font-size:0.84rem;line-height:1.65;">'+strengths+'</ul>'+
+    '</div>'+
+    '<div style="padding:14px 16px;background:rgba(91,134,197,0.10);border-left:3px solid #5B86C5;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#8FB4E0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Areas to Improve</div>'+
+      '<ul style="list-style:none;padding:0;margin:0;font-size:0.84rem;line-height:1.65;">'+improvements+'</ul>'+
+    '</div>'+
+  '</div>'+
+  phrasing+coach;
+}
+function rpEscape(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
 function showModel(){
   var q=questions[qIdx];

@@ -344,19 +344,98 @@ async function endDiscussion(){
       ?'The candidate spoke only once. Do NOT evaluate listening/responding skills (not enough data). Only evaluate the content, logic, and English expression of that single answer.'
       :'The candidate spoke '+userTurns+' times. Evaluate content, logic, English expression, AND how well they connected to the partner\'s points across turns.';
     var fbRes=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:600,
-      system:'You are a cabin crew group discussion coach. Scenario: "'+TOPICS[selectedTopic].scenario+'"\n\n'+scopeNote+'\n\nRules:\n- Evaluate ONLY what the candidate (You) actually said. Do NOT evaluate the partner.\n- Speech-to-text input — ignore grammar/punctuation.\n- Never criticize for things not demonstrably in the answer.\n- Be encouraging but honest.\n\nFormat:\n\n# Score: X/100\n\n# Strengths\n- (2 items, briefly quote what the candidate actually said)\n\n# Areas to Improve\n- (1-2 items, only with concrete evidence. If none, write "No specific issues to improve.")\n\n# Practical Tip\n- (1 item)\n\nWrite the feedback in English.',
-      messages:[{role:'user',content:'Full discussion:\n\n'+convo+'\n\nCandidate\'s own answers only:\n'+userAnswers+'\n\nPlease give feedback on the candidate only.'}]
+      model:'claude-haiku-4-5-20251001',max_tokens:1100,
+      system:'You are a cabin crew Round-2 group discussion coach. Scenario: "'+TOPICS[selectedTopic].scenario+'"\n\n'+scopeNote+'\n\nRules:\n- Evaluate ONLY what the candidate (You) actually said. Do NOT evaluate the partner.\n- Speech-to-text input — ignore grammar/punctuation.\n- Never criticise for things not demonstrably in the answer.\n- Be encouraging but honest.\n\nScore these five dimensions (each 0-100):\n- Service Mindset: customer-first reasoning, hospitality framing\n- Content: substance and relevance of the point made\n- Collaboration: building on the partner, acknowledging others, group-friendly tone\n- English Fluency: smoothness and vocabulary control (ignore punctuation)\n- Decision Clarity: clear stance / clear closing thought (not wishy-washy)\n\nReturn ONLY a valid JSON object — no markdown, no preamble, no code fences. Use this EXACT schema:\n\n{\n  "overall_score": <0-100 integer>,\n  "level": "Excellent" | "Strong" | "Solid" | "Needs Work",\n  "service_mindset": <0-100 integer>,\n  "content": <0-100 integer>,\n  "collaboration": <0-100 integer>,\n  "english_fluency": <0-100 integer>,\n  "decision_clarity": <0-100 integer>,\n  "strengths": ["quoted phrase + why it worked", "...", "..."],\n  "improvements": ["specific suggestion 1", "specific suggestion 2"],\n  "phrasing_before": "exact weak line from candidate",\n  "phrasing_after": "rewritten as a top Round-2 candidate would say it",\n  "coach_one_line": "single direct sentence to remember"\n}\n\nQuote real transcript phrases inside strengths. Reply ONLY the JSON.',
+      messages:[{role:'user',content:'Full discussion:\n\n'+convo+'\n\nCandidate\'s own answers only:\n'+userAnswers+'\n\nReturn the JSON evaluation of the candidate only.'}]
     })});
     var fbData=await fbRes.json();
-    var fbText=((fbData&&fbData.content&&fbData.content[0]&&fbData.content[0].text)||'Failed to generate feedback.').replace(/\*\*/g,'');
-    fb.innerHTML='<b style="color:var(--gold);">Feedback</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>';
+    var fbText=((fbData&&fbData.content&&fbData.content[0]&&fbData.content[0].text)||'').replace(/\*\*/g,'').trim();
+    var parsed=null;
+    try{
+      var jmatch=fbText.match(/\{[\s\S]*\}/);
+      if(jmatch) parsed=JSON.parse(jmatch[0]);
+    }catch(e){console.warn('[discussion2-en] JSON parse failed:',e);}
+    if(parsed && typeof parsed.overall_score==='number'){
+      fb.innerHTML=renderD2Dashboard(parsed);
+    } else {
+      fb.innerHTML='<b style="color:var(--gold);">Feedback</b><br><br><div style="white-space:pre-line;">'+(fbText||'Failed to generate feedback.')+'</div>';
+    }
     if(typeof savePracticeRecord==='function') savePracticeRecord({stage:'discussion2',question:TOPICS[selectedTopic].title,answer:userAnswers,feedback:fbText});
   }catch(e){
     fb.innerHTML='<b style="color:#E74C3C;">Failed to generate feedback. Please try again.</b>';
   }
   document.getElementById('btn-next').disabled=false;
 }
+
+// Visual feedback dashboard for Discussion Round 2
+function renderD2Dashboard(d){
+  var score=Math.max(0,Math.min(100,d.overall_score||0));
+  var level=d.level||'Solid';
+  var lvlColor=score>=85?'#2E7D32':score>=72?'#C9A84C':score>=55?'#5B86C5':'#7A8FB5';
+  var circ=2*Math.PI*54;
+  var off=circ*(1-score/100);
+  var metrics=[
+    {label:'Service Mindset',v:d.service_mindset},
+    {label:'Content',v:d.content},
+    {label:'Collaboration',v:d.collaboration},
+    {label:'English Fluency',v:d.english_fluency},
+    {label:'Decision Clarity',v:d.decision_clarity}
+  ];
+  var bars=metrics.map(function(m){
+    var v=Math.max(0,Math.min(100,m.v||0));
+    var c=v>=80?'#2E7D32':v>=65?'#C9A84C':v>=50?'#5B86C5':'#7A8FB5';
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:54px;">'+
+      '<div style="width:100%;height:96px;background:rgba(255,255,255,0.05);border-radius:6px;position:relative;overflow:hidden;">'+
+        '<div style="position:absolute;bottom:0;left:0;right:0;height:'+v+'%;background:'+c+';border-radius:6px 6px 0 0;transition:height 0.8s ease;"></div>'+
+        '<div style="position:absolute;top:6px;left:0;right:0;text-align:center;font-size:0.78rem;font-weight:700;color:#fff;">'+v+'</div>'+
+      '</div>'+
+      '<div style="font-size:0.66rem;color:rgba(255,255,255,0.65);letter-spacing:0.02em;text-align:center;line-height:1.2;">'+m.label+'</div>'+
+    '</div>';
+  }).join('');
+  var strengths=(d.strengths||[]).map(function(s){return '<li style="padding:4px 0;color:rgba(255,255,255,0.85);">✓ '+d2Escape(s)+'</li>';}).join('');
+  var improvements=(d.improvements||[]).map(function(s){return '<li style="padding:4px 0;color:rgba(255,255,255,0.85);">→ '+d2Escape(s)+'</li>';}).join('');
+  var phrasing=(d.phrasing_before&&d.phrasing_after)?
+    '<div style="margin-top:14px;padding:12px 14px;background:rgba(255,255,255,0.04);border-left:3px solid #C9A84C;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#C9A84C;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Phrasing Upgrade</div>'+
+      '<div style="font-size:0.82rem;color:rgba(255,255,255,0.6);margin-bottom:4px;">Before: <i>"'+d2Escape(d.phrasing_before)+'"</i></div>'+
+      '<div style="font-size:0.82rem;color:rgba(255,255,255,0.92);">After: <b>"'+d2Escape(d.phrasing_after)+'"</b></div>'+
+    '</div>':'';
+  var coach=d.coach_one_line?
+    '<div style="margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(232,201,106,0.08));border-left:3px solid #E8C96A;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#E8C96A;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Coach\'s One Line</div>'+
+      '<div style="font-size:0.92rem;color:#fff;font-weight:500;">'+d2Escape(d.coach_one_line)+'</div>'+
+    '</div>':'';
+  return '<div style="display:grid;grid-template-columns:180px 1fr;gap:24px;align-items:start;margin-top:6px;">'+
+    '<div style="display:flex;flex-direction:column;align-items:center;">'+
+      '<svg width="160" height="160" viewBox="0 0 140 140" style="transform:rotate(-90deg);">'+
+        '<circle cx="70" cy="70" r="54" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12"/>'+
+        '<circle cx="70" cy="70" r="54" fill="none" stroke="'+lvlColor+'" stroke-width="12" stroke-linecap="round" stroke-dasharray="'+circ.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" style="transition:stroke-dashoffset 1s ease;"/>'+
+      '</svg>'+
+      '<div style="margin-top:-110px;text-align:center;pointer-events:none;">'+
+        '<div style="font-family:DM Serif Display,serif;font-size:2.4rem;color:#fff;line-height:1;">'+score+'</div>'+
+        '<div style="font-size:0.7rem;letter-spacing:0.18em;color:rgba(255,255,255,0.5);margin-top:2px;text-transform:uppercase;">/ 100</div>'+
+      '</div>'+
+      '<div style="margin-top:62px;padding:4px 14px;background:'+lvlColor+';color:#fff;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;border-radius:12px;">'+d2Escape(level)+'</div>'+
+    '</div>'+
+    '<div>'+
+      '<div style="font-size:0.7rem;font-weight:700;color:#C9A84C;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">AI Skill Analysis</div>'+
+      '<div style="display:flex;gap:10px;align-items:flex-end;justify-content:space-between;">'+bars+'</div>'+
+    '</div>'+
+  '</div>'+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px;">'+
+    '<div style="padding:14px 16px;background:rgba(46,125,50,0.08);border-left:3px solid #4CAF50;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#81C784;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Strengths</div>'+
+      '<ul style="list-style:none;padding:0;margin:0;font-size:0.84rem;line-height:1.65;">'+strengths+'</ul>'+
+    '</div>'+
+    '<div style="padding:14px 16px;background:rgba(91,134,197,0.10);border-left:3px solid #5B86C5;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#8FB4E0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Areas to Improve</div>'+
+      '<ul style="list-style:none;padding:0;margin:0;font-size:0.84rem;line-height:1.65;">'+improvements+'</ul>'+
+    '</div>'+
+  '</div>'+
+  phrasing+coach;
+}
+function d2Escape(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
 function r(){return Math.floor(Math.random()*36)+50;}
 </script>
 <section class="seo-tips" style="background:#fff;padding:40px 5%;border-top:1px solid #F5E9C8;">

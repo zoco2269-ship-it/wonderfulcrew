@@ -526,23 +526,39 @@ async function endSession(){
     var ctrl2=new AbortController();
     var tid2=setTimeout(function(){ctrl2.abort();},45000);
     var r=await fetch('/api/ai',{method:'POST',signal:ctrl2.signal,headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:700,
-      system:'You are a senior CV Drop small talk coach for Emirates / Qatar / Singapore Airlines / Cathay Pacific cabin crew interviews. Evaluate ONLY the candidate answers (the recruiter\'s questions are context). Reply in English, in plain text. No markdown, no asterisks. NEVER comment on smile — the system displays smile data separately.\n\nProvide a detailed structured evaluation in this exact format:\n\nOverall Score: X/100\nLevel: (Excellent / Strong / Solid / Needs Work)\n\n[Strengths]\n- 2-3 specific bullet points quoting actual phrases from the candidate\'s answers (not generic praise)\n\n[Areas to Improve]\n- 2-3 specific bullet points with concrete fixes (not vague suggestions)\n\n[Detailed Evaluation]\n1) First Impression & Warmth — score /20, one-line reason\n2) Content Specificity (real examples vs generic answers) — score /20, one-line reason\n3) English Fluency & Expression — score /20, one-line reason\n4) Motivation Clarity (why this airline / why cabin crew) — score /20, one-line reason\n5) Conversation Flow (natural reply, follow-up handling) — score /20, one-line reason\n\n[Coach\'s One Line]\nA single sentence the candidate should remember for next time.\n\nBe direct, specific, and grounded in the actual transcript. Quote real phrases. Avoid filler praise like "great answer" or "well done".',
+      model:'claude-haiku-4-5-20251001',max_tokens:1100,
+      system:'You are a senior CV Drop small talk coach for Emirates / Qatar / Singapore Airlines / Cathay Pacific cabin crew interviews. Evaluate ONLY the candidate answers (the recruiter\'s questions are context). NEVER comment on smile — the system displays smile data separately.\n\nReturn ONLY a valid JSON object — no markdown, no preamble, no code fences. Use this EXACT schema:\n\n{\n  "overall_score": <0-100 integer>,\n  "level": "Excellent" | "Strong" | "Solid" | "Needs Work",\n  "first_impression": <0-100 integer>,\n  "content": <0-100 integer>,\n  "english_fluency": <0-100 integer>,\n  "motivation_clarity": <0-100 integer>,\n  "conversation_flow": <0-100 integer>,\n  "strengths": ["quoted phrase + why it worked", "...", "..."],\n  "improvements": ["specific concrete fix 1", "specific concrete fix 2"],\n  "phrasing_before": "exact weak line from the candidate transcript",\n  "phrasing_after": "rewritten as a top CV-Drop candidate would say it",\n  "coach_one_line": "single direct sentence to remember"\n}\n\nQuote real candidate phrases in strengths. No generic praise like "great answer". Reply ONLY the JSON.',
       messages:[{role:'user',content:'Candidate answers:\n'+userAnswers}]
     })});
     clearTimeout(tid2);
     var d=await r.json();
     if(d && d.error){console.error('[smalltalk feedback error]',d.error);throw new Error(typeof d.error==='string'?d.error:(d.error.message||'AI error'));}
-    var fbText=((d&&d.content&&d.content[0]&&d.content[0].text)||'Feedback generation failed').replace(/\*\*/g,'');
-    fb.innerHTML='<b style="color:var(--gold);">Small Talk Feedback</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>'+
+    var fbText=((d&&d.content&&d.content[0]&&d.content[0].text)||'Feedback generation failed').replace(/\*\*/g,'').trim();
+    var parsedST=null;
+    try{
+      var jmatchST=fbText.match(/\{[\s\S]*\}/);
+      if(jmatchST) parsedST=JSON.parse(jmatchST[0]);
+    }catch(e){console.warn('[smalltalk-en] JSON parse failed:',e);}
+    var bodyHTML;
+    if(parsedST && typeof parsedST.overall_score==='number'){
+      bodyHTML='<b style="color:var(--gold);">Small Talk Feedback</b><br><br>'+renderSmalltalkDashboard(parsedST);
+    } else {
+      bodyHTML='<b style="color:var(--gold);">Small Talk Feedback</b><br><br><div style="white-space:pre-line;">'+fbText+'</div>';
+    }
+    fb.innerHTML=bodyHTML+
       smileBlock+
       '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">'+
       '<button onclick="startSmalltalk()" style="padding:10px 22px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#1A2340;border:none;border-radius:22px;font-family:inherit;font-size:0.84rem;font-weight:700;cursor:pointer;">🔄 Practice again</button>'+
       '<a href="'+BACK_URL+'" style="color:var(--gold);font-size:0.82rem;">← Back to curriculum</a>'+
       '</div>';
     try{
-      var _scMatch=fbText.match(/(?:Score|점수)[:\s]*(\d+)/i);
-      var _parsedScore=_scMatch?parseInt(_scMatch[1],10):null;
+      var _parsedScore=null;
+      if(parsedST && typeof parsedST.overall_score==='number'){
+        _parsedScore=parsedST.overall_score;
+      } else {
+        var _scMatch=fbText.match(/(?:Score|점수)[:\s]*(\d+)/i);
+        _parsedScore=_scMatch?parseInt(_scMatch[1],10):null;
+      }
       if(typeof savePracticeRecord==='function'){
         savePracticeRecord({
           airline:'',
@@ -560,6 +576,75 @@ async function endSession(){
     fb.innerHTML='<b style="color:#E74C3C;">Feedback generation failed. '+msg+'</b>';
   }
 }
+
+// Visual feedback dashboard for small talk
+function renderSmalltalkDashboard(d){
+  var score=Math.max(0,Math.min(100,d.overall_score||0));
+  var level=d.level||'Solid';
+  var lvlColor=score>=85?'#2E7D32':score>=72?'#C9A84C':score>=55?'#5B86C5':'#7A8FB5';
+  var circ=2*Math.PI*54;
+  var off=circ*(1-score/100);
+  var metrics=[
+    {label:'First Impression',v:d.first_impression},
+    {label:'Content',v:d.content},
+    {label:'English Fluency',v:d.english_fluency},
+    {label:'Motivation',v:d.motivation_clarity},
+    {label:'Conversation Flow',v:d.conversation_flow}
+  ];
+  var bars=metrics.map(function(m){
+    var v=Math.max(0,Math.min(100,m.v||0));
+    var c=v>=80?'#2E7D32':v>=65?'#C9A84C':v>=50?'#5B86C5':'#7A8FB5';
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:54px;">'+
+      '<div style="width:100%;height:96px;background:rgba(255,255,255,0.05);border-radius:6px;position:relative;overflow:hidden;">'+
+        '<div style="position:absolute;bottom:0;left:0;right:0;height:'+v+'%;background:'+c+';border-radius:6px 6px 0 0;transition:height 0.8s ease;"></div>'+
+        '<div style="position:absolute;top:6px;left:0;right:0;text-align:center;font-size:0.78rem;font-weight:700;color:#fff;">'+v+'</div>'+
+      '</div>'+
+      '<div style="font-size:0.66rem;color:rgba(255,255,255,0.65);letter-spacing:0.02em;text-align:center;line-height:1.2;">'+m.label+'</div>'+
+    '</div>';
+  }).join('');
+  var strengths=(d.strengths||[]).map(function(s){return '<li style="padding:4px 0;color:rgba(255,255,255,0.85);">✓ '+stEscape(s)+'</li>';}).join('');
+  var improvements=(d.improvements||[]).map(function(s){return '<li style="padding:4px 0;color:rgba(255,255,255,0.85);">→ '+stEscape(s)+'</li>';}).join('');
+  var phrasing=(d.phrasing_before&&d.phrasing_after)?
+    '<div style="margin-top:14px;padding:12px 14px;background:rgba(255,255,255,0.04);border-left:3px solid #C9A84C;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#C9A84C;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Phrasing Upgrade</div>'+
+      '<div style="font-size:0.82rem;color:rgba(255,255,255,0.6);margin-bottom:4px;">Before: <i>"'+stEscape(d.phrasing_before)+'"</i></div>'+
+      '<div style="font-size:0.82rem;color:rgba(255,255,255,0.92);">After: <b>"'+stEscape(d.phrasing_after)+'"</b></div>'+
+    '</div>':'';
+  var coach=d.coach_one_line?
+    '<div style="margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(232,201,106,0.08));border-left:3px solid #E8C96A;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#E8C96A;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Coach\'s One Line</div>'+
+      '<div style="font-size:0.92rem;color:#fff;font-weight:500;">'+stEscape(d.coach_one_line)+'</div>'+
+    '</div>':'';
+  return '<div style="display:grid;grid-template-columns:180px 1fr;gap:24px;align-items:start;margin-top:6px;">'+
+    '<div style="display:flex;flex-direction:column;align-items:center;">'+
+      '<svg width="160" height="160" viewBox="0 0 140 140" style="transform:rotate(-90deg);">'+
+        '<circle cx="70" cy="70" r="54" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12"/>'+
+        '<circle cx="70" cy="70" r="54" fill="none" stroke="'+lvlColor+'" stroke-width="12" stroke-linecap="round" stroke-dasharray="'+circ.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" style="transition:stroke-dashoffset 1s ease;"/>'+
+      '</svg>'+
+      '<div style="margin-top:-110px;text-align:center;pointer-events:none;">'+
+        '<div style="font-family:DM Serif Display,serif;font-size:2.4rem;color:#fff;line-height:1;">'+score+'</div>'+
+        '<div style="font-size:0.7rem;letter-spacing:0.18em;color:rgba(255,255,255,0.5);margin-top:2px;text-transform:uppercase;">/ 100</div>'+
+      '</div>'+
+      '<div style="margin-top:62px;padding:4px 14px;background:'+lvlColor+';color:#fff;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;border-radius:12px;">'+stEscape(level)+'</div>'+
+    '</div>'+
+    '<div>'+
+      '<div style="font-size:0.7rem;font-weight:700;color:#C9A84C;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">AI Skill Analysis</div>'+
+      '<div style="display:flex;gap:10px;align-items:flex-end;justify-content:space-between;">'+bars+'</div>'+
+    '</div>'+
+  '</div>'+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px;">'+
+    '<div style="padding:14px 16px;background:rgba(46,125,50,0.08);border-left:3px solid #4CAF50;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#81C784;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Strengths</div>'+
+      '<ul style="list-style:none;padding:0;margin:0;font-size:0.84rem;line-height:1.65;">'+strengths+'</ul>'+
+    '</div>'+
+    '<div style="padding:14px 16px;background:rgba(91,134,197,0.10);border-left:3px solid #5B86C5;border-radius:4px;">'+
+      '<div style="font-size:0.68rem;font-weight:700;color:#8FB4E0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Areas to Improve</div>'+
+      '<ul style="list-style:none;padding:0;margin:0;font-size:0.84rem;line-height:1.65;">'+improvements+'</ul>'+
+    '</div>'+
+  '</div>'+
+  phrasing+coach;
+}
+function stEscape(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 </script>
 <section class="seo-tips" style="background:#fff;padding:40px 5%;border-top:1px solid #F5E9C8;">
   <details style="max-width:900px;margin:0 auto;background:#FAF7F0;border:1px solid #F5E9C8;border-radius:14px;padding:22px 28px;">

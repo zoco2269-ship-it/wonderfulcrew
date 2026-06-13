@@ -1,5 +1,5 @@
 // WonderfulCrew Service Worker — Push + Offline shell cache
-const CACHE_NAME = 'wc-en-v2';
+const CACHE_NAME = 'wc-en-v3';
 const APP_SHELL = [
   '/index-en.html',
   '/curriculum-en.html',

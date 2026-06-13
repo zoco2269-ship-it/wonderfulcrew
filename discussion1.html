@@ -181,7 +181,7 @@ async function startRec(){
       if(ev.results[r].isFinal){
         var t=(ev.results[r][0].transcript||'').trim();
         var k=norm(t);
-        if(k && !window._finalSeen[k]){window._finalSeen[k]=1;window._finalList.push(t);}
+        if(k){var fl=window._finalList,keep=true;for(var i=fl.length-1;i>=0;i--){var ki=norm(fl[i]);if(!ki)continue;if(ki.indexOf(k)!==-1){keep=false;break;}if(k.indexOf(ki)!==-1){fl[i]=t;keep=false;break;}}if(keep){window._finalSeen[k]=1;fl.push(t);}}
       }else{interim+=ev.results[r][0].transcript;}
     }
     fullText=window._finalList.join(' ');

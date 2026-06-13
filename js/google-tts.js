@@ -33,7 +33,22 @@ async function gcSpeak(text, lang, gender, onEnd) {
         _gcTtsAudio = audio;
         audio.onended = function() { if (_gcTtsAudio === audio) { _gcTtsAudio = null; if (onEnd) onEnd(); } };
         audio.onerror = function() { if (_gcTtsAudio === audio) { _gcTtsAudio = null; if (onEnd) onEnd(); } };
-        audio.play();
+        var _pp = audio.play();
+        if (_pp && _pp.catch) { _pp.catch(function(err) {
+          console.warn('[gcSpeak] audio.play blocked, falling back to speechSynthesis', err);
+          if (_gcTtsAudio === audio) _gcTtsAudio = null;
+          if ('speechSynthesis' in window) {
+            try {
+              var _u = new SpeechSynthesisUtterance(text);
+              _u.lang = lang || 'en-GB';
+              _u.rate = 0.9;
+              _u.pitch = gender === 'male' ? 0.85 : 1.05;
+              _u.onend = function() { if (onEnd) onEnd(); };
+              _u.onerror = function() { if (onEnd) onEnd(); };
+              window.speechSynthesis.speak(_u);
+            } catch(e2) { if (onEnd) onEnd(); }
+          } else if (onEnd) { onEnd(); }
+        }); }
         return true;
       }
     }

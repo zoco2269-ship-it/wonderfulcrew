@@ -176,21 +176,7 @@ body{height:auto!important;min-height:100vh!important;overflow-y:auto!important;
 
 <nav>
   <a href="index-en.html" class="nav-logo">Wonderful<span>Crew</span></a>
-  <a href="#" class="nav-back" onclick="backToSetup();return false;" style="position:absolute;right:24px;">← Back</a>
-  <div class="nav-links">
-    <div class="nav-dropdown"><a href="index-en.html#about">About</a><div class="nav-dropdown-menu nav-dd-grid"><a href="about-en.html">About WonderfulCrew</a><a href="column-en.html">Interview Insights</a></div></div>
-    <div class="nav-dropdown"><a href="index-en.html#expertise">Programs</a><div class="nav-dropdown-menu wide"><a href="leveltest-en.html">Cabin Crew</a><a href="hotel-en.html">Hotel &amp; Luxury</a><a href="walking-analysis-en.html">Walking &amp; Posture</a><a href="cruise-en.html">Cruise</a><a href="coach-feedback-en.html">1:1 Coach Feedback</a><a href="ai-coach-en.html">AI Coach</a></div></div>
-    <div class="nav-dropdown"><a href="index-en.html#resources">Resources</a><div class="nav-dropdown-menu wide"><a href="interview-guide-en.html">Interview Guide</a><a href="english-interview-en.html">Interview Q&amp;A</a><a href="grooming-guide-en.html">Image &amp; Grooming</a><a href="resume-guide-en.html">Resume &amp; CV</a><a href="customer-service-en.html">Customer Service Skills</a><a href="culture-difference-en.html">Cultural Awareness</a></div></div>
-    <a href="daily-english-en.html">English Practice</a>
-    <a href="jobs-en.html">Careers</a>
-    <a href="community-en.html">Community</a>
-    <a href="plans-en.html">Plans</a>
-  </div>
-  <div style="display:flex;align-items:center;gap:12px;">
-    <a href="leveltest-en.html" class="nav-cta">Start Practice</a>
-    <a href="login-en.html" style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;letter-spacing:0.06em;text-decoration:none;transition:all 0.2s;">Sign In</a>
-    <a href="index.html" style="display:inline-flex;align-items:center;padding:7px 14px;border-radius:20px;border:1px solid var(--gold-pale);color:var(--text-mid);font-size:0.78rem;font-weight:600;text-decoration:none;">KO</a>
-  </div>
+  <a href="#" class="nav-back" onclick="backToSetup();return false;">← Back</a>
 </nav>
 
 <!-- SETUP SCREEN -->
@@ -330,37 +316,7 @@ var SCENARIOS=[
   "A passenger accuses another passenger of stealing their belongings from the overhead bin.",
   "A passenger demands a full refund mid-flight because the Wi-Fi is not working.",
   "A passenger is found smoking in the lavatory and denies it despite the smoke detector going off.",
-  // ── Hotel scenarios ──
-  "A hotel guest complains that their room has not been cleaned despite requesting housekeeping twice.",
-  "A guest at check-in insists they booked an ocean-view room, but the reservation shows a city-view room.",
-  "A VIP guest demands a late checkout at 4 PM, but the hotel is fully booked for incoming guests.",
-  "A guest reports that the air conditioning in their room is broken on an extremely hot day.",
-  "A guest finds hair in the bathroom and demands to be moved to another room immediately.",
-  "A hotel guest's luggage was mistakenly delivered to the wrong room and some items appear to be missing.",
-  "A guest complains about loud construction noise next to the hotel that started early in the morning.",
-  "A guest at the hotel restaurant is upset because they waited 40 minutes for their room service order.",
-  // ── Restaurant scenarios ──
-  "A restaurant guest finds a foreign object in their soup and is extremely upset.",
-  "A couple celebrating their anniversary was seated next to a loud group and wants to be moved.",
-  "A guest with a severe nut allergy discovers their dish may contain traces of peanuts after tasting it.",
-  "A guest complains that their steak is overcooked after specifically requesting medium-rare.",
-  "A large party's reservation was lost and there are no tables available for the next two hours.",
-  "A guest is unhappy because the waiter charged them for items they did not order.",
-  "A regular guest is disappointed that their favorite dish has been removed from the menu.",
-  "A guest spills red wine on their expensive outfit and blames the narrow table arrangement.",
-  // ── Café / Lounge scenarios ──
-  "A café customer received the wrong order for the third time and is losing patience.",
-  "A guest at the airline lounge is told their membership has expired and they cannot enter.",
-  "A café customer's laptop was damaged when another customer accidentally spilled coffee on it.",
-  "A lounge guest complains that the Wi-Fi has been down for an hour and they have an urgent meeting.",
-  "A customer in the café is upset because they were charged twice for the same drink.",
-  "A guest at the VIP lounge is unhappy with the food selection and says it is not up to premium standards.",
-  // ── Cruise / Resort scenarios ──
-  "A cruise passenger's cabin has a water leak and their personal belongings are getting wet.",
-  "A resort guest booked a spa treatment but was told upon arrival that it was cancelled without notice.",
-  "A cruise guest missed the shore excursion because they received the wrong departure time.",
-  "A resort guest's pool cabana was given to another guest despite their advance reservation.",
-  // ── Airport Ground Service scenarios ──
+  // ── Airport Ground Service scenarios (in-flight crew also rotates ground duty) ──
   "A passenger at the check-in counter discovers their flight has been overbooked and they may be bumped.",
   "A passenger with a connecting flight is told their luggage did not make the transfer.",
   "A wheelchair-assistance passenger was left waiting at the gate for 30 minutes with no staff in sight.",
@@ -513,6 +469,20 @@ var SCENARIO_SETS_EN={
 };
 
 function startInterview(){
+  // Mobile autoplay unlock — must run inside the click handler (user gesture)
+  // so subsequent fetch-then-audio.play() in speakQuestion is allowed.
+  try{
+    if(!window._wcAudioUnlock){
+      window._wcAudioUnlock=new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+      window._wcAudioUnlock.muted=true;
+    }
+    var _up=window._wcAudioUnlock.play();
+    if(_up&&_up.catch)_up.catch(function(){});
+    if('speechSynthesis' in window){
+      try{var _du=new SpeechSynthesisUtterance(' ');_du.volume=0;window.speechSynthesis.speak(_du);}catch(e){}
+    }
+  }catch(e){}
+
   // Background-specific scenario pool — flight uses default SCENARIOS,
   // others use SCENARIO_SETS_EN
   var setting=(document.getElementById('s-setting')||{}).value||'flight';
@@ -851,7 +821,16 @@ async function speakQuestion(text,lang){
         _ttsAudio=audio;
         audio.onended=function(){if(_ttsAudio===audio){iCard.classList.remove('speaking');mouth.classList.remove('talking');_ttsAudio=null;}};
         audio.onerror=function(){if(_ttsAudio===audio){iCard.classList.remove('speaking');mouth.classList.remove('talking');_ttsAudio=null;}};
-        audio.play();
+        var _pp=audio.play();
+        if(_pp&&_pp.catch){_pp.catch(function(err){
+          console.warn('[TTS] audio.play blocked — falling back to speechSynthesis',err);
+          if(_ttsAudio===audio)_ttsAudio=null;
+          if('speechSynthesis' in window){
+            try{var _u=new SpeechSynthesisUtterance(text);_u.lang=lang||'en-GB';_u.rate=0.9;_u.pitch=isMale?0.85:1.1;
+              _u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
+              window.speechSynthesis.speak(_u);}catch(e2){iCard.classList.remove('speaking');mouth.classList.remove('talking');}
+          } else {iCard.classList.remove('speaking');mouth.classList.remove('talking');}
+        });}
         return;
       }
     }

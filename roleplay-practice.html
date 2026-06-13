@@ -496,6 +496,20 @@ var SCENARIO_SETS={
 };
 
 function startInterview(){
+  // 모바일 autoplay unlock — Start 클릭(user gesture) 안에서 무음 audio 한 번 play
+  // 이후 gcSpeak 의 fetch→audio.play 비동기 호출이 차단되지 않도록.
+  try{
+    if(!window._wcAudioUnlock){
+      window._wcAudioUnlock=new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+      window._wcAudioUnlock.muted=true;
+    }
+    var _up=window._wcAudioUnlock.play();
+    if(_up&&_up.catch)_up.catch(function(){});
+    if('speechSynthesis' in window){
+      try{var _du=new SpeechSynthesisUtterance(' ');_du.volume=0;window.speechSynthesis.speak(_du);}catch(e){}
+    }
+  }catch(e){}
+
   // 선택된 배경의 전체 시나리오를 셔플해서 사용 — 제한 없이 '다음 질문' 으로 순회
   var setting=(document.getElementById('s-setting')||{}).value||'flight';
   window._curSetting=setting;

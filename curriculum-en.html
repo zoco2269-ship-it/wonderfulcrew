@@ -176,7 +176,8 @@ var AIRLINES_ME=[
 var AIRLINES_AP=[
   {key:'cathay',en:'Cathay Pacific',region:'Hong Kong'},
   {key:'singapore',en:'Singapore Airlines',region:'Singapore'},
-  {key:'airasia',en:'AirAsia',region:'Kuala Lumpur, Malaysia'}
+  {key:'airasia',en:'AirAsia',region:'Kuala Lumpur, Malaysia'},
+  {key:'koreanair',en:'Korean Air',region:'Incheon, Korea · Interview in Korean'}
 ];
 var AIRLINES_EU=[
   {key:'klm',en:'KLM Royal Dutch',region:'Amsterdam, Netherlands'},
@@ -207,6 +208,7 @@ function matchAirlineKey(name){
   if(n.indexOf('finnair')>=0||n.indexOf('핀에어')>=0)return 'finnair';
   if(n.indexOf('flydubai')>=0||n.indexOf('플라이두바이')>=0)return 'flydubai';
   if(n.indexOf('airasia')>=0||n.indexOf('에어아시아')>=0)return 'airasia';
+  if(n.indexOf('koreanair')>=0||n.indexOf('korean air')>=0||n.indexOf('대한항공')>=0)return 'koreanair';
   return null;
 }
 
@@ -234,7 +236,8 @@ var CURRICULUM_PAGES={
   klm:'curriculum-klm-en.html',
   lufthansa:'curriculum-lufthansa-en.html',
   finnair:'curriculum-finnair-en.html',
-  'international-other':'curriculum-international-other-en.html'
+  'international-other':'curriculum-international-other-en.html',
+  koreanair:'koreanair-process-en.html'
 };
 
 function renderGroup(list, container){

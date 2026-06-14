@@ -200,10 +200,11 @@ window.addEventListener('popstate',function(){
 
   <div class="setup-grid" style="grid-template-columns:1fr 1fr;max-width:440px;margin:0 auto 24px;">
     <div>
-      <div class="setup-label">English Accent</div>
+      <div class="setup-label">Language</div>
       <select class="setup-select" id="s-accent">
         <option value="en-GB">British English</option>
         <option value="en-US">American English</option>
+        <option value="th-TH">ภาษาไทย (Thai)</option>
         <option value="en-IN">Indian English</option>
         <option value="en-PH">Filipino English</option>
         <option value="fr-FR">French English</option>
@@ -686,7 +687,7 @@ async function startListening(){
   }
   // 6. SR 빌드
   recognition=new SR();
-  recognition.lang='en-US';
+  recognition.lang=(window._wcLang||(document.getElementById('s-accent')&&document.getElementById('s-accent').value)||'en-US');
   recognition.interimResults=true;
   recognition.continuous=true;
   fullText='';
@@ -752,7 +753,7 @@ async function startListening(){
         try{
           var SR2=window.SpeechRecognition||window.webkitSpeechRecognition;
           var r2=new SR2();
-          r2.lang='en-US';r2.interimResults=true;r2.continuous=true;
+          r2.lang=(window._wcLang||(document.getElementById('s-accent')&&document.getElementById('s-accent').value)||'en-US');r2.interimResults=true;r2.continuous=true;
           r2.onresult=recognition.onresult;
           r2.onerror=recognition.onerror;
           r2.onend=recognition.onend;
@@ -916,7 +917,7 @@ async function processAnswer(){
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:80,
-      system:'You are the CUSTOMER in this roleplay scenario: "'+scenario+'"\n\nThe user is the SERVICE STAFF (cabin crew / hotel staff / restaurant server / etc.) helping you. NEVER break character. NEVER give meta-instructions. NEVER say things like "please respond as crew" or "let me start over" or "I\'m waiting for you". Just stay in character as an impatient or concerned customer no matter what the staff says.\n\nLANGUAGE PROFICIENCY LOCK (CRITICAL):\n- Your VERY FIRST utterance in this conversation was: "'+(firstOpener||'(none)')+'"\n- That utterance DEFINES your English proficiency level for the ENTIRE conversation.\n- If your first line was broken/fragmented (single words, 2-3 word phrases like "Food? Food?" or "Water. Now."), you CANNOT suddenly become fluent later. Stay at that same broken level every turn.\n- If your first line used simple short sentences, stay simple — do NOT elevate to sophisticated vocabulary.\n- If your first line was fluent full sentences, maintain that.\n- NEVER improve your English skill mid-conversation. The character you opened with is who you are.\n\nAbsolute rules:\n- You are the CUSTOMER, not the staff. NEVER say staff phrases ("I apologize", "Let me help", "Right away", "How can I assist", "I\'ll look into that").\n- Even if the staff\'s reply is unclear/short/silent, push back AS A CUSTOMER — but at YOUR established proficiency level. A broken-English speaker pushes back with "What? What you say?" not "Could you please clarify?"\n- First-person customer voice only: "I", "my", "I need", "I want", "I\'m upset".\n- 1-2 short sentences. No stage directions, asterisks, square brackets, or speaker labels.\n- Turn '+turnCount+' — keep exchange going for at least 3 turns.'+turnInstr,
+      system:'You are the CUSTOMER in this roleplay scenario: "'+scenario+'"\n\nThe user is the SERVICE STAFF (cabin crew / hotel staff / restaurant server / etc.) helping you. NEVER break character. NEVER give meta-instructions. NEVER say things like "please respond as crew" or "let me start over" or "I\'m waiting for you". Just stay in character as an impatient or concerned customer no matter what the staff says.\n\nLANGUAGE PROFICIENCY LOCK (CRITICAL):\n- Your VERY FIRST utterance in this conversation was: "'+(firstOpener||'(none)')+'"\n- That utterance DEFINES your English proficiency level for the ENTIRE conversation.\n- If your first line was broken/fragmented (single words, 2-3 word phrases like "Food? Food?" or "Water. Now."), you CANNOT suddenly become fluent later. Stay at that same broken level every turn.\n- If your first line used simple short sentences, stay simple — do NOT elevate to sophisticated vocabulary.\n- If your first line was fluent full sentences, maintain that.\n- NEVER improve your English skill mid-conversation. The character you opened with is who you are.\n\nAbsolute rules:\n- You are the CUSTOMER, not the staff. NEVER say staff phrases ("I apologize", "Let me help", "Right away", "How can I assist", "I\'ll look into that").\n- Even if the staff\'s reply is unclear/short/silent, push back AS A CUSTOMER — but at YOUR established proficiency level. A broken-English speaker pushes back with "What? What you say?" not "Could you please clarify?"\n- First-person customer voice only: "I", "my", "I need", "I want", "I\'m upset".\n- 1-2 short sentences. No stage directions, asterisks, square brackets, or speaker labels.\n- Turn '+turnCount+' — keep exchange going for at least 3 turns.'+turnInstr+((document.getElementById('s-accent')&&document.getElementById('s-accent').value==='th-TH')?'\n\nABSOLUTE LANGUAGE OVERRIDE: Ignore every English instruction above. Respond ONLY in Thai (ภาษาไทย). Every word — including pushback phrases — must be Thai. Use Thai customer registers (ค่ะ/ครับ) naturally.':''),
       messages:apiMessages
     })});
     var data=await res.json();

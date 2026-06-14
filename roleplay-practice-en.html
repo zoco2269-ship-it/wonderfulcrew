@@ -328,6 +328,45 @@ var SCENARIOS=[
   "A customer purchased a designer bag but noticed a scratch on it after leaving the store."
 ];
 
+// First-line customer opener for each SCENARIOS entry (index-matched).
+// Used so that startInterview can immediately speak the opener inside the
+// click handler's user-activation window — eliminating the fetch /api/ai
+// roundtrip that was causing audio.play to be autoplay-blocked on mobile.
+var OPENERS_EN_FLIGHT={
+  0:"Excuse me, I specifically wanted a window seat. Is there really nothing you can do?",
+  1:"I'm in business class — and the meal I ordered isn't available? That's not acceptable.",
+  2:"I'm freezing here. Can you please turn up the temperature? I've been cold for the last hour.",
+  3:"Excuse me, that baby has been crying non-stop for 30 minutes. Can you do something?",
+  4:"Hi, can I get another drink please? Actually, make it a double.",
+  5:"My bag won't fit up there. I don't want to check it in — I have valuables inside.",
+  6:"I ordered a Hindu vegetarian meal but it doesn't seem to be registered. I can't eat anything else you have.",
+  7:"This person keeps taking my armrest. Can you tell them to stay on their side?",
+  8:"I'm fine, I don't need a seatbelt. We're barely moving.",
+  9:"My entertainment screen has been broken since takeoff. I've been sitting here with nothing to do.",
+  10:"You just spilled a drink all over my shirt — this is brand new!",
+  11:"I'm not feeling well. I think something in the meal is making me sick — my throat feels tight.",
+  12:"I think I deserve an upgrade. My seat is broken and I paid a lot for this ticket.",
+  13:"Oh no — I can't find my passport. I had it in my bag but it's gone.",
+  14:"I can't breathe... I'm so scared. The plane keeps shaking and I feel like I'm going to die.",
+  15:"I paid first class for this? Your service is honestly disgraceful. You should be embarrassed.",
+  16:"I just need to stand here. I'm claustrophobic — I can't sit in that small seat for 10 hours.",
+  17:"Excuse me, can you tell me when I should take my heart medicine? My doctor said before meals but I'm confused.",
+  18:"My dog won't stop barking. I think she needs the bathroom but we're not allowed to walk around.",
+  19:"All the economy bathrooms are busy. Can I please use the business class one? I really can't wait.",
+  20:"I'm so scared! The plane keeps shaking. My mom told us to find someone if we got scared.",
+  21:"I'm telling you, that person stole my watch from my bag in the overhead bin while I was sleeping!",
+  22:"Your WiFi has been down for the whole flight. I want a full refund — I paid for premium internet.",
+  23:"What? No, that wasn't me smoking. The detector must be broken.",
+  24:"What do you mean overbooked? I have a confirmed ticket — I need to be on this flight today!",
+  25:"I just landed and my suitcase isn't here. I have a wedding tomorrow morning — all my clothes are in that bag!",
+  26:"I've been sitting in this wheelchair at the gate for 30 minutes. No one is helping me board.",
+  27:"We booked the bassinet seat months ago. You can't just reassign it — I have an infant!",
+  28:"I bought this perfume yesterday and it smells nothing like it did in the store. I want a refund.",
+  29:"Why do your staff keep following me around the store? Do I look like a thief to you?",
+  30:"I bought this watch and my tax refund came out wrong. I'm missing almost a hundred dollars.",
+  31:"Look at this designer bag — there's a scratch on the leather. I just bought it five minutes ago."
+};
+
 var MODELS={
   0:"I completely understand your preference for a window seat, Sir. Let me check every section of the aircraft for you right now. I'm afraid all window seats are taken today, but I do have an excellent aisle seat near the front with extra legroom. It's actually one of our most requested seats. I'll also make sure to bring you a complimentary drink as soon as we're airborne, and if a window seat opens up, you'll be the first to know.",
   1:"I sincerely apologize about that. Let me check if any other cabin has your choice available. I'm afraid it's completely gone, but I'd like to personally recommend our chef's second option — many of our frequent flyers actually prefer it. I'll also bring you a glass of champagne with my sincere apologies. And I'll make a note in your profile so your preferred meal is prioritized on your next flight with us.",
@@ -491,7 +530,7 @@ function startInterview(){
   window._curSetting=setting;
   var pool=[];
   if(setting==='flight'){
-    SCENARIOS.forEach(function(q,i){pool.push({q:q,origIdx:'f'+i,opener:null});});
+    SCENARIOS.forEach(function(q,i){pool.push({q:q,origIdx:'f'+i,opener:OPENERS_EN_FLIGHT[i]||null});});
   } else {
     (SCENARIO_SETS_EN[setting]||[]).forEach(function(it,i){pool.push({q:it.q,origIdx:setting[0]+i,opener:it.o});});
   }
@@ -588,8 +627,9 @@ function showQuestion(){
   document.getElementById('waveform').classList.remove('active');
   fullText='';
 
-  // AI (customer) speaks the complaint/request first
-  customerFirstSpeak(q.q);
+  // AI (customer) speaks the complaint/request first — uses the pre-baked opener
+  // so the TTS audio.play fires while the user-activation from the click is still alive.
+  customerFirstSpeak(q.q,q.opener);
 }
 
 function detectSetting(scenario){
@@ -603,42 +643,31 @@ function detectSetting(scenario){
   return{role:'passenger',staff:'cabin crew member',place:'an airplane'};
 }
 
-async function customerFirstSpeak(scenario){
+// Synchronous — no fetch. Uses pre-baked opener so speakQuestion() fires
+// inside the originating click handler's user-activation window
+// (matches the Korean roleplay flow which works reliably on mobile).
+function customerFirstSpeak(scenario,opener){
   var fb=document.getElementById('feedback');
   var setting=detectSetting(scenario);
-  fb.innerHTML='<span style="color:var(--gold);">The '+setting.role+' is speaking...</span>';
+  var aiText=opener||'Excuse me, I have a problem and I really need your help with this.';
+
+  chatHistory.push({role:'assistant',content:aiText});
+  fb.innerHTML='<b style="color:var(--gold);">'+setting.role.charAt(0).toUpperCase()+setting.role.slice(1)+':</b> '+aiText;
   fb.classList.add('active');
 
-  try{
-    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:150,
-      system:'You are a '+setting.role+' at '+setting.place+'. The situation is: "'+scenario+'"\n\nYou must speak FIRST as the upset/confused '+setting.role+'. Say 1-2 sentences expressing your complaint or request naturally, as if talking to the '+setting.staff+' standing in front of you. Be realistic. Speak in ENGLISH only. Do NOT say anything from the staff perspective. Do NOT use asterisks or stage directions like *coughing* or *sighing*. Only speak dialogue.',
-      messages:[{role:'user',content:'Start the conversation as the '+setting.role+'.'}]
-    })});
-    var data=await res.json();
-    var aiText=(data&&data.content&&data.content[0]&&data.content[0].text)||'Excuse me, I have a problem.';
-    aiText=aiText.replace(/\*\*/g,'').replace(/\*[^*]+\*/g,'').trim();
+  var accent=document.getElementById('s-accent').value;
+  speakQuestion(aiText,accent);
 
-    chatHistory.push({role:'assistant',content:aiText});
-    fb.innerHTML='<b style="color:var(--gold);">'+setting.role.charAt(0).toUpperCase()+setting.role.slice(1)+':</b> '+aiText;
-
-    // TTS
-    var accent=document.getElementById('s-accent').value;
-    speakQuestion(aiText,accent);
-
-    // Show answer button when TTS ends (mobile requires user-gesture → auto recog.start() is blocked)
-    var checkTTS=setInterval(function(){
-      var gcPlaying=(_ttsAudio && !_ttsAudio.paused && !_ttsAudio.ended);
-      var synPlaying=('speechSynthesis' in window && window.speechSynthesis.speaking);
-      if(!gcPlaying && !synPlaying){
-        clearInterval(checkTTS);
-        var bA=document.getElementById('btn-answer');
-        if(bA) bA.style.display='inline-flex';
-      }
-    },300);
-  }catch(e){
-    fb.innerHTML='<span style="color:#E74C3C;">An error occurred. Please try again.</span>';
-  }
+  // Show answer button once TTS finishes (mobile requires user-gesture → auto recog.start() is blocked)
+  var checkTTS=setInterval(function(){
+    var gcPlaying=(_ttsAudio && !_ttsAudio.paused && !_ttsAudio.ended);
+    var synPlaying=('speechSynthesis' in window && window.speechSynthesis.speaking);
+    if(!gcPlaying && !synPlaying){
+      clearInterval(checkTTS);
+      var bA=document.getElementById('btn-answer');
+      if(bA) bA.style.display='inline-flex';
+    }
+  },300);
 }
 
 async function requestMicAndListen(){

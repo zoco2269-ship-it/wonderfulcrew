@@ -151,6 +151,9 @@ footer a:hover{color:var(--gold);}
     <div class="group-header">Other</div>
     <div class="airline-grid" id="grid-other"></div>
 
+    <div class="group-header" style="margin-top:32px;">Korean Domestic Airlines <span style="font-size:0.72rem;color:var(--text-muted);font-weight:400;letter-spacing:0;text-transform:none;">· interviews in Korean</span></div>
+    <div class="airline-grid" id="grid-kr"></div>
+
     <div id="airline-empty">No level test result yet. <a href="leveltest-en.html" style="color:var(--gold);font-weight:700;">Take the Level Test first →</a></div>
   </div>
 
@@ -176,8 +179,7 @@ var AIRLINES_ME=[
 var AIRLINES_AP=[
   {key:'cathay',en:'Cathay Pacific',region:'Hong Kong'},
   {key:'singapore',en:'Singapore Airlines',region:'Singapore'},
-  {key:'airasia',en:'AirAsia',region:'Kuala Lumpur, Malaysia'},
-  {key:'koreanair',en:'Korean Air',region:'Seoul, Korea · in Korean'}
+  {key:'airasia',en:'AirAsia',region:'Kuala Lumpur, Malaysia'}
 ];
 var AIRLINES_EU=[
   {key:'klm',en:'KLM Royal Dutch',region:'Amsterdam, Netherlands'},
@@ -186,6 +188,9 @@ var AIRLINES_EU=[
 ];
 var AIRLINES_OTHER=[
   {key:'international-other',en:'Other International',region:'Global Carriers'}
+];
+var AIRLINES_KR=[
+  {key:'koreanair',en:'Korean Air',region:'Seoul, Korea'}
 ];
 
 var LEVEL=null;
@@ -268,6 +273,7 @@ renderGroup(AIRLINES_ME, document.getElementById('grid-me'));
 renderGroup(AIRLINES_AP, document.getElementById('grid-ap'));
 renderGroup(AIRLINES_EU, document.getElementById('grid-eu'));
 renderGroup(AIRLINES_OTHER, document.getElementById('grid-other'));
+renderGroup(AIRLINES_KR, document.getElementById('grid-kr'));
 </script>
 
 </body>

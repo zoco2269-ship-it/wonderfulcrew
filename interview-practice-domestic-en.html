@@ -4,24 +4,24 @@
 <script src="js/nav-dropdown.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interview Practice 마스터 | 항공사·국내항공사 모의 면접 - 원더풀크루</title>
-<meta name="description" content="항공사·국내항공사 면접 모의 면접 마스터 페이지. CV Drop, Open Day, Final, Video 면접까지 단계별 연습. 합격생 1,000명+ 데이터 기반.">
-<meta name="keywords" content="Interview Practice, 항공사 모의 면접, 승무원 Interview Practice, CV Drop, Open Day, Final Interview, Video Interview">
+<title>Interview Practice Master | Airline & Domestic Carrier Mock Interview - WonderfulCrew</title>
+<meta name="description" content="Airline & domestic carrier mock interview master page. Step-by-step practice for CV Drop, Open Day, Final, and Video interviews. Based on data from 1,000+ successful candidates.">
+<meta name="keywords" content="Interview Practice, Airline Mock Interview, Cabin Crew Interview Practice, CV Drop, Open Day, Final Interview, Video Interview">
 <meta name="author" content="WonderfulCrew">
 <link rel="canonical" href="https://www.wonderfulcrew.com/interview-practice-domestic-en">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://www.wonderfulcrew.com/interview-practice-domestic-en">
-<meta property="og:title" content="Interview Practice 마스터 | 항공사·국내항공사 모의 면접 - 원더풀크루">
-<meta property="og:description" content="항공사·국내항공사 면접 모의 면접 마스터 페이지. CV Drop, Open Day, Final, Video 면접까지 단계별 연습. 합격생 1,000명+ 데이터 기반.">
+<meta property="og:title" content="Interview Practice Master | Airline & Domestic Carrier Mock Interview - WonderfulCrew">
+<meta property="og:description" content="Airline & domestic carrier mock interview master page. Step-by-step practice for CV Drop, Open Day, Final, and Video interviews. Based on data from 1,000+ successful candidates.">
 <meta property="og:image" content="https://www.wonderfulcrew.com/images/logo.png">
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="WonderfulCrew">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Interview Practice 마스터 | 항공사·국내항공사 모의 면접 - 원더풀크루">
-<meta name="twitter:description" content="항공사·국내항공사 면접 모의 면접 마스터 페이지. CV Drop, Open Day, Final, Video 면접까지 단계별 연습. 합격생 1,000명+ 데이터 기반.">
+<meta name="twitter:title" content="Interview Practice Master | Airline & Domestic Carrier Mock Interview - WonderfulCrew">
+<meta name="twitter:description" content="Airline & domestic carrier mock interview master page. Step-by-step practice for CV Drop, Open Day, Final, and Video interviews. Based on data from 1,000+ successful candidates.">
 <meta name="twitter:image" content="https://www.wonderfulcrew.com/images/logo.png">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":"Interview Practice 마스터","description":"항공사·국내항공사 면접 모의 면접 마스터 페이지. CV Drop, Open Day, Final, Video 면접까지 단계별 연습. 합격생 1,000명+ 데이터 기반.","url":"https://www.wonderfulcrew.com/interview-practice-domestic-en","inLanguage":"en-US","publisher":{"@type":"Organization","name":"WonderfulCrew","url":"https://www.wonderfulcrew.com","logo":{"@type":"ImageObject","url":"https://www.wonderfulcrew.com/images/logo.png"}},"author":{"@type":"Organization","name":"WonderfulCrew"}}
+{"@context":"https://schema.org","@type":"Article","headline":"Interview Practice Master","description":"Airline & domestic carrier mock interview master page. Step-by-step practice for CV Drop, Open Day, Final, and Video interviews. Based on data from 1,000+ successful candidates.","url":"https://www.wonderfulcrew.com/interview-practice-domestic-en","inLanguage":"en-US","publisher":{"@type":"Organization","name":"WonderfulCrew","url":"https://www.wonderfulcrew.com","logo":{"@type":"ImageObject","url":"https://www.wonderfulcrew.com/images/logo.png"}},"author":{"@type":"Organization","name":"WonderfulCrew"}}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
@@ -66,7 +66,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script src="js/sr-dedupe.js?v=3"></script>
 <script src="js/mobile-sr.js?v=2"></script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"WonderfulCrew","item":"https://www.wonderfulcrew.com/"},{"@type":"ListItem","position":2,"name":"연습"},{"@type":"ListItem","position":3,"name":"Interview Practice","item":"https://www.wonderfulcrew.com/interview-practice-domestic-en"}]}
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"WonderfulCrew","item":"https://www.wonderfulcrew.com/"},{"@type":"ListItem","position":2,"name":"Practice"},{"@type":"ListItem","position":3,"name":"Interview Practice","item":"https://www.wonderfulcrew.com/interview-practice-domestic-en"}]}
 </script>
 </head>
 <body>
@@ -623,7 +623,7 @@ function toggleRec(){
     btn.disabled=true;
     // 피드백 (음성 인식 안 됐어도 시도)
     setTimeout(function(){
-      if(!fullText.trim()) fullText='(음성 인식 없음 - 답변 내용을 텍스트로 확인할 수 없습니다)';
+      if(!fullText.trim()) fullText='(No speech recognized - unable to verify answer content as text)';
       generateFeedback();
       btn.disabled=false;
     }, 500);

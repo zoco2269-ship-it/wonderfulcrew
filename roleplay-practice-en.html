@@ -656,18 +656,10 @@ function customerFirstSpeak(scenario,opener){
   fb.classList.add('active');
 
   var accent=document.getElementById('s-accent').value;
-  speakQuestion(aiText,accent);
-
-  // Show answer button once TTS finishes (mobile requires user-gesture → auto recog.start() is blocked)
-  var checkTTS=setInterval(function(){
-    var gcPlaying=(_ttsAudio && !_ttsAudio.paused && !_ttsAudio.ended);
-    var synPlaying=('speechSynthesis' in window && window.speechSynthesis.speaking);
-    if(!gcPlaying && !synPlaying){
-      clearInterval(checkTTS);
-      var bA=document.getElementById('btn-answer');
-      if(bA) bA.style.display='inline-flex';
-    }
-  },300);
+  speakQuestion(aiText,accent,function(){
+    var bA=document.getElementById('btn-answer');
+    if(bA) bA.style.display='inline-flex';
+  });
 }
 
 async function requestMicAndListen(){
@@ -817,73 +809,32 @@ function _sanitizeForTTS(t){
 var _ttsSeq=0;
 var _ttsAbort=null;
 
-async function speakQuestion(text,lang){
+// Unified with smalltalk/final/Korean roleplay — delegate to gcSpeak (js/google-tts.js).
+// The local fetch + new Audio implementation was failing on mobile (autoplay blocked
+// after the second fetch). gcSpeak has a 3s timeout and a SpeechSynthesis fallback
+// that all three other voice-enabled pages use successfully.
+function speakQuestion(text,lang,onEnd){
   var iCard=document.getElementById('interviewer-card');
   var mouth=document.getElementById('avatar-mouth');
-  iCard.classList.add('speaking');
-  mouth.classList.add('talking');
-
-  // Fully cancel previous audio and requests
-  _ttsSeq++;
-  var mySeq=_ttsSeq;
-  if(_ttsAbort){try{_ttsAbort.abort();}catch(e){}_ttsAbort=null;}
-  if(_ttsAudio){try{_ttsAudio.pause();_ttsAudio.currentTime=0;_ttsAudio=null;}catch(e){}}
-  if('speechSynthesis' in window) window.speechSynthesis.cancel();
-
+  if(iCard) iCard.classList.add('speaking');
+  if(mouth) mouth.classList.add('talking');
   var isMale=(chosenAvatar==='👨🏻');
-  text=_sanitizeForTTS(text);
-
-  // Try Google Cloud TTS API
-  try{
-    _ttsAbort=new AbortController();
-    var res=await fetch('/api/tts',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text:text,lang:lang||'en-GB',gender:isMale?'male':'female'}),
-      signal:_ttsAbort.signal
-    });
-    // Drop this response if another call came in while waiting
-    if(mySeq!==_ttsSeq){iCard.classList.remove('speaking');mouth.classList.remove('talking');return;}
-    if(res.ok){
-      var data=await res.json();
-      if(mySeq!==_ttsSeq){iCard.classList.remove('speaking');mouth.classList.remove('talking');return;}
-      if(data.audioContent){
-        // Reuse the unlocked Audio element from startInterview (mobile autoplay policy:
-        // a fresh `new Audio()` requires its own user-activation, which expires after
-        // 5s of fetches. Same element + new src keeps the unlock alive.)
-        var audio=window._wcAudioUnlock||new Audio();
-        audio.muted=false;
-        audio.volume=1;
-        try{audio.pause();}catch(e){}
-        audio.src='data:audio/mp3;base64,'+data.audioContent;
-        _ttsAudio=audio;
-        audio.onended=function(){if(_ttsAudio===audio){iCard.classList.remove('speaking');mouth.classList.remove('talking');_ttsAudio=null;}};
-        audio.onerror=function(){if(_ttsAudio===audio){iCard.classList.remove('speaking');mouth.classList.remove('talking');_ttsAudio=null;}};
-        var _pp=audio.play();
-        if(_pp&&_pp.catch){_pp.catch(function(err){
-          console.warn('[TTS] audio.play blocked — falling back to speechSynthesis',err);
-          if(_ttsAudio===audio)_ttsAudio=null;
-          if('speechSynthesis' in window){
-            try{var _u=new SpeechSynthesisUtterance(text);_u.lang=lang||'en-GB';_u.rate=0.9;_u.pitch=isMale?0.85:1.1;
-              _u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
-              window.speechSynthesis.speak(_u);}catch(e2){iCard.classList.remove('speaking');mouth.classList.remove('talking');}
-          } else {iCard.classList.remove('speaking');mouth.classList.remove('talking');}
-        });}
-        return;
-      }
-    }
-  }catch(e){if(e.name==='AbortError'){iCard.classList.remove('speaking');mouth.classList.remove('talking');return;}console.log('Google TTS failed, falling back to browser TTS');}
-  if(mySeq!==_ttsSeq){iCard.classList.remove('speaking');mouth.classList.remove('talking');return;}
-
-  // Fallback: browser TTS
-  if(!('speechSynthesis' in window)){iCard.classList.remove('speaking');mouth.classList.remove('talking');return;}
-  var u=new SpeechSynthesisUtterance(text);
-  u.lang=lang||'en-US';u.rate=0.85;u.pitch=isMale?0.85:1.1;
-  var voices=window.speechSynthesis.getVoices();
-  var exact=voices.filter(function(v){return v.lang===(lang||'en-US');});
-  if(exact.length>0) u.voice=exact[0];
-  u.onend=function(){iCard.classList.remove('speaking');mouth.classList.remove('talking');};
-  window.speechSynthesis.speak(u);
+  var clean=_sanitizeForTTS(text);
+  var done=function(){
+    if(iCard) iCard.classList.remove('speaking');
+    if(mouth) mouth.classList.remove('talking');
+    if(typeof onEnd==='function') onEnd();
+  };
+  if(typeof gcSpeak==='function'){
+    gcSpeak(clean,lang||'en-GB',isMale?'male':'female',done);
+  } else if('speechSynthesis' in window){
+    var u=new SpeechSynthesisUtterance(clean);
+    u.lang=lang||'en-GB';u.rate=0.9;u.pitch=isMale?0.85:1.1;
+    u.onend=done;
+    window.speechSynthesis.speak(u);
+  } else {
+    done();
+  }
 }
 
 var chatHistory=[];

@@ -622,16 +622,42 @@ function showQuestion(){
   customerFirstSpeak(opener);
 }
 
-function customerFirstSpeak(openerText){
+async function customerFirstSpeak(openerText){
   var fb=document.getElementById('feedback');
-
-  chatHistory.push({role:'assistant',content:openerText});
-  fb.innerHTML='<b style="color:var(--gold);">Customer:</b> '+openerText;
-  fb.classList.add('active');
-
-  // TTS 즉시 시작
   var accent=document.getElementById('s-accent').value;
-  speakQuestion(openerText,accent);
+
+  // Thai mode — fetch a one-shot translation so the SPOKEN line is Thai,
+  // but display Thai + English subtitle so the learner understands.
+  if(accent==='th-TH' && openerText){
+    fb.innerHTML='<span style="color:var(--gold);">Translating to Thai...</span>';
+    fb.classList.add('active');
+    try{
+      var tr=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',max_tokens:200,
+        system:'You translate a single English customer line into natural spoken Thai.\nReturn STRICTLY this two-line format (no other text):\nTHAI: <Thai translation, natural spoken Thai with ค่ะ/ครับ as fits>\nEN: <the original English line, verbatim>',
+        messages:[{role:'user',content:openerText}]
+      })});
+      var td=await tr.json();
+      var raw=((td&&td.content&&td.content[0]&&td.content[0].text)||'').trim();
+      var tm=raw.match(/THAI:\s*([^\n]+)/i);
+      var em=raw.match(/EN:\s*([^\n]+)/i);
+      var thaiText=tm?tm[1].trim():openerText;
+      var enText=em?em[1].trim():openerText;
+      chatHistory.push({role:'assistant',content:thaiText});
+      fb.innerHTML='<b style="color:var(--gold);">Customer:</b> '+thaiText+'<br><span style="opacity:0.6;font-size:0.85em;display:inline-block;margin-top:6px;">EN: '+enText+'</span>';
+      speakQuestion(thaiText,accent);
+    }catch(e){
+      // Fallback: speak the English original
+      chatHistory.push({role:'assistant',content:openerText});
+      fb.innerHTML='<b style="color:var(--gold);">Customer:</b> '+openerText;
+      speakQuestion(openerText,'en-GB');
+    }
+  } else {
+    chatHistory.push({role:'assistant',content:openerText});
+    fb.innerHTML='<b style="color:var(--gold);">Customer:</b> '+openerText;
+    fb.classList.add('active');
+    speakQuestion(openerText,accent);
+  }
 
   // TTS 끝나면 답변 버튼 표시 (모바일 user-gesture 제약 회피)
   var checkTTS=setInterval(function(){
@@ -917,7 +943,7 @@ async function processAnswer(){
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:80,
-      system:'You are the CUSTOMER in this roleplay scenario: "'+scenario+'"\n\nThe user is the SERVICE STAFF (cabin crew / hotel staff / restaurant server / etc.) helping you. NEVER break character. NEVER give meta-instructions. NEVER say things like "please respond as crew" or "let me start over" or "I\'m waiting for you". Just stay in character as an impatient or concerned customer no matter what the staff says.\n\nLANGUAGE PROFICIENCY LOCK (CRITICAL):\n- Your VERY FIRST utterance in this conversation was: "'+(firstOpener||'(none)')+'"\n- That utterance DEFINES your English proficiency level for the ENTIRE conversation.\n- If your first line was broken/fragmented (single words, 2-3 word phrases like "Food? Food?" or "Water. Now."), you CANNOT suddenly become fluent later. Stay at that same broken level every turn.\n- If your first line used simple short sentences, stay simple — do NOT elevate to sophisticated vocabulary.\n- If your first line was fluent full sentences, maintain that.\n- NEVER improve your English skill mid-conversation. The character you opened with is who you are.\n\nAbsolute rules:\n- You are the CUSTOMER, not the staff. NEVER say staff phrases ("I apologize", "Let me help", "Right away", "How can I assist", "I\'ll look into that").\n- Even if the staff\'s reply is unclear/short/silent, push back AS A CUSTOMER — but at YOUR established proficiency level. A broken-English speaker pushes back with "What? What you say?" not "Could you please clarify?"\n- First-person customer voice only: "I", "my", "I need", "I want", "I\'m upset".\n- 1-2 short sentences. No stage directions, asterisks, square brackets, or speaker labels.\n- Turn '+turnCount+' — keep exchange going for at least 3 turns.'+turnInstr+((document.getElementById('s-accent')&&document.getElementById('s-accent').value==='th-TH')?'\n\nABSOLUTE LANGUAGE OVERRIDE: Ignore every English instruction above. Respond ONLY in Thai (ภาษาไทย). Every word — including pushback phrases — must be Thai. Use Thai customer registers (ค่ะ/ครับ) naturally.':''),
+      system:'You are the CUSTOMER in this roleplay scenario: "'+scenario+'"\n\nThe user is the SERVICE STAFF (cabin crew / hotel staff / restaurant server / etc.) helping you. NEVER break character. NEVER give meta-instructions. NEVER say things like "please respond as crew" or "let me start over" or "I\'m waiting for you". Just stay in character as an impatient or concerned customer no matter what the staff says.\n\nLANGUAGE PROFICIENCY LOCK (CRITICAL):\n- Your VERY FIRST utterance in this conversation was: "'+(firstOpener||'(none)')+'"\n- That utterance DEFINES your English proficiency level for the ENTIRE conversation.\n- If your first line was broken/fragmented (single words, 2-3 word phrases like "Food? Food?" or "Water. Now."), you CANNOT suddenly become fluent later. Stay at that same broken level every turn.\n- If your first line used simple short sentences, stay simple — do NOT elevate to sophisticated vocabulary.\n- If your first line was fluent full sentences, maintain that.\n- NEVER improve your English skill mid-conversation. The character you opened with is who you are.\n\nAbsolute rules:\n- You are the CUSTOMER, not the staff. NEVER say staff phrases ("I apologize", "Let me help", "Right away", "How can I assist", "I\'ll look into that").\n- Even if the staff\'s reply is unclear/short/silent, push back AS A CUSTOMER — but at YOUR established proficiency level. A broken-English speaker pushes back with "What? What you say?" not "Could you please clarify?"\n- First-person customer voice only: "I", "my", "I need", "I want", "I\'m upset".\n- 1-2 short sentences. No stage directions, asterisks, square brackets, or speaker labels.\n- Turn '+turnCount+' — keep exchange going for at least 3 turns.'+turnInstr+((document.getElementById('s-accent')&&document.getElementById('s-accent').value==='th-TH')?'\n\nABSOLUTE LANGUAGE OVERRIDE: Ignore every English instruction above. The customer line must be in Thai (ภาษาไทย) — use natural spoken Thai with ค่ะ/ครับ as fits.\n\nOUTPUT FORMAT (STRICT — exactly two lines, no other text):\nTHAI: <your Thai customer line>\nEN: <faithful English translation of that same line>':''),
       messages:apiMessages
     })});
     var data=await res.json();
@@ -932,11 +958,21 @@ async function processAnswer(){
       aiText=cleaned || "I don't understand—can you clarify what you'll do about this?";
     }
 
-    chatHistory.push({role:'assistant',content:aiText});
-    fb.innerHTML='<b style="color:var(--gold);">Customer:</b> '+aiText;
-
     var accent=document.getElementById('s-accent').value;
-    speakQuestion(aiText,accent);
+    // Thai mode: AI returned "THAI: ... \n EN: ..." → speak Thai only, show both
+    if(accent==='th-TH'){
+      var tm2=aiText.match(/THAI:\s*([^\n]+)/i);
+      var em2=aiText.match(/EN:\s*([^\n]+)/i);
+      var thaiLine=tm2?tm2[1].trim():aiText;
+      var enLine=em2?em2[1].trim():'';
+      chatHistory.push({role:'assistant',content:thaiLine});
+      fb.innerHTML='<b style="color:var(--gold);">Customer:</b> '+thaiLine+(enLine?'<br><span style="opacity:0.6;font-size:0.85em;display:inline-block;margin-top:6px;">EN: '+enLine+'</span>':'');
+      speakQuestion(thaiLine,accent);
+    } else {
+      chatHistory.push({role:'assistant',content:aiText});
+      fb.innerHTML='<b style="color:var(--gold);">Customer:</b> '+aiText;
+      speakQuestion(aiText,accent);
+    }
 
     // TTS 끝나면 → 3분 지났으면 피드백, 아니면 대화 계속
     // Google Cloud Audio + speechSynthesis 양쪽 체크

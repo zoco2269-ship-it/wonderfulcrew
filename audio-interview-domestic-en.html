@@ -307,7 +307,19 @@ function showQuestion(){
   var card = document.getElementById('interviewer-card');
   card.classList.add('speaking');
   document.getElementById('q-progress').textContent = 'Question ' + (qIdx+1) + ' / ' + questions.length;
-  document.getElementById('q-text').textContent = questions[qIdx];
+  document.getElementById('q-text').innerHTML = '<div>' + questions[qIdx] + '</div><div id="q-en-subtitle" style="opacity:0.55;font-size:0.85em;margin-top:10px;border-top:1px solid rgba(255,255,255,0.1);padding-top:10px;">EN: <span style="opacity:0.7;">translating…</span></div>';
+  // Background English subtitle so the learner understands the Korean/Thai question
+  (function(qtext){
+    fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:120,
+      system:'Translate the interview question to natural English. Reply with ONLY the English translation — no quotes, no prefix.',
+      messages:[{role:'user',content:qtext}]
+    })}).then(function(r){return r.json();}).then(function(d){
+      var en=((d&&d.content&&d.content[0]&&d.content[0].text)||'').trim();
+      var sub=document.getElementById('q-en-subtitle');
+      if(sub&&en) sub.innerHTML='EN: '+en;
+    }).catch(function(){});
+  })(questions[qIdx]);
   document.getElementById('q-status').innerHTML = '<span class="dot"></span> The interviewer is speaking...';
   document.getElementById('q-status').style.display = 'block';
   document.getElementById('transcript').classList.remove('visible');
@@ -500,8 +512,10 @@ async function processAnswer(){
   var sysPrompt = 'You are a Korean Air cabin crew panel interviewer. The candidate is a foreign applicant. ' +
     'You just asked: "' + question + '". The candidate answered: "' + ans + '". ' +
     'Give a SHORT, warm acknowledgement (1-2 sentences) and a brief natural follow-up or transition. ' +
-    'Respond ONLY in ' + langName + '. No translations. No stage directions. No quotation marks. ' +
-    'Tone: polite Korean Air panel interviewer.';
+    'The acknowledgement must be in ' + langName + ' (natural spoken register). ' +
+    'Tone: polite Korean Air panel interviewer.\n\n' +
+    'OUTPUT FORMAT (STRICT — exactly two lines, no other text):\n' +
+    langName.toUpperCase() + ': <your ' + langName + ' line>\nEN: <faithful English translation of that same line>';
 
   try{
     var res = await fetch('/api/ai',{
@@ -518,10 +532,17 @@ async function processAnswer(){
     var aiText = (data && data.content && data.content[0] && data.content[0].text) || '';
     aiText = (aiText || '').replace(/\*\*/g,'').replace(/^["']|["']$/g,'').trim();
     if(!aiText){
-      aiText = (chosenLang === 'th-TH') ? 'ขอบคุณค่ะ ดีมากเลย' : '네, 답변 잘 들었습니다. 감사합니다.';
+      aiText = (chosenLang === 'th-TH') ? 'ขอบคุณค่ะ ดีมากเลย\nEN: Thank you, that was great.' : '네, 답변 잘 들었습니다. 감사합니다.\nEN: Yes, I heard your answer well. Thank you.';
     }
 
-    reaction.innerHTML = '<b>Interviewer:</b> ' + aiText;
+    // Parse "{LANG}: ... \n EN: ..." — speak native only, show both
+    var nativeKey=(chosenLang==='th-TH')?'THAI':'KOREAN';
+    var nativeM=aiText.match(new RegExp(nativeKey+':\\s*([^\\n]+)','i'));
+    var enM=aiText.match(/EN:\s*([^\n]+)/i);
+    var nativeLine=nativeM?nativeM[1].trim():aiText.split('\n')[0].replace(/^[A-Z]+:\s*/i,'').trim();
+    var enLine=enM?enM[1].trim():'';
+    aiText=nativeLine;
+    reaction.innerHTML = '<b>Interviewer:</b> ' + nativeLine + (enLine?'<br><span style="opacity:0.6;font-size:0.85em;display:inline-block;margin-top:6px;">EN: '+enLine+'</span>':'');
 
     // Speak the AI's reaction in the chosen language
     var card = document.getElementById('interviewer-card');

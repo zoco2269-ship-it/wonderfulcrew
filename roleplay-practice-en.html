@@ -469,15 +469,17 @@ var SCENARIO_SETS_EN={
 };
 
 function startInterview(){
-  // Mobile autoplay unlock — must run inside the click handler (user gesture)
-  // so subsequent fetch-then-audio.play() in speakQuestion is allowed.
+  // Mobile autoplay unlock — must run inside the click handler (user gesture).
+  // muted=true play does NOT unlock the element on most browsers, so we use
+  // volume=0 instead (counts as a real audible play and unlocks the element).
   try{
     if(!window._wcAudioUnlock){
       window._wcAudioUnlock=new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
-      window._wcAudioUnlock.muted=true;
     }
+    window._wcAudioUnlock.volume=0;
+    window._wcAudioUnlock.muted=false;
     var _up=window._wcAudioUnlock.play();
-    if(_up&&_up.catch)_up.catch(function(){});
+    if(_up&&_up.catch)_up.catch(function(err){console.warn('[unlock] play failed',err);});
     if('speechSynthesis' in window){
       try{var _du=new SpeechSynthesisUtterance(' ');_du.volume=0;window.speechSynthesis.speak(_du);}catch(e){}
     }
@@ -822,6 +824,7 @@ async function speakQuestion(text,lang){
         // 5s of fetches. Same element + new src keeps the unlock alive.)
         var audio=window._wcAudioUnlock||new Audio();
         audio.muted=false;
+        audio.volume=1;
         try{audio.pause();}catch(e){}
         audio.src='data:audio/mp3;base64,'+data.audioContent;
         _ttsAudio=audio;

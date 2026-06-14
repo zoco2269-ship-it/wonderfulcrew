@@ -817,7 +817,13 @@ async function speakQuestion(text,lang){
       var data=await res.json();
       if(mySeq!==_ttsSeq){iCard.classList.remove('speaking');mouth.classList.remove('talking');return;}
       if(data.audioContent){
-        var audio=new Audio('data:audio/mp3;base64,'+data.audioContent);
+        // Reuse the unlocked Audio element from startInterview (mobile autoplay policy:
+        // a fresh `new Audio()` requires its own user-activation, which expires after
+        // 5s of fetches. Same element + new src keeps the unlock alive.)
+        var audio=window._wcAudioUnlock||new Audio();
+        audio.muted=false;
+        try{audio.pause();}catch(e){}
+        audio.src='data:audio/mp3;base64,'+data.audioContent;
         _ttsAudio=audio;
         audio.onended=function(){if(_ttsAudio===audio){iCard.classList.remove('speaking');mouth.classList.remove('talking');_ttsAudio=null;}};
         audio.onerror=function(){if(_ttsAudio===audio){iCard.classList.remove('speaking');mouth.classList.remove('talking');_ttsAudio=null;}};

@@ -836,12 +836,22 @@ async function showSuggestedResponse(){
   var scenario=typeof q==='string'?q:q.q;
   var lastCustomer='';
   for(var i=chatHistory.length-1;i>=0;i--){if(chatHistory[i].role==='assistant'){lastCustomer=chatHistory[i].content;break;}}
+  // SETTING LOCK — model answer trainer must stay in the chosen environment
+  var _mSet=(window._curSetting||(document.getElementById('s-setting')&&document.getElementById('s-setting').value)||'flight');
+  var _mSetMap={
+    flight:{trainer:'a senior CABIN CREW trainer for an international airline',youAre:'The staff speaking the answer is a CABIN CREW MEMBER on board a commercial airline flight. The customer is a SEATED PASSENGER inside the aircraft cabin.',forbid:'STRICT FORBIDDEN — the answer must NEVER mention: hotel rooms, room service, housekeeping, key cards, check-in/out, billing/invoice/folio, restaurant menus, café orders, cruise cabins, shore excursions. It must NEVER suggest impossible places to store items (NEVER mention cockpit, flight deck, crew rest, lavatory, or galley as storage). Acceptable solutions are limited to: gate-checking with priority tag, other overhead bins, under-seat storage in front, coat closet for soft items only, securing in a vacant seat with seatbelt only if airline policy permits.'},
+    hotel:{trainer:'a senior HOTEL FRONT-OF-HOUSE trainer',youAre:'The staff is hotel staff. The customer is a hotel guest.',forbid:'NEVER mention aircraft cabins, seats, seatbelts, turbulence, overhead bins, or cargo holds.'},
+    restaurant:{trainer:'a senior RESTAURANT SERVICE trainer',youAre:'The staff is restaurant staff. The customer is a restaurant guest.',forbid:'NEVER mention aircraft cabins, hotel rooms, or housekeeping.'},
+    cafe:{trainer:'a senior CAFÉ / AIRPORT LOUNGE trainer',youAre:'The staff is café or lounge staff. The customer is a café/lounge customer.',forbid:'NEVER mention aircraft cabins, hotel rooms, or cruise cabins.'},
+    cruise:{trainer:'a senior CRUISE SERVICE trainer',youAre:'The staff is cruise service staff. The customer is a cruise passenger.',forbid:'NEVER mention aircraft cabins or hotel rooms.'}
+  };
+  var _mS=_mSetMap[_mSet]||_mSetMap.flight;
   fb.innerHTML='<span style="color:var(--gold);">Generating model answer...</span>';
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',max_tokens:200,
-      system:'You are a cabin crew trainer. Give an ideal model answer (2-4 sentences) for the cabin crew to say to the customer in this scenario.\n\nScenario: '+scenario+(lastCustomer?'\nCustomer just said: '+lastCustomer:'')+'\n\nWrite only the model answer — no preamble, no stage directions. Professional, warm, solution-oriented. English only.',
-      messages:[{role:'user',content:'Give me a model cabin crew response.'}]
+      system:'You are '+_mS.trainer+'. '+_mS.youAre+' '+_mS.forbid+'\n\nGive an ideal model answer (2-4 sentences) for the staff to say to the customer in this scenario.\n\nScenario: '+scenario+(lastCustomer?'\nCustomer just said: '+lastCustomer:'')+'\n\nWrite only the model answer — no preamble, no stage directions. Professional, warm, solution-oriented, operationally realistic. English only.',
+      messages:[{role:'user',content:'Give me a model staff response.'}]
     })});
     var data=await res.json();
     var txt=((data&&data.content&&data.content[0]&&data.content[0].text)||'I\'m so sorry for the inconvenience. Let me look into this right away and find a solution for you.').replace(/\*\*/g,'').trim();

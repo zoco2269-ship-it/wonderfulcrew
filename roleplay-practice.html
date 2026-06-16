@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <script src="js/nav-dropdown.js"></script>
@@ -602,6 +602,8 @@ var timeExpired=false;
 var roleplayTimer=null;
 
 function showQuestion(){
+  lastSuggestedResponse='';
+  var _bM0=document.getElementById('btn-model'); if(_bM0) _bM0.style.display='none';
   chatHistory=[];endingRoleplay=false;timeExpired=false;
   if(roleplayTimer)clearTimeout(roleplayTimer);
   roleplayTimer=setTimeout(function(){timeExpired=true;},180000);

@@ -830,6 +830,8 @@ async function generateFeedback(scenario){
 }
 
 function nextQuestion(){
+  lastSuggestedResponse='';
+  var _bM1=document.getElementById('btn-model'); if(_bM1) _bM1.style.display='none';
   try{if(typeof gcStop==='function')gcStop();}catch(e){}
   if(recognition)try{recognition.onend=null;recognition.stop();recognition=null;}catch(e){}
   if('speechSynthesis' in window)window.speechSynthesis.cancel();

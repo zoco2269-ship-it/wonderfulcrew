@@ -809,12 +809,7 @@ var lastSuggestedResponse='';
 async function showSuggestedResponse(){
   var fb=document.getElementById('feedback');
   fb.classList.add('active');
-  // 이미 피드백으로 생성된 모범답변이 있으면 표시
-  if(lastSuggestedResponse){
-    fb.innerHTML+='<br><br><b style="color:var(--gold);">Model Answer:</b><br><div style="white-space:pre-line;background:rgba(201,168,76,0.08);padding:16px;border-left:3px solid var(--gold);margin-top:8px;">'+lastSuggestedResponse+'</div>';
-    document.getElementById('btn-model').style.display='none';
-    return;
-  }
+  // 캐시 분기 폐지 — 매번 새 fetch (시나리오 바뀐 뒤 옛 답변 적중 사고 방지)
   // 즉석 모범답변 생성 (대화 중 요청)
   var q=questions[qIdx];
   var scenario=typeof q==='string'?q:q.q;
@@ -999,6 +994,8 @@ async function generateFeedback(scenario){
 }
 
 function nextQuestion(){
+  lastSuggestedResponse='';
+  var _bM1=document.getElementById('btn-model'); if(_bM1) _bM1.style.display='none';
   try{if(typeof gcStop==='function')gcStop();}catch(e){}
   if(recognition)try{recognition.onend=null;recognition.stop();recognition=null;}catch(e){}
   if('speechSynthesis' in window)window.speechSynthesis.cancel();

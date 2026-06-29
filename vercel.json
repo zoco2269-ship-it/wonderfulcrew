@@ -64,6 +64,9 @@
     "api/ai.js": {
       "maxDuration": 30
     },
+    "api/analyze-growth.js": {
+      "maxDuration": 60
+    },
     "api/stt.js": {
       "maxDuration": 30
     },

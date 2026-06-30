@@ -252,10 +252,55 @@ LECTURES.forEach(function(ch){
         '<h4>'+s.title+'</h4>'+
         '<p>'+s.desc+'</p>'+
       '</div>';
+    card.setAttribute('data-title',s.title);
     grid.appendChild(card);
   });
   list.appendChild(grid);
 });
+
+// ====== 영상 modal (사이트 안에서 iframe 재생) ======
+(function(){
+  var overlay=document.createElement('div');
+  overlay.id='wc-video-modal';
+  overlay.style.cssText='display:none;position:fixed;inset:0;background:rgba(10,15,30,0.92);z-index:9999;align-items:center;justify-content:center;padding:24px;';
+  overlay.innerHTML='<div style="position:relative;width:100%;max-width:980px;aspect-ratio:16/9;background:#000;border-radius:6px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.6);">'
+    +'<button id="wc-vmclose" aria-label="닫기" style="position:absolute;top:-44px;right:0;background:transparent;border:none;color:#fff;font-size:1.6rem;cursor:pointer;line-height:1;padding:6px 10px;">✕</button>'
+    +'<div id="wc-vmtitle" style="position:absolute;top:-40px;left:0;color:rgba(255,255,255,0.75);font-family:\'Noto Serif KR\',serif;font-size:0.96rem;max-width:80%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>'
+    +'<div id="wc-vmframe" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);font-family:\'Noto Sans KR\',sans-serif;font-size:0.9rem;">불러오는 중…</div>'
+    +'</div>';
+  document.body.appendChild(overlay);
+  function closeModal(){
+    overlay.style.display='none';
+    document.getElementById('wc-vmframe').innerHTML='불러오는 중…';
+  }
+  document.getElementById('wc-vmclose').onclick=closeModal;
+  overlay.addEventListener('click',function(e){if(e.target===overlay)closeModal();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&overlay.style.display==='flex')closeModal();});
+
+  window.openLectureModal=function(vimeoUrl,title){
+    overlay.style.display='flex';
+    document.getElementById('wc-vmtitle').textContent=title||'';
+    var frameBox=document.getElementById('wc-vmframe');
+    frameBox.innerHTML='불러오는 중…';
+    // Vimeo oEmbed 로 vanity URL → numeric video ID 추출 → player.vimeo.com iframe
+    fetch('https://vimeo.com/api/oembed.json?url='+encodeURIComponent(vimeoUrl)+'&autoplay=1')
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(d&&d.video_id){
+          frameBox.innerHTML='<iframe src="https://player.vimeo.com/video/'+d.video_id+'?autoplay=1&title=0&byline=0&portrait=0" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="display:block;"></iframe>';
+        } else if(d&&d.html){
+          // oEmbed 가 iframe HTML 통째로 반환한 경우 그대로 사용
+          frameBox.innerHTML=d.html;
+        } else {
+          throw new Error('no video id');
+        }
+      })
+      .catch(function(){
+        // oEmbed 실패 시 (private 영상 등) — 안내 + 새 탭 fallback
+        frameBox.innerHTML='<div style="text-align:center;padding:24px;line-height:1.7;">영상 권한 설정 확인이 필요해요. 잠시 새 탭에서 열어드릴게요.<br><a href="'+vimeoUrl+'" target="_blank" rel="noopener" style="color:#E8C96A;font-weight:600;text-decoration:underline;">새 탭에서 영상 열기 →</a></div>';
+      });
+  };
+})();
 </script>
 
 </div></section>
@@ -378,7 +423,7 @@ document.addEventListener('click',function(e){
     }catch(e){}
   }
   if(paid){
-    window.open(card.getAttribute('data-url'),'_blank');
+    openLectureModal(card.getAttribute('data-url'), card.getAttribute('data-title')||'');
   } else {
     document.getElementById('premium-modal').style.display='flex';
   }

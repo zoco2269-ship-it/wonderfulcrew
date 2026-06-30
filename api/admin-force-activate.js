@@ -85,6 +85,22 @@ module.exports = async function(req, res) {
       updated_at: now.toISOString()
     }, { onConflict: 'auth_id' });
 
+    // heal-plan-active 가 payments row 없으면 planActive=false 로 덮어쓰는 버그 방지.
+    // admin-grant 결제 row 를 completed 상태로 INSERT 해서 heal 이 정상 검증되게 함.
+    const hasCompletedSamePlan = (allPayments||[]).some(p => p.status === 'completed' && (p.plan||'').toLowerCase() === String(usePlan).toLowerCase());
+    if (!hasCompletedSamePlan) {
+      try {
+        await sb.from('payments').insert({
+          user_id: authId,
+          plan: usePlan,
+          amount: 0,
+          status: 'completed',
+          moid: 'admin-grant-' + Date.now(),
+          created_at: now.toISOString()
+        });
+      } catch(e) { console.warn('[admin-grant payment insert]', e.message); }
+    }
+
     await sb.from('subscriptions').upsert({
       user_id: authId,
       plan: usePlan,

@@ -697,18 +697,53 @@ async function runWatchDemo(scenario, openerText){
   var bA=document.getElementById('btn-answer');if(bA) bA.style.display='none';
   var bS=document.getElementById('btn-stop');if(bS) bS.style.display='none';
   var bM=document.getElementById('btn-model');if(bM) bM.style.display='none';
-  var tx=document.getElementById('transcript');if(tx) tx.textContent='🎬 Watch demo — AI Doctor is responding...';
+  var tx=document.getElementById('transcript');if(tx) tx.textContent='🎬 Watch demo — AI Doctor and Patient in dialogue';
+
+  // ── 아바타 UI 조정: interviewer=Patient, student card=Doctor 이모지 ──
+  var iCard=document.getElementById('interviewer-card');
+  var sCard=document.getElementById('student-card');
+  var iName=document.getElementById('interviewer-name');
+  var iRole=iCard&&iCard.querySelector('.role');
+  var aImg=document.getElementById('avatar-img');
+  var aEmoji=document.getElementById('avatar-emoji');
+  var aFallback=document.getElementById('avatar-face-fallback');
+  if(aImg) aImg.style.display='none';
+  if(aFallback) aFallback.style.display='flex';
+  if(aEmoji) aEmoji.textContent='😟';   // Patient face
+  if(iName) iName.textContent='Patient';
+  if(iRole) iRole.textContent='AI · Layperson';
+  // Doctor card: replace camera+placeholder with doctor emoji panel
+  if(sCard){
+    var cam=document.getElementById('cam-video'); if(cam) cam.style.display='none';
+    var camPh=document.getElementById('cam-ph'); if(camPh) camPh.style.display='none';
+    if(!document.getElementById('doctor-face-fallback')){
+      var docFace=document.createElement('div');
+      docFace.className='avatar-face';
+      docFace.id='doctor-face-fallback';
+      docFace.style.cssText='display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(180deg,#1a2340,#2a3550);';
+      docFace.innerHTML='<div class="face" style="font-size:5rem;">👨‍⚕️</div>';
+      sCard.insertBefore(docFace,sCard.firstChild);
+    } else {
+      document.getElementById('doctor-face-fallback').style.display='flex';
+    }
+    var sName=sCard.querySelector('.name'); if(sName) sName.textContent='Doctor';
+    var sRole=sCard.querySelector('.role'); if(sRole) sRole.innerHTML='AI · NURSE/SPIKES';
+  }
+  var speak=function(cardEl,onEnd){
+    if(cardEl) cardEl.classList.add('speaking');
+    return function(){ if(cardEl) cardEl.classList.remove('speaking'); if(onEnd) onEnd(); };
+  };
 
   // Patient's opener line (already available)
   chatHistory.push({role:'assistant',content:openerText});
-  var lines=[{who:'patient',text:openerText}];
   fb.innerHTML='<b style="color:var(--gold);">Patient:</b> '+openerText;
 
   // Speak opener as patient (female voice) then fetch rest of dialogue
   await new Promise(function(res){
+    var done=speak(iCard,function(){res();});
     if(typeof gcSpeak==='function'){
-      gcSpeak(openerText,'en-GB','female',function(){res();});
-    } else { setTimeout(res,1200); }
+      gcSpeak(openerText,'en-GB','female',done);
+    } else { setTimeout(done,1200); }
   });
 
   // Fetch remaining 5 lines in one shot
@@ -748,10 +783,15 @@ async function runWatchDemo(scenario, openerText){
     fb.innerHTML+='<br><br><b style="color:'+color+';">'+label+':</b> '+line.text;
     chatHistory.push({role:line.who==='doctor'?'user':'assistant',content:line.text});
     var voice=line.who==='doctor'?'male':'female';
+    var speakingCard=line.who==='doctor'?sCard:iCard;
+    (function(){
+      var _line=line, _voice=voice, _card=speakingCard;
+    })();
     await new Promise(function(res){
+      var done=speak(speakingCard,function(){res();});
       if(typeof gcSpeak==='function'){
-        gcSpeak(line.text,'en-GB',voice,function(){res();});
-      } else { setTimeout(res,1500); }
+        gcSpeak(line.text,'en-GB',voice,done);
+      } else { setTimeout(done,1500); }
     });
     // 짧은 pause 사이
     await new Promise(function(res){setTimeout(res,350);});

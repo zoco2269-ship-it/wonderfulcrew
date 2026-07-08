@@ -622,7 +622,7 @@ function showQuestion(){
   roleplayTimer=setTimeout(function(){timeExpired=true;},180000);
   var q=questions[qIdx];
   document.getElementById('q-text').textContent=q.q;
-  document.getElementById('transcript').textContent='The customer speaks first...';
+  document.getElementById('transcript').textContent=((window._curSetting||'')==='medical'?'The patient speaks first...':'The customer speaks first...');
   document.getElementById('feedback').classList.remove('active');
   document.getElementById('feedback').innerHTML='';
   document.getElementById('btn-stop').style.display='none';
@@ -662,18 +662,24 @@ async function customerFirstSpeak(openerText){
       var td=await tr.json();
       var thaiText=(((td&&td.content&&td.content[0]&&td.content[0].text)||'').trim())||openerText;
       chatHistory.push({role:'assistant',content:thaiText});
-      fb.innerHTML='<b style="color:var(--gold);">Customer:</b> '+thaiText;
+      fb.innerHTML='<b style="color:var(--gold);">'+((window._curSetting||'')==='medical'?'Patient':'Customer')+':</b> '+thaiText;
       speakQuestion(thaiText,accent);
     }catch(e){
       chatHistory.push({role:'assistant',content:openerText});
-      fb.innerHTML='<b style="color:var(--gold);">Customer:</b> '+openerText;
+      fb.innerHTML='<b style="color:var(--gold);">'+((window._curSetting||'')==='medical'?'Patient':'Customer')+':</b> '+openerText;
       speakQuestion(openerText,'en-GB');
     }
   } else {
     chatHistory.push({role:'assistant',content:openerText});
-    fb.innerHTML='<b style="color:var(--gold);">Customer:</b> '+openerText;
+    fb.innerHTML='<b style="color:var(--gold);">'+((window._curSetting||'')==='medical'?'Patient':'Customer')+':</b> '+openerText;
     fb.classList.add('active');
     speakQuestion(openerText,accent);
+  }
+
+  // Medical Practice — 응대 힌트 + Model Answer 버튼 즉시 노출 (뭐라 답할지 모르는 사용자용)
+  if((window._curSetting||'')==='medical'){
+    fb.innerHTML+='<div style="margin-top:16px;padding:12px 16px;background:rgba(74,144,226,0.10);border-left:3px solid #4A90E2;border-radius:4px;font-size:0.88rem;color:rgba(255,255,255,0.82);line-height:1.65;">💡 <b style="color:#7BB0F0;">How to respond (NURSE framework):</b><br><b>1. Name</b> the emotion — "I can see how frightening this is."<br><b>2. Empathize</b> — reflect what they feel.<br><b>3. Next step</b> — a clear, plain-language plan.<br><b>4. Invite</b> — "What questions do you have?"<br><span style="font-size:0.8rem;opacity:0.8;display:block;margin-top:8px;">Not sure? Tap <b>[Model Answer]</b> below for an ideal response.</span></div>';
+    var bMnow=document.getElementById('btn-model');if(bMnow) bMnow.style.display='inline-flex';
   }
 
   // TTS 끝나면 답변 버튼 표시 (모바일 user-gesture 제약 회피)
@@ -1107,7 +1113,7 @@ async function processAnswer(){
     }
 
     chatHistory.push({role:'assistant',content:aiText});
-    fb.innerHTML='<b style="color:var(--gold);">Customer:</b> '+aiText;
+    fb.innerHTML='<b style="color:var(--gold);">'+((window._curSetting||'')==='medical'?'Patient':'Customer')+':</b> '+aiText;
 
     var accent=document.getElementById('s-accent').value;
     speakQuestion(aiText,accent);

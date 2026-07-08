@@ -901,6 +901,16 @@ async function runWatchDemo(scenario, openerText){
       parsed.push({who:m[1].toLowerCase(),text:m[2].trim()});
     }
   }
+  // Sanitize — strip markdown ** and stage directions like *pauses, eyes watery*
+  parsed=parsed.map(function(p){
+    var t=(p.text||'')
+      .replace(/\*\*/g,'')
+      .replace(/\*[^*\n]+\*/g,'')
+      .replace(/^\s*[*_\-]+\s*/,'')
+      .replace(/\s+/g,' ')
+      .trim();
+    return {who:p.who,text:t};
+  }).filter(function(p){return p.text;});
   if(!parsed.length){
     fb.innerHTML+='<br><span style="color:#E74C3C;">Could not parse demo. Please try Next Scenario.</span>';
     var bN2=document.getElementById('btn-next');if(bN2) bN2.style.display='inline-flex';

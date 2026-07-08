@@ -720,9 +720,9 @@ async function customerFirstSpeak(openerText){
   var fb=document.getElementById('feedback');
   var accent=document.getElementById('s-accent').value;
 
-  // Medical WATCH mode — no user input, AI plays both doctor and patient
+  // Medical mode (both 'medical' and 'medical-watch') — AI plays both roles, no user input
   var _curSet=(window._curSetting||(document.getElementById('s-setting')||{}).value||'flight');
-  if(_curSet==='medical-watch'){
+  if(_curSet==='medical' || _curSet==='medical-watch'){
     var q=questions[qIdx];
     var scenario=typeof q==='string'?q:q.q;
     runWatchDemo(scenario, openerText);

@@ -509,6 +509,26 @@ var SCENARIO_SETS={
 SCENARIO_SETS_EN['medical-watch']=SCENARIO_SETS_EN.medical;
 
 function startInterview(){
+  // ── UI 초기화 (Watch 모드 잔재가 Practice 를 막지 못하게) ──
+  try{
+    var _docFace=document.getElementById('doctor-face-fallback');
+    if(_docFace) _docFace.remove();
+    var _sCard=document.getElementById('student-card');
+    if(_sCard){
+      _sCard.classList.remove('speaking');
+      var _sName=_sCard.querySelector('.name'); if(_sName) _sName.textContent='You';
+      var _sRole=_sCard.querySelector('.role');
+      if(_sRole) _sRole.innerHTML='<span class="rec-dot" id="rec-dot"></span> <span id="rec-label">Standby</span>';
+      var _cv=document.getElementById('cam-video'); if(_cv){_cv.style.display='';}
+      var _cph=document.getElementById('cam-ph'); if(_cph){_cph.style.display='';_cph.innerHTML='<div>📷</div><div>Camera initializing</div>';}
+    }
+    var _iCard=document.getElementById('interviewer-card');
+    if(_iCard) _iCard.classList.remove('speaking');
+    var _iName=document.getElementById('interviewer-name'); if(_iName) _iName.textContent='Interviewer';
+    var _iRole=_iCard&&_iCard.querySelector('.role'); if(_iRole) _iRole.textContent='WonderfulCrew AI';
+    var _aEmoji=document.getElementById('avatar-emoji'); if(_aEmoji && chosenAvatar) _aEmoji.textContent=chosenAvatar;
+  }catch(e){}
+
   // 모바일 autoplay unlock — Start 클릭(user gesture) 안에서 무음 audio 한 번 play
   // 이후 gcSpeak 의 fetch→audio.play 비동기 호출이 차단되지 않도록.
   try{

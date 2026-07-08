@@ -557,6 +557,11 @@ function startInterview(){
   // 모바일 SpeechRecognition 호환성: audio 는 SR 이 단독으로 쓸 수 있게 getUserMedia 에서 요청하지 않음
   (async function(){
     try{
+      // Watch 모드 — 카메라 안 씀. Practice 모드만 카메라 시도.
+      if((window._curSetting||'')==='medical-watch'){
+        var phW=document.getElementById('cam-ph'); if(phW) phW.style.display='none';
+        return;
+      }
       stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}});
       var v=document.getElementById('cam-video');
       if(v){v.srcObject=stream;v.style.display='block';}
@@ -740,11 +745,21 @@ async function runWatchDemo(scenario, openerText){
     return function(){ if(cardEl) cardEl.classList.remove('speaking'); if(onEnd) onEnd(); };
   };
 
-  // Patient's opener line (already available)
-  chatHistory.push({role:'assistant',content:openerText});
-  fb.innerHTML='<b style="color:var(--gold);">Patient:</b> '+openerText;
+  // 1) Doctor greets first (natural clinical flow)
+  var greeting='Please come in and have a seat. What brings you in today?';
+  fb.innerHTML='<b style="color:#4A90E2;">Doctor:</b> '+greeting;
+  chatHistory.push({role:'user',content:greeting});
+  await new Promise(function(res){
+    var done=speak(sCard,function(){res();});
+    if(typeof gcSpeak==='function'){
+      gcSpeak(greeting,'en-GB','male',done);
+    } else { setTimeout(done,1400); }
+  });
+  await new Promise(function(res){setTimeout(res,300);});
 
-  // Speak opener as patient (female voice) then fetch rest of dialogue
+  // 2) Patient responds with opener (their concern)
+  chatHistory.push({role:'assistant',content:openerText});
+  fb.innerHTML+='<br><br><b style="color:var(--gold);">Patient:</b> '+openerText;
   await new Promise(function(res){
     var done=speak(iCard,function(){res();});
     if(typeof gcSpeak==='function'){

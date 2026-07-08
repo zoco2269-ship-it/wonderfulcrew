@@ -508,46 +508,18 @@ SCENARIO_SETS_EN['medical-watch']=SCENARIO_SETS_EN.medical;
 // Keyed by the first ~30 chars of the opener for lookup.
 var MEDICAL_WATCH_SCRIPTS={
   "Doctor, please just tell me st":[
-    {who:'doctor',text:"I can hear how frightened you are, and three sleepless nights — that's an exhausting weight to carry alone."},
-    {who:'patient',text:"I just... I need to know. Please. Don't sugarcoat it."},
-    {who:'doctor',text:"I won't. Here's what the biopsy shows — there are abnormal cells, and yes, it is a form of early-stage cancer. But early-stage means we have real, effective options."},
-    {who:'patient',text:"Oh god... my kids. What do I tell my kids?"},
-    {who:'doctor',text:"You don't have to figure that out right now. First we'll get you a specialist appointment this week, and I'll give you a family communication guide. What questions do you have for me right now?"}
-  ],
-  "Ninety minutes. NINETY.":[
-    {who:'doctor',text:"You're right — 90 minutes is unacceptable, and I'm genuinely sorry. Your time matters, and we failed to respect it today."},
-    {who:'patient',text:"Sorry doesn't give me my afternoon back. What are you actually going to do?"},
-    {who:'doctor',text:"Fair. Two things: I'll personally review why our schedule broke down, and I'll block the next slot as buffer so you're not rushed. Can I have your full attention now for as long as you need?"},
-    {who:'patient',text:"...okay. Fine. Just — let's just get through this."},
-    {who:'doctor',text:"Thank you for staying. Tell me what brought you in — I want to hear all of it, not just the summary."}
+    {who:'doctor',text:"I can hear how frightened you are. Three sleepless nights is exhausting."},
+    {who:'patient',text:"Please. Just tell me straight."},
+    {who:'doctor',text:"The biopsy shows early-stage cancer. Early-stage means we have real, effective options."},
+    {who:'patient',text:"My kids... what do I tell them?"},
+    {who:'doctor',text:"Not right now. Specialist appointment this week. What worries you most?"}
   ],
   "...I'm sorry, can you say that":[
-    {who:'doctor',text:"Take a breath. I know this is a lot. Yes — it is Stage 2 breast cancer. That means the tumor is present and has begun to spread slightly, but it has not spread to distant parts of your body."},
-    {who:'patient',text:"So... am I going to die?"},
-    {who:'doctor',text:"Stage 2 has very good treatment outcomes — most patients respond well to treatment. It's a serious diagnosis but not a hopeless one. I want you to hear that clearly."},
-    {who:'patient',text:"What... what happens next?"},
-    {who:'doctor',text:"Next week we'll meet with an oncologist together, and I'll be in that room with you. Between now and then, write down every question — no question is too small. What comes to mind first?"}
-  ],
-  "I already told you — I need am":[
-    {who:'doctor',text:"I hear you — you're frustrated, and you want this fixed. Let me explain why I'm hesitant on amoxicillin, and then let's decide together."},
-    {who:'patient',text:"My friend had the exact same thing. It worked for her."},
-    {who:'doctor',text:"Your friend's body and infection might have been different from yours. What I'm seeing today is likely viral, meaning antibiotics won't help — and they can cause side effects. My goal is you feeling better in 3 days, not just prescribing something."},
-    {who:'patient',text:"So what, I just suffer?"},
-    {who:'doctor',text:"Not at all. I'll give you specific relief steps, and if you're not better by day 3, come straight back — no waiting room — and we'll reassess. Does that feel workable?"}
-  ],
-  "So I take the white one in the":[
-    {who:'doctor',text:"No need to apologize — medications are confusing, and asking again is exactly the right thing to do. Let me draw it for you."},
-    {who:'patient',text:"That would help. My daughter tries to explain but I still forget."},
-    {who:'doctor',text:"The white pill in the morning, with breakfast. The blue pill at bedtime. I'll write it on this card with pictures — a sun for morning, a moon for night."},
-    {who:'patient',text:"Sun for morning... moon for night. Okay."},
-    {who:'doctor',text:"Perfect. Put this card on your fridge. And if you're ever unsure, call our nurse line — no charge, no wrong questions. Shall we practice once now?"}
-  ],
-  "His fever is 39.5 and he's flo":[
-    {who:'doctor',text:"I hear you — that fever and how limp he seems, you're right to be worried. Let's look at him carefully right now, together."},
-    {who:'patient',text:"Is it meningitis? Please just tell me it's not."},
-    {who:'doctor',text:"Meningitis has specific signs I'm checking for — neck stiffness, a rash that doesn't fade when pressed, unresponsiveness. So far I'm not seeing those markers, but I want to be thorough."},
-    {who:'patient',text:"So it's not meningitis?"},
-    {who:'doctor',text:"Based on this exam, it doesn't look like it. But because he's this floppy, I want a blood test today for safety. What worries you most right now that we haven't talked about?"}
+    {who:'doctor',text:"Take a breath. Yes — Stage 2. It has not spread to distant parts."},
+    {who:'patient',text:"Am I going to die?"},
+    {who:'doctor',text:"Stage 2 has very good treatment outcomes. Serious, but not hopeless."},
+    {who:'patient',text:"What happens next?"},
+    {who:'doctor',text:"Oncologist next week. I'll be in the room with you. What questions come up first?"}
   ]
 };
 function _lookupWatchScript(opener){

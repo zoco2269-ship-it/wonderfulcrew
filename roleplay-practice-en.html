@@ -888,7 +888,7 @@ async function runWatchDemo(scenario, openerText){
     try{
       var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
         model:'claude-haiku-4-5-20251001',max_tokens:600,
-        system:'You are a senior physician communication coach demonstrating an ideal doctor-patient consultation. Frameworks: NURSE, SPIKES, AIDET. The doctor speaks in warm, plain English, names the emotion first, then provides a clear next step, then invites the patient to ask questions.\n\nCONTEXT — Scenario: "'+scenario+'"\nPatient just said (opener): "'+openerText+'"\n\nContinue for 5 more turns. Output STRICTLY 5 lines:\nDOCTOR 1: ...\nPATIENT 2: ...\nDOCTOR 2: ...\nPATIENT 3: ...\nDOCTOR 3: ...',
+        system:'You are a senior physician communication coach demonstrating an ideal doctor-patient consultation. Frameworks: NURSE, SPIKES, AIDET. The doctor speaks in warm, plain English, names the emotion first, then provides a clear next step, then invites the patient to ask questions.\n\nABSOLUTE FORMATTING RULES (violation = failure):\n- NO asterisks (*, **) anywhere. Not for bold. Not for italics. Not for stage directions.\n- NO stage directions of any kind (no *pauses*, no *voice quieter*, no *nods*, no *eyes watery*, no (whispers), no [sighs]).\n- NO markdown. Plain speech only. Each line is exactly what the person says out loud.\n- NO parentheticals describing tone or action.\n\nCONTEXT — Scenario: "'+scenario+'"\nPatient just said (opener): "'+openerText+'"\n\nContinue for 5 more turns. Output STRICTLY 5 lines, each with ONLY spoken words (no asterisks, no directions):\nDOCTOR 1: <spoken words only>\nPATIENT 2: <spoken words only>\nDOCTOR 2: <spoken words only>\nPATIENT 3: <spoken words only>\nDOCTOR 3: <spoken words only>',
         messages:[{role:'user',content:'Begin the demo.'}]
       })});
       var d=await r.json();
@@ -901,12 +901,14 @@ async function runWatchDemo(scenario, openerText){
       parsed.push({who:m[1].toLowerCase(),text:m[2].trim()});
     }
   }
-  // Sanitize — strip markdown ** and stage directions like *pauses, eyes watery*
+  // Sanitize aggressively — strip ALL asterisks, brackets, parentheticals, and stage directions
   parsed=parsed.map(function(p){
     var t=(p.text||'')
-      .replace(/\*\*/g,'')
-      .replace(/\*[^*\n]+\*/g,'')
-      .replace(/^\s*[*_\-]+\s*/,'')
+      .replace(/\*[^*\n]*\*/g,'')     // *anything between asterisks*
+      .replace(/\([^)\n]*\)/g,'')      // (parentheticals like (pauses))
+      .replace(/\[[^\]\n]*\]/g,'')    // [square brackets]
+      .replace(/[*_~`]/g,'')          // any remaining asterisk/underscore/tilde/backtick
+      .replace(/^\s*[\-—:•·]+\s*/,'')
       .replace(/\s+/g,' ')
       .trim();
     return {who:p.who,text:t};

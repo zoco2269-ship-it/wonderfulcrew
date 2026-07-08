@@ -219,7 +219,8 @@ window.addEventListener('popstate',function(){
         <option value="restaurant">🍽 Restaurant</option>
         <option value="cafe">☕ Café · Lounge</option>
         <option value="cruise">🚢 Cruise</option>
-        <option value="medical">🩺 Medical Consultation</option>
+        <option value="medical">🩺 Medical — Practice (You are the Doctor)</option>
+        <option value="medical-watch">🎬 Medical — Watch Model (AI Doctor Demo)</option>
       </select>
     </div>
   </div>
@@ -230,7 +231,7 @@ window.addEventListener('popstate',function(){
     try{
       var m=new URLSearchParams(location.search).get('mode');
       if(!m) return;
-      var allowed=['flight','hotel','restaurant','cafe','cruise','medical'];
+      var allowed=['flight','hotel','restaurant','cafe','cruise','medical','medical-watch'];
       if(allowed.indexOf(m)===-1) return;
       var sel=document.getElementById('s-setting');
       if(!sel) return;
@@ -504,6 +505,8 @@ var SCENARIO_SETS={
     {q:"A young mother is worried her toddler's high fever is meningitis after reading online forums.",o:"His fever is 39.5 and he's floppy. I read online that could be meningitis. Please tell me it's not meningitis. Please just check him properly."}
   ]
 };
+// Watch mode uses the same medical scenario pool
+SCENARIO_SETS_EN['medical-watch']=SCENARIO_SETS_EN.medical;
 
 function startInterview(){
   // 모바일 autoplay unlock — Start 클릭(user gesture) 안에서 무음 audio 한 번 play
@@ -637,6 +640,15 @@ async function customerFirstSpeak(openerText){
   var fb=document.getElementById('feedback');
   var accent=document.getElementById('s-accent').value;
 
+  // Medical WATCH mode — no user input, AI plays both doctor and patient
+  var _curSet=(window._curSetting||(document.getElementById('s-setting')||{}).value||'flight');
+  if(_curSet==='medical-watch'){
+    var q=questions[qIdx];
+    var scenario=typeof q==='string'?q:q.q;
+    runWatchDemo(scenario, openerText);
+    return;
+  }
+
   // Thai mode — fetch a one-shot translation so the SPOKEN line is Thai.
   if(accent==='th-TH' && openerText){
     fb.innerHTML='<span style="color:var(--gold);">Translating to Thai...</span>';
@@ -675,6 +687,78 @@ async function customerFirstSpeak(openerText){
       var bN=document.getElementById('btn-next');if(bN) bN.style.display='inline-flex';
     }
   },200);
+}
+
+// Medical Watch demo — AI plays both patient and doctor, user just observes.
+async function runWatchDemo(scenario, openerText){
+  var fb=document.getElementById('feedback');
+  fb.classList.add('active');
+  // 마이크 관련 버튼 숨김 — 사용자 입력 없음
+  var bA=document.getElementById('btn-answer');if(bA) bA.style.display='none';
+  var bS=document.getElementById('btn-stop');if(bS) bS.style.display='none';
+  var bM=document.getElementById('btn-model');if(bM) bM.style.display='none';
+  var tx=document.getElementById('transcript');if(tx) tx.textContent='🎬 Watch demo — AI Doctor is responding...';
+
+  // Patient's opener line (already available)
+  chatHistory.push({role:'assistant',content:openerText});
+  var lines=[{who:'patient',text:openerText}];
+  fb.innerHTML='<b style="color:var(--gold);">Patient:</b> '+openerText;
+
+  // Speak opener as patient (female voice) then fetch rest of dialogue
+  await new Promise(function(res){
+    if(typeof gcSpeak==='function'){
+      gcSpeak(openerText,'en-GB','female',function(){res();});
+    } else { setTimeout(res,1200); }
+  });
+
+  // Fetch remaining 5 lines in one shot
+  var demoText='';
+  try{
+    var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:600,
+      system:'You are a senior physician communication coach demonstrating an ideal doctor-patient consultation. Frameworks: NURSE (Name/Understand/Respect/Support/Explore), SPIKES for bad news, AIDET. The doctor speaks in warm, plain English, names the emotion first, then provides a clear next step, then invites the patient to ask questions. Absolutely no jargon without a plain-language paraphrase.\n\nCONTEXT — Scenario: "'+scenario+'"\nPatient just said (opener): "'+openerText+'"\n\nContinue the conversation for 5 more turns. Output STRICTLY 5 lines in this exact format, no other text, no markdown, no numbering elsewhere:\nDOCTOR 1: <warm empathic response naming the emotion + one concrete next step>\nPATIENT 2: <natural reaction — deeper concern or a follow-up question>\nDOCTOR 2: <response with clarification or explanation in plain language>\nPATIENT 3: <final concern>\nDOCTOR 3: <closing that summarizes plan + invites more questions>\n\nEach line 1-2 sentences max. Realistic, natural, empathic.',
+      messages:[{role:'user',content:'Begin the demo.'}]
+    })});
+    var d=await r.json();
+    demoText=((d&&d.content&&d.content[0]&&d.content[0].text)||'').trim();
+  }catch(e){
+    fb.innerHTML+='<br><span style="color:#E74C3C;">Failed to load demo. Please try Next Scenario.</span>';
+    var bN=document.getElementById('btn-next');if(bN) bN.style.display='inline-flex';
+    return;
+  }
+
+  // Parse 5 lines
+  var parsed=[];
+  var re=/(DOCTOR|PATIENT)\s*\d*\s*:\s*([^\n]+)/gi;
+  var m;
+  while((m=re.exec(demoText))!==null){
+    parsed.push({who:m[1].toLowerCase(),text:m[2].trim()});
+  }
+  if(!parsed.length){
+    fb.innerHTML+='<br><span style="color:#E74C3C;">Could not parse demo. Please try Next Scenario.</span>';
+    var bN2=document.getElementById('btn-next');if(bN2) bN2.style.display='inline-flex';
+    return;
+  }
+
+  // Play each line sequentially — text first, TTS second (male=doctor, female=patient)
+  for(var i=0;i<parsed.length;i++){
+    var line=parsed[i];
+    var label=line.who==='doctor'?'Doctor':'Patient';
+    var color=line.who==='doctor'?'#4A90E2':'var(--gold)';
+    fb.innerHTML+='<br><br><b style="color:'+color+';">'+label+':</b> '+line.text;
+    chatHistory.push({role:line.who==='doctor'?'user':'assistant',content:line.text});
+    var voice=line.who==='doctor'?'male':'female';
+    await new Promise(function(res){
+      if(typeof gcSpeak==='function'){
+        gcSpeak(line.text,'en-GB',voice,function(){res();});
+      } else { setTimeout(res,1500); }
+    });
+    // 짧은 pause 사이
+    await new Promise(function(res){setTimeout(res,350);});
+  }
+
+  if(tx) tx.textContent='🎬 Demo complete — press Next Scenario for another case.';
+  var bN3=document.getElementById('btn-next');if(bN3) bN3.style.display='inline-flex';
 }
 
 // 스몰톡 startAnswer 와 동일 구조 — 단일 async 함수. 순서: gcStop → SR 체크 → mic 권한 → SR 빌드.

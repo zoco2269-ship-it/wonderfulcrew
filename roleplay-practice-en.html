@@ -853,6 +853,10 @@ async function runWatchDemo(scenario, openerText){
     return function(){ if(cardEl) cardEl.classList.remove('speaking'); if(onEnd) onEnd(); };
   };
 
+  // Kick off script lookup / AI fetch NOW in parallel with the greeting+opener
+  // so there's zero silence between the patient's opener and the doctor's next line.
+  var parsedPromise=Promise.resolve(_lookupWatchScript(openerText));
+
   // 1) Doctor greets first (natural clinical flow)
   var greeting='Please come in and have a seat. What brings you in today?';
   fb.innerHTML='<b style="color:#4A90E2;">Doctor:</b> '+greeting;
@@ -863,7 +867,6 @@ async function runWatchDemo(scenario, openerText){
       gcSpeak(greeting,'en-GB','male',done);
     } else { setTimeout(done,1400); }
   });
-  await new Promise(function(res){setTimeout(res,300);});
 
   // 2) Patient responds with opener (their concern)
   chatHistory.push({role:'assistant',content:openerText});
@@ -875,8 +878,8 @@ async function runWatchDemo(scenario, openerText){
     } else { setTimeout(done,1200); }
   });
 
-  // Try pre-scripted dialogue first (reliable, no fetch dependency)
-  var parsed=_lookupWatchScript(openerText);
+  // Await the pre-scripted lookup / AI fetch (already running in background)
+  var parsed=await parsedPromise;
 
   // Fallback to AI-generated dialogue if no script found
   if(!parsed){
@@ -934,7 +937,7 @@ async function runWatchDemo(scenario, openerText){
       } else { setTimeout(done,1500); }
     });
     // 짧은 pause 사이
-    await new Promise(function(res){setTimeout(res,350);});
+    await new Promise(function(res){setTimeout(res,80);});
   }
 
   if(tx) tx.textContent='🎬 Demo complete — press Next Scenario for another case.';

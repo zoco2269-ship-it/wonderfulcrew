@@ -508,6 +508,61 @@ var SCENARIO_SETS={
 // Watch mode uses the same medical scenario pool
 SCENARIO_SETS_EN['medical-watch']=SCENARIO_SETS_EN.medical;
 
+// Pre-scripted demo dialogues (for Watch mode reliability — no fetch dependency).
+// Keyed by the first ~30 chars of the opener for lookup.
+var MEDICAL_WATCH_SCRIPTS={
+  "Doctor, please just tell me st":[
+    {who:'doctor',text:"I can hear how frightened you are, and three sleepless nights — that's an exhausting weight to carry alone."},
+    {who:'patient',text:"I just... I need to know. Please. Don't sugarcoat it."},
+    {who:'doctor',text:"I won't. Here's what the biopsy shows — there are abnormal cells, and yes, it is a form of early-stage cancer. But early-stage means we have real, effective options."},
+    {who:'patient',text:"Oh god... my kids. What do I tell my kids?"},
+    {who:'doctor',text:"You don't have to figure that out right now. First we'll get you a specialist appointment this week, and I'll give you a family communication guide. What questions do you have for me right now?"}
+  ],
+  "Ninety minutes. NINETY.":[
+    {who:'doctor',text:"You're right — 90 minutes is unacceptable, and I'm genuinely sorry. Your time matters, and we failed to respect it today."},
+    {who:'patient',text:"Sorry doesn't give me my afternoon back. What are you actually going to do?"},
+    {who:'doctor',text:"Fair. Two things: I'll personally review why our schedule broke down, and I'll block the next slot as buffer so you're not rushed. Can I have your full attention now for as long as you need?"},
+    {who:'patient',text:"...okay. Fine. Just — let's just get through this."},
+    {who:'doctor',text:"Thank you for staying. Tell me what brought you in — I want to hear all of it, not just the summary."}
+  ],
+  "...I'm sorry, can you say that":[
+    {who:'doctor',text:"Take a breath. I know this is a lot. Yes — it is Stage 2 breast cancer. That means the tumor is present and has begun to spread slightly, but it has not spread to distant parts of your body."},
+    {who:'patient',text:"So... am I going to die?"},
+    {who:'doctor',text:"Stage 2 has very good treatment outcomes — most patients respond well to treatment. It's a serious diagnosis but not a hopeless one. I want you to hear that clearly."},
+    {who:'patient',text:"What... what happens next?"},
+    {who:'doctor',text:"Next week we'll meet with an oncologist together, and I'll be in that room with you. Between now and then, write down every question — no question is too small. What comes to mind first?"}
+  ],
+  "I already told you — I need am":[
+    {who:'doctor',text:"I hear you — you're frustrated, and you want this fixed. Let me explain why I'm hesitant on amoxicillin, and then let's decide together."},
+    {who:'patient',text:"My friend had the exact same thing. It worked for her."},
+    {who:'doctor',text:"Your friend's body and infection might have been different from yours. What I'm seeing today is likely viral, meaning antibiotics won't help — and they can cause side effects. My goal is you feeling better in 3 days, not just prescribing something."},
+    {who:'patient',text:"So what, I just suffer?"},
+    {who:'doctor',text:"Not at all. I'll give you specific relief steps, and if you're not better by day 3, come straight back — no waiting room — and we'll reassess. Does that feel workable?"}
+  ],
+  "So I take the white one in the":[
+    {who:'doctor',text:"No need to apologize — medications are confusing, and asking again is exactly the right thing to do. Let me draw it for you."},
+    {who:'patient',text:"That would help. My daughter tries to explain but I still forget."},
+    {who:'doctor',text:"The white pill in the morning, with breakfast. The blue pill at bedtime. I'll write it on this card with pictures — a sun for morning, a moon for night."},
+    {who:'patient',text:"Sun for morning... moon for night. Okay."},
+    {who:'doctor',text:"Perfect. Put this card on your fridge. And if you're ever unsure, call our nurse line — no charge, no wrong questions. Shall we practice once now?"}
+  ],
+  "His fever is 39.5 and he's flo":[
+    {who:'doctor',text:"I hear you — that fever and how limp he seems, you're right to be worried. Let's look at him carefully right now, together."},
+    {who:'patient',text:"Is it meningitis? Please just tell me it's not."},
+    {who:'doctor',text:"Meningitis has specific signs I'm checking for — neck stiffness, a rash that doesn't fade when pressed, unresponsiveness. So far I'm not seeing those markers, but I want to be thorough."},
+    {who:'patient',text:"So it's not meningitis?"},
+    {who:'doctor',text:"Based on this exam, it doesn't look like it. But because he's this floppy, I want a blood test today for safety. What worries you most right now that we haven't talked about?"}
+  ]
+};
+function _lookupWatchScript(opener){
+  if(!opener) return null;
+  var key=opener.substring(0,30);
+  for(var k in MEDICAL_WATCH_SCRIPTS){
+    if(k===key || opener.indexOf(k)===0) return MEDICAL_WATCH_SCRIPTS[k];
+  }
+  return null;
+}
+
 function startInterview(){
   // ── UI 초기화 (Watch 모드 잔재가 Practice 를 막지 못하게) ──
   try{
@@ -674,30 +729,40 @@ async function customerFirstSpeak(openerText){
     return;
   }
 
-  // Medical PRACTICE — doctor greets first so the flow feels like a real clinic
+  // Medical PRACTICE — doctor greets first, then patient responds. Buttons show immediately.
   if(_curSet==='medical'){
     fb.classList.add('active');
     var docGreet='Please come in and have a seat. What brings you here today?';
-    fb.innerHTML='<b style="color:#4A90E2;">Doctor (You):</b> '+docGreet;
+    var docBlock='<div id="med-doc-block"><b style="color:#4A90E2;">Doctor (Model Opening):</b> '+docGreet+'</div>';
+    var patBlock='<div id="med-pat-block" style="opacity:0.4;margin-top:12px;"><b style="color:var(--gold);">Patient:</b> <span id="med-pat-txt">…</span></div>';
+    var hintBlock='<div style="margin-top:16px;padding:12px 16px;background:rgba(74,144,226,0.10);border-left:3px solid #4A90E2;border-radius:4px;font-size:0.88rem;color:rgba(255,255,255,0.82);line-height:1.65;">💡 <b style="color:#7BB0F0;">Your turn as the doctor (NURSE framework):</b><br><b>1. Name</b> the emotion — "I can see how frightening this is."<br><b>2. Empathize</b> — reflect what they feel.<br><b>3. Next step</b> — a clear, plain-language plan.<br><b>4. Invite</b> — "What questions do you have?"<br><span style="font-size:0.8rem;opacity:0.8;display:block;margin-top:8px;">Not sure? Tap <b>[Model Answer]</b> for an ideal response.</span></div>';
+    fb.innerHTML=docBlock+patBlock+hintBlock;
     chatHistory.push({role:'user',content:docGreet});
-    await new Promise(function(res){
-      if(typeof gcSpeak==='function'){ gcSpeak(docGreet,'en-GB','male',function(){res();}); }
-      else { setTimeout(res,1400); }
-    });
-    await new Promise(function(res){setTimeout(res,300);});
-    // Then patient responds with opener
     chatHistory.push({role:'assistant',content:openerText});
-    fb.innerHTML+='<br><br><b style="color:var(--gold);">Patient:</b> '+openerText;
-    await new Promise(function(res){
-      if(typeof gcSpeak==='function'){ gcSpeak(openerText,'en-GB','female',function(){res();}); }
-      else { setTimeout(res,1400); }
-    });
-    // NURSE hint + Model Answer + Answer 버튼 노출
-    fb.innerHTML+='<div style="margin-top:16px;padding:12px 16px;background:rgba(74,144,226,0.10);border-left:3px solid #4A90E2;border-radius:4px;font-size:0.88rem;color:rgba(255,255,255,0.82);line-height:1.65;">💡 <b style="color:#7BB0F0;">How to respond (NURSE):</b><br><b>1. Name</b> the emotion — "I can see how frightening this is."<br><b>2. Empathize</b> — reflect what they feel.<br><b>3. Next step</b> — a clear, plain-language plan.<br><b>4. Invite</b> — "What questions do you have?"<br><span style="font-size:0.8rem;opacity:0.8;display:block;margin-top:8px;">Tap <b>[Model Answer]</b> for an ideal response.</span></div>';
-    var bMmed=document.getElementById('btn-model');if(bMmed) bMmed.style.display='inline-flex';
+    // Answer 버튼 + 다른 버튼 즉시 노출 — gcSpeak 실패해도 사용자 응대 가능
     var bAmed=document.getElementById('btn-answer');if(bAmed) bAmed.style.display='inline-flex';
+    var bMmed=document.getElementById('btn-model');if(bMmed) bMmed.style.display='inline-flex';
     var bNmed=document.getElementById('btn-next');if(bNmed) bNmed.style.display='inline-flex';
-    var txMed=document.getElementById('transcript');if(txMed) txMed.textContent='Your turn — tap 🎙 Answer to respond.';
+    var txMed=document.getElementById('transcript');if(txMed) txMed.textContent='Doctor speaking… tap 🎙 Answer when the patient is done.';
+    // Fire-and-forget TTS: greeting → then patient opener (no await, no blocking)
+    if(typeof gcSpeak==='function'){
+      gcSpeak(docGreet,'en-GB','male',function(){
+        setTimeout(function(){
+          var patTxtEl=document.getElementById('med-pat-txt');
+          if(patTxtEl) patTxtEl.textContent=openerText;
+          var patBlockEl=document.getElementById('med-pat-block');
+          if(patBlockEl) patBlockEl.style.opacity='1';
+          gcSpeak(openerText,'en-GB','female',function(){
+            var tx2=document.getElementById('transcript');if(tx2) tx2.textContent='🎙 Your turn — respond to the patient.';
+          });
+        },300);
+      });
+    } else {
+      var patTxtEl2=document.getElementById('med-pat-txt');
+      if(patTxtEl2) patTxtEl2.textContent=openerText;
+      var patBlockEl2=document.getElementById('med-pat-block');
+      if(patBlockEl2) patBlockEl2.style.opacity='1';
+    }
     return;
   }
 
@@ -814,28 +879,27 @@ async function runWatchDemo(scenario, openerText){
     } else { setTimeout(done,1200); }
   });
 
-  // Fetch remaining 5 lines in one shot
-  var demoText='';
-  try{
-    var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:600,
-      system:'You are a senior physician communication coach demonstrating an ideal doctor-patient consultation. Frameworks: NURSE (Name/Understand/Respect/Support/Explore), SPIKES for bad news, AIDET. The doctor speaks in warm, plain English, names the emotion first, then provides a clear next step, then invites the patient to ask questions. Absolutely no jargon without a plain-language paraphrase.\n\nCONTEXT — Scenario: "'+scenario+'"\nPatient just said (opener): "'+openerText+'"\n\nContinue the conversation for 5 more turns. Output STRICTLY 5 lines in this exact format, no other text, no markdown, no numbering elsewhere:\nDOCTOR 1: <warm empathic response naming the emotion + one concrete next step>\nPATIENT 2: <natural reaction — deeper concern or a follow-up question>\nDOCTOR 2: <response with clarification or explanation in plain language>\nPATIENT 3: <final concern>\nDOCTOR 3: <closing that summarizes plan + invites more questions>\n\nEach line 1-2 sentences max. Realistic, natural, empathic.',
-      messages:[{role:'user',content:'Begin the demo.'}]
-    })});
-    var d=await r.json();
-    demoText=((d&&d.content&&d.content[0]&&d.content[0].text)||'').trim();
-  }catch(e){
-    fb.innerHTML+='<br><span style="color:#E74C3C;">Failed to load demo. Please try Next Scenario.</span>';
-    var bN=document.getElementById('btn-next');if(bN) bN.style.display='inline-flex';
-    return;
-  }
+  // Try pre-scripted dialogue first (reliable, no fetch dependency)
+  var parsed=_lookupWatchScript(openerText);
 
-  // Parse 5 lines
-  var parsed=[];
-  var re=/(DOCTOR|PATIENT)\s*\d*\s*:\s*([^\n]+)/gi;
-  var m;
-  while((m=re.exec(demoText))!==null){
-    parsed.push({who:m[1].toLowerCase(),text:m[2].trim()});
+  // Fallback to AI-generated dialogue if no script found
+  if(!parsed){
+    var demoText='';
+    try{
+      var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',max_tokens:600,
+        system:'You are a senior physician communication coach demonstrating an ideal doctor-patient consultation. Frameworks: NURSE, SPIKES, AIDET. The doctor speaks in warm, plain English, names the emotion first, then provides a clear next step, then invites the patient to ask questions.\n\nCONTEXT — Scenario: "'+scenario+'"\nPatient just said (opener): "'+openerText+'"\n\nContinue for 5 more turns. Output STRICTLY 5 lines:\nDOCTOR 1: ...\nPATIENT 2: ...\nDOCTOR 2: ...\nPATIENT 3: ...\nDOCTOR 3: ...',
+        messages:[{role:'user',content:'Begin the demo.'}]
+      })});
+      var d=await r.json();
+      demoText=((d&&d.content&&d.content[0]&&d.content[0].text)||'').trim();
+    }catch(e){}
+    parsed=[];
+    var re=/(DOCTOR|PATIENT)\s*\d*\s*:\s*([^\n]+)/gi;
+    var m;
+    while((m=re.exec(demoText))!==null){
+      parsed.push({who:m[1].toLowerCase(),text:m[2].trim()});
+    }
   }
   if(!parsed.length){
     fb.innerHTML+='<br><span style="color:#E74C3C;">Could not parse demo. Please try Next Scenario.</span>';

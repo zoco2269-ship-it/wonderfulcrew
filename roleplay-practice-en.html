@@ -674,6 +674,33 @@ async function customerFirstSpeak(openerText){
     return;
   }
 
+  // Medical PRACTICE — doctor greets first so the flow feels like a real clinic
+  if(_curSet==='medical'){
+    fb.classList.add('active');
+    var docGreet='Please come in and have a seat. What brings you here today?';
+    fb.innerHTML='<b style="color:#4A90E2;">Doctor (You):</b> '+docGreet;
+    chatHistory.push({role:'user',content:docGreet});
+    await new Promise(function(res){
+      if(typeof gcSpeak==='function'){ gcSpeak(docGreet,'en-GB','male',function(){res();}); }
+      else { setTimeout(res,1400); }
+    });
+    await new Promise(function(res){setTimeout(res,300);});
+    // Then patient responds with opener
+    chatHistory.push({role:'assistant',content:openerText});
+    fb.innerHTML+='<br><br><b style="color:var(--gold);">Patient:</b> '+openerText;
+    await new Promise(function(res){
+      if(typeof gcSpeak==='function'){ gcSpeak(openerText,'en-GB','female',function(){res();}); }
+      else { setTimeout(res,1400); }
+    });
+    // NURSE hint + Model Answer + Answer 버튼 노출
+    fb.innerHTML+='<div style="margin-top:16px;padding:12px 16px;background:rgba(74,144,226,0.10);border-left:3px solid #4A90E2;border-radius:4px;font-size:0.88rem;color:rgba(255,255,255,0.82);line-height:1.65;">💡 <b style="color:#7BB0F0;">How to respond (NURSE):</b><br><b>1. Name</b> the emotion — "I can see how frightening this is."<br><b>2. Empathize</b> — reflect what they feel.<br><b>3. Next step</b> — a clear, plain-language plan.<br><b>4. Invite</b> — "What questions do you have?"<br><span style="font-size:0.8rem;opacity:0.8;display:block;margin-top:8px;">Tap <b>[Model Answer]</b> for an ideal response.</span></div>';
+    var bMmed=document.getElementById('btn-model');if(bMmed) bMmed.style.display='inline-flex';
+    var bAmed=document.getElementById('btn-answer');if(bAmed) bAmed.style.display='inline-flex';
+    var bNmed=document.getElementById('btn-next');if(bNmed) bNmed.style.display='inline-flex';
+    var txMed=document.getElementById('transcript');if(txMed) txMed.textContent='Your turn — tap 🎙 Answer to respond.';
+    return;
+  }
+
   // Thai mode — fetch a one-shot translation so the SPOKEN line is Thai.
   if(accent==='th-TH' && openerText){
     fb.innerHTML='<span style="color:var(--gold);">Translating to Thai...</span>';

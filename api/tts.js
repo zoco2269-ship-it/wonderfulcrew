@@ -20,7 +20,8 @@ module.exports = async function(req, res) {
     'en-SG': { male: 'cmn-CN-Neural2-B', female: 'cmn-CN-Neural2-A', lang: 'cmn-CN' },
     'es-ES': { male: 'es-ES-Neural2-B', female: 'es-ES-Neural2-C', lang: 'es-ES' },
     'fr-FR': { male: 'fr-FR-Neural2-B', female: 'fr-FR-Neural2-A', lang: 'fr-FR' },
-    'ko-KR': { male: 'ko-KR-Wavenet-D', female: 'ko-KR-Wavenet-B', lang: 'ko-KR' }
+    'ko-KR': { male: 'ko-KR-Wavenet-D', female: 'ko-KR-Wavenet-B', lang: 'ko-KR' },
+    'th-TH': { male: 'th-TH-Neural2-C', female: 'th-TH-Neural2-C', lang: 'th-TH' }
   };
 
   const selectedLang = lang || 'en-GB';

@@ -219,8 +219,9 @@ window.addEventListener('popstate',function(){
         <option value="restaurant">🍽 Restaurant</option>
         <option value="cafe">☕ Café · Lounge</option>
         <option value="cruise">🚢 Cruise</option>
-        <option value="medical">🩺 Medical — Practice (You are the Doctor)</option>
-        <option value="medical-watch">🎬 Medical — Watch Model (AI Doctor Demo)</option>
+        <option value="medical-watch">🎬 Medical — Watch (AI Doctor ↔ AI Patient)</option>
+        <option value="medical-doctor">🩺 Medical — AI Doctor Coaching (learn empathic responses)</option>
+        <option value="medical-patient">😟 Medical — AI Patient Simulation (learn to read emotion)</option>
       </select>
     </div>
   </div>
@@ -231,7 +232,7 @@ window.addEventListener('popstate',function(){
     try{
       var m=new URLSearchParams(location.search).get('mode');
       if(!m) return;
-      var allowed=['flight','hotel','restaurant','cafe','cruise','medical','medical-watch'];
+      var allowed=['flight','hotel','restaurant','cafe','cruise','medical','medical-watch','medical-doctor','medical-patient'];
       if(allowed.indexOf(m)===-1) return;
       var sel=document.getElementById('s-setting');
       if(!sel) return;
@@ -501,8 +502,29 @@ var SCENARIO_SETS={
     {q:"A patient just received a serious diagnosis (Stage 2 breast cancer) and needs the treatment plan explained.",o:"...I'm sorry, can you say that again? Stage 2? What does that... what does that even mean? Am I going to die?"}
   ]
 };
-// Watch mode uses the same medical scenario pool
+// All three medical modes share the same scenario pool
 SCENARIO_SETS_EN['medical-watch']=SCENARIO_SETS_EN.medical;
+SCENARIO_SETS_EN['medical-doctor']=SCENARIO_SETS_EN.medical;
+SCENARIO_SETS_EN['medical-patient']=SCENARIO_SETS_EN.medical;
+
+// Learning-focus meta per mode (shown as an educational card after the demo)
+var MEDICAL_MODE_META={
+  'medical-watch':{
+    title:'🎬 Observation Mode',
+    focus:'Watch how a skilled doctor uses the NURSE framework — Name the emotion, Understand, Respect, Support, Explore. Notice how she never dismisses feelings.',
+    bestPractice:'A great doctor names the emotion first. "I can hear how frightened you are." Then gives a concrete next step. Then invites questions.'
+  },
+  'medical-doctor':{
+    title:'🩺 AI Doctor Coaching',
+    focus:'Study the doctor\'s empathic language patterns. Every phrase demonstrates SPIKES (Setting, Perception, Invitation, Knowledge, Empathy, Strategy) for delivering hard news.',
+    bestPractice:'Notice: the doctor never says "don\'t worry." Instead — "I hear you\'re frightened. Here\'s exactly what we know, and what we\'ll do next."'
+  },
+  'medical-patient':{
+    title:'😟 AI Patient Simulation',
+    focus:'Study how patients express emotion under stress — fear, grief, denial, demand. Doctors trained on this learn to recognize hidden signals earlier.',
+    bestPractice:'Anxious patients often ask closed questions ("Is it cancer?") because they can\'t bear ambiguity. Answer the emotion first, then the fact.'
+  }
+};
 
 // Pre-scripted demo dialogues (for Watch mode reliability — no fetch dependency).
 // Keyed by the first ~30 chars of the opener for lookup.
@@ -688,9 +710,9 @@ async function customerFirstSpeak(openerText){
   var fb=document.getElementById('feedback');
   var accent=document.getElementById('s-accent').value;
 
-  // Medical mode (both 'medical' and 'medical-watch') — AI plays both roles, no user input
+  // Medical modes — AI plays both roles automatically, learning card shown after
   var _curSet=(window._curSetting||(document.getElementById('s-setting')||{}).value||'flight');
-  if(_curSet==='medical' || _curSet==='medical-watch'){
+  if(_curSet==='medical'||_curSet==='medical-watch'||_curSet==='medical-doctor'||_curSet==='medical-patient'){
     var q=questions[qIdx];
     var scenario=typeof q==='string'?q:q.q;
     runWatchDemo(scenario, openerText);
@@ -935,6 +957,21 @@ async function runWatchDemo(scenario, openerText){
     }
     // no pause between lines — keep the pace tight
   }
+
+  // Learning Point card — mode-specific educational focus
+  try{
+    var modeMeta=(typeof MEDICAL_MODE_META!=='undefined')&&MEDICAL_MODE_META[window._curSetting||''];
+    if(modeMeta){
+      fb.innerHTML+='<div style="margin-top:24px;padding:18px 22px;background:linear-gradient(135deg,rgba(74,144,226,0.14),rgba(201,168,76,0.10));border:1px solid rgba(201,168,76,0.4);border-radius:8px;">'
+        +'<div style="font-family:\'DM Serif Display\',serif;font-size:1.1rem;color:#E8C96A;margin-bottom:10px;">'+modeMeta.title+' — Learning Focus</div>'
+        +'<div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.7;margin-bottom:14px;">'+modeMeta.focus+'</div>'
+        +'<div style="padding:12px 16px;background:rgba(255,255,255,0.06);border-left:3px solid #E8C96A;border-radius:4px;">'
+        +'<div style="font-size:0.78rem;color:#E8C96A;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;font-weight:600;">✨ Best Practice</div>'
+        +'<div style="font-size:0.9rem;color:rgba(255,255,255,0.9);line-height:1.6;font-style:italic;">"'+modeMeta.bestPractice+'"</div>'
+        +'</div>'
+        +'</div>';
+    }
+  }catch(e){}
 
   if(tx) tx.textContent='🎬 Demo complete — press Next Scenario for another case.';
   var bN3=document.getElementById('btn-next');if(bN3) bN3.style.display='inline-flex';

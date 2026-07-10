@@ -812,7 +812,14 @@ async function runWatchDemo(scenario, openerText){
   var bM=document.getElementById('btn-model');if(bM) bM.style.display='none';
   var tx=document.getElementById('transcript');if(tx) tx.textContent='🎬 Watch demo — AI Doctor and Patient in dialogue';
 
-  // ── 아바타 UI 조정: interviewer=Patient, student card=Doctor 이모지 ──
+  // ── 실사 톤 아바타 UI (Patient = 실사 여성, Doctor = 실사 남성) ──
+  // CSS: 미묘한 breathing + speaking 시 강조 애니메이션 (한 번만 삽입)
+  if(!document.getElementById('med-avatar-anim-css')){
+    var _s=document.createElement('style');
+    _s.id='med-avatar-anim-css';
+    _s.textContent='@keyframes medBreathe{0%,100%{transform:scale(1);}50%{transform:scale(1.02);}} @keyframes medTalking{0%,100%{transform:scale(1.03);filter:brightness(1.05);}50%{transform:scale(1.06);filter:brightness(1.15);}} .med-avatar-img{width:100%;height:100%;object-fit:cover;object-position:center 20%;animation:medBreathe 4s ease-in-out infinite;transition:filter 0.3s;} .card-frame.speaking .med-avatar-img{animation:medTalking 0.9s ease-in-out infinite;} .card-frame.speaking{box-shadow:0 0 0 3px rgba(232,201,106,0.7),0 0 42px rgba(232,201,106,0.4);transition:box-shadow 0.25s;}';
+    document.head.appendChild(_s);
+  }
   var iCard=document.getElementById('interviewer-card');
   var sCard=document.getElementById('student-card');
   var iName=document.getElementById('interviewer-name');
@@ -820,24 +827,36 @@ async function runWatchDemo(scenario, openerText){
   var aImg=document.getElementById('avatar-img');
   var aEmoji=document.getElementById('avatar-emoji');
   var aFallback=document.getElementById('avatar-face-fallback');
-  if(aImg) aImg.style.display='none';
-  if(aFallback) aFallback.style.display='flex';
-  if(aEmoji) aEmoji.textContent='😟';   // Patient face
+
+  // Patient 카드 — 여성 실사 이미지 삽입 (기존 avatar-display 안)
+  if(aImg){
+    aImg.src='images/woman-interviewer.png';
+    aImg.alt='Patient';
+    aImg.className='med-avatar-img';
+    aImg.style.cssText='width:100%;height:100%;object-fit:cover;object-position:center 20%;display:block;transform:scale(1);';
+    aImg.style.display='block';
+  }
+  if(aFallback) aFallback.style.display='none';
+  // wrap 클래스 붙이기 위해 avatar-display 활용
+  var iAvatarWrap=iCard&&iCard.querySelector('.avatar-display');
+  if(iAvatarWrap){ iAvatarWrap.classList.add('med-avatar-wrap'); }
   if(iName) iName.textContent='Patient';
   if(iRole) iRole.textContent='AI · Layperson';
-  // Doctor card: replace camera+placeholder with doctor emoji panel
+
+  // Doctor 카드 — student card 자리에 남성 실사 이미지
   if(sCard){
     var cam=document.getElementById('cam-video'); if(cam) cam.style.display='none';
     var camPh=document.getElementById('cam-ph'); if(camPh) camPh.style.display='none';
-    if(!document.getElementById('doctor-face-fallback')){
-      var docFace=document.createElement('div');
-      docFace.className='avatar-face';
-      docFace.id='doctor-face-fallback';
-      docFace.style.cssText='display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(180deg,#1a2340,#2a3550);';
-      docFace.innerHTML='<div class="face" style="font-size:5rem;">👨‍⚕️</div>';
-      sCard.insertBefore(docFace,sCard.firstChild);
+    var docWrap=document.getElementById('doctor-face-fallback');
+    if(!docWrap){
+      docWrap=document.createElement('div');
+      docWrap.id='doctor-face-fallback';
+      docWrap.className='avatar-display med-avatar-wrap';
+      docWrap.style.cssText='position:absolute;inset:0;overflow:hidden;background:#0e1428;';
+      docWrap.innerHTML='<img class="med-avatar-img" src="images/man-interviewer.png" alt="Doctor" onerror="this.outerHTML=\'<div style=\\\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:5rem;\\\'>👨‍⚕️</div>\'">';
+      sCard.insertBefore(docWrap,sCard.firstChild);
     } else {
-      document.getElementById('doctor-face-fallback').style.display='flex';
+      docWrap.style.display='';
     }
     var sName=sCard.querySelector('.name'); if(sName) sName.textContent='Doctor';
     var sRole=sCard.querySelector('.role'); if(sRole) sRole.innerHTML='AI · NURSE/SPIKES';

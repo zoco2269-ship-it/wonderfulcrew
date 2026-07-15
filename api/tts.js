@@ -45,7 +45,8 @@ module.exports = async function(req, res) {
           audioConfig: {
             audioEncoding: 'MP3',
             speakingRate: 1.08,
-            pitch: 0
+            // Google TTS Thai 는 여성 voice 만 지원 — 남성 요청 시 pitch 낮춰 흉내
+            pitch: (selectedLang === 'th-TH' && selectedGender === 'male') ? -6.0 : 0
           }
         })
       }

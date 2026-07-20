@@ -67,6 +67,9 @@
     "api/analyze-growth.js": {
       "maxDuration": 60
     },
+    "api/did-lipsync.js": {
+      "maxDuration": 60
+    },
     "api/stt.js": {
       "maxDuration": 30
     },

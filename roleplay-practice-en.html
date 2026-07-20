@@ -869,26 +869,73 @@ async function runWatchDemo(scenario, openerText){
   // Kick off script lookup / AI fetch NOW in parallel with the greeting+opener
   var parsedPromise=Promise.resolve(_lookupWatchScript(openerText));
 
+  // ── D-ID lipsync 옵션 (localStorage.wc_did='1' 이면 활성) ──
+  var useDID=false;
+  try{ useDID=(localStorage.getItem('wc_did')==='1'); }catch(e){}
+  function _didFetch(text,gender){
+    return fetch('/api/did-lipsync',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text:text,gender:gender,lang:'en-GB'})})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(d){return d&&d.videoUrl?d.videoUrl:null;})
+      .catch(function(){return null;});
+  }
+  // 카드 안 이미지 교체 → video element (립싱크 mp4 재생)
+  function _playLipsync(cardEl, videoUrl){
+    return new Promise(function(res){
+      if(!cardEl||!videoUrl){res();return;}
+      var wrap=cardEl.querySelector('.avatar-display')||cardEl.querySelector('#doctor-face-fallback');
+      if(!wrap){res();return;}
+      var v=document.createElement('video');
+      v.src=videoUrl; v.autoplay=true; v.playsInline=true; v.setAttribute('playsinline','');
+      v.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;inset:0;background:#000;';
+      v.onended=function(){cardEl.classList.remove('speaking');v.remove();res();};
+      v.onerror=function(){cardEl.classList.remove('speaking');v.remove();res();};
+      cardEl.classList.add('speaking');
+      wrap.appendChild(v);
+      var _p=v.play(); if(_p&&_p.catch)_p.catch(function(){cardEl.classList.remove('speaking');v.remove();res();});
+    });
+  }
+  // 병렬로 미리 D-ID mp4 요청 (parsed 준비 후)
+  var didVideosPromise=useDID?parsedPromise.then(function(p){
+    if(!p||!p.length) return {greeting:null,opener:null,script:[]};
+    var greetingPromise=_didFetch('Please come in and have a seat. What brings you in today?','male');
+    var openerPromise=_didFetch(openerText,'female');
+    var scriptPromises=p.map(function(item){return _didFetch(item.text,item.who==='doctor'?'male':'female');});
+    return Promise.all([greetingPromise,openerPromise,Promise.all(scriptPromises)]).then(function(arr){
+      return {greeting:arr[0],opener:arr[1],script:arr[2]};
+    });
+  }):Promise.resolve(null);
+
   // 1) Doctor greets first (natural clinical flow)
   var greeting='Please come in and have a seat. What brings you in today?';
   fb.innerHTML='<b style="color:#4A90E2;">Doctor:</b> '+greeting;
   chatHistory.push({role:'user',content:greeting});
-  await new Promise(function(res){
-    var done=speak(sCard,function(){res();});
-    if(typeof gcSpeak==='function'){
-      gcSpeak(greeting,'en-GB','male',done);
-    } else { setTimeout(done,1400); }
-  });
+
+  // D-ID videos 대기 (활성화된 경우) — 첫 두 라인 우선 준비
+  var didVideos=await didVideosPromise;
+
+  if(useDID && didVideos && didVideos.greeting){
+    await _playLipsync(sCard, didVideos.greeting);
+  } else {
+    await new Promise(function(res){
+      var done=speak(sCard,function(){res();});
+      if(typeof gcSpeak==='function'){ gcSpeak(greeting,'en-GB','male',done); }
+      else { setTimeout(done,1400); }
+    });
+  }
 
   // 2) Patient responds with opener (their concern)
   chatHistory.push({role:'assistant',content:openerText});
   fb.innerHTML+='<br><br><b style="color:var(--gold);">Patient:</b> '+openerText;
-  await new Promise(function(res){
-    var done=speak(iCard,function(){res();});
-    if(typeof gcSpeak==='function'){
-      gcSpeak(openerText,'en-GB','female',done);
-    } else { setTimeout(done,1200); }
-  });
+  if(useDID && didVideos && didVideos.opener){
+    await _playLipsync(iCard, didVideos.opener);
+  } else {
+    await new Promise(function(res){
+      var done=speak(iCard,function(){res();});
+      if(typeof gcSpeak==='function'){ gcSpeak(openerText,'en-GB','female',done); }
+      else { setTimeout(done,1200); }
+    });
+  }
 
   // Await the pre-scripted lookup / AI fetch (already running in background)
   var parsed=await parsedPromise;
@@ -930,7 +977,7 @@ async function runWatchDemo(scenario, openerText){
     return;
   }
 
-  // Play each line sequentially — gcSpeak 순차 재생 (안정성 우선)
+  // Play each line sequentially — D-ID lipsync 우선, 없으면 gcSpeak
   for(var i=0;i<parsed.length;i++){
     var line=parsed[i];
     var label=line.who==='doctor'?'Doctor':'Patient';
@@ -939,11 +986,16 @@ async function runWatchDemo(scenario, openerText){
     chatHistory.push({role:line.who==='doctor'?'user':'assistant',content:line.text});
     var voice=line.who==='doctor'?'male':'female';
     var speakingCard=line.who==='doctor'?sCard:iCard;
-    await new Promise(function(res){
-      var done=speak(speakingCard,function(){res();});
-      if(typeof gcSpeak==='function'){ gcSpeak(line.text,'en-GB',voice,done); }
-      else { setTimeout(done,1500); }
-    });
+    var didUrl=useDID && didVideos && didVideos.script && didVideos.script[i];
+    if(didUrl){
+      await _playLipsync(speakingCard, didUrl);
+    } else {
+      await new Promise(function(res){
+        var done=speak(speakingCard,function(){res();});
+        if(typeof gcSpeak==='function'){ gcSpeak(line.text,'en-GB',voice,done); }
+        else { setTimeout(done,1500); }
+      });
+    }
   }
 
   // Learning Point card — mode-specific educational focus

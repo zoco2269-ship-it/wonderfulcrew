@@ -869,21 +869,6 @@ async function runWatchDemo(scenario, openerText){
   // Kick off script lookup / AI fetch NOW in parallel with the greeting+opener
   var parsedPromise=Promise.resolve(_lookupWatchScript(openerText));
 
-  // Preload TTS audio for every scripted line in PARALLEL — 재생 시점에 즉시 play
-  function _preloadTTS(text,gender){
-    return fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text:(text||'').substring(0,500),lang:'en-GB',gender:gender||'female'})})
-      .then(function(r){return r.ok?r.json():null;})
-      .then(function(d){if(d&&d.audioContent){var a=new Audio('data:audio/mp3;base64,'+d.audioContent);return a;}return null;})
-      .catch(function(){return null;});
-  }
-  var audiosPromise=parsedPromise.then(function(p){
-    if(!p||!p.length) return [];
-    return Promise.all(p.map(function(item){
-      return _preloadTTS(item.text,item.who==='doctor'?'male':'female');
-    }));
-  });
-
   // 1) Doctor greets first (natural clinical flow)
   var greeting='Please come in and have a seat. What brings you in today?';
   fb.innerHTML='<b style="color:#4A90E2;">Doctor:</b> '+greeting;
@@ -945,9 +930,7 @@ async function runWatchDemo(scenario, openerText){
     return;
   }
 
-  // Play each line sequentially — text first, TTS second (male=doctor, female=patient)
-  // Wait for all pre-loaded audios (already fetched in parallel during greeting+opener)
-  var preloadedAudios=await audiosPromise;
+  // Play each line sequentially — gcSpeak 순차 재생 (안정성 우선)
   for(var i=0;i<parsed.length;i++){
     var line=parsed[i];
     var label=line.who==='doctor'?'Doctor':'Patient';
@@ -956,25 +939,11 @@ async function runWatchDemo(scenario, openerText){
     chatHistory.push({role:line.who==='doctor'?'user':'assistant',content:line.text});
     var voice=line.who==='doctor'?'male':'female';
     var speakingCard=line.who==='doctor'?sCard:iCard;
-    var preAudio=preloadedAudios&&preloadedAudios[i];
-    if(preAudio){
-      // 즉시 재생 — fetch 지연 없음
-      await new Promise(function(res){
-        if(speakingCard) speakingCard.classList.add('speaking');
-        preAudio.onended=function(){ if(speakingCard) speakingCard.classList.remove('speaking'); res(); };
-        preAudio.onerror=function(){ if(speakingCard) speakingCard.classList.remove('speaking'); res(); };
-        var _pp=preAudio.play();
-        if(_pp&&_pp.catch)_pp.catch(function(){ if(speakingCard) speakingCard.classList.remove('speaking'); res(); });
-      });
-    } else {
-      // Fallback — preload 실패한 경우 gcSpeak
-      await new Promise(function(res){
-        var done=speak(speakingCard,function(){res();});
-        if(typeof gcSpeak==='function'){ gcSpeak(line.text,'en-GB',voice,done); }
-        else { setTimeout(done,1500); }
-      });
-    }
-    // no pause between lines — keep the pace tight
+    await new Promise(function(res){
+      var done=speak(speakingCard,function(){res();});
+      if(typeof gcSpeak==='function'){ gcSpeak(line.text,'en-GB',voice,done); }
+      else { setTimeout(done,1500); }
+    });
   }
 
   // Learning Point card — mode-specific educational focus

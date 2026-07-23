@@ -128,6 +128,8 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
       <p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">KRW 199,000<span style="font-size:0.7rem;color:var(--text-muted);">/month</span></p>
       <p style="font-size:0.82rem;color:var(--text-mid);">500 usage / month</p>
       <button class="btn-gold" style="width:100%;" onclick="payWithInnopay('basic')">Subscribe</button>
+      <div style="margin:12px 0 6px;font-size:0.7rem;color:var(--text-muted);letter-spacing:0.08em;">— or pay internationally —</div>
+      <div id="paypal-basic"></div>
     </div>
     <div class="card" style="text-align:center;border:2px solid var(--gold);position:relative;overflow:hidden;">
       <div style="position:absolute;top:8px;right:-28px;background:var(--gold);color:#fff;font-size:0.62rem;font-weight:800;padding:4px 32px;transform:rotate(45deg);">Popular</div>
@@ -135,6 +137,8 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
       <p style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);margin:12px 0;">KRW 299,000<span style="font-size:0.7rem;color:var(--text-muted);">/month</span></p>
       <p style="font-size:0.82rem;color:var(--text-mid);">1,200 usage / month + AI Coach</p>
       <button class="btn-gold" style="width:100%;" onclick="payWithInnopay('elite')">Subscribe</button>
+      <div style="margin:12px 0 6px;font-size:0.7rem;color:var(--text-muted);letter-spacing:0.08em;">— or pay internationally —</div>
+      <div id="paypal-elite"></div>
     </div>
   </div>
 
@@ -145,6 +149,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <div style="font-family:'DM Serif Display',serif;font-size:2.8rem;color:#fff;margin-bottom:8px;">KRW 2,500,000<span style="font-size:0.8rem;color:rgba(255,255,255,0.5);"> (1 year)</span></div>
     <p style="font-size:0.84rem;color:rgba(255,255,255,0.7);margin-bottom:20px;line-height:1.7;">5,000 usage / month + AI Coach + 1:1 Coach Feedback<br>Live classes + All lectures + Secret notes + Premium group chat</p>
     <a href="pricing-en.html" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;border-radius:28px;font-size:0.92rem;font-weight:700;text-decoration:none;">Learn More →</a>
+    <a href="premium-checkout-en.html" style="display:inline-block;margin-left:8px;padding:14px 32px;background:#fff;color:var(--navy);border-radius:28px;font-size:0.92rem;font-weight:700;text-decoration:none;">Get Premium →</a>
   </div>
 
   <div style="margin-top:32px;padding:24px;background:#fff;border:1px solid var(--gold-pale);">
@@ -162,9 +167,15 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <footer>© 2026 WonderfulCrew. Premium Cabin Crew Coaching.<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">Business Registration No. 441-87-03214 &middot; Mail-Order License: 2024-Seoul-Mapo-3057</span></footer>
 
 <script src="js/free-trial.js?v=15"></script>
+<script src="js/paypal-checkout.js"></script>
 <script>
 // 무료체험 상태 표시
 renderTrialBadge('trial-status');
+// PayPal 구독 버튼 (베이직/엘리트) — 국제 결제
+if (window.wcRenderSubscription) {
+  wcRenderSubscription('paypal-basic', 'basic');
+  wcRenderSubscription('paypal-elite', 'elite');
+}
 </script>
 </body>
 </html>

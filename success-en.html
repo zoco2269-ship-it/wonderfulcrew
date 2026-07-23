@@ -41,9 +41,12 @@ localStorage.setItem('wc_paid_date',new Date().toISOString());
 try{
   var _qpInit=new URLSearchParams(location.search);
   var _amtInit=parseInt(_qpInit.get('amount')||'0',10)||0;
-  var _planInit='basic';
-  if(_amtInit>=2000000)_planInit='premium';
-  else if(_amtInit>=290000)_planInit='elite';
+  var _planInit=_qpInit.get('plan')||''; // PayPal redirects with ?plan=; InnoPay uses ?amount=
+  if(!_planInit){
+    _planInit='basic';
+    if(_amtInit>=2000000)_planInit='premium';
+    else if(_amtInit>=290000)_planInit='elite';
+  }
   localStorage.setItem('wc_plan',_planInit);
 }catch(e){}
 var t=JSON.parse(localStorage.getItem('wc_eng_tokens')||'{}');

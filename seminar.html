@@ -480,10 +480,10 @@
       <p class="sec-sub" style="margin:0 auto;">신청서 제출 후, 참여 안내를 개별 연락드립니다.</p>
     </div>
     <form class="form-card" id="applyForm">
-      <div class="field"><label>이름</label><input type="text" placeholder="홍길동" required /></div>
-      <div class="field"><label>연락처</label><input type="tel" placeholder="010-0000-0000" required /></div>
-      <div class="field"><label>이메일</label><input type="email" placeholder="example@email.com" required /></div>
-      <div class="field"><label>목표 항공사 (선택)</label><input type="text" placeholder="예: 에미레이트항공" /></div>
+      <div class="field"><label>이름</label><input id="sf-name" type="text" placeholder="홍길동" required /></div>
+      <div class="field"><label>연락처</label><input id="sf-phone" type="tel" placeholder="010-0000-0000" required /></div>
+      <div class="field"><label>이메일</label><input id="sf-email" type="email" placeholder="example@email.com" required /></div>
+      <div class="field"><label>목표 항공사 (선택)</label><input id="sf-airline" type="text" placeholder="예: 에미레이트항공" /></div>
       <button type="submit" class="submit-btn">무료로 설명회 신청하기</button>
       <p class="form-note">신청해 주신 정보는 설명회 안내 목적으로만 사용됩니다.</p>
     </form>
@@ -546,6 +546,19 @@
   document.getElementById('applyForm').addEventListener('submit', function(e){
     e.preventDefault();
     var toast = document.getElementById('toast');
+    // 신청자 정보 저장 (Supabase) — 실패해도 UX(토스트+카톡 이동)는 그대로 진행
+    var payload = {
+      name: (document.getElementById('sf-name').value || '').trim(),
+      phone: (document.getElementById('sf-phone').value || '').trim(),
+      email: (document.getElementById('sf-email').value || '').trim(),
+      airline: (document.getElementById('sf-airline').value || '').trim()
+    };
+    try {
+      fetch('/api/seminar-signup', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(function(){});
+    } catch (err) {}
     toast.classList.add('show');
     setTimeout(function(){
       window.location.href = KAKAO_OPENCHAT_URL;

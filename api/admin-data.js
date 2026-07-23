@@ -207,6 +207,11 @@ module.exports = async function(req, res) {
       return res.json({ ok: true, signups: signups || [] });
     }
 
+    if (scope === 'inquiries') {
+      const { data: inquiries } = await sb.from('inquiries').select('*').order('created_at', { ascending: false }).limit(500);
+      return res.json({ ok: true, inquiries: inquiries || [] });
+    }
+
     return res.status(400).json({ error: 'unknown scope' });
   } catch (e) {
     console.error('[admin-data] error:', e);

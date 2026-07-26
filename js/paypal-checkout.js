@@ -31,9 +31,10 @@
     if (sdkPromise) return sdkPromise;
     sdkPromise = new Promise(function (resolve, reject) {
       if (!cfg.clientId) { reject(new Error('PayPal is not configured yet.')); return; }
-      var params = 'client-id=' + encodeURIComponent(cfg.clientId) + '&currency=' + (cfg.currency || 'USD');
+      var params = 'client-id=' + encodeURIComponent(cfg.clientId);
+      // For subscriptions, currency comes from the plan — passing it in the SDK URL breaks the approval flow.
       if (intent === 'subscription') params += '&vault=true&intent=subscription';
-      else params += '&intent=capture';
+      else params += '&currency=' + (cfg.currency || 'USD') + '&intent=capture';
       var s = document.createElement('script');
       s.src = 'https://www.paypal.com/sdk/js?' + params;
       s.onload = function () { resolve(window.paypal); };
@@ -53,10 +54,14 @@
       var user = getUser();
       paypal.Buttons({
         style: { shape: 'pill', color: 'gold', layout: 'vertical', label: 'subscribe' },
-        createSubscription: function (data, actions) {
-          return actions.subscription.create({
-            plan_id: planId,
-            custom_id: plan + ':' + (user.id || user.email || '')
+        createSubscription: function () {
+          // Create the subscription on our server (proven path), return its id to the button.
+          return fetch('/api/paypal-create-subscription', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ plan: plan, userId: user.id || '', email: user.email || '' })
+          }).then(function (r) { return r.json(); }).then(function (d) {
+            if (d.error || !d.id) throw new Error(d.error || 'subscription create failed');
+            return d.id;
           });
         },
         onApprove: async function (data) {

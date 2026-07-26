@@ -41,6 +41,20 @@
   .spin{text-align:center;color:var(--muted);padding:26px;font-size:0.95rem;}
   .redo{display:block;margin:14px auto 0;background:none;border:none;color:var(--gold);font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;}
   footer{margin-top:auto;padding:26px 6%;background:#141B2E;color:rgba(255,255,255,0.5);text-align:center;font-size:0.78rem;}
+
+  /* 메이크업 입혀보기 */
+  .makeup{margin-top:18px;}
+  .mk-title{font-family:'DM Serif Display',serif;font-size:1.18rem;color:var(--navy);margin-bottom:6px;}
+  .beta{font-size:0.58rem;font-weight:700;color:#fff;background:var(--gold);padding:2px 7px;border-radius:8px;vertical-align:middle;letter-spacing:0.06em;margin-left:6px;}
+  .mk-status{font-size:0.84rem;color:var(--muted);margin-bottom:12px;line-height:1.5;}
+  .mk-canvas{display:block;width:100%;max-width:460px;margin:0 auto 16px;border-radius:12px;background:#0E1524;}
+  .mk-group{margin-bottom:14px;}
+  .mk-label{font-size:0.82rem;font-weight:700;color:var(--navy);margin-bottom:9px;}
+  .mk-swatches{display:flex;gap:11px;flex-wrap:wrap;align-items:center;}
+  .mk-sw{width:36px;height:36px;border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);transition:transform .12s;}
+  .mk-sw:hover{transform:scale(1.1);}
+  .mk-sw.on{box-shadow:0 0 0 2px var(--navy);transform:scale(1.12);}
+  .mk-sw.none{width:auto;height:36px;border-radius:18px;padding:0 14px;background:#fff;color:var(--muted);display:inline-flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:700;}
 </style>
 </head>
 <body>
@@ -72,6 +86,20 @@
 
     <button class="go" id="go" disabled>이미지 진단받기</button>
     <div class="privacy">🔒 사진은 분석에만 쓰이고 저장하지 않아요.</div>
+  </div>
+
+  <div class="card makeup" id="makeupCard" style="display:none;">
+    <div class="mk-title">💄 메이크업 입혀보기<span class="beta">BETA</span></div>
+    <div class="mk-status" id="mkStatus">얼굴 인식 준비 중…</div>
+    <canvas id="mkCanvas" class="mk-canvas"></canvas>
+    <div class="mk-group">
+      <div class="mk-label">💋 립스틱</div>
+      <div class="mk-swatches" id="lipSwatches"></div>
+    </div>
+    <div class="mk-group">
+      <div class="mk-label">👁 아이섀도</div>
+      <div class="mk-swatches" id="eyeSwatches"></div>
+    </div>
   </div>
 
   <div class="result" id="result">
@@ -154,6 +182,100 @@
     window.scrollTo({top:0,behavior:'smooth'});
   });
 })();
+</script>
+
+<!-- 메이크업 입혀보기 — MediaPipe FaceLandmarker (무료, 브라우저 실행) -->
+<script type="module">
+import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs";
+
+var LIPS_OUTER=[61,185,40,39,37,0,267,269,270,409,291,375,321,405,314,17,84,181,91,146];
+var LIPS_INNER=[78,191,80,81,82,13,312,311,310,415,308,324,318,402,317,14,87,178,88,95];
+var EYE_L=[33,246,161,160,159,158,157,173,133];
+var EYE_R=[263,466,388,387,386,385,384,398,362];
+var LIP_SHADES=[['코랄','#E8735B'],['로즈','#C15C63'],['핑크','#DB6E92'],['레드','#B5322C'],['뉴드','#C68A78']];
+var EYE_SHADES=[['피치','#E3A184'],['브라운','#9A6A4E'],['로즈골드','#C98A76'],['코랄','#E08A6E']];
+
+var $=function(id){return document.getElementById(id);};
+var landmarker=null, lm=null, baseImg=null, cw=0, ch=0, lipColor=null, eyeColor=null;
+
+async function ensure(){
+  if(landmarker) return landmarker;
+  $('mkStatus').textContent='메이크업 엔진을 처음 한 번 불러오는 중… (잠시만요)';
+  var fs=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/wasm");
+  landmarker=await FaceLandmarker.createFromOptions(fs,{
+    baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"},
+    runningMode:"IMAGE", numFaces:1
+  });
+  return landmarker;
+}
+
+function drawLoop(ctx, idxs){ idxs.forEach(function(id,i){ var p=lm[id]; var x=p.x*cw, y=p.y*ch; if(i)ctx.lineTo(x,y); else ctx.moveTo(x,y); }); ctx.closePath(); }
+
+function render(){
+  var c=$('mkCanvas'), ctx=c.getContext('2d');
+  ctx.clearRect(0,0,cw,ch); ctx.drawImage(baseImg,0,0,cw,ch);
+  if(!lm) return;
+  // 아이섀도 (아래층)
+  if(eyeColor){
+    [EYE_L,EYE_R].forEach(function(eye){
+      var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
+      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var delta=Math.max(6, w*0.34);
+      ctx.save(); ctx.filter='blur(5px)'; ctx.globalAlpha=0.40; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=eyeColor;
+      ctx.beginPath();
+      pts.forEach(function(p,i){ if(i)ctx.lineTo(p.x,p.y); else ctx.moveTo(p.x,p.y); });
+      for(var i=pts.length-1;i>=0;i--){ ctx.lineTo(pts[i].x, pts[i].y-delta); }
+      ctx.closePath(); ctx.fill(); ctx.restore();
+    });
+  }
+  // 립스틱 (윗층)
+  if(lipColor){
+    ctx.save(); ctx.globalAlpha=0.52; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=lipColor;
+    ctx.beginPath(); drawLoop(ctx,LIPS_OUTER); drawLoop(ctx,LIPS_INNER.slice().reverse()); ctx.fill('evenodd'); ctx.restore();
+  }
+}
+
+function markOn(group,el){ Array.prototype.forEach.call($(group).children,function(c){c.classList.remove('on');}); if(el)el.classList.add('on'); }
+function buildSwatches(){
+  var lip=$('lipSwatches'), eye=$('eyeSwatches'); lip.innerHTML=''; eye.innerHTML='';
+  var none=function(cb){ var b=document.createElement('div'); b.className='mk-sw none'; b.textContent='없음'; b.onclick=cb; return b; };
+  lip.appendChild(none(function(){ lipColor=null; markOn('lipSwatches',null); render(); }));
+  LIP_SHADES.forEach(function(s){ var b=document.createElement('div'); b.className='mk-sw'; b.style.background=s[1]; b.title=s[0];
+    b.onclick=function(){ lipColor=s[1]; markOn('lipSwatches',b); render(); }; lip.appendChild(b); });
+  eye.appendChild(none(function(){ eyeColor=null; markOn('eyeSwatches',null); render(); }));
+  EYE_SHADES.forEach(function(s){ var b=document.createElement('div'); b.className='mk-sw'; b.style.background=s[1]; b.title=s[0];
+    b.onclick=function(){ eyeColor=s[1]; markOn('eyeSwatches',b); render(); }; eye.appendChild(b); });
+}
+
+async function handle(file){
+  $('makeupCard').style.display='block'; $('mkStatus').textContent='사진 분석 중…';
+  lipColor=null; eyeColor=null;
+  var url=URL.createObjectURL(file);
+  var img=new Image();
+  img.onload=async function(){
+    try{
+      var L=await ensure();
+      var maxW=460, w=img.naturalWidth, h=img.naturalHeight;
+      if(w>maxW){ h=Math.round(h*maxW/w); w=maxW; }
+      cw=w; ch=h; var c=$('mkCanvas'); c.width=w; c.height=h; baseImg=img;
+      var res=L.detect(img);
+      if(res && res.faceLandmarks && res.faceLandmarks[0]){
+        lm=res.faceLandmarks[0];
+        $('mkStatus').textContent='색상을 눌러 입혀보세요 — 어울리는 색을 찾아보세요! 💄';
+        buildSwatches();
+      } else {
+        lm=null; $('mkStatus').textContent='얼굴을 인식하지 못했어요. 정면·밝은 사진으로 다시 시도해 주세요.';
+      }
+      render();
+    } catch(e){
+      $('mkStatus').textContent='메이크업 미리보기를 불러오지 못했어요. 네트워크를 확인하고 새로고침해 주세요.';
+    } finally { URL.revokeObjectURL(url); }
+  };
+  img.onerror=function(){ $('mkStatus').textContent='이미지를 불러오지 못했어요.'; };
+  img.src=url;
+}
+
+var fileEl=$('file');
+if(fileEl){ fileEl.addEventListener('change', function(e){ var f=e.target.files && e.target.files[0]; if(f) handle(f); }); }
 </script>
 </body>
 </html>

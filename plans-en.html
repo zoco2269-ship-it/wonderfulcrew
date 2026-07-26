@@ -167,10 +167,11 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <script>
 // 무료체험 상태 표시
 renderTrialBadge('trial-status');
-// PayPal 구독 버튼 (베이직/엘리트) — 국제 결제
-if (window.wcRenderSubscription) {
-  wcRenderSubscription('paypal-basic', 'basic');
-  wcRenderSubscription('paypal-elite', 'elite');
+// PayPal 결제 버튼 (베이직/엘리트) — 국제 결제 (일시불: 1개월 이용권)
+// 참고: 한국 PayPal 비즈니스 계정은 자동 반복결제(Reference Transactions) 미지원 → 일시불로 처리.
+if (window.wcRenderOneTime) {
+  wcRenderOneTime('paypal-basic', 'basic');
+  wcRenderOneTime('paypal-elite', 'elite');
 }
 </script>
 </body>

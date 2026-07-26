@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>AI 면접 이미지 스타일리스트 · WonderfulCrew (시안)</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--ink:#1F1B14;--mid:#4A4438;--muted:#837a6c;--line:#ECE5D6;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#fff;color:var(--ink);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:0 6%;height:62px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;}
+  .logo{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--navy);}.logo span{color:var(--gold);}
+  .back{font-size:0.86rem;color:var(--mid);}
+  .ownernote{background:#FFF8E6;border-bottom:1px dashed var(--gold);color:#8a6d1f;font-size:0.8rem;text-align:center;padding:9px 6%;line-height:1.6;}
+  .wrap{width:100%;max-width:640px;margin:0 auto;padding:44px 6% 40px;flex:1;}
+  .eyebrow{text-align:center;font-size:0.74rem;letter-spacing:0.22em;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:14px;}
+  h1{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--navy);text-align:center;line-height:1.3;margin-bottom:12px;}
+  .lead{text-align:center;font-size:0.98rem;color:var(--mid);line-height:1.8;margin-bottom:30px;}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 24px;box-shadow:0 6px 22px rgba(26,35,64,0.06);}
+  .drop{border:2px dashed var(--gold-pale);border-radius:14px;background:var(--cream);text-align:center;padding:30px 16px;cursor:pointer;transition:border-color .16s,background .16s;}
+  .drop:hover{border-color:var(--gold);}
+  .drop .ic{font-size:40px;}
+  .drop .t{font-weight:700;color:var(--navy);margin-top:8px;}
+  .drop .s{font-size:0.82rem;color:var(--muted);margin-top:4px;}
+  #preview{display:none;width:100%;max-height:340px;object-fit:contain;border-radius:14px;background:#0E1524;margin-top:4px;}
+  .toggle{display:flex;gap:10px;justify-content:center;margin:20px 0 6px;}
+  .toggle button{flex:1;max-width:180px;padding:12px;border-radius:24px;border:1.5px solid var(--line);background:#fff;color:var(--mid);font-family:inherit;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all .15s;}
+  .toggle button.on{border-color:var(--gold);background:rgba(201,168,76,0.12);color:var(--navy);}
+  .go{width:100%;margin-top:18px;padding:15px;border-radius:28px;border:none;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:var(--navy);font-family:inherit;font-weight:700;font-size:1rem;cursor:pointer;box-shadow:0 8px 20px rgba(201,168,76,0.28);}
+  .go:disabled{opacity:0.45;cursor:not-allowed;box-shadow:none;}
+  .privacy{text-align:center;font-size:0.78rem;color:var(--muted);margin-top:14px;line-height:1.6;}
+
+  .result{margin-top:22px;display:none;}
+  .result.on{display:block;}
+  .rbox{background:linear-gradient(160deg,#fff,#FBF7EC);border:1px solid var(--gold-pale);border-radius:18px;padding:24px;font-size:0.98rem;line-height:1.85;color:var(--ink);white-space:pre-wrap;}
+  .rtitle{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .spin{text-align:center;color:var(--muted);padding:26px;font-size:0.95rem;}
+  .redo{display:block;margin:14px auto 0;background:none;border:none;color:var(--gold);font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;}
+  footer{margin-top:auto;padding:26px 6%;background:#141B2E;color:rgba(255,255,255,0.5);text-align:center;font-size:0.78rem;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="home-v2.html" class="logo">Wonderful<span>Crew</span></a>
+  <a href="home-v2.html" class="back">← 홈</a>
+</nav>
+<div class="ownernote">※ <b>시안(작동함)</b> — 정미님 아이디어대로 실제 만든 AI 이미지 스타일리스트예요. 사진 올려서 직접 해보세요.</div>
+
+<div class="wrap">
+  <div class="eyebrow">Step 1 · Image Check</div>
+  <h1>AI 면접 이미지 스타일리스트</h1>
+  <p class="lead">사진을 올리면 AI가 첫인상을 진단하고,<br>어울리는 메이크업·헤어·면접 복장을 추천해 드려요.</p>
+
+  <div class="card">
+    <label class="drop" id="drop" for="file">
+      <div class="ic">📷</div>
+      <div class="t">사진 올리기</div>
+      <div class="s">정면 얼굴이 잘 나온 사진이 좋아요 (JPG·PNG)</div>
+      <img id="preview" alt="preview">
+    </label>
+    <input type="file" id="file" accept="image/*" hidden>
+
+    <div class="toggle">
+      <button data-t="domestic" class="on">국내 항공사</button>
+      <button data-t="international">외항사</button>
+    </div>
+
+    <button class="go" id="go" disabled>이미지 진단받기</button>
+    <div class="privacy">🔒 사진은 분석에만 쓰이고 저장하지 않아요.</div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="rbox">
+      <div class="rtitle">💁‍♀️ 스타일리스트 진단</div>
+      <div id="rbody"></div>
+    </div>
+    <button class="redo" id="redo">↺ 다른 사진으로 다시</button>
+  </div>
+</div>
+
+<footer>© 2026 WonderfulCrew · AI 이미지 진단은 참고용 조언입니다.</footer>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var imgData=null, mediaType='image/jpeg', target='domestic';
+
+  $('file').addEventListener('change', function(e){
+    var f=e.target.files && e.target.files[0]; if(!f) return;
+    var reader=new FileReader();
+    reader.onload=function(){
+      var img=new Image();
+      img.onload=function(){
+        // 리사이즈(최대 800px) + JPEG 압축 → 전송량·비용 절감
+        var max=800, w=img.width, h=img.height;
+        if(w>h && w>max){ h=Math.round(h*max/w); w=max; }
+        else if(h>=w && h>max){ w=Math.round(w*max/h); h=max; }
+        var c=document.createElement('canvas'); c.width=w; c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        var dataUrl=c.toDataURL('image/jpeg',0.85);
+        mediaType='image/jpeg';
+        imgData=dataUrl;
+        var pv=$('preview'); pv.src=dataUrl; pv.style.display='block';
+        $('drop').querySelector('.ic').style.display='none';
+        $('drop').querySelector('.t').textContent='사진 변경';
+        $('drop').querySelector('.s').style.display='none';
+        $('go').disabled=false;
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(f);
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.toggle button'), function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.toggle button').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); target=b.getAttribute('data-t');
+    });
+  });
+
+  $('go').addEventListener('click', async function(){
+    if(!imgData) return;
+    $('go').disabled=true;
+    $('result').classList.add('on');
+    $('rbody').parentElement.style.display='none';
+    $('result').scrollIntoView({behavior:'smooth'});
+    var res=$('result');
+    var spin=document.createElement('div'); spin.className='spin'; spin.id='spin'; spin.textContent='AI가 사진을 살펴보는 중이에요…';
+    res.insertBefore(spin, res.firstChild);
+    try{
+      var r=await fetch('/api/image-check',{method:'POST',headers:{'content-type':'application/json'},
+        body:JSON.stringify({image:imgData, mediaType:mediaType, target:target})});
+      var d=await r.json();
+      spin.remove();
+      $('rbody').parentElement.style.display='block';
+      if(!r.ok||!d.reply) throw new Error((d.error&&(d.error.message||d.error))||'분석에 실패했어요.');
+      $('rbody').textContent=d.reply;
+    }catch(e){
+      if($('spin'))$('spin').remove();
+      $('rbody').parentElement.style.display='block';
+      $('rbody').textContent='⚠ '+(e.message||'오류가 발생했어요. 잠시 후 다시 시도해 주세요.');
+    }finally{ $('go').disabled=false; }
+  });
+
+  $('redo').addEventListener('click', function(){
+    imgData=null; $('file').value=''; $('preview').style.display='none';
+    $('drop').querySelector('.ic').style.display=''; $('drop').querySelector('.t').textContent='사진 올리기'; $('drop').querySelector('.s').style.display='';
+    $('go').disabled=true; $('result').classList.remove('on'); $('rbody').textContent='';
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+})();
+</script>
+</body>
+</html>

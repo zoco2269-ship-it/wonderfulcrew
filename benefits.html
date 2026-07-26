@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 미리보기 단계: 검색 노출 차단. 확정되면 이 줄 삭제 -->
+<meta name="robots" content="noindex, nofollow">
+<title>회원 혜택 · WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;
+    --cream:#FAF7F0;--navy:#1A2340;--ink:#1F1B14;--mid:#4A4438;--muted:#7A7266;--line:#EDE6D6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#fff;color:var(--ink);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  /* nav */
+  nav{display:flex;align-items:center;justify-content:space-between;padding:0 6%;height:64px;background:rgba(255,255,255,0.96);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;}
+  .logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);}
+  .logo span{color:var(--gold);}
+  .nav-links{display:flex;gap:26px;font-size:0.9rem;color:var(--mid);font-weight:500;}
+  .nav-links a.active{color:var(--gold);font-weight:700;}
+  @media(max-width:720px){.nav-links{display:none;}}
+  /* hero */
+  .hero{background:linear-gradient(180deg,var(--cream),#fff);text-align:center;padding:70px 6% 56px;border-bottom:1px solid var(--line);}
+  .eyebrow{font-size:0.76rem;letter-spacing:0.22em;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:16px;}
+  .hero h1{font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--navy);line-height:1.25;margin-bottom:16px;}
+  .hero h1 em{font-style:normal;color:var(--gold);}
+  .hero p{font-size:1.02rem;color:var(--mid);line-height:1.85;max-width:620px;margin:0 auto;}
+  .hero .kline{width:54px;height:2px;background:var(--gold);margin:22px auto 0;}
+  /* section */
+  .wrap{width:100%;max-width:1080px;margin:0 auto;padding:56px 6%;}
+  .sec-title{text-align:center;font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--navy);margin-bottom:8px;}
+  .sec-sub{text-align:center;font-size:0.95rem;color:var(--muted);line-height:1.7;margin-bottom:38px;}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:860px){.grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:560px){.grid{grid-template-columns:1fr;}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px 24px;transition:transform .18s,box-shadow .18s,border-color .18s;position:relative;overflow:hidden;}
+  .card:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(26,35,64,0.10);border-color:var(--gold-pale);}
+  .card .ic{font-size:34px;line-height:1;}
+  .card h3{font-size:1.14rem;color:var(--navy);margin:14px 0 6px;font-weight:700;}
+  .card .desc{font-size:0.9rem;color:var(--mid);line-height:1.65;margin-bottom:16px;min-height:44px;}
+  .card .perk{display:inline-block;font-size:0.76rem;font-weight:700;color:var(--gold);background:rgba(201,168,76,0.12);padding:5px 12px;border-radius:16px;letter-spacing:0.02em;}
+  .card .go{display:block;margin-top:18px;text-align:center;padding:11px;border-radius:26px;background:var(--navy);color:#fff;font-size:0.86rem;font-weight:600;transition:background .18s;}
+  .card .go:hover{background:#26304f;}
+  .card .soon{position:absolute;top:14px;right:14px;font-size:0.62rem;font-weight:700;color:var(--muted);background:#F4F1EA;padding:4px 9px;border-radius:12px;letter-spacing:0.04em;}
+  /* how it works */
+  .how{background:var(--cream);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media(max-width:640px){.steps{grid-template-columns:1fr;}}
+  .step{text-align:center;padding:8px;}
+  .step .n{width:44px;height:44px;margin:0 auto 12px;border-radius:50%;background:#fff;border:1.5px solid var(--gold-pale);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--gold);}
+  .step h4{font-size:1rem;color:var(--navy);margin-bottom:6px;}
+  .step p{font-size:0.86rem;color:var(--mid);line-height:1.6;}
+  /* partner CTA */
+  .partner{background:var(--navy);color:#fff;text-align:center;padding:52px 6%;position:relative;overflow:hidden;}
+  .partner h2{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--gold-light);margin-bottom:10px;}
+  .partner p{font-size:0.96rem;color:rgba(255,255,255,0.78);line-height:1.75;max-width:560px;margin:0 auto 22px;}
+  .btn-gold{display:inline-block;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:var(--navy);font-weight:700;border-radius:28px;padding:14px 34px;font-size:0.95rem;}
+  /* note for owner */
+  .ownernote{background:#FFF8E6;border:1px dashed var(--gold);color:#8a6d1f;font-size:0.82rem;text-align:center;padding:10px 6%;line-height:1.6;}
+  footer{padding:34px 6%;background:#141B2E;color:rgba(255,255,255,0.55);text-align:center;font-size:0.8rem;line-height:1.8;}
+  footer .logo{font-size:1.1rem;color:#fff;margin-bottom:6px;display:inline-block;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Wonderful<span>Crew</span></a>
+  <div class="nav-links">
+    <a href="index.html">홈</a>
+    <a href="plans.html">요금제</a>
+    <a href="benefits.html" class="active">혜택</a>
+    <a href="community.html">커뮤니티</a>
+  </div>
+</nav>
+
+<!-- 정미님 확인용 안내 (실제 오픈 시 이 줄 삭제) -->
+<div class="ownernote">※ 미리보기입니다 — 파트너/혜택 내용은 <b>예시 자리표시</b>예요. 실제 제휴처가 정해지면 로고·혜택·링크만 교체하면 됩니다.</div>
+
+<section class="hero">
+  <div class="eyebrow">Member Benefits</div>
+  <h1>승무원 준비, <em>혜택까지</em> 원더풀크루.</h1>
+  <p>면접 준비의 처음부터 끝까지 — 원더풀크루가 엄선한 파트너의 회원 전용 혜택으로 더 품격 있게 준비하세요.</p>
+  <div class="kline"></div>
+</section>
+
+<div class="wrap">
+  <div class="sec-title">엄선한 파트너 혜택</div>
+  <div class="sec-sub">지망생에게 꼭 필요한 분야만, 신뢰할 수 있는 파트너와 함께합니다.</div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="ic">👔</div>
+      <h3>면접 정장 · 유니폼</h3>
+      <div class="desc">항공사 면접에 맞는 단정한 정장과 이미지 연출을 위한 스타일링.</div>
+      <span class="perk">회원 전용 할인</span>
+      <a href="#" class="go">혜택 확인 →</a>
+    </div>
+    <div class="card">
+      <div class="ic">📸</div>
+      <h3>증명 · 프로필 사진</h3>
+      <div class="desc">서류 통과율을 좌우하는 증명사진과 프로필 촬영 스튜디오.</div>
+      <span class="perk">회원 전용 혜택</span>
+      <a href="#" class="go">혜택 확인 →</a>
+    </div>
+    <div class="card">
+      <div class="ic">💄</div>
+      <h3>메이크업 · 이미지메이킹</h3>
+      <div class="desc">항공사가 선호하는 단정하고 밝은 이미지 메이크업과 워킹 코칭.</div>
+      <span class="perk">회원 전용 혜택</span>
+      <a href="#" class="go">혜택 확인 →</a>
+    </div>
+    <div class="card">
+      <span class="soon">오픈 예정</span>
+      <div class="ic">✨</div>
+      <h3>피부 · 치아 관리</h3>
+      <div class="desc">면접을 앞둔 컨디셔닝 — 피부 관리와 미소를 위한 케어.</div>
+      <span class="perk">회원 전용 혜택</span>
+      <a href="#" class="go">혜택 확인 →</a>
+    </div>
+    <div class="card">
+      <span class="soon">오픈 예정</span>
+      <div class="ic">💇‍♀️</div>
+      <h3>헤어 · 스타일링</h3>
+      <div class="desc">단정한 승무원 헤어 스타일링과 면접 당일 케어.</div>
+      <span class="perk">회원 전용 혜택</span>
+      <a href="#" class="go">혜택 확인 →</a>
+    </div>
+    <div class="card">
+      <span class="soon">오픈 예정</span>
+      <div class="ic">🗣️</div>
+      <h3>어학 · 시험 준비</h3>
+      <div class="desc">TOEIC·OPIc 등 지원 자격을 위한 어학 준비 파트너.</div>
+      <span class="perk">회원 전용 혜택</span>
+      <a href="#" class="go">혜택 확인 →</a>
+    </div>
+  </div>
+</div>
+
+<section class="how">
+  <div class="wrap">
+    <div class="sec-title">이용 방법</div>
+    <div class="sec-sub">복잡하지 않아요. 세 단계면 됩니다.</div>
+    <div class="steps">
+      <div class="step">
+        <div class="n">1</div>
+        <h4>혜택 확인</h4>
+        <p>원하는 파트너의 회원 혜택을 확인합니다.</p>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <h4>인증 · 예약</h4>
+        <p>원더풀크루 회원 인증 후 혜택을 받습니다.</p>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <h4>준비 완료</h4>
+        <p>더 품격 있게, 더 준비된 모습으로.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="partner">
+  <h2>파트너로 함께하시겠어요?</h2>
+  <p>승무원을 준비하는 지망생에게 정확히 닿고 싶은 브랜드라면, 원더풀크루의 회원 혜택 파트너로 함께하세요.</p>
+  <a href="mailto:wonderfulcrew1@gmail.com?subject=%5B%ED%98%9C%ED%83%9D%20%ED%8C%8C%ED%8A%B8%EB%84%88%20%EB%AC%B8%EC%9D%98%5D" class="btn-gold">제휴 문의하기</a>
+</section>
+
+<footer>
+  <a href="index.html" class="logo">Wonderful<span style="color:var(--gold);">Crew</span></a><br>
+  © 2026 WonderfulCrew. Premium Cabin Crew Coaching.
+</footer>
+
+</body>
+</html>

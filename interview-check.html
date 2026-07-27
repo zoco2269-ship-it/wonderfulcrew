@@ -89,7 +89,7 @@
 import { FaceLandmarker, FilesetResolver, DrawingUtils } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs";
 
 var $=function(id){return document.getElementById(id);};
-var landmarker=null, du=null, running=false, stream=null, lastT=-1, lastMsg=0;
+var landmarker=null, du=null, running=false, stream=null, lastT=-1, lastMsg=0, lastTs=0, errShown=false;
 
 async function ensure(){
   if(landmarker) return landmarker;
@@ -112,7 +112,7 @@ function analyze(res){
   if(!res || !res.faceLandmarks || !res.faceLandmarks[0]){ $('coach').textContent='얼굴이 안 보여요 — 카메라 앞으로 와주세요'; return; }
   var lm=res.faceLandmarks[0];
   // 초록 메쉬
-  du.drawConnectors(lm, FaceLandmarker.FACE_LANDMARKS_TESSELATION, {color:'rgba(48,209,88,0.35)', lineWidth:0.8});
+  du.drawConnectors(lm, FaceLandmarker.FACE_LANDMARKS_TESSELATION, {color:'rgba(48,209,88,0.55)', lineWidth:1});
   du.drawConnectors(lm, FaceLandmarker.FACE_LANDMARKS_FACE_OVAL, {color:'rgba(48,209,88,0.9)', lineWidth:2});
   du.drawConnectors(lm, FaceLandmarker.FACE_LANDMARKS_LIPS, {color:'#7CF29B', lineWidth:2});
   du.drawConnectors(lm, FaceLandmarker.FACE_LANDMARKS_LEFT_EYE, {color:'#7CF29B', lineWidth:1.6});
@@ -147,9 +147,10 @@ function analyze(res){
 function loop(){
   if(!running) return;
   var v=$('cam');
-  if(v.readyState>=2 && v.currentTime!==lastT){
-    lastT=v.currentTime;
-    try{ var res=landmarker.detectForVideo(v, performance.now()); analyze(res); }catch(e){}
+  if(v.readyState>=2 && v.videoWidth){
+    var ts=performance.now(); if(ts<=lastTs) ts=lastTs+1; lastTs=ts;
+    try{ var res=landmarker.detectForVideo(v, ts); analyze(res); }
+    catch(e){ if(!errShown){ errShown=true; $('status').textContent='분석 오류: '+(e.message||e); } }
   }
   requestAnimationFrame(loop);
 }
@@ -160,12 +161,13 @@ async function start(){
     await ensure();
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:640,height:480}});
     var v=$('cam'); v.srcObject=stream;
+    await new Promise(function(r){ if(v.videoWidth) return r(); v.onloadedmetadata=function(){r();}; });
     await v.play();
     var c=$('mesh'); c.width=v.videoWidth||640; c.height=v.videoHeight||480;
     du=new DrawingUtils(c.getContext('2d'));
     $('camPh').style.display='none'; $('rec').classList.add('on'); $('status').textContent='';
     $('startBtn').style.display='none'; $('stopBtn').style.display='inline-block';
-    running=true; lastT=-1; loop();
+    running=true; lastTs=0; errShown=false; loop();
   }catch(e){
     $('status').textContent='카메라를 켤 수 없어요. 브라우저 카메라 권한을 허용해 주세요.';
     $('startBtn').disabled=false;

@@ -156,20 +156,22 @@ function loop(){
 }
 
 async function start(){
-  $('startBtn').disabled=true;
+  $('startBtn').disabled=true; $('status').textContent='시작하는 중…';
   try{
     await ensure();
+    $('status').textContent='카메라 여는 중… (권한 허용해 주세요)';
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:640,height:480}});
     var v=$('cam'); v.srcObject=stream;
     await new Promise(function(r){ if(v.videoWidth) return r(); v.onloadedmetadata=function(){r();}; });
     await v.play();
     var c=$('mesh'); c.width=v.videoWidth||640; c.height=v.videoHeight||480;
     du=new DrawingUtils(c.getContext('2d'));
-    $('camPh').style.display='none'; $('rec').classList.add('on'); $('status').textContent='';
+    $('camPh').style.display='none'; $('rec').classList.add('on');
+    $('status').textContent='분석 중… 얼굴에 초록 그물망이 뜨면 정상이에요';
     $('startBtn').style.display='none'; $('stopBtn').style.display='inline-block';
     running=true; lastTs=0; errShown=false; loop();
   }catch(e){
-    $('status').textContent='카메라를 켤 수 없어요. 브라우저 카메라 권한을 허용해 주세요.';
+    $('status').textContent='⚠ 시작 실패: '+((e&&e.message)||e);
     $('startBtn').disabled=false;
   }
 }
@@ -184,6 +186,10 @@ function stop(){
 }
 $('startBtn').addEventListener('click',start);
 $('stopBtn').addEventListener('click',stop);
+window.__ivReady=true;
+</script>
+<script>
+setTimeout(function(){ if(!window.__ivReady){ var s=document.getElementById('status'); if(s) s.textContent='⚠ 분석 모듈을 불러오지 못했어요 — 네트워크/광고차단/확장프로그램을 확인하고 새로고침해 주세요. (F12 콘솔의 빨간 오류를 알려주시면 정확히 잡아드려요)'; } }, 4000);
 </script>
 </body>
 </html>

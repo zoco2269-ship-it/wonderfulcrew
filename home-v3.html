@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>승무원 준비, 여기서 시작 · WonderfulCrew (시안 v3)</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
+<style>
+  :root{
+    --canvas:#FCFAF7;        /* 따뜻한 화이트 */
+    --ink:#241F1B;           /* 검정 대신 따뜻한 딥잉크 */
+    --muted:#7A7167;
+    --accent:#E9664A;        /* 시그니처 코랄 */
+    --accent-soft:#FBEBE5;   /* 코랄 연한 톤 */
+    --line:#ECE6DE;
+    --card:#fff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Pretendard Variable',-apple-system,system-ui,sans-serif;background:var(--canvas);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{width:100%;max-width:960px;margin:0 auto;padding:0 6%;}
+
+  nav{display:flex;align-items:center;justify-content:space-between;height:66px;max-width:960px;margin:0 auto;padding:0 6%;}
+  .logo{font-weight:800;font-size:1.3rem;letter-spacing:-0.02em;}
+  .logo span{color:var(--accent);}
+  .nav-right{display:flex;align-items:center;gap:14px;}
+  .nav-link{font-size:0.9rem;font-weight:600;color:var(--muted);}
+  .nav-cta{font-size:0.88rem;font-weight:700;color:#fff;background:var(--accent);padding:10px 22px;border-radius:30px;box-shadow:0 8px 20px color-mix(in srgb, var(--accent) 30%, transparent);}
+  /* 색 팔레트 바 */
+  .pbar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);box-shadow:0 10px 30px rgba(36,31,27,0.14);border-radius:40px;padding:9px 16px;z-index:60;}
+  .pbar-label{font-size:0.78rem;font-weight:700;color:var(--ink);margin-right:2px;}
+  .psw{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer;transition:transform .12s;}
+  .psw:hover{transform:scale(1.15);}
+  .psw.on{box-shadow:0 0 0 2px var(--ink);transform:scale(1.15);}
+  @media(max-width:560px){.pbar{gap:7px;padding:8px 12px;}.pbar-label{display:none;}.psw{width:24px;height:24px;}}
+
+  .ownernote{background:var(--accent-soft);color:#a24b34;font-size:0.78rem;text-align:center;padding:9px 6%;line-height:1.6;}
+
+  /* HERO — 아주 깔끔하게 */
+  .hero{text-align:center;padding:70px 0 90px;}
+  .eyebrow{display:inline-block;font-size:0.78rem;font-weight:700;letter-spacing:0.02em;color:#fff;background:var(--ink);padding:8px 18px;border-radius:30px;margin-bottom:32px;}
+  .hero h1{font-size:3.4rem;font-weight:800;line-height:1.18;letter-spacing:-0.03em;margin-bottom:26px;}
+  .hero h1 .hl{background:linear-gradient(transparent 62%, var(--accent-soft) 62%);padding:0 2px;}
+  .hero h1 em{font-style:normal;color:var(--accent);}
+  .hero p{font-size:1.12rem;color:var(--muted);line-height:1.85;max-width:560px;margin:0 auto 38px;}
+  .cta{display:inline-block;font-size:1.02rem;font-weight:700;color:#fff;background:var(--accent);padding:17px 40px;border-radius:40px;box-shadow:0 12px 28px color-mix(in srgb, var(--accent) 34%, transparent);transition:transform .15s;}
+  .cta:hover{transform:translateY(-2px);}
+  .hero .mini{display:block;margin-top:16px;font-size:0.88rem;color:var(--muted);}
+  @media(max-width:600px){.hero h1{font-size:2.3rem;}}
+
+  /* STEPS — 미니멀 타임라인 카드 */
+  .steps{padding-bottom:80px;}
+  .steps .lead{text-align:center;font-size:0.8rem;font-weight:700;letter-spacing:0.14em;color:var(--accent);text-transform:uppercase;margin-bottom:26px;}
+  .row{display:flex;align-items:center;gap:22px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px 26px;margin-bottom:14px;transition:transform .16s,box-shadow .16s;}
+  .row:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(36,31,27,0.09);}
+  .row .n{width:52px;height:52px;flex-shrink:0;border-radius:15px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.2rem;}
+  .row.first .n{background:var(--accent);}
+  .row .tx{flex:1;}
+  .row .tx .k{font-size:0.74rem;font-weight:700;letter-spacing:0.04em;color:var(--accent);margin-bottom:3px;}
+  .row .tx h3{font-size:1.28rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px;}
+  .row .tx p{font-size:0.94rem;color:var(--muted);line-height:1.6;}
+  .row .ic{font-size:30px;flex-shrink:0;}
+  .row .lang{display:inline-flex;gap:5px;margin-top:8px;}
+  .row .lang span{font-size:0.66rem;font-weight:700;color:var(--ink);background:#F2EEE8;padding:3px 9px;border-radius:10px;}
+  @media(max-width:560px){.row{padding:18px;gap:14px;}.row .ic{display:none;}}
+
+  footer{border-top:1px solid var(--line);text-align:center;padding:30px 6%;color:var(--muted);font-size:0.84rem;}
+  footer b{color:var(--ink);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Wonderful<span>Crew</span></a>
+  <div class="nav-right">
+    <a href="#steps" class="nav-link">둘러보기</a>
+    <a href="lecture.html" class="nav-cta">강의 보기</a>
+  </div>
+</nav>
+<div class="ownernote">※ <b>시안 v3</b> — 아래 <b>색 스와치</b>를 눌러 원하는 색 조합을 골라보세요. 상단 "강의 보기"는 실제 강의 페이지로 연결됩니다.</div>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">WonderfulCrew · 승무원 준비</span>
+    <h1>막막한 승무원 준비,<br><span class="hl">순서대로</span> <em>하나씩.</em></h1>
+    <p>이미지 체크부터 자소서·면접·롤플레이까지.<br>AI와 함께, 국내 항공사도 외항사도.</p>
+    <a href="image-check.html" class="cta">이미지 체크부터 시작 →</a>
+    <a href="lecture.html" class="mini" style="color:var(--accent);font-weight:700;">또는 전체 강의 둘러보기 →</a>
+  </div>
+</section>
+
+<section class="steps" id="steps">
+  <div class="wrap">
+    <div class="lead">6단계 · 위에서부터 순서대로</div>
+
+    <a href="image-check.html" class="row first">
+      <div class="n">1</div><div class="ic">🪞</div>
+      <div class="tx"><div class="k">지금 작동</div><h3>이미지 체크</h3><p>사진 한 장으로 첫인상 진단 + 메이크업·헤어·복장 추천. 립·아이 컬러 가상 피팅까지.</p></div>
+    </a>
+    <div class="row">
+      <div class="n">2</div><div class="ic">✍️</div>
+      <div class="tx"><h3>자기소개서</h3><p>질문만 따라가면 완성. AI와 함께 국문·영문 자소서.</p><span class="lang"><span>국문</span><span>영문</span></span></div>
+    </div>
+    <div class="row">
+      <div class="n">3</div><div class="ic">🎥</div>
+      <div class="tx"><h3>영상 면접 · 스몰톡</h3><p>카메라 켜고 실전처럼. 자주 나오는 질문·스몰톡 연습.</p><span class="lang"><span>국문</span><span>영문</span></span></div>
+    </div>
+    <div class="row">
+      <div class="n">4</div><div class="ic">🎭</div>
+      <div class="tx"><h3>롤플레이</h3><p>승객 응대·상황 대응을 AI와 실시간으로.</p><span class="lang"><span>국문</span><span>영문</span></span></div>
+    </div>
+    <div class="row">
+      <div class="n">5</div><div class="ic">💬</div>
+      <div class="tx"><h3>그룹 디스커션</h3><p>외항사를 준비한다면. 실전 그룹 토론 연습.</p></div>
+    </div>
+    <div class="row">
+      <div class="n">6</div><div class="ic">✅</div>
+      <div class="tx"><h3>파이널 점검</h3><p>실전 직전, 지금까지의 준비를 한눈에 정리.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <b>WonderfulCrew</b> · Premium Cabin Crew Coaching<br>© 2026
+</footer>
+
+<div class="pbar" id="pbar">
+  <span class="pbar-label">색 골라보기</span>
+  <button class="psw on" data-p="coral"  style="background:#E9664A" title="코랄"></button>
+  <button class="psw"    data-p="rose"   style="background:#C6577A" title="로즈"></button>
+  <button class="psw"    data-p="teal"   style="background:#1F9E92" title="틸"></button>
+  <button class="psw"    data-p="olive"  style="background:#7C8A4E" title="올리브"></button>
+  <button class="psw"    data-p="plum"   style="background:#7A5AA8" title="플럼"></button>
+  <button class="psw"    data-p="forest" style="background:#2F7D5B" title="포레스트"></button>
+</div>
+<script>
+(function(){
+  var P={
+    coral: {accent:'#E9664A',soft:'#FBEBE5',ink:'#241F1B',canvas:'#FCFAF7',line:'#ECE6DE'},
+    rose:  {accent:'#C6577A',soft:'#F8E9EF',ink:'#2E2430',canvas:'#FCF9FA',line:'#EEE6EA'},
+    teal:  {accent:'#1F9E92',soft:'#E1F1EE',ink:'#1E2A28',canvas:'#F8FBFA',line:'#E3ECEA'},
+    olive: {accent:'#7C8A4E',soft:'#EEF0E1',ink:'#26271F',canvas:'#FAFAF4',line:'#E9EADF'},
+    plum:  {accent:'#7A5AA8',soft:'#EFE9F5',ink:'#26222E',canvas:'#FBFAFC',line:'#EAE6EF'},
+    forest:{accent:'#2F7D5B',soft:'#E3F0E9',ink:'#1F2723',canvas:'#F8FAF8',line:'#E3EAE5'}
+  };
+  var r=document.documentElement;
+  function apply(k){ var p=P[k]; if(!p) return;
+    r.style.setProperty('--accent',p.accent); r.style.setProperty('--accent-soft',p.soft);
+    r.style.setProperty('--ink',p.ink); r.style.setProperty('--canvas',p.canvas); r.style.setProperty('--line',p.line); }
+  document.querySelectorAll('#pbar .psw').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('#pbar .psw').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); apply(b.getAttribute('data-p'));
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

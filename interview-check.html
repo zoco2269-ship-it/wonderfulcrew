@@ -74,6 +74,7 @@
     <div class="bar"><div class="lab"><span>😊 미소</span><span id="v-smile">–</span></div><div class="track"><div class="fill" id="f-smile"></div></div></div>
     <div class="bar"><div class="lab"><span>🧭 정면 응시</span><span id="v-front">–</span></div><div class="track"><div class="fill" id="f-front"></div></div></div>
     <div class="bar"><div class="lab"><span>⚖️ 얼굴 수평</span><span id="v-balance">–</span></div><div class="track"><div class="fill" id="f-balance"></div></div></div>
+    <div class="bar"><div class="lab"><span>💪 어깨 균형</span><span id="v-shoulder">–</span></div><div class="track"><div class="fill" id="f-shoulder"></div></div></div>
     <div class="bar"><div class="lab"><span>👀 시선(렌즈)</span><span id="v-gaze">–</span></div><div class="track"><div class="fill" id="f-gaze"></div></div></div>
     <div class="bar"><div class="lab"><span>🎙 목소리</span><span id="v-voice">–</span></div><div class="track"><div class="fill" id="f-voice"></div></div></div>
     <div class="bar"><div class="lab" style="font-weight:800;"><span>⭐ 종합</span><span id="v-total">–</span></div><div class="track"><div class="fill" id="f-total"></div></div></div>
@@ -90,11 +91,21 @@
 <footer>© 2026 WonderfulCrew · 실시간 분석은 참고용입니다. 영상은 저장되지 않아요.</footer>
 
 <script type="module">
-import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs";
+import { FaceLandmarker, FilesetResolver, PoseLandmarker } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs";
 
 var $=function(id){return document.getElementById(id);};
 var landmarker=null, du=null, running=false, stream=null, lastT=-1, lastMsg=0, lastTs=0, errShown=false;
 var audioCtx=null, analyser=null, abuf=null, voiceScore=0, pitchHz=0, lastVol=0, smileFrames=0, totalFrames=0;
+var poseLm=null, shoulderScore=100;
+function analyzePose(pr){
+  if(!pr || !pr.landmarks || !pr.landmarks[0]) return;
+  var p=pr.landmarks[0], L=p[11], R=p[12];
+  if(!L||!R) return;
+  if(L.visibility!==undefined && (L.visibility<0.4||R.visibility<0.4)) return;
+  var dy=Math.abs(L.y-R.y);
+  shoulderScore=Math.max(0,Math.min(100,100*(1-dy/0.06)));
+  setBar('shoulder', shoulderScore);
+}
 function autoCorrelate(buf, sr){
   var SIZE=buf.length, sum=0; for(var i=0;i<SIZE;i++){ sum+=buf[i]*buf[i]; }
   if(Math.sqrt(sum/SIZE)<0.01) return 0;
@@ -133,6 +144,7 @@ async function ensure(){
   }catch(e){
     landmarker=await FaceLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"},runningMode:"VIDEO",numFaces:1,outputFaceBlendshapes:true});
   }
+  try{ poseLm=await PoseLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task"},runningMode:"VIDEO",numPoses:1}); }catch(e){ poseLm=null; }
   return landmarker;
 }
 
@@ -177,7 +189,7 @@ function analyze(res){
   var balance=Math.max(0,Math.min(100,100*(1-tilt/10)));
   // 미소 유지율 추적
   totalFrames++; if(smile>=45) smileFrames++;
-  var total=Math.round(smile*0.3 + front*0.2 + balance*0.15 + gazeScore*0.15 + voiceScore*0.2);
+  var total=Math.round(smile*0.26 + front*0.16 + balance*0.12 + gazeScore*0.13 + voiceScore*0.18 + shoulderScore*0.15);
   setBar('smile',smile); setBar('front',front); setBar('balance',balance); setBar('gaze',gazeScore); setBar('total',total);
 
   // 코칭 메시지(0.5초마다)
@@ -188,6 +200,7 @@ function analyze(res){
     else if(lastVol>5 && voiceScore<38) msg='🎙 목소리를 더 크고 밝게!';
     else if(front<55) msg='🧭 고개를 정면으로 — 렌즈를 보세요';
     else if(balance<62) msg='⚖️ 고개를 수평으로 (한쪽으로 기울었어요)';
+    else if(shoulderScore<58) msg='💪 어깨를 수평으로 펴세요';
     else if(gazeScore<55) msg='👀 시선을 렌즈에 두세요';
     else if(pitchHz>0 && pitchHz<155 && lastVol>6) msg='🎙 톤을 조금 높여 밝게 말해보세요';
     else msg='👍 아주 좋아요! 이대로 유지하세요';
@@ -203,6 +216,7 @@ function loop(){
     try{ var res=landmarker.detectForVideo(v, ts); analyze(res); }
     catch(e){ if(!errShown){ errShown=true; $('status').textContent='분석 오류: '+(e.message||e); } }
     analyzeVoice();
+    if(poseLm){ try{ analyzePose(poseLm.detectForVideo(v, ts)); }catch(e){} }
   }
   requestAnimationFrame(loop);
 }
@@ -221,7 +235,7 @@ async function start(){
     $('camPh').style.display='none'; $('rec').classList.add('on');
     $('status').textContent='분석 중… 얼굴에 초록 그물망이 뜨면 정상이에요';
     $('startBtn').style.display='none'; $('stopBtn').style.display='inline-block';
-    running=true; lastTs=0; errShown=false; smileFrames=0; totalFrames=0; voiceScore=0; loop();
+    running=true; lastTs=0; errShown=false; smileFrames=0; totalFrames=0; voiceScore=0; shoulderScore=100; loop();
   }catch(e){
     $('status').textContent='⚠ 시작 실패: '+((e&&e.message)||e);
     $('startBtn').disabled=false;
@@ -236,7 +250,7 @@ function stop(){
   try{ if(audioCtx) audioCtx.close(); }catch(e){} audioCtx=null; analyser=null;
   var hold = totalFrames>0 ? Math.round(smileFrames/totalFrames*100) : 0;
   $('coach').textContent='세션 종료 — 미소 유지율 '+hold+'% 😊 (다시 시작 가능)';
-  ['smile','front','balance','gaze','voice','total'].forEach(function(k){ var f=$('f-'+k); if(f)f.style.width='0'; var vv=$('v-'+k); if(vv)vv.textContent='–'; });
+  ['smile','front','balance','shoulder','gaze','voice','total'].forEach(function(k){ var f=$('f-'+k); if(f)f.style.width='0'; var vv=$('v-'+k); if(vv)vv.textContent='–'; });
 }
 $('startBtn').addEventListener('click',start);
 $('stopBtn').addEventListener('click',stop);

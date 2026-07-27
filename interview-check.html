@@ -71,8 +71,11 @@
       <div class="coach" id="coach">준비되면 시작하세요 🙂</div>
       <div class="bar"><div class="lab"><span>😊 미소</span><span id="v-smile">–</span></div><div class="track"><div class="fill" id="f-smile"></div></div></div>
       <div class="bar"><div class="lab"><span>🧭 정면 응시</span><span id="v-front">–</span></div><div class="track"><div class="fill" id="f-front"></div></div></div>
+      <div class="bar"><div class="lab"><span>⚖️ 얼굴 수평</span><span id="v-balance">–</span></div><div class="track"><div class="fill" id="f-balance"></div></div></div>
       <div class="bar"><div class="lab"><span>👀 시선(렌즈)</span><span id="v-gaze">–</span></div><div class="track"><div class="fill" id="f-gaze"></div></div></div>
-      <div class="tips">얼굴에 초록 그물망이 뜨면 분석 중이에요. 실제 면접처럼 자연스럽게 웃고, 카메라 렌즈를 바라보세요.</div>
+      <div class="bar"><div class="lab"><span>🎙 목소리(성량·톤)</span><span id="v-voice">–</span></div><div class="track"><div class="fill" id="f-voice"></div></div></div>
+      <div class="bar" style="margin-top:8px;"><div class="lab" style="font-weight:800;"><span>⭐ 종합 점수</span><span id="v-total">–</span></div><div class="track" style="height:12px;"><div class="fill" id="f-total"></div></div></div>
+      <div class="tips">얼굴을 스캔하며 분석 중이에요. 실제 면접처럼 <b>활짝 웃고</b>, 카메라 렌즈를 바라보며, <b>또렷한 목소리</b>로 말해보세요.</div>
     </div>
   </div>
 
@@ -90,6 +93,35 @@ import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@m
 
 var $=function(id){return document.getElementById(id);};
 var landmarker=null, du=null, running=false, stream=null, lastT=-1, lastMsg=0, lastTs=0, errShown=false;
+var audioCtx=null, analyser=null, abuf=null, voiceScore=0, pitchHz=0, lastVol=0, smileFrames=0, totalFrames=0;
+function autoCorrelate(buf, sr){
+  var SIZE=buf.length, sum=0; for(var i=0;i<SIZE;i++){ sum+=buf[i]*buf[i]; }
+  if(Math.sqrt(sum/SIZE)<0.01) return 0;
+  var r1=0,r2=SIZE-1,thr=0.2;
+  for(var i=0;i<SIZE/2;i++){ if(Math.abs(buf[i])<thr){ r1=i; break; } }
+  for(var i=1;i<SIZE/2;i++){ if(Math.abs(buf[SIZE-i])<thr){ r2=SIZE-i; break; } }
+  var b=buf.slice(r1,r2), c=new Array(b.length).fill(0);
+  for(var i=0;i<b.length;i++){ for(var j=0;j<b.length-i;j++){ c[i]+=b[j]*b[j+i]; } }
+  var d=0; while(d<c.length-1 && c[d]>c[d+1]) d++;
+  var maxv=-1,maxp=-1; for(var i=d;i<b.length;i++){ if(c[i]>maxv){ maxv=c[i]; maxp=i; } }
+  return maxp>0 ? sr/maxp : 0;
+}
+function setupAudio(st){
+  try{ var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    audioCtx=new AC(); var src=audioCtx.createMediaStreamSource(st);
+    analyser=audioCtx.createAnalyser(); analyser.fftSize=2048; src.connect(analyser); abuf=new Float32Array(analyser.fftSize);
+  }catch(e){ analyser=null; }
+}
+function analyzeVoice(){
+  if(!analyser) return;
+  analyser.getFloatTimeDomainData(abuf);
+  var sum=0; for(var i=0;i<abuf.length;i++){ sum+=abuf[i]*abuf[i]; }
+  var vol=Math.min(100, Math.sqrt(sum/abuf.length)*700); lastVol=vol;
+  pitchHz=autoCorrelate(abuf, audioCtx.sampleRate);
+  if(vol>5){ voiceScore=voiceScore*0.82+vol*0.18; } else { voiceScore=voiceScore*0.92; }
+  voiceScore=Math.max(0,Math.min(100,voiceScore));
+  setBar('voice', voiceScore);
+}
 
 async function ensure(){
   if(landmarker) return landmarker;
@@ -134,15 +166,25 @@ function analyze(res){
   var gaze=Math.max(b.eyeLookInLeft||0,b.eyeLookOutLeft||0,b.eyeLookInRight||0,b.eyeLookOutRight||0,b.eyeLookUpLeft||0,b.eyeLookDownLeft||0,b.eyeLookUpRight||0,b.eyeLookDownRight||0);
   var gazeScore=Math.max(0,Math.min(100,100*(1-Math.max(0,gaze-0.2)/0.4)));
 
-  setBar('smile',smile); setBar('front',front); setBar('gaze',gazeScore);
+  // 얼굴 수평(두 눈 라인 기울기)
+  var ex=(lm[263].x-lm[33].x)*cw, ey=(lm[263].y-lm[33].y)*ch;
+  var tilt=Math.abs(Math.atan2(ey,ex)*180/Math.PI); if(tilt>90)tilt=180-tilt;
+  var balance=Math.max(0,Math.min(100,100*(1-tilt/10)));
+  // 미소 유지율 추적
+  totalFrames++; if(smile>=45) smileFrames++;
+  var total=Math.round(smile*0.3 + front*0.2 + balance*0.15 + gazeScore*0.15 + voiceScore*0.2);
+  setBar('smile',smile); setBar('front',front); setBar('balance',balance); setBar('gaze',gazeScore); setBar('total',total);
 
   // 코칭 메시지(0.5초마다)
   var now=performance.now();
   if(now-lastMsg>500){
     lastMsg=now; var msg;
-    if(smile<40) msg='😊 미소를 더! 입꼬리를 살짝 올려보세요';
-    else if(front<55) msg='🧭 고개를 정면으로 — 카메라를 바라보세요';
+    if(smile<40) msg='😊 미소를 더 활짝! 치아가 보이게 웃어요';
+    else if(lastVol>5 && voiceScore<38) msg='🎙 목소리를 더 크고 밝게!';
+    else if(front<55) msg='🧭 고개를 정면으로 — 렌즈를 보세요';
+    else if(balance<62) msg='⚖️ 고개를 수평으로 (한쪽으로 기울었어요)';
     else if(gazeScore<55) msg='👀 시선을 렌즈에 두세요';
+    else if(pitchHz>0 && pitchHz<155 && lastVol>6) msg='🎙 톤을 조금 높여 밝게 말해보세요';
     else msg='👍 아주 좋아요! 이대로 유지하세요';
     $('coach').textContent=msg;
   }
@@ -155,6 +197,7 @@ function loop(){
     var ts=performance.now(); if(ts<=lastTs) ts=lastTs+1; lastTs=ts;
     try{ var res=landmarker.detectForVideo(v, ts); analyze(res); }
     catch(e){ if(!errShown){ errShown=true; $('status').textContent='분석 오류: '+(e.message||e); } }
+    analyzeVoice();
   }
   requestAnimationFrame(loop);
 }
@@ -164,7 +207,8 @@ async function start(){
   try{
     await ensure();
     $('status').textContent='카메라 여는 중… (권한 허용해 주세요)';
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:640,height:480}});
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:640,height:480}, audio:true});
+    setupAudio(stream);
     var v=$('cam'); v.srcObject=stream;
     await new Promise(function(r){ if(v.videoWidth) return r(); v.onloadedmetadata=function(){r();}; });
     await v.play();
@@ -172,7 +216,7 @@ async function start(){
     $('camPh').style.display='none'; $('rec').classList.add('on');
     $('status').textContent='분석 중… 얼굴에 초록 그물망이 뜨면 정상이에요';
     $('startBtn').style.display='none'; $('stopBtn').style.display='inline-block';
-    running=true; lastTs=0; errShown=false; loop();
+    running=true; lastTs=0; errShown=false; smileFrames=0; totalFrames=0; voiceScore=0; loop();
   }catch(e){
     $('status').textContent='⚠ 시작 실패: '+((e&&e.message)||e);
     $('startBtn').disabled=false;
@@ -184,8 +228,10 @@ function stop(){
   var c=$('mesh'); if(c) c.getContext('2d').clearRect(0,0,c.width,c.height);
   $('cam').srcObject=null; $('camPh').style.display='flex'; $('rec').classList.remove('on');
   $('stopBtn').style.display='none'; $('startBtn').style.display='inline-block'; $('startBtn').disabled=false;
-  $('coach').textContent='정지됨 — 다시 시작할 수 있어요';
-  ['smile','front','gaze'].forEach(function(k){ $('f-'+k).style.width='0'; $('v-'+k).textContent='–'; });
+  try{ if(audioCtx) audioCtx.close(); }catch(e){} audioCtx=null; analyser=null;
+  var hold = totalFrames>0 ? Math.round(smileFrames/totalFrames*100) : 0;
+  $('coach').textContent='세션 종료 — 미소 유지율 '+hold+'% 😊 (다시 시작 가능)';
+  ['smile','front','balance','gaze','voice','total'].forEach(function(k){ var f=$('f-'+k); if(f)f.style.width='0'; var vv=$('v-'+k); if(vv)vv.textContent='–'; });
 }
 $('startBtn').addEventListener('click',start);
 $('stopBtn').addEventListener('click',stop);

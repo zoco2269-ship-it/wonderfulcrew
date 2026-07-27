@@ -238,11 +238,11 @@ function render(){
   if(!lm) return;
   // 아이섀도 (아래층) — 연하게/진하게
   if(eyeColor){
-    var a=eyeStrong?0.72:0.44;
+    var a=eyeStrong?0.92:0.58;
     [EYE_L,EYE_R].forEach(function(eye){
       var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
-      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var delta=Math.max(6, w*(eyeStrong?0.5:0.34));
-      ctx.save(); ctx.filter='blur(5px)'; ctx.globalAlpha=a; ctx.globalCompositeOperation='source-over'; ctx.fillStyle=eyeColor;
+      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var delta=Math.max(7, w*(eyeStrong?0.55:0.36));
+      ctx.save(); ctx.filter='blur(4px)'; ctx.globalAlpha=a; ctx.globalCompositeOperation='source-over'; ctx.fillStyle=eyeColor;
       ctx.beginPath();
       pts.forEach(function(p,i){ if(i)ctx.lineTo(p.x,p.y); else ctx.moveTo(p.x,p.y); });
       for(var i=pts.length-1;i>=0;i--){ ctx.lineTo(pts[i].x, pts[i].y-delta); }
@@ -252,9 +252,9 @@ function render(){
   }
   // 립스틱 (윗층) — 2패스: 깊이(multiply) + 발색(source-over) → 뚜렷하게
   if(lipColor){
-    ctx.save(); ctx.globalAlpha=0.5; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=lipColor;
+    ctx.save(); ctx.globalAlpha=0.45; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=lipColor;
     ctx.beginPath(); drawLoop(ctx,LIPS_OUTER); drawLoop(ctx,LIPS_INNER.slice().reverse()); ctx.fill('evenodd'); ctx.restore();
-    ctx.save(); ctx.globalAlpha=0.30; ctx.globalCompositeOperation='source-over'; ctx.fillStyle=lipColor;
+    ctx.save(); ctx.globalAlpha=0.55; ctx.globalCompositeOperation='source-over'; ctx.fillStyle=lipColor;
     ctx.beginPath(); drawLoop(ctx,LIPS_OUTER); drawLoop(ctx,LIPS_INNER.slice().reverse()); ctx.fill('evenodd'); ctx.restore();
   }
 }

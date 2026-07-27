@@ -3,176 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>승무원 면접 무료 설명회 · WonderfulCrew</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<title>AI와 함께하는 승무원 준비 · 무료 라이브 · WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-  :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--ink:#1F1B14;--mid:#4A4438;--muted:#837a6c;--line:#ECE5D6;}
+  :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--navy2:#141B2E;--ink:#1F1B14;--mid:#4A4438;--muted:#837a6c;--line:#ECE5D6;}
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Noto Sans KR',sans-serif;background:#fff;color:var(--ink);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;}
   a{color:inherit;text-decoration:none;}
-  nav{display:flex;align-items:center;justify-content:space-between;padding:0 6%;height:62px;background:rgba(255,255,255,0.96);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;}
-  .logo{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--navy);}.logo span{color:var(--gold);}
-  .nav-cta{font-size:0.82rem;font-weight:700;color:var(--navy);background:var(--gold-pale);padding:8px 16px;border-radius:20px;}
-  .ownernote{background:#FFF8E6;border-bottom:1px dashed var(--gold);color:#8a6d1f;font-size:0.8rem;text-align:center;padding:9px 6%;line-height:1.7;}
-
-  .hero{background:linear-gradient(180deg,var(--cream),#fff);text-align:center;padding:66px 6% 54px;border-bottom:1px solid var(--line);}
-  .eyebrow{font-size:0.74rem;letter-spacing:0.2em;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:16px;}
-  .hero h1{font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--navy);line-height:1.28;margin-bottom:16px;}
-  .hero h1 em{font-style:normal;color:var(--gold);}
-  .hero p{font-size:1.05rem;color:var(--mid);line-height:1.85;max-width:580px;margin:0 auto 14px;}
-  .schedule{display:inline-block;font-size:0.86rem;color:var(--navy);font-weight:600;background:#fff;border:1px solid var(--gold-pale);border-radius:22px;padding:9px 18px;margin:8px 0 24px;}
-  .cta{display:inline-block;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:var(--navy);font-weight:700;border-radius:30px;padding:16px 40px;font-size:1rem;box-shadow:0 8px 22px rgba(201,168,76,0.3);}
-  .freebadge{display:inline-block;font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy);background:var(--gold-pale);border:1px solid var(--gold);border-radius:24px;padding:6px 22px;margin-bottom:8px;}
-  .hero-mock{max-width:580px;margin:28px auto 30px;border-radius:16px;overflow:hidden;box-shadow:0 22px 54px rgba(26,35,64,0.24);border:1px solid var(--line);background:#0E1524;}
-  .hero-mock .mock-bar{display:flex;gap:6px;padding:10px 14px;background:#141B2E;}
-  .hero-mock .mock-bar span{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.28);}
-  .hero-mock img{display:block;width:100%;}
-
-  .wrap{width:100%;max-width:820px;margin:0 auto;padding:56px 6%;}
+  img{max-width:100%;display:block;}
+  .bar{background:linear-gradient(90deg,#E8C96A,#C9A84C);color:var(--navy);text-align:center;font-weight:700;font-size:0.86rem;padding:9px 6%;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:0 6%;height:60px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;}
+  .logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--navy);}.logo span{color:var(--gold);}
+  .nav-cta{font-size:0.82rem;font-weight:700;color:#fff;background:var(--navy);padding:9px 18px;border-radius:22px;}
+  .ownernote{background:#FFF8E6;border-bottom:1px dashed var(--gold);color:#8a6d1f;font-size:0.78rem;text-align:center;padding:9px 6%;line-height:1.7;}
+  .wrap{width:100%;max-width:860px;margin:0 auto;padding:0 6%;}
+  .sec{padding:54px 0;}
   .sec-title{text-align:center;font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--navy);margin-bottom:8px;}
-  .sec-sub{text-align:center;font-size:0.96rem;color:var(--muted);line-height:1.75;margin-bottom:36px;}
+  .sec-sub{text-align:center;font-size:0.96rem;color:var(--muted);line-height:1.75;margin-bottom:34px;}
 
-  /* AI 차별점 */
-  .ai{background:var(--navy);color:#fff;border-radius:22px;padding:40px 34px;text-align:center;position:relative;overflow:hidden;}
-  .ai .badge{display:inline-block;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;color:var(--navy);background:var(--gold-light);padding:6px 14px;border-radius:16px;text-transform:uppercase;margin-bottom:18px;}
-  .ai h2{font-family:'DM Serif Display',serif;font-size:1.7rem;color:#fff;line-height:1.35;margin-bottom:14px;}
-  .ai h2 em{font-style:normal;color:var(--gold-light);}
-  .ai p{font-size:1rem;color:rgba(255,255,255,0.82);line-height:1.85;max-width:560px;margin:0 auto;}
-  .ai .stat{display:flex;justify-content:center;gap:38px;margin-top:26px;flex-wrap:wrap;}
-  .ai .stat .n{font-family:'DM Serif Display',serif;font-size:2.1rem;color:var(--gold-light);line-height:1;}
-  .ai .stat .l{font-size:0.8rem;color:rgba(255,255,255,0.7);margin-top:6px;}
+  /* HERO */
+  .hero{background:linear-gradient(160deg,var(--navy),var(--navy2));color:#fff;padding:20px 0 0;overflow:hidden;}
+  .hero .in{max-width:860px;margin:0 auto;padding:34px 6% 44px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:26px;align-items:center;}
+  @media(max-width:720px){.hero .in{grid-template-columns:1fr;text-align:center;}}
+  .hero .live-badge{display:inline-block;background:var(--gold);color:var(--navy);font-weight:900;font-size:0.86rem;letter-spacing:0.06em;padding:7px 18px;border-radius:22px;margin-bottom:16px;}
+  .hero h1{font-family:'DM Serif Display',serif;font-size:2.3rem;line-height:1.3;margin-bottom:12px;}
+  .hero h1 em{font-style:normal;color:var(--gold-light);}
+  .hero p{color:rgba(255,255,255,0.82);font-size:1rem;line-height:1.8;margin-bottom:18px;}
+  .hero .date{font-size:1.05rem;font-weight:700;color:var(--gold-light);margin-bottom:18px;}
+  .hero .cta{display:inline-block;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:var(--navy);font-weight:800;border-radius:30px;padding:15px 38px;font-size:1rem;box-shadow:0 10px 26px rgba(0,0,0,0.28);}
+  .hero .pic{border-radius:18px;overflow:hidden;border:3px solid rgba(201,168,76,0.5);box-shadow:0 18px 44px rgba(0,0,0,0.35);}
+  .hero .pic img{width:100%;height:100%;object-fit:cover;}
 
-  /* 대표 소개 */
-  .founder{display:flex;gap:26px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:0 6px 22px rgba(26,35,64,0.06);}
-  .founder .photo{width:120px;height:120px;border-radius:50%;flex-shrink:0;overflow:hidden;background:var(--cream);border:2px solid var(--gold-pale);}
-  .founder .photo img{width:100%;height:100%;object-fit:cover;display:block;}
-  .founder .info h3{font-size:1.2rem;color:var(--navy);margin-bottom:4px;}
-  .founder .info .role{font-size:0.82rem;color:var(--gold);font-weight:700;margin-bottom:10px;}
-  .founder .info p{font-size:0.94rem;color:var(--mid);line-height:1.75;}
-  @media(max-width:560px){.founder{flex-direction:column;text-align:center;}}
+  /* 대표 약력 */
+  .cred{background:var(--navy2);color:#fff;border-radius:18px;padding:30px 30px;}
+  .cred h3{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--gold-light);margin-bottom:16px;}
+  .cred ul{list-style:none;}
+  .cred li{position:relative;padding:9px 0 9px 26px;font-size:0.98rem;color:rgba(255,255,255,0.9);line-height:1.6;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .cred li:before{content:'✔';position:absolute;left:0;color:var(--gold);font-weight:700;}
+  .cred li b{color:#fff;}
 
-  /* 커리큘럼 6단계 (클릭 X) */
-  .step{display:flex;align-items:flex-start;gap:18px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:14px;}
-  .step .num{width:40px;height:40px;flex-shrink:0;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.15rem;}
-  .step .ic{font-size:28px;line-height:1;flex-shrink:0;width:40px;text-align:center;}
-  .step .body h3{font-size:1.1rem;color:var(--navy);margin-bottom:3px;}
-  .step .body p{font-size:0.88rem;color:var(--mid);line-height:1.6;}
-  .step .lang{display:inline-flex;gap:5px;margin-top:7px;}
-  .step .lang span{font-size:0.66rem;font-weight:600;color:var(--navy);background:#F1ECE0;padding:3px 9px;border-radius:10px;}
+  /* credibility strip */
+  .cong{background:var(--cream);text-align:center;}
+  .cong .big{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--navy);}
+  .cong .big em{font-style:normal;color:var(--gold);}
+  .cong p{font-size:1rem;color:var(--mid);margin-top:10px;line-height:1.7;}
 
-  /* 신청 폼 */
-  .signup{background:var(--cream);border-top:1px solid var(--line);}
+  /* features */
+  .feat{display:flex;flex-direction:column;gap:26px;}
+  .fcard{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 8px 26px rgba(26,35,64,0.07);}
+  .fcard img{width:100%;border-bottom:1px solid var(--line);background:#0E1524;}
+  .fcard .ft{padding:20px 24px;}
+  .fcard .tag{display:inline-block;font-size:0.7rem;font-weight:700;color:var(--gold);background:rgba(201,168,76,0.13);padding:4px 11px;border-radius:12px;margin-bottom:8px;letter-spacing:0.04em;}
+  .fcard h3{font-size:1.2rem;color:var(--navy);margin-bottom:6px;}
+  .fcard p{font-size:0.94rem;color:var(--mid);line-height:1.7;}
+  .fcard .try{display:inline-block;margin-top:12px;font-size:0.86rem;font-weight:700;color:var(--navy);background:var(--gold-pale);padding:9px 18px;border-radius:22px;}
+
+  /* testimonials */
+  .tst{background:var(--cream);}
+  .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:640px){.tgrid{grid-template-columns:1fr;}}
+  .tcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 4px 16px rgba(26,35,64,0.05);}
+  .tcard .badge{display:inline-block;font-size:0.72rem;font-weight:700;padding:4px 11px;border-radius:12px;margin-bottom:10px;}
+  .tcard .badge.dom{color:#1d6f42;background:#e5f4ea;}
+  .tcard .badge.intl{color:#8a5a1f;background:#f7ecd6;}
+  .tcard .q{font-size:0.96rem;color:var(--ink);line-height:1.75;margin-bottom:12px;}
+  .tcard .who{font-size:0.84rem;color:var(--muted);font-weight:600;}
+
+  /* audience */
+  .aud{max-width:640px;margin:0 auto;}
+  .arow{display:flex;gap:16px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:12px;box-shadow:0 3px 12px rgba(26,35,64,0.05);}
+  .arow .n{width:38px;height:38px;flex-shrink:0;border-radius:10px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;}
+  .arow .t{font-size:1rem;color:var(--navy);font-weight:600;line-height:1.5;}
+
+  /* date card */
+  .datecard{background:var(--navy);color:#fff;text-align:center;border-radius:20px;padding:40px 28px;}
+  .datecard .kicker{display:inline-block;background:#fff;color:var(--navy);font-weight:900;border-radius:22px;padding:7px 22px;font-size:0.92rem;margin-bottom:16px;}
+  .datecard .d{font-family:'DM Serif Display',serif;font-size:2.6rem;color:var(--gold-light);line-height:1.15;}
+  .datecard .t{font-size:1.2rem;color:#fff;margin-top:4px;font-weight:700;}
+  .datecard .warn{font-size:0.9rem;color:rgba(255,255,255,0.72);margin:18px 0 22px;}
+  .datecard .cta{display:inline-block;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:var(--navy);font-weight:800;border-radius:30px;padding:16px 44px;font-size:1.05rem;box-shadow:0 10px 24px rgba(0,0,0,0.3);}
+
+  /* form */
+  .signup{background:var(--cream);}
   .form-card{background:#fff;border:1px solid var(--gold-pale);border-radius:20px;padding:32px 28px;max-width:520px;margin:0 auto;box-shadow:0 10px 34px rgba(26,35,64,0.08);}
   .form-card .field{margin-bottom:14px;}
   .form-card label{display:block;font-size:0.84rem;font-weight:600;color:var(--navy);margin-bottom:6px;}
-  .form-card input{width:100%;padding:13px 15px;border:1px solid #E2DED2;border-radius:12px;font-family:inherit;font-size:1rem;color:var(--ink);background:#fff;}
+  .form-card input{width:100%;padding:13px 15px;border:1px solid #E2DED2;border-radius:12px;font-family:inherit;font-size:1rem;color:var(--ink);}
   .form-card input:focus{outline:none;border-color:var(--gold);}
-  .submit-btn{width:100%;margin-top:8px;padding:16px;border:none;border-radius:28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:var(--navy);font-family:inherit;font-weight:700;font-size:1rem;cursor:pointer;box-shadow:0 8px 20px rgba(201,168,76,0.28);}
+  .submit-btn{width:100%;margin-top:8px;padding:16px;border:none;border-radius:28px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:var(--navy);font-family:inherit;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 8px 20px rgba(201,168,76,0.28);}
   .form-note{text-align:center;font-size:0.78rem;color:var(--muted);margin-top:12px;line-height:1.6;}
-
   .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:14px 24px;border-radius:30px;font-size:0.9rem;box-shadow:0 10px 30px rgba(0,0,0,0.25);opacity:0;pointer-events:none;transition:all .3s;z-index:50;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-
-  footer{margin-top:auto;padding:30px 6%;background:#141B2E;color:rgba(255,255,255,0.55);text-align:center;font-size:0.8rem;line-height:1.8;}
+  footer{padding:30px 6%;background:var(--navy2);color:rgba(255,255,255,0.55);text-align:center;font-size:0.8rem;line-height:1.8;}
   footer .logo{font-size:1.05rem;color:#fff;}
-  @media(max-width:520px){.hero h1{font-size:2rem;}.ai h2{font-size:1.4rem;}}
+  @media(max-width:520px){.hero h1{font-size:1.9rem;}.cong .big{font-size:1.6rem;}.datecard .d{font-size:2rem;}}
 </style>
 </head>
 <body>
 
+<div class="bar">🎉 선착순 무료 모집 · 조기 마감될 수 있어요</div>
 <nav>
   <a href="index.html" class="logo">Wonderful<span>Crew</span></a>
   <a href="#apply" class="nav-cta">무료 신청</a>
 </nav>
-<div class="ownernote">※ 정미님 채워넣을 자리 2곳만: <b>[설명회 일정]</b> · <b>[대표 약력 한 줄]</b>. 이 줄은 완성 후 삭제하세요.</div>
+<div class="ownernote">※ 정미님 채워넣을 곳: <b>[라이브 일정]</b> · <b>[대표 실제 약력 1줄]</b> · <b>[합격생 실제 후기·이름]</b> (지금은 예시 자리표시). 후기는 반드시 실제 합격생 것으로 교체하세요. 이 줄은 완성 후 삭제.</div>
 
+<!-- HERO -->
 <section class="hero">
-  <div class="eyebrow">Free Info Session</div>
-  <div class="freebadge">무료 설명회</div>
-  <h1>AI와 함께하는<br><em>승무원 준비</em></h1>
-  <p>아무것도 몰라도 괜찮아요. 서류부터 최종 면접까지, AI와 함께 준비하는 전 과정을 한자리에서 보여드립니다.</p>
-  <div class="hero-mock">
-    <div class="mock-bar"><span></span><span></span><span></span></div>
-    <img src="images/hero-roleplay.jpg" alt="AI 면접관과 1:1로 진행하는 승무원 면접 롤플레이 화면">
+  <div class="in">
+    <div>
+      <span class="live-badge">무료 라이브</span>
+      <h1>AI와 함께하는<br><em>승무원 준비</em></h1>
+      <p>아무것도 몰라도 괜찮아요. 서류부터 최종 면접까지 —<br>1,000명 이상을 합격시킨 노하우와 승무원 전용 AI로 준비하는 법을 라이브로 보여드립니다.</p>
+      <div class="date">📅 [7월 ○일 (○) 저녁 8시] · 온라인</div>
+      <a href="#apply" class="cta">무료 라이브 신청 →</a>
+    </div>
+    <div class="pic"><img src="images/ceo-profile.jpg" alt="원더풀크루 대표 정미"></div>
   </div>
-  <div class="schedule">📅 설명회 일정: [○월 ○일 ○요일 오후 ○시 · 온라인]</div><br>
-  <a href="#apply" class="cta">무료로 신청하기 →</a>
 </section>
 
-<!-- AI 차별점 -->
-<div class="wrap">
-  <div class="ai">
-    <div class="badge">Not a generic AI</div>
-    <h2>범용 AI가 아닙니다.<br><em>승무원 면접 전용</em>으로 특화된 AI예요.</h2>
-    <p>1,000명 이상의 합격을 이끌어 온 노하우를 그대로 학습시킨, 승무원 면접에만 특화된 전용 AI입니다. 시중의 일반 AI와는 준비의 깊이가 다릅니다.</p>
-    <div class="stat">
-      <div><div class="n">3만+</div><div class="l">학습한 면접 데이터</div></div>
-      <div><div class="n">1,000명+</div><div class="l">합격</div></div>
-      <div><div class="n">국내·외항사</div><div class="l">모두 대응</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- 대표 소개 -->
-<div class="wrap" style="padding-top:0;">
+<!-- 대표 약력 -->
+<section class="sec"><div class="wrap">
   <div class="sec-title">누가 알려드리나요?</div>
-  <div class="sec-sub">현장에서 직접 합격을 만들어 온 코치가 함께합니다.</div>
-  <div class="founder">
-    <div class="photo"><img src="images/ceo-profile.jpg" alt="원더풀크루 대표 정미"></div>
-    <div class="info">
-      <h3>정미 <span style="font-size:0.86rem;color:var(--muted);font-weight:400;">· 원더풀크루 대표</span></h3>
-      <div class="role">승무원 면접 코치</div>
-      <p>1,000명 이상의 지망생을 합격으로 이끈 현장 노하우를 바탕으로, 그 경험과 데이터를 AI에 담았습니다. 이 설명회에서는 그 준비 과정을 처음부터 끝까지, 쉽게 풀어 드립니다.<br><span style="color:var(--muted);font-size:0.84rem;">※ [정미님: 실제 약력을 여기에 채워주세요 — 예: 전직 ○○항공 승무원, ○년 코칭]</span></p>
+  <div class="sec-sub">현장에서 직접 합격을 만들어 온 코치가 라이브로 함께합니다.</div>
+  <div class="cred">
+    <h3>정미 · 원더풀크루 대표</h3>
+    <ul>
+      <li>승무원 면접 <b>전문 코치</b> · 원더풀크루 대표</li>
+      <li>누적 <b>1,000명 이상</b> 합격 지도</li>
+      <li><b>3만+ 면접 데이터</b>를 학습한 승무원 면접 <b>전용 AI</b> 개발</li>
+      <li>※ [정미님 실제 약력 1줄 — 예: 전직 ○○항공 승무원 / ○년 경력]</li>
+    </ul>
+  </div>
+</div></section>
+
+<!-- credibility -->
+<section class="sec cong"><div class="wrap">
+  <div class="big">합격 또 <em>합격</em>.</div>
+  <p>혼자 준비하다 번번이 탈락하는 이유는 따로 있습니다.<br>현직 코치의 합격 비결을, 이번 무료 라이브에서 전부 공개합니다.</p>
+</div></section>
+
+<!-- 기능 showcase -->
+<section class="sec"><div class="wrap">
+  <div class="sec-title">이런 걸 준비합니다 · AI와 함께</div>
+  <div class="sec-sub">라이브에서 실제 화면으로 하나씩 보여드려요.</div>
+  <div class="feat">
+    <div class="fcard">
+      <img src="images/hero-roleplay.jpg" alt="AI 1:1 롤플레이 면접 화면">
+      <div class="ft"><span class="tag">1:1 롤플레이 면접</span><h3>AI 면접관과 실시간 면접</h3><p>실제 면접처럼 AI 면접관과 1:1로. 발음·미소·아이컨택·속도까지 즉시 점수로 피드백.</p></div>
+    </div>
+    <div class="fcard">
+      <img src="images/practice-mockup.png" alt="면접 연습 설정 화면">
+      <div class="ft"><span class="tag">실전 면접 연습</span><h3>항공사·억양 골라 실전 연습</h3><p>국내·외항사, 원하는 항공사와 영어 억양을 골라 반복 연습.</p></div>
+    </div>
+    <div class="fcard">
+      <img src="images/analysis-mockup.png" alt="종합 실력 분석 리포트">
+      <div class="ft"><span class="tag">종합 실력 분석</span><h3>내 실력을 한눈에 리포트로</h3><p>유창성·자신감·발음·서비스마인드 등 항목별 점수와 강·약점, 성장 기록까지.</p></div>
+    </div>
+    <div class="fcard" style="background:linear-gradient(160deg,#fff,#FBF7EC);">
+      <div class="ft"><span class="tag">AI 이미지·메이크업·의상 진단</span><h3>💄 얼굴형별 메이크업·복장까지</h3><p>사진을 올리면 AI가 첫인상을 진단하고, 립·아이 컬러를 사진에 <b>실제로 입혀보고</b>, 얼굴형에 맞는 블라우스·자켓까지 추천해요.</p><a class="try" href="image-check.html">직접 체험해보기 →</a></div>
     </div>
   </div>
-</div>
+</div></section>
 
-<!-- 커리큘럼 -->
-<div class="wrap" style="padding-top:0;">
-  <div class="sec-title">설명회에서 이렇게 준비합니다</div>
-  <div class="sec-sub">합격까지 6단계 — AI와 함께 각 단계를 어떻게 준비하는지 알려드립니다.<br>(설명회에서 직접 시연하고 설명해 드려요.)</div>
+<!-- 합격생 후기 -->
+<section class="sec tst"><div class="wrap">
+  <div class="sec-title">합격생 이야기</div>
+  <div class="sec-sub">국내 항공사, 외국 항공사 — 원더풀크루와 함께 합격했습니다.<br><span style="font-size:0.82rem;">※ 아래는 예시입니다. 정미님이 실제 합격생 후기로 교체하세요.</span></div>
+  <div class="tgrid">
+    <div class="tcard"><span class="badge dom">국내 항공사 합격</span><div class="q">"혼자 할 땐 뭘 준비할지도 몰랐는데, 순서대로 따라가니 자소서부터 면접까지 길이 보였어요."</div><div class="who">[김○○ · 대한항공 합격]</div></div>
+    <div class="tcard"><span class="badge dom">국내 항공사 합격</span><div class="q">"AI로 매일 롤플레이 연습한 게 실전에서 자신감으로 이어졌어요."</div><div class="who">[이○○ · 아시아나항공 합격]</div></div>
+    <div class="tcard"><span class="badge intl">외국 항공사 합격</span><div class="q">"디스커션이 제일 두려웠는데, 반복 연습으로 영어 면접이 편해졌어요."</div><div class="who">[박○○ · 에미레이트항공 합격]</div></div>
+    <div class="tcard"><span class="badge intl">외국 항공사 합격</span><div class="q">"이미지·복장 진단까지 받아서 첫인상부터 준비된 느낌이었어요."</div><div class="who">[최○○ · 카타르항공 합격]</div></div>
+  </div>
+</div></section>
 
-  <div class="step">
-    <div class="num">1</div><div class="ic">🪞</div>
-    <div class="body"><h3>이미지 체크</h3><p>내가 승무원 상에 가까울까? AI가 첫인상을 진단하고 어울리는 메이크업·헤어·면접 복장을 추천하는 방법을 알려드립니다.</p></div>
+<!-- 이런 분들만 -->
+<section class="sec"><div class="wrap">
+  <div class="sec-title">이런 분들만 신청하세요</div>
+  <div class="sec-sub">한 명이라도 진심인 분께 도움이 되고 싶어요.</div>
+  <div class="aud">
+    <div class="arow"><div class="n">1</div><div class="t">승무원 준비를 어디서부터 해야 할지 막막한 분</div></div>
+    <div class="arow"><div class="n">2</div><div class="t">국내 항공사·외항사 모두 도전하고 싶은 분</div></div>
+    <div class="arow"><div class="n">3</div><div class="t">혼자 준비하다 번번이 탈락해 방향을 잡고 싶은 분</div></div>
   </div>
-  <div class="step">
-    <div class="num">2</div><div class="ic">✍️</div>
-    <div class="body"><h3>자기소개서 쓰기</h3><p>처음이어도 질문만 따라가면 완성. 합격하는 자소서를 AI와 함께 쓰는 법.</p><span class="lang"><span>국문</span><span>영문</span></span></div>
+</div></section>
+
+<!-- 일정 -->
+<section class="sec"><div class="wrap">
+  <div class="datecard">
+    <span class="kicker">무료 라이브</span>
+    <div class="d">[7월 ○일 (○)]</div>
+    <div class="t">저녁 8시 · 온라인</div>
+    <div class="warn">선착순 모집, 조기 마감될 수 있습니다.</div>
+    <a href="#apply" class="cta">신청하기</a>
   </div>
-  <div class="step">
-    <div class="num">3</div><div class="ic">🎥</div>
-    <div class="body"><h3>영상 면접 · 스몰톡</h3><p>카메라 앞에서 실전처럼. 자주 나오는 질문과 스몰톡을 준비하는 법.</p><span class="lang"><span>국문</span><span>영문</span></span></div>
-  </div>
-  <div class="step">
-    <div class="num">4</div><div class="ic">🎭</div>
-    <div class="body"><h3>롤플레이</h3><p>승객 응대·상황 대응을 AI와 실시간으로 연습하는 법.</p><span class="lang"><span>국문</span><span>영문</span></span></div>
-  </div>
-  <div class="step">
-    <div class="num">5</div><div class="ic">💬</div>
-    <div class="body"><h3>그룹 디스커션</h3><p>외항사를 준비한다면. 실전 그룹 토론을 준비하는 법.</p></div>
-  </div>
-  <div class="step">
-    <div class="num">6</div><div class="ic">✅</div>
-    <div class="body"><h3>파이널 점검</h3><p>실전 직전, 지금까지의 준비를 한눈에 점검하는 법.</p></div>
-  </div>
-</div>
+</div></section>
 
 <!-- 신청 -->
-<section class="signup" id="apply">
-  <div class="wrap">
-    <div class="sec-title">무료 설명회 신청</div>
-    <div class="sec-sub">아래 정보를 남기시면 오픈채팅방으로 안내해 드립니다.</div>
-    <form class="form-card" id="applyForm" novalidate>
-      <div class="field"><label>이름</label><input id="sf-name" type="text" placeholder="홍길동" required></div>
-      <div class="field"><label>연락처</label><input id="sf-phone" type="tel" placeholder="010-0000-0000" required></div>
-      <div class="field"><label>이메일</label><input id="sf-email" type="email" placeholder="example@email.com" required></div>
-      <div class="field"><label>목표 항공사 (선택)</label><input id="sf-airline" type="text" placeholder="예: 대한항공 / 에미레이트항공"></div>
-      <button type="submit" class="submit-btn">무료로 설명회 신청하기</button>
-      <p class="form-note">신청해 주신 정보는 설명회 안내 목적으로만 사용됩니다.</p>
-    </form>
-  </div>
-</section>
+<section class="sec signup" id="apply"><div class="wrap">
+  <div class="sec-title">무료 라이브 신청</div>
+  <div class="sec-sub">아래 정보를 남기시면 오픈채팅방으로 안내해 드립니다.</div>
+  <form class="form-card" id="applyForm" novalidate>
+    <div class="field"><label>이름</label><input id="sf-name" type="text" placeholder="홍길동" required></div>
+    <div class="field"><label>연락처</label><input id="sf-phone" type="tel" placeholder="010-0000-0000" required></div>
+    <div class="field"><label>이메일</label><input id="sf-email" type="email" placeholder="example@email.com" required></div>
+    <div class="field"><label>목표 항공사 (선택)</label><input id="sf-airline" type="text" placeholder="예: 대한항공 / 에미레이트항공"></div>
+    <button type="submit" class="submit-btn">무료 라이브 신청하기</button>
+    <p class="form-note">신청해 주신 정보는 라이브 안내 목적으로만 사용됩니다.</p>
+  </form>
+</div></section>
 
 <div class="toast" id="toast">신청이 접수되었습니다. 오픈채팅방으로 이동합니다…</div>
 
@@ -192,17 +232,8 @@
       email: (document.getElementById('sf-email').value || '').trim(),
       airline: (document.getElementById('sf-airline').value || '').trim()
     };
-    if(!payload.name || (!payload.phone && !payload.email)){
-      alert('이름과 연락처(또는 이메일)를 입력해 주세요.');
-      return;
-    }
-    // 신청자 정보 저장 (Supabase) — 실패해도 UX(안내+이동)는 진행
-    try {
-      fetch('/api/seminar-signup', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).catch(function(){});
-    } catch (err) {}
+    if(!payload.name || (!payload.phone && !payload.email)){ alert('이름과 연락처(또는 이메일)를 입력해 주세요.'); return; }
+    try { fetch('/api/seminar-signup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }).catch(function(){}); } catch(err){}
     toast.classList.add('show');
     setTimeout(function(){ window.location.href = KAKAO_OPENCHAT_URL; }, 1200);
   });

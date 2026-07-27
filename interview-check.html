@@ -86,7 +86,7 @@
 <footer>© 2026 WonderfulCrew · 실시간 분석은 참고용입니다. 영상은 저장되지 않아요.</footer>
 
 <script type="module">
-import { FaceLandmarker, FilesetResolver, DrawingUtils } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs";
+import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs";
 
 var $=function(id){return document.getElementById(id);};
 var landmarker=null, du=null, running=false, stream=null, lastT=-1, lastMsg=0, lastTs=0, errShown=false;
@@ -107,16 +107,17 @@ function bsMap(cats){ var m={}; (cats||[]).forEach(function(c){m[c.categoryName]
 function setBar(id,val){ var f=$('f-'+id); var col = val>=70?'var(--good)':val>=45?'var(--warn)':'var(--bad)'; f.style.width=val+'%'; f.style.background=col; $('v-'+id).textContent=Math.round(val); }
 
 function analyze(res){
-  var c=$('mesh'), ctx=c.getContext('2d');
-  ctx.clearRect(0,0,c.width,c.height);
+  var c=$('mesh'), ctx=c.getContext('2d'), cw=c.width, ch=c.height;
+  ctx.clearRect(0,0,cw,ch);
   if(!res || !res.faceLandmarks || !res.faceLandmarks[0]){ $('coach').textContent='얼굴이 안 보여요 — 카메라 앞으로 와주세요'; return; }
   var lm=res.faceLandmarks[0];
-  // 초록 메쉬
-  du.drawConnectors(lm, FaceLandmarker.FACE_LANDMARKS_TESSELATION, {color:'rgba(48,209,88,0.55)', lineWidth:1});
-  du.drawConnectors(lm, FaceLandmarker.FACE_LANDMARKS_FACE_OVAL, {color:'rgba(48,209,88,0.9)', lineWidth:2});
-  du.drawConnectors(lm, FaceLandmarker.FACE_LANDMARKS_LIPS, {color:'#7CF29B', lineWidth:2});
-  du.drawConnectors(lm, FaceLandmarker.FACE_LANDMARKS_LEFT_EYE, {color:'#7CF29B', lineWidth:1.6});
-  du.drawConnectors(lm, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE, {color:'#7CF29B', lineWidth:1.6});
+  // 초록 메쉬 (DrawingUtils 없이 직접 그림)
+  function conn(set,color,lw){ if(!set)return; ctx.strokeStyle=color; ctx.lineWidth=lw; ctx.beginPath(); for(var i=0;i<set.length;i++){ var a=lm[set[i].start], b=lm[set[i].end]; if(!a||!b)continue; ctx.moveTo(a.x*cw,a.y*ch); ctx.lineTo(b.x*cw,b.y*ch); } ctx.stroke(); }
+  conn(FaceLandmarker.FACE_LANDMARKS_TESSELATION,'rgba(48,209,88,0.5)',1);
+  conn(FaceLandmarker.FACE_LANDMARKS_FACE_OVAL,'rgba(48,209,88,0.95)',2.5);
+  conn(FaceLandmarker.FACE_LANDMARKS_LIPS,'#7CF29B',2);
+  conn(FaceLandmarker.FACE_LANDMARKS_LEFT_EYE,'#7CF29B',1.8);
+  conn(FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE,'#7CF29B',1.8);
 
   // 지표 계산
   var b=bsMap(res.faceBlendshapes && res.faceBlendshapes[0] && res.faceBlendshapes[0].categories);
@@ -165,7 +166,6 @@ async function start(){
     await new Promise(function(r){ if(v.videoWidth) return r(); v.onloadedmetadata=function(){r();}; });
     await v.play();
     var c=$('mesh'); c.width=v.videoWidth||640; c.height=v.videoHeight||480;
-    du=new DrawingUtils(c.getContext('2d'));
     $('camPh').style.display='none'; $('rec').classList.add('on');
     $('status').textContent='분석 중… 얼굴에 초록 그물망이 뜨면 정상이에요';
     $('startBtn').style.display='none'; $('stopBtn').style.display='inline-block';

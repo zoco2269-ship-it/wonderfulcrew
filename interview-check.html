@@ -20,9 +20,11 @@
   h1{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--navy);text-align:center;line-height:1.3;margin-bottom:10px;}
   .lead{text-align:center;font-size:0.98rem;color:var(--mid);line-height:1.8;margin-bottom:26px;}
 
-  .stage{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:start;}
-  @media(max-width:720px){.stage{grid-template-columns:1fr;}}
-  .camwrap{position:relative;width:100%;border-radius:16px;overflow:hidden;background:#0E1524;aspect-ratio:4/3;transform:scaleX(-1);}
+  .stage{display:flex;justify-content:center;margin-bottom:14px;}
+  .metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;max-width:560px;margin:0 auto;}
+  .metrics .bar{margin:0;}
+  @media(max-width:440px){.metrics{grid-template-columns:1fr;}}
+  .camwrap{position:relative;width:100%;max-width:540px;border-radius:16px;overflow:hidden;background:#0E1524;aspect-ratio:4/3;transform:scaleX(-1);}
   #cam{width:100%;height:100%;object-fit:cover;display:block;}
   #mesh{position:absolute;inset:0;width:100%;height:100%;}
   .cam-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:rgba(255,255,255,0.5);font-size:0.9rem;transform:scaleX(-1);}
@@ -32,7 +34,7 @@
   @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 
   .panel{background:var(--card,#fff);border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:0 6px 22px rgba(26,35,64,0.06);}
-  .coach{background:var(--gold);color:#fff;border-radius:14px;padding:16px 18px;font-size:1.05rem;font-weight:700;text-align:center;line-height:1.5;margin-bottom:18px;min-height:58px;display:flex;align-items:center;justify-content:center;}
+  .coach{background:var(--gold);color:#fff;border-radius:14px;padding:16px 18px;font-size:1.05rem;font-weight:700;text-align:center;line-height:1.5;margin:0 auto 16px;max-width:540px;min-height:56px;display:flex;align-items:center;justify-content:center;}
   .bar{margin-bottom:14px;}
   .bar .lab{display:flex;justify-content:space-between;font-size:0.86rem;margin-bottom:5px;color:var(--ink);font-weight:600;}
   .bar .track{height:9px;background:#EEF0F3;border-radius:6px;overflow:hidden;}
@@ -66,18 +68,17 @@
       <div class="cam-ph" id="camPh"><div class="big">🎥</div><div>아래 "면접 분석 시작"을 눌러주세요</div></div>
       <div class="rec" id="rec"><i></i> 분석 중</div>
     </div>
-
-    <div class="panel">
-      <div class="coach" id="coach">준비되면 시작하세요 🙂</div>
-      <div class="bar"><div class="lab"><span>😊 미소</span><span id="v-smile">–</span></div><div class="track"><div class="fill" id="f-smile"></div></div></div>
-      <div class="bar"><div class="lab"><span>🧭 정면 응시</span><span id="v-front">–</span></div><div class="track"><div class="fill" id="f-front"></div></div></div>
-      <div class="bar"><div class="lab"><span>⚖️ 얼굴 수평</span><span id="v-balance">–</span></div><div class="track"><div class="fill" id="f-balance"></div></div></div>
-      <div class="bar"><div class="lab"><span>👀 시선(렌즈)</span><span id="v-gaze">–</span></div><div class="track"><div class="fill" id="f-gaze"></div></div></div>
-      <div class="bar"><div class="lab"><span>🎙 목소리(성량·톤)</span><span id="v-voice">–</span></div><div class="track"><div class="fill" id="f-voice"></div></div></div>
-      <div class="bar" style="margin-top:8px;"><div class="lab" style="font-weight:800;"><span>⭐ 종합 점수</span><span id="v-total">–</span></div><div class="track" style="height:12px;"><div class="fill" id="f-total"></div></div></div>
-      <div class="tips">얼굴을 스캔하며 분석 중이에요. 실제 면접처럼 <b>활짝 웃고</b>, 카메라 렌즈를 바라보며, <b>또렷한 목소리</b>로 말해보세요.</div>
-    </div>
   </div>
+  <div class="coach" id="coach">준비되면 시작하세요 🙂</div>
+  <div class="metrics">
+    <div class="bar"><div class="lab"><span>😊 미소</span><span id="v-smile">–</span></div><div class="track"><div class="fill" id="f-smile"></div></div></div>
+    <div class="bar"><div class="lab"><span>🧭 정면 응시</span><span id="v-front">–</span></div><div class="track"><div class="fill" id="f-front"></div></div></div>
+    <div class="bar"><div class="lab"><span>⚖️ 얼굴 수평</span><span id="v-balance">–</span></div><div class="track"><div class="fill" id="f-balance"></div></div></div>
+    <div class="bar"><div class="lab"><span>👀 시선(렌즈)</span><span id="v-gaze">–</span></div><div class="track"><div class="fill" id="f-gaze"></div></div></div>
+    <div class="bar"><div class="lab"><span>🎙 목소리</span><span id="v-voice">–</span></div><div class="track"><div class="fill" id="f-voice"></div></div></div>
+    <div class="bar"><div class="lab" style="font-weight:800;"><span>⭐ 종합</span><span id="v-total">–</span></div><div class="track"><div class="fill" id="f-total"></div></div></div>
+  </div>
+  <div class="tips" style="text-align:center;max-width:560px;margin:12px auto 0;">실제 면접처럼 <b>활짝 웃고</b>, 카메라 렌즈를 바라보며, <b>또렷한 목소리</b>로 말해보세요.</div>
 
   <div class="controls">
     <button class="btn-gold" id="startBtn">● 면접 분석 시작</button>
@@ -145,27 +146,18 @@ function analyze(res){
   var lm=res.faceLandmarks[0];
   // 초록 메쉬 (DrawingUtils 없이 직접 그림)
   function conn(set,color,lw){ if(!set)return; ctx.strokeStyle=color; ctx.lineWidth=lw; ctx.beginPath(); for(var i=0;i<set.length;i++){ var a=lm[set[i].start], b=lm[set[i].end]; if(!a||!b)continue; ctx.moveTo(a.x*cw,a.y*ch); ctx.lineTo(b.x*cw,b.y*ch); } ctx.stroke(); }
-  // 세련된 스캔 오버레이 — 글로우 윤곽선
-  ctx.save(); ctx.shadowColor='rgba(64,224,208,0.9)'; ctx.shadowBlur=8; ctx.lineCap='round';
-  conn(FaceLandmarker.FACE_LANDMARKS_FACE_OVAL,'rgba(90,232,214,0.85)',1.6);
-  conn(FaceLandmarker.FACE_LANDMARKS_LIPS,'rgba(130,248,228,0.9)',1.4);
-  conn(FaceLandmarker.FACE_LANDMARKS_LEFT_EYE,'rgba(130,248,228,0.9)',1.3);
-  conn(FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE,'rgba(130,248,228,0.9)',1.3);
-  conn(FaceLandmarker.FACE_LANDMARKS_LEFT_EYEBROW,'rgba(130,248,228,0.8)',1.2);
-  conn(FaceLandmarker.FACE_LANDMARKS_RIGHT_EYEBROW,'rgba(130,248,228,0.8)',1.2);
-  // 핵심 포인트(글로우 점)
-  ctx.fillStyle='rgba(150,252,232,0.95)';
-  var kp=[33,263,1,61,291,199,10,133,362];
-  for(var ki=0;ki<kp.length;ki++){ var p=lm[kp[ki]]; if(!p)continue; ctx.beginPath(); ctx.arc(p.x*cw,p.y*ch,2.2,0,6.2832); ctx.fill(); }
+  // 분석 메쉬 — 은은한 네트 + 적당한 포인트 (레퍼런스 스타일)
+  ctx.save(); ctx.lineCap='round';
+  conn(FaceLandmarker.FACE_LANDMARKS_TESSELATION,'rgba(80,205,120,0.22)',0.6);
+  ctx.shadowColor='rgba(64,200,120,0.6)'; ctx.shadowBlur=4;
+  conn(FaceLandmarker.FACE_LANDMARKS_FACE_OVAL,'rgba(95,220,140,0.7)',1.2);
+  conn(FaceLandmarker.FACE_LANDMARKS_LEFT_EYE,'rgba(120,235,160,0.85)',1.1);
+  conn(FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE,'rgba(120,235,160,0.85)',1.1);
+  conn(FaceLandmarker.FACE_LANDMARKS_LIPS,'rgba(120,235,160,0.85)',1.1);
+  ctx.shadowBlur=0;
+  ctx.fillStyle='rgba(80,220,130,0.95)';
+  for(var pi=0;pi<lm.length;pi+=11){ ctx.beginPath(); ctx.arc(lm[pi].x*cw, lm[pi].y*ch, 1.8, 0, 6.2832); ctx.fill(); }
   ctx.restore();
-  // 스캔 라인 애니메이션(얼굴 위를 위→아래로 훑기)
-  var bx0=1,by0=1,bx1=0,by1=0;
-  for(var si=0;si<lm.length;si++){ var s=lm[si]; if(s.x<bx0)bx0=s.x; if(s.y<by0)by0=s.y; if(s.x>bx1)bx1=s.x; if(s.y>by1)by1=s.y; }
-  var prog=(performance.now()%1700)/1700, sy=(by0+(by1-by0)*prog)*ch;
-  ctx.save(); ctx.shadowColor='rgba(64,224,208,0.9)'; ctx.shadowBlur=12;
-  var grd=ctx.createLinearGradient(bx0*cw,0,bx1*cw,0);
-  grd.addColorStop(0,'rgba(90,232,214,0)'); grd.addColorStop(0.5,'rgba(150,252,232,0.9)'); grd.addColorStop(1,'rgba(90,232,214,0)');
-  ctx.strokeStyle=grd; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(bx0*cw,sy); ctx.lineTo(bx1*cw,sy); ctx.stroke(); ctx.restore();
 
   // 지표 계산
   var b=bsMap(res.faceBlendshapes && res.faceBlendshapes[0] && res.faceBlendshapes[0].categories);

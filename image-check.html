@@ -48,6 +48,14 @@
   .beta{font-size:0.58rem;font-weight:700;color:#fff;background:var(--gold);padding:2px 7px;border-radius:8px;vertical-align:middle;letter-spacing:0.06em;margin-left:6px;}
   .mk-status{font-size:0.84rem;color:var(--muted);margin-bottom:12px;line-height:1.5;}
   .mk-canvas{display:block;width:100%;max-width:460px;margin:0 auto 16px;border-radius:12px;background:#0E1524;}
+  .ba-wrap{position:relative;width:100%;max-width:460px;margin:0 auto 8px;border-radius:12px;overflow:hidden;background:#0E1524;user-select:none;touch-action:none;cursor:ew-resize;}
+  #beforeCanvas{display:block;width:100%;height:auto;}
+  #afterCanvas{position:absolute;top:0;left:0;width:100%;height:auto;}
+  .ba-handle{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;box-shadow:0 0 6px rgba(0,0,0,0.55);}
+  .ba-grip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:#fff;color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:0.95rem;box-shadow:0 2px 8px rgba(0,0,0,0.4);}
+  .ba-label{position:absolute;top:10px;font-size:0.62rem;font-weight:800;letter-spacing:0.08em;color:#fff;background:rgba(0,0,0,0.55);padding:3px 9px;border-radius:12px;pointer-events:none;}
+  .ba-before{left:10px;} .ba-after{right:10px;}
+  .ba-hint{text-align:center;font-size:0.78rem;color:var(--muted);margin-bottom:14px;}
   .mk-group{margin-bottom:14px;}
   .mk-label{font-size:0.82rem;font-weight:700;color:var(--navy);margin-bottom:9px;}
   .mk-swatches{display:flex;gap:11px;flex-wrap:wrap;align-items:center;}
@@ -102,7 +110,14 @@
   <div class="card makeup" id="makeupCard" style="display:none;">
     <div class="mk-title">💄 메이크업 입혀보기<span class="beta">BETA</span></div>
     <div class="mk-status" id="mkStatus">얼굴 인식 준비 중…</div>
-    <canvas id="mkCanvas" class="mk-canvas"></canvas>
+    <div class="ba-wrap" id="baWrap">
+      <canvas id="beforeCanvas"></canvas>
+      <canvas id="afterCanvas"></canvas>
+      <div class="ba-handle" id="baHandle"><div class="ba-grip">⟺</div></div>
+      <div class="ba-label ba-before">BEFORE (원본)</div>
+      <div class="ba-label ba-after">AFTER (메이크업)</div>
+    </div>
+    <div class="ba-hint">↔ 가운데 줄을 드래그해서 원본과 비교해 보세요</div>
     <div class="mk-group">
       <div class="mk-label">💋 립스틱</div>
       <div class="mk-swatches" id="lipSwatches"></div>
@@ -231,10 +246,7 @@ async function ensure(){
 
 function drawLoop(ctx, idxs){ idxs.forEach(function(id,i){ var p=lm[id]; var x=p.x*cw, y=p.y*ch; if(i)ctx.lineTo(x,y); else ctx.moveTo(x,y); }); ctx.closePath(); }
 
-function render(){
-  var c=$('mkCanvas'), ctx=c.getContext('2d');
-  ctx.clearRect(0,0,cw,ch); ctx.filter='none'; ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
-  ctx.drawImage(baseImg,0,0,cw,ch);   // 항상 원본부터 (없음이면 원본 그대로)
+function paintMakeup(ctx){
   if(!lm) return;
   // 아이섀도 (아래층) — 연하게/진하게
   if(eyeColor){
@@ -250,7 +262,7 @@ function render(){
     });
     ctx.filter='none';
   }
-  // 립스틱 (윗층) — 2패스: 깊이(multiply) + 발색(source-over) → 뚜렷하게
+  // 립스틱 (윗층) — 2패스: 깊이(multiply) + 발색(source-over)
   if(lipColor){
     ctx.save(); ctx.globalAlpha=0.45; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=lipColor;
     ctx.beginPath(); drawLoop(ctx,LIPS_OUTER); drawLoop(ctx,LIPS_INNER.slice().reverse()); ctx.fill('evenodd'); ctx.restore();
@@ -258,6 +270,26 @@ function render(){
     ctx.beginPath(); drawLoop(ctx,LIPS_OUTER); drawLoop(ctx,LIPS_INNER.slice().reverse()); ctx.fill('evenodd'); ctx.restore();
   }
 }
+function render(){
+  var bctx=$('beforeCanvas').getContext('2d'), actx=$('afterCanvas').getContext('2d');
+  [bctx,actx].forEach(function(x){ x.clearRect(0,0,cw,ch); x.filter='none'; x.globalAlpha=1; x.globalCompositeOperation='source-over'; x.drawImage(baseImg,0,0,cw,ch); });
+  paintMakeup(actx);   // 애프터에만 메이크업
+  applySlider();
+}
+var sliderPct=0.5;
+function applySlider(){
+  var ac=$('afterCanvas'), h=$('baHandle');
+  if(ac) ac.style.clipPath='inset(0 0 0 '+(sliderPct*100)+'%)';  // 왼쪽=원본, 오른쪽=메이크업
+  if(h) h.style.left=(sliderPct*100)+'%';
+}
+(function(){
+  var w=$('baWrap'); if(!w) return; var dragging=false;
+  function setX(clientX){ var r=w.getBoundingClientRect(); sliderPct=Math.max(0,Math.min(1,(clientX-r.left)/r.width)); applySlider(); }
+  w.addEventListener('pointerdown', function(e){ dragging=true; try{w.setPointerCapture(e.pointerId);}catch(_){} setX(e.clientX); });
+  w.addEventListener('pointermove', function(e){ if(dragging) setX(e.clientX); });
+  w.addEventListener('pointerup', function(){ dragging=false; });
+  w.addEventListener('pointercancel', function(){ dragging=false; });
+})();
 
 function markOn(group,el){ Array.prototype.forEach.call($(group).children,function(c){c.classList.remove('on');}); if(el)el.classList.add('on'); }
 function buildSwatches(){
@@ -325,7 +357,7 @@ async function handle(file){
       var L=await ensure();
       var maxW=460, w=img.naturalWidth, h=img.naturalHeight;
       if(w>maxW){ h=Math.round(h*maxW/w); w=maxW; }
-      cw=w; ch=h; var c=$('mkCanvas'); c.width=w; c.height=h; baseImg=img;
+      cw=w; ch=h; $('beforeCanvas').width=w; $('beforeCanvas').height=h; $('afterCanvas').width=w; $('afterCanvas').height=h; baseImg=img; sliderPct=0.5;
       var res=L.detect(img);
       if(res && res.faceLandmarks && res.faceLandmarks[0]){
         lm=res.faceLandmarks[0];

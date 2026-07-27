@@ -7,7 +7,7 @@
 <title>AI 면접 이미지 스타일리스트 · WonderfulCrew (시안)</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-  :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--ink:#1F1B14;--mid:#4A4438;--muted:#837a6c;--line:#ECE5D6;}
+  :root{--gold:#3E9AD6;--gold-light:#7BC0F0;--gold-pale:#DCEDFB;--cream:#F1F8FE;--navy:#213A52;--ink:#1E2A38;--mid:#47586B;--muted:#7C8896;--line:#E1EAF3;}
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Noto Sans KR',sans-serif;background:#fff;color:var(--ink);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
   a{color:inherit;text-decoration:none;}
@@ -44,7 +44,7 @@
   .toggle{display:flex;gap:10px;justify-content:center;margin:20px 0 6px;}
   .toggle button{flex:1;max-width:180px;padding:12px;border-radius:24px;border:1.5px solid var(--line);background:#fff;color:var(--mid);font-family:inherit;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all .15s;}
   .toggle button.on{border-color:var(--gold);background:rgba(201,168,76,0.12);color:var(--navy);}
-  .go{width:100%;margin-top:18px;padding:15px;border-radius:28px;border:none;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:var(--navy);font-family:inherit;font-weight:700;font-size:1rem;cursor:pointer;box-shadow:0 8px 20px rgba(201,168,76,0.28);}
+  .go{width:100%;margin-top:18px;padding:15px;border-radius:28px;border:none;background:linear-gradient(135deg,#7BC0F0,#3E9AD6);color:var(--navy);font-family:inherit;font-weight:700;font-size:1rem;cursor:pointer;box-shadow:0 8px 20px rgba(201,168,76,0.28);}
   .go:disabled{opacity:0.45;cursor:not-allowed;box-shadow:none;}
   .privacy{text-align:center;font-size:0.78rem;color:var(--muted);margin-top:14px;line-height:1.6;}
 
@@ -304,7 +304,7 @@ function paintMakeup(ctx){
       var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
       var d0=Math.abs(pts[0].x/cw-midX), dN=Math.abs(pts[pts.length-1].x/cw-midX);
       if(dN>d0) pts.reverse(); // pts[0]=바깥 눈꼬리, 끝=안쪽 앞머리
-      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var maxW=Math.max(1.4, w*0.055);
+      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var maxW=Math.max(1.0, w*0.032);
       ctx.save(); ctx.filter='blur(0.5px)'; ctx.strokeStyle='rgba(30,24,22,0.9)'; ctx.lineCap='round'; ctx.lineJoin='round';
       for(var i=0;i<pts.length-1;i++){
         var t=1-i/(pts.length-1); // 바깥 1 → 앞머리 0

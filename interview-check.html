@@ -7,7 +7,7 @@
 <title>AI 실시간 면접 분석 · WonderfulCrew (시안)</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-  :root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--ink:#1F1B14;--mid:#4A4438;--muted:#837a6c;--line:#ECE5D6;--good:#2E9E6B;--warn:#D69A34;--bad:#D9694F;}
+  :root{--gold:#3E9AD6;--gold-light:#7BC0F0;--gold-pale:#DCEDFB;--cream:#F1F8FE;--navy:#213A52;--ink:#1E2A38;--mid:#47586B;--muted:#7C8896;--line:#E1EAF3;--good:#2E9E6B;--warn:#D69A34;--bad:#D9694F;}
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Noto Sans KR',sans-serif;background:#fff;color:var(--ink);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
   a{color:inherit;text-decoration:none;}
@@ -32,7 +32,7 @@
   @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 
   .panel{background:var(--card,#fff);border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:0 6px 22px rgba(26,35,64,0.06);}
-  .coach{background:var(--navy);color:#fff;border-radius:14px;padding:16px 18px;font-size:1.05rem;font-weight:700;text-align:center;line-height:1.5;margin-bottom:18px;min-height:58px;display:flex;align-items:center;justify-content:center;}
+  .coach{background:var(--gold);color:#fff;border-radius:14px;padding:16px 18px;font-size:1.05rem;font-weight:700;text-align:center;line-height:1.5;margin-bottom:18px;min-height:58px;display:flex;align-items:center;justify-content:center;}
   .bar{margin-bottom:14px;}
   .bar .lab{display:flex;justify-content:space-between;font-size:0.86rem;margin-bottom:5px;color:var(--ink);font-weight:600;}
   .bar .track{height:9px;background:#EEF0F3;border-radius:6px;overflow:hidden;}
@@ -40,7 +40,7 @@
   .tips{margin-top:14px;font-size:0.82rem;color:var(--muted);line-height:1.7;}
 
   .controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px;}
-  .btn-gold{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:var(--navy);font-weight:700;border:none;border-radius:28px;padding:15px 34px;font-family:inherit;font-size:1rem;cursor:pointer;box-shadow:0 8px 20px rgba(201,168,76,0.3);}
+  .btn-gold{background:linear-gradient(135deg,#7BC0F0,#3E9AD6);color:var(--navy);font-weight:700;border:none;border-radius:28px;padding:15px 34px;font-family:inherit;font-size:1rem;cursor:pointer;box-shadow:0 8px 20px rgba(201,168,76,0.3);}
   .btn-ghost{background:#fff;color:var(--navy);border:1px solid var(--line);border-radius:28px;padding:14px 26px;font-family:inherit;font-weight:600;font-size:0.92rem;cursor:pointer;}
   .status{text-align:center;font-size:0.86rem;color:var(--muted);margin-top:14px;line-height:1.6;}
   footer{margin-top:auto;padding:26px 6%;background:#141B2E;color:rgba(255,255,255,0.5);text-align:center;font-size:0.78rem;}

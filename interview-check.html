@@ -113,11 +113,14 @@ function analyze(res){
   var lm=res.faceLandmarks[0];
   // 초록 메쉬 (DrawingUtils 없이 직접 그림)
   function conn(set,color,lw){ if(!set)return; ctx.strokeStyle=color; ctx.lineWidth=lw; ctx.beginPath(); for(var i=0;i<set.length;i++){ var a=lm[set[i].start], b=lm[set[i].end]; if(!a||!b)continue; ctx.moveTo(a.x*cw,a.y*ch); ctx.lineTo(b.x*cw,b.y*ch); } ctx.stroke(); }
-  conn(FaceLandmarker.FACE_LANDMARKS_TESSELATION,'rgba(48,209,88,0.5)',1);
-  conn(FaceLandmarker.FACE_LANDMARKS_FACE_OVAL,'rgba(48,209,88,0.95)',2.5);
-  conn(FaceLandmarker.FACE_LANDMARKS_LIPS,'#7CF29B',2);
-  conn(FaceLandmarker.FACE_LANDMARKS_LEFT_EYE,'#7CF29B',1.8);
-  conn(FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE,'#7CF29B',1.8);
+  conn(FaceLandmarker.FACE_LANDMARKS_FACE_OVAL,'rgba(52,211,153,0.85)',2);
+  conn(FaceLandmarker.FACE_LANDMARKS_LIPS,'rgba(110,240,170,0.95)',1.8);
+  conn(FaceLandmarker.FACE_LANDMARKS_LEFT_EYE,'rgba(110,240,170,0.95)',1.6);
+  conn(FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE,'rgba(110,240,170,0.95)',1.6);
+  conn(FaceLandmarker.FACE_LANDMARKS_LEFT_EYEBROW,'rgba(110,240,170,0.85)',1.5);
+  conn(FaceLandmarker.FACE_LANDMARKS_RIGHT_EYEBROW,'rgba(110,240,170,0.85)',1.5);
+  ctx.fillStyle='rgba(52,211,153,0.45)';
+  for(var pi=0;pi<lm.length;pi+=6){ ctx.beginPath(); ctx.arc(lm[pi].x*cw, lm[pi].y*ch, 1.1, 0, 6.2832); ctx.fill(); }
 
   // 지표 계산
   var b=bsMap(res.faceBlendshapes && res.faceBlendshapes[0] && res.faceBlendshapes[0].categories);
@@ -129,7 +132,7 @@ function analyze(res){
   var front=Math.max(0,Math.min(100,100*(1-off/0.16)));
   // 시선
   var gaze=Math.max(b.eyeLookInLeft||0,b.eyeLookOutLeft||0,b.eyeLookInRight||0,b.eyeLookOutRight||0,b.eyeLookUpLeft||0,b.eyeLookDownLeft||0,b.eyeLookUpRight||0,b.eyeLookDownRight||0);
-  var gazeScore=Math.max(0,Math.min(100,100*(1-gaze/0.55)));
+  var gazeScore=Math.max(0,Math.min(100,100*(1-Math.max(0,gaze-0.2)/0.4)));
 
   setBar('smile',smile); setBar('front',front); setBar('gaze',gazeScore);
 

@@ -21,7 +21,18 @@
   @media(max-width:700px){.makeup-grid{grid-template-columns:1fr;}}
   .eyebrow{text-align:center;font-size:0.74rem;letter-spacing:0.22em;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:14px;}
   h1{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--navy);text-align:center;line-height:1.3;margin-bottom:12px;}
-  .lead{text-align:center;font-size:0.98rem;color:var(--mid);line-height:1.8;margin-bottom:30px;}
+  .lead{text-align:center;font-size:0.98rem;color:var(--mid);line-height:1.8;margin-bottom:22px;}
+  .ex{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 auto 12px;max-width:500px;}
+  .ex-item{flex:1;text-align:center;}
+  .ex-item img{width:100%;border-radius:12px;border:2.5px solid var(--line);display:block;}
+  .ex-item.bad img{border-color:#E5B09A;}
+  .ex-item.good img{border-color:#8FBF9E;}
+  .ex-item figcaption{margin-top:8px;font-size:0.86rem;font-weight:700;}
+  .ex-item.bad figcaption{color:#C0653F;}
+  .ex-item.good figcaption{color:#2E8B57;}
+  .ex-arrow{font-size:1.7rem;color:var(--gold);flex-shrink:0;}
+  .ex-cap{text-align:center;font-size:0.9rem;color:var(--mid);line-height:1.65;margin-bottom:28px;max-width:520px;margin-left:auto;margin-right:auto;}
+  @media(max-width:480px){.ex-arrow{font-size:1.3rem;}}
 
   .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 24px;box-shadow:0 6px 22px rgba(26,35,64,0.06);}
   .drop{border:2px dashed var(--gold-pale);border-radius:14px;background:var(--cream);text-align:center;padding:30px 16px;cursor:pointer;transition:border-color .16s,background .16s;}
@@ -92,6 +103,13 @@
   <h1>AI 면접 이미지 스타일리스트</h1>
   <p class="lead">사진을 올리면 AI가 첫인상을 진단하고,<br>어울리는 메이크업·헤어·면접 복장을 추천해 드려요.</p>
 
+  <div class="ex">
+    <figure class="ex-item bad"><img src="images/photo-bad.png" alt="무표정 예시"><figcaption>✗ 무표정</figcaption></figure>
+    <div class="ex-arrow">→</div>
+    <figure class="ex-item good"><img src="images/photo-good.png" alt="밝은 미소 예시"><figcaption>✓ 밝은 미소</figcaption></figure>
+  </div>
+  <p class="ex-cap">AI가 이렇게 진단해드려요 — 무표정보다 <b>치아가 보이는 밝은 미소</b>가 승무원 사진의 핵심이에요.</p>
+
   <div class="card">
     <label class="drop" id="drop" for="file">
       <div class="ic">📷</div>
@@ -132,6 +150,7 @@
         <div class="mk-group">
           <div class="mk-label">👁 아이섀도 <span class="mk-int"><button id="intLight" class="on">연하게</button><button id="intStrong">진하게</button></span></div>
           <div class="mk-swatches" id="eyeSwatches"></div>
+          <div class="mk-label" style="margin-top:14px;">✒️ 아이라인 <span class="mk-int"><button id="linerOff" class="on">없음</button><button id="linerOn">있게</button></span></div>
         </div>
       </div>
     </div>
@@ -236,11 +255,12 @@ var LIPS_OUTER=[61,185,40,39,37,0,267,269,270,409,291,375,321,405,314,17,84,181,
 var LIPS_INNER=[78,191,80,81,82,13,312,311,310,415,308,324,318,402,317,14,87,178,88,95];
 var EYE_L=[33,246,161,160,159,158,157,173,133];
 var EYE_R=[263,466,388,387,386,385,384,398,362];
-var LIP_SHADES=[['코랄','#FF6F5E'],['로즈','#D24B63'],['핫핑크','#E85C97'],['레드','#C81E33'],['뉴드','#C77E63']];
-var EYE_SHADES=[['피치','#F0A57F'],['브라운','#8B5A3C'],['로즈골드','#D08A72'],['버건디','#7E3B4A']];
+var LIP_SHADES=[['코랄','#FF6F5E'],['오렌지','#F4794E'],['로즈','#D24B63'],['핫핑크','#E85C97'],['레드','#C81E33'],['체리','#B01E3C'],['말린장미','#B5675E'],['뉴드','#C77E63']];
+var EYE_SHADES=[['피치','#F0A57F'],['코랄','#E08A6E'],['브라운','#8B5A3C'],['카멜','#A9793F'],['로즈골드','#D08A72'],['그레이브라운','#7E6F68'],['버건디','#7E3B4A'],['라벤더','#9A86B0']];
 
 var $=function(id){return document.getElementById(id);};
-var landmarker=null, lm=null, blend=null, baseImg=null, cw=0, ch=0, lipColor=null, eyeColor=null, eyeStrong=false;
+var landmarker=null, lm=null, blend=null, baseImg=null, cw=0, ch=0, lipColor=null, eyeColor=null, eyeStrong=false, eyeliner=false;
+function hx(hex,a){ hex=hex.replace('#',''); var r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16); return 'rgba('+r+','+g+','+b+','+a+')'; }
 
 async function ensure(){
   if(landmarker) return landmarker;
@@ -257,17 +277,35 @@ function drawLoop(ctx, idxs){ idxs.forEach(function(id,i){ var p=lm[id]; var x=p
 
 function paintMakeup(ctx){
   if(!lm) return;
-  // 아이섀도 — multiply(자연 음영) + 소프트 블러
+  // 아이섀도 — 세로 그라데이션(속눈썹→위로 자연 페이드) + 블러 → 뭉침 없이 자연스럽게
   if(eyeColor){
-    var a=eyeStrong?0.60:0.38;
+    var peak=eyeStrong?0.70:0.46;
     [EYE_L,EYE_R].forEach(function(eye){
       var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
-      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var delta=Math.max(7, w*(eyeStrong?0.5:0.34));
-      ctx.save(); ctx.filter='blur(6px)'; ctx.globalAlpha=a; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=eyeColor;
+      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var delta=Math.max(8, w*(eyeStrong?0.62:0.44));
+      var yb=Math.max.apply(null,pts.map(function(p){return p.y;}));
+      var yt=Math.min.apply(null,pts.map(function(p){return p.y;}))-delta;
+      var grad=ctx.createLinearGradient(0,yb,0,yt);
+      grad.addColorStop(0, hx(eyeColor,peak));
+      grad.addColorStop(0.5, hx(eyeColor,peak*0.45));
+      grad.addColorStop(1, hx(eyeColor,0));
+      ctx.save(); ctx.filter='blur(5px)'; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=grad;
       ctx.beginPath();
       pts.forEach(function(p,i){ if(i)ctx.lineTo(p.x,p.y); else ctx.moveTo(p.x,p.y); });
       for(var i=pts.length-1;i>=0;i--){ ctx.lineTo(pts[i].x, pts[i].y-delta); }
       ctx.closePath(); ctx.fill(); ctx.restore();
+    });
+    ctx.filter='none';
+  }
+  // 아이라인 — 윗 속눈썹 라인
+  if(eyeliner){
+    [EYE_L,EYE_R].forEach(function(eye){
+      var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
+      var w=Math.abs(pts[0].x-pts[pts.length-1].x);
+      ctx.save(); ctx.filter='blur(0.6px)'; ctx.strokeStyle='rgba(30,24,22,0.9)'; ctx.lineWidth=Math.max(1.6,w*0.045); ctx.lineJoin='round'; ctx.lineCap='round';
+      ctx.beginPath();
+      pts.forEach(function(p,i){ if(i)ctx.lineTo(p.x,p.y); else ctx.moveTo(p.x,p.y); });
+      ctx.stroke(); ctx.restore();
     });
     ctx.filter='none';
   }
@@ -317,6 +355,9 @@ function buildSwatches(){
 (function(){ var il=$('intLight'), is=$('intStrong');
   if(il&&is){ il.onclick=function(){ eyeStrong=false; il.classList.add('on'); is.classList.remove('on'); render(); };
     is.onclick=function(){ eyeStrong=true; is.classList.add('on'); il.classList.remove('on'); render(); }; } })();
+(function(){ var off=$('linerOff'), on=$('linerOn');
+  if(off&&on){ off.onclick=function(){ eyeliner=false; off.classList.add('on'); on.classList.remove('on'); render(); };
+    on.onclick=function(){ eyeliner=true; on.classList.add('on'); off.classList.remove('on'); render(); }; } })();
 
 /* ---- 얼굴형 분석 & 스타일 추천 (무료, 규칙 기반) ---- */
 function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }

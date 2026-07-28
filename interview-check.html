@@ -107,7 +107,7 @@ import { FaceLandmarker, FilesetResolver, PoseLandmarker } from "https://cdn.jsd
 var $=function(id){return document.getElementById(id);};
 var landmarker=null, du=null, running=false, stream=null, lastT=-1, lastMsg=0, lastTs=0, errShown=false;
 var audioCtx=null, analyser=null, abuf=null, voiceScore=0, pitchHz=0, lastVol=0, smileFrames=0, totalFrames=0;
-var poseLm=null, shoulderScore=100;
+var poseLm=null, shoulderScore=100, scanUntil=0;
 function analyzePose(pr){
   if(!pr || !pr.landmarks || !pr.landmarks[0]) return;
   var p=pr.landmarks[0], L=p[11], R=p[12];
@@ -181,12 +181,14 @@ function analyze(res){
   ctx.moveTo(X0,Y1-BL); ctx.lineTo(X0,Y1); ctx.lineTo(X0+BL,Y1);
   ctx.moveTo(X1-BL,Y1); ctx.lineTo(X1,Y1); ctx.lineTo(X1,Y1-BL);
   ctx.stroke(); ctx.restore();
-  // 우아한 스캔 라인 (얼굴 위→아래 부드럽게)
-  var prog=(performance.now()%2000)/2000, sy=Y0+(Y1-Y0)*prog;
-  ctx.save(); ctx.shadowColor='rgba(120,220,255,0.9)'; ctx.shadowBlur=14;
-  var grd=ctx.createLinearGradient(X0,0,X1,0);
-  grd.addColorStop(0,'rgba(120,222,255,0)'); grd.addColorStop(0.5,'rgba(185,242,255,0.9)'); grd.addColorStop(1,'rgba(120,222,255,0)');
-  ctx.strokeStyle=grd; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(X0,sy); ctx.lineTo(X1,sy); ctx.stroke(); ctx.restore();
+  // 우아한 스캔 라인 — 처음 몇 초만 훑고 멈춤(계속 나오면 방해되므로)
+  if(performance.now()<scanUntil){
+    var prog=(performance.now()%2000)/2000, sy=Y0+(Y1-Y0)*prog;
+    ctx.save(); ctx.shadowColor='rgba(120,220,255,0.9)'; ctx.shadowBlur=14;
+    var grd=ctx.createLinearGradient(X0,0,X1,0);
+    grd.addColorStop(0,'rgba(120,222,255,0)'); grd.addColorStop(0.5,'rgba(185,242,255,0.9)'); grd.addColorStop(1,'rgba(120,222,255,0)');
+    ctx.strokeStyle=grd; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(X0,sy); ctx.lineTo(X1,sy); ctx.stroke(); ctx.restore();
+  }
 
   // 지표 계산
   var b=bsMap(res.faceBlendshapes && res.faceBlendshapes[0] && res.faceBlendshapes[0].categories);
@@ -252,7 +254,7 @@ async function start(){
     $('camPh').style.display='none'; $('rec').classList.add('on');
     $('status').textContent='실시간 분석 중… 얼굴에 스캔 프레임이 뜨면 정상이에요';
     $('startBtn').style.display='none'; $('stopBtn').style.display='inline-block';
-    running=true; lastTs=0; errShown=false; smileFrames=0; totalFrames=0; voiceScore=0; shoulderScore=100; loop();
+    running=true; lastTs=0; errShown=false; smileFrames=0; totalFrames=0; voiceScore=0; shoulderScore=100; scanUntil=performance.now()+3500; loop();
   }catch(e){
     $('status').textContent='⚠ 시작 실패: '+((e&&e.message)||e);
     $('startBtn').disabled=false;

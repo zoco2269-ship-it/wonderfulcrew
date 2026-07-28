@@ -173,12 +173,6 @@
           <div class="mk-label" style="margin-top:14px;">🌫 스모키 <span class="mk-int"><button id="smokyOff" class="on">없음</button><button id="smokyOn">있게</button></span></div>
         </div>
         <div class="mk-group">
-          <div class="mk-label">🧥 옷 대략 미리보기 <span class="beta">무료·참고용</span></div>
-          <div class="mk-swatches" id="garmentSwatches"></div>
-          <div class="mk-label" style="margin-top:10px;">형태 <span class="mk-int"><button data-g="single" class="on">싱글</button><button data-g="collarless">노카라</button><button data-g="double">더블</button></span></div>
-          <div style="font-size:0.74rem;color:var(--muted);margin-top:6px;line-height:1.5;">대략 실루엣만 참고용이에요. 정확한 착장은 아래 <b>AI 완성 면접사진</b>에서 뽑아요.</div>
-        </div>
-        <div class="mk-group">
           <button id="bgSave" class="go" style="margin-top:4px;">📥 메이크업 사진 저장</button>
         </div>
       </div>
@@ -359,8 +353,6 @@ var landmarker=null, lm=null, blend=null, baseImg=null, cw=0, ch=0, lipColor=nul
 var segmenter=null, personCanvas=null, bgColor=null;
 var segMC=null, clothesCanvas=null, jacketColor=null;
 var lipInt=0.6, eyeInt=0.6;
-var garmentColor=null, garmentStyle='single';
-var poseLmk=null, poseShoulders=null;
 function hx(hex,a){ hex=hex.replace('#',''); var r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16); return 'rgba('+r+','+g+','+b+','+a+')'; }
 
 async function ensure(){
@@ -443,37 +435,18 @@ async function computeJacket(){
   if(mask.close)mask.close(); if(res.close)res.close();
 }
 
-// 어깨 좌표(옷 정렬용) — PoseLandmarker IMAGE
-async function ensurePose(){
-  if(poseLmk) return poseLmk;
-  var fs=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/wasm");
-  poseLmk=await PoseLandmarker.createFromOptions(fs,{
-    baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task"},
-    runningMode:"IMAGE", numPoses:1
-  });
-  return poseLmk;
-}
-async function computePose(){
-  if(!baseImg) return;
-  await ensurePose();
-  var res=poseLmk.detect(baseImg);
-  var p=res && res.landmarks && res.landmarks[0];
-  if(p && p[11] && p[12]) poseShoulders={lx:p[12].x, ly:p[12].y, rx:p[11].x, ry:p[11].y};
-  if(res && res.close) res.close();
-}
-
 function paintMakeup(ctx){
   if(!lm) return;
   // 아이섀도 — 부드러운 블롭. 눈 앞은 옅게, 눈꼬리로 갈수록 크고 진하게, 경계 없이 자연스럽게 번짐.
   if(eyeColor){
-    var peak=0.24+eyeInt*0.42;  // 자연스럽게(너무 진하지 않게)
+    var peak=0.13+eyeInt*0.40;  // 더 연하게(슬라이더 최소=아주 옅게)
     var midXe=(lm[234].x+lm[454].x)/2;
     [EYE_L,EYE_R].forEach(function(eye){
       var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
       var d0=Math.abs(pts[0].x/cw-midXe), dN=Math.abs(pts[pts.length-1].x/cw-midXe);
       if(dN>d0) pts.reverse(); // pts[0]=바깥 눈꼬리
       var w=Math.abs(pts[0].x-pts[pts.length-1].x);
-      var baseD=Math.max(9, w*(0.36+eyeInt*0.18));
+      var baseD=Math.max(8, w*(0.28+eyeInt*0.12));  // 범위 좁게
       var oc=document.createElement('canvas'); oc.width=cw; oc.height=ch; var octx=oc.getContext('2d');
       octx.save(); octx.filter='blur(4px)';
       function blob(cx,cy,r,a){
@@ -488,11 +461,10 @@ function paintMakeup(ctx){
         var idxf=(1-f)*(n-1);                        // f=0→앞머리(pts끝), f=1→눈꼬리(pts[0])
         var i0=Math.floor(idxf), i1=Math.min(n-1,i0+1), fr=idxf-i0;
         var px=pts[i0].x+(pts[i1].x-pts[i0].x)*fr, py=pts[i0].y+(pts[i1].y-pts[i0].y)*fr;
-        blob(px, py-baseD*(0.26+0.22*f), baseD*(0.48+0.72*f), peak*(0.32+0.68*f));
+        blob(px, py-baseD*(0.20+0.16*f), baseD*(0.42+0.42*f), peak*(0.30+0.55*f));  // 뒤로 갈수록 덜 커지게
       }
       var o=pts[0], o2=pts[1]; var ux=(o.x-o2.x), uy=(o.y-o2.y); var ul=Math.hypot(ux,uy)||1; ux/=ul; uy/=ul;
-      blob(o.x+ux*w*0.07, o.y+uy*w*0.07-baseD*0.55, baseD*0.92, peak*0.85);   // 눈꼬리 윙(번지며 사라짐)
-      blob(o.x+ux*w*0.14, o.y+uy*w*0.14-baseD*0.75, baseD*0.66, peak*0.5);
+      blob(o.x+ux*w*0.03, o.y+uy*w*0.03-baseD*0.42, baseD*0.6, peak*0.55);   // 눈꼬리 살짝만(윙 축소)
       octx.restore();
       ctx.save(); ctx.globalCompositeOperation='multiply'; ctx.drawImage(oc,0,0); ctx.restore();
     });
@@ -573,42 +545,6 @@ function paintMakeup(ctx){
     ctx.filter='none';
   }
 }
-// 옷 대략 미리보기 — 어깨 좌표(포즈)에 맞춰 자켓 실루엣 + 흰 블라우스(무료, 스타일 참고용)
-function drawGarment(ctx){
-  if(!garmentColor || !lm) return;
-  var faceW=Math.abs(lm[454].x-lm[234].x)*cw, chinY=lm[152].y*ch;
-  var cx, shW, shY;
-  if(poseShoulders){
-    var lSx=poseShoulders.lx*cw, rSx=poseShoulders.rx*cw, lSy=poseShoulders.ly*ch, rSy=poseShoulders.ry*ch;
-    cx=(lSx+rSx)/2; shY=(lSy+rSy)/2; shW=Math.abs(rSx-lSx)/2;
-  } else { cx=((lm[234].x+lm[454].x)/2)*cw; shY=chinY+faceW*0.55; shW=faceW*1.45; }
-  var neckH=Math.max(faceW*0.24, shW*0.20);  // 넥라인 열림 반폭
-  var topY=Math.max(chinY+faceW*0.10, shY-faceW*0.25);   // 옷 최상단(어깨선 살짝 위)
-  var lap=faceW*0.5, botY=ch;
-  ctx.save();
-  // 블라우스(안) 흰색
-  ctx.fillStyle='#F5F4F0'; ctx.beginPath();
-  if(garmentStyle==='collarless'){ ctx.moveTo(cx-neckH,topY+faceW*0.02); ctx.quadraticCurveTo(cx,topY+faceW*0.26, cx+neckH,topY+faceW*0.02); }
-  else { ctx.moveTo(cx-neckH,topY); ctx.lineTo(cx+neckH,topY); }
-  ctx.lineTo(cx+neckH*0.8,botY); ctx.lineTo(cx-neckH*0.8,botY); ctx.closePath(); ctx.fill();
-  // 자켓 좌우 패널 — 넥라인 → 어깨 tip → 아래
-  function panel(sign){
-    var g=ctx.createLinearGradient(cx, topY, cx+sign*shW, botY);
-    g.addColorStop(0, garmentColor); g.addColorStop(1, shade(garmentColor,-18));
-    ctx.fillStyle=g; ctx.beginPath();
-    if(garmentStyle==='collarless'){ ctx.moveTo(cx+sign*neckH*0.95, topY+faceW*0.03); ctx.quadraticCurveTo(cx+sign*neckH*1.5, topY, cx+sign*shW*0.65, topY+faceW*0.02); }
-    else { ctx.moveTo(cx+sign*neckH, topY); ctx.lineTo(cx+sign*neckH*1.9, topY+lap); ctx.lineTo(cx+sign*neckH*0.9, topY+lap*1.15); }
-    ctx.lineTo(cx+sign*neckH*0.8, botY);
-    ctx.lineTo(cx+sign*shW*1.12, botY);
-    ctx.lineTo(cx+sign*shW*1.02, shY);       // 어깨 tip
-    ctx.closePath(); ctx.fill();
-    if(garmentStyle==='double'){ ctx.strokeStyle=shade(garmentColor,-30); ctx.lineWidth=Math.max(1,faceW*0.02);
-      ctx.beginPath(); ctx.moveTo(cx+sign*neckH*0.5, topY+lap*1.1); ctx.lineTo(cx+sign*neckH*0.5, botY); ctx.stroke(); }
-  }
-  panel(-1); panel(1);
-  ctx.restore();
-}
-function shade(hex,amt){ hex=hex.replace('#',''); var r=Math.max(0,Math.min(255,parseInt(hex.substr(0,2),16)+amt)),g=Math.max(0,Math.min(255,parseInt(hex.substr(2,2),16)+amt)),b=Math.max(0,Math.min(255,parseInt(hex.substr(4,2),16)+amt)); return 'rgb('+r+','+g+','+b+')'; }
 function render(){
   window.__mk={lip:lipColor, eye:eyeColor, liner:eyeliner, smoky:smoky, lipInt:lipInt, eyeInt:eyeInt}; // AI 완성사진에 전달용
   var bctx=$('beforeCanvas').getContext('2d'), actx=$('afterCanvas').getContext('2d');
@@ -626,7 +562,6 @@ function render(){
     jx.globalCompositeOperation='destination-in'; jx.drawImage(clothesCanvas,0,0,cw,ch);
     actx.drawImage(jc,0,0,cw,ch);
   }
-  drawGarment(actx);   // 옷 대략 미리보기(선택 시)
   paintMakeup(actx);   // 애프터에만 메이크업
   applySlider();
 }
@@ -657,15 +592,6 @@ function buildSwatches(){
   EYE_SHADES.forEach(function(s){ var b=document.createElement('div'); b.className='mk-sw'; b.style.background=s[1]; b.title=s[0];
     b.onclick=function(){ eyeColor=s[1]; markOn('eyeSwatches',b); render(); }; eye.appendChild(b); });
   eye.appendChild(mkPick('#8B5A3C', function(v,el){ eyeColor=v; markOn('eyeSwatches',el); render(); }));
-  // 옷 대략 미리보기 색
-  var ga=$('garmentSwatches'); if(ga){ ga.innerHTML='';
-    var gNone=none(function(){ garmentColor=null; markOn('garmentSwatches',gNone); render(); });
-    ga.appendChild(gNone); gNone.classList.add('on');
-    [['네이비','#20304F'],['블랙','#181A20'],['차콜','#3A3F4A'],['레드','#8E2233'],['버건디','#5A2733'],['카멜','#6E4B2A']].forEach(function(s){
-      var b=document.createElement('div'); b.className='mk-sw'; b.style.background=s[1]; b.title=s[0];
-      b.onclick=async function(){ markOn('garmentSwatches',b); if(!poseShoulders){ try{ await computePose(); }catch(e){} } garmentColor=s[1]; render(); }; ga.appendChild(b); });
-    ga.appendChild(mkPick('#20304F', async function(v,el){ markOn('garmentSwatches',el); if(!poseShoulders){ try{ await computePose(); }catch(e){} } garmentColor=v; render(); }));
-  }
   // 증명사진 배경 프리셋
   var bg=$('bgSwatches'); if(bg){ bg.innerHTML='';
     var bgNone=none(function(){ bgColor=null; markOn('bgSwatches',bgNone); render(); });
@@ -713,8 +639,6 @@ function mkPick(init, cb){
 (function(){ var off=$('smokyOff'), on=$('smokyOn');
   if(off&&on){ off.onclick=function(){ smoky=false; off.classList.add('on'); on.classList.remove('on'); render(); };
     on.onclick=function(){ smoky=true; on.classList.add('on'); off.classList.remove('on'); render(); }; } })();
-(function(){ var btns=document.querySelectorAll('.mk-int button[data-g]');
-  Array.prototype.forEach.call(btns,function(b){ b.onclick=function(){ Array.prototype.forEach.call(btns,function(x){x.classList.remove('on');}); b.classList.add('on'); garmentStyle=b.getAttribute('data-g'); render(); }; }); })();
 (function(){ var l=$('lipInt'); if(l) l.oninput=function(){ lipInt=(+l.value)/100; render(); }; })();
 (function(){ var e=$('eyeInt'); if(e) e.oninput=function(){ eyeInt=(+e.value)/100; render(); }; })();
 (function(){ var s=$('bgSave'); if(s) s.onclick=function(){

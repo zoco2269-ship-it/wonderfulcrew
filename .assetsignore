@@ -1,0 +1,13 @@
+api
+.git
+.github
+.vercel
+.claude
+node_modules
+*.md
+package.json
+package-lock.json
+wrangler.jsonc
+.gitignore
+.vercelignore
+add-buttons.js

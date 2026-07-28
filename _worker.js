@@ -37,9 +37,11 @@ async function runVercel(handler, request, env) {
   } catch (e) {}
 
   const bodyText = request.method === "GET" || request.method === "HEAD" ? "" : await request.text();
+  const urlObj = new URL(request.url);
   const req = {
     method: request.method,
-    url: new URL(request.url).pathname,
+    url: urlObj.pathname + urlObj.search,
+    query: Object.fromEntries(urlObj.searchParams),
     headers: Object.fromEntries(request.headers),
     body: bodyText,
   };

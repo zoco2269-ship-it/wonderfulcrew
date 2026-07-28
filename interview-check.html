@@ -200,16 +200,18 @@ function analyze(res){
   ctx.moveTo(X0,Y1-BL); ctx.lineTo(X0,Y1); ctx.lineTo(X0+BL,Y1);
   ctx.moveTo(X1-BL,Y1); ctx.lineTo(X1,Y1); ctx.lineTo(X1,Y1-BL);
   ctx.stroke(); ctx.restore();
-  // 시작 디텍트 연출 — 실제 얼굴 메쉬(삼각 테셀레이션), 아주 얇은 초록 선, 큰 점 없음, 얼굴만. 처음 몇 초만.
+  // 시작 디텍트 연출 — 하늘색 원이 얼굴 중앙에서 밖으로 점점 커짐(레이더 핑). 처음 몇 초만.
   if(performance.now()<scanUntil){
-    var life=scanUntil-performance.now();
+    var now=performance.now(), life=scanUntil-now;
     var A=Math.min(1, Math.min((4600-life)/400, life/500));  // 페이드 인/아웃
-    var TESS=FaceLandmarker.FACE_LANDMARKS_TESSELATION;
-    ctx.save(); ctx.shadowColor='rgba(60,230,120,0.45)'; ctx.shadowBlur=3;
-    ctx.strokeStyle='rgba(70,235,130,'+(0.34*A)+')'; ctx.lineWidth=0.6;
-    ctx.beginPath();
-    for(var ti=0;ti<TESS.length;ti++){ var a=lm[TESS[ti].start], b=lm[TESS[ti].end]; if(!a||!b)continue; ctx.moveTo(a.x*cw,a.y*ch); ctx.lineTo(b.x*cw,b.y*ch); }
-    ctx.stroke(); ctx.restore();
+    var cx=(X0+X1)/2, cy=(Y0+Y1)/2, R=Math.hypot(X1-X0,Y1-Y0)/2*1.05;
+    ctx.save(); ctx.shadowColor='rgba(96,214,255,0.7)'; ctx.shadowBlur=10;
+    for(var k=0;k<2;k++){                          // 위상 다른 원 2개가 번갈아 확장
+      var pr=((now/1600 + k*0.5)%1), rr=R*pr;
+      ctx.strokeStyle='rgba(120,222,255,'+(A*0.65*(1-pr))+')'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(cx,cy,rr,0,Math.PI*2); ctx.stroke();
+    }
+    ctx.restore();
   }
 
   // 지표 계산

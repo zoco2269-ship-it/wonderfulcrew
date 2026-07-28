@@ -403,7 +403,7 @@ async function computePerson(){
   // 디스플레이 해상도로 확대 + 약한 블러(AA만)
   var pc=document.createElement('canvas'); pc.width=cw; pc.height=ch; var pctx=pc.getContext('2d');
   pctx.drawImage(baseImg,0,0,cw,ch);
-  pctx.globalCompositeOperation='destination-in'; pctx.filter='blur(1px)';
+  pctx.globalCompositeOperation='destination-in'; pctx.filter='blur(2.2px)';  // 경계 더 부드럽게(덜 어색)
   pctx.drawImage(mk2,0,0,cw,ch); pctx.filter='none';
   personCanvas=pc;
   if(mask.close)mask.close(); if(res.close)res.close();

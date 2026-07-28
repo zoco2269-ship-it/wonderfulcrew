@@ -102,16 +102,18 @@ import { FaceLandmarker, FilesetResolver, PoseLandmarker } from "https://cdn.jsd
 var $=function(id){return document.getElementById(id);};
 var landmarker=null, du=null, running=false, stream=null, lastT=-1, lastMsg=0, lastTs=0, errShown=false;
 var audioCtx=null, analyser=null, abuf=null, voiceScore=0, pitchHz=0, lastVol=0, smileFrames=0, totalFrames=0;
-var poseLm=null, shoulderScore=100, scanUntil=0;
+var poseLm=null, shoulderScore=100, scanUntil=0, shoulderEMA=null;
 function analyzePose(pr){
   if(!pr || !pr.landmarks || !pr.landmarks[0]) return;
   var p=pr.landmarks[0], L=p[11], R=p[12];
   if(!L||!R) return;
   if(L.visibility!==undefined && (L.visibility<0.4||R.visibility<0.4)) return;
-  // 어깨 너비 대비 기울기(=각도)로 계산 → 카메라 거리·프레임 무관하게 정확
+  // 어깨 너비 대비 기울기(=각도). 문턱 완화 + 시간평균(EMA)으로 역광·흔들림에도 안정적으로.
   var dy=Math.abs(L.y-R.y), dx=Math.abs(L.x-R.x)||0.001;
   var ratio=dy/dx;                 // tan(기울기 각도)
-  shoulderScore=Math.max(0,Math.min(100,100*(1-ratio/0.13)));  // 약 7.4° 기울면 0점
+  var raw=Math.max(0,Math.min(100,100*(1-ratio/0.22)));  // 약 12.4° 기울면 0점(과민 방지)
+  shoulderEMA = (shoulderEMA==null) ? raw : shoulderEMA*0.75 + raw*0.25;  // 부드럽게
+  shoulderScore=shoulderEMA;
   setBar('shoulder', shoulderScore);
 }
 function autoCorrelate(buf, sr){
@@ -271,7 +273,7 @@ async function start(){
     $('camPh').style.display='none'; $('rec').classList.add('on');
     $('status').textContent='실시간 분석 중… 얼굴에 스캔 프레임이 뜨면 정상이에요';
     $('startBtn').style.display='none'; $('stopBtn').style.display='inline-block';
-    running=true; lastTs=0; errShown=false; smileFrames=0; totalFrames=0; voiceScore=0; shoulderScore=100; scanUntil=performance.now()+3500; loop();
+    running=true; lastTs=0; errShown=false; smileFrames=0; totalFrames=0; voiceScore=0; shoulderScore=100; shoulderEMA=null; scanUntil=performance.now()+3500; loop();
   }catch(e){
     $('status').textContent='⚠ 시작 실패: '+((e&&e.message)||e);
     $('startBtn').disabled=false;

@@ -200,24 +200,20 @@ function analyze(res){
   ctx.moveTo(X0,Y1-BL); ctx.lineTo(X0,Y1); ctx.lineTo(X0+BL,Y1);
   ctx.moveTo(X1-BL,Y1); ctx.lineTo(X1,Y1); ctx.lineTo(X1,Y1-BL);
   ctx.stroke(); ctx.restore();
-  // 시작 스캔 연출 — 레이더식(회전 스윕 + 확장 핑 링). 첨단 디텍트 느낌, 처음 몇 초만.
+  // 시작 스캔 연출 — 얼굴 전체에 옅은 노드 + 윤곽선(디텍트 느낌). 눈/입 집중 X, 그물처럼 빽빽 X. 처음 몇 초만.
   if(performance.now()<scanUntil){
-    var now=performance.now(), cx=(X0+X1)/2, cy=(Y0+Y1)/2, R=Math.hypot(X1-X0,Y1-Y0)/2;
-    ctx.save();
-    // 회전 스윕(부채꼴 트레일)
-    var ang=(now/650)%(Math.PI*2);
-    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,R,ang-0.85,ang); ctx.closePath();
-    var rg=ctx.createRadialGradient(cx,cy,0,cx,cy,R); rg.addColorStop(0,'rgba(96,214,255,0.20)'); rg.addColorStop(1,'rgba(96,214,255,0)');
-    ctx.fillStyle=rg; ctx.fill();
-    // 스윕 라인(글로우)
-    ctx.shadowColor='rgba(120,220,255,0.95)'; ctx.shadowBlur=14;
-    var lg=ctx.createLinearGradient(cx,cy,cx+Math.cos(ang)*R,cy+Math.sin(ang)*R);
-    lg.addColorStop(0,'rgba(120,222,255,0)'); lg.addColorStop(1,'rgba(205,246,255,0.95)');
-    ctx.strokeStyle=lg; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(ang)*R,cy+Math.sin(ang)*R); ctx.stroke();
-    // 확장 핑 링
-    var pr=(now%1500)/1500, rr=R*pr;
-    ctx.shadowBlur=8; ctx.strokeStyle='rgba(140,230,255,'+(0.55*(1-pr))+')'; ctx.lineWidth=1.6;
-    ctx.beginPath(); ctx.arc(cx,cy,rr,0,Math.PI*2); ctx.stroke();
+    var now=performance.now(), life=scanUntil-now;
+    var A=Math.min(1, Math.min((4600-life)/400, life/500));  // 페이드 인/아웃
+    var JAW=[234,93,132,58,172,136,150,149,176,148,152,377,400,378,379,365,397,288,361,323,454];  // 열린 턱·볼선(머리쪽 X)
+    var NODES=[9,151,107,336,50,280,116,345,168,6,4,172,397,152,58,288,234,454];  // 얼굴 안쪽만, 적게
+    var LINK=[[234,454],[116,345],[168,4]];
+    ctx.save(); ctx.shadowColor='rgba(96,214,255,0.7)'; ctx.shadowBlur=6;
+    ctx.strokeStyle='rgba(130,224,255,'+(0.55*A)+')'; ctx.lineWidth=0.8; ctx.lineCap='round';  // 얇은 턱·볼선(열림)
+    ctx.beginPath(); JAW.forEach(function(id,i){ var p=lm[id]; if(!p)return; var x=p.x*cw,y=p.y*ch; if(i)ctx.lineTo(x,y); else ctx.moveTo(x,y); }); ctx.stroke();
+    ctx.strokeStyle='rgba(130,224,255,'+(0.28*A)+')';                       // 얇은 구조 라인 3개
+    LINK.forEach(function(e){ var a=lm[e[0]],b=lm[e[1]]; if(!a||!b)return; ctx.beginPath(); ctx.moveTo(a.x*cw,a.y*ch); ctx.lineTo(b.x*cw,b.y*ch); ctx.stroke(); });
+    ctx.fillStyle='rgba(185,240,255,'+(0.85*A)+')';                         // 옅은 노드(작게)
+    NODES.forEach(function(id){ var p=lm[id]; if(!p)return; ctx.beginPath(); ctx.arc(p.x*cw,p.y*ch,1.6,0,6.2832); ctx.fill(); });
     ctx.restore();
   }
 

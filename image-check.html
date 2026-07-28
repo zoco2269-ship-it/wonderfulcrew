@@ -153,6 +153,12 @@
           <div class="mk-label" style="margin-top:14px;">✒️ 아이라인 <span class="mk-int"><button id="linerOff" class="on">없음</button><button id="linerOn">있게</button></span></div>
           <div class="mk-label" style="margin-top:14px;">🌫 스모키 <span class="mk-int"><button id="smokyOff" class="on">없음</button><button id="smokyOn">있게</button></span></div>
         </div>
+        <div class="mk-group">
+          <div class="mk-label">🖼 증명사진 배경 <span class="beta">무료</span></div>
+          <div class="mk-swatches" id="bgSwatches"></div>
+          <div id="bgStatus" style="font-size:0.78rem;color:var(--muted);margin-top:6px;"></div>
+          <button id="bgSave" class="go" style="margin-top:10px;display:none;">📥 결과 사진 저장</button>
+        </div>
       </div>
     </div>
   </div>
@@ -261,6 +267,7 @@ var EYE_SHADES=[['피치','#F0A57F'],['코랄','#E08A6E'],['브라운','#8B5A3C'
 
 var $=function(id){return document.getElementById(id);};
 var landmarker=null, lm=null, blend=null, baseImg=null, cw=0, ch=0, lipColor=null, eyeColor=null, eyeStrong=true, eyeliner=false, smoky=false;
+var segmenter=null, personCanvas=null, bgColor=null;
 function hx(hex,a){ hex=hex.replace('#',''); var r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16); return 'rgba('+r+','+g+','+b+','+a+')'; }
 
 async function ensure(){
@@ -275,6 +282,37 @@ async function ensure(){
 }
 
 function drawLoop(ctx, idxs){ idxs.forEach(function(id,i){ var p=lm[id]; var x=p.x*cw, y=p.y*ch; if(i)ctx.lineTo(x,y); else ctx.moveTo(x,y); }); ctx.closePath(); }
+
+// --- 증명사진 배경교체(무료) : MediaPipe Selfie Segmentation ---
+async function ensureSeg(){
+  if(segmenter) return segmenter;
+  var fs=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/wasm");
+  segmenter=await ImageSegmenter.createFromOptions(fs,{
+    baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/latest/selfie_segmenter.tflite"},
+    runningMode:"IMAGE", outputCategoryMask:false, outputConfidenceMasks:true
+  });
+  return segmenter;
+}
+async function computePerson(){
+  if(!baseImg) return;
+  await ensureSeg();
+  var res=segmenter.segment(baseImg);
+  var mask=res.confidenceMasks[0];
+  var mw=mask.width, mh=mask.height, arr=mask.getAsFloat32Array();
+  // 중앙(인물)이 배경으로 잡히면 반전
+  var c=arr[Math.floor(mh/2)*mw+Math.floor(mw/2)]; var inv=(c<0.5);
+  var pc=document.createElement('canvas'); pc.width=mw; pc.height=mh;
+  var pctx=pc.getContext('2d'); pctx.drawImage(baseImg,0,0,mw,mh);
+  var id=pctx.getImageData(0,0,mw,mh), D=id.data;
+  for(var i=0;i<mw*mh;i++){
+    var a=arr[i]; if(inv)a=1-a;
+    var t=(a-0.35)/0.30; t=t<0?0:(t>1?1:t); // 가장자리 소프트 페더링
+    D[i*4+3]=Math.round(255*t);
+  }
+  pctx.putImageData(id,0,0);
+  personCanvas=pc;
+  if(mask.close)mask.close(); if(res.close)res.close();
+}
 
 function paintMakeup(ctx){
   if(!lm) return;
@@ -383,6 +421,10 @@ function paintMakeup(ctx){
 function render(){
   var bctx=$('beforeCanvas').getContext('2d'), actx=$('afterCanvas').getContext('2d');
   [bctx,actx].forEach(function(x){ x.clearRect(0,0,cw,ch); x.filter='none'; x.globalAlpha=1; x.globalCompositeOperation='source-over'; x.drawImage(baseImg,0,0,cw,ch); });
+  if(bgColor && personCanvas){   // 애프터: 배경색 갈고 인물만 올림
+    actx.clearRect(0,0,cw,ch); actx.fillStyle=bgColor; actx.fillRect(0,0,cw,ch);
+    actx.drawImage(personCanvas,0,0,cw,ch);
+  }
   paintMakeup(actx);   // 애프터에만 메이크업
   applySlider();
 }
@@ -411,6 +453,18 @@ function buildSwatches(){
   var eyeNone=none(function(){ eyeColor=null; markOn('eyeSwatches',eyeNone); render(); }); eye.appendChild(eyeNone); eyeNone.classList.add('on');
   EYE_SHADES.forEach(function(s){ var b=document.createElement('div'); b.className='mk-sw'; b.style.background=s[1]; b.title=s[0];
     b.onclick=function(){ eyeColor=s[1]; markOn('eyeSwatches',b); render(); }; eye.appendChild(b); });
+  // 증명사진 배경 프리셋
+  var bg=$('bgSwatches'); if(bg){ bg.innerHTML='';
+    var bgNone=none(function(){ bgColor=null; markOn('bgSwatches',bgNone); $('bgSave').style.display='none'; render(); });
+    bg.appendChild(bgNone); bgNone.classList.add('on');
+    [['흰색','#FFFFFF'],['파랑','#4A90D9'],['회색','#D9DEE3']].forEach(function(s){
+      var b=document.createElement('div'); b.className='mk-sw'; b.style.background=s[1]; b.title=s[0];
+      if(s[1]==='#FFFFFF') b.style.border='1px solid #ccc';
+      b.onclick=async function(){ markOn('bgSwatches',b);
+        if(!personCanvas){ $('bgStatus').textContent='인물을 오려내는 중… (처음 한 번)'; try{ await computePerson(); }catch(e){ $('bgStatus').textContent='인물 분리 실패 — 다른 사진으로 시도해 주세요.'; return; } }
+        bgColor=s[1]; $('bgStatus').textContent=''; $('bgSave').style.display='block'; render(); };
+      bg.appendChild(b); });
+  }
 }
 
 // 아이섀도 강약
@@ -423,6 +477,9 @@ function buildSwatches(){
 (function(){ var off=$('smokyOff'), on=$('smokyOn');
   if(off&&on){ off.onclick=function(){ smoky=false; off.classList.add('on'); on.classList.remove('on'); render(); };
     on.onclick=function(){ smoky=true; on.classList.add('on'); off.classList.remove('on'); render(); }; } })();
+(function(){ var s=$('bgSave'); if(s) s.onclick=function(){
+  var ac=$('afterCanvas'); if(!ac) return;
+  var a=document.createElement('a'); a.download='wonderfulcrew-photo.png'; a.href=ac.toDataURL('image/png'); a.click(); }; })();
 
 /* ---- 얼굴형 분석 & 스타일 추천 (무료, 규칙 기반) ---- */
 function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }

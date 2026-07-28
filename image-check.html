@@ -250,7 +250,7 @@
 
 <!-- 메이크업 입혀보기 — MediaPipe FaceLandmarker (무료, 브라우저 실행) -->
 <script type="module">
-import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs";
+import { FaceLandmarker, FilesetResolver, ImageSegmenter } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs";
 
 var LIPS_OUTER=[61,185,40,39,37,0,267,269,270,409,291,375,321,405,314,17,84,181,91,146];
 var LIPS_INNER=[78,191,80,81,82,13,312,311,310,415,308,324,318,402,317,14,87,178,88,95];
@@ -278,22 +278,39 @@ function drawLoop(ctx, idxs){ idxs.forEach(function(id,i){ var p=lm[id]; var x=p
 
 function paintMakeup(ctx){
   if(!lm) return;
-  // 아이섀도 — 세로 그라데이션(속눈썹→위로 자연 페이드) + 블러 → 뭉침 없이 자연스럽게
+  // 아이섀도 — 눈 전체 덮고 눈꼬리(바깥)로 윙 빼면서 위로 자연 페이드. 바깥쪽을 더 넓게.
   if(eyeColor){
-    var peak=eyeStrong?0.70:0.46;
+    var peak=eyeStrong?0.72:0.48;
+    var midXe=(lm[234].x+lm[454].x)/2;
     [EYE_L,EYE_R].forEach(function(eye){
       var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
-      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var delta=Math.max(8, w*(eyeStrong?0.62:0.44));
+      var d0=Math.abs(pts[0].x/cw-midXe), dN=Math.abs(pts[pts.length-1].x/cw-midXe);
+      if(dN>d0) pts.reverse(); // pts[0]=바깥 눈꼬리, 끝=앞머리
+      var w=Math.abs(pts[0].x-pts[pts.length-1].x);
+      var baseD=Math.max(10, w*(eyeStrong?0.74:0.54));
+      // 상단 경계: 각 점 위로, 바깥일수록 더 높게(눈꼬리 강조)
+      var top=[];
+      for(var i=0;i<pts.length;i++){
+        var outer=1-i/(pts.length-1); // 바깥1→앞머리0
+        top.push({x:pts[i].x, y:pts[i].y-baseD*(0.62+0.7*outer)});
+      }
+      // 눈꼬리 윙 — 바깥+위로 뻗은 두 점
+      var o=pts[0], o2=pts[1];
+      var ux=(o.x-o2.x), uy=(o.y-o2.y); var ul=Math.hypot(ux,uy)||1; ux/=ul; uy/=ul;
+      var wingBase={x:o.x+ux*w*0.15, y:o.y+uy*w*0.15};
+      var wingTop={x:o.x+ux*w*0.20, y:o.y+uy*w*0.20 - baseD*1.05};
       var yb=Math.max.apply(null,pts.map(function(p){return p.y;}));
-      var yt=Math.min.apply(null,pts.map(function(p){return p.y;}))-delta;
+      var yt=Math.min.apply(null,top.map(function(p){return p.y;}));
       var grad=ctx.createLinearGradient(0,yb,0,yt);
       grad.addColorStop(0, hx(eyeColor,peak));
-      grad.addColorStop(0.5, hx(eyeColor,peak*0.45));
+      grad.addColorStop(0.55, hx(eyeColor,peak*0.5));
       grad.addColorStop(1, hx(eyeColor,0));
-      ctx.save(); ctx.filter='blur(5px)'; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=grad;
+      ctx.save(); ctx.filter='blur(6px)'; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=grad;
       ctx.beginPath();
-      pts.forEach(function(p,i){ if(i)ctx.lineTo(p.x,p.y); else ctx.moveTo(p.x,p.y); });
-      for(var i=pts.length-1;i>=0;i--){ ctx.lineTo(pts[i].x, pts[i].y-delta); }
+      ctx.moveTo(pts[0].x,pts[0].y);
+      for(var i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);   // 래시라인 → 앞머리
+      for(var i=top.length-1;i>=0;i--) ctx.lineTo(top[i].x,top[i].y); // 상단 앞머리 → 바깥
+      ctx.lineTo(wingTop.x,wingTop.y); ctx.lineTo(wingBase.x,wingBase.y); // 눈꼬리 윙
       ctx.closePath(); ctx.fill(); ctx.restore();
     });
     ctx.filter='none';

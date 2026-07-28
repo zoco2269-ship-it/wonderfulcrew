@@ -175,10 +175,6 @@ function analyze(res){
   ctx.moveTo(X0,Y1-BL); ctx.lineTo(X0,Y1); ctx.lineTo(X0+BL,Y1);
   ctx.moveTo(X1-BL,Y1); ctx.lineTo(X1,Y1); ctx.lineTo(X1,Y1-BL);
   ctx.stroke(); ctx.restore();
-  // 은은한 얼굴 윤곽 글로우 (점 대신)
-  ctx.save(); ctx.shadowColor='rgba(96,214,255,0.8)'; ctx.shadowBlur=8; ctx.lineCap='round';
-  conn(FaceLandmarker.FACE_LANDMARKS_FACE_OVAL,'rgba(120,222,255,0.4)',1.3);
-  ctx.restore();
   // 우아한 스캔 라인 (얼굴 위→아래 부드럽게)
   var prog=(performance.now()%2000)/2000, sy=Y0+(Y1-Y0)*prog;
   ctx.save(); ctx.shadowColor='rgba(120,220,255,0.9)'; ctx.shadowBlur=14;

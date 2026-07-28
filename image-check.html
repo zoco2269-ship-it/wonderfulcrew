@@ -416,39 +416,32 @@ async function computeJacket(){
 
 function paintMakeup(ctx){
   if(!lm) return;
-  // 아이섀도 — 눈 앞(안쪽)은 투명하게 거의 안 바르고, 중간부터 진해져 눈꼬리(바깥) 최대. 가로 그라데이션.
+  // 아이섀도 — 부드러운 블롭. 눈 앞은 옅게, 눈꼬리로 갈수록 크고 진하게, 경계 없이 자연스럽게 번짐.
   if(eyeColor){
-    var peak=0.30+eyeInt*0.55;
+    var peak=0.24+eyeInt*0.42;  // 자연스럽게(너무 진하지 않게)
     var midXe=(lm[234].x+lm[454].x)/2;
     [EYE_L,EYE_R].forEach(function(eye){
       var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
       var d0=Math.abs(pts[0].x/cw-midXe), dN=Math.abs(pts[pts.length-1].x/cw-midXe);
-      if(dN>d0) pts.reverse(); // pts[0]=바깥 눈꼬리, 끝=앞머리(눈 앞)
+      if(dN>d0) pts.reverse(); // pts[0]=바깥 눈꼬리
       var w=Math.abs(pts[0].x-pts[pts.length-1].x);
-      var baseD=Math.max(10, w*(0.50+eyeInt*0.30));
-      var top=[];
-      for(var i=0;i<pts.length;i++){ var outer=1-i/(pts.length-1); top.push({x:pts[i].x, y:pts[i].y-baseD*(0.55+0.8*outer)}); }
-      var o=pts[0], o2=pts[1];
-      var ux=(o.x-o2.x), uy=(o.y-o2.y); var ul=Math.hypot(ux,uy)||1; ux/=ul; uy/=ul;
-      var wingBase={x:o.x+ux*w*0.15, y:o.y+uy*w*0.15};
-      var wingTop={x:o.x+ux*w*0.20, y:o.y+uy*w*0.20 - baseD*1.05};
-      var yb=Math.max.apply(null,pts.map(function(p){return p.y;}));
-      var yt=Math.min.apply(null,top.map(function(p){return p.y;}));
-      // 오프스크린: 세로 그라데이션으로 채운 뒤 가로(눈앞→눈꼬리) 알파를 곱함
+      var baseD=Math.max(9, w*(0.36+eyeInt*0.18));
       var oc=document.createElement('canvas'); oc.width=cw; oc.height=ch; var octx=oc.getContext('2d');
-      var vg=octx.createLinearGradient(0,yb,0,yt);
-      vg.addColorStop(0, hx(eyeColor,peak)); vg.addColorStop(0.55, hx(eyeColor,peak*0.5)); vg.addColorStop(1, hx(eyeColor,0));
-      octx.save(); octx.filter='blur(6px)'; octx.fillStyle=vg;
-      octx.beginPath(); octx.moveTo(pts[0].x,pts[0].y);
-      for(var i=1;i<pts.length;i++) octx.lineTo(pts[i].x,pts[i].y);
-      for(var i=top.length-1;i>=0;i--) octx.lineTo(top[i].x,top[i].y);
-      octx.lineTo(wingTop.x,wingTop.y); octx.lineTo(wingBase.x,wingBase.y);
-      octx.closePath(); octx.fill(); octx.restore();
-      // 가로 falloff: 눈 앞(투명·경계 안 티남) → 눈꼬리(최대)
-      var innerX=pts[pts.length-1].x, outerX=wingTop.x;
-      var hg=octx.createLinearGradient(innerX,0,outerX,0);
-      hg.addColorStop(0,'rgba(0,0,0,0)'); hg.addColorStop(0.32,'rgba(0,0,0,0.28)'); hg.addColorStop(0.7,'rgba(0,0,0,0.8)'); hg.addColorStop(1,'rgba(0,0,0,1)');
-      octx.globalCompositeOperation='destination-in'; octx.fillStyle=hg; octx.fillRect(0,0,cw,ch);
+      octx.save(); octx.filter='blur(4px)';
+      function blob(cx,cy,r,a){
+        var g=octx.createRadialGradient(cx,cy,0,cx,cy,r);
+        g.addColorStop(0,hx(eyeColor,a)); g.addColorStop(0.55,hx(eyeColor,a*0.5)); g.addColorStop(1,hx(eyeColor,0));
+        octx.fillStyle=g; octx.beginPath(); octx.arc(cx,cy,r,0,6.2832); octx.fill();
+      }
+      var n=pts.length;
+      for(var i=0;i<n;i++){
+        var outer=1-i/(n-1);                 // 0 눈앞 → 1 눈꼬리
+        blob(pts[i].x, pts[i].y-baseD*(0.30+0.25*outer), baseD*(0.55+0.75*outer), peak*(0.12+0.9*outer));
+      }
+      var o=pts[0], o2=pts[1]; var ux=(o.x-o2.x), uy=(o.y-o2.y); var ul=Math.hypot(ux,uy)||1; ux/=ul; uy/=ul;
+      blob(o.x+ux*w*0.08, o.y+uy*w*0.08-baseD*0.55, baseD*0.95, peak*0.8);   // 눈꼬리 윙(번지며 사라짐)
+      blob(o.x+ux*w*0.15, o.y+uy*w*0.15-baseD*0.75, baseD*0.70, peak*0.5);
+      octx.restore();
       ctx.save(); ctx.globalCompositeOperation='multiply'; ctx.drawImage(oc,0,0); ctx.restore();
     });
     ctx.filter='none';
@@ -588,7 +581,7 @@ function buildSwatches(){
   var ja=$('jacketSwatches'); if(ja){ ja.innerHTML='';
     var jaNone=none(function(){ jacketColor=null; markOn('jacketSwatches',jaNone); render(); });
     ja.appendChild(jaNone); jaNone.classList.add('on');
-    [['네이비','#20304F'],['블랙','#181A20'],['차콜','#3A3F4A'],['버건디','#5A2733']].forEach(function(s){
+    [['네이비','#20304F'],['블랙','#181A20'],['차콜','#3A3F4A'],['그레이','#6B7280'],['버건디','#5A2733'],['레드','#8E2233'],['카멜','#6E4B2A'],['그린','#2C4A3B']].forEach(function(s){
       var b=document.createElement('div'); b.className='mk-sw'; b.style.background=s[1]; b.title=s[0];
       b.onclick=async function(){ markOn('jacketSwatches',b);
         if(!clothesCanvas){ $('jacketStatus').textContent='옷 영역 인식 중… (처음 한 번)'; try{ await computeJacket(); }catch(e){ $('jacketStatus').textContent='옷 인식 실패 — 다른 사진으로 시도해 주세요.'; return; } }

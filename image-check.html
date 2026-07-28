@@ -173,6 +173,17 @@
     </div>
   </div>
 
+  <div class="card" id="finishCard" style="display:none;border:1.5px solid var(--gold);background:linear-gradient(180deg,#FFFDF6,#fff);">
+    <div class="mk-title">✨ AI 완성 면접사진 <span class="beta" style="background:var(--navy);color:#fff;">프리미엄</span></div>
+    <p style="font-size:0.92rem;color:var(--mid);line-height:1.7;margin:2px 0 14px;">업로드한 사진을 AI가 <b>메이크업 · 헤어 정리(쪽머리) · 피부 보정 · 파란 배경</b>까지 한 번에 완성해 드려요. 몇십만원짜리 스튜디오 촬영을 대체하는 프리미엄 기능입니다.</p>
+    <button class="go" id="finishBtn">✨ AI로 완성사진 만들기</button>
+    <div id="finishStatus" style="font-size:0.84rem;color:var(--muted);margin-top:10px;line-height:1.6;"></div>
+    <div id="finishResult" style="display:none;text-align:center;margin-top:16px;">
+      <img id="finishImg" alt="AI 완성 사진" style="max-width:340px;width:100%;border-radius:14px;box-shadow:0 10px 30px rgba(26,35,64,0.18);">
+      <div><button class="go" id="finishSave" style="margin-top:12px;max-width:340px;">📥 완성사진 저장</button></div>
+    </div>
+  </div>
+
   <div class="card" id="styleCard" style="display:none;">
     <div class="mk-title">🧭 얼굴형 & 스타일 추천 <span class="beta">무료·AI 미사용</span></div>
     <div class="sline"><b>얼굴형</b><span id="faceShape">-</span></div>
@@ -218,6 +229,7 @@
         $('drop').querySelector('.t').textContent='사진 변경';
         $('drop').querySelector('.s').style.display='none';
         $('go').disabled=false;
+        if($('finishCard')){ $('finishCard').style.display='block'; $('finishResult').style.display='none'; $('finishStatus').textContent=''; }
       };
       img.src=reader.result;
     };
@@ -255,8 +267,26 @@
     }finally{ $('go').disabled=false; }
   });
 
+  var finishBtn=$('finishBtn');
+  if(finishBtn) finishBtn.addEventListener('click', async function(){
+    if(!imgData){ $('finishStatus').textContent='먼저 사진을 올려주세요.'; return; }
+    finishBtn.disabled=true; $('finishResult').style.display='none';
+    $('finishStatus').textContent='AI가 완성사진을 만드는 중이에요… (20~40초 정도 걸려요)';
+    try{
+      var r=await fetch('/api/photo-finish',{method:'POST',headers:{'content-type':'application/json'},
+        body:JSON.stringify({image:imgData, mediaType:mediaType, target:target})});
+      var d=await r.json();
+      if(!r.ok||!d.image) throw new Error((d.error&&(d.error.message||d.error))||'완성에 실패했어요.');
+      $('finishImg').src=d.image; $('finishResult').style.display='block'; $('finishStatus').textContent='';
+      $('finishSave').onclick=function(){ var a=document.createElement('a'); a.download='wonderfulcrew-AI-photo.png'; a.href=d.image; a.click(); };
+      $('finishResult').scrollIntoView({behavior:'smooth',block:'center'});
+    }catch(e){ $('finishStatus').textContent='⚠ '+(e.message||'오류가 발생했어요. 잠시 후 다시 시도해 주세요.'); }
+    finally{ finishBtn.disabled=false; }
+  });
+
   $('redo').addEventListener('click', function(){
     imgData=null; $('file').value=''; $('preview').style.display='none';
+    if($('finishCard')){ $('finishCard').style.display='none'; }
     $('drop').querySelector('.ic').style.display=''; $('drop').querySelector('.t').textContent='사진 올리기'; $('drop').querySelector('.s').style.display='';
     $('go').disabled=true; $('result').classList.remove('on'); $('rbody').textContent='';
     window.scrollTo({top:0,behavior:'smooth'});

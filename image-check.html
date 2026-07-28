@@ -298,21 +298,38 @@ function paintMakeup(ctx){
     });
     ctx.filter='none';
   }
-  // 스모키 — 눈가에 어두운 음영을 넓고 부드럽게 번지듯(위 눈꺼풀 위주). 아이섀도와 겹쳐도 자연스럽게.
+  // 스모키 — 속눈썹 라인에 짙게 깔고, 눈꼬리(뒷라인)까지 진하게 빼고, 거기서부터 은은하게 번짐.
   if(smoky){
-    var sc='#2E2833';
+    var sc='#241F28', midXs=(lm[234].x+lm[454].x)/2;
     [EYE_L,EYE_R].forEach(function(eye){
       var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
-      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var up=Math.max(10, w*0.82);
+      var d0=Math.abs(pts[0].x/cw-midXs), dN=Math.abs(pts[pts.length-1].x/cw-midXs);
+      if(dN>d0) pts.reverse(); // pts[0]=바깥 눈꼬리
+      var w=Math.abs(pts[0].x-pts[pts.length-1].x);
+      // (1) 은은한 스모키 번짐 — 속눈썹 라인에서 위로 살짝, 강한 블러
+      var up=Math.max(8, w*0.40);
       var yb=Math.max.apply(null,pts.map(function(p){return p.y;}));
       var yt=Math.min.apply(null,pts.map(function(p){return p.y;}))-up;
       var g=ctx.createLinearGradient(0,yb,0,yt);
-      g.addColorStop(0, hx(sc,0.80)); g.addColorStop(0.4, hx(sc,0.44)); g.addColorStop(1, hx(sc,0));
-      ctx.save(); ctx.filter='blur(6px)'; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=g;
+      g.addColorStop(0, hx(sc,0.70)); g.addColorStop(0.5, hx(sc,0.28)); g.addColorStop(1, hx(sc,0));
+      ctx.save(); ctx.filter='blur(7px)'; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=g;
       ctx.beginPath();
       pts.forEach(function(p,i){ if(i)ctx.lineTo(p.x,p.y); else ctx.moveTo(p.x,p.y); });
       for(var i=pts.length-1;i>=0;i--){ ctx.lineTo(pts[i].x, pts[i].y-up); }
       ctx.closePath(); ctx.fill(); ctx.restore();
+      // (2) 짙은 스모키 라이너 — 눈꼬리(바깥) 두껍게 → 앞머리 얇게, 뒷라인까지 길게, 살짝 번지게
+      var maxW=Math.max(1.6, w*0.058);
+      ctx.save(); ctx.filter='blur(1.6px)'; ctx.strokeStyle=hx(sc,0.92); ctx.lineCap='round'; ctx.lineJoin='round';
+      for(var i=0;i<pts.length-1;i++){
+        var t=1-i/(pts.length-1); // 바깥 1 → 앞머리 0
+        ctx.beginPath(); ctx.lineWidth=maxW*(0.2+0.8*t);
+        ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[i+1].x,pts[i+1].y); ctx.stroke();
+      }
+      var o=pts[0], o2=pts[1]; // 눈꼬리를 뒤로 길게 빼서 뒷라인까지 짙은 윙
+      ctx.beginPath(); ctx.lineWidth=maxW*0.95;
+      ctx.moveTo(o.x,o.y); ctx.lineTo(o.x+(o.x-o2.x)*0.95, o.y+(o.y-o2.y)*0.95-maxW*0.35); ctx.stroke();
+      ctx.restore();
+      ctx.filter='none';
     });
     ctx.filter='none';
   }

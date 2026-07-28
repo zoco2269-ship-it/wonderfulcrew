@@ -341,17 +341,18 @@ async function computePerson(){
   var res=segmenter.segment(baseImg);
   var mask=res.confidenceMasks[0];
   var mw=mask.width, mh=mask.height, arr=mask.getAsFloat32Array();
-  // 중앙(인물)이 배경으로 잡히면 반전
-  var c=arr[Math.floor(mh/2)*mw+Math.floor(mw/2)]; var inv=(c<0.5);
-  var pc=document.createElement('canvas'); pc.width=mw; pc.height=mh;
-  var pctx=pc.getContext('2d'); pctx.drawImage(baseImg,0,0,mw,mh);
-  var id=pctx.getImageData(0,0,mw,mh), D=id.data;
-  for(var i=0;i<mw*mh;i++){
-    var a=arr[i]; if(inv)a=1-a;
-    var t=(a-0.35)/0.30; t=t<0?0:(t>1?1:t); // 가장자리 소프트 페더링
-    D[i*4+3]=Math.round(255*t);
-  }
-  pctx.putImageData(id,0,0);
+  var c=arr[Math.floor(mh/2)*mw+Math.floor(mw/2)]; var inv=(c<0.5); // 중앙이 배경으로 잡히면 반전
+  // 알파 마스크(저해상)
+  var mk=document.createElement('canvas'); mk.width=mw; mk.height=mh; var mctx=mk.getContext('2d');
+  var mid=mctx.createImageData(mw,mh), MD=mid.data;
+  for(var i=0;i<mw*mh;i++){ var a=arr[i]; if(inv)a=1-a; var t=(a-0.25)/0.5; t=t<0?0:(t>1?1:t);
+    MD[i*4]=255;MD[i*4+1]=255;MD[i*4+2]=255;MD[i*4+3]=Math.round(255*t); }
+  mctx.putImageData(mid,0,0);
+  // 디스플레이 해상도로 확대 + 블러 → 경계 부드럽게
+  var pc=document.createElement('canvas'); pc.width=cw; pc.height=ch; var pctx=pc.getContext('2d');
+  pctx.drawImage(baseImg,0,0,cw,ch);
+  pctx.globalCompositeOperation='destination-in'; pctx.filter='blur(2px)';
+  pctx.drawImage(mk,0,0,cw,ch); pctx.filter='none';
   personCanvas=pc;
   if(mask.close)mask.close(); if(res.close)res.close();
 }
@@ -370,9 +371,16 @@ async function computeJacket(){
   await ensureSegMC();
   var res=segMC.segment(baseImg);
   var mask=res.categoryMask; var mw=mask.width, mh=mask.height, arr=mask.getAsUint8Array();
+  // 밝기 샘플 — 어두운 옷(자켓)만 고르고 밝은 블라우스는 제외
+  var tmp=document.createElement('canvas'); tmp.width=mw; tmp.height=mh; var tctx=tmp.getContext('2d');
+  tctx.drawImage(baseImg,0,0,mw,mh); var src=tctx.getImageData(0,0,mw,mh).data;
   var cc=document.createElement('canvas'); cc.width=mw; cc.height=mh;
   var cctx=cc.getContext('2d'); var id=cctx.createImageData(mw,mh), D=id.data;
-  for(var i=0;i<mw*mh;i++){ var on=(arr[i]===4); D[i*4]=255;D[i*4+1]=255;D[i*4+2]=255; D[i*4+3]=on?255:0; }
+  for(var i=0;i<mw*mh;i++){
+    var lum=(0.299*src[i*4]+0.587*src[i*4+1]+0.114*src[i*4+2])/255;
+    var on=(arr[i]===4 && lum<0.55); // clothes && 어두움 → 자켓
+    D[i*4]=255;D[i*4+1]=255;D[i*4+2]=255; D[i*4+3]=on?255:0;
+  }
   cctx.putImageData(id,0,0);
   clothesCanvas=cc;
   if(mask.close)mask.close(); if(res.close)res.close();

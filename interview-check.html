@@ -40,6 +40,10 @@
 
   .panel{background:var(--card,#fff);border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:0 6px 22px rgba(26,35,64,0.06);}
   .coach{background:linear-gradient(135deg,#5FB2EA,#3E9AD6);color:#fff;border-radius:16px;padding:16px 18px;font-size:1.05rem;font-weight:700;text-align:center;line-height:1.5;margin:0 auto 16px;max-width:540px;min-height:56px;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(62,154,214,0.32);}
+  .coachrow{display:flex;gap:14px;align-items:stretch;max-width:900px;margin:0 auto 16px;}
+  .coachrow .coach{margin:0;max-width:none;flex:1;}
+  .coachrow .controls{margin:0;flex-shrink:0;display:flex;gap:8px;align-items:center;}
+  @media(max-width:600px){.coachrow{flex-direction:column;}}
   .bar{margin-bottom:14px;}
   .bar .lab{display:flex;justify-content:space-between;font-size:0.86rem;margin-bottom:5px;color:var(--ink);font-weight:600;}
   .bar .track{height:9px;background:#EEF0F3;border-radius:6px;overflow:hidden;}
@@ -74,7 +78,13 @@
       <div class="rec" id="rec"><i></i> 분석 중</div>
     </div>
   </div>
-  <div class="coach" id="coach">준비되면 시작하세요 🙂</div>
+  <div class="coachrow">
+    <div class="coach" id="coach">준비되면 시작하세요 🙂</div>
+    <div class="controls">
+      <button class="btn-gold" id="startBtn">● 면접 분석 시작</button>
+      <button class="btn-ghost" id="stopBtn" style="display:none;">■ 정지</button>
+    </div>
+  </div>
   <div class="metrics">
     <div class="bar"><div class="lab"><span>😊 미소</span><span id="v-smile">–</span></div><div class="track"><div class="fill" id="f-smile"></div></div></div>
     <div class="bar"><div class="lab"><span>🧭 정면 응시</span><span id="v-front">–</span></div><div class="track"><div class="fill" id="f-front"></div></div></div>
@@ -86,10 +96,6 @@
   </div>
   <div class="tips" style="text-align:center;max-width:560px;margin:12px auto 0;">실제 면접처럼 <b>활짝 웃고</b>, 카메라 렌즈를 바라보며, <b>또렷한 목소리</b>로 말해보세요.</div>
 
-  <div class="controls">
-    <button class="btn-gold" id="startBtn">● 면접 분석 시작</button>
-    <button class="btn-ghost" id="stopBtn" style="display:none;">■ 정지</button>
-  </div>
   <div class="status" id="status"></div>
 </div>
 

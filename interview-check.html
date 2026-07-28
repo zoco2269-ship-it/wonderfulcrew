@@ -200,13 +200,22 @@ function analyze(res){
   ctx.moveTo(X0,Y1-BL); ctx.lineTo(X0,Y1); ctx.lineTo(X0+BL,Y1);
   ctx.moveTo(X1-BL,Y1); ctx.lineTo(X1,Y1); ctx.lineTo(X1,Y1-BL);
   ctx.stroke(); ctx.restore();
-  // 우아한 스캔 라인 — 처음 몇 초만 훑고 멈춤(계속 나오면 방해되므로)
+  // 시작 스캔 연출 — 첨단 스캐너처럼 빔이 위아래 왕복하며 얼굴을 훑음(처음 몇 초만).
   if(performance.now()<scanUntil){
-    var prog=(performance.now()%2000)/2000, sy=Y0+(Y1-Y0)*prog;
-    ctx.save(); ctx.shadowColor='rgba(120,220,255,0.9)'; ctx.shadowBlur=14;
+    var per=1300, ph=(performance.now()%(per*2))/(per*2);   // 0..1 (왕복 1주기)
+    var tri=ph<0.5 ? ph*2 : 1-(ph-0.5)*2;                    // 0→1→0 (아래로 갔다 위로)
+    var sy=Y0+(Y1-Y0)*tri, band=Math.max(24,(Y1-Y0)*0.10);
+    ctx.save();
+    // 빔 밴드(위아래 페이드)
+    var vg=ctx.createLinearGradient(0,sy-band,0,sy+band);
+    vg.addColorStop(0,'rgba(96,214,255,0)'); vg.addColorStop(0.5,'rgba(96,214,255,0.20)'); vg.addColorStop(1,'rgba(96,214,255,0)');
+    ctx.fillStyle=vg; ctx.fillRect(X0,sy-band,X1-X0,band*2);
+    // 스캔 라인(밝은 코어 + 글로우)
+    ctx.shadowColor='rgba(120,220,255,0.95)'; ctx.shadowBlur=16;
     var grd=ctx.createLinearGradient(X0,0,X1,0);
-    grd.addColorStop(0,'rgba(120,222,255,0)'); grd.addColorStop(0.5,'rgba(185,242,255,0.9)'); grd.addColorStop(1,'rgba(120,222,255,0)');
-    ctx.strokeStyle=grd; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(X0,sy); ctx.lineTo(X1,sy); ctx.stroke(); ctx.restore();
+    grd.addColorStop(0,'rgba(120,222,255,0)'); grd.addColorStop(0.5,'rgba(205,246,255,1)'); grd.addColorStop(1,'rgba(120,222,255,0)');
+    ctx.strokeStyle=grd; ctx.lineWidth=2.2; ctx.beginPath(); ctx.moveTo(X0,sy); ctx.lineTo(X1,sy); ctx.stroke();
+    ctx.restore();
   }
 
   // 지표 계산
@@ -275,7 +284,7 @@ async function start(){
     $('camPh').style.display='none'; $('rec').classList.add('on');
     $('status').textContent='실시간 분석 중… 얼굴에 스캔 프레임이 뜨면 정상이에요';
     $('startBtn').style.display='none'; $('stopBtn').style.display='inline-block';
-    running=true; lastTs=0; errShown=false; smileFrames=0; totalFrames=0; voiceScore=0; shoulderScore=100; shoulderEMA=null; scanUntil=performance.now()+3500; loop();
+    running=true; lastTs=0; errShown=false; smileFrames=0; totalFrames=0; voiceScore=0; shoulderScore=100; shoulderEMA=null; scanUntil=performance.now()+4600; loop();
   }catch(e){
     $('status').textContent='⚠ 시작 실패: '+((e&&e.message)||e);
     $('startBtn').disabled=false;

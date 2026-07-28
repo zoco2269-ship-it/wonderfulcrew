@@ -180,19 +180,12 @@
   <div class="card" id="finishCard" style="display:none;border:1.5px solid var(--gold);background:linear-gradient(180deg,#FFFDF6,#fff);">
     <div class="mk-title">✨ AI 완성 면접사진 <span class="beta" style="background:var(--navy);color:#fff;">프리미엄</span></div>
     <p style="font-size:0.92rem;color:var(--mid);line-height:1.7;margin:2px 0 14px;">업로드한 사진을 AI가 <b>메이크업 · 헤어 정리(깔끔한 쪽머리, 중앙 가르마 없이) · 피부 보정 · 배경</b>까지 한 번에 완성해 드려요. 몇십만원짜리 스튜디오 촬영을 대체하는 프리미엄 기능입니다.</p>
-    <div class="fin-opt"><span class="fin-l">🖼 배경</span>
-      <button data-k="bg" data-v="white" class="on">흰색</button>
-      <button data-k="bg" data-v="lightblue">연한 파랑</button>
-      <button data-k="bg" data-v="blue">진한 파랑</button>
-    </div>
-    <div class="fin-opt"><span class="fin-l">🧥 자켓</span>
-      <button data-k="jacket" data-v="navy" class="on">네이비</button>
-      <button data-k="jacket" data-v="black">블랙</button>
-      <button data-k="jacket" data-v="charcoal">차콜</button>
-    </div>
-    <div class="fin-opt"><span class="fin-l">👚 블라우스</span>
-      <button data-k="blouse" data-v="white" class="on">화이트</button>
-      <button data-k="blouse" data-v="ivory">아이보리</button>
+    <div class="fin-opt"><span class="fin-l">🖼 배경색</span><div class="mk-swatches" id="finBgSw"></div></div>
+    <div class="fin-opt"><span class="fin-l">🧥 자켓색</span><div class="mk-swatches" id="finJkSw"></div></div>
+    <div class="fin-opt"><span class="fin-l">👚 넥라인</span>
+      <button data-k="neckline" data-v="shirt" class="on">카라 셔츠</button>
+      <button data-k="neckline" data-v="round">카라 없음</button>
+      <button data-k="neckline" data-v="highneck">목까지</button>
     </div>
     <button class="go" id="finishBtn" style="margin-top:14px;">✨ AI로 완성사진 만들기</button>
     <div id="finishStatus" style="font-size:0.84rem;color:var(--muted);margin-top:10px;line-height:1.6;"></div>
@@ -285,7 +278,7 @@
     }finally{ $('go').disabled=false; }
   });
 
-  var finOpts={bg:'white', jacket:'navy', blouse:'white'};
+  var finOpts={bgHex:'#9CC3E8', jacketHex:'#20304F', neckline:'shirt'};
   Array.prototype.forEach.call(document.querySelectorAll('.fin-opt button'), function(b){
     b.addEventListener('click', function(){
       var k=b.getAttribute('data-k');
@@ -293,6 +286,22 @@
       b.classList.add('on'); finOpts[k]=b.getAttribute('data-v');
     });
   });
+  function buildFinSw(host, list, key, def){
+    var el=$(host); if(!el) return; el.innerHTML='';
+    function mark(sel){ Array.prototype.forEach.call(el.children,function(c){c.classList.remove('on');}); if(sel)sel.classList.add('on'); }
+    list.forEach(function(s){ var b=document.createElement('div'); b.className='mk-sw'; b.style.background=s[1]; b.title=s[0];
+      if(s[1].toLowerCase()==='#ffffff') b.style.border='1px solid #ccc';
+      if(s[1]===def) b.classList.add('on');
+      b.onclick=function(){ finOpts[key]=s[1]; mark(b); }; el.appendChild(b); });
+    var wrap=document.createElement('label'); wrap.className='mk-sw pick'; wrap.title='직접 색'; wrap.style.position='relative';
+    var em=document.createElement('span'); em.textContent='🎨'; em.style.pointerEvents='none';
+    var inp=document.createElement('input'); inp.type='color'; inp.value=def;
+    inp.style.position='absolute'; inp.style.opacity='0'; inp.style.width='100%'; inp.style.height='100%'; inp.style.left='0'; inp.style.top='0'; inp.style.cursor='pointer';
+    inp.oninput=function(){ finOpts[key]=inp.value; wrap.style.boxShadow='0 0 0 2px '+inp.value; mark(wrap); };
+    wrap.appendChild(em); wrap.appendChild(inp); el.appendChild(wrap);
+  }
+  buildFinSw('finBgSw', [['흰색','#FFFFFF'],['연하늘','#DCEAF7'],['하늘','#9CC3E8'],['진파랑','#4A78C0'],['회색','#DDE1E6']], 'bgHex', '#9CC3E8');
+  buildFinSw('finJkSw', [['네이비','#20304F'],['블랙','#181A20'],['차콜','#3A3F4A'],['그레이','#6B7280'],['버건디','#5A2733']], 'jacketHex', '#20304F');
   var finishBtn=$('finishBtn');
   if(finishBtn) finishBtn.addEventListener('click', async function(){
     if(!imgData){ $('finishStatus').textContent='먼저 사진을 올려주세요.'; return; }
@@ -300,7 +309,7 @@
     $('finishStatus').textContent='AI가 완성사진을 만드는 중이에요… (20~40초 정도 걸려요)';
     try{
       var r=await fetch('/api/photo-finish',{method:'POST',headers:{'content-type':'application/json'},
-        body:JSON.stringify({image:imgData, mediaType:mediaType, target:target, bg:finOpts.bg, jacket:finOpts.jacket, blouse:finOpts.blouse})});
+        body:JSON.stringify({image:imgData, mediaType:mediaType, target:target, bgHex:finOpts.bgHex, jacketHex:finOpts.jacketHex, neckline:finOpts.neckline})});
       var d=await r.json();
       if(!r.ok||!d.image) throw new Error((d.error&&(d.error.message||d.error))||'완성에 실패했어요.');
       $('finishImg').src=d.image; $('finishResult').style.display='block'; $('finishStatus').textContent='';

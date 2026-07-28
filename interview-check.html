@@ -158,17 +158,11 @@ function analyze(res){
   var lm=res.faceLandmarks[0];
   // 초록 메쉬 (DrawingUtils 없이 직접 그림)
   function conn(set,color,lw){ if(!set)return; ctx.strokeStyle=color; ctx.lineWidth=lw; ctx.beginPath(); for(var i=0;i<set.length;i++){ var a=lm[set[i].start], b=lm[set[i].end]; if(!a||!b)continue; ctx.moveTo(a.x*cw,a.y*ch); ctx.lineTo(b.x*cw,b.y*ch); } ctx.stroke(); }
-  // 분석 메쉬 — 은은한 네트 + 적당한 포인트 (레퍼런스 스타일)
-  ctx.save(); ctx.lineCap='round';
-  conn(FaceLandmarker.FACE_LANDMARKS_TESSELATION,'rgba(80,205,120,0.22)',0.6);
-  ctx.shadowColor='rgba(64,200,120,0.6)'; ctx.shadowBlur=4;
-  conn(FaceLandmarker.FACE_LANDMARKS_FACE_OVAL,'rgba(95,220,140,0.7)',1.2);
-  conn(FaceLandmarker.FACE_LANDMARKS_LEFT_EYE,'rgba(120,235,160,0.85)',1.1);
-  conn(FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE,'rgba(120,235,160,0.85)',1.1);
-  conn(FaceLandmarker.FACE_LANDMARKS_LIPS,'rgba(120,235,160,0.85)',1.1);
-  ctx.shadowBlur=0;
-  ctx.fillStyle='rgba(80,220,130,0.95)';
-  for(var pi=0;pi<lm.length;pi+=11){ ctx.beginPath(); ctx.arc(lm[pi].x*cw, lm[pi].y*ch, 1.8, 0, 6.2832); ctx.fill(); }
+  // 그물 없이 — 핵심 포인트에만 글로우 점(디텍트 느낌 + 은은한 펄스)
+  var KEYPTS=[10,152,234,454,127,356,33,133,263,362,159,145,386,374,105,66,296,334,1,6,98,327,61,291,13,14,205,425];
+  var pulse=1+0.22*Math.sin(performance.now()/280);
+  ctx.save(); ctx.shadowColor='rgba(64,224,208,0.95)'; ctx.shadowBlur=7; ctx.fillStyle='rgba(120,242,224,0.95)';
+  for(var ki=0;ki<KEYPTS.length;ki++){ var p=lm[KEYPTS[ki]]; if(!p)continue; ctx.beginPath(); ctx.arc(p.x*cw,p.y*ch,2.3*pulse,0,6.2832); ctx.fill(); }
   ctx.restore();
 
   // 지표 계산

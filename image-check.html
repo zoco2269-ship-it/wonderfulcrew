@@ -119,10 +119,19 @@
   <p class="ex-cap">AI가 이렇게 진단해드려요 — 무표정보다 <b>치아가 보이는 밝은 미소</b>가 승무원 사진의 핵심이에요.</p>
 
   <div class="card">
+    <div style="background:var(--cream,#F1F8FE);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:16px;">
+      <div style="font-weight:800;color:var(--navy);font-size:0.95rem;margin-bottom:8px;">📸 이렇게 셀카 한 장이면 충분해요 (규격만 지켜주세요)</div>
+      <div style="font-size:0.86rem;color:var(--mid);line-height:1.85;">
+        ① <b>정면</b>으로, 카메라를 <b>눈높이</b>에 &nbsp;②&nbsp;<b>얼굴~어깨</b>까지 나오게 (너무 가깝지 않게)<br>
+        ③ <b>밝은 정면 조명</b> (창 등지는 역광 ✗) &nbsp;④&nbsp;<b>단색·깔끔한 벽</b> 앞에서 (흐릿한 배경 ✗)<br>
+        ⑤ <b>초점 또렷하게</b> (흔들림 ✗) &nbsp;⑥&nbsp;안경 반사·모자 ✗
+      </div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-top:8px;line-height:1.6;">💡 <b>헤어·메이크업·정장·배경은 AI가 알아서</b> 완성해요. 셀카는 위 규격만 지키면 훨씬 정확하게 나와요!</div>
+    </div>
     <label class="drop" id="drop" for="file">
       <div class="ic">📷</div>
       <div class="t">사진 올리기</div>
-      <div class="s">정면 얼굴이 잘 나온 사진이 좋아요 (JPG·PNG)</div>
+      <div class="s">위 규격대로 찍은 정면 셀카 (JPG·PNG)</div>
       <img id="preview" alt="preview">
     </label>
     <input type="file" id="file" accept="image/*" hidden>

@@ -204,7 +204,11 @@ function analyze(res){
     var lC=lm[61], rC=lm[291], bot=lm[17];                // 입 아래 스마일 가이드(위로 올리라는 U 곡선)
     ctx.beginPath(); ctx.moveTo(lC.x*cw,lC.y*ch);
     ctx.quadraticCurveTo(bot.x*cw, bot.y*ch+18*rev, rC.x*cw, rC.y*ch); ctx.stroke();
-    [33,133,362,263].forEach(function(id){ var p=lm[id]; ctx.beginPath(); ctx.arc(p.x*cw,p.y*ch,3.2,0,6.2832); ctx.fill(); }); // 눈가(아이스마일)
+    // 눈웃음 가이드 — 눈 아래 부드러운 크레센트(웃으면 눈이 접히는 느낌). 점 대신.
+    function eyeSmile(oId,iId,bId){ var o=lm[oId],ii=lm[iId],b=lm[bId]; if(!o||!ii||!b)return;
+      ctx.beginPath(); ctx.moveTo(o.x*cw,o.y*ch);
+      ctx.quadraticCurveTo(b.x*cw, b.y*ch+7*rev, ii.x*cw, ii.y*ch); ctx.stroke(); }
+    eyeSmile(33,133,145); eyeSmile(263,362,374);
     ctx.restore();
   }
   // 정면(코 위치 vs 얼굴 중심)

@@ -244,7 +244,7 @@ async function start(){
     await v.play();
     var c=$('mesh'); c.width=v.videoWidth||640; c.height=v.videoHeight||480;
     $('camPh').style.display='none'; $('rec').classList.add('on');
-    $('status').textContent='분석 중… 얼굴에 초록 그물망이 뜨면 정상이에요';
+    $('status').textContent='실시간 분석 중… 얼굴에 스캔 프레임이 뜨면 정상이에요';
     $('startBtn').style.display='none'; $('stopBtn').style.display='inline-block';
     running=true; lastTs=0; errShown=false; smileFrames=0; totalFrames=0; voiceScore=0; shoulderScore=100; loop();
   }catch(e){

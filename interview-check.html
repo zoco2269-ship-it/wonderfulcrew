@@ -200,21 +200,24 @@ function analyze(res){
   ctx.moveTo(X0,Y1-BL); ctx.lineTo(X0,Y1); ctx.lineTo(X0+BL,Y1);
   ctx.moveTo(X1-BL,Y1); ctx.lineTo(X1,Y1); ctx.lineTo(X1,Y1-BL);
   ctx.stroke(); ctx.restore();
-  // 시작 스캔 연출 — 첨단 스캐너처럼 빔이 위아래 왕복하며 얼굴을 훑음(처음 몇 초만).
+  // 시작 스캔 연출 — 레이더식(회전 스윕 + 확장 핑 링). 첨단 디텍트 느낌, 처음 몇 초만.
   if(performance.now()<scanUntil){
-    var per=1300, ph=(performance.now()%(per*2))/(per*2);   // 0..1 (왕복 1주기)
-    var tri=ph<0.5 ? ph*2 : 1-(ph-0.5)*2;                    // 0→1→0 (아래로 갔다 위로)
-    var sy=Y0+(Y1-Y0)*tri, band=Math.max(24,(Y1-Y0)*0.10);
+    var now=performance.now(), cx=(X0+X1)/2, cy=(Y0+Y1)/2, R=Math.hypot(X1-X0,Y1-Y0)/2;
     ctx.save();
-    // 빔 밴드(위아래 페이드)
-    var vg=ctx.createLinearGradient(0,sy-band,0,sy+band);
-    vg.addColorStop(0,'rgba(96,214,255,0)'); vg.addColorStop(0.5,'rgba(96,214,255,0.20)'); vg.addColorStop(1,'rgba(96,214,255,0)');
-    ctx.fillStyle=vg; ctx.fillRect(X0,sy-band,X1-X0,band*2);
-    // 스캔 라인(밝은 코어 + 글로우)
-    ctx.shadowColor='rgba(120,220,255,0.95)'; ctx.shadowBlur=16;
-    var grd=ctx.createLinearGradient(X0,0,X1,0);
-    grd.addColorStop(0,'rgba(120,222,255,0)'); grd.addColorStop(0.5,'rgba(205,246,255,1)'); grd.addColorStop(1,'rgba(120,222,255,0)');
-    ctx.strokeStyle=grd; ctx.lineWidth=2.2; ctx.beginPath(); ctx.moveTo(X0,sy); ctx.lineTo(X1,sy); ctx.stroke();
+    // 회전 스윕(부채꼴 트레일)
+    var ang=(now/650)%(Math.PI*2);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,R,ang-0.85,ang); ctx.closePath();
+    var rg=ctx.createRadialGradient(cx,cy,0,cx,cy,R); rg.addColorStop(0,'rgba(96,214,255,0.20)'); rg.addColorStop(1,'rgba(96,214,255,0)');
+    ctx.fillStyle=rg; ctx.fill();
+    // 스윕 라인(글로우)
+    ctx.shadowColor='rgba(120,220,255,0.95)'; ctx.shadowBlur=14;
+    var lg=ctx.createLinearGradient(cx,cy,cx+Math.cos(ang)*R,cy+Math.sin(ang)*R);
+    lg.addColorStop(0,'rgba(120,222,255,0)'); lg.addColorStop(1,'rgba(205,246,255,0.95)');
+    ctx.strokeStyle=lg; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(ang)*R,cy+Math.sin(ang)*R); ctx.stroke();
+    // 확장 핑 링
+    var pr=(now%1500)/1500, rr=R*pr;
+    ctx.shadowBlur=8; ctx.strokeStyle='rgba(140,230,255,'+(0.55*(1-pr))+')'; ctx.lineWidth=1.6;
+    ctx.beginPath(); ctx.arc(cx,cy,rr,0,Math.PI*2); ctx.stroke();
     ctx.restore();
   }
 

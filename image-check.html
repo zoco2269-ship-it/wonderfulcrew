@@ -185,7 +185,7 @@
   </div>
 
   <div class="card" id="finishCard" style="display:none;border:1.5px solid var(--gold);background:linear-gradient(180deg,#FFFDF6,#fff);">
-    <div class="mk-title">✨ AI 완성 면접사진 <span class="beta" style="background:var(--navy);color:#fff;">프리미엄</span></div>
+    <div class="mk-title">✨ AI 완성 면접사진 <span class="beta" style="background:var(--navy);color:#fff;">🔒 관리자 전용</span></div>
     <p style="font-size:0.92rem;color:var(--mid);line-height:1.7;margin:2px 0 14px;">업로드한 사진을 AI가 <b>메이크업 · 헤어 정리(깔끔한 쪽머리, 중앙 가르마 없이) · 피부 보정 · 배경</b>까지 한 번에 완성해 드려요. 몇십만원짜리 스튜디오 촬영을 대체하는 프리미엄 기능입니다.</p>
     <div class="fin-opt"><span class="fin-l">🖼 배경색</span><div class="mk-swatches" id="finBgSw"></div></div>
     <div class="fin-opt"><span class="fin-l">🧥 자켓색</span><div class="mk-swatches" id="finJkSw"></div></div>
@@ -318,12 +318,15 @@
   var finishBtn=$('finishBtn');
   if(finishBtn) finishBtn.addEventListener('click', async function(){
     if(!imgData){ $('finishStatus').textContent='먼저 사진을 올려주세요.'; return; }
+    var code=localStorage.getItem('wc_pf_code')||'';   // 관리자 전용 코드
+    if(!code){ code=prompt('🔒 관리자 코드를 입력하세요 (이 기능은 관리자 전용이에요)')||''; if(!code){ $('finishStatus').textContent='관리자 전용 기능이에요.'; return; } localStorage.setItem('wc_pf_code',code); }
     finishBtn.disabled=true; $('finishResult').style.display='none';
     $('finishStatus').textContent='AI가 완성사진을 만드는 중이에요… (20~40초 정도 걸려요)';
     try{
       var r=await fetch('/api/photo-finish',{method:'POST',headers:{'content-type':'application/json'},
-        body:JSON.stringify({image:imgData, mediaType:mediaType, target:target, bgHex:finOpts.bgHex, jacketHex:finOpts.jacketHex, jacketStyle:finOpts.jacketStyle, neckline:finOpts.neckline, makeup:(window.__mk||null)})});
+        body:JSON.stringify({image:imgData, mediaType:mediaType, target:target, bgHex:finOpts.bgHex, jacketHex:finOpts.jacketHex, jacketStyle:finOpts.jacketStyle, neckline:finOpts.neckline, makeup:(window.__mk||null), code:code})});
       var d=await r.json();
+      if(r.status===403){ localStorage.removeItem('wc_pf_code'); throw new Error('🔒 관리자 전용으로 잠겨 있어요.'); }
       if(!r.ok||!d.image) throw new Error((d.error&&(d.error.message||d.error))||'완성에 실패했어요.');
       $('finishImg').src=d.image; $('finishResult').style.display='block'; $('finishStatus').textContent='';
       $('finishSave').onclick=function(){ var a=document.createElement('a'); a.download='wonderfulcrew-AI-photo.png'; a.href=d.image; a.click(); };

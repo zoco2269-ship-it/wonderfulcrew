@@ -23,6 +23,21 @@ function buildPrompt(o) {
     innertop: 'a simple elegant ivory round-neck inner top (a clean fine-knit/blouse top with a smooth round neckline, no collar)'
   };
   const neck = neckMap[o.neckline] || neckMap.round;
+  // 사용자가 미리보기에서 고른 메이크업을 그대로 반영
+  const validHex = (v) => (/^#[0-9a-fA-F]{6}$/.test(v || '') ? v : null);
+  const strength = (v) => (v > 0.66 ? 'bold' : (v > 0.33 ? 'medium' : 'soft'));
+  const m = o.makeup;
+  let makeup;
+  if (m && typeof m === 'object' && (validHex(m.lip) || validHex(m.eye) || m.liner || m.smoky)) {
+    const parts = ['clean, softly groomed brows', 'even smooth skin (remove blemishes and oil shine but keep natural skin texture)', 'a healthy natural blush'];
+    parts.push(validHex(m.lip) ? `a ${strength(m.lipInt)} lip color very close to ${validHex(m.lip)}, applied cleanly` : 'a natural rosy-coral lip');
+    if (validHex(m.eye)) parts.push(`${strength(m.eyeInt)} eyeshadow in a shade close to ${validHex(m.eye)}, blended softly and concentrated toward the outer corner of the eye (light at the inner corner)`);
+    if (m.smoky) parts.push('a soft smoky-eye effect at the outer corner, subtly smudged and blended (not harsh)');
+    if (m.liner) parts.push('a fine natural eyeliner along the upper lash line with a slight tapered wing at the outer corner');
+    makeup = 'apply exactly this interview makeup, matching the colors as closely as possible: ' + parts.join('; ') + '. Keep it clean, natural and professional — never heavy or garish.';
+  } else {
+    makeup = 'natural but defined interview makeup — clean groomed brows, subtle neutral eyeshadow with a soft outer accent, natural eyeliner, even smooth skin, healthy natural blush, and a natural rosy-to-coral lip. Clean and bright, not heavy.';
+  }
   return `You are a professional ID-photo retoucher for airline cabin-crew (flight attendant) job applicants. Edit the given photo into a clean, polished, studio-quality interview ID photo. ${airline}
 
 Apply ALL of the following, keeping everything natural and professional:
@@ -63,7 +78,8 @@ module.exports = async function handler(req, res) {
     bgHex: body.bgHex,
     jacketHex: body.jacketHex,
     jacketStyle: ['single', 'collarless', 'double'].indexOf(body.jacketStyle) > -1 ? body.jacketStyle : 'single',
-    neckline: ['shirt', 'round', 'highneck', 'innertop'].indexOf(body.neckline) > -1 ? body.neckline : 'round'
+    neckline: ['shirt', 'round', 'highneck', 'innertop'].indexOf(body.neckline) > -1 ? body.neckline : 'round',
+    makeup: (body.makeup && typeof body.makeup === 'object') ? body.makeup : null
   };
 
   try {

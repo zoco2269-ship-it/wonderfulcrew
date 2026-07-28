@@ -308,7 +308,7 @@
     $('finishStatus').textContent='AI가 완성사진을 만드는 중이에요… (20~40초 정도 걸려요)';
     try{
       var r=await fetch('/api/photo-finish',{method:'POST',headers:{'content-type':'application/json'},
-        body:JSON.stringify({image:imgData, mediaType:mediaType, target:target, bgHex:finOpts.bgHex, jacketHex:finOpts.jacketHex, jacketStyle:finOpts.jacketStyle, neckline:finOpts.neckline})});
+        body:JSON.stringify({image:imgData, mediaType:mediaType, target:target, bgHex:finOpts.bgHex, jacketHex:finOpts.jacketHex, jacketStyle:finOpts.jacketStyle, neckline:finOpts.neckline, makeup:(window.__mk||null)})});
       var d=await r.json();
       if(!r.ok||!d.image) throw new Error((d.error&&(d.error.message||d.error))||'완성에 실패했어요.');
       $('finishImg').src=d.image; $('finishResult').style.display='block'; $('finishStatus').textContent='';
@@ -538,6 +538,7 @@ function paintMakeup(ctx){
   }
 }
 function render(){
+  window.__mk={lip:lipColor, eye:eyeColor, liner:eyeliner, smoky:smoky, lipInt:lipInt, eyeInt:eyeInt}; // AI 완성사진에 전달용
   var bctx=$('beforeCanvas').getContext('2d'), actx=$('afterCanvas').getContext('2d');
   [bctx,actx].forEach(function(x){ x.clearRect(0,0,cw,ch); x.filter='none'; x.globalAlpha=1; x.globalCompositeOperation='source-over'; x.drawImage(baseImg,0,0,cw,ch); });
   if(bgColor && personCanvas){   // 애프터: 배경색 갈고 인물만 올림

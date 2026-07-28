@@ -3,18 +3,32 @@
 // 사진은 편집에만 사용하고 저장하지 않음.
 const MODEL = 'gemini-2.5-flash-image';
 
-function buildPrompt(target) {
-  const airline = target === 'international'
+function buildPrompt(o) {
+  const airline = o.target === 'international'
     ? 'Styling should suit an international airline cabin-crew interview.'
     : 'Styling should suit a Korean domestic airline cabin-crew interview.';
+  const bgMap = {
+    white: 'a clean, evenly-lit pure white ID-photo background',
+    lightblue: 'a clean, evenly-lit soft light-blue ID-photo background',
+    blue: 'a clean, evenly-lit standard deeper-blue ID-photo background'
+  };
+  const jkMap = {
+    navy: 'a well-fitted navy blazer',
+    black: 'a well-fitted black blazer',
+    charcoal: 'a well-fitted charcoal-gray blazer'
+  };
+  const blMap = { white: 'a crisp white blouse', ivory: 'a soft ivory blouse' };
+  const bg = bgMap[o.bg] || bgMap.white;
+  const jk = jkMap[o.jacket] || jkMap.navy;
+  const bl = blMap[o.blouse] || blMap.white;
   return `You are a professional ID-photo retoucher for airline cabin-crew (flight attendant) job applicants. Edit the given photo into a clean, polished, studio-quality interview ID photo. ${airline}
 
 Apply ALL of the following, keeping everything natural and professional:
 - Makeup: natural but defined interview makeup — clean groomed brows, subtle neutral eyeshadow with a soft outer accent, natural eyeliner, even smooth skin (remove blemishes/oil shine but keep natural skin texture), healthy natural blush, and a natural rosy-to-coral lip. Not heavy, not glamorous — clean and bright.
-- Hair: neaten the hair into a sleek, tidy low bun / chignon updo with NO flyaways; forehead, ears and jawline visible and clean.
+- Hair: neaten the hair into a sleek, tidy low bun / chignon updo. IMPORTANT: do NOT part the hair down the middle (no center part) — use a soft side part or a clean fully-pulled-back style. No flyaways; forehead, ears and jawline visible and clean.
 - Expression & posture: keep a warm, bright, confident closed-lip or gentle smile; straighten the posture and shoulders slightly.
-- Wardrobe: a well-fitted navy blazer over a white blouse.
-- Background: replace with a clean, evenly-lit solid light-blue ID-photo background.
+- Wardrobe: ${jk} over ${bl}.
+- Background: replace with ${bg}.
 
 CRITICAL: Preserve the person's identity exactly — same face shape, eyes, nose, mouth, and overall likeness. Do NOT beautify into a different person, do NOT change ethnicity, age, or facial proportions. This must clearly be the same person.
 
@@ -41,7 +55,12 @@ module.exports = async function handler(req, res) {
   if (!image) return res.status(400).json({ error: '사진이 필요합니다.' });
 
   const mediaType = /png/i.test(body.mediaType || '') ? 'image/png' : 'image/jpeg';
-  const target = body.target === 'international' ? 'international' : 'domestic';
+  const opts = {
+    target: body.target === 'international' ? 'international' : 'domestic',
+    bg: ['white', 'lightblue', 'blue'].indexOf(body.bg) > -1 ? body.bg : 'white',
+    jacket: ['navy', 'black', 'charcoal'].indexOf(body.jacket) > -1 ? body.jacket : 'navy',
+    blouse: ['white', 'ivory'].indexOf(body.blouse) > -1 ? body.blouse : 'white'
+  };
 
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
@@ -50,7 +69,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         contents: [{
           parts: [
-            { text: buildPrompt(target) },
+            { text: buildPrompt(opts) },
             { inline_data: { mime_type: mediaType, data: image } }
           ]
         }],

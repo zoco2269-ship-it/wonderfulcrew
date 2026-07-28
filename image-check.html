@@ -83,6 +83,10 @@
   .mk-int button.on{border-color:var(--gold);background:rgba(201,168,76,0.14);color:var(--navy);}
   .mk-slider{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:0.72rem;color:var(--muted);}
   .mk-slider input[type=range]{flex:1;accent-color:var(--gold);height:4px;cursor:pointer;}
+  .fin-opt{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:9px;}
+  .fin-opt .fin-l{font-size:0.82rem;font-weight:700;color:var(--navy);width:74px;flex-shrink:0;}
+  .fin-opt button{font-family:inherit;font-size:0.78rem;font-weight:600;padding:6px 12px;border-radius:14px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;}
+  .fin-opt button.on{border-color:var(--gold);background:rgba(201,168,76,0.14);color:var(--navy);}
   /* 스타일 추천 카드 */
   .sline{display:flex;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);font-size:0.95rem;}
   .sline b{color:var(--gold);min-width:56px;font-size:0.82rem;}
@@ -175,8 +179,22 @@
 
   <div class="card" id="finishCard" style="display:none;border:1.5px solid var(--gold);background:linear-gradient(180deg,#FFFDF6,#fff);">
     <div class="mk-title">✨ AI 완성 면접사진 <span class="beta" style="background:var(--navy);color:#fff;">프리미엄</span></div>
-    <p style="font-size:0.92rem;color:var(--mid);line-height:1.7;margin:2px 0 14px;">업로드한 사진을 AI가 <b>메이크업 · 헤어 정리(쪽머리) · 피부 보정 · 파란 배경</b>까지 한 번에 완성해 드려요. 몇십만원짜리 스튜디오 촬영을 대체하는 프리미엄 기능입니다.</p>
-    <button class="go" id="finishBtn">✨ AI로 완성사진 만들기</button>
+    <p style="font-size:0.92rem;color:var(--mid);line-height:1.7;margin:2px 0 14px;">업로드한 사진을 AI가 <b>메이크업 · 헤어 정리(깔끔한 쪽머리, 중앙 가르마 없이) · 피부 보정 · 배경</b>까지 한 번에 완성해 드려요. 몇십만원짜리 스튜디오 촬영을 대체하는 프리미엄 기능입니다.</p>
+    <div class="fin-opt"><span class="fin-l">🖼 배경</span>
+      <button data-k="bg" data-v="white" class="on">흰색</button>
+      <button data-k="bg" data-v="lightblue">연한 파랑</button>
+      <button data-k="bg" data-v="blue">진한 파랑</button>
+    </div>
+    <div class="fin-opt"><span class="fin-l">🧥 자켓</span>
+      <button data-k="jacket" data-v="navy" class="on">네이비</button>
+      <button data-k="jacket" data-v="black">블랙</button>
+      <button data-k="jacket" data-v="charcoal">차콜</button>
+    </div>
+    <div class="fin-opt"><span class="fin-l">👚 블라우스</span>
+      <button data-k="blouse" data-v="white" class="on">화이트</button>
+      <button data-k="blouse" data-v="ivory">아이보리</button>
+    </div>
+    <button class="go" id="finishBtn" style="margin-top:14px;">✨ AI로 완성사진 만들기</button>
     <div id="finishStatus" style="font-size:0.84rem;color:var(--muted);margin-top:10px;line-height:1.6;"></div>
     <div id="finishResult" style="display:none;text-align:center;margin-top:16px;">
       <img id="finishImg" alt="AI 완성 사진" style="max-width:340px;width:100%;border-radius:14px;box-shadow:0 10px 30px rgba(26,35,64,0.18);">
@@ -267,6 +285,14 @@
     }finally{ $('go').disabled=false; }
   });
 
+  var finOpts={bg:'white', jacket:'navy', blouse:'white'};
+  Array.prototype.forEach.call(document.querySelectorAll('.fin-opt button'), function(b){
+    b.addEventListener('click', function(){
+      var k=b.getAttribute('data-k');
+      document.querySelectorAll('.fin-opt button[data-k="'+k+'"]').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); finOpts[k]=b.getAttribute('data-v');
+    });
+  });
   var finishBtn=$('finishBtn');
   if(finishBtn) finishBtn.addEventListener('click', async function(){
     if(!imgData){ $('finishStatus').textContent='먼저 사진을 올려주세요.'; return; }
@@ -274,7 +300,7 @@
     $('finishStatus').textContent='AI가 완성사진을 만드는 중이에요… (20~40초 정도 걸려요)';
     try{
       var r=await fetch('/api/photo-finish',{method:'POST',headers:{'content-type':'application/json'},
-        body:JSON.stringify({image:imgData, mediaType:mediaType, target:target})});
+        body:JSON.stringify({image:imgData, mediaType:mediaType, target:target, bg:finOpts.bg, jacket:finOpts.jacket, blouse:finOpts.blouse})});
       var d=await r.json();
       if(!r.ok||!d.image) throw new Error((d.error&&(d.error.message||d.error))||'완성에 실패했어요.');
       $('finishImg').src=d.image; $('finishResult').style.display='block'; $('finishStatus').textContent='';

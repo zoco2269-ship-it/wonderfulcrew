@@ -191,24 +191,24 @@ function analyze(res){
   var b=bsMap(res.faceBlendshapes && res.faceBlendshapes[0] && res.faceBlendshapes[0].categories);
   var smileRaw=((b.mouthSmileLeft||0)+(b.mouthSmileRight||0))/2;
   var smile=Math.max(0,Math.min(100, smileRaw*150));
-  // 미소가 낮아지면 입·눈 주변에 디텍트 포인트가 다시 나타나 "웃으세요" 신호(무표정일수록 강하게)
+  // 미소가 낮으면 입·눈웃음 가이드가 은은하게 떠서 "웃으세요" 신호(무표정일수록 진하게). 고급스러운 샴페인골드 글로우.
   if(smile<32){
-    var rev=1-smile/32;                                   // 0(문턱)~1(무표정)
-    var pulse=0.55+0.45*Math.sin(performance.now()/280);  // 맥동
-    var A=Math.min(1,rev*(0.35+0.65*pulse));
-    ctx.save();
-    ctx.shadowColor='rgba(255,176,74,0.95)'; ctx.shadowBlur=13;
-    ctx.strokeStyle='rgba(255,190,96,'+A+')'; ctx.fillStyle='rgba(255,196,104,'+A+')';
-    ctx.lineWidth=2.4; ctx.lineCap='round';
-    [61,291].forEach(function(id){ var p=lm[id]; ctx.beginPath(); ctx.arc(p.x*cw,p.y*ch,4.2,0,6.2832); ctx.fill(); }); // 입꼬리
-    var lC=lm[61], rC=lm[291], bot=lm[17];                // 입 아래 스마일 가이드(위로 올리라는 U 곡선)
-    ctx.beginPath(); ctx.moveTo(lC.x*cw,lC.y*ch);
-    ctx.quadraticCurveTo(bot.x*cw, bot.y*ch+18*rev, rC.x*cw, rC.y*ch); ctx.stroke();
-    // 눈웃음 가이드 — 눈 아래 부드러운 크레센트(웃으면 눈이 접히는 느낌). 점 대신.
-    function eyeSmile(oId,iId,bId){ var o=lm[oId],ii=lm[iId],b=lm[bId]; if(!o||!ii||!b)return;
-      ctx.beginPath(); ctx.moveTo(o.x*cw,o.y*ch);
-      ctx.quadraticCurveTo(b.x*cw, b.y*ch+7*rev, ii.x*cw, ii.y*ch); ctx.stroke(); }
-    eyeSmile(33,133,145); eyeSmile(263,362,374);
+    var rev=1-smile/32;                                    // 0(문턱)~1(무표정)
+    var pulse=0.5+0.5*Math.sin(performance.now()/520);     // 느리고 우아한 맥동
+    var A=Math.min(0.9, rev*(0.4+0.5*pulse));
+    var lC=lm[61], rC=lm[291], bot=lm[17];
+    function guides(){
+      ctx.beginPath();
+      ctx.moveTo(lC.x*cw,lC.y*ch);
+      ctx.quadraticCurveTo(bot.x*cw, bot.y*ch+16*rev, rC.x*cw, rC.y*ch);  // 입 스마일 가이드(아래로 볼록 U)
+      [[33,133],[263,362]].forEach(function(e){ var o=lm[e[0]],ii=lm[e[1]]; if(!o||!ii)return;  // 눈웃음 크레센트(위로 볼록 ∩)
+        var mx=(o.x+ii.x)/2*cw, my=(o.y+ii.y)/2*ch;
+        ctx.moveTo(o.x*cw,o.y*ch); ctx.quadraticCurveTo(mx, my-(9+7*rev), ii.x*cw, ii.y*ch); });
+    }
+    ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.shadowColor='rgba(255,206,140,0.9)'; ctx.shadowBlur=16;            // 1) 부드러운 글로우
+    ctx.strokeStyle='rgba(255,214,150,'+(A*0.5)+')'; ctx.lineWidth=5; guides(); ctx.stroke();
+    ctx.shadowBlur=6; ctx.strokeStyle='rgba(255,238,205,'+A+')'; ctx.lineWidth=1.4; guides(); ctx.stroke();  // 2) 얇고 선명한 라인
     ctx.restore();
   }
   // 정면(코 위치 vs 얼굴 중심)

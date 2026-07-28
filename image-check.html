@@ -433,14 +433,18 @@ function paintMakeup(ctx){
         g.addColorStop(0,hx(eyeColor,a)); g.addColorStop(0.55,hx(eyeColor,a*0.5)); g.addColorStop(1,hx(eyeColor,0));
         octx.fillStyle=g; octx.beginPath(); octx.arc(cx,cy,r,0,6.2832); octx.fill();
       }
-      var n=pts.length;
-      for(var i=0;i<n;i++){
-        var outer=1-i/(n-1);                 // 0 눈앞 → 1 눈꼬리
-        blob(pts[i].x, pts[i].y-baseD*(0.30+0.25*outer), baseD*(0.55+0.75*outer), peak*(0.12+0.9*outer));
+      // 눈 앞(0)→눈꼬리(1) 따라 촘촘히 샘플링. 앞은 얇게, 뒤로 갈수록 넓고 진하게(부드러운 그라데이션)
+      var n=pts.length, M=16;
+      for(var k=0;k<=M;k++){
+        var f=k/M;                                   // 0 눈앞 → 1 눈꼬리
+        var idxf=(1-f)*(n-1);                        // f=0→앞머리(pts끝), f=1→눈꼬리(pts[0])
+        var i0=Math.floor(idxf), i1=Math.min(n-1,i0+1), fr=idxf-i0;
+        var px=pts[i0].x+(pts[i1].x-pts[i0].x)*fr, py=pts[i0].y+(pts[i1].y-pts[i0].y)*fr;
+        blob(px, py-baseD*(0.26+0.22*f), baseD*(0.48+0.72*f), peak*(0.32+0.68*f));
       }
       var o=pts[0], o2=pts[1]; var ux=(o.x-o2.x), uy=(o.y-o2.y); var ul=Math.hypot(ux,uy)||1; ux/=ul; uy/=ul;
-      blob(o.x+ux*w*0.08, o.y+uy*w*0.08-baseD*0.55, baseD*0.95, peak*0.8);   // 눈꼬리 윙(번지며 사라짐)
-      blob(o.x+ux*w*0.15, o.y+uy*w*0.15-baseD*0.75, baseD*0.70, peak*0.5);
+      blob(o.x+ux*w*0.07, o.y+uy*w*0.07-baseD*0.55, baseD*0.92, peak*0.85);   // 눈꼬리 윙(번지며 사라짐)
+      blob(o.x+ux*w*0.14, o.y+uy*w*0.14-baseD*0.75, baseD*0.66, peak*0.5);
       octx.restore();
       ctx.save(); ctx.globalCompositeOperation='multiply'; ctx.drawImage(oc,0,0); ctx.restore();
     });

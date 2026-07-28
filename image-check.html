@@ -371,13 +371,13 @@ async function computePerson(){
   // 알파 마스크(저해상)
   var mk=document.createElement('canvas'); mk.width=mw; mk.height=mh; var mctx=mk.getContext('2d');
   var mid=mctx.createImageData(mw,mh), MD=mid.data;
-  for(var i=0;i<mw*mh;i++){ var a=arr[i]; if(inv)a=1-a; var t=(a-0.25)/0.5; t=t<0?0:(t>1?1:t);
+  for(var i=0;i<mw*mh;i++){ var a=arr[i]; if(inv)a=1-a; var t=(a-0.60)/0.14; t=t<0?0:(t>1?1:t); // 더 높은 문턱 → 마스크가 안쪽으로(원배경 잔상 제거)
     MD[i*4]=255;MD[i*4+1]=255;MD[i*4+2]=255;MD[i*4+3]=Math.round(255*t); }
   mctx.putImageData(mid,0,0);
-  // 디스플레이 해상도로 확대 + 블러 → 경계 부드럽게
+  // 디스플레이 해상도로 확대 + 약한 블러(AA만) → 경계 부드럽지만 번지지 않게
   var pc=document.createElement('canvas'); pc.width=cw; pc.height=ch; var pctx=pc.getContext('2d');
   pctx.drawImage(baseImg,0,0,cw,ch);
-  pctx.globalCompositeOperation='destination-in'; pctx.filter='blur(2px)';
+  pctx.globalCompositeOperation='destination-in'; pctx.filter='blur(1.2px)';
   pctx.drawImage(mk,0,0,cw,ch); pctx.filter='none';
   personCanvas=pc;
   if(mask.close)mask.close(); if(res.close)res.close();
@@ -404,8 +404,10 @@ async function computeJacket(){
   var cctx=cc.getContext('2d'); var id=cctx.createImageData(mw,mh), D=id.data;
   for(var i=0;i<mw*mh;i++){
     var lum=(0.299*src[i*4]+0.587*src[i*4+1]+0.114*src[i*4+2])/255;
-    var on=(arr[i]===4 && lum<0.55); // clothes && 어두움 → 자켓
-    D[i*4]=255;D[i*4+1]=255;D[i*4+2]=255; D[i*4+3]=on?255:0;
+    // 어두운 옷(자켓)일수록 강하게, 밝은 옷(니트·블라우스)은 0 → 얼룩 방지(하드 컷 대신 부드러운 그라데이션)
+    var wgt=(0.42-lum)/0.22; wgt=wgt<0?0:(wgt>1?1:wgt);
+    var on=(arr[i]===4)?wgt:0;
+    D[i*4]=255;D[i*4+1]=255;D[i*4+2]=255; D[i*4+3]=Math.round(255*on);
   }
   cctx.putImageData(id,0,0);
   clothesCanvas=cc;

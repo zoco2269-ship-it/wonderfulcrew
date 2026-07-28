@@ -151,6 +151,7 @@
           <div class="mk-label">👁 아이섀도</div>
           <div class="mk-swatches" id="eyeSwatches"></div>
           <div class="mk-label" style="margin-top:14px;">✒️ 아이라인 <span class="mk-int"><button id="linerOff" class="on">없음</button><button id="linerOn">있게</button></span></div>
+          <div class="mk-label" style="margin-top:14px;">🌫 스모키 <span class="mk-int"><button id="smokyOff" class="on">없음</button><button id="smokyOn">있게</button></span></div>
         </div>
       </div>
     </div>
@@ -259,7 +260,7 @@ var LIP_SHADES=[['코랄','#FF6F5E'],['오렌지','#F4794E'],['로즈','#D24B63'
 var EYE_SHADES=[['피치','#F0A57F'],['코랄','#E08A6E'],['브라운','#8B5A3C'],['카멜','#A9793F'],['로즈골드','#D08A72'],['그레이브라운','#7E6F68'],['버건디','#7E3B4A'],['라벤더','#9A86B0']];
 
 var $=function(id){return document.getElementById(id);};
-var landmarker=null, lm=null, blend=null, baseImg=null, cw=0, ch=0, lipColor=null, eyeColor=null, eyeStrong=true, eyeliner=false;
+var landmarker=null, lm=null, blend=null, baseImg=null, cw=0, ch=0, lipColor=null, eyeColor=null, eyeStrong=true, eyeliner=false, smoky=false;
 function hx(hex,a){ hex=hex.replace('#',''); var r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16); return 'rgba('+r+','+g+','+b+','+a+')'; }
 
 async function ensure(){
@@ -293,6 +294,24 @@ function paintMakeup(ctx){
       ctx.beginPath();
       pts.forEach(function(p,i){ if(i)ctx.lineTo(p.x,p.y); else ctx.moveTo(p.x,p.y); });
       for(var i=pts.length-1;i>=0;i--){ ctx.lineTo(pts[i].x, pts[i].y-delta); }
+      ctx.closePath(); ctx.fill(); ctx.restore();
+    });
+    ctx.filter='none';
+  }
+  // 스모키 — 눈가에 어두운 음영을 넓고 부드럽게 번지듯(위 눈꺼풀 위주). 아이섀도와 겹쳐도 자연스럽게.
+  if(smoky){
+    var sc='#2E2833';
+    [EYE_L,EYE_R].forEach(function(eye){
+      var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
+      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var up=Math.max(10, w*0.82);
+      var yb=Math.max.apply(null,pts.map(function(p){return p.y;}));
+      var yt=Math.min.apply(null,pts.map(function(p){return p.y;}))-up;
+      var g=ctx.createLinearGradient(0,yb,0,yt);
+      g.addColorStop(0, hx(sc,0.80)); g.addColorStop(0.4, hx(sc,0.44)); g.addColorStop(1, hx(sc,0));
+      ctx.save(); ctx.filter='blur(6px)'; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=g;
+      ctx.beginPath();
+      pts.forEach(function(p,i){ if(i)ctx.lineTo(p.x,p.y); else ctx.moveTo(p.x,p.y); });
+      for(var i=pts.length-1;i>=0;i--){ ctx.lineTo(pts[i].x, pts[i].y-up); }
       ctx.closePath(); ctx.fill(); ctx.restore();
     });
     ctx.filter='none';
@@ -367,6 +386,9 @@ function buildSwatches(){
 (function(){ var off=$('linerOff'), on=$('linerOn');
   if(off&&on){ off.onclick=function(){ eyeliner=false; off.classList.add('on'); on.classList.remove('on'); render(); };
     on.onclick=function(){ eyeliner=true; on.classList.add('on'); off.classList.remove('on'); render(); }; } })();
+(function(){ var off=$('smokyOff'), on=$('smokyOn');
+  if(off&&on){ off.onclick=function(){ smoky=false; off.classList.add('on'); on.classList.remove('on'); render(); };
+    on.onclick=function(){ smoky=true; on.classList.add('on'); off.classList.remove('on'); render(); }; } })();
 
 /* ---- 얼굴형 분석 & 스타일 추천 (무료, 규칙 기반) ---- */
 function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }

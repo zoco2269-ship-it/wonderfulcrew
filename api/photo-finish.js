@@ -9,17 +9,24 @@ function buildPrompt(o) {
     : 'Styling should suit a Korean domestic airline cabin-crew interview.';
   const hex = (v, d) => (/^#[0-9a-fA-F]{6}$/.test(v || '') ? v : d);
   const bg = `a clean, evenly-lit solid studio background of the color ${hex(o.bgHex, '#9CC3E8')}`;
-  const jk = `a well-fitted, professional tailored blazer in the color ${hex(o.jacketHex, '#20304F')}`;
-  const neckMap = {
-    shirt: 'a white dress shirt with a clearly visible pointed collar (a proper collared shirt), worn under the blazer',
-    round: 'a collarless white blouse with a plain smooth ROUND neckline — absolutely NO collar of any kind, a clean rounded neckline',
-    highneck: 'a white blouse buttoned all the way up to a high, closed neckline covering the neck — modest high-neck style, no open collar'
+  const jkStyleMap = {
+    single: 'a well-fitted single-breasted tailored blazer with notch lapels',
+    collarless: 'a well-fitted collarless round-neck tailored jacket (no lapels)',
+    double: 'a well-fitted double-breasted tailored blazer'
   };
-  const neck = neckMap[o.neckline] || neckMap.shirt;
+  const jkStyle = jkStyleMap[o.jacketStyle] || jkStyleMap.single;
+  const jk = `${jkStyle} in the color ${hex(o.jacketHex, '#20304F')}`;
+  const neckMap = {
+    shirt: 'a white dress shirt with a clearly visible pointed collar (a proper collared shirt), worn under the jacket',
+    round: 'a collarless white blouse with a plain smooth ROUND neckline — absolutely NO collar of any kind, a clean rounded neckline',
+    highneck: 'a white blouse buttoned all the way up to a high, closed neckline covering the neck — modest high-neck style, no open collar',
+    innertop: 'a simple elegant ivory round-neck inner top (a clean fine-knit/blouse top with a smooth round neckline, no collar)'
+  };
+  const neck = neckMap[o.neckline] || neckMap.round;
   return `You are a professional ID-photo retoucher for airline cabin-crew (flight attendant) job applicants. Edit the given photo into a clean, polished, studio-quality interview ID photo. ${airline}
 
 Apply ALL of the following, keeping everything natural and professional:
-- Expression (MANDATORY): a warm, bright, elegant smile WITH the upper TEETH gently VISIBLE — a natural, pretty, friendly open smile (like a flight attendant's welcoming smile). A teeth-showing smile is REQUIRED for a cabin-crew interview photo; do NOT use a closed-lip smile. VERY IMPORTANT: keep it natural and attractive — do NOT exaggerate, force, or distort the mouth or teeth; the teeth must look clean, even and realistic, and the overall expression must stay soft, graceful and beautiful. If the source smile is closed, adjust it subtly and naturally into this gentle teeth-showing smile while perfectly preserving the person's identity.
+- Expression (MANDATORY, MOST IMPORTANT — do this extremely well): give her a warm, bright, genuine smile where the corners of the mouth lift up gently and the UPPER row of teeth is naturally visible — a soft, pretty, welcoming flight-attendant smile, exactly like a real professional interview headshot. The smile must look 100% photorealistic and natural: relaxed lips, evenly-lit clean upper teeth of normal size and shape, a real Duchenne smile that also lightly engages the eyes. STRICTLY AVOID an unnatural result — no forced or stiff grin, no overly wide or gummy smile, no lower teeth showing, no clenched or crooked or oversized/fake-looking teeth, nothing creepy or uncanny. It should look like the SAME person simply caught in a beautiful natural smile. A closed-lip or expressionless mouth is NOT acceptable.
 - Makeup: natural but defined interview makeup — clean groomed brows, subtle neutral eyeshadow with a soft outer accent, natural eyeliner, even smooth skin (remove blemishes/oil shine but keep natural skin texture), healthy natural blush, and a natural rosy-to-coral lip. Clean and bright, not heavy.
 - Hair: smoothly pulled back into a small, low, neat bun at the nape, with a SOFT NATURAL VOLUME at the crown/top of the head — do NOT plaster the hair completely flat against the scalp; keep a gentle rounded lift on top for an elegant silhouette. From this FRONT view the hairstyle must look sleek and clean: NO bun, knot, ponytail, or tied-hair lump may be visible or protrude at the sides of the head or by the neck/shoulders. No center part; no flyaways; forehead, ears and jawline clean and visible.
 - Wardrobe (follow EXACTLY as described): ${jk}, and worn underneath it: ${neck}. Render this exact collar/neckline style clearly and make it the visible neckline in the photo.
@@ -55,7 +62,8 @@ module.exports = async function handler(req, res) {
     target: body.target === 'international' ? 'international' : 'domestic',
     bgHex: body.bgHex,
     jacketHex: body.jacketHex,
-    neckline: ['shirt', 'round', 'highneck'].indexOf(body.neckline) > -1 ? body.neckline : 'shirt'
+    jacketStyle: ['single', 'collarless', 'double'].indexOf(body.jacketStyle) > -1 ? body.jacketStyle : 'single',
+    neckline: ['shirt', 'round', 'highneck', 'innertop'].indexOf(body.neckline) > -1 ? body.neckline : 'round'
   };
 
   try {

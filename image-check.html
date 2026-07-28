@@ -163,15 +163,8 @@
           <div class="mk-label" style="margin-top:14px;">🌫 스모키 <span class="mk-int"><button id="smokyOff" class="on">없음</button><button id="smokyOn">있게</button></span></div>
         </div>
         <div class="mk-group">
-          <div class="mk-label">🖼 증명사진 배경 <span class="beta">무료</span></div>
-          <div class="mk-swatches" id="bgSwatches"></div>
-          <div id="bgStatus" style="font-size:0.78rem;color:var(--muted);margin-top:6px;"></div>
-        </div>
-        <div class="mk-group">
-          <div class="mk-label">🧥 자켓 색 <span class="beta">무료</span></div>
-          <div class="mk-swatches" id="jacketSwatches"></div>
-          <div id="jacketStatus" style="font-size:0.78rem;color:var(--muted);margin-top:6px;"></div>
-          <button id="bgSave" class="go" style="margin-top:12px;display:none;">📥 결과 사진 저장</button>
+          <button id="bgSave" class="go" style="margin-top:4px;">📥 메이크업 사진 저장</button>
+          <div style="font-size:0.78rem;color:var(--muted);margin-top:8px;line-height:1.6;">🖼 배경·자켓·헤어는 아래 <b>AI 완성 면접사진</b>에서 골라서 뽑으세요.</div>
         </div>
       </div>
     </div>
@@ -182,10 +175,16 @@
     <p style="font-size:0.92rem;color:var(--mid);line-height:1.7;margin:2px 0 14px;">업로드한 사진을 AI가 <b>메이크업 · 헤어 정리(깔끔한 쪽머리, 중앙 가르마 없이) · 피부 보정 · 배경</b>까지 한 번에 완성해 드려요. 몇십만원짜리 스튜디오 촬영을 대체하는 프리미엄 기능입니다.</p>
     <div class="fin-opt"><span class="fin-l">🖼 배경색</span><div class="mk-swatches" id="finBgSw"></div></div>
     <div class="fin-opt"><span class="fin-l">🧥 자켓색</span><div class="mk-swatches" id="finJkSw"></div></div>
-    <div class="fin-opt"><span class="fin-l">👚 넥라인</span>
-      <button data-k="neckline" data-v="shirt" class="on">카라 셔츠</button>
-      <button data-k="neckline" data-v="round">카라 없음</button>
+    <div class="fin-opt"><span class="fin-l">🧥 자켓형태</span>
+      <button data-k="jacketStyle" data-v="single" class="on">싱글</button>
+      <button data-k="jacketStyle" data-v="collarless">노카라</button>
+      <button data-k="jacketStyle" data-v="double">더블</button>
+    </div>
+    <div class="fin-opt"><span class="fin-l">👚 블라우스</span>
+      <button data-k="neckline" data-v="round" class="on">카라 없음</button>
+      <button data-k="neckline" data-v="shirt">카라 셔츠</button>
       <button data-k="neckline" data-v="highneck">목까지</button>
+      <button data-k="neckline" data-v="innertop">이너탑</button>
     </div>
     <button class="go" id="finishBtn" style="margin-top:14px;">✨ AI로 완성사진 만들기</button>
     <div id="finishStatus" style="font-size:0.84rem;color:var(--muted);margin-top:10px;line-height:1.6;"></div>
@@ -278,7 +277,7 @@
     }finally{ $('go').disabled=false; }
   });
 
-  var finOpts={bgHex:'#9CC3E8', jacketHex:'#20304F', neckline:'shirt'};
+  var finOpts={bgHex:'#9CC3E8', jacketHex:'#20304F', jacketStyle:'single', neckline:'round'};
   Array.prototype.forEach.call(document.querySelectorAll('.fin-opt button'), function(b){
     b.addEventListener('click', function(){
       var k=b.getAttribute('data-k');
@@ -309,7 +308,7 @@
     $('finishStatus').textContent='AI가 완성사진을 만드는 중이에요… (20~40초 정도 걸려요)';
     try{
       var r=await fetch('/api/photo-finish',{method:'POST',headers:{'content-type':'application/json'},
-        body:JSON.stringify({image:imgData, mediaType:mediaType, target:target, bgHex:finOpts.bgHex, jacketHex:finOpts.jacketHex, neckline:finOpts.neckline})});
+        body:JSON.stringify({image:imgData, mediaType:mediaType, target:target, bgHex:finOpts.bgHex, jacketHex:finOpts.jacketHex, jacketStyle:finOpts.jacketStyle, neckline:finOpts.neckline})});
       var d=await r.json();
       if(!r.ok||!d.image) throw new Error((d.error&&(d.error.message||d.error))||'완성에 실패했어요.');
       $('finishImg').src=d.image; $('finishResult').style.display='block'; $('finishStatus').textContent='';

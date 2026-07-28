@@ -11,21 +11,22 @@ function buildPrompt(o) {
   const bg = `a clean, evenly-lit solid studio background of the color ${hex(o.bgHex, '#9CC3E8')}`;
   const jk = `a well-fitted, professional tailored blazer in the color ${hex(o.jacketHex, '#20304F')}`;
   const neckMap = {
-    shirt: 'a crisp white collared dress shirt',
-    round: 'a clean white collarless blouse with a smooth round neckline (no collar at all)',
-    highneck: 'a white high-neck blouse buttoned all the way up to the neck (modest, closed neckline)'
+    shirt: 'a white dress shirt with a clearly visible pointed collar (a proper collared shirt), worn under the blazer',
+    round: 'a collarless white blouse with a plain smooth ROUND neckline — absolutely NO collar of any kind, a clean rounded neckline',
+    highneck: 'a white blouse buttoned all the way up to a high, closed neckline covering the neck — modest high-neck style, no open collar'
   };
   const neck = neckMap[o.neckline] || neckMap.shirt;
   return `You are a professional ID-photo retoucher for airline cabin-crew (flight attendant) job applicants. Edit the given photo into a clean, polished, studio-quality interview ID photo. ${airline}
 
 Apply ALL of the following, keeping everything natural and professional:
-- Makeup: natural but defined interview makeup — clean groomed brows, subtle neutral eyeshadow with a soft outer accent, natural eyeliner, even smooth skin (remove blemishes/oil shine but keep natural skin texture), healthy natural blush, and a natural rosy-to-coral lip. Not heavy, not glamorous — clean and bright.
-- Hair: neaten the hair into a sleek, tidy low bun / chignon that is pulled back cleanly and lies FLAT against the head. IMPORTANT: the bun must NOT bulge or stick out, and NO ponytail bump or tied-hair lump should be visible from the front — keep the silhouette smooth and rounded. Do NOT part the hair down the middle (no center part); use a soft side part or a clean fully-pulled-back style. No flyaways; forehead, ears and jawline visible and clean.
-- Expression & posture: keep a warm, bright, confident closed-lip or gentle smile; straighten the posture and shoulders slightly.
-- Wardrobe: ${jk} over ${neck}.
-- Background: replace with ${bg}.
+- Expression (MANDATORY): a warm, bright, elegant smile WITH the upper TEETH gently VISIBLE — a natural, pretty, friendly open smile (like a flight attendant's welcoming smile). A teeth-showing smile is REQUIRED for a cabin-crew interview photo; do NOT use a closed-lip smile. VERY IMPORTANT: keep it natural and attractive — do NOT exaggerate, force, or distort the mouth or teeth; the teeth must look clean, even and realistic, and the overall expression must stay soft, graceful and beautiful. If the source smile is closed, adjust it subtly and naturally into this gentle teeth-showing smile while perfectly preserving the person's identity.
+- Makeup: natural but defined interview makeup — clean groomed brows, subtle neutral eyeshadow with a soft outer accent, natural eyeliner, even smooth skin (remove blemishes/oil shine but keep natural skin texture), healthy natural blush, and a natural rosy-to-coral lip. Clean and bright, not heavy.
+- Hair: smoothly pulled back into a small, low, neat bun at the nape. From this FRONT view the hairstyle must look sleek and clean: NO bun, knot, ponytail, or tied-hair lump may be visible or protrude at the sides of the head or by the neck/shoulders. No center part; no flyaways; forehead, ears and jawline clean and visible.
+- Wardrobe (follow EXACTLY as described): ${jk}, and worn underneath it: ${neck}. Render this exact collar/neckline style clearly and make it the visible neckline in the photo.
+- Background: replace with ${bg} — match this background color exactly.
+- Posture: straighten the shoulders and head slightly.
 
-CRITICAL: Preserve the person's identity exactly — same face shape, eyes, nose, mouth, and overall likeness. Do NOT beautify into a different person, do NOT change ethnicity, age, or facial proportions. This must clearly be the same person.
+CRITICAL: Preserve the person's identity exactly — same face shape, eyes, nose, and overall likeness. Do NOT turn them into a different person, and do NOT change ethnicity, age, or facial proportions. It must clearly be the same person, just polished.
 
 Output ONLY the edited photo image.`;
 }

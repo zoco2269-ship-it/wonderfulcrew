@@ -108,8 +108,10 @@ function analyzePose(pr){
   var p=pr.landmarks[0], L=p[11], R=p[12];
   if(!L||!R) return;
   if(L.visibility!==undefined && (L.visibility<0.4||R.visibility<0.4)) return;
-  var dy=Math.abs(L.y-R.y);
-  shoulderScore=Math.max(0,Math.min(100,100*(1-dy/0.06)));
+  // 어깨 너비 대비 기울기(=각도)로 계산 → 카메라 거리·프레임 무관하게 정확
+  var dy=Math.abs(L.y-R.y), dx=Math.abs(L.x-R.x)||0.001;
+  var ratio=dy/dx;                 // tan(기울기 각도)
+  shoulderScore=Math.max(0,Math.min(100,100*(1-ratio/0.13)));  // 약 7.4° 기울면 0점
   setBar('shoulder', shoulderScore);
 }
 function autoCorrelate(buf, sr){

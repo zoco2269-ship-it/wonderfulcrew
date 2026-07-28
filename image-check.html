@@ -599,11 +599,12 @@ function buildSwatches(){
 }
 function showSave(){ var s=$('bgSave'); if(s) s.style.display='block'; }
 function mkPick(init, cb){
-  var wrap=document.createElement('label'); wrap.className='mk-sw pick'; wrap.title='직접 색 선택'; wrap.textContent='🎨';
+  var wrap=document.createElement('label'); wrap.className='mk-sw pick'; wrap.title='직접 색 선택';
+  var em=document.createElement('span'); em.textContent='🎨'; em.style.pointerEvents='none';
   var inp=document.createElement('input'); inp.type='color'; inp.value=init;
   inp.style.position='absolute'; inp.style.opacity='0'; inp.style.width='100%'; inp.style.height='100%'; inp.style.left='0'; inp.style.top='0'; inp.style.cursor='pointer';
-  inp.oninput=function(){ wrap.style.background=inp.value; wrap.textContent=''; cb(inp.value, wrap); };
-  wrap.style.position='relative'; wrap.appendChild(inp); return wrap;
+  inp.oninput=function(){ wrap.style.boxShadow='0 0 0 2px '+inp.value; cb(inp.value, wrap); }; // 🎨 버튼은 그대로, 선택색은 테두리로 표시
+  wrap.style.position='relative'; wrap.appendChild(em); wrap.appendChild(inp); return wrap;
 }
 
 // 아이섀도 강약

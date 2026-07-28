@@ -80,6 +80,8 @@
   .mk-int{margin-left:8px;display:inline-flex;gap:4px;vertical-align:middle;}
   .mk-int button{font-family:inherit;font-size:0.72rem;font-weight:600;padding:4px 10px;border-radius:14px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;}
   .mk-int button.on{border-color:var(--gold);background:rgba(201,168,76,0.14);color:var(--navy);}
+  .mk-slider{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:0.72rem;color:var(--muted);}
+  .mk-slider input[type=range]{flex:1;accent-color:var(--gold);height:4px;cursor:pointer;}
   /* 스타일 추천 카드 */
   .sline{display:flex;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);font-size:0.95rem;}
   .sline b{color:var(--gold);min-width:56px;font-size:0.82rem;}
@@ -146,10 +148,12 @@
         <div class="mk-group">
           <div class="mk-label">💋 립스틱</div>
           <div class="mk-swatches" id="lipSwatches"></div>
+          <div class="mk-slider"><span>연하게</span><input type="range" id="lipInt" min="0" max="100" value="60"><span>진하게</span></div>
         </div>
         <div class="mk-group">
           <div class="mk-label">👁 아이섀도</div>
           <div class="mk-swatches" id="eyeSwatches"></div>
+          <div class="mk-slider"><span>연하게</span><input type="range" id="eyeInt" min="0" max="100" value="60"><span>진하게</span></div>
           <div class="mk-label" style="margin-top:14px;">✒️ 아이라인 <span class="mk-int"><button id="linerOff" class="on">없음</button><button id="linerOn">있게</button></span></div>
           <div class="mk-label" style="margin-top:14px;">🌫 스모키 <span class="mk-int"><button id="smokyOff" class="on">없음</button><button id="smokyOn">있게</button></span></div>
         </div>
@@ -268,6 +272,7 @@ var EYE_SHADES=[['피치','#F0A57F'],['코랄','#E08A6E'],['브라운','#8B5A3C'
 var $=function(id){return document.getElementById(id);};
 var landmarker=null, lm=null, blend=null, baseImg=null, cw=0, ch=0, lipColor=null, eyeColor=null, eyeStrong=true, eyeliner=false, smoky=false;
 var segmenter=null, personCanvas=null, bgColor=null;
+var lipInt=0.6, eyeInt=0.6;
 function hx(hex,a){ hex=hex.replace('#',''); var r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16); return 'rgba('+r+','+g+','+b+','+a+')'; }
 
 async function ensure(){
@@ -318,14 +323,14 @@ function paintMakeup(ctx){
   if(!lm) return;
   // 아이섀도 — 눈 전체 덮고 눈꼬리(바깥)로 윙 빼면서 위로 자연 페이드. 바깥쪽을 더 넓게.
   if(eyeColor){
-    var peak=eyeStrong?0.72:0.48;
+    var peak=0.28+eyeInt*0.55;
     var midXe=(lm[234].x+lm[454].x)/2;
     [EYE_L,EYE_R].forEach(function(eye){
       var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
       var d0=Math.abs(pts[0].x/cw-midXe), dN=Math.abs(pts[pts.length-1].x/cw-midXe);
       if(dN>d0) pts.reverse(); // pts[0]=바깥 눈꼬리, 끝=앞머리
       var w=Math.abs(pts[0].x-pts[pts.length-1].x);
-      var baseD=Math.max(10, w*(eyeStrong?0.74:0.54));
+      var baseD=Math.max(10, w*(0.50+eyeInt*0.30));
       // 상단 경계: 각 점 위로, 바깥일수록 더 높게(눈꼬리 강조)
       var top=[];
       for(var i=0;i<pts.length;i++){
@@ -411,9 +416,9 @@ function paintMakeup(ctx){
   }
   // 립스틱 — multiply(입술 결 유지) + 살짝 발색, 가장자리 소프트 블러 → 자연스럽게
   if(lipColor){
-    ctx.save(); ctx.filter='blur(1.4px)'; ctx.globalAlpha=0.60; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=lipColor;
+    ctx.save(); ctx.filter='blur(1.4px)'; ctx.globalAlpha=0.30+lipInt*0.55; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=lipColor;
     ctx.beginPath(); drawLoop(ctx,LIPS_OUTER); drawLoop(ctx,LIPS_INNER.slice().reverse()); ctx.fill('evenodd'); ctx.restore();
-    ctx.save(); ctx.filter='blur(1.4px)'; ctx.globalAlpha=0.16; ctx.globalCompositeOperation='source-over'; ctx.fillStyle=lipColor;
+    ctx.save(); ctx.filter='blur(1.4px)'; ctx.globalAlpha=0.08+lipInt*0.16; ctx.globalCompositeOperation='source-over'; ctx.fillStyle=lipColor;
     ctx.beginPath(); drawLoop(ctx,LIPS_OUTER); drawLoop(ctx,LIPS_INNER.slice().reverse()); ctx.fill('evenodd'); ctx.restore();
     ctx.filter='none';
   }
@@ -477,6 +482,8 @@ function buildSwatches(){
 (function(){ var off=$('smokyOff'), on=$('smokyOn');
   if(off&&on){ off.onclick=function(){ smoky=false; off.classList.add('on'); on.classList.remove('on'); render(); };
     on.onclick=function(){ smoky=true; on.classList.add('on'); off.classList.remove('on'); render(); }; } })();
+(function(){ var l=$('lipInt'); if(l) l.oninput=function(){ lipInt=(+l.value)/100; render(); }; })();
+(function(){ var e=$('eyeInt'); if(e) e.oninput=function(){ eyeInt=(+e.value)/100; render(); }; })();
 (function(){ var s=$('bgSave'); if(s) s.onclick=function(){
   var ac=$('afterCanvas'); if(!ac) return;
   var a=document.createElement('a'); a.download='wonderfulcrew-photo.png'; a.href=ac.toDataURL('image/png'); a.click(); }; })();

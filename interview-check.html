@@ -105,7 +105,7 @@ var $=function(id){return document.getElementById(id);};
 var landmarker=null, du=null, running=false, stream=null, lastT=-1, lastMsg=0, lastTs=0, errShown=false;
 var audioCtx=null, analyser=null, abuf=null, voiceScore=0, pitchHz=0, lastVol=0, smileFrames=0, totalFrames=0;
 var poseLm=null, shoulderScore=100, scanUntil=0, shoulderEMA=null;
-var lightScore=100, frameScore=100, envHint='', frameHint='';
+var lightScore=100, frameScore=100, envHint='', frameHint='', smileLow=0;
 function analyzePose(pr){
   if(!pr || !pr.landmarks || !pr.landmarks[0]) return;
   var p=pr.landmarks[0], L=p[11], R=p[12];
@@ -192,14 +192,26 @@ function analyze(res){
     else if(faceL>0.82) envHint='💡 너무 밝아요 — 조명을 조금 낮춰보세요';
   }catch(e){}
   setBar('light',lightScore);
-  // 프리미엄 포커스 브래킷(코너)
-  ctx.save(); ctx.strokeStyle='rgba(96,214,255,0.95)'; ctx.lineWidth=2.4; ctx.lineCap='round'; ctx.lineJoin='round';
-  ctx.shadowColor='rgba(96,214,255,0.85)'; ctx.shadowBlur=9; ctx.beginPath();
+  // 포커스 브래킷 — 잘 웃으면 파랑, 미소 빠지면 앰버색으로 은은하게 깜빡(주변시로 신호)
+  var lowP = smileLow>0.05 ? (0.55+0.45*Math.sin(performance.now()/250)) : 0;  // 미소 낮을 때 맥동
+  var brR = Math.round(96+(255-96)*smileLow), brG = Math.round(214-(214-176)*smileLow), brB = Math.round(255-(255-70)*smileLow);
+  var brA = smileLow>0.05 ? (0.55+0.45*lowP) : 0.95;
+  ctx.save(); ctx.strokeStyle='rgba('+brR+','+brG+','+brB+','+brA+')'; ctx.lineWidth=2.4; ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.shadowColor='rgba('+brR+','+brG+','+brB+',0.85)'; ctx.shadowBlur=9+8*smileLow*lowP; ctx.beginPath();
   ctx.moveTo(X0,Y0+BL); ctx.lineTo(X0,Y0); ctx.lineTo(X0+BL,Y0);
   ctx.moveTo(X1-BL,Y0); ctx.lineTo(X1,Y0); ctx.lineTo(X1,Y0+BL);
   ctx.moveTo(X0,Y1-BL); ctx.lineTo(X0,Y1); ctx.lineTo(X0+BL,Y1);
   ctx.moveTo(X1-BL,Y1); ctx.lineTo(X1,Y1); ctx.lineTo(X1,Y1-BL);
   ctx.stroke(); ctx.restore();
+  // 미소 낮으면 프레임 안쪽에 은은한 앰버 글로우(주변시 신호, 얼굴엔 안 그림)
+  if(smileLow>0.05){
+    ctx.save();
+    var gw=Math.min(X1-X0,Y1-Y0)*0.5, gA=0.16*smileLow*(0.6+0.4*lowP);
+    var vg=ctx.createRadialGradient((X0+X1)/2,(Y0+Y1)/2, gw*0.55, (X0+X1)/2,(Y0+Y1)/2, gw*1.25);
+    vg.addColorStop(0,'rgba(255,176,74,0)'); vg.addColorStop(1,'rgba(255,176,74,'+gA+')');
+    ctx.fillStyle=vg; ctx.fillRect(X0,Y0,X1-X0,Y1-Y0);
+    ctx.restore();
+  }
   // 시작 디텍트 연출 — ① 얼굴 중앙에서 원 확장(짧게) → ② 위아래 스캔 바. 처음 몇 초만.
   if(performance.now()<scanUntil){
     var now=performance.now(), life=scanUntil-now, elapsed=4600-life;
@@ -231,6 +243,7 @@ function analyze(res){
   var b=bsMap(res.faceBlendshapes && res.faceBlendshapes[0] && res.faceBlendshapes[0].categories);
   var smileRaw=((b.mouthSmileLeft||0)+(b.mouthSmileRight||0))/2;
   var smile=Math.max(0,Math.min(100, smileRaw*150));
+  smileLow = smile<40 ? (1-smile/40) : 0;   // 미소 낮을수록 1 → 프레임이 앰버로 깜빡(다음 프레임)
   // (얼굴 위 그림 없음 — 분석 표시는 코너 프레임 + 아래 지표/코칭으로만. 전문적으로.)
   // 정면(코 위치 vs 얼굴 중심)
   var midX=(lm[234].x+lm[454].x)/2, faceW=Math.abs(lm[454].x-lm[234].x)||0.001;

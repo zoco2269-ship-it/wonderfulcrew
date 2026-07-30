@@ -95,6 +95,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"원더풀크루","item":"https://www.wonderfulcrew.com/"},{"@type":"ListItem","position":2,"name":"연습"},{"@type":"ListItem","position":3,"name":"디스커션 일반","item":"https://www.wonderfulcrew.com/discussion-general"}]}
 </script>
+<link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 </head>
 <body>
 <nav><a href="index.html" class="nav-logo">Wonderful<span>Crew</span></a><a href="discussion-hub.html" class="nav-back">← 디스커션 허브</a></nav>
@@ -262,8 +264,8 @@ async function stopAnswer(){
   turnCount++;
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:120,
-      system:'You are a fellow candidate (not interviewer) in a cabin crew group discussion. Scenario: '+TOPICS[selectedTopic].scenario+'\n\nSpeaking style: short, casual, conversational. 1-2 sentences only, under 25 words. Use "I think", "maybe", "what about" style. Keep discussion going, don\'t conclude. English only. No asterisks.',
+      prompt_key:'discussion_general_partner',
+      vars:{scenario:TOPICS[selectedTopic].scenario},
       messages:chatHistory
     })});
     var data=await res.json();
@@ -301,8 +303,8 @@ async function endDiscussion(){
     var convo=chatHistory.map(function(m){return (m.role==='user'?'You':'Partner')+': '+m.content;}).join('\n');
     var userAnswers=chatHistory.filter(function(m){return m.role==='user';}).map(function(m,i){return 'Turn '+(i+1)+': '+m.content;}).join('\n');
     var fbRes=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:600,
-      system:'You are a cabin crew group discussion coach. Scenario: "'+TOPICS[selectedTopic].scenario+'"\n\nEvaluate ONLY what the candidate (You) said. Speech-to-text input — ignore grammar. Be encouraging but honest.\n\nFormat:\n\n# 점수: X/100\n\n# 잘한 점\n- (2개, 실제 본인 발언 짧게 인용)\n\n# 개선할 점\n- (1~2개)\n\n# 실전 팁\n- (1개)\n\nWrite in Korean. No markdown # symbols, use plain text headers.',
+      prompt_key:'discussion_general_feedback',
+      vars:{scenario:TOPICS[selectedTopic].scenario},
       messages:[{role:'user',content:'Full discussion:\n\n'+convo+'\n\nCandidate\'s own answers only:\n'+userAnswers}]
     })});
     var fbData=await fbRes.json();

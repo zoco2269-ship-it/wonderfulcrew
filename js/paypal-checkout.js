@@ -32,6 +32,8 @@
     sdkPromise = new Promise(function (resolve, reject) {
       if (!cfg.clientId) { reject(new Error('PayPal is not configured yet.')); return; }
       var params = 'client-id=' + encodeURIComponent(cfg.clientId);
+      // English / international pages only — force the checkout UI to English (avoid IP-based locale like Hungarian).
+      params += '&locale=en_US';
       // For subscriptions, currency comes from the plan — passing it in the SDK URL breaks the approval flow.
       if (intent === 'subscription') params += '&vault=true&intent=subscription';
       else params += '&currency=' + (cfg.currency || 'USD') + '&intent=capture';

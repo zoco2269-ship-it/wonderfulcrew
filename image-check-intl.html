@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>AI 면접 이미지 스타일리스트 · WonderfulCrew (시안)</title>
+<title>AI 면접 이미지 스타일리스트 (외국 항공사) · WonderfulCrew (시안)</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
   :root{--gold:#3E9AD6;--gold-light:#7BC0F0;--gold-pale:#DCEDFB;--cream:#F1F8FE;--navy:#213A52;--ink:#1E2A38;--mid:#47586B;--muted:#7C8896;--line:#E1EAF3;}
@@ -110,14 +110,14 @@
 
 <div class="wrap">
   <div class="eyebrow">Step 1 · Image Check</div>
-  <h1>AI 면접 이미지 스타일리스트</h1>
-  <p class="lead">사진을 올리면 AI가 첫인상을 진단하고,<br>어울리는 메이크업·헤어·면접 복장을 추천해 드려요.</p>
-  <p style="text-align:center;font-size:0.84rem;margin:8px 0 0;color:#5A5048;">✈ 외국 항공사 지원자세요? <a href="image-check-intl.html" style="color:#C9A84C;font-weight:700;text-decoration:none;">외국 항공사 버전 →</a></p>
+  <h1>AI 면접 이미지 스타일리스트 <span style="font-size:0.6em;color:#C9A84C;">외국 항공사</span></h1>
+  <p class="lead">사진을 올리면 AI가 첫인상을 진단하고,<br>외국 항공사 기준에 맞는 메이크업·헤어·면접 복장을 추천해 드려요.</p>
+  <p style="text-align:center;font-size:0.84rem;margin:8px 0 0;color:#5A5048;">🇰🇷 국내 항공사 지원자세요? <a href="image-check.html" style="color:#C9A84C;font-weight:700;text-decoration:none;">국내 항공사 버전 →</a></p>
 
   <div class="ex">
-    <figure class="ex-item bad"><img src="images/photo-bad.png" alt="무표정 예시"><figcaption>✗ 무표정</figcaption></figure>
+    <figure class="ex-item bad"><img src="images/photo-bad-intl.png" onerror="this.onerror=null;this.src='images/photo-bad.png'" alt="무표정 예시"><figcaption>✗ 무표정</figcaption></figure>
     <div class="ex-arrow">→</div>
-    <figure class="ex-item good"><img src="images/photo-good.png" alt="밝은 미소 예시"><figcaption>✓ 밝은 미소</figcaption></figure>
+    <figure class="ex-item good"><img src="images/photo-good-intl.png" onerror="this.onerror=null;this.src='images/photo-good.png'" alt="밝은 미소 예시"><figcaption>✓ 밝은 미소</figcaption></figure>
   </div>
   <p class="ex-cap">AI가 이렇게 진단해드려요 — 무표정보다 <b>치아가 보이는 밝은 미소</b>가 승무원 사진의 핵심이에요.</p>
 
@@ -227,7 +227,7 @@
 <script>
 (function(){
   var $=function(id){return document.getElementById(id);};
-  var imgData=null, mediaType='image/jpeg', target='domestic';
+  var imgData=null, mediaType='image/jpeg', target='international';
 
   $('file').addEventListener('change', function(e){
     var f=e.target.files && e.target.files[0]; if(!f) return;

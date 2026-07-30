@@ -32,6 +32,7 @@
   .camwrap{position:relative;width:100%;max-width:540px;border-radius:16px;overflow:hidden;background:#0E1524;aspect-ratio:4/3;transform:scaleX(-1);box-shadow:0 16px 40px -18px rgba(20,32,52,0.4);}
   #cam{width:100%;height:100%;object-fit:cover;display:block;}
   #mesh{position:absolute;inset:0;width:100%;height:100%;}
+  #smileBubble{position:absolute;display:none;align-items:center;gap:5px;transform:translate(-50%,-50%) scaleX(-1);transform-origin:center;background:rgba(244,178,62,0.95);color:#3a2402;font-size:0.72rem;font-weight:800;padding:5px 10px;border-radius:12px;white-space:nowrap;pointer-events:none;box-shadow:0 3px 10px rgba(0,0,0,0.3);z-index:6;transition:opacity .2s;}
   .cam-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:rgba(255,255,255,0.55);font-size:0.9rem;transform:scaleX(-1);}
   .cam-ph .big{font-size:2.4rem;}
   .rec{position:absolute;top:10px;left:12px;display:none;align-items:center;gap:6px;font-size:0.7rem;color:#fff;background:rgba(217,105,79,0.92);padding:3px 10px;border-radius:12px;transform:scaleX(-1);}
@@ -73,6 +74,7 @@
     <div class="camwrap" id="camwrap">
       <video id="cam" autoplay muted playsinline></video>
       <canvas id="mesh"></canvas>
+      <div id="smileBubble">😊 입꼬리 조금만 더!</div>
       <div class="cam-ph" id="camPh"><div class="big">🎥</div><div>아래 "이미지 분석 시작"을 눌러주세요</div></div>
       <div class="rec" id="rec"><i></i> 분석 중</div>
     </div>
@@ -169,7 +171,7 @@ function setBar(id,val){ var f=$('f-'+id); var col = val>=70?'var(--good)':val>=
 function analyze(res){
   var c=$('mesh'), ctx=c.getContext('2d'), cw=c.width, ch=c.height;
   ctx.clearRect(0,0,cw,ch);
-  if(!res || !res.faceLandmarks || !res.faceLandmarks[0]){ $('coach').textContent='얼굴이 안 보여요 — 카메라 앞으로 와주세요'; return; }
+  if(!res || !res.faceLandmarks || !res.faceLandmarks[0]){ $('coach').textContent='얼굴이 안 보여요 — 카메라 앞으로 와주세요'; var sbh=$('smileBubble'); if(sbh)sbh.style.display='none'; return; }
   var lm=res.faceLandmarks[0];
   // 초록 메쉬 (DrawingUtils 없이 직접 그림)
   function conn(set,color,lw){ if(!set)return; ctx.strokeStyle=color; ctx.lineWidth=lw; ctx.beginPath(); for(var i=0;i<set.length;i++){ var a=lm[set[i].start], b=lm[set[i].end]; if(!a||!b)continue; ctx.moveTo(a.x*cw,a.y*ch); ctx.lineTo(b.x*cw,b.y*ch); } ctx.stroke(); }
@@ -205,15 +207,24 @@ function analyze(res){
   ctx.moveTo(X0,Y1-BL); ctx.lineTo(X0,Y1); ctx.lineTo(X0+BL,Y1);
   ctx.moveTo(X1-BL,Y1); ctx.lineTo(X1,Y1); ctx.lineTo(X1,Y1-BL);
   ctx.stroke(); ctx.restore();
-  // 미소 낮으면 프레임 안쪽에 은은한 앰버 글로우(주변시 신호, 얼굴엔 안 그림)
+  // 미소 낮으면: 입 주변 은은한 앰버 글로우(캔버스) + 입꼬리 옆 코치 말풍선(HTML, 미러 보정). 얼굴엔 선 안 그림.
+  var sb=$('smileBubble');
   if(smileLow>0.05){
+    var mcx=(lm[13].x+lm[14].x)/2, mcy=(lm[13].y+lm[14].y)/2;
     ctx.save();
-    var gw=Math.min(X1-X0,Y1-Y0)*0.5, gA=0.16*smileLow*(0.6+0.4*lowP);
-    var vg=ctx.createRadialGradient((X0+X1)/2,(Y0+Y1)/2, gw*0.55, (X0+X1)/2,(Y0+Y1)/2, gw*1.25);
-    vg.addColorStop(0,'rgba(255,176,74,0)'); vg.addColorStop(1,'rgba(255,176,74,'+gA+')');
-    ctx.fillStyle=vg; ctx.fillRect(X0,Y0,X1-X0,Y1-Y0);
+    var gpx=mcx*cw, gpy=mcy*ch, mr=Math.max(26,(X1-X0)*0.15), mga=0.34*smileLow*(0.6+0.4*lowP);
+    var mg=ctx.createRadialGradient(gpx,gpy,mr*0.15, gpx,gpy,mr);
+    mg.addColorStop(0,'rgba(255,186,80,'+mga+')'); mg.addColorStop(1,'rgba(255,186,80,0)');
+    ctx.fillStyle=mg; ctx.beginPath(); ctx.arc(gpx,gpy,mr,0,Math.PI*2); ctx.fill();
     ctx.restore();
-  }
+    if(sb){
+      var faceMid=(lm[234].x+lm[454].x)/2, corner=lm[291], dir=(corner.x>=faceMid)?1:-1;
+      sb.style.left=((corner.x+dir*0.035)*100)+'%';
+      sb.style.top=((corner.y-0.015)*100)+'%';
+      sb.style.opacity=Math.min(1,0.6+smileLow).toFixed(2);
+      sb.style.display='flex';
+    }
+  } else if(sb){ sb.style.display='none'; }
   // 시작 디텍트 연출 — ① 얼굴 중앙에서 원 확장(짧게) → ② 위아래 스캔 바. 처음 몇 초만.
   if(performance.now()<scanUntil){
     var now=performance.now(), life=scanUntil-now, elapsed=4600-life;
@@ -318,6 +329,7 @@ function stop(){
   running=false;
   if(stream){ stream.getTracks().forEach(function(t){t.stop();}); stream=null; }
   var c=$('mesh'); if(c) c.getContext('2d').clearRect(0,0,c.width,c.height);
+  var sbx=$('smileBubble'); if(sbx) sbx.style.display='none';
   $('cam').srcObject=null; $('camPh').style.display='flex'; $('rec').classList.remove('on');
   $('stopBtn').style.display='none'; $('startBtn').style.display='inline-block'; $('startBtn').disabled=false;
   try{ if(audioCtx) audioCtx.close(); }catch(e){} audioCtx=null; analyser=null;

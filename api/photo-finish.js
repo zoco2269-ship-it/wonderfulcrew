@@ -71,13 +71,6 @@ module.exports = async function handler(req, res) {
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = {}; } }
   body = body || {};
 
-  // 관리자 전용 잠금 — PHOTO_FINISH_CODE 환경변수가 설정돼 있고 그 값과 일치할 때만 허용.
-  // (환경변수 미설정 시 전면 차단 = 아무도 크레딧을 못 씀)
-  const gate = process.env.PHOTO_FINISH_CODE;
-  if (!gate || String(body.code || '') !== gate) {
-    return res.status(403).json({ error: '이 기능은 관리자 전용으로 잠겨 있어요.' });
-  }
-
   let image = String(body.image || '');
   const comma = image.indexOf(',');
   if (image.indexOf('data:') === 0 && comma > -1) image = image.slice(comma + 1);

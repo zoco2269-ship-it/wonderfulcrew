@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>승무원 준비, 여기서 시작 · WonderfulCrew (시안 v4)</title>
+<link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--gold:#C9A84C;--gold-l:#E8C96A;--navy:#1A2340;--navy-2:#243056;--cream:#FAF7F0;--ink:#161616;--line:#EbE3D0;--sky:#5CC8F5;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  img{max-width:100%;display:block;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 22px;}
+
+  nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:rgba(250,247,240,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);}
+  .logo span{color:var(--gold);}
+  .nav-cta{padding:9px 20px;border-radius:22px;background:linear-gradient(135deg,var(--gold-l),var(--gold));color:#fff;font-size:0.86rem;font-weight:700;}
+
+  .hero{background:var(--navy);color:#fff;overflow:hidden;}
+  .hero-in{display:grid;grid-template-columns:1.15fr 0.85fr;gap:36px;align-items:center;padding:64px 0 58px;}
+  .hero .eyebrow{font-family:'DM Serif Display',serif;letter-spacing:0.28em;font-size:0.72rem;color:var(--gold-l);text-transform:uppercase;margin-bottom:16px;}
+  .hero h1{font-size:2.5rem;font-weight:300;line-height:1.32;margin-bottom:16px;}
+  .hero h1 em{font-style:normal;color:var(--gold-l);font-weight:700;}
+  .hero p{color:rgba(255,255,255,0.82);font-size:1.02rem;line-height:1.7;margin-bottom:26px;}
+  .hero-cta{display:inline-flex;align-items:center;gap:9px;padding:14px 30px;border-radius:26px;background:linear-gradient(135deg,var(--gold-l),var(--gold));color:#fff;font-size:1rem;font-weight:700;}
+  .hero-photos{position:relative;height:340px;}
+  .hero-photos img{position:absolute;border-radius:16px;box-shadow:0 20px 44px -14px rgba(0,0,0,0.55);border:3px solid rgba(255,255,255,0.9);object-fit:cover;}
+  .hp1{width:190px;height:250px;left:8%;top:20px;z-index:2;}
+  .hp2{width:150px;height:200px;right:6%;top:0;z-index:1;transform:rotate(4deg);}
+  .hp3{width:150px;height:196px;right:14%;bottom:-6px;z-index:3;transform:rotate(-3deg);}
+  .hero-badge{position:absolute;left:0;bottom:8px;background:#fff;color:var(--navy);font-size:0.72rem;font-weight:700;padding:7px 14px;border-radius:20px;box-shadow:0 8px 20px rgba(0,0,0,0.25);z-index:5;}
+
+  section{padding:62px 0;}
+  .sec-eyebrow{font-family:'DM Serif Display',serif;letter-spacing:0.22em;font-size:0.72rem;color:var(--gold);text-transform:uppercase;text-align:center;}
+  .sec-title{font-family:'DM Serif Display',serif;font-size:1.9rem;color:var(--navy);text-align:center;margin:10px 0 6px;}
+  .sec-sub{text-align:center;color:#3A3A3A;font-size:0.98rem;line-height:1.7;margin-bottom:38px;}
+
+  .feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+  .feat{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 10px 30px -18px rgba(26,35,64,0.4);transition:transform .16s,box-shadow .16s;}
+  .feat:hover{transform:translateY(-4px);box-shadow:0 20px 40px -18px rgba(26,35,64,0.5);}
+  .feat.card-static{cursor:default;}
+  .feat.card-static:hover{transform:none;box-shadow:0 10px 30px -18px rgba(26,35,64,0.4);}
+  .feat .vis{position:relative;height:196px;background:var(--navy);overflow:hidden;}
+  .feat .vis img{width:100%;height:100%;object-fit:cover;object-position:center 22%;}
+  .feat .badge{position:absolute;top:12px;left:12px;background:var(--gold);color:#fff;font-size:0.68rem;font-weight:800;padding:4px 11px;border-radius:14px;z-index:3;letter-spacing:0.02em;}
+  .feat .body{padding:20px 22px 22px;flex:1;display:flex;flex-direction:column;}
+  .feat h3{font-family:'DM Serif Display',serif;font-size:1.28rem;color:var(--navy);margin-bottom:8px;}
+  .feat p{font-family:'Noto Sans KR',sans-serif;font-size:0.9rem;color:#2C2C2C;line-height:1.72;flex:1;}
+  .feat .go{margin-top:14px;font-family:'Noto Sans KR',sans-serif;font-size:0.86rem;font-weight:700;color:var(--gold);}
+  .lang{display:inline-flex;gap:6px;margin-top:10px;}
+  .lang span{font-family:'Noto Sans KR',sans-serif;font-size:0.68rem;font-weight:700;color:var(--navy);background:var(--cream);border:1px solid var(--line);padding:2px 9px;border-radius:10px;}
+
+  .vis-bubble{position:absolute;left:54%;top:34%;background:rgba(244,178,62,0.96);color:#3a2402;font-size:0.78rem;font-weight:800;padding:6px 12px;border-radius:14px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.35);z-index:4;}
+  .vis-bubble::after{content:'';position:absolute;left:-7px;top:50%;transform:translateY(-50%);border:7px solid transparent;border-right-color:rgba(244,178,62,0.96);border-left:none;}
+  .photo-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px;}
+  .photo-strip img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;border:2px solid #fff;box-shadow:0 6px 16px -8px rgba(0,0,0,0.4);}
+
+  footer{background:var(--navy);color:rgba(255,255,255,0.72);text-align:center;padding:40px 22px;font-size:0.84rem;}
+  footer b{color:#fff;}
+
+  @media(max-width:860px){
+    .hero-in{grid-template-columns:1fr;gap:24px;padding:44px 0;}
+    .hero h1{font-size:1.9rem;}
+    .hero-photos{height:300px;}
+    .feat-grid{grid-template-columns:1fr;}
+    .photo-strip{grid-template-columns:repeat(3,1fr);}
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">Wonderful<span>Crew</span></a>
+  <a href="leveltest.html" class="nav-cta">면접 연습 시작</a>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <div class="eyebrow">Premium Cabin Crew Coaching</div>
+      <h1>막막한 승무원 준비,<br><em>AI와 하나씩</em> 완성하다</h1>
+      <p>첫인상 진단부터 AI 완성 면접사진, 자기소개서, 실전 면접·롤플레이까지.<br>국내 항공사도 외국 항공사도, 순서대로 준비하세요.</p>
+      <a href="image-check.html" class="hero-cta">이미지 체크부터 시작 →</a>
+    </div>
+    <div class="hero-photos">
+      <img class="hp1" src="images/2.png" alt="승무원의 모습">
+      <img class="hp2" src="images/1.png" alt="승무원의 모습">
+      <img class="hp3" src="images/3.png" alt="승무원의 모습">
+      <div class="hero-badge">✦ 당신도, 이 자리에</div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="sec-eyebrow">Features</div>
+    <div class="sec-title">준비의 모든 단계, <span style="color:var(--gold);">한 곳에서</span></div>
+    <div class="sec-sub">원더풀크루가 준비한 승무원 합격의 모든 단계입니다. 지금 작동하는 기능부터, 계속 추가됩니다.</div>
+
+    <div class="feat-grid">
+
+      <div class="feat card-static">
+        <div class="vis"><span class="badge">지금 작동</span><img src="images/photo-bad.png" alt="이미지 체크" style="object-position:center 20%;"></div>
+        <div class="body">
+          <h3>이미지 체크 · 메이크업 피팅</h3>
+          <p>사진 한 장으로 첫인상을 진단하고, 어울리는 메이크업·헤어·복장을 추천해 드려요. 립·아이 컬러 가상 피팅까지 바로 확인.</p>
+        </div>
+      </div>
+
+      <div class="feat card-static">
+        <div class="vis" style="display:flex;gap:0;">
+          <span class="badge" style="z-index:5;">NEW</span>
+          <div style="flex:1;position:relative;height:100%;"><img src="images/photo-bad.png" alt="비포 - 무표정" style="width:100%;height:100%;object-fit:cover;object-position:center top;filter:grayscale(0.12);"><span style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.55);color:#fff;font-size:0.66rem;font-weight:700;padding:2px 9px;border-radius:10px;">BEFORE</span></div>
+          <div style="flex:1;position:relative;height:100%;border-left:2px solid #fff;"><img src="images/photo-good.png" alt="애프터 - 밝은 미소 증명사진" style="width:100%;height:100%;object-fit:cover;object-position:center top;"><span style="position:absolute;bottom:8px;right:8px;background:var(--gold);color:#fff;font-size:0.66rem;font-weight:700;padding:2px 9px;border-radius:10px;">AFTER</span></div>
+        </div>
+        <div class="body">
+          <h3>AI 완성 면접사진</h3>
+          <p>캐주얼 셀카 한 장을 단정한 면접 증명사진으로. 밝은 미소·헤어·정장·조명·배경까지 AI가 완성합니다. 수십만원 촬영 패키지를 대체해요.</p>
+        </div>
+      </div>
+
+      <div class="feat card-static">
+        <div class="vis" style="background:#fff;"><span class="badge">NEW</span>
+          <img src="images/photo-good.png" alt="실시간 미소 분석" style="object-fit:contain;object-position:center;">
+          <div class="vis-bubble" style="left:63%;top:57%;">😊 입꼬리 조금 더!</div>
+        </div>
+        <div class="body">
+          <h3>실시간 이미지 분석</h3>
+          <p>카메라를 켜면 AI가 미소·시선·정면·조명·어깨 균형을 실시간으로 코칭해요. 미소가 약하면 입꼬리 옆 말풍선으로 바로 신호를 줍니다.</p>
+        </div>
+      </div>
+
+      <div class="feat card-static">
+        <div class="vis" style="background:#fff;"><img src="images/cv2.png" alt="영문 CV 예시" style="object-fit:cover;object-position:center top;"></div>
+        <div class="body">
+          <h3>자기소개서 · CV</h3>
+          <p>질문만 따라가면 완성돼요. AI와 함께 국문·영문 자기소개서를 항공사 양식에 맞게 다듬습니다.</p>
+          <span class="lang"><span>국문</span><span>영문</span></span>
+        </div>
+      </div>
+
+      <div class="feat card-static">
+        <div class="vis"><img src="images/img1.jpg" alt="기내 서비스 · 영상 면접 연습" style="object-position:center 40%;"></div>
+        <div class="body">
+          <h3>영상 면접 · 스몰톡</h3>
+          <p>카메라 켜고 실전처럼. 자주 나오는 질문과 스몰톡을 AI와 주고받으며 답변 감각을 익혀요.</p>
+          <span class="lang"><span>국문</span><span>영문</span></span>
+        </div>
+      </div>
+
+      <div class="feat card-static">
+        <div class="vis"><img src="images/hero-roleplay.jpg" alt="AI 면접관과 1:1 롤플레이" style="object-position:center top;"></div>
+        <div class="body">
+          <h3>롤플레이 · 상황 대응</h3>
+          <p>기내 승객 응대와 돌발 상황을 AI와 실시간으로. 4지선다 무료 시나리오부터 자유 응대 훈련까지.</p>
+          <span class="lang"><span>국문</span><span>영문</span></span>
+        </div>
+      </div>
+
+      <div class="feat card-static">
+        <div class="vis" style="background:#0C1A38;padding:0;">
+          <div style="height:100%;display:flex;flex-direction:column;padding:11px;">
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
+              <span style="width:7px;height:7px;border-radius:50%;background:#E24B4A;flex-shrink:0;"></span>
+              <span style="color:#fff;font-size:0.64rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">TOPIC · 기내 서비스 딜레마, 어떻게 대응할까?</span>
+            </div>
+            <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;min-height:0;">
+              <div style="position:relative;border-radius:8px;overflow:hidden;background:#243056;"><img src="images/photo-good.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center 22%;"><span style="position:absolute;bottom:3px;left:4px;color:#fff;font-size:0.5rem;font-family:'Noto Sans KR';text-shadow:0 1px 2px #000;">지망생 A</span></div>
+              <div style="position:relative;border-radius:8px;overflow:hidden;background:#243056;"><img src="images/photo-bad.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center 22%;"><span style="position:absolute;bottom:3px;left:4px;color:#fff;font-size:0.5rem;font-family:'Noto Sans KR';text-shadow:0 1px 2px #000;">지망생 B</span></div>
+              <div style="border-radius:8px;background:linear-gradient(135deg,#E8C96A,#C9A84C);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Noto Sans KR',sans-serif;"><span style="color:#fff;font-size:0.95rem;font-weight:800;">AI</span><span style="color:#fff;font-size:0.5rem;">진행 · 평가</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="body">
+          <h3>그룹 디스커션</h3>
+          <p>외국 항공사를 준비한다면. 실전 그룹 토론을 배경별 시나리오로 무제한 연습합니다.</p>
+          <span class="lang"><span>영문</span></span>
+        </div>
+      </div>
+
+      <div class="feat card-static">
+        <div class="vis" style="background:#fff;"><img src="images/analysis-mockup.png" alt="종합 실력 분석 리포트" style="object-fit:cover;object-position:center top;"></div>
+        <div class="body">
+          <h3>파이널 · 종합 분석</h3>
+          <p>실전 직전 점검과 종합 실력 분석 리포트, 1:1 코치 피드백까지. 지금까지의 준비를 합격으로 완성해요.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <b>WonderfulCrew</b> · Premium Cabin Crew Coaching<br>
+  에미레이트 7년차 일등석 출신 대표가 만든 승무원 코칭 AI 플랫폼 · © 2026
+</footer>
+</body>
+</html>

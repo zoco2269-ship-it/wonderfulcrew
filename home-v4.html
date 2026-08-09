@@ -44,8 +44,8 @@
   .feat:hover{transform:translateY(-4px);box-shadow:0 20px 40px -18px rgba(26,35,64,0.5);}
   .feat.card-static{cursor:default;}
   .feat.card-static:hover{transform:none;box-shadow:0 10px 30px -18px rgba(26,35,64,0.4);}
-  .feat .vis{position:relative;height:196px;background:var(--navy);overflow:hidden;}
-  .feat .vis img{width:100%;height:100%;object-fit:cover;object-position:center 22%;}
+  .feat .vis{position:relative;height:230px;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+  .feat .vis img{width:100%;height:100%;object-fit:contain;object-position:center;}
   .feat .badge{position:absolute;top:12px;left:12px;background:var(--gold);color:#fff;font-size:0.68rem;font-weight:800;padding:4px 11px;border-radius:14px;z-index:3;letter-spacing:0.02em;}
   .feat .body{padding:20px 22px 22px;flex:1;display:flex;flex-direction:column;}
   .feat h3{font-family:'DM Serif Display',serif;font-size:1.28rem;color:var(--navy);margin-bottom:8px;}
@@ -103,7 +103,7 @@
     <div class="feat-grid">
 
       <div class="feat card-static">
-        <div class="vis"><span class="badge">지금 작동</span><img src="images/photo-bad.png" alt="이미지 체크" style="object-position:center 20%;"></div>
+        <div class="vis"><span class="badge">지금 작동</span><img src="images/photo-bad.png" alt="이미지 체크"></div>
         <div class="body">
           <h3>이미지 체크 · 메이크업 피팅</h3>
           <p>사진 한 장으로 첫인상을 진단하고, 어울리는 메이크업·헤어·복장을 추천해 드려요. 립·아이 컬러 가상 피팅까지 바로 확인.</p>
@@ -111,11 +111,7 @@
       </div>
 
       <div class="feat card-static">
-        <div class="vis" style="display:flex;gap:0;">
-          <span class="badge" style="z-index:5;">NEW</span>
-          <div style="flex:1;position:relative;height:100%;"><img src="images/photo-bad.png" alt="비포 - 무표정" style="width:100%;height:100%;object-fit:cover;object-position:center top;filter:grayscale(0.12);"><span style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.55);color:#fff;font-size:0.66rem;font-weight:700;padding:2px 9px;border-radius:10px;">BEFORE</span></div>
-          <div style="flex:1;position:relative;height:100%;border-left:2px solid #fff;"><img src="images/photo-good.png" alt="애프터 - 밝은 미소 증명사진" style="width:100%;height:100%;object-fit:cover;object-position:center top;"><span style="position:absolute;bottom:8px;right:8px;background:var(--gold);color:#fff;font-size:0.66rem;font-weight:700;padding:2px 9px;border-radius:10px;">AFTER</span></div>
-        </div>
+        <div class="vis"><span class="badge">NEW</span><img src="images/photo-good.png" alt="AI 완성 면접사진"></div>
         <div class="body">
           <h3>AI 완성 면접사진</h3>
           <p>캐주얼 셀카 한 장을 단정한 면접 증명사진으로. 밝은 미소·헤어·정장·조명·배경까지 AI가 완성합니다. 수십만원 촬영 패키지를 대체해요.</p>
@@ -124,8 +120,8 @@
 
       <div class="feat card-static">
         <div class="vis" style="background:#fff;"><span class="badge">NEW</span>
-          <img src="images/photo-good.png" alt="실시간 미소 분석" style="object-fit:contain;object-position:center;">
-          <div class="vis-bubble" style="left:63%;top:57%;">😊 입꼬리 조금 더!</div>
+          <img src="images/photo-good.png" alt="실시간 미소 분석">
+          <div class="vis-bubble" style="left:62%;top:61%;">😊 입꼬리 조금 더!</div>
         </div>
         <div class="body">
           <h3>실시간 이미지 분석</h3>
@@ -134,7 +130,7 @@
       </div>
 
       <div class="feat card-static">
-        <div class="vis" style="background:#fff;"><img src="images/cv2.png" alt="영문 CV 예시" style="object-fit:cover;object-position:center top;"></div>
+        <div class="vis" style="background:#fff;"><img src="images/cv2.png" alt="영문 CV 예시"></div>
         <div class="body">
           <h3>자기소개서 · CV</h3>
           <p>질문만 따라가면 완성돼요. AI와 함께 국문·영문 자기소개서를 항공사 양식에 맞게 다듬습니다.</p>
@@ -143,7 +139,7 @@
       </div>
 
       <div class="feat card-static">
-        <div class="vis"><img src="images/img1.jpg" alt="기내 서비스 · 영상 면접 연습" style="object-position:center 40%;"></div>
+        <div class="vis"><img src="images/img1.jpg" alt="기내 서비스 · 영상 면접 연습"></div>
         <div class="body">
           <h3>영상 면접 · 스몰톡</h3>
           <p>카메라 켜고 실전처럼. 자주 나오는 질문과 스몰톡을 AI와 주고받으며 답변 감각을 익혀요.</p>
@@ -152,7 +148,7 @@
       </div>
 
       <div class="feat card-static">
-        <div class="vis"><img src="images/hero-roleplay.jpg" alt="AI 면접관과 1:1 롤플레이" style="object-position:center top;"></div>
+        <div class="vis" style="background:#151c3a;"><img src="images/hero-roleplay.jpg" alt="AI 면접관과 1:1 롤플레이"></div>
         <div class="body">
           <h3>롤플레이 · 상황 대응</h3>
           <p>기내 승객 응대와 돌발 상황을 AI와 실시간으로. 4지선다 무료 시나리오부터 자유 응대 훈련까지.</p>
@@ -182,7 +178,7 @@
       </div>
 
       <div class="feat card-static">
-        <div class="vis" style="background:#fff;"><img src="images/analysis-mockup.png" alt="종합 실력 분석 리포트" style="object-fit:cover;object-position:center top;"></div>
+        <div class="vis" style="background:#fff;"><img src="images/analysis-mockup.png" alt="종합 실력 분석 리포트"></div>
         <div class="body">
           <h3>파이널 · 종합 분석</h3>
           <p>실전 직전 점검과 종합 실력 분석 리포트, 1:1 코치 피드백까지. 지금까지의 준비를 합격으로 완성해요.</p>

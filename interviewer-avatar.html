@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 면접관 아바타 (프로토타입) · WonderfulCrew</title>
+<link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-l:#E8C96A;--navy:#1A2340;--navy-2:#243056;--cream:#FAF7F0;--ink:#161616;--line:#EbE3D0;--muted:#6A6255;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+button{font-family:inherit;cursor:pointer;}
+.topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:rgba(250,247,240,0.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+.logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--navy);}
+.logo span{color:var(--gold);}
+.note{background:#FFF6DA;border-bottom:1px solid var(--line);color:#7a5a12;font-family:'Noto Sans KR',sans-serif;font-size:0.8rem;text-align:center;padding:7px 16px;}
+.wrap{max-width:920px;margin:0 auto;padding:22px 18px 60px;}
+.intro{text-align:center;margin-bottom:18px;}
+.intro .eyebrow{font-family:'DM Serif Display',serif;letter-spacing:0.24em;font-size:0.7rem;color:var(--gold);text-transform:uppercase;}
+.intro h1{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin:8px 0 6px;font-weight:400;}
+.intro p{font-family:'Noto Sans KR',sans-serif;color:var(--muted);font-size:0.9rem;line-height:1.6;}
+
+.stage{position:relative;background:linear-gradient(160deg,#26355f,#161d34);border-radius:20px;overflow:hidden;box-shadow:0 20px 50px -20px rgba(26,35,64,0.5);}
+.stage-in{position:relative;width:100%;aspect-ratio:16/10;}
+#avatar{position:absolute;inset:0;width:100%;height:100%;}
+/* 지원자 캠 (코너) */
+.self{position:absolute;right:14px;top:14px;width:26%;max-width:190px;aspect-ratio:3/4;border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,0.85);background:#0e1524;box-shadow:0 8px 22px rgba(0,0,0,0.4);}
+.self video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);}
+.self .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:rgba(255,255,255,0.6);font-family:'Noto Sans KR',sans-serif;font-size:0.7rem;text-align:center;padding:8px;}
+.self .lab{position:absolute;left:8px;bottom:8px;color:#fff;font-family:'Noto Sans KR',sans-serif;font-size:0.62rem;text-shadow:0 1px 3px #000;}
+.badge{position:absolute;left:14px;top:14px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.42);color:#fff;font-family:'Noto Sans KR',sans-serif;font-size:0.72rem;font-weight:700;padding:5px 12px;border-radius:14px;}
+.badge i{width:7px;height:7px;border-radius:50%;background:#4FD07A;}
+.badge.speaking i{background:#F4B23E;animation:pulse 1s infinite;}
+@keyframes pulse{50%{opacity:0.3;}}
+/* 자막 */
+.cap{position:absolute;left:5%;right:5%;bottom:16px;background:rgba(0,0,0,0.5);color:#fff;font-family:'Noto Sans KR',sans-serif;font-size:0.98rem;line-height:1.5;text-align:center;padding:11px 16px;border-radius:14px;backdrop-filter:blur(4px);}
+.cap b{color:var(--gold-l);}
+
+.controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px auto 0;}
+.btn{padding:12px 22px;border-radius:26px;font-family:'Noto Sans KR',sans-serif;font-size:0.92rem;font-weight:700;border:1px solid var(--line);background:#fff;color:var(--navy);}
+.btn.primary{background:linear-gradient(135deg,var(--gold-l),var(--gold));color:#fff;border-color:transparent;}
+.btn.dark{background:var(--navy);color:#fff;border-color:transparent;}
+.btn:disabled{opacity:0.5;}
+.hintline{text-align:center;font-family:'Noto Sans KR',sans-serif;font-size:0.78rem;color:var(--muted);margin-top:12px;line-height:1.6;}
+
+.tiers{margin-top:34px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px;font-family:'Noto Sans KR',sans-serif;}
+.tiers h3{font-family:'DM Serif Display',serif;color:var(--navy);font-size:1.05rem;margin-bottom:12px;}
+.tier{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line);font-size:0.86rem;color:#333;line-height:1.6;}
+.tier:first-of-type{border-top:none;}
+.tier .t{font-weight:800;color:var(--navy);white-space:nowrap;}
+.tier .c{color:var(--gold);font-weight:700;white-space:nowrap;margin-left:auto;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="hub.html" class="logo">Wonderful<span>Crew</span></a>
+  <a href="hub.html" style="font-family:'Noto Sans KR',sans-serif;font-size:0.82rem;color:var(--muted);">← 기능</a>
+</div>
+<div class="note">🧪 프로토타입 · 브라우저 무료 음성으로 실시간 립싱크. 실제 서비스에선 더 정교한 아바타로 고도화돼요.</div>
+
+<div class="wrap">
+  <div class="intro">
+    <div class="eyebrow">Live AI Interviewer</div>
+    <h1>말하는 AI 면접관 아바타</h1>
+    <p>이모티콘이 아니라, 실시간으로 말하고 반응하는 면접관과 연습해요.<br>롤플레이·파이널 면접에 붙일 수 있는 개념 시연입니다.</p>
+  </div>
+
+  <div class="stage">
+    <div class="stage-in">
+      <!-- 면접관 아바타 -->
+      <svg id="avatar" viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="bg" cx="50%" cy="30%" r="80%"><stop offset="0%" stop-color="#2c3d6b"/><stop offset="100%" stop-color="#151d34"/></radialGradient>
+          <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F6D9C0"/><stop offset="100%" stop-color="#EFC5A6"/></linearGradient>
+          <linearGradient id="hair" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3a2c22"/><stop offset="100%" stop-color="#241a14"/></linearGradient>
+          <linearGradient id="suit" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#243056"/><stop offset="100%" stop-color="#1a2340"/></linearGradient>
+        </defs>
+        <rect width="400" height="250" fill="url(#bg)"/>
+        <!-- 어깨/정장 -->
+        <path d="M120 250 Q130 190 200 188 Q270 190 280 250 Z" fill="url(#suit)"/>
+        <path d="M186 250 L186 205 L200 224 L214 205 L214 250 Z" fill="#fff" opacity="0.95"/>
+        <!-- 스카프(항공) -->
+        <path d="M182 202 Q200 214 218 202 L214 210 Q200 222 186 210 Z" fill="#C9A84C"/>
+        <!-- 목 -->
+        <rect x="188" y="172" width="24" height="26" rx="10" fill="#EFC5A6"/>
+        <!-- 머리 그룹(살짝 흔들림) -->
+        <g id="head">
+          <!-- 뒷머리 -->
+          <path d="M148 118 Q146 60 200 58 Q254 60 252 118 Q256 150 244 168 L156 168 Q144 150 148 118 Z" fill="url(#hair)"/>
+          <!-- 얼굴 -->
+          <ellipse cx="200" cy="120" rx="46" ry="52" fill="url(#skin)"/>
+          <!-- 볼터치 -->
+          <ellipse cx="172" cy="132" rx="9" ry="6" fill="#F3A9A0" opacity="0.5"/>
+          <ellipse cx="228" cy="132" rx="9" ry="6" fill="#F3A9A0" opacity="0.5"/>
+          <!-- 눈썹 -->
+          <path d="M168 100 Q180 95 192 100" stroke="#3a2c22" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M208 100 Q220 95 232 100" stroke="#3a2c22" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <!-- 눈(깜빡임 그룹) -->
+          <g id="eyes">
+            <ellipse cx="180" cy="112" rx="8" ry="6.5" fill="#fff"/>
+            <circle cx="181" cy="113" r="4.2" fill="#4a3526"/><circle cx="182.4" cy="111.6" r="1.3" fill="#fff"/>
+            <ellipse cx="220" cy="112" rx="8" ry="6.5" fill="#fff"/>
+            <circle cx="219" cy="113" r="4.2" fill="#4a3526"/><circle cx="220.4" cy="111.6" r="1.3" fill="#fff"/>
+          </g>
+          <g id="lids"></g>
+          <!-- 코 -->
+          <path d="M200 118 Q196 134 200 138 Q204 138 204 136" stroke="#D8A98A" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          <!-- 입(립싱크) -->
+          <g id="mouth">
+            <ellipse id="mouthInner" cx="200" cy="152" rx="13" ry="2" fill="#7a2f35"/>
+            <path id="teeth" d="M189 150 h22 v3 h-22 Z" fill="#fff" opacity="0"/>
+            <path id="lips" d="M186 151 Q200 146 214 151 Q200 160 186 151 Z" fill="none" stroke="#C56A6A" stroke-width="2.4" stroke-linejoin="round"/>
+          </g>
+        </g>
+      </svg>
+
+      <div class="badge" id="badge"><i></i> <span id="badgeText">대기 중</span></div>
+
+      <!-- 지원자 캠 -->
+      <div class="self">
+        <video id="selfCam" autoplay muted playsinline style="display:none;"></video>
+        <div class="ph" id="selfPh">📷<br>내 카메라<br>(선택)</div>
+        <div class="lab">지원자 (나)</div>
+      </div>
+
+      <div class="cap" id="caption">아래 <b>면접 시작</b>을 누르면 면접관이 인사하고 질문해요.</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn primary" id="startBtn">▶ 면접 시작</button>
+    <button class="btn" id="nextBtn" disabled>다음 질문 →</button>
+    <button class="btn" id="repeatBtn" disabled>다시 듣기</button>
+    <button class="btn dark" id="camBtn">📷 내 카메라 켜기</button>
+  </div>
+  <div class="hintline">🔊 소리를 켜주세요. 면접관 목소리는 브라우저 내장 음성(무료)이라, 실제 서비스에선 더 자연스러운 AI 음성으로 바뀝니다.</div>
+
+  <div class="tiers">
+    <h3>아바타 3단계 — 무엇을 붙일지</h3>
+    <div class="tier"><span class="t">A · 애니메이션 (지금 이것)</span><span>브라우저에서 실시간 립싱크. 우리 LLM+음성만 쓰면 돼요.</span><span class="c">거의 무료</span></div>
+    <div class="tier"><span class="t">C · 응답별 영상</span><span>답변마다 말하는 얼굴 영상 생성. 몇 초 지연.</span><span class="c">저렴</span></div>
+    <div class="tier"><span class="t">B · 실사 실시간</span><span>진짜 사람 같은 얼굴(HeyGen·D-ID). 유료/B2G 티어용.</span><span class="c">분당 과금</span></div>
+  </div>
+</div>
+
+<script>
+var $=function(id){return document.getElementById(id);};
+var QUESTIONS = [
+  "안녕하세요, 만나서 반갑습니다. 먼저 간단히 자기소개 부탁드릴게요.",
+  "승무원이 되고 싶은 이유는 무엇인가요?",
+  "기내에서 몸이 불편한 승객을 만난다면 어떻게 대응하시겠어요?",
+  "팀으로 일할 때 본인의 강점은 무엇이라고 생각하나요?",
+  "화가 난 승객을 진정시켜야 하는 상황, 어떻게 하시겠어요?",
+  "마지막으로, 우리 항공사에 지원한 이유를 말씀해 주세요."
+];
+var qi = -1, koVoice = null, talking = false, rafId = null;
+
+/* 한국어 음성 고르기 */
+function pickVoice(){
+  var vs = speechSynthesis.getVoices();
+  koVoice = vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang)||/Korean/i.test(v.name);}) || vs.find(function(v){return /^ko/i.test(v.lang);}) || null;
+}
+pickVoice();
+if(typeof speechSynthesis!=='undefined') speechSynthesis.onvoiceschanged = pickVoice;
+
+/* 입 애니메이션 (말하는 동안 랜덤 개폐) */
+function startMouth(){
+  var inner=$('mouthInner'), teeth=$('teeth'), lips=$('lips');
+  var t=0;
+  function tick(){
+    t+=0.35;
+    // 여러 주파수 합성으로 자연스러운 개폐
+    var open = 3.2 + Math.abs(Math.sin(t))*4 + Math.abs(Math.sin(t*1.7+1))*3;
+    if(Math.random()<0.06) open*=0.35; // 가끔 닫힘(자음)
+    inner.setAttribute('ry', Math.max(1.2, open).toFixed(1));
+    inner.setAttribute('rx', (12 - open*0.5).toFixed(1));
+    teeth.setAttribute('opacity', open>6? '0.85':'0');
+    lips.setAttribute('d', 'M186 '+(151- open*0.15).toFixed(1)+' Q200 '+(147+ open*0.5).toFixed(1)+' 214 '+(151-open*0.15).toFixed(1)+' Q200 '+(160+open*0.4).toFixed(1)+' 186 '+(151-open*0.15).toFixed(1)+' Z');
+    rafId=requestAnimationFrame(tick);
+  }
+  tick();
+}
+function stopMouth(){
+  if(rafId) cancelAnimationFrame(rafId); rafId=null;
+  $('mouthInner').setAttribute('ry','2'); $('mouthInner').setAttribute('rx','13');
+  $('teeth').setAttribute('opacity','0');
+  $('lips').setAttribute('d','M186 151 Q200 146 214 151 Q200 160 186 151 Z');
+}
+
+/* 눈 깜빡임 */
+function blink(){
+  var eyes=$('eyes');
+  eyes.style.transition='transform .09s'; eyes.style.transformOrigin='200px 112px'; eyes.style.transform='scaleY(0.1)';
+  setTimeout(function(){ eyes.style.transform='scaleY(1)'; }, 110);
+}
+setInterval(function(){ if(Math.random()<0.7) blink(); }, 3200);
+
+/* 머리 미세 흔들림 (idle) */
+(function idle(){
+  var head=$('head'), s=0;
+  setInterval(function(){ s+=0.04; head.style.transform='translate('+(Math.sin(s)*1.2).toFixed(2)+'px,'+(Math.cos(s*0.8)*1).toFixed(2)+'px) rotate('+(Math.sin(s*0.6)*0.8).toFixed(2)+'deg)'; head.style.transformOrigin='200px 150px'; }, 40);
+})();
+
+function setBadge(txt, speaking){
+  $('badgeText').textContent=txt;
+  $('badge').classList.toggle('speaking', !!speaking);
+}
+
+function speak(text){
+  if(!('speechSynthesis' in window)){ $('caption').innerHTML='이 브라우저는 음성을 지원하지 않아요. 자막으로 진행합니다.<br><b>'+text+'</b>'; return; }
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);
+  u.lang='ko-KR'; if(koVoice) u.voice=koVoice; u.rate=0.98; u.pitch=1.05;
+  u.onstart=function(){ talking=true; setBadge('말하는 중…', true); startMouth(); };
+  u.onend=function(){ talking=false; setBadge('여러분 차례예요 🎙', false); stopMouth(); };
+  u.onerror=function(){ talking=false; setBadge('여러분 차례예요 🎙', false); stopMouth(); };
+  $('caption').innerHTML='<b>면접관</b> · '+text;
+  speechSynthesis.speak(u);
+}
+
+function ask(i){
+  qi=i;
+  speak(QUESTIONS[i]);
+  $('nextBtn').disabled = (i>=QUESTIONS.length-1);
+  $('repeatBtn').disabled=false;
+  if(i>=QUESTIONS.length-1) $('nextBtn').textContent='면접 종료';
+}
+
+$('startBtn').addEventListener('click',function(){
+  this.textContent='● 진행 중';
+  ask(0);
+});
+$('nextBtn').addEventListener('click',function(){
+  if(qi>=QUESTIONS.length-1){ speak('수고하셨습니다. 오늘 면접은 여기까지예요. 좋은 결과 있길 바랍니다!'); setBadge('면접 종료', false); this.disabled=true; return; }
+  ask(qi+1);
+});
+$('repeatBtn').addEventListener('click',function(){ if(qi>=0) speak(QUESTIONS[qi]); });
+
+$('camBtn').addEventListener('click',async function(){
+  try{
+    var s=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+    var v=$('selfCam'); v.srcObject=s; v.style.display='block'; $('selfPh').style.display='none';
+    this.textContent='📷 카메라 켜짐';
+  }catch(e){ alert('카메라를 열 수 없어요. 모바일은 주소가 https 여야 카메라가 작동해요.'); }
+});
+</script>
+</body>
+</html>

@@ -219,10 +219,12 @@ function analyze(res){
     ctx.restore();
     if(sb){
       var faceMid=(lm[234].x+lm[454].x)/2, corner=lm[291], dir=(corner.x>=faceMid)?1:-1;
-      sb.style.left=((corner.x+dir*0.035)*100)+'%';
-      sb.style.top=((corner.y-0.015)*100)+'%';
-      sb.style.opacity=Math.min(1,0.6+smileLow).toFixed(2);
       sb.style.display='flex';
+      // 입꼬리 옆에 붙이기: 말풍선 안쪽 끝이 입꼬리에서 살짝 떨어지도록 실제 폭의 절반 + 여백만큼 바깥으로. 얼굴/입을 안 가림.
+      var cwr=$('camwrap'), fw=(cwr&&cwr.clientWidth)||540, half=((sb.offsetWidth||130)/fw)/2;
+      sb.style.left=((corner.x+dir*(half+0.03))*100)+'%';
+      sb.style.top=((corner.y-0.005)*100)+'%';
+      sb.style.opacity=Math.min(1,0.6+smileLow).toFixed(2);
     }
   } else if(sb){ sb.style.display='none'; }
   // 시작 디텍트 연출 — ① 얼굴 중앙에서 원 확장(짧게) → ② 위아래 스캔 바. 처음 몇 초만.
@@ -310,8 +312,16 @@ async function start(){
   try{
     await ensure();
     $('status').textContent='카메라 여는 중… (권한 허용해 주세요)';
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:640,height:480}, audio:true});
-    setupAudio(stream);
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      throw new Error('이 브라우저에선 카메라를 열 수 없어요. 모바일은 주소가 https 여야 카메라가 작동해요.');
+    }
+    try{
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}}, audio:true});
+    }catch(err1){
+      // 모바일에서 마이크 거부/미지원이면 비디오만으로 재시도
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}, audio:false});
+    }
+    try{ setupAudio(stream); }catch(eA){ analyser=null; }
     var v=$('cam'); v.srcObject=stream;
     await new Promise(function(r){ if(v.videoWidth) return r(); v.onloadedmetadata=function(){r();}; });
     await v.play();

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>승무원 합격의 모든 것 · WonderfulCrew</title>
+<link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-l:#E8C96A;--navy:#1A2340;--navy-2:#243056;--cream:#FAF7F0;--ink:#161616;--line:#EbE3D0;--muted:#6A6255;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+
+nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:rgba(250,247,240,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+.logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);}
+.logo span{color:var(--gold);}
+.nav-back{font-family:'Noto Sans KR',sans-serif;font-size:0.84rem;color:var(--muted);}
+
+.hero{text-align:center;padding:44px 22px 12px;}
+.hero .eyebrow{font-family:'DM Serif Display',serif;letter-spacing:0.26em;font-size:0.72rem;color:var(--gold);text-transform:uppercase;}
+.hero h1{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--navy);margin:10px 0 8px;font-weight:400;}
+.hero p{font-family:'Noto Sans KR',sans-serif;color:var(--muted);font-size:0.95rem;line-height:1.7;max-width:560px;margin:0 auto;}
+
+.grid{max-width:1040px;margin:26px auto 60px;padding:0 22px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 22px 22px;display:flex;flex-direction:column;box-shadow:0 10px 30px -20px rgba(26,35,64,0.4);transition:transform .16s,box-shadow .16s;position:relative;overflow:hidden;}
+.card:hover{transform:translateY(-4px);box-shadow:0 22px 44px -20px rgba(26,35,64,0.55);}
+.card .ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;background:linear-gradient(135deg,#FBF3DC,#F3E7C4);margin-bottom:16px;}
+.card h3{font-family:'DM Serif Display',serif;font-size:1.24rem;color:var(--navy);margin-bottom:7px;}
+.card p{font-family:'Noto Sans KR',sans-serif;font-size:0.86rem;color:#2C2C2C;line-height:1.65;flex:1;}
+.card .go{margin-top:15px;font-family:'Noto Sans KR',sans-serif;font-size:0.85rem;font-weight:700;color:var(--gold);}
+.card .lang{display:inline-flex;gap:6px;margin-top:11px;}
+.card .lang span{font-family:'Noto Sans KR',sans-serif;font-size:0.66rem;font-weight:700;color:var(--navy);background:var(--cream);border:1px solid var(--line);padding:2px 9px;border-radius:10px;}
+.badge{position:absolute;top:16px;right:16px;background:var(--gold);color:#fff;font-family:'Noto Sans KR',sans-serif;font-size:0.64rem;font-weight:800;padding:3px 10px;border-radius:12px;letter-spacing:0.02em;z-index:3;}
+.badge.soon{background:#B9B2A2;}
+
+/* 실제 기능 화면 스크린샷 (자연 높이) */
+.vis-shot{border-radius:12px;overflow:hidden;margin-bottom:16px;background:#fff;border:1px solid var(--line);}
+.vis-shot img{width:100%;height:auto;display:block;}
+
+/* 면접사진 결과 미리보기 */
+.vis-photo{height:150px;border-radius:12px;overflow:hidden;margin-bottom:16px;background:#F1ECE0;}
+.vis-photo img{width:100%;height:100%;object-fit:cover;object-position:center 18%;display:block;}
+
+/* 메이크업 입혀보기 BEFORE/AFTER 미니 프레임 */
+.vis-makeup{position:relative;height:150px;border-radius:12px;overflow:hidden;margin-bottom:16px;background:#fff;display:flex;}
+.mk-half{position:relative;width:50%;height:100%;overflow:hidden;}
+.vis-makeup img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 16%;}
+.vis-makeup .mk-half:nth-child(1) img{transform:scale(1.2);transform-origin:center 34%;}
+.vis-makeup .mk-half:nth-child(2) img{object-position:center 42%;}
+.mk-div{position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(255,255,255,0.92);box-shadow:0 0 6px rgba(0,0,0,0.35);}
+.mk-handle{position:absolute;left:50%;top:82%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:0.62rem;color:#333;box-shadow:0 2px 6px rgba(0,0,0,0.3);}
+.mk-lab{position:absolute;top:8px;font-family:'Noto Sans KR',sans-serif;font-size:0.5rem;font-weight:700;color:#fff;background:rgba(0,0,0,0.5);padding:2px 7px;border-radius:8px;}
+.mk-lab.b{left:8px;} .mk-lab.a{right:8px;}
+.mk-swatches{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;}
+.mk-swatches i{width:12px;height:12px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.35);}
+
+/* 메이크업 비포/애프터 #2 — 한 장을 중간 분할 */
+.vis-makeup2{position:relative;height:150px;border-radius:12px;overflow:hidden;margin-bottom:16px;background:#fff;}
+.vis-makeup2 img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;}
+.mk2-after{clip-path:inset(0 0 0 50%);filter:saturate(1.3) brightness(1.04) contrast(1.03);}
+
+/* 롤플레이 상황·대화 미니 프레임 */
+.vis-roleplay{position:relative;height:150px;border-radius:12px;overflow:hidden;margin-bottom:16px;background:linear-gradient(160deg,#243056,#161d34);padding:12px;display:flex;flex-direction:column;gap:7px;}
+.rp-top{display:flex;align-items:center;gap:6px;color:#fff;font-family:'Noto Sans KR',sans-serif;font-size:0.56rem;font-weight:700;}
+.rp-top i{width:6px;height:6px;border-radius:50%;background:#E24B4A;animation:vablink 1s infinite;}
+.rp-b{max-width:80%;font-family:'Noto Sans KR',sans-serif;font-size:0.56rem;line-height:1.35;padding:6px 9px;border-radius:12px;}
+.rp-b.q{align-self:flex-start;background:rgba(255,255,255,0.14);color:#fff;border-bottom-left-radius:3px;}
+.rp-b.a{align-self:flex-end;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#3a2c07;border-bottom-right-radius:3px;font-weight:600;}
+
+/* CV 템플릿 미니 미리보기 (클래식 템플릿 — 실제 내용) */
+.vis-cv{border-radius:12px;overflow:hidden;margin-bottom:16px;display:flex;background:#fff;border:1px solid var(--line);font-family:'Noto Sans KR',sans-serif;}
+.vis-cv .cv-desc{font-size:4.7px;color:#807a70;line-height:1.35;margin:1px 0 6px;}
+.vis-cv .cv-side{width:41%;background:#A9744F;color:#fff;padding:11px 9px;text-align:center;}
+.vis-cv .cv-photo{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.9);background:rgba(255,255,255,.18) url('images/cv-face.png') center 15%/cover;margin:0 auto 5px;}
+.vis-cv .cv-name{font-size:7.5px;font-weight:800;letter-spacing:.05em;line-height:1.1;}
+.vis-cv .cv-title{font-size:4.6px;letter-spacing:.18em;color:rgba(255,255,255,.85);margin-top:2px;}
+.vis-cv .cv-csec{font-size:5px;font-weight:800;letter-spacing:.12em;margin:7px 0 3px;border-top:1px solid rgba(255,255,255,.32);padding-top:5px;text-align:left;}
+.vis-cv .cv-cl{font-size:4.6px;color:rgba(255,255,255,.9);margin-bottom:2px;text-align:left;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vis-cv .cv-main{flex:1;padding:11px 10px;color:#333;text-align:left;overflow:hidden;}
+.vis-cv .cv-mh{font-size:6px;font-weight:800;letter-spacing:.06em;color:#A9744F;border-bottom:1px solid #eee3d4;padding-bottom:2px;margin:0 0 3px;}
+.vis-cv .cv-mt{font-size:6px;font-weight:700;color:#2f2f2f;line-height:1.15;}
+.vis-cv .cv-ms{font-size:5px;color:#8a8a8a;margin:1px 0 7px;line-height:1.2;}
+.vis-cv .cv-chips{display:flex;gap:3px;flex-wrap:wrap;margin-top:1px;}
+.vis-cv .cv-chips span{font-size:4.6px;font-weight:700;color:#7a531f;background:#F3E7C4;border:1px solid #d9b96a;border-radius:6px;padding:2px 5px;line-height:1;}
+
+/* 실제 '실시간 이미지 분석' 화면 미니 프레임 */
+.vis-analysis{position:relative;height:188px;border-radius:12px;overflow:hidden;background:#1e2c48;margin-bottom:16px;}
+.va-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 32%;display:block;}
+.va-corner{position:absolute;width:18px;height:18px;border:2px solid rgba(120,222,255,0.85);}
+.va-corner.tl{top:13%;left:27%;border-right:none;border-bottom:none;}
+.va-corner.tr{top:13%;right:27%;border-left:none;border-bottom:none;}
+.va-corner.bl{top:72%;bottom:auto;left:27%;border-right:none;border-top:none;}
+.va-corner.br{top:72%;bottom:auto;right:27%;border-left:none;border-top:none;}
+.va-rec{position:absolute;top:10px;left:11px;display:flex;align-items:center;gap:5px;font-family:'Noto Sans KR',sans-serif;font-size:0.56rem;font-weight:700;color:#fff;background:rgba(217,105,79,0.92);padding:2px 8px;border-radius:10px;}
+.va-rec i{width:5px;height:5px;border-radius:50%;background:#fff;animation:vablink 1s infinite;}
+@keyframes vablink{50%{opacity:0.25;}}
+.va-head{position:absolute;left:50%;top:26%;transform:translateX(-50%);width:48px;height:58px;border-radius:50% 50% 46% 46%;background:linear-gradient(180deg,rgba(255,255,255,0.16),rgba(255,255,255,0.04));}
+.va-bubble{position:absolute;top:50%;left:58%;background:rgba(244,178,62,0.96);color:#3a2402;font-family:'Noto Sans KR',sans-serif;font-size:0.58rem;font-weight:800;padding:4px 8px;border-radius:10px;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,0.35);}
+.va-bubble::after{content:'';position:absolute;left:-6px;top:50%;transform:translateY(-50%);border:6px solid transparent;border-right-color:rgba(244,178,62,0.96);border-left:none;}
+.va-metrics{position:absolute;left:0;right:0;bottom:0;display:flex;gap:7px;padding:8px 10px 9px;background:linear-gradient(0deg,rgba(8,13,24,0.96),rgba(8,13,24,0));}
+.va-m{flex:1;}
+.va-m .l{font-family:'Noto Sans KR',sans-serif;font-size:0.44rem;color:rgba(255,255,255,0.82);display:flex;justify-content:space-between;gap:2px;white-space:nowrap;margin-bottom:3px;}
+.va-m .t{height:4px;border-radius:3px;background:rgba(255,255,255,0.16);overflow:hidden;}
+.va-m .t>i{display:block;height:100%;border-radius:3px;}
+
+.stepnote{max-width:1040px;margin:0 auto 50px;padding:0 22px;}
+.stepnote .in{background:var(--navy);border-radius:16px;padding:22px 24px;color:#fff;font-family:'Noto Sans KR',sans-serif;text-align:center;}
+.stepnote .in b{color:var(--gold-l);}
+.stepnote .in span{color:rgba(255,255,255,0.75);font-size:0.9rem;line-height:1.7;}
+
+footer{background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;padding:34px 22px;font-family:'Noto Sans KR',sans-serif;font-size:0.8rem;}
+
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.grid{grid-template-columns:1fr;}.hero h1{font-size:1.7rem;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Wonderful<span>Crew</span></a>
+  <a href="index.html" class="nav-back">← 홈</a>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">For Cabin Crew</div>
+  <h1>승무원 합격의 모든 것</h1>
+  <p>합격까지 필요한 모든 준비를 한 곳에. 카드를 누르면 바로 시작됩니다.</p>
+</div>
+
+<div class="grid">
+
+  <a href="image-check.html" class="card">
+    <div class="vis-makeup">
+      <div class="mk-half"><img src="images/Gemini_Generated_Image_hf75a8hf75a8hf75.png" alt="비포"></div>
+      <div class="mk-half"><img src="images/photo-good-global.png" alt="애프터"></div>
+      <div class="mk-div"></div>
+      <div class="mk-handle">⇔</div>
+      <div class="mk-lab b">BEFORE</div>
+      <div class="mk-lab a">AFTER</div>
+    </div>
+    <h3>면접사진 만들기</h3>
+    <p>캐주얼 셀카 한 장을 단정한 면접 증명사진으로. 메이크업·헤어·재킷 컬러까지 골라 AI가 완성해요.</p>
+    <span class="go">면접사진 만들기 →</span>
+  </a>
+
+  <a href="image-check.html#makeupCard" class="card">
+    <div class="vis-shot"><img src="images/image-1786512263800.png" alt="메이크업 입혀보기"></div>
+    <h3>메이크업 입히기 · 컬러 찾기</h3>
+    <p>내 얼굴에 립스틱·아이섀도·아이라인을 직접 입혀보고 어울리는 컬러를 찾아요. 비포/애프터로 바로 비교.</p>
+    <span class="go">컬러 입혀보기 →</span>
+  </a>
+
+  <a href="interview-check.html" class="card">
+    <div class="vis-analysis">
+      <img class="va-img" src="images/analysis-face.png" alt="실시간 얼굴 분석 화면">
+      <div class="va-corner tl"></div><div class="va-corner tr"></div>
+      <div class="va-corner bl"></div><div class="va-corner br"></div>
+      <div class="va-rec"><i></i> 분석 중</div>
+      <div class="va-bubble">😊 미소 아주 좋아요!</div>
+      <div class="va-metrics">
+        <div class="va-m"><div class="l"><span>미소</span><span>100</span></div><div class="t"><i style="width:100%;background:#4FBE7A"></i></div></div>
+        <div class="va-m"><div class="l"><span>목소리톤</span><span>84</span></div><div class="t"><i style="width:84%;background:#4FBE7A"></i></div></div>
+        <div class="va-m"><div class="l"><span>정면응시</span><span>92</span></div><div class="t"><i style="width:92%;background:#4FBE7A"></i></div></div>
+        <div class="va-m"><div class="l"><span>눈깜빡임</span><span>73</span></div><div class="t"><i style="width:73%;background:linear-gradient(90deg,#E9A23E,#F4C23E)"></i></div></div>
+      </div>
+    </div>
+    <h3>AI 실시간 이미지 분석</h3>
+    <p>카메라를 켜면 미소·시선·정면·조명을 실시간 코칭. 미소가 약하면 입꼬리 옆에서 바로 신호를 줘요.</p>
+    <span class="go">시작하기 →</span>
+  </a>
+
+  <a href="cv-maker.html" class="card">
+    <div class="vis-cv">
+      <div class="cv-side">
+        <div class="cv-photo"></div>
+        <div class="cv-name">JIMIN LEE</div>
+        <div class="cv-title">CABIN CREW</div>
+        <div class="cv-csec">CONTACT</div>
+        <div class="cv-cl">📞 +82 10-1234-5678</div>
+        <div class="cv-cl">✉ jimin.lee@email.com</div>
+        <div class="cv-cl">📍 Seoul, Korea</div>
+        <div class="cv-csec">LANGUAGES</div>
+        <div class="cv-cl">Korean — Native</div>
+        <div class="cv-cl">English — Fluent (TOEIC 900)</div>
+      </div>
+      <div class="cv-main">
+        <div class="cv-mh">EXPERIENCE</div>
+        <div class="cv-mt">The Grand Hotel Seoul · Front Desk</div>
+        <div class="cv-ms">2022–2024</div>
+        <div class="cv-desc">Cared for international guests and resolved complaints with warmth and composure — building a genuine service mindset.</div>
+        <div class="cv-mt">Sky Catering · In-flight Service</div>
+        <div class="cv-ms">2021–2022</div>
+        <div class="cv-desc">Kept strict safety &amp; hygiene standards and delivered 100% on-time service through close teamwork.</div>
+        <div class="cv-mh">SKILLS</div>
+        <div class="cv-chips"><span>Customer Service</span><span>Teamwork</span><span>Safety &amp; Emergency</span><span>Grooming</span><span>Cross-cultural Comm.</span><span>Composure</span></div>
+      </div>
+    </div>
+    <h3>CV 템플릿 메이커</h3>
+    <p>템플릿 모양과 컬러를 고르고 채우면 실시간 완성. 승무원 지원에 맞춘 영문 이력서를 몇 분 만에.</p>
+    <span class="go">만들기 →</span>
+  </a>
+
+  <a href="smalltalk.html" class="card">
+    <div class="vis-photo"><img src="images/small%20talk2.png" alt="영상 면접 · 스몰톡"></div>
+    <h3>영상 면접 · 스몰톡</h3>
+    <p>카메라 켜고 실전처럼. 자주 나오는 질문과 스몰톡을 AI와 주고받으며 답변 감각을 익혀요.</p>
+    <span class="lang"><span>국문</span><span>영문</span></span>
+    <span class="go">연습하기 →</span>
+  </a>
+
+  <a href="roleplay-practice.html" class="card">
+    <div class="vis-photo"><img src="images/hero-roleplay.jpg" alt="롤플레이 상황 대응"></div>
+    <h3>롤플레이 · 상황 대응</h3>
+    <p>기내 승객 응대와 돌발 상황을 AI와 실시간으로. 무료 시나리오부터 자유 응대 훈련까지.</p>
+    <span class="lang"><span>국문</span><span>영문</span></span>
+    <span class="go">연습하기 →</span>
+  </a>
+
+  <a href="discussion-hub.html" class="card">
+    <div class="vis-photo"><img src="images/Gemini_Generated_Image_dqt50bdqt50bdqt5.png" alt="그룹 디스커션"></div>
+    <h3>그룹 디스커션</h3>
+    <p>외국 항공사를 준비한다면. 실전 그룹 토론을 배경별 시나리오로 무제한 연습합니다.</p>
+    <span class="lang"><span>영문</span></span>
+    <span class="go">연습하기 →</span>
+  </a>
+
+  <a href="final.html" class="card">
+    <div class="vis-photo"><img src="images/Gemini_Generated_Image_9vrkb49vrkb49vrk.png" alt="파이널 종합 분석"></div>
+    <h3>파이널 · 종합 분석</h3>
+    <p>실전 직전 점검과 종합 실력 분석 리포트, 1:1 코치 피드백까지. 준비를 합격으로 완성해요.</p>
+    <span class="go">보기 →</span>
+  </a>
+
+</div>
+
+<footer>© 원더풀크루 WonderfulCrew · 승무원 합격의 완성</footer>
+
+</body>
+</html>

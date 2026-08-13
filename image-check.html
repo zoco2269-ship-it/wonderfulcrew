@@ -113,9 +113,10 @@
   <h1>AI 면접 이미지 스타일리스트</h1>
   <p class="lead">사진을 올리면 AI가 첫인상을 진단하고,<br>어울리는 메이크업·헤어·면접 복장을 추천해 드려요.</p>
   <p style="text-align:center;font-size:0.84rem;margin:8px 0 0;color:#5A5048;">✈ 외국 항공사 지원자세요? <a href="image-check-intl.html" style="color:#C9A84C;font-weight:700;text-decoration:none;">외국 항공사 버전 →</a></p>
+  <script>if(location.hash==='#makeupCard'){var _eb=document.querySelector('.eyebrow');if(_eb)_eb.textContent='Makeup Try-On';var _h=document.querySelector('h1');if(_h)_h.textContent='💄 메이크업 입혀보기';var _l=document.querySelector('.lead');if(_l)_l.innerHTML='사진을 올리면 내 얼굴에 <b>립스틱·아이섀도·아이라인</b>을 입혀보고<br>어울리는 컬러를 비포/애프터로 바로 찾을 수 있어요.';}</script>
 
   <div class="ex">
-    <figure class="ex-item bad"><img src="images/photo-bad.png" alt="무표정 예시"><figcaption>✗ 무표정</figcaption></figure>
+    <figure class="ex-item bad"><img src="images/Gemini_Generated_Image_hf75a8hf75a8hf75.png" alt="무표정 예시"><figcaption>✗ 무표정</figcaption></figure>
     <div class="ex-arrow">→</div>
     <figure class="ex-item good"><img src="images/photo-good.png" alt="밝은 미소 예시"><figcaption>✓ 밝은 미소</figcaption></figure>
   </div>
@@ -687,6 +688,7 @@ function fillStyleCard(){
 
 async function handle(file){
   $('makeupCard').style.display='block'; $('mkStatus').textContent='사진 분석 중…';
+  if(location.hash==='#makeupCard'){ try{ $('makeupCard').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} }
   lipColor=null; eyeColor=null;
   var url=URL.createObjectURL(file);
   var img=new Image();

@@ -32,7 +32,9 @@ nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-con
 .section-title h2{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--navy);margin-top:8px;font-weight:400;}
 
 /* ==== 허브 카드 그대로 — 세로 한 줄씩 ==== */
-.stack{max-width:460px;margin:24px auto 20px;padding:0 22px;display:flex;flex-direction:column;gap:26px;}
+.stack{max-width:364px;margin:24px auto 20px;padding:0 22px;display:flex;flex-direction:column;gap:26px;}
+.card{cursor:default;}
+.card:hover{transform:none;box-shadow:0 10px 30px -20px rgba(26,35,64,0.4);}
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 22px 22px;display:flex;flex-direction:column;box-shadow:0 10px 30px -20px rgba(26,35,64,0.4);transition:transform .16s,box-shadow .16s;position:relative;overflow:hidden;}
 .card:hover{transform:translateY(-4px);box-shadow:0 22px 44px -20px rgba(26,35,64,0.55);}
 .card h3{font-family:'DM Serif Display',serif;font-size:1.24rem;color:var(--navy);margin-bottom:7px;}
@@ -52,7 +54,7 @@ nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-con
 .vis-makeup{position:relative;height:150px;border-radius:12px;overflow:hidden;margin-bottom:16px;background:#fff;display:flex;}
 .mk-half{position:relative;width:50%;height:100%;overflow:hidden;}
 .vis-makeup img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 16%;}
-.vis-makeup .mk-half:nth-child(1) img{transform:scale(0.88);transform-origin:center 30%;}
+.vis-makeup .mk-half:nth-child(1) img{transform:scale(0.98);transform-origin:center 30%;}
 .vis-makeup .mk-half:nth-child(2) img{object-position:center 42%;}
 .mk-div{position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(255,255,255,0.92);box-shadow:0 0 6px rgba(0,0,0,0.35);}
 .mk-handle{position:absolute;left:50%;top:82%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:0.62rem;color:#333;box-shadow:0 2px 6px rgba(0,0,0,0.3);}
@@ -138,15 +140,14 @@ footer b{color:#fff;}
 <!-- ==== 허브 카드 그대로, 세로 한 줄씩 ==== -->
 <div class="stack">
 
-  <a href="english-interview-live.html" class="card">
+  <div class="card">
     <span class="badge">NEW</span>
     <div class="vis-photo"><img src="images/woman-interviewer.png" alt="실시간 AI 면접관" style="object-position:center 14%;"></div>
     <h3>AI 실시간 아바타 면접관</h3>
     <p>이모티콘이 아닙니다. 실제 사람 같은 면접관이 실시간으로 질문하고, 당신의 답변에 반응해요. 외항사 영어 면접·기내 롤플레이를 진짜 면접처럼 연습하세요.</p>
-    <span class="go">실시간 체험하기 →</span>
-  </a>
+  </div>
 
-  <a href="image-check.html" class="card">
+  <div class="card">
     <div class="vis-makeup">
       <div class="mk-half"><img src="images/Gemini_Generated_Image_hf75a8hf75a8hf75.png" alt="비포"></div>
       <div class="mk-half"><img src="images/photo-good-global.png" alt="애프터"></div>
@@ -157,17 +158,15 @@ footer b{color:#fff;}
     </div>
     <h3>면접사진 만들기</h3>
     <p>캐주얼 셀카 한 장을 단정한 면접 증명사진으로. 메이크업·헤어·재킷 컬러까지 골라 AI가 완성해요.</p>
-    <span class="go">면접사진 만들기 →</span>
-  </a>
+  </div>
 
-  <a href="image-check.html#makeupCard" class="card">
+  <div class="card">
     <div class="vis-shot"><img src="images/image-1786512263800.png" alt="메이크업 입혀보기"></div>
     <h3>메이크업 입히기 · 컬러 찾기</h3>
     <p>내 얼굴에 립스틱·아이섀도·아이라인을 직접 입혀보고 어울리는 컬러를 찾아요. 비포/애프터로 바로 비교.</p>
-    <span class="go">컬러 입혀보기 →</span>
-  </a>
+  </div>
 
-  <a href="interview-check.html" class="card">
+  <div class="card">
     <div class="vis-analysis">
       <img class="va-img" src="images/analysis-face.png" alt="실시간 얼굴 분석 화면">
       <div class="va-corner tl"></div><div class="va-corner tr"></div>
@@ -183,10 +182,9 @@ footer b{color:#fff;}
     </div>
     <h3>AI 실시간 이미지 분석</h3>
     <p>카메라를 켜면 미소·시선·정면·조명을 실시간 코칭. 미소가 약하면 입꼬리 옆에서 바로 신호를 줘요.</p>
-    <span class="go">시작하기 →</span>
-  </a>
+  </div>
 
-  <a href="cv-maker.html" class="card">
+  <div class="card">
     <div class="vis-cv">
       <div class="cv-side">
         <div class="cv-photo"></div>
@@ -214,39 +212,34 @@ footer b{color:#fff;}
     </div>
     <h3>CV 템플릿 메이커</h3>
     <p>템플릿 모양과 컬러를 고르고 채우면 실시간 완성. 승무원 지원에 맞춘 영문 이력서를 몇 분 만에.</p>
-    <span class="go">만들기 →</span>
-  </a>
+  </div>
 
-  <a href="smalltalk.html" class="card">
+  <div class="card">
     <div class="vis-photo"><img src="images/small%20talk2.png" alt="영상 면접 · 스몰톡"></div>
     <h3>영상 면접 · 스몰톡</h3>
     <p>카메라 켜고 실전처럼. 자주 나오는 질문과 스몰톡을 AI와 주고받으며 답변 감각을 익혀요.</p>
     <span class="lang"><span>국문</span><span>영문</span></span>
-    <span class="go">연습하기 →</span>
-  </a>
+  </div>
 
-  <a href="roleplay-practice.html" class="card">
+  <div class="card">
     <div class="vis-photo"><img src="images/hero-roleplay.jpg" alt="롤플레이 상황 대응"></div>
     <h3>롤플레이 · 상황 대응</h3>
     <p>기내 승객 응대와 돌발 상황을 AI와 실시간으로. 무료 시나리오부터 자유 응대 훈련까지.</p>
     <span class="lang"><span>국문</span><span>영문</span></span>
-    <span class="go">연습하기 →</span>
-  </a>
+  </div>
 
-  <a href="discussion-hub.html" class="card">
+  <div class="card">
     <div class="vis-photo"><img src="images/Gemini_Generated_Image_dqt50bdqt50bdqt5.png" alt="그룹 디스커션"></div>
     <h3>그룹 디스커션</h3>
     <p>외국 항공사를 준비한다면. 실전 그룹 토론을 배경별 시나리오로 무제한 연습합니다.</p>
     <span class="lang"><span>영문</span></span>
-    <span class="go">연습하기 →</span>
-  </a>
+  </div>
 
-  <a href="final.html" class="card">
+  <div class="card">
     <div class="vis-photo"><img src="images/Gemini_Generated_Image_9vrkb49vrkb49vrk.png" alt="파이널 종합 분석"></div>
     <h3>파이널 · 종합 분석</h3>
     <p>실전 직전 점검과 종합 실력 분석 리포트, 1:1 코치 피드백까지. 준비를 합격으로 완성해요.</p>
-    <span class="go">보기 →</span>
-  </a>
+  </div>
 
 </div>
 

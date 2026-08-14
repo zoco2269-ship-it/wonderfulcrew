@@ -32,7 +32,7 @@ nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-con
 .section-title h2{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--navy);margin-top:8px;font-weight:400;}
 
 /* ==== 허브 카드 그대로 — 세로 한 줄씩 ==== */
-.stack{max-width:364px;margin:24px auto 20px;padding:0 22px;display:flex;flex-direction:column;gap:26px;}
+.stack{max-width:560px;margin:24px auto 20px;padding:0 22px;display:flex;flex-direction:column;gap:26px;}
 .card{cursor:default;}
 .card:hover{transform:none;box-shadow:0 10px 30px -20px rgba(26,35,64,0.4);}
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 22px 22px;display:flex;flex-direction:column;box-shadow:0 10px 30px -20px rgba(26,35,64,0.4);transition:transform .16s,box-shadow .16s;position:relative;overflow:hidden;}
@@ -48,10 +48,10 @@ nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-con
 .vis-shot{border-radius:12px;overflow:hidden;margin-bottom:16px;background:#fff;border:1px solid var(--line);}
 .vis-shot img{width:100%;height:auto;display:block;}
 /* 면접사진 결과 미리보기 */
-.vis-photo{height:150px;border-radius:12px;overflow:hidden;margin-bottom:16px;background:#F1ECE0;}
+.vis-photo{aspect-ratio:11/6;border-radius:12px;overflow:hidden;margin-bottom:16px;background:#F1ECE0;}
 .vis-photo img{width:100%;height:100%;object-fit:cover;object-position:center 18%;display:block;}
 /* 메이크업 BEFORE/AFTER 미니 프레임 */
-.vis-makeup{position:relative;height:150px;border-radius:12px;overflow:hidden;margin-bottom:16px;background:#fff;display:flex;}
+.vis-makeup{position:relative;aspect-ratio:11/6;border-radius:12px;overflow:hidden;margin-bottom:16px;background:#fff;display:flex;}
 .mk-half{position:relative;width:50%;height:100%;overflow:hidden;}
 .vis-makeup img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 16%;}
 .vis-makeup .mk-half:nth-child(1) img{transform:scale(0.98);transform-origin:center 30%;}
@@ -62,21 +62,21 @@ nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-con
 .mk-lab.b{left:8px;} .mk-lab.a{right:8px;}
 /* CV 템플릿 미니 미리보기 */
 .vis-cv{border-radius:12px;overflow:hidden;margin-bottom:16px;display:flex;background:#fff;border:1px solid var(--line);font-family:'Noto Sans KR',sans-serif;}
-.vis-cv .cv-desc{font-size:4.7px;color:#807a70;line-height:1.35;margin:1px 0 6px;}
-.vis-cv .cv-side{width:41%;background:#A9744F;color:#fff;padding:11px 9px;text-align:center;}
-.vis-cv .cv-photo{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.9);background:rgba(255,255,255,.18) url('images/cv-face.png') center 15%/cover;margin:0 auto 5px;}
-.vis-cv .cv-name{font-size:7.5px;font-weight:800;letter-spacing:.05em;line-height:1.1;}
-.vis-cv .cv-title{font-size:4.6px;letter-spacing:.18em;color:rgba(255,255,255,.85);margin-top:2px;}
-.vis-cv .cv-csec{font-size:5px;font-weight:800;letter-spacing:.12em;margin:7px 0 3px;border-top:1px solid rgba(255,255,255,.32);padding-top:5px;text-align:left;}
-.vis-cv .cv-cl{font-size:4.6px;color:rgba(255,255,255,.9);margin-bottom:2px;text-align:left;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.vis-cv .cv-main{flex:1;padding:11px 10px;color:#333;text-align:left;overflow:hidden;}
-.vis-cv .cv-mh{font-size:6px;font-weight:800;letter-spacing:.06em;color:#A9744F;border-bottom:1px solid #eee3d4;padding-bottom:2px;margin:0 0 3px;}
-.vis-cv .cv-mt{font-size:6px;font-weight:700;color:#2f2f2f;line-height:1.15;}
-.vis-cv .cv-ms{font-size:5px;color:#8a8a8a;margin:1px 0 7px;line-height:1.2;}
-.vis-cv .cv-chips{display:flex;gap:3px;flex-wrap:wrap;margin-top:1px;}
-.vis-cv .cv-chips span{font-size:4.6px;font-weight:700;color:#7a531f;background:#F3E7C4;border:1px solid #d9b96a;border-radius:6px;padding:2px 5px;line-height:1;}
+.vis-cv .cv-desc{font-size:8px;color:#807a70;line-height:1.35;margin:2px 0 10px;}
+.vis-cv .cv-side{width:41%;background:#A9744F;color:#fff;padding:19px 15px;text-align:center;}
+.vis-cv .cv-photo{width:60px;height:60px;border-radius:50%;border:2px solid rgba(255,255,255,.9);background:rgba(255,255,255,.18) url('images/cv-face.png') center 15%/cover;margin:0 auto 9px;}
+.vis-cv .cv-name{font-size:13px;font-weight:800;letter-spacing:.05em;line-height:1.1;}
+.vis-cv .cv-title{font-size:7.8px;letter-spacing:.18em;color:rgba(255,255,255,.85);margin-top:3px;}
+.vis-cv .cv-csec{font-size:8.5px;font-weight:800;letter-spacing:.12em;margin:12px 0 5px;border-top:1px solid rgba(255,255,255,.32);padding-top:9px;text-align:left;}
+.vis-cv .cv-cl{font-size:7.8px;color:rgba(255,255,255,.9);margin-bottom:4px;text-align:left;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vis-cv .cv-main{flex:1;padding:19px 17px;color:#333;text-align:left;overflow:hidden;}
+.vis-cv .cv-mh{font-size:10px;font-weight:800;letter-spacing:.06em;color:#A9744F;border-bottom:1px solid #eee3d4;padding-bottom:4px;margin:0 0 5px;}
+.vis-cv .cv-mt{font-size:10px;font-weight:700;color:#2f2f2f;line-height:1.15;}
+.vis-cv .cv-ms{font-size:8.5px;color:#8a8a8a;margin:2px 0 12px;line-height:1.2;}
+.vis-cv .cv-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px;}
+.vis-cv .cv-chips span{font-size:7.8px;font-weight:700;color:#7a531f;background:#F3E7C4;border:1px solid #d9b96a;border-radius:6px;padding:3px 8px;line-height:1;}
 /* 실시간 이미지 분석 미니 프레임 */
-.vis-analysis{position:relative;height:188px;border-radius:12px;overflow:hidden;background:#1e2c48;margin-bottom:16px;}
+.vis-analysis{position:relative;aspect-ratio:22/15;border-radius:12px;overflow:hidden;background:#1e2c48;margin-bottom:16px;}
 .va-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 32%;display:block;}
 .va-corner{position:absolute;width:18px;height:18px;border:2px solid rgba(120,222,255,0.85);}
 .va-corner.tl{top:13%;left:27%;border-right:none;border-bottom:none;}
@@ -144,7 +144,7 @@ footer b{color:#fff;}
     <span class="badge">NEW</span>
     <div class="vis-photo"><img src="images/woman-interviewer.png" alt="실시간 AI 면접관" style="object-position:center 14%;"></div>
     <h3>AI 실시간 아바타 면접관</h3>
-    <p>이모티콘이 아닙니다. 실제 사람 같은 면접관이 실시간으로 질문하고, 당신의 답변에 반응해요. 외항사 영어 면접·기내 롤플레이를 진짜 면접처럼 연습하세요.</p>
+    <p>실제 사람 같은 AI 면접관이 실시간으로 질문하고, 당신의 답변에 반응해요. 외항사 영어 면접과 기내 롤플레이를 진짜 면접처럼 연습하세요.</p>
   </div>
 
   <div class="card">

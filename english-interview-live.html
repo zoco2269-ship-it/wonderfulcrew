@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 실시간 영어 면접 · 외항사 · WonderfulCrew</title>
+<link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-l:#E8C96A;--navy:#1A2340;--navy-2:#243056;--cream:#FAF7F0;--ink:#161616;--line:#EbE3D0;--muted:#6A6255;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+.topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:rgba(250,247,240,0.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+.logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--navy);}
+.logo span{color:var(--gold);}
+.back{font-family:'Noto Sans KR',sans-serif;font-size:0.82rem;color:var(--muted);}
+.wrap{max-width:1000px;margin:0 auto;padding:26px 18px 60px;}
+.intro{text-align:center;margin-bottom:20px;}
+.intro .eyebrow{font-family:'DM Serif Display',serif;letter-spacing:0.24em;font-size:0.7rem;color:var(--gold);text-transform:uppercase;}
+.intro h1{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--navy);margin:8px 0 6px;font-weight:400;}
+.intro p{font-family:'Noto Sans KR',sans-serif;color:var(--muted);font-size:0.92rem;line-height:1.65;}
+
+/* D-ID 아바타가 들어갈 칸 — 크기·비율 여기서 조절 */
+.stage{background:linear-gradient(160deg,#26355f,#161d34);border-radius:20px;overflow:hidden;box-shadow:0 20px 50px -20px rgba(26,35,64,0.5);position:relative;}
+#didAgent{width:100%;height:min(74vh,640px);}
+#didAgent iframe{width:100%!important;height:100%!important;border:0!important;}
+
+.tips{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;font-family:'Noto Sans KR',sans-serif;font-size:0.86rem;color:#333;line-height:1.75;}
+.tips b{color:var(--navy);}
+.tips .row{display:flex;gap:8px;align-items:flex-start;margin-top:6px;}
+.tips .row:first-of-type{margin-top:0;}
+.note{margin-top:14px;font-family:'Noto Sans KR',sans-serif;font-size:0.76rem;color:var(--muted);line-height:1.6;text-align:center;}
+footer{background:var(--navy);color:rgba(255,255,255,0.55);text-align:center;padding:30px 20px;font-family:'Noto Sans KR',sans-serif;font-size:0.78rem;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="hub.html" class="logo">Wonderful<span>Crew</span></a>
+  <a href="hub.html" class="back">← 기능</a>
+</div>
+
+<div class="wrap">
+  <div class="intro">
+    <div class="eyebrow">Live English Interview · Foreign Airlines</div>
+    <h1>AI 실시간 영어 면접</h1>
+    <p>외국 항공사 면접관과 실시간으로 영어 면접·롤플레이를 연습해요.<br>🔊 소리를 켜고, 🎙 마이크 권한을 허용한 뒤 <b>영어로</b> 답해보세요.</p>
+  </div>
+
+  <div class="stage">
+    <!-- D-ID 실시간 면접관 아바타가 이 칸에 렌더링됩니다 -->
+    <div id="didAgent"></div>
+  </div>
+
+  <div class="tips">
+    <div class="row">🎙 <span><b>마이크 허용</b> 후 영어로 말하면 면접관이 실시간으로 반응해요. (음소거 아이콘이 켜져 있으면 못 들어요)</span></div>
+    <div class="row">🎭 <span>승객 응대 <b>롤플레이</b> + 예상 질문 <b>꼬리질문</b>까지, 실제 외항사 면접처럼 주고받아요.</span></div>
+    <div class="row">⏱ <span>답변 후 <b>1~2초</b> 정도 생각하는 시간이 있어요 (실시간 특성).</span></div>
+  </div>
+
+  <div class="note">※ 시연 단계에서는 화면에 워터마크가 보일 수 있어요. 정식 서비스에서는 제거됩니다.</div>
+</div>
+
+<footer>© 원더풀크루 WonderfulCrew · 승무원 합격의 완성</footer>
+
+<!-- D-ID Agent (Frame) — 외항사 영어 면접관 -->
+<script type="module"
+  src="https://agent.d-id.com/v2/index.js"
+  data-mode="full"
+  data-client-key="ck_LRnATfwlg1J4g11j724Gw"
+  data-agent-id="v2_agt_NUXPiZ3_"
+  data-name="did-agent"
+  data-monitor="true"
+  data-target-id="didAgent">
+</script>
+
+</body>
+</html>

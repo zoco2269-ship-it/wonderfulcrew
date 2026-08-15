@@ -71,6 +71,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .wcard:active{transform:scale(0.96);}
 .wcard .emo{font-size:5.2rem;line-height:1;display:inline-block;filter:drop-shadow(0 6px 8px rgba(0,0,0,0.18));}
 .wcard .ko{font-family:'Jua',sans-serif;font-size:1.5rem;color:#E4568E;margin-top:8px;}
+.wcard .pr{font-size:0.86rem;color:#C77FB0;font-weight:800;margin-top:1px;}
 .wcard .vi{font-size:0.9rem;font-weight:700;color:#8A93A8;margin-top:0;}
 .wcard.boing .emo{animation:boing .6s;}
 
@@ -110,19 +111,21 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 @keyframes brushmove{0%{left:24%;opacity:0;transform:rotate(-22deg);}12%{opacity:1;}86%{opacity:1;}100%{left:72%;opacity:0;transform:rotate(-6deg);}}
 .reveal .ko{font-family:'Jua',sans-serif;font-size:3.3rem;color:#E4568E;margin-top:6px;opacity:0;}
 .reveal.on .ko{animation:wordin .5s ease-out 1.05s both;}
+.reveal .pr{font-size:1.2rem;color:#C77FB0;font-weight:800;opacity:0;}
+.reveal.on .pr{animation:wordin .5s ease-out 1.18s both;}
 @keyframes wordin{from{opacity:0;transform:scale(0.6) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
 .reveal .vi{font-size:1.2rem;font-weight:700;color:#7A8296;opacity:0;}
 .reveal.on .vi{animation:wordin .5s ease-out 1.25s both;}
 .reveal .again{margin-top:18px;font-family:'Jua',sans-serif;font-size:1.1rem;color:#fff;background:var(--sky);border:none;border-radius:22px;padding:12px 30px;cursor:pointer;box-shadow:0 5px 0 #2b9fd4;}
 
 /* 게임 */
-.game-q{background:#fff;border-radius:30px;padding:22px;text-align:center;box-shadow:0 9px 0 rgba(0,0,0,0.08);margin-bottom:16px;}
-.game-q .ask{font-family:'Jua',sans-serif;font-size:1.1rem;color:#7A5AA8;}
-.game-q .word{font-family:'Jua',sans-serif;font-size:3rem;color:#3AA0E0;margin:4px 0;animation:breathe 1.8s ease-in-out infinite;}
-.game-q .spk{font-size:0.95rem;font-weight:800;color:#FF7CB5;cursor:pointer;}
-.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
-.opt{aspect-ratio:1.25;border-radius:26px;background:#fff;border:4px solid transparent;display:flex;align-items:center;justify-content:center;
-  font-size:4rem;cursor:pointer;box-shadow:0 7px 0 rgba(0,0,0,0.09);transition:transform .1s;}
+.game-q{background:#fff;border-radius:24px;padding:13px 18px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,0.08);margin:0 auto 12px;max-width:420px;}
+.game-q .ask{font-family:'Jua',sans-serif;font-size:1rem;color:#7A5AA8;}
+.game-q .word{font-family:'Jua',sans-serif;font-size:2.3rem;color:#3AA0E0;margin:2px 0;animation:breathe 1.8s ease-in-out infinite;}
+.game-q .spk{font-size:0.92rem;font-weight:800;color:#FF7CB5;cursor:pointer;}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:420px;margin:0 auto;}
+.opt{aspect-ratio:1.45;border-radius:22px;background:#fff;border:4px solid transparent;display:flex;align-items:center;justify-content:center;
+  font-size:4.6rem;cursor:pointer;box-shadow:0 7px 0 rgba(0,0,0,0.09);transition:transform .1s;}
 .opt .e{display:inline-block;animation:bob 2.2s ease-in-out infinite;}
 .opt:active{transform:scale(0.96);}
 .opt.right{border-color:var(--grass);background:#EBFFE0;}
@@ -189,6 +192,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
     <div class="brush">🖌️</div>
     <div class="emo" id="rEmo">🐘</div>
     <div class="ko" id="rKo">코끼리</div>
+    <div class="pr" id="rPr">[ko-kki-ri]</div>
     <div class="vi" id="rVi">con voi</div>
     <button class="again" id="rAgain">🔊 다시 듣기</button>
   </div>
@@ -215,7 +219,13 @@ function pickVoice(){var vs=speechSynthesis.getVoices();
 if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
 var _u=null;
 function say(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();}catch(e){}
-  setTimeout(function(){_u=new SpeechSynthesisUtterance(t);_u.lang='ko-KR';if(koVoice)_u.voice=koVoice;_u.rate=0.9;_u.pitch=1.05;speechSynthesis.speak(_u);},80);}
+  setTimeout(function(){_u=new SpeechSynthesisUtterance(t);_u.lang='ko-KR';if(koVoice)_u.voice=koVoice;_u.rate=0.82;_u.pitch=1.06;
+    speechSynthesis.speak(_u);try{speechSynthesis.resume();}catch(e){}
+    // 크롬 짧은 발화 잘림 방지 — 재생 유지
+    var g=setInterval(function(){if(speechSynthesis.speaking){try{speechSynthesis.resume();}catch(e){}}else{clearInterval(g);}},250);},150);}
+/* 한글 → 로마자 발음 (베트남 아이들이 읽게) */
+function romanize(s){var CHO=['g','kk','n','d','tt','r','m','b','pp','s','ss','','j','jj','ch','k','t','p','h'],JUNG=['a','ae','ya','yae','eo','e','yeo','ye','o','wa','wae','oe','yo','u','wo','we','wi','yu','eu','ui','i'],JONG=['','k','k','k','n','n','n','t','l','k','m','l','l','l','p','l','m','p','p','t','t','ng','t','t','k','t','p','t'],out=[];
+  for(var i=0;i<s.length;i++){var code=s.charCodeAt(i)-0xAC00;if(code<0||code>11171){out.push(s[i]);continue;}out.push(CHO[Math.floor(code/588)]+JUNG[Math.floor((code%588)/28)]+JONG[code%28]);}return out.join('-');}
 
 /* 반짝이 팡 */
 function spark(cx,cy){var e=['✨','⭐','💫','🌟','🎉'];
@@ -234,10 +244,13 @@ function confetti(){var c=['#FF6FB0','#4FC3F7','#FFD23F','#6FD86F','#B388FF','#F
 var JA=[['ㄱ','기역'],['ㄴ','니은'],['ㄷ','디귿'],['ㄹ','리을'],['ㅁ','미음'],['ㅂ','비읍'],['ㅅ','시옷'],['ㅇ','이응'],['ㅈ','지읒'],['ㅊ','치읓'],['ㅋ','키읔'],['ㅌ','티읕'],['ㅍ','피읖'],['ㅎ','히읗']];
 var MO=[['ㅏ','아'],['ㅑ','야'],['ㅓ','어'],['ㅕ','여'],['ㅗ','오'],['ㅛ','요'],['ㅜ','우'],['ㅠ','유'],['ㅡ','으'],['ㅣ','이']];
 var CATS={
-  '동물':{label:'🐘 동물',items:[['🐘','코끼리','con voi'],['🦁','사자','sư tử'],['🐶','강아지','chó con'],['🐱','고양이','con mèo'],['🐰','토끼','con thỏ'],['🐻','곰','con gấu'],['🐯','호랑이','con hổ'],['🐸','개구리','con ếch'],['🐧','펭귄','chim cánh cụt'],['🐴','말','con ngựa']]},
-  '과일':{label:'🍎 과일',items:[['🍎','사과','táo'],['🍌','바나나','chuối'],['🍓','딸기','dâu tây'],['🍉','수박','dưa hấu'],['🍇','포도','nho'],['🍊','귤','quýt'],['🍑','복숭아','đào']]},
-  '탈것':{label:'🚗 탈것',items:[['🚗','자동차','ô tô'],['✈️','비행기','máy bay'],['🚌','버스','xe buýt'],['🚲','자전거','xe đạp'],['🚂','기차','tàu hỏa'],['🚢','배','thuyền']]},
-  '색깔':{label:'🎨 색깔',items:[['🔴','빨강','đỏ'],['🔵','파랑','xanh dương'],['🟢','초록','xanh lá'],['🟡','노랑','vàng'],['⚫','검정','đen'],['⚪','하양','trắng']]}
+  '동물':{label:'🐘 동물',items:[['🐘','코끼리','con voi'],['🦁','사자','sư tử'],['🐶','강아지','chó con'],['🐱','고양이','con mèo'],['🐰','토끼','con thỏ'],['🐻','곰','con gấu'],['🐯','호랑이','con hổ'],['🐸','개구리','con ếch'],['🐧','펭귄','chim cánh cụt'],['🐴','말','con ngựa'],['🐷','돼지','con lợn'],['🐮','소','con bò'],['🐔','닭','con gà'],['🐵','원숭이','con khỉ'],['🦊','여우','con cáo'],['🐼','판다','gấu trúc'],['🦒','기린','hươu cao cổ'],['🐢','거북이','con rùa'],['🐝','벌','con ong'],['🦋','나비','con bướm']]},
+  '과일':{label:'🍎 과일',items:[['🍎','사과','táo'],['🍌','바나나','chuối'],['🍓','딸기','dâu tây'],['🍉','수박','dưa hấu'],['🍇','포도','nho'],['🍊','귤','quýt'],['🍑','복숭아','đào'],['🍒','체리','anh đào'],['🥝','키위','kiwi'],['🍍','파인애플','dứa'],['🥭','망고','xoài'],['🍋','레몬','chanh'],['🥥','코코넛','dừa']]},
+  '음식':{label:'🍚 음식',items:[['🍚','밥','cơm'],['🍜','국수','mì'],['🍞','빵','bánh mì'],['🍗','치킨','gà rán'],['🍕','피자','pizza'],['🍔','햄버거','hamburger'],['🍦','아이스크림','kem'],['🍭','사탕','kẹo'],['🥛','우유','sữa'],['🍳','계란','trứng'],['🧀','치즈','phô mai'],['🍪','쿠키','bánh quy']]},
+  '탈것':{label:'🚗 탈것',items:[['🚗','자동차','ô tô'],['✈️','비행기','máy bay'],['🚌','버스','xe buýt'],['🚲','자전거','xe đạp'],['🚂','기차','tàu hỏa'],['🚢','배','thuyền'],['🚕','택시','taxi'],['🚓','경찰차','xe cảnh sát'],['🚑','구급차','xe cứu thương'],['🚒','소방차','xe cứu hỏa'],['🛵','오토바이','xe máy'],['🚁','헬리콥터','trực thăng'],['🚀','로켓','tên lửa']]},
+  '색깔':{label:'🎨 색깔',items:[['🔴','빨강','đỏ'],['🟠','주황','cam'],['🟡','노랑','vàng'],['🟢','초록','xanh lá'],['🔵','파랑','xanh dương'],['🟣','보라','tím'],['🟤','갈색','nâu'],['⚫','검정','đen'],['⚪','하양','trắng'],['🩷','분홍','hồng']]},
+  '몸':{label:'👀 몸',items:[['👀','눈','mắt'],['👂','귀','tai'],['👃','코','mũi'],['👄','입','miệng'],['✋','손','bàn tay'],['🦶','발','bàn chân'],['🦷','이','răng'],['💪','팔','cánh tay'],['🦵','다리','chân'],['👅','혀','lưỡi']]},
+  '자연':{label:'🌳 자연',items:[['🌞','해','mặt trời'],['🌙','달','mặt trăng'],['⭐','별','ngôi sao'],['☁️','구름','mây'],['🌧️','비','mưa'],['🌈','무지개','cầu vồng'],['🌸','꽃','hoa'],['🌳','나무','cây'],['🔥','불','lửa'],['💧','물','nước'],['⛰️','산','núi']]}
 };
 
 /* 장면 — 그림이 하나씩 그려지며 단어 학습 */
@@ -259,7 +272,7 @@ function playScene(){
     d.innerHTML='<span class="e">'+o.e+'</span><span class="lab">'+o.ko+'<small>'+o.vi+'</small></span>';host.appendChild(d);return d;});
   function pen(o){var p=document.createElement('div');p.className='pen';p.textContent='✏️';p.style.left=o.x+'%';p.style.top=o.y+'%';host.appendChild(p);void p.offsetWidth;p.classList.add('go');setTimeout(function(){p.remove();},820);}
   var i=0;
-  (function step(){if(i>=SCENE.length)return;var o=SCENE[i];pen(o);els[i].classList.add('in');say(o.ko);i++;sceneTimer=setTimeout(step,1700);})();
+  (function step(){if(i>=SCENE.length)return;var o=SCENE[i];els[i].classList.add('in');say(o.ko);i++;sceneTimer=setTimeout(step,1900);})();
 }
 $('sceneBtn').onclick=playScene;
 
@@ -285,10 +298,10 @@ function renderCats(){var el=$('cats');el.innerHTML='';
     b.onclick=function(){curCat=k;renderCats();renderWords();};el.appendChild(b);});}
 function renderWords(){var el=$('wordgrid');el.innerHTML='';
   CATS[curCat].items.forEach(function(w,i){var c=document.createElement('div');c.className='wcard a'+(i%4);
-    c.innerHTML='<div class="emo">'+w[0]+'</div><div class="ko">'+w[1]+'</div><div class="vi">'+w[2]+'</div>';
+    c.innerHTML='<div class="emo">'+w[0]+'</div><div class="ko">'+w[1]+'</div><div class="pr">['+romanize(w[1])+']</div><div class="vi">'+w[2]+'</div>';
     c.onclick=function(){c.classList.remove('boing');void c.offsetWidth;c.classList.add('boing');sparkAt(c);showReveal(w);};
     el.appendChild(c);});}
-function showReveal(w){$('rEmo').textContent=w[0];$('rKo').textContent=w[1];$('rVi').textContent=w[2];
+function showReveal(w){$('rEmo').textContent=w[0];$('rKo').textContent=w[1];$('rPr').textContent='['+romanize(w[1])+']';$('rVi').textContent=w[2];
   var r=$('reveal');r.classList.remove('on');void r.offsetWidth;r.classList.add('on');
   setTimeout(function(){say(w[1]);},1050);}
 $('reveal').onclick=function(e){if(e.target===$('reveal'))$('reveal').classList.remove('on');};

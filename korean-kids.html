@@ -66,6 +66,9 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .draw-stage svg path{fill:none;stroke:#2b2b3a;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .draw-stage .colorimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .9s ease;}
 .draw-stage .colorimg.show{opacity:1;}
+.draw-stage .draw-color{position:absolute;inset:0;}
+.draw-stage .draw-color img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .55s ease;}
+.draw-stage .draw-color img.show{opacity:1;}
 .draw-pen{position:absolute;top:0;left:0;font-size:2.4rem;transform:translate(-50%,-30%);opacity:0;pointer-events:none;z-index:5;transition:left .45s ease,top .45s ease,opacity .3s;filter:drop-shadow(0 3px 4px rgba(0,0,0,0.35));}
 .draw-hots{position:absolute;inset:0;z-index:6;}
 .dhot{position:absolute;transform:translate(-50%,-50%);width:17%;height:22%;border-radius:50%;cursor:pointer;}
@@ -213,7 +216,8 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
     <div class="seclabel">그림이 하나씩 그려져요! 다 그려지면 눌러서 이름을 배워요 · Chạm để nghe</div>
     <div class="draw-stage" id="drawStage">
       <svg id="drawSvg" viewBox="0 0 1600 893" preserveAspectRatio="xMidYMid meet"></svg>
-      <img id="drawImg" class="colorimg" src="images/scene-beach.jpg" alt="바닷가 장면">
+      <div class="draw-color" id="drawColor"></div>
+      <img id="drawImg" class="colorimg finalimg" src="images/scene-beach.jpg" alt="바닷가 장면">
       <div class="draw-pen" id="drawPen">✏️</div>
       <div class="draw-hots" id="drawHots"></div>
     </div>
@@ -297,13 +301,8 @@ function pickVoice(){var vs=speechSynthesis.getVoices();
     ||vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang)&&/(yuna|heami|sunhi|nari|hyunsu)/i.test(v.name);})
     ||vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang);})||vs.find(function(v){return /^ko/i.test(v.lang);})||null;}
 if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
-var _u=null,ttsA=null;
-/* 브라우저 음성(대체용) — 윈도우 기본 음성은 로봇 같아서 최후 수단 */
-function speakSyn(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();}catch(e){}
-  setTimeout(function(){_u=new SpeechSynthesisUtterance(t);_u.lang='ko-KR';if(koVoice)_u.voice=koVoice;_u.rate=0.9;_u.pitch=1.02;
-    speechSynthesis.speak(_u);try{speechSynthesis.resume();}catch(e){}
-    var g=setInterval(function(){if(speechSynthesis.speaking){try{speechSynthesis.resume();}catch(e){}}else{clearInterval(g);}},250);},120);}
-/* 자연스러운 구글 TTS 음성 우선 → 실패 시 브라우저 음성 */
+var ttsA=null;
+/* 구글 TTS(여자 음성)만 사용 — 브라우저(남자) 음성은 쓰지 않음 */
 function say(t){
   try{if(ttsA){ttsA.pause();ttsA=null;}}catch(e){}
   try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){}
@@ -372,7 +371,7 @@ renderSceneCats();
 
 /* 그림 — 선(벡터)이 사물별로 하나씩 그려지고 → 색칠 → 눌러서 학습 (inkword 방식) */
 var SVGNS2='http://www.w3.org/2000/svg';
-var drawData=null,drawTimers=[],DRAWWIN=1400;
+var drawData=null,drawTimers=[],DRAWWIN=2200;
 function enableDrawTap(){
   if(!drawData)return;var hots=$('drawHots');
   drawData.forEach(function(o){var h=document.createElement('div');h.className='dhot';h.style.left=o.xp+'%';h.style.top=o.yp+'%';
@@ -383,25 +382,34 @@ function enableDrawTap(){
     hots.appendChild(h);});
 }
 function runDraw(){
-  var svg=$('drawSvg'),img=$('drawImg'),pen=$('drawPen'),hots=$('drawHots');
-  svg.innerHTML='';hots.innerHTML='';img.classList.remove('show');pen.style.opacity='0';
-  var built=drawData.map(function(o){var pels=o.paths.map(function(dd){var pe=document.createElementNS(SVGNS2,'path');pe.setAttribute('d',dd);svg.appendChild(pe);return pe;});return {o:o,pels:pels};});
+  var svg=$('drawSvg'),color=$('drawColor'),fin=$('drawImg'),pen=$('drawPen'),hots=$('drawHots');
+  svg.innerHTML='';color.innerHTML='';hots.innerHTML='';fin.classList.remove('show');pen.style.opacity='0';
+  var built=drawData.map(function(o){
+    var pels=o.paths.map(function(dd){var pe=document.createElementNS(SVGNS2,'path');pe.setAttribute('d',dd);svg.appendChild(pe);return pe;});
+    var ci=document.createElement('img');ci.src='images/scene-beach.jpg';var b=o.bb;
+    ci.style.clipPath='inset('+b[1]+'% '+(100-b[2])+'% '+(100-b[3])+'% '+b[0]+'%)';color.appendChild(ci);
+    return {o:o,pels:pels,ci:ci};
+  });
   built.forEach(function(ob){ob.pels.forEach(function(pe){var len=pe.getTotalLength()||1;pe.style.strokeDasharray=len;pe.style.strokeDashoffset=len;});});
   void svg.getBoundingClientRect();
   var curLab=null;
-  built.forEach(function(ob,oi){var o=ob.o,base=300+oi*DRAWWIN;
-    drawTimers.push(setTimeout(function(){pen.style.opacity='1';pen.style.left=o.xp+'%';pen.style.top=o.yp+'%';},base-160));
-    var n=ob.pels.length,stag=Math.min(90,800/Math.max(n,1));
-    ob.pels.forEach(function(pe,pi){var len=pe.getTotalLength()||1,dur=Math.max(300,Math.min(750,len*2));
+  built.forEach(function(ob,oi){var o=ob.o,base=400+oi*DRAWWIN;
+    drawTimers.push(setTimeout(function(){pen.style.opacity='1';pen.style.left=o.xp+'%';pen.style.top=o.yp+'%';},base-220));
+    var n=ob.pels.length,stag=Math.min(140,1000/Math.max(n,1));
+    ob.pels.forEach(function(pe,pi){var len=pe.getTotalLength()||1,dur=Math.max(400,Math.min(1050,len*3));
       drawTimers.push(setTimeout(function(){pe.style.transition='stroke-dashoffset '+dur+'ms ease-in-out';pe.style.strokeDashoffset='0';},base+pi*stag));});
-    drawTimers.push(setTimeout(function(){say(o.ko);
+    // 선 다 그려지면 → 그 사물만 색칠 + "이게 X." + 이름 라벨 + 반짝이
+    drawTimers.push(setTimeout(function(){
+      ob.ci.classList.add('show');say(o.ko);
       if(curLab)curLab.classList.remove('show');
       var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-16,5)+'%';
       l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
-      hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l;},base+DRAWWIN-220));
+      hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l;
+      try{sparkAt(l);}catch(e){}
+    },base+DRAWWIN-650));
   });
-  var fin=300+built.length*DRAWWIN+400;
-  drawTimers.push(setTimeout(function(){img.classList.add('show');pen.style.opacity='0';hots.innerHTML='';enableDrawTap();},fin));
+  var end=400+built.length*DRAWWIN+500;
+  drawTimers.push(setTimeout(function(){fin.classList.add('show');pen.style.opacity='0';hots.innerHTML='';enableDrawTap();},end));
 }
 function playDraw(){
   drawTimers.forEach(clearTimeout);drawTimers=[];

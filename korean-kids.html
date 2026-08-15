@@ -31,10 +31,23 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .tab.on[data-t="hangul"]{background:var(--pink);color:#fff;}
 .tab.on[data-t="words"]{background:var(--sky);color:#fff;}
 .tab.on[data-t="game"]{background:var(--grass);color:#fff;}
+.tab.on[data-t="scene"]{background:var(--grape);color:#fff;}
 .sound-hint{text-align:center;font-size:0.86rem;color:#5B6480;font-weight:800;margin:2px 0 14px;}
 
 .panel{display:none;} .panel.on{display:block;animation:pop .3s;}
 .seclabel{font-family:'Jua',sans-serif;font-size:1.2rem;color:#7A5AA8;text-align:center;margin:8px 0 14px;}
+
+/* 장면 — 그림이 하나씩 그려짐 */
+.scene{position:relative;aspect-ratio:16/10;border-radius:28px;overflow:hidden;margin-bottom:14px;
+  background:linear-gradient(180deg,#7FD0FF 0%,#B6E9FF 54%,#FFE3A0 54%,#FFD180 100%);box-shadow:0 9px 0 rgba(0,0,0,0.09);}
+.sobj{position:absolute;transform:translate(-50%,-50%);text-align:center;opacity:0;}
+.sobj.in{opacity:1;}
+.sobj .e{font-size:clamp(2.4rem,7vw,3.7rem);display:block;line-height:1;filter:drop-shadow(0 5px 7px rgba(0,0,0,0.22));}
+.sobj.in .e{animation:sdraw .7s ease-out both, bob 2.6s ease-in-out .7s infinite;}
+@keyframes sdraw{0%{clip-path:inset(0 0 100% 0);transform:translateY(14px) scale(0.7);}100%{clip-path:inset(0 0 0 0);transform:translateY(0) scale(1);}}
+.sobj .lab{font-family:'Jua',sans-serif;font-size:1rem;color:#155e8c;background:rgba(255,255,255,0.94);border-radius:13px;padding:2px 9px;display:inline-block;margin-top:3px;box-shadow:0 3px 8px rgba(0,0,0,0.14);opacity:0;}
+.sobj.in .lab{animation:wordin .4s ease-out .55s both;}
+.sobj .lab small{display:block;font-size:0.68rem;color:#7d879c;font-weight:700;line-height:1.1;}
 
 /* 한글 카드 */
 .grid{display:grid;gap:12px;}
@@ -83,9 +96,17 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .reveal{position:fixed;inset:0;background:rgba(50,45,75,0.5);display:none;align-items:center;justify-content:center;z-index:70;backdrop-filter:blur(4px);padding:20px;}
 .reveal.on{display:flex;animation:pop .25s;}
 .reveal .box{background:#fff;border-radius:40px;padding:34px 30px 28px;text-align:center;max-width:360px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,0.32);position:relative;}
-.reveal .emo{font-size:8.5rem;line-height:1;display:inline-block;animation:boing .7s, floaty 2.6s ease-in-out .7s infinite;filter:drop-shadow(0 10px 12px rgba(0,0,0,0.22));}
-.reveal .ko{font-family:'Jua',sans-serif;font-size:3.3rem;color:#E4568E;margin-top:6px;}
-.reveal .vi{font-size:1.2rem;font-weight:700;color:#7A8296;}
+.reveal .emo{font-size:8.5rem;line-height:1;display:inline-block;filter:drop-shadow(0 10px 12px rgba(0,0,0,0.22));}
+.reveal.on .emo{animation:drawwipe 1.15s ease-out both, floaty 2.6s ease-in-out 1.25s infinite;}
+@keyframes drawwipe{0%{clip-path:inset(0 100% 0 0);}100%{clip-path:inset(0 0 0 0);}}
+.reveal .brush{position:absolute;top:44px;font-size:2.6rem;pointer-events:none;opacity:0;}
+.reveal.on .brush{animation:brushmove 1.15s ease-out;}
+@keyframes brushmove{0%{left:24%;opacity:0;transform:rotate(-22deg);}12%{opacity:1;}86%{opacity:1;}100%{left:72%;opacity:0;transform:rotate(-6deg);}}
+.reveal .ko{font-family:'Jua',sans-serif;font-size:3.3rem;color:#E4568E;margin-top:6px;opacity:0;}
+.reveal.on .ko{animation:wordin .5s ease-out 1.05s both;}
+@keyframes wordin{from{opacity:0;transform:scale(0.6) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.reveal .vi{font-size:1.2rem;font-weight:700;color:#7A8296;opacity:0;}
+.reveal.on .vi{animation:wordin .5s ease-out 1.25s both;}
 .reveal .again{margin-top:18px;font-family:'Jua',sans-serif;font-size:1.1rem;color:#fff;background:var(--sky);border:none;border-radius:22px;padding:12px 30px;cursor:pointer;box-shadow:0 5px 0 #2b9fd4;}
 
 /* 게임 */
@@ -119,13 +140,20 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
   </header>
 
   <div class="tabs">
-    <button class="tab on" data-t="hangul">🔤 한글</button>
+    <button class="tab on" data-t="scene">🏖️ 장면</button>
+    <button class="tab" data-t="hangul">🔤 한글</button>
     <button class="tab" data-t="words">🖼️ 낱말</button>
     <button class="tab" data-t="game">🎮 놀이</button>
   </div>
   <div class="sound-hint">🔊 소리를 켜주세요! Bật âm thanh nhé!</div>
 
-  <div class="panel on" id="p-hangul">
+  <div class="panel on" id="p-scene">
+    <div class="seclabel">그림이 그려지는 걸 보고 배워요! · Vừa xem tranh vừa học</div>
+    <div class="scene" id="scene"></div>
+    <div style="text-align:center;"><button class="tab" id="sceneBtn" style="background:var(--grape);color:#fff;">▶ 다시 그리기</button></div>
+  </div>
+
+  <div class="panel" id="p-hangul">
     <div class="seclabel">자음 ㄱㄴㄷ · Phụ âm</div>
     <div class="grid jamo" id="jaeum"></div>
     <div class="seclabel" style="margin-top:22px;">모음 ㅏㅑㅓ · Nguyên âm</div>
@@ -152,6 +180,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 
 <div class="reveal" id="reveal">
   <div class="box">
+    <div class="brush">🖌️</div>
     <div class="emo" id="rEmo">🐘</div>
     <div class="ko" id="rKo">코끼리</div>
     <div class="vi" id="rVi">con voi</div>
@@ -205,11 +234,34 @@ var CATS={
   '색깔':{label:'🎨 색깔',items:[['🔴','빨강','đỏ'],['🔵','파랑','xanh dương'],['🟢','초록','xanh lá'],['🟡','노랑','vàng'],['⚫','검정','đen'],['⚪','하양','trắng']]}
 };
 
+/* 장면 — 그림이 하나씩 그려지며 단어 학습 */
+var SCENE=[
+  {e:'☀️',ko:'해',vi:'mặt trời',x:20,y:20},
+  {e:'☁️',ko:'구름',vi:'mây',x:68,y:15},
+  {e:'🗼',ko:'등대',vi:'hải đăng',x:50,y:44},
+  {e:'🏝️',ko:'섬',vi:'đảo',x:81,y:60},
+  {e:'⛵',ko:'배',vi:'thuyền',x:30,y:56},
+  {e:'🌊',ko:'파도',vi:'sóng',x:20,y:82},
+  {e:'🐚',ko:'조개',vi:'vỏ sò',x:58,y:85},
+  {e:'🐟',ko:'물고기',vi:'con cá',x:85,y:83}
+];
+var sceneTimer=null;
+function playScene(){
+  if(sceneTimer)clearTimeout(sceneTimer);
+  var host=$('scene');host.innerHTML='';
+  var els=SCENE.map(function(o){var d=document.createElement('div');d.className='sobj';d.style.left=o.x+'%';d.style.top=o.y+'%';
+    d.innerHTML='<span class="e">'+o.e+'</span><span class="lab">'+o.ko+'<small>'+o.vi+'</small></span>';host.appendChild(d);return d;});
+  var i=0;
+  (function step(){if(i>=SCENE.length)return;els[i].classList.add('in');say(SCENE[i].ko);i++;sceneTimer=setTimeout(step,1500);})();
+}
+$('sceneBtn').onclick=playScene;
+
 /* 탭 */
 document.querySelectorAll('.tab').forEach(function(t){t.onclick=function(){
   document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});t.classList.add('on');
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
-  $('p-'+t.dataset.t).classList.add('on');if(t.dataset.t==='game')newQuiz();};});
+  $('p-'+t.dataset.t).classList.add('on');
+  if(t.dataset.t==='game')newQuiz();if(t.dataset.t==='scene')playScene();};});
 
 /* 한글 */
 function jamoCards(list,host){var el=$(host);el.innerHTML='';
@@ -227,9 +279,11 @@ function renderCats(){var el=$('cats');el.innerHTML='';
 function renderWords(){var el=$('wordgrid');el.innerHTML='';
   CATS[curCat].items.forEach(function(w,i){var c=document.createElement('div');c.className='wcard a'+(i%4);
     c.innerHTML='<div class="emo">'+w[0]+'</div><div class="ko">'+w[1]+'</div><div class="vi">'+w[2]+'</div>';
-    c.onclick=function(){c.classList.remove('boing');void c.offsetWidth;c.classList.add('boing');sparkAt(c);say(w[1]);showReveal(w);};
+    c.onclick=function(){c.classList.remove('boing');void c.offsetWidth;c.classList.add('boing');sparkAt(c);showReveal(w);};
     el.appendChild(c);});}
-function showReveal(w){$('rEmo').textContent=w[0];$('rKo').textContent=w[1];$('rVi').textContent=w[2];$('reveal').classList.add('on');}
+function showReveal(w){$('rEmo').textContent=w[0];$('rKo').textContent=w[1];$('rVi').textContent=w[2];
+  var r=$('reveal');r.classList.remove('on');void r.offsetWidth;r.classList.add('on');
+  setTimeout(function(){say(w[1]);},1050);}
 $('reveal').onclick=function(e){if(e.target===$('reveal'))$('reveal').classList.remove('on');};
 $('rAgain').onclick=function(){say($('rKo').textContent);};
 renderCats();renderWords();
@@ -247,6 +301,9 @@ function pick(o,w){if(w[1]===answer[1]){o.classList.add('right');score++;$('gSco
   else{o.classList.add('wrong');toast('다시! ','bad');setTimeout(function(){o.classList.remove('wrong');},700);}}
 $('gSpk').onclick=function(){if(answer)say(answer[1]);};
 function toast(m,k){var t=$('toast');t.textContent=m;t.className='toast on '+k;setTimeout(function(){t.classList.remove('on');},1000);}
+
+/* 첫 화면에서 장면 자동으로 그려지기 */
+setTimeout(playScene, 400);
 </script>
 </body>
 </html>

@@ -316,21 +316,31 @@ function rnd(a,b){return a+Math.random()*(b-a);}
 
 /* 소리 */
 var koVoice=null;
+/* 브라우저 한국어 '여자' 음성 선택 (남자 음성 injoon/hyunsu 제외) */
 function pickVoice(){var vs=speechSynthesis.getVoices();
   koVoice=vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang)&&/google/i.test(v.name);})
-    ||vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang)&&/(yuna|heami|sunhi|nari|hyunsu)/i.test(v.name);})
+    ||vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang)&&/(heami|yuna|sun-?hi|sunhi|nari|seoyeon|female)/i.test(v.name);})
+    ||vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang)&&!/(injoon|in-?joon|hyunsu|male)/i.test(v.name);})
     ||vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang);})||vs.find(function(v){return /^ko/i.test(v.lang);})||null;}
 if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
 var ttsA=null;
-/* 구글 TTS(여자 음성)만 사용 — 브라우저(남자) 음성은 쓰지 않음 */
+/* 자연스러운 구글(여자) 음성 우선 → 실패하면 브라우저 '여자' 음성으로 (무음·남자 방지) */
+function speakSyn(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();}catch(e){}
+  var u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';if(koVoice)u.voice=koVoice;u.rate=0.92;u.pitch=1.12;
+  try{speechSynthesis.speak(u);speechSynthesis.resume();}catch(e){}}
 function say(t){
   try{if(ttsA){ttsA.pause();ttsA=null;}}catch(e){}
   try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){}
+  var settled=false;
+  function fb(){if(settled)return;settled=true;try{if(ttsA)ttsA.pause();}catch(e){}speakSyn(t);}
   try{
     var a=new Audio('https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ko&q='+encodeURIComponent(t));
-    a.play().catch(function(){});
     ttsA=a;
-  }catch(e){}
+    a.addEventListener('playing',function(){if(settled){try{a.pause();}catch(e){}}else{settled=true;}});
+    a.addEventListener('error',fb);
+    var p=a.play();if(p&&p.catch)p.catch(fb);
+    setTimeout(function(){if(!settled&&(a.paused||a.currentTime===0))fb();},1200);
+  }catch(e){fb();}
 }
 /* 한글 → 로마자 발음 (베트남 아이들이 읽게) */
 function romanize(s){var CHO=['g','kk','n','d','tt','r','m','b','pp','s','ss','','j','jj','ch','k','t','p','h'],JUNG=['a','ae','ya','yae','eo','e','yeo','ye','o','wa','wae','oe','yo','u','wo','we','wi','yu','eu','ui','i'],JONG=['','k','k','k','n','n','n','t','l','k','m','l','l','l','p','l','m','p','p','t','t','ng','t','t','k','t','p','t'],out=[];

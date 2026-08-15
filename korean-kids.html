@@ -403,7 +403,15 @@ renderSceneCats();
 
 /* 그림 — 선(벡터)이 사물별로 하나씩 그려지고 → 색칠 → 눌러서 학습 (inkword 방식) */
 var SVGNS2='http://www.w3.org/2000/svg';
-var drawData=null,drawTimers=[],DRAWWIN=2400;
+var drawData=null,drawTimers=[],DRAWWIN=3600,drawSeq=0;
+function penFollow(pe,dur,startDelay){var token=drawSeq;
+  drawTimers.push(setTimeout(function(){if(token!==drawSeq)return;
+    var pen=document.getElementById('drawPen'),svg=document.getElementById('drawSvg');
+    var vb=(svg.getAttribute('viewBox')||'0 0 1024 1024').split(' '),W=+vb[2]||1024,H=+vb[3]||1024;
+    pen.style.transition='none';pen.style.opacity='1';var len=pe.getTotalLength()||1,t0=null;
+    function fr(now){if(token!==drawSeq)return;if(t0==null)t0=now;var p=Math.min(1,(now-t0)/dur);var pt=pe.getPointAtLength(len*p);
+      pen.style.left=(pt.x/W*100)+'%';pen.style.top=(pt.y/H*100)+'%';if(p<1)requestAnimationFrame(fr);}
+    requestAnimationFrame(fr);},startDelay));}
 function enableDrawTap(){
   if(!drawData)return;var hots=$('drawHots');
   drawData.forEach(function(o){var h=document.createElement('div');h.className='dhot';h.style.left=o.xp+'%';h.style.top=o.yp+'%';
@@ -426,9 +434,11 @@ function runDraw(){
   void svg.getBoundingClientRect();
   var curLab=null;
   built.forEach(function(ob,oi){var o=ob.o,base=400+oi*DRAWWIN;
-    drawTimers.push(setTimeout(function(){pen.style.opacity='1';pen.style.left=o.xp+'%';pen.style.top=o.yp+'%';},base-220));
-    var n=ob.pels.length,stag=Math.min(140,1000/Math.max(n,1));
-    ob.pels.forEach(function(pe,pi){var len=pe.getTotalLength()||1,dur=Math.max(400,Math.min(1050,len*3));
+    var n=ob.pels.length,stag=Math.min(200,1400/Math.max(n,1));
+    // 주 윤곽선을 연필이 따라 그림 (천천히)
+    var mainDur=Math.max(1000,Math.min(2400,(ob.pels[0].getTotalLength()||1)*4.5));
+    penFollow(ob.pels[0],mainDur,base);
+    ob.pels.forEach(function(pe,pi){var len=pe.getTotalLength()||1,dur=Math.max(600,Math.min(1700,len*4.5));
       drawTimers.push(setTimeout(function(){pe.style.transition='stroke-dashoffset '+dur+'ms ease-in-out';pe.style.strokeDashoffset='0';},base+pi*stag));});
     // 선 다 그려지면 → 그 사물만 색칠 + "이게 X." + 이름 라벨 + 반짝이
     drawTimers.push(setTimeout(function(){
@@ -444,7 +454,7 @@ function runDraw(){
   drawTimers.push(setTimeout(function(){fin.classList.add('show');pen.style.opacity='0';hots.innerHTML='';enableDrawTap();},end));
 }
 function playDraw(){
-  drawTimers.forEach(clearTimeout);drawTimers=[];
+  drawTimers.forEach(clearTimeout);drawTimers=[];drawSeq++;
   if(drawData){runDraw();return;}
   fetch('images/scene-beach-lines.json?v=3').then(function(r){return r.json();}).then(function(j){drawData=j;runDraw();}).catch(function(){});
 }
@@ -596,7 +606,7 @@ renderGameModes();
 /* 탭 */
 document.querySelectorAll('.tab').forEach(function(t){t.onclick=function(){
   try{if(ttsA)ttsA.pause();}catch(e){}
-  try{drawTimers.forEach(clearTimeout);drawTimers=[];}catch(e){}
+  try{drawTimers.forEach(clearTimeout);drawTimers=[];drawSeq++;}catch(e){}
   try{if(bayTimer)clearTimeout(bayTimer);}catch(e){}
   try{stopSong();}catch(e){}
   document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});t.classList.add('on');

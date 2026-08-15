@@ -34,6 +34,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .tab.on[data-t="scene"]{background:var(--grape);color:#fff;}
 .tab.on[data-t="bay"]{background:#2BB7C4;color:#fff;}
 .tab.on[data-t="draw"]{background:#5AA469;color:#fff;}
+.tab.on[data-t="song"]{background:#F49D3C;color:#fff;}
 .sound-hint{text-align:center;font-size:0.86rem;color:#5B6480;font-weight:800;margin:2px 0 14px;}
 
 .panel{display:none;} .panel.on{display:block;animation:pop .3s;}
@@ -79,6 +80,16 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .dlab .k{font-size:1.05rem;color:#155e8c;line-height:1.1;}
 .dlab .r{font-size:0.66rem;color:#C77FB0;font-weight:800;}
 .dlab .v{font-size:0.66rem;color:#7d879c;font-weight:700;}
+
+/* 동요 */
+.song-emoji{text-align:center;font-size:4.2rem;line-height:1;margin:6px 0 12px;animation:bob 2.2s ease-in-out infinite;}
+.song-lines{max-width:580px;margin:0 auto;}
+.sline{background:#fff;border-radius:16px;padding:11px 16px;margin-bottom:9px;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,0.07);transition:transform .12s,background .25s,box-shadow .25s;}
+.sline:active{transform:scale(0.98);}
+.sline.on{background:#FFF0A6;transform:scale(1.03);box-shadow:0 7px 0 #efd049;}
+.sline .ko{font-family:'Jua',sans-serif;font-size:1.3rem;color:#3A3A55;line-height:1.35;}
+.sline .ro{font-size:0.8rem;color:#C77FB0;font-weight:800;margin-top:2px;}
+.sline .vi{font-size:0.86rem;color:#8A93A8;font-weight:700;margin-top:1px;}
 .bobj{position:absolute;transform:translate(-50%,-50%);text-align:center;opacity:0;cursor:pointer;}
 .bobj.in{opacity:1;}
 .bobj .e{font-size:clamp(2.2rem,7vw,3.5rem);display:block;line-height:1;filter:drop-shadow(0 5px 7px rgba(0,0,0,0.22));}
@@ -201,6 +212,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
     <button class="tab" data-t="draw">🎨 그림</button>
     <button class="tab" data-t="hangul">🔤 한글</button>
     <button class="tab" data-t="words">🖼️ 낱말</button>
+    <button class="tab" data-t="song">🎵 동요</button>
     <button class="tab" data-t="game">🎮 놀이</button>
   </div>
   <div class="sound-hint">🔊 소리를 켜주세요! Bật âm thanh nhé!</div>
@@ -248,6 +260,14 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
   <div class="panel" id="p-words">
     <div class="cats" id="cats"></div>
     <div class="grid words" id="wordgrid"></div>
+  </div>
+
+  <div class="panel" id="p-song">
+    <div class="seclabel">동요로 배워요! 노래를 듣고 따라 불러요 · Học tiếng Hàn qua bài hát</div>
+    <div class="cats" id="songCats"></div>
+    <div class="song-emoji" id="songEmoji">🐻</div>
+    <div class="song-lines" id="songLines"></div>
+    <div style="text-align:center;margin-top:12px;"><button class="tab" id="songBtn" style="background:#F49D3C;color:#fff;">▶ 노래 듣기</button></div>
   </div>
 
   <div class="panel" id="p-game">
@@ -418,6 +438,65 @@ function playDraw(){
 }
 $('drawBtn2').onclick=playDraw;
 
+/* 동요 — 노래 한 줄씩 불러주며 반짝(가라오케) + 줄 눌러 다시 듣기 */
+function romanizeLine(s){return s.split(' ').map(function(w){return romanize(w);}).join(' ');}
+var SONGS=[
+  {name:'곰 세 마리',emoji:'🐻',lines:[
+    ['곰 세 마리가 한 집에 있어','Ba chú gấu ở chung một nhà'],
+    ['아빠 곰 엄마 곰 아기 곰','Gấu bố, gấu mẹ, gấu con'],
+    ['아빠 곰은 뚱뚱해','Gấu bố thì mập mạp'],
+    ['엄마 곰은 날씬해','Gấu mẹ thì thon thả'],
+    ['아기 곰은 너무 귀여워','Gấu con thật dễ thương'],
+    ['으쓱으쓱 잘한다','Lắc lư, giỏi quá!']
+  ]},
+  {name:'나비야',emoji:'🦋',lines:[
+    ['나비야 나비야 이리 날아 오너라','Bướm ơi bướm ơi, bay lại đây nào'],
+    ['노랑 나비 흰 나비 춤을 추며 오너라','Bướm vàng bướm trắng, múa mà bay tới'],
+    ['봄바람에 꽃잎도 방긋방긋 웃으며','Gió xuân, cánh hoa cũng mỉm cười'],
+    ['참새도 짹짹짹 노래하며 춤춘다','Chim sẻ ríu rít, vừa hát vừa múa']
+  ]},
+  {name:'작은 별',emoji:'⭐',lines:[
+    ['반짝반짝 작은 별','Ngôi sao nhỏ lấp lánh'],
+    ['아름답게 비치네','Chiếu sáng thật đẹp xinh'],
+    ['동쪽 하늘에서도','Ở bầu trời phía đông'],
+    ['서쪽 하늘에서도','Ở bầu trời phía tây'],
+    ['반짝반짝 작은 별','Ngôi sao nhỏ lấp lánh'],
+    ['아름답게 비치네','Chiếu sáng thật đẹp xinh']
+  ]},
+  {name:'머리 어깨 무릎 발',emoji:'🧒',lines:[
+    ['머리 어깨 무릎 발 무릎 발','Đầu, vai, đầu gối, chân'],
+    ['머리 어깨 무릎 발 무릎 발','Đầu, vai, đầu gối, chân'],
+    ['머리 어깨 발 무릎 발','Đầu, vai, chân, đầu gối'],
+    ['머리 어깨 무릎 귀 코 귀','Đầu, vai, gối, tai, mũi, tai']
+  ]}
+];
+var curSong=0,songTimer=null;
+function renderSongCats(){var el=$('songCats');el.innerHTML='';
+  SONGS.forEach(function(s,i){var b=document.createElement('button');b.className='cat'+(i===curSong?' on':'');b.textContent=s.emoji+' '+s.name;
+    b.onclick=function(){curSong=i;renderSongCats();renderSong();};el.appendChild(b);});}
+function renderSong(){
+  if(songTimer)clearTimeout(songTimer);
+  var s=SONGS[curSong];$('songEmoji').textContent=s.emoji;
+  var host=$('songLines');host.innerHTML='';
+  s.lines.forEach(function(ln,i){var d=document.createElement('div');d.className='sline';d.dataset.i=i;
+    d.innerHTML='<div class="ko">'+ln[0]+'</div><div class="ro">['+romanizeLine(ln[0])+']</div><div class="vi">'+ln[1]+'</div>';
+    d.onclick=function(){highlight(i);say(ln[0]);};host.appendChild(d);});
+}
+function highlight(i){var ls=$('songLines').children;for(var k=0;k<ls.length;k++)ls[k].classList.toggle('on',k===i);
+  if(ls[i])ls[i].scrollIntoView({block:'nearest',behavior:'smooth'});}
+function playSong(){
+  if(songTimer)clearTimeout(songTimer);
+  var s=SONGS[curSong],i=0;
+  (function step(){
+    if(i>=s.lines.length){songTimer=setTimeout(function(){var ls=$('songLines').children;for(var k=0;k<ls.length;k++)ls[k].classList.remove('on');},900);return;}
+    highlight(i);say(s.lines[i][0]);
+    var koLen=s.lines[i][0].replace(/\s/g,'').length;var wait=Math.max(2200,koLen*250);
+    i++;songTimer=setTimeout(step,wait);
+  })();
+}
+$('songBtn').onclick=playSong;
+renderSongCats();renderSong();
+
 /* 한글 조합 — 자음+모음 클릭하면 글자 완성 */
 var CHO2=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
 var JUNG2=['ㅏ','ㅑ','ㅓ','ㅕ','ㅗ','ㅛ','ㅜ','ㅠ','ㅡ','ㅣ'];
@@ -463,11 +542,13 @@ document.querySelectorAll('.tab').forEach(function(t){t.onclick=function(){
   try{if(ttsA)ttsA.pause();}catch(e){}
   try{drawTimers.forEach(clearTimeout);drawTimers=[];}catch(e){}
   try{if(bayTimer)clearTimeout(bayTimer);}catch(e){}
+  try{if(songTimer)clearTimeout(songTimer);}catch(e){}
   document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});t.classList.add('on');
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
   $('p-'+t.dataset.t).classList.add('on');
   if(t.dataset.t==='bay')playBay();
   if(t.dataset.t==='draw')playDraw();
+  if(t.dataset.t==='song')renderSong();
   if(t.dataset.t==='game'){if(gameMode==='quiz')newQuiz();else renderFree();}};});
 
 /* 한글 */

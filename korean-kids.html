@@ -32,6 +32,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .tab.on[data-t="words"]{background:var(--sky);color:#fff;}
 .tab.on[data-t="game"]{background:var(--grass);color:#fff;}
 .tab.on[data-t="scene"]{background:var(--grape);color:#fff;}
+.tab.on[data-t="bay"]{background:#2BB7C4;color:#fff;}
 .sound-hint{text-align:center;font-size:0.86rem;color:#5B6480;font-weight:800;margin:2px 0 14px;}
 
 .panel{display:none;} .panel.on{display:block;animation:pop .3s;}
@@ -54,6 +55,20 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 @keyframes scribble{0%{opacity:0;transform:translate(-50%,-50%) translate(-16px,12px) rotate(-26deg);}12%{opacity:1;}34%{transform:translate(-50%,-50%) translate(15px,-9px) rotate(-8deg);}58%{transform:translate(-50%,-50%) translate(-11px,13px) rotate(-20deg);}80%{transform:translate(-50%,-50%) translate(13px,-5px) rotate(-6deg);}88%{opacity:1;}100%{opacity:0;}}
 /* 그려지는 wipe를 조금 더 천천히·또렷하게 */
 .sobj.in .e{animation:sdraw .85s ease-out both, bob 2.6s ease-in-out .85s infinite;}
+
+/* 만들기 — 장면이 하나씩 뿅뿅 놓이며 완성 (연필 없음) */
+.scene.bay{aspect-ratio:15/11;background:#BEEBFF;}
+.bobj{position:absolute;transform:translate(-50%,-50%);text-align:center;opacity:0;cursor:pointer;}
+.bobj.in{opacity:1;}
+.bobj .e{font-size:clamp(2.2rem,7vw,3.5rem);display:block;line-height:1;filter:drop-shadow(0 5px 7px rgba(0,0,0,0.22));}
+.bobj.in .e{animation:plop .6s cubic-bezier(.2,1.5,.4,1) both, bob 2.8s ease-in-out .6s infinite;}
+@keyframes plop{0%{transform:translateY(-30px) scale(0.2);opacity:0;}55%{opacity:1;}100%{transform:translateY(0) scale(1);opacity:1;}}
+.bobj.tap .e{animation:boing .6s;}
+.bobj .blab{font-family:'Jua',sans-serif;font-size:0.95rem;color:#155e8c;background:rgba(255,255,255,0.95);border-radius:13px;padding:2px 9px;display:inline-block;margin-top:3px;box-shadow:0 3px 8px rgba(0,0,0,0.16);opacity:0;line-height:1.18;}
+.bobj .blab b{display:block;font-size:0.64rem;color:#C77FB0;font-weight:800;}
+.bobj .blab small{display:block;font-size:0.66rem;color:#7d879c;font-weight:700;}
+.bobj.in .blab{animation:wordin .4s ease-out .5s both;}
+@keyframes wordin{from{opacity:0;transform:translateY(6px) scale(.8);}to{opacity:1;transform:translateY(0) scale(1);}}
 
 /* 한글 카드 */
 .grid{display:grid;gap:12px;}
@@ -150,17 +165,24 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 
   <div class="tabs">
     <button class="tab on" data-t="scene">🏖️ 장면</button>
+    <button class="tab" data-t="bay">🎬 만들기</button>
     <button class="tab" data-t="hangul">🔤 한글</button>
     <button class="tab" data-t="words">🖼️ 낱말</button>
     <button class="tab" data-t="game">🎮 놀이</button>
   </div>
   <div class="sound-hint">🔊 소리를 켜주세요! Bật âm thanh nhé!</div>
-  <div style="text-align:center;margin:2px 0 6px;"><a href="korean-draw.html" style="display:inline-block;font-family:'Jua',sans-serif;font-size:1rem;color:#fff;background:var(--grape);border-radius:22px;padding:9px 20px;box-shadow:0 5px 0 rgba(0,0,0,0.12);text-decoration:none;">🎨 그림이 그려져요 →</a></div>
 
   <div class="panel on" id="p-scene">
     <div class="seclabel">그림이 그려지는 걸 보고 배워요! · Vừa xem tranh vừa học</div>
     <div class="scene" id="scene"></div>
     <div style="text-align:center;"><button class="tab" id="sceneBtn" style="background:var(--grape);color:#fff;">▶ 다시 그리기</button></div>
+  </div>
+
+  <div class="panel" id="p-bay">
+    <div class="seclabel">장면을 골라요! 그림이 하나씩 만들어져요 · Chọn cảnh · hiện ra từng thứ một</div>
+    <div class="cats" id="sceneCats"></div>
+    <div class="scene bay" id="bay"></div>
+    <div style="text-align:center;"><button class="tab" id="bayBtn" style="background:#2BB7C4;color:#fff;">▶ 다시 보기</button></div>
   </div>
 
   <div class="panel" id="p-hangul">
@@ -218,12 +240,24 @@ function pickVoice(){var vs=speechSynthesis.getVoices();
     ||vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang)&&/(yuna|heami|sunhi|nari|hyunsu)/i.test(v.name);})
     ||vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang);})||vs.find(function(v){return /^ko/i.test(v.lang);})||null;}
 if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
-var _u=null;
-function say(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();}catch(e){}
-  setTimeout(function(){_u=new SpeechSynthesisUtterance(t);_u.lang='ko-KR';if(koVoice)_u.voice=koVoice;_u.rate=0.82;_u.pitch=1.06;
+var _u=null,ttsA=null;
+/* 브라우저 음성(대체용) — 윈도우 기본 음성은 로봇 같아서 최후 수단 */
+function speakSyn(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();}catch(e){}
+  setTimeout(function(){_u=new SpeechSynthesisUtterance(t);_u.lang='ko-KR';if(koVoice)_u.voice=koVoice;_u.rate=0.9;_u.pitch=1.02;
     speechSynthesis.speak(_u);try{speechSynthesis.resume();}catch(e){}
-    // 크롬 짧은 발화 잘림 방지 — 재생 유지
-    var g=setInterval(function(){if(speechSynthesis.speaking){try{speechSynthesis.resume();}catch(e){}}else{clearInterval(g);}},250);},150);}
+    var g=setInterval(function(){if(speechSynthesis.speaking){try{speechSynthesis.resume();}catch(e){}}else{clearInterval(g);}},250);},120);}
+/* 자연스러운 구글 TTS 음성 우선 → 실패 시 브라우저 음성 */
+function say(t){
+  try{if(ttsA){ttsA.pause();ttsA=null;}}catch(e){}
+  try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){}
+  try{
+    var a=new Audio('https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ko&q='+encodeURIComponent(t));
+    a.crossOrigin='anonymous';var fell=false;
+    a.onerror=function(){if(!fell){fell=true;speakSyn(t);}};
+    var p=a.play();if(p&&p.catch)p.catch(function(){if(!fell){fell=true;speakSyn(t);}});
+    ttsA=a;
+  }catch(e){speakSyn(t);}
+}
 /* 한글 → 로마자 발음 (베트남 아이들이 읽게) */
 function romanize(s){var CHO=['g','kk','n','d','tt','r','m','b','pp','s','ss','','j','jj','ch','k','t','p','h'],JUNG=['a','ae','ya','yae','eo','e','yeo','ye','o','wa','wae','oe','yo','u','wo','we','wi','yu','eu','ui','i'],JONG=['','k','k','k','n','n','n','t','l','k','m','l','l','l','p','l','m','p','p','t','t','ng','t','t','k','t','p','t'],out=[];
   for(var i=0;i<s.length;i++){var code=s.charCodeAt(i)-0xAC00;if(code<0||code>11171){out.push(s[i]);continue;}out.push(CHO[Math.floor(code/588)]+JUNG[Math.floor((code%588)/28)]+JONG[code%28]);}return out.join('-');}
@@ -277,12 +311,39 @@ function playScene(){
 }
 $('sceneBtn').onclick=playScene;
 
+/* 만들기 — 여러 장면이 하나씩 만들어짐 (연필 없이 뿅뿅) */
+var SLOTS=[[20,28],[50,25],[80,30],[66,41],[15,53],[45,50],[80,55],[30,73],[58,71],[85,75]];
+var SCENES={
+ '바닷가':{icon:'🏖️',bg:'linear-gradient(180deg,#8FD8FF 0%,#BEEBFF 42%,#6FC6E8 42%,#9FDCF0 60%,#FCE7B0 60%,#F4CE7E 100%)',items:[['☀️','해','mặt trời'],['☁️','구름','mây'],['🐚','조개','vỏ sò'],['🗼','등대','hải đăng'],['⛵','배','thuyền'],['🌴','야자수','cây dừa'],['⛱️','파라솔','ô dù'],['🏰','모래성','lâu đài cát'],['🦀','게','con cua'],['🐠','물고기','con cá']]},
+ '숲속':{icon:'🌲',bg:'linear-gradient(180deg,#AEE0FF 0%,#CFF0FF 40%,#BFE9A8 40%,#96D677 100%)',items:[['☀️','해','mặt trời'],['🌥️','구름','mây'],['🌳','나무','cây'],['🌲','소나무','cây thông'],['🌸','꽃','hoa'],['🦋','나비','con bướm'],['🍄','버섯','nấm'],['🐰','토끼','con thỏ'],['🐿️','다람쥐','con sóc'],['🐦','새','con chim']]},
+ '동물원':{icon:'🦁',bg:'linear-gradient(180deg,#FFE7B0 0%,#FFF0CF 45%,#BFE29A 45%,#A6D982 100%)',items:[['🦁','사자','sư tử'],['🐘','코끼리','con voi'],['🦒','기린','hươu cao cổ'],['🐵','원숭이','con khỉ'],['🦓','얼룩말','ngựa vằn'],['🐼','판다','gấu trúc'],['🐯','호랑이','con hổ'],['🐻','곰','con gấu'],['🐧','펭귄','chim cánh cụt'],['🐊','악어','cá sấu']]},
+ '우주':{icon:'🚀',bg:'linear-gradient(180deg,#22224E 0%,#33336E 50%,#43356E 100%)',items:[['🌞','해','mặt trời'],['🌙','달','mặt trăng'],['🌍','지구','trái đất'],['🚀','로켓','tên lửa'],['👨‍🚀','우주인','phi hành gia'],['⭐','별','ngôi sao'],['🪐','토성','sao thổ'],['☄️','혜성','sao chổi'],['🛸','비행접시','đĩa bay'],['🌟','별똥별','sao băng']]},
+ '도시':{icon:'🏙️',bg:'linear-gradient(180deg,#BFE3FF 0%,#DDF0FF 55%,#CBD3DC 55%,#B7C0CB 100%)',items:[['🏢','빌딩','tòa nhà'],['🏠','집','ngôi nhà'],['🚗','자동차','ô tô'],['🚌','버스','xe buýt'],['🚦','신호등','đèn giao thông'],['🌳','나무','cây'],['🏬','백화점','trung tâm'],['✈️','비행기','máy bay'],['🌉','다리','cây cầu'],['🚲','자전거','xe đạp']]}
+};
+var curScene='바닷가',bayTimer=null;
+function renderSceneCats(){var el=$('sceneCats');el.innerHTML='';
+  Object.keys(SCENES).forEach(function(k){var b=document.createElement('button');b.className='cat'+(k===curScene?' on':'');b.textContent=SCENES[k].icon+' '+k;
+    b.onclick=function(){curScene=k;renderSceneCats();playBay();};el.appendChild(b);});}
+function playBay(){
+  if(bayTimer)clearTimeout(bayTimer);
+  var sc=SCENES[curScene],host=$('bay');host.style.background=sc.bg;host.innerHTML='';
+  var dark=(curScene==='우주');
+  var els=sc.items.map(function(w,idx){var pos=SLOTS[idx%SLOTS.length];var d=document.createElement('div');d.className='bobj';d.style.left=pos[0]+'%';d.style.top=pos[1]+'%';
+    d.innerHTML='<span class="e">'+w[0]+'</span><span class="blab">'+w[1]+'<b>['+romanize(w[1])+']</b><small>'+w[2]+'</small></span>';
+    d.onclick=function(){d.classList.remove('tap');void d.offsetWidth;d.classList.add('tap');say(w[1]);};
+    host.appendChild(d);return d;});
+  var i=0;
+  (function step(){if(i>=els.length)return;els[i].classList.add('in');say(sc.items[i][1]);i++;bayTimer=setTimeout(step,1650);})();
+}
+$('bayBtn').onclick=playBay;
+renderSceneCats();
+
 /* 탭 */
 document.querySelectorAll('.tab').forEach(function(t){t.onclick=function(){
   document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});t.classList.add('on');
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
   $('p-'+t.dataset.t).classList.add('on');
-  if(t.dataset.t==='game')newQuiz();if(t.dataset.t==='scene')playScene();};});
+  if(t.dataset.t==='game')newQuiz();if(t.dataset.t==='scene')playScene();if(t.dataset.t==='bay')playBay();};});
 
 /* 한글 */
 function jamoCards(list,host){var el=$(host);el.innerHTML='';

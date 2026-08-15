@@ -33,6 +33,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .tab.on[data-t="game"]{background:var(--grass);color:#fff;}
 .tab.on[data-t="scene"]{background:var(--grape);color:#fff;}
 .tab.on[data-t="bay"]{background:#2BB7C4;color:#fff;}
+.tab.on[data-t="draw"]{background:#5AA469;color:#fff;}
 .sound-hint{text-align:center;font-size:0.86rem;color:#5B6480;font-weight:800;margin:2px 0 14px;}
 
 .panel{display:none;} .panel.on{display:block;animation:pop .3s;}
@@ -58,6 +59,23 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 
 /* 만들기 — 장면이 하나씩 뿅뿅 놓이며 완성 (연필 없음) */
 .scene.bay{aspect-ratio:15/11;background:#BEEBFF;}
+
+/* 그림 — 일러스트가 그려지듯 나타남 (inkword 방식) */
+.draw-stage{position:relative;aspect-ratio:16/9;border-radius:26px;overflow:hidden;background:#fff;box-shadow:0 9px 0 rgba(0,0,0,0.09);margin-bottom:12px;}
+.draw-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;clip-path:inset(0 100% 0 0);}
+.draw-stage img.drawing{transition:clip-path var(--drawdur,7s) linear;clip-path:inset(0 0 0 0);}
+.draw-pen{position:absolute;top:0;left:0;font-size:2.4rem;transform:translate(-50%,-20%);opacity:0;pointer-events:none;z-index:5;filter:drop-shadow(0 3px 4px rgba(0,0,0,0.35));}
+.draw-pen.go{opacity:1;transition:left var(--drawdur,7s) linear;}
+.draw-hots{position:absolute;inset:0;}
+.dhot{position:absolute;transform:translate(-50%,-50%);width:17%;height:22%;border-radius:50%;cursor:pointer;}
+.dhot.tap{animation:hotpop .5s;}
+@keyframes hotpop{0%,100%{transform:translate(-50%,-50%) scale(1);}40%{transform:translate(-50%,-50%) scale(1.18);}}
+.dlab{position:absolute;transform:translate(-50%,-50%);background:rgba(255,255,255,0.97);border-radius:13px;padding:3px 10px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.24);font-family:'Jua',sans-serif;pointer-events:none;opacity:0;z-index:6;white-space:nowrap;}
+.dlab.show{animation:labin .4s ease-out both;}
+@keyframes labin{from{opacity:0;transform:translate(-50%,-50%) scale(.5);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
+.dlab .k{font-size:1.05rem;color:#155e8c;line-height:1.1;}
+.dlab .r{font-size:0.66rem;color:#C77FB0;font-weight:800;}
+.dlab .v{font-size:0.66rem;color:#7d879c;font-weight:700;}
 .bobj{position:absolute;transform:translate(-50%,-50%);text-align:center;opacity:0;cursor:pointer;}
 .bobj.in{opacity:1;}
 .bobj .e{font-size:clamp(2.2rem,7vw,3.5rem);display:block;line-height:1;filter:drop-shadow(0 5px 7px rgba(0,0,0,0.22));}
@@ -177,6 +195,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 
   <div class="tabs">
     <button class="tab on" data-t="bay">🎬 장면</button>
+    <button class="tab" data-t="draw">🎨 그림</button>
     <button class="tab" data-t="hangul">🔤 한글</button>
     <button class="tab" data-t="words">🖼️ 낱말</button>
     <button class="tab" data-t="game">🎮 놀이</button>
@@ -188,6 +207,16 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
     <div class="cats" id="sceneCats"></div>
     <div class="scene bay" id="bay"></div>
     <div style="text-align:center;"><button class="tab" id="bayBtn" style="background:#2BB7C4;color:#fff;">▶ 다시 보기</button></div>
+  </div>
+
+  <div class="panel" id="p-draw">
+    <div class="seclabel">그림이 그려지면서 단어가 나와요! 다 그려지면 눌러봐요 · Chạm vào tranh để nghe</div>
+    <div class="draw-stage" id="drawStage">
+      <img id="drawImg" src="images/scene-beach.jpg" alt="바닷가 장면">
+      <div class="draw-pen" id="drawPen">✏️</div>
+      <div class="draw-hots" id="drawHots"></div>
+    </div>
+    <div style="text-align:center;"><button class="tab" id="drawBtn2" style="background:#5AA469;color:#fff;">▶ 다시 그리기</button></div>
   </div>
 
   <div class="panel" id="p-hangul">
@@ -342,6 +371,44 @@ function playBay(){
 $('bayBtn').onclick=playBay;
 renderSceneCats();
 
+/* 그림 — 일러스트가 그려지듯 나타나며 단어 학습 (inkword 방식) */
+var DRAW=[
+  {ko:'야자수',vi:'cây dừa',x:9,y:66},
+  {ko:'구름',vi:'mây',x:19,y:27},
+  {ko:'등대',vi:'hải đăng',x:22,y:58},
+  {ko:'해',vi:'mặt trời',x:31,y:18},
+  {ko:'배',vi:'thuyền',x:48,y:60},
+  {ko:'파도',vi:'sóng',x:52,y:82},
+  {ko:'불가사리',vi:'sao biển',x:61,y:91},
+  {ko:'모래성',vi:'lâu đài cát',x:74,y:78},
+  {ko:'물고기',vi:'con cá',x:91,y:88}
+];
+var DRAWDUR=8000,drawTimers=[];
+function playDraw(){
+  drawTimers.forEach(clearTimeout);drawTimers=[];
+  var img=$('drawImg'),pen=$('drawPen'),hots=$('drawHots');
+  hots.innerHTML='';
+  img.classList.remove('drawing');pen.classList.remove('go');pen.style.left='0%';pen.style.opacity='0';
+  img.style.setProperty('--drawdur',DRAWDUR+'ms');pen.style.setProperty('--drawdur',DRAWDUR+'ms');
+  void img.offsetWidth;
+  requestAnimationFrame(function(){img.classList.add('drawing');pen.style.opacity='1';pen.classList.add('go');pen.style.left='100%';});
+  DRAW.forEach(function(o){
+    drawTimers.push(setTimeout(function(){
+      say(o.ko);
+      var l=document.createElement('div');l.className='dlab';l.style.left=o.x+'%';l.style.top=Math.max(o.y-13,4)+'%';
+      l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
+      hots.appendChild(l);requestAnimationFrame(function(){l.classList.add('show');});
+    },(o.x/100)*DRAWDUR+400));
+  });
+  drawTimers.push(setTimeout(function(){pen.style.opacity='0';enableDrawTap();},DRAWDUR+400));
+}
+function enableDrawTap(){
+  var hots=$('drawHots');
+  DRAW.forEach(function(o){var h=document.createElement('div');h.className='dhot';h.style.left=o.x+'%';h.style.top=o.y+'%';
+    h.onclick=function(){h.classList.remove('tap');void h.offsetWidth;h.classList.add('tap');say(o.ko);};hots.appendChild(h);});
+}
+$('drawBtn2').onclick=playDraw;
+
 /* 한글 조합 — 자음+모음 클릭하면 글자 완성 */
 var CHO2=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
 var JUNG2=['ㅏ','ㅑ','ㅓ','ㅕ','ㅗ','ㅛ','ㅜ','ㅠ','ㅡ','ㅣ'];
@@ -388,6 +455,7 @@ document.querySelectorAll('.tab').forEach(function(t){t.onclick=function(){
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
   $('p-'+t.dataset.t).classList.add('on');
   if(t.dataset.t==='bay')playBay();
+  if(t.dataset.t==='draw')playDraw();
   if(t.dataset.t==='game'){if(gameMode==='quiz')newQuiz();else renderFree();}};});
 
 /* 한글 */

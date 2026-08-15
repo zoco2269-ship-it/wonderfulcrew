@@ -308,11 +308,9 @@ function say(t){
   try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){}
   try{
     var a=new Audio('https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ko&q='+encodeURIComponent(t));
-    var fell=false;
-    a.onerror=function(){if(!fell){fell=true;speakSyn(t);}};
-    var p=a.play();if(p&&p.catch)p.catch(function(){if(!fell){fell=true;speakSyn(t);}});
+    a.play().catch(function(){});
     ttsA=a;
-  }catch(e){speakSyn(t);}
+  }catch(e){}
 }
 /* 한글 → 로마자 발음 (베트남 아이들이 읽게) */
 function romanize(s){var CHO=['g','kk','n','d','tt','r','m','b','pp','s','ss','','j','jj','ch','k','t','p','h'],JUNG=['a','ae','ya','yae','eo','e','yeo','ye','o','wa','wae','oe','yo','u','wo','we','wi','yu','eu','ui','i'],JONG=['','k','k','k','n','n','n','t','l','k','m','l','l','l','p','l','m','p','p','t','t','ng','t','t','k','t','p','t'],out=[];
@@ -451,6 +449,9 @@ renderGameModes();
 
 /* 탭 */
 document.querySelectorAll('.tab').forEach(function(t){t.onclick=function(){
+  try{if(ttsA)ttsA.pause();}catch(e){}
+  try{drawTimers.forEach(clearTimeout);drawTimers=[];}catch(e){}
+  try{if(bayTimer)clearTimeout(bayTimer);}catch(e){}
   document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});t.classList.add('on');
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
   $('p-'+t.dataset.t).classList.add('on');

@@ -48,6 +48,12 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .sobj .lab{font-family:'Jua',sans-serif;font-size:1rem;color:#155e8c;background:rgba(255,255,255,0.94);border-radius:13px;padding:2px 9px;display:inline-block;margin-top:3px;box-shadow:0 3px 8px rgba(0,0,0,0.14);opacity:0;}
 .sobj.in .lab{animation:wordin .4s ease-out .55s both;}
 .sobj .lab small{display:block;font-size:0.68rem;color:#7d879c;font-weight:700;line-height:1.1;}
+/* 연필로 슥슥 그리는 동작 */
+.pen{position:absolute;transform:translate(-50%,-50%);font-size:1.8rem;pointer-events:none;z-index:6;opacity:0;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.25));}
+.pen.go{animation:scribble .8s ease-in-out forwards;}
+@keyframes scribble{0%{opacity:0;transform:translate(-50%,-50%) translate(-16px,12px) rotate(-26deg);}12%{opacity:1;}34%{transform:translate(-50%,-50%) translate(15px,-9px) rotate(-8deg);}58%{transform:translate(-50%,-50%) translate(-11px,13px) rotate(-20deg);}80%{transform:translate(-50%,-50%) translate(13px,-5px) rotate(-6deg);}88%{opacity:1;}100%{opacity:0;}}
+/* 그려지는 wipe를 조금 더 천천히·또렷하게 */
+.sobj.in .e{animation:sdraw .85s ease-out both, bob 2.6s ease-in-out .85s infinite;}
 
 /* 한글 카드 */
 .grid{display:grid;gap:12px;}
@@ -251,8 +257,9 @@ function playScene(){
   var host=$('scene');host.innerHTML='';
   var els=SCENE.map(function(o){var d=document.createElement('div');d.className='sobj';d.style.left=o.x+'%';d.style.top=o.y+'%';
     d.innerHTML='<span class="e">'+o.e+'</span><span class="lab">'+o.ko+'<small>'+o.vi+'</small></span>';host.appendChild(d);return d;});
+  function pen(o){var p=document.createElement('div');p.className='pen';p.textContent='✏️';p.style.left=o.x+'%';p.style.top=o.y+'%';host.appendChild(p);void p.offsetWidth;p.classList.add('go');setTimeout(function(){p.remove();},820);}
   var i=0;
-  (function step(){if(i>=SCENE.length)return;els[i].classList.add('in');say(SCENE[i].ko);i++;sceneTimer=setTimeout(step,1500);})();
+  (function step(){if(i>=SCENE.length)return;var o=SCENE[i];pen(o);els[i].classList.add('in');say(o.ko);i++;sceneTimer=setTimeout(step,1700);})();
 }
 $('sceneBtn').onclick=playScene;
 

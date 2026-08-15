@@ -62,7 +62,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .scene.bay{aspect-ratio:15/11;background:#BEEBFF;}
 
 /* 그림 — 선이 사물별로 하나씩 그려지고 → 색칠 (inkword 방식) */
-.draw-stage{position:relative;aspect-ratio:16/9;border-radius:26px;overflow:hidden;background:#fff;box-shadow:0 9px 0 rgba(0,0,0,0.09);margin-bottom:12px;}
+.draw-stage{position:relative;aspect-ratio:1/1;max-width:460px;margin:0 auto 12px;border-radius:26px;overflow:hidden;background:#fff;box-shadow:0 9px 0 rgba(0,0,0,0.09);}
 .draw-stage svg{position:absolute;inset:0;width:100%;height:100%;}
 .draw-stage svg path{fill:none;stroke:#2b2b3a;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .draw-stage .colorimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .9s ease;}
@@ -227,7 +227,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
   <div class="panel" id="p-draw">
     <div class="seclabel">그림이 하나씩 그려져요! 다 그려지면 눌러서 이름을 배워요 · Chạm để nghe</div>
     <div class="draw-stage" id="drawStage">
-      <svg id="drawSvg" viewBox="0 0 1600 893" preserveAspectRatio="xMidYMid meet"></svg>
+      <svg id="drawSvg" viewBox="0 0 1024 1024" preserveAspectRatio="xMidYMid meet"></svg>
       <div class="draw-color" id="drawColor"></div>
       <img id="drawImg" class="colorimg finalimg" src="images/scene-beach.jpg" alt="바닷가 장면">
       <div class="draw-pen" id="drawPen">✏️</div>
@@ -401,12 +401,12 @@ renderSceneCats();
 
 /* 그림 — 선(벡터)이 사물별로 하나씩 그려지고 → 색칠 → 눌러서 학습 (inkword 방식) */
 var SVGNS2='http://www.w3.org/2000/svg';
-var drawData=null,drawTimers=[],DRAWWIN=2200;
+var drawData=null,drawTimers=[],DRAWWIN=2900;
 function enableDrawTap(){
   if(!drawData)return;var hots=$('drawHots');
   drawData.forEach(function(o){var h=document.createElement('div');h.className='dhot';h.style.left=o.xp+'%';h.style.top=o.yp+'%';
     h.onclick=function(){h.classList.remove('tap');void h.offsetWidth;h.classList.add('tap');say(o.ko);
-      var l=document.createElement('div');l.className='dlab show';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-16,5)+'%';
+      var l=document.createElement('div');l.className='dlab show';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-10,4)+'%';
       l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
       hots.appendChild(l);setTimeout(function(){l.classList.remove('show');setTimeout(function(){l.remove();},350);},1800);};
     hots.appendChild(h);});
@@ -432,7 +432,7 @@ function runDraw(){
     drawTimers.push(setTimeout(function(){
       ob.ci.classList.add('show');say(o.ko);
       if(curLab)curLab.classList.remove('show');
-      var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-16,5)+'%';
+      var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-10,4)+'%';
       l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
       hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l;
       try{sparkAt(l);}catch(e){}

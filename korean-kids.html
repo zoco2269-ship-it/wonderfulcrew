@@ -142,13 +142,24 @@ var $=function(id){return document.getElementById(id);};
 
 /* ---- 소리 (한국어 TTS) ---- */
 var koVoice=null;
-function pickVoice(){ var vs=speechSynthesis.getVoices(); koVoice=vs.find(function(v){return /ko/i.test(v.lang);})||null; }
+function pickVoice(){
+  var vs=speechSynthesis.getVoices();
+  koVoice = vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang) && /google/i.test(v.name);})
+    || vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang) && /(yuna|heami|sunhi|nari|hyunsu|jimin)/i.test(v.name);})
+    || vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang);})
+    || vs.find(function(v){return /^ko/i.test(v.lang);}) || null;
+}
 if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+var _u=null;
 function say(text){
   if(!('speechSynthesis' in window)) return;
-  speechSynthesis.cancel();
-  var u=new SpeechSynthesisUtterance(text); u.lang='ko-KR'; if(koVoice)u.voice=koVoice; u.rate=0.85; u.pitch=1.25;
-  speechSynthesis.speak(u);
+  try{ speechSynthesis.cancel(); }catch(e){}
+  // 취소 직후 바로 speak 하면 크롬에서 잘림 → 살짝 지연
+  setTimeout(function(){
+    _u=new SpeechSynthesisUtterance(text);
+    _u.lang='ko-KR'; if(koVoice)_u.voice=koVoice; _u.rate=0.9; _u.pitch=1.05;
+    speechSynthesis.speak(_u);
+  }, 80);
 }
 
 /* ---- 데이터 ---- */

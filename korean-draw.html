@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>그림이 그려져요! · 한국어 장면 학습</title>
+<link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{--pink:#FF6FB0;--grape:#B388FF;--ink:#3A3A55;}
+body{font-family:'Baloo 2','Jua',sans-serif;color:var(--ink);min-height:100vh;background:linear-gradient(160deg,#FFF0C4,#CDEEFF 55%,#EADFFF);}
+.wrap{max-width:740px;margin:0 auto;padding:16px 14px 60px;}
+header{text-align:center;padding:8px 0 4px;}
+header h1{font-family:'Jua',sans-serif;font-size:clamp(1.7rem,6vw,2.4rem);color:#FF4FA0;text-shadow:2px 3px 0 #fff,4px 6px 0 rgba(255,111,176,0.25);}
+header .sub{font-weight:800;color:#4F84EF;font-size:0.95rem;margin-top:2px;}
+.back{display:inline-block;margin:6px auto 0;font-family:'Jua',sans-serif;font-size:0.9rem;color:#7A5AA8;background:#fff;border-radius:18px;padding:7px 16px;box-shadow:0 4px 0 rgba(0,0,0,0.08);}
+.hint{text-align:center;font-size:0.86rem;color:#5B6480;font-weight:800;margin:10px 0;}
+.title{font-family:'Jua',sans-serif;text-align:center;font-size:1.15rem;color:#7A5AA8;margin-bottom:6px;}
+
+.scene{position:relative;aspect-ratio:3/2;border-radius:26px;overflow:hidden;box-shadow:0 10px 0 rgba(0,0,0,0.09);margin:14px 0 12px;
+  background:linear-gradient(180deg,#8FD3FF 0%,#BFEBFF 58%,#CFF0B0 58%,#AEE38C 100%);}
+.sobj{position:absolute;transform:translate(-50%,-50%);text-align:center;opacity:0;cursor:default;}
+.sobj.in{opacity:1;}
+.sobj .e{font-size:clamp(2.6rem,9vw,4.4rem);display:block;line-height:1;filter:drop-shadow(0 5px 7px rgba(0,0,0,0.22));}
+/* 붓으로 칠해지듯 나타남 */
+.sobj.in .e{animation:paint 1s ease-out both;}
+@keyframes paint{0%{clip-path:inset(0 0 100% 0);transform:scale(0.9) rotate(-2deg);}100%{clip-path:inset(0 0 0 0);transform:scale(1) rotate(0);}}
+.sobj.done .e{animation:paint 1s ease-out both, bob 2.6s ease-in-out 1s infinite;}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.sobj.clickable{cursor:pointer;}
+.sobj.pick .e{animation:boing .55s;}
+@keyframes boing{0%,100%{transform:scale(1);}35%{transform:translateY(-14px) scale(1.15) rotate(-8deg);}}
+/* 붓 */
+.brush{position:absolute;font-size:2.2rem;pointer-events:none;z-index:5;opacity:0;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.25));}
+.brush.go{animation:brushmove 1s ease-out both;}
+@keyframes brushmove{0%{opacity:0;transform:translate(-50%,-90%) rotate(20deg);}12%{opacity:1;}100%{opacity:0;transform:translate(-50%,60%) rotate(12deg);}}
+/* 라벨 (터치하면 변신) */
+.lab{position:absolute;transform:translate(-50%,-50%);background:rgba(255,255,255,0.96);border-radius:14px;padding:4px 11px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,0.18);font-family:'Jua',sans-serif;z-index:6;}
+.lab.show{animation:labin .4s ease-out both;}
+@keyframes labin{from{opacity:0;transform:translate(-50%,-50%) scale(0.5);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
+.lab .k{font-size:1.2rem;color:#155e8c;line-height:1.1;}
+.lab .r{font-size:0.72rem;color:#C77FB0;font-weight:800;}
+.lab .v{font-size:0.68rem;color:#7d879c;font-weight:700;}
+
+.controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn{font-family:'Jua',sans-serif;font-size:1.05rem;padding:12px 24px;border:none;border-radius:24px;color:#fff;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,0.14);}
+.btn.draw{background:var(--grape);} .btn.word{background:var(--pink);}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,0.14);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="korean-kids.html" class="back">← 놀이로</a>
+    <h1>그림이 그려져요!</h1>
+    <div class="sub">Xem tranh được vẽ ra · 그려지는 걸 보고 단어를 배워요</div>
+  </header>
+
+  <div class="hint">🔊 소리를 켜주세요! · ▶ 그리기 버튼을 눌러보세요</div>
+  <div class="title" id="sceneTitle">🏖️ 바닷가 마을 · Làng biển</div>
+
+  <div class="scene" id="scene"></div>
+
+  <div class="controls">
+    <button class="btn draw" id="drawBtn">▶ 다시 그리기</button>
+    <button class="btn word" id="wordBtn">🔤 단어 다시 듣기</button>
+  </div>
+  <div class="hint" style="margin-top:14px;">그림이 다 그려지면 <b>그림을 눌러</b> 단어가 나와요! · Chạm vào tranh</div>
+</div>
+
+<script>
+var $=function(id){return document.getElementById(id);};
+var koVoice=null;
+function pickVoice(){var vs=speechSynthesis.getVoices();koVoice=vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang)&&/google/i.test(v.name);})||vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang);})||vs.find(function(v){return /^ko/i.test(v.lang);})||null;}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+var _u=null;
+function say(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();}catch(e){}
+  setTimeout(function(){_u=new SpeechSynthesisUtterance(t);_u.lang='ko-KR';if(koVoice)_u.voice=koVoice;_u.rate=0.82;_u.pitch=1.06;speechSynthesis.speak(_u);try{speechSynthesis.resume();}catch(e){}
+    var g=setInterval(function(){if(speechSynthesis.speaking){try{speechSynthesis.resume();}catch(e){}}else{clearInterval(g);}},250);},150);}
+function romanize(s){var CHO=['g','kk','n','d','tt','r','m','b','pp','s','ss','','j','jj','ch','k','t','p','h'],JUNG=['a','ae','ya','yae','eo','e','yeo','ye','o','wa','wae','oe','yo','u','wo','we','wi','yu','eu','ui','i'],JONG=['','k','k','k','n','n','n','t','l','k','m','l','l','l','p','l','m','p','p','t','t','ng','t','t','k','t','p','t'],out=[];
+  for(var i=0;i<s.length;i++){var code=s.charCodeAt(i)-0xAC00;if(code<0||code>11171){out.push(s[i]);continue;}out.push(CHO[Math.floor(code/588)]+JUNG[Math.floor((code%588)/28)]+JONG[code%28]);}return out.join('-');}
+
+/* 장면: 알아보는 이모지 + 붓으로 그려지듯 */
+var SCENE=[
+  {e:'☀️',ko:'해',vi:'mặt trời',x:18,y:20},
+  {e:'☁️',ko:'구름',vi:'mây',x:64,y:16},
+  {e:'⛰️',ko:'산',vi:'núi',x:22,y:52},
+  {e:'⛵',ko:'배',vi:'thuyền',x:47,y:44},
+  {e:'🏠',ko:'집',vi:'nhà',x:70,y:52},
+  {e:'🌳',ko:'나무',vi:'cây',x:88,y:56},
+  {e:'🌊',ko:'파도',vi:'sóng',x:20,y:84},
+  {e:'🌷',ko:'꽃',vi:'hoa',x:62,y:86}
+];
+var host=$('scene'),timers=[];
+function clr(){timers.forEach(clearTimeout);timers=[];}
+function drawAll(){
+  clr();host.innerHTML='';
+  var els=SCENE.map(function(o){var d=document.createElement('div');d.className='sobj';d.style.left=o.x+'%';d.style.top=o.y+'%';
+    d.innerHTML='<span class="e">'+o.e+'</span>';host.appendChild(d);return d;});
+  function brush(o){var b=document.createElement('div');b.className='brush';b.textContent='🖌️';b.style.left=o.x+'%';b.style.top=o.y+'%';host.appendChild(b);void b.offsetWidth;b.classList.add('go');timers.push(setTimeout(function(){b.remove();},1050));}
+  var i=0;
+  (function step(){ if(i>=SCENE.length){ enableTouch(els); return; }
+    var o=SCENE[i],d=els[i]; brush(o); d.classList.add('in'); say(o.ko);
+    timers.push(setTimeout(function(){d.classList.add('done');},1000));
+    i++; timers.push(setTimeout(step,1700)); })();
+}
+function enableTouch(els){
+  els.forEach(function(d,idx){var o=SCENE[idx];d.classList.add('clickable','done');
+    d.onclick=function(){ d.classList.remove('pick');void d.offsetWidth;d.classList.add('pick'); say(o.ko);
+      if(!d._lab){ var l=document.createElement('div');l.className='lab';l.style.left=o.x+'%';l.style.top=(o.y-14)+'%';
+        l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
+        host.appendChild(l);requestAnimationFrame(function(){l.classList.add('show');});d._lab=l; } };});
+}
+$('drawBtn').onclick=drawAll;
+$('wordBtn').onclick=function(){ SCENE.forEach(function(o,i){ timers.push(setTimeout(function(){say(o.ko);},i*1100)); }); };
+setTimeout(drawAll,500);
+</script>
+</body>
+</html>

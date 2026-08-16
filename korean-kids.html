@@ -62,7 +62,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .scene.bay{aspect-ratio:15/11;background:#BEEBFF;}
 
 /* 그림 — 선이 사물별로 하나씩 그려지고 → 색칠 (inkword 방식) */
-.draw-stage{position:relative;aspect-ratio:16/9;max-width:760px;margin:0 auto 12px;border-radius:22px;overflow:hidden;background:#fff;box-shadow:0 9px 0 rgba(0,0,0,0.09);}
+.draw-stage{position:relative;aspect-ratio:1600/893;max-width:760px;margin:0 auto 12px;border-radius:22px;overflow:hidden;background:#fff;box-shadow:0 9px 0 rgba(0,0,0,0.09);}
 .draw-stage svg{position:absolute;inset:0;width:100%;height:100%;}
 .draw-stage svg path{fill:none;stroke:#2b2b3a;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .draw-stage .colorimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .9s ease;}
@@ -70,7 +70,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .draw-stage .draw-color{position:absolute;inset:0;}
 .draw-stage .draw-color img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .55s ease;}
 .draw-stage .draw-color img.show{opacity:1;}
-.draw-pen{position:absolute;top:0;left:0;font-size:2.4rem;transform:translate(-50%,-30%);opacity:0;pointer-events:none;z-index:5;transition:left .45s ease,top .45s ease,opacity .3s;filter:drop-shadow(0 3px 4px rgba(0,0,0,0.35));}
+.draw-pen{position:absolute;top:0;left:0;font-size:2.4rem;transform:translate(-15%,-85%);opacity:0;pointer-events:none;z-index:5;transition:left .45s ease,top .45s ease,opacity .3s;filter:drop-shadow(0 3px 4px rgba(0,0,0,0.35));}
 .draw-hots{position:absolute;inset:0;z-index:6;}
 .dhot{position:absolute;transform:translate(-50%,-50%);width:17%;height:22%;border-radius:50%;cursor:pointer;}
 .dhot.tap{animation:hotpop .5s;}
@@ -229,6 +229,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 
   <div class="panel" id="p-draw">
     <div class="seclabel">그림이 하나씩 그려져요! 다 그려지면 눌러서 이름을 배워요 · Chạm để nghe</div>
+    <div class="cats" id="drawCats"></div>
     <div class="draw-stage" id="drawStage">
       <svg id="drawSvg" viewBox="0 0 1600 893" preserveAspectRatio="xMidYMid meet"></svg>
       <div class="draw-color" id="drawColor"></div>
@@ -407,6 +408,17 @@ renderSceneCats();
 /* 그림 — 선(벡터)이 사물별로 하나씩 그려지고 → 색칠 → 눌러서 학습 (inkword 방식) */
 var SVGNS2='http://www.w3.org/2000/svg';
 var drawData=null,drawTimers=[],DRAWWIN=3600,drawSeq=0;
+/* 그림 장면 여러 개 — 고르면 그 장면을 그림 */
+var DRAWSCENES={
+  '바닷가':{icon:'🏖️',img:'images/scene-beach.jpg?v=4',json:'images/scene-beach-lines.json?v=4'},
+  '농장':{icon:'🚜',img:'images/scene-farm.jpg?v=1',json:'images/scene-farm-lines.json?v=1'}
+};
+var curDraw='바닷가',drawCache={};
+function renderDrawCats(){var el=$('drawCats');if(!el)return;el.innerHTML='';
+  Object.keys(DRAWSCENES).forEach(function(k){var b=document.createElement('button');b.className='cat'+(k===curDraw?' on':'');
+    b.textContent=DRAWSCENES[k].icon+' '+k;
+    b.onclick=function(){curDraw=k;renderDrawCats();playDraw();};el.appendChild(b);});}
+renderDrawCats();
 function penFollow(pe,dur,startDelay){var token=drawSeq;
   drawTimers.push(setTimeout(function(){if(token!==drawSeq)return;
     var pen=document.getElementById('drawPen'),svg=document.getElementById('drawSvg');
@@ -428,7 +440,7 @@ function runDraw(){
   var svg=$('drawSvg'),color=$('drawColor'),fin=$('drawImg'),pen=$('drawPen'),hots=$('drawHots');
   svg.innerHTML='';color.innerHTML='';hots.innerHTML='';fin.classList.remove('show');pen.style.opacity='0';pen.style.transition='none';
   var vb=(svg.getAttribute('viewBox')||'0 0 1600 893').split(' '),W=+vb[2]||1600,H=+vb[3]||893;
-  var XN='http://www.w3.org/1999/xlink', IMG='images/scene-beach.jpg?v=4';
+  var XN='http://www.w3.org/1999/xlink', IMG=DRAWSCENES[curDraw].img;
   // 색은 각 사물의 실제 윤곽(그 사물 path들)으로만 채워짐 → 하나 그리면 그 모양대로 색칠. 배경은 하얀 스케치북.
   var defs=document.createElementNS(SVGNS2,'defs'),gColor=document.createElementNS(SVGNS2,'g'),gInk=document.createElementNS(SVGNS2,'g');
   var built=drawData.map(function(o,idx){
@@ -476,8 +488,8 @@ function runDraw(){
 }
 function playDraw(){
   drawTimers.forEach(clearTimeout);drawTimers=[];drawSeq++;
-  if(drawData){runDraw();return;}
-  fetch('images/scene-beach-lines.json?v=4').then(function(r){return r.json();}).then(function(j){drawData=j;runDraw();}).catch(function(){});
+  if(drawCache[curDraw]){drawData=drawCache[curDraw];runDraw();return;}
+  fetch(DRAWSCENES[curDraw].json).then(function(r){return r.json();}).then(function(j){drawCache[curDraw]=j;drawData=j;runDraw();}).catch(function(){});
 }
 $('drawBtn2').onclick=playDraw;
 

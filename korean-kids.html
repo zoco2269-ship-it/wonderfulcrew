@@ -84,6 +84,14 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 /* 동요 */
 .song-emoji{text-align:center;font-size:4.2rem;line-height:1;margin:6px 0 12px;animation:bob 2.2s ease-in-out infinite;}
 .song-emoji img{width:4.8rem;height:4.8rem;object-fit:contain;vertical-align:middle;}
+/* 동요 무대: 쨍한 배경 + 2프레임(팔내림/팔올림) 플립 댄스 */
+.song-emoji.stagebg{border-radius:22px;padding:16px 0;max-width:430px;margin:6px auto 12px;box-shadow:0 8px 0 rgba(0,0,0,0.08);}
+.song-emoji.two{position:relative;height:190px;}
+.song-emoji.two img{position:absolute;left:50%;top:0;transform:translateX(-50%);width:auto;height:190px;opacity:1;transition:opacity .09s;}
+.song-emoji.two img.f1{opacity:0;}
+.song-emoji.two.alt img.f1{opacity:1;}
+.song-emoji.two.alt img.f0{opacity:0;}
+.song-emoji.dance{animation:bob .62s ease-in-out infinite;}
 .cat img{width:1.4em;height:1.4em;object-fit:contain;vertical-align:middle;margin-right:2px;}
 .song-lines{max-width:580px;margin:0 auto;}
 .sline{background:#fff;border-radius:16px;padding:11px 16px;margin-bottom:9px;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,0.07);transition:transform .12s,background .25s,box-shadow .25s;}
@@ -524,7 +532,7 @@ $('drawBtn2').onclick=playDraw;
 /* 동요 — 노래 한 줄씩 불러주며 반짝(가라오케) + 줄 눌러 다시 듣기 */
 function romanizeLine(s){return s.split(' ').map(function(w){return romanize(w);}).join(' ');}
 var SONGS=[
-  {name:'곰 세 마리',emoji:'🐻',lines:[
+  {name:'곰 세 마리',emoji:'🐻',frames:['images/song-bears-a.png','images/song-bears-b.png'],bg:'repeating-linear-gradient(180deg,#BFE3FF 0 30px,#7CC3FF 30px 60px)',lines:[
     ['곰 세 마리가 한 집에 있어','Ba chú gấu ở chung một nhà'],
     ['아빠 곰 엄마 곰 아기 곰','Gấu bố, gấu mẹ, gấu con'],
     ['아빠 곰은 뚱뚱해','Gấu bố thì mập mạp'],
@@ -532,13 +540,13 @@ var SONGS=[
     ['아기 곰은 너무 귀여워','Gấu con thật dễ thương'],
     ['으쓱으쓱 잘한다','Lắc lư, giỏi quá!']
   ]},
-  {name:'나비야',emoji:'🦋',img:'images/butterfly-cute.png',lines:[
+  {name:'나비야',emoji:'🦋',img:'images/butterfly-cute.png',bg:'repeating-linear-gradient(180deg,#FFD8EC 0 30px,#FF9FD0 30px 60px)',lines:[
     ['나비야 나비야 이리 날아 오너라','Bướm ơi bướm ơi, bay lại đây nào'],
     ['노랑 나비 흰 나비 춤을 추며 오너라','Bướm vàng bướm trắng, múa mà bay tới'],
     ['봄바람에 꽃잎도 방긋방긋 웃으며','Gió xuân, cánh hoa cũng mỉm cười'],
     ['참새도 짹짹짹 노래하며 춤춘다','Chim sẻ ríu rít, vừa hát vừa múa']
   ]},
-  {name:'작은 별',emoji:'⭐',lines:[
+  {name:'작은 별',emoji:'⭐',bg:'repeating-linear-gradient(180deg,#D9CCFF 0 30px,#A88BFF 30px 60px)',lines:[
     ['반짝반짝 작은 별','Ngôi sao nhỏ lấp lánh'],
     ['아름답게 비치네','Chiếu sáng thật đẹp xinh'],
     ['동쪽 하늘에서도','Ở bầu trời phía đông'],
@@ -546,7 +554,7 @@ var SONGS=[
     ['반짝반짝 작은 별','Ngôi sao nhỏ lấp lánh'],
     ['아름답게 비치네','Chiếu sáng thật đẹp xinh']
   ]},
-  {name:'머리 어깨 무릎 발',emoji:'🧒',lines:[
+  {name:'머리 어깨 무릎 발',emoji:'🧒',bg:'repeating-linear-gradient(180deg,#FFF3A8 0 30px,#B9E86E 30px 60px)',lines:[
     ['머리 어깨 무릎 발 무릎 발','Đầu, vai, đầu gối, chân'],
     ['머리 어깨 무릎 발 무릎 발','Đầu, vai, đầu gối, chân'],
     ['머리 어깨 발 무릎 발','Đầu, vai, chân, đầu gối'],
@@ -560,7 +568,12 @@ function renderSongCats(){var el=$('songCats');el.innerHTML='';
     b.onclick=function(){curSong=i;renderSongCats();renderSong();};el.appendChild(b);});}
 function renderSong(){
   stopSong();
-  var s=SONGS[curSong];var se=$('songEmoji');if(s.img){se.innerHTML='<img src="'+s.img+'" alt="">';}else{se.textContent=s.emoji;}
+  var s=SONGS[curSong];var se=$('songEmoji');
+  se.classList.remove('two','alt','dance');
+  if(s.bg){se.classList.add('stagebg');se.style.background=s.bg;}else{se.classList.remove('stagebg');se.style.background='';}
+  if(s.frames){se.classList.add('two');se.innerHTML='<img class="f0" src="'+s.frames[0]+'" alt=""><img class="f1" src="'+s.frames[1]+'" alt="">';}
+  else if(s.img){se.innerHTML='<img src="'+s.img+'" alt="">';}
+  else{se.textContent=s.emoji;}
   var host=$('songLines');host.innerHTML='';
   s.lines.forEach(function(ln,i){var d=document.createElement('div');d.className='sline';d.dataset.i=i;
     d.innerHTML='<div class="ko">'+ln[0]+'</div><div class="ro">['+romanizeLine(ln[0])+']</div><div class="vi">'+ln[1]+'</div>';
@@ -601,7 +614,7 @@ var MELO={
    [['sol',.5],['la',.5],['sol',.5],['fa',.5],['mi',.5],['fa',.5],['re',.5],['mi',.5],['do',1]]
  ]}
 };
-function stopSong(){ singSeq++; if(songTimer){clearTimeout(songTimer);songTimer=null;} songTimers.forEach(clearTimeout);songTimers=[];
+function stopSong(){ singSeq++; stopDance(); if(songTimer){clearTimeout(songTimer);songTimer=null;} songTimers.forEach(clearTimeout);songTimers=[];
   songNodes.forEach(function(n){try{n.stop();}catch(e){}});songNodes=[];
   try{if(ttsA){ttsA.pause();ttsA=null;}}catch(e){}
   try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){} }
@@ -630,6 +643,13 @@ function loadSyl(c){
     .then(function(buf){SYLRES[c]=buf;return buf;}).catch(function(){return null;});
   return SYLBUF[c];
 }
+/* 노래 중 캐릭터 댄스(2프레임 플립 + 통통) */
+var flipInt=null;
+function startDance(beat){var se=$('songEmoji');se.classList.add('dance');
+  if(se.classList.contains('two')){var on=false;
+    flipInt=setInterval(function(){on=!on;se.classList.toggle('alt',on);},Math.max(260,Math.round((beat||0.5)*1000)));}}
+function stopDance(){if(flipInt){clearInterval(flipInt);flipInt=null;}
+  var se=$('songEmoji');if(se){se.classList.remove('dance');se.classList.remove('alt');}}
 var singBus=null;
 function getSingBus(){
   // 목소리 전용 버스: 살짝 울림(리버브 느낌의 피드백 딜레이) → 노래방 마이크 느낌
@@ -650,6 +670,7 @@ function playMelody(m){
   var need={};chars.forEach(function(cs){cs.forEach(function(c){need[c]=1;});});
   Promise.all(Object.keys(need).map(loadSyl)).then(function(){
     if(mySeq!==singSeq)return;
+    startDance(m.beat);
     var BASE=311, bus=getSingBus();
     var t=audioCtx.currentTime+0.15, off=0.15;
     m.lines.forEach(function(line,li){
@@ -686,6 +707,7 @@ function playMelody(m){
   return true;
 }
 function playSongTTS(){
+  startDance(0.55);
   var s=SONGS[curSong],i=0;
   (function step(){
     if(i>=s.lines.length){songTimer=setTimeout(function(){var ls=$('songLines').children;for(var k=0;k<ls.length;k++)ls[k].classList.remove('on');},900);return;}

@@ -212,7 +212,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V15';
+ var CUR='V16';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -356,9 +356,10 @@ function speakSyn(t){if(!('speechSynthesis' in window))return;
 function say(t){
   try{if(ttsA){ttsA.pause();ttsA=null;}}catch(e){}
   try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){}
+  /* 구글 실시간 소리가 남/여를 오락가락함 — 브라우저의 확실한 '여자' 목소리를 1순위로 고정 */
+  if(koVoice){speakSyn(t);return;}
   var settled=false;
   function fb(){if(settled)return;settled=true;try{if(ttsA)ttsA.pause();}catch(e){}speakSyn(t);}
-  /* 사전 mp3는 남자 목소리로 판명(93~133Hz) — 절대 사용 금지. 원래의 여자 목소리(구글 실시간)로만. */
   try{
     var a=new Audio('https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ko&q='+encodeURIComponent(t));
     ttsA=a;
@@ -432,8 +433,27 @@ var SVGNS2='http://www.w3.org/2000/svg';
 var drawData=null,drawTimers=[],DRAWWIN=3600,drawSeq=0;
 /* 그림 장면 여러 개 — 고르면 그 장면을 그림 */
 var DRAWSCENES={
-  '바닷가':{icon:'🏖️',img:'images/scene-beach2.jpg?v=1',json:'images/scene-beach-lines.json?v=9'},
-  '농장':{icon:'🚜',img:'images/scene-farm.jpg?v=2',json:'images/scene-farm-lines.json?v=6'}
+  '바닷가':{icon:'🏖️',img:'images/scene-beach2.jpg?v=1',boxes:[
+    {ko:'바닷가',vi:'bãi biển',bg:1,b:[0,52,100,100]},
+    {ko:'해',vi:'mặt trời',b:[20,3,44,27]},
+    {ko:'구름',vi:'mây',b:[5,11,31,29]},
+    {ko:'등대',vi:'hải đăng',b:[16,32,31,71]},
+    {ko:'야자수',vi:'cây dừa',b:[0,41,18,73]},
+    {ko:'배',vi:'thuyền',b:[36,39,59,71]},
+    {ko:'구름',vi:'mây',b:[6,59,25,78]},
+    {ko:'모래성',vi:'lâu đài cát',b:[67,49,89,78]},
+    {ko:'불가사리',vi:'sao biển',b:[41,70,57,88]},
+    {ko:'물고기',vi:'con cá',b:[70,67,89,86]}]},
+  '농장':{icon:'🚜',img:'images/scene-farm.jpg?v=2',boxes:[
+    {ko:'농장',vi:'nông trại',bg:1,b:[0,48,100,100]},
+    {ko:'무지개',vi:'cầu vồng',b:[4,3,31,24]},
+    {ko:'집',vi:'ngôi nhà',b:[0,24,19,50]},
+    {ko:'소',vi:'con bò',b:[41,36,67,63]},
+    {ko:'닭',vi:'con gà',b:[81,52,97,73]},
+    {ko:'해바라기',vi:'hoa hướng dương',b:[0,66,14,95]},
+    {ko:'나무',vi:'cây táo',b:[28,66,50,98]},
+    {ko:'돼지',vi:'con lợn',b:[53,72,76,98]},
+    {ko:'트랙터',vi:'máy kéo',b:[81,72,100,98]}]}
 };
 var curDraw='바닷가',drawCache={};
 function renderDrawCats(){var el=$('drawCats');if(!el)return;el.innerHTML='';
@@ -458,77 +478,56 @@ function enableDrawTap(){
       hots.appendChild(l);setTimeout(function(){l.classList.remove('show');setTimeout(function(){l.remove();},350);},1800);};
     hots.appendChild(h);});
 }
+/* v3 전면 재설계: 선 따라 그리기 폐기. 연필이 사물 자리를 지그재그로 색칠하면
+   그 사물이 위→아래로 나타남. 무조건 한 번에 한 사물, 조각·유령 밑그림 원천 불가. */
 function runDraw(){
   var svg=$('drawSvg'),color=$('drawColor'),fin=$('drawImg'),pen=$('drawPen'),hots=$('drawHots');
   svg.innerHTML='';color.innerHTML='';hots.innerHTML='';fin.classList.remove('show');pen.style.opacity='0';pen.style.transition='none';
-  fin.src=DRAWSCENES[curDraw].img;
-  var vb=(svg.getAttribute('viewBox')||'0 0 1600 893').split(' '),W=+vb[2]||1600,H=+vb[3]||893;
-  var XN='http://www.w3.org/1999/xlink', IMG=DRAWSCENES[curDraw].img;
-  // 색은 각 사물의 실제 윤곽(그 사물 path들)으로만 채워짐 → 하나 그리면 그 모양대로 색칠. 배경은 하얀 스케치북.
-  var defs=document.createElementNS(SVGNS2,'defs'),gColor=document.createElementNS(SVGNS2,'g'),gInk=document.createElementNS(SVGNS2,'g');
-  var built=drawData.map(function(o,idx){
-    var cid='clip'+drawSeq+'_'+idx;
-    var cp=document.createElementNS(SVGNS2,'clipPath');cp.setAttribute('id',cid);cp.setAttribute('clipPathUnits','userSpaceOnUse');
-    (o.clips&&o.clips.length?o.clips:o.paths).forEach(function(dd){var p=document.createElementNS(SVGNS2,'path');p.setAttribute('d',dd);p.setAttribute('fill','#000');cp.appendChild(p);});
-    defs.appendChild(cp);
-    var im=document.createElementNS(SVGNS2,'image');
-    im.setAttributeNS(XN,'href',IMG);im.setAttribute('href',IMG);
-    im.setAttribute('x',0);im.setAttribute('y',0);im.setAttribute('width',W);im.setAttribute('height',H);
-    im.setAttribute('preserveAspectRatio','xMidYMid slice');im.setAttribute('clip-path','url(#'+cid+')');
-    im.style.opacity='0';im.style.transition='opacity .45s ease';gColor.appendChild(im);
-    var pels=o.paths.map(function(dd){var pe=document.createElementNS(SVGNS2,'path');pe.setAttribute('d',dd);gInk.appendChild(pe);return pe;});
-    return {o:o,pels:pels,ci:im};
-  });
-  svg.appendChild(defs);svg.appendChild(gColor);svg.appendChild(gInk);
-  built.forEach(function(ob){ob.pels.forEach(function(pe){var len=pe.getTotalLength()||1;pe.style.strokeDasharray=len;pe.style.strokeDashoffset=len;pe.style.transition='none';});});
-  void svg.getBoundingClientRect();
+  var IMG=DRAWSCENES[curDraw].img; fin.src=IMG;
   var token=drawSeq, curLab=null, oi=0;
-  // 한 획씩 순서대로 — 같은 rAF가 그 획의 stroke와 연필 위치를 동시에 제어 → 연필 끝이 정확히 선을 그림
+  var built=drawData.map(function(o){
+    var b=o.b, w=b[2]-b[0], h=b[3]-b[1];
+    var box=document.createElement('div');
+    box.style.cssText='position:absolute;overflow:hidden;left:'+b[0]+'%;top:'+b[1]+'%;width:'+w+'%;height:'+h+'%;';
+    var im=document.createElement('img');
+    im.src=IMG;
+    im.style.cssText='position:absolute;width:'+(10000/w)+'%;height:'+(10000/h)+'%;left:'+(-b[0]*100/w)+'%;top:'+(-b[1]*100/h)+'%;max-width:none;';
+    box.appendChild(im);
+    box.style.clipPath='inset(0 0 100% 0)';
+    color.appendChild(box);
+    return {o:o,box:box,b:b,w:w,h:h};
+  });
   function drawObject(){
     if(token!==drawSeq)return;
     if(oi>=built.length){ pen.style.opacity='0'; fin.classList.add('show'); hots.innerHTML=''; enableDrawTap(); return; }
-    var ob=built[oi], o=ob.o, pi=0;
-    // 한 획씩 순서대로(뭉텅이 금지) — 대신 사물당 총 시간을 고정해 복잡한 그림도 같은 시간에 끝남
-    var OBJMS=3000, lens=ob.pels.map(function(pe){return pe.getTotalLength()||1;});
-    var penLen=lens.reduce(function(s,l){return s+l;},0)||1;
-    // 배경(언덕 등)은 연필로 안 그림 — 조각선이 여기저기 튀어 낙서처럼 보임. 은은하게 통째로 등장.
-    if(o.bg){
-      ob.pels.forEach(function(pe){pe.style.transition='opacity 1s ease';pe.style.opacity='0';pe.style.strokeDashoffset=0;});
-      void svg.getBoundingClientRect();
-      ob.pels.forEach(function(pe){pe.style.opacity='1';});
-      pi=ob.pels.length;
-    }
-    function drawPath(){
+    var ob=built[oi], o=ob.o, dur=o.bg?2200:2600, rows=o.bg?3:4, t0=null;
+    pen.style.opacity='1';
+    (function fr(now){
       if(token!==drawSeq)return;
-      if(pi>=ob.pels.length){
-        if(!o.bg)ob.ci.style.opacity='1'; /* 배경은 선만 — 색은 사물 차례에, 마지막에 전체 완성 */
-        say(o.ko);
-        if(curLab)curLab.classList.remove('show');
-        var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-9,3)+'%';
-        l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
-        hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l; try{sparkAt(l);}catch(e){}
-        oi++; drawTimers.push(setTimeout(drawObject,550)); return;
-      }
-      var pe=ob.pels[pi], len=lens[pi], dur=Math.max(35,OBJMS*len/penLen);
-      pen.style.opacity='1'; var t0=null;
-      (function fr(now){ if(token!==drawSeq)return; if(t0==null)t0=now; var p=Math.min(1,(now-t0)/dur);
-        pe.style.strokeDashoffset=len*(1-p);
-        var pt=pe.getPointAtLength(len*p); pen.style.left=(pt.x/W*100)+'%'; pen.style.top=(pt.y/H*100)+'%';
-        if(p<1)requestAnimationFrame(fr); else { pi++; drawPath(); } })(performance.now());
-    }
-    drawPath();
+      if(t0==null)t0=now;
+      var p=Math.min(1,(now-t0)/dur);
+      // 위→아래 나타나기 + 연필 좌우 지그재그
+      ob.box.style.clipPath='inset(0 0 '+((1-p)*100)+'% 0)';
+      var zig=p*rows, xr=zig%2<1?(zig%1):(1-zig%1);
+      pen.style.left=(ob.b[0]+xr*ob.w)+'%';
+      pen.style.top=(ob.b[1]+p*ob.h)+'%';
+      if(p<1){requestAnimationFrame(fr);return;}
+      say(o.ko);
+      if(curLab)curLab.classList.remove('show');
+      var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-9,3)+'%';
+      l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
+      hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l; try{sparkAt(l);}catch(e){}
+      oi++; drawTimers.push(setTimeout(drawObject,600));
+    })(performance.now());
   }
   drawObject();
 }
 function playDraw(){
   drawTimers.forEach(clearTimeout);drawTimers=[];drawSeq++;
-  var seq=drawSeq,key=curDraw;
-  if(drawCache[key]){drawData=drawCache[key];runDraw();return;}
-  fetch(DRAWSCENES[key].json).then(function(r){return r.json();}).then(function(j){
-    drawCache[key]=j;
-    if(seq!==drawSeq)return; // 그 사이 다른 장면 선택됨 — 늦게 온 응답은 무시
-    drawData=j;runDraw();
-  }).catch(function(){});
+  drawData=DRAWSCENES[curDraw].boxes.map(function(o){
+    return {ko:o.ko,vi:o.vi,bg:o.bg,b:o.b,xp:(o.b[0]+o.b[2])/2,yp:(o.b[1]+o.b[3])/2};
+  });
+  runDraw();
 }
 $('drawBtn2').onclick=playDraw;
 

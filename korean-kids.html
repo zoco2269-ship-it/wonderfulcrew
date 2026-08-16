@@ -479,6 +479,13 @@ function runDraw(){
     // 한 획씩 순서대로(뭉텅이 금지) — 대신 사물당 총 시간을 고정해 복잡한 그림도 같은 시간에 끝남
     var OBJMS=3000, lens=ob.pels.map(function(pe){return pe.getTotalLength()||1;});
     var penLen=lens.reduce(function(s,l){return s+l;},0)||1;
+    // 배경(언덕 등)은 연필로 안 그림 — 조각선이 여기저기 튀어 낙서처럼 보임. 은은하게 통째로 등장.
+    if(o.bg){
+      ob.pels.forEach(function(pe){pe.style.transition='opacity 1s ease';pe.style.opacity='0';pe.style.strokeDashoffset=0;});
+      void svg.getBoundingClientRect();
+      ob.pels.forEach(function(pe){pe.style.opacity='1';});
+      pi=ob.pels.length;
+    }
     function drawPath(){
       if(token!==drawSeq)return;
       if(pi>=ob.pels.length){

@@ -212,7 +212,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V10';
+ var CUR='V11';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -509,7 +509,8 @@ function runDraw(){
     function drawPath(){
       if(token!==drawSeq)return;
       if(pi>=ob.pels.length){
-        ob.ci.style.opacity='1'; say(o.ko);
+        if(!o.bg)ob.ci.style.opacity='1'; /* 배경은 선만 — 색은 사물 차례에, 마지막에 전체 완성 */
+        say(o.ko);
         if(curLab)curLab.classList.remove('show');
         var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-9,3)+'%';
         l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';

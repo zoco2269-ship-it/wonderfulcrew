@@ -420,8 +420,8 @@ var SVGNS2='http://www.w3.org/2000/svg';
 var drawData=null,drawTimers=[],DRAWWIN=3600,drawSeq=0;
 /* 그림 장면 여러 개 — 고르면 그 장면을 그림 */
 var DRAWSCENES={
-  '바닷가':{icon:'🏖️',img:'images/scene-beach.jpg?v=4',json:'images/scene-beach-lines.json?v=5'},
-  '농장':{icon:'🚜',img:'images/scene-farm.jpg?v=2',json:'images/scene-farm-lines.json?v=3'}
+  '바닷가':{icon:'🏖️',img:'images/scene-beach.jpg?v=4',json:'images/scene-beach-lines.json?v=6'},
+  '농장':{icon:'🚜',img:'images/scene-farm.jpg?v=2',json:'images/scene-farm-lines.json?v=6'}
 };
 var curDraw='바닷가',drawCache={};
 function renderDrawCats(){var el=$('drawCats');if(!el)return;el.innerHTML='';
@@ -457,7 +457,7 @@ function runDraw(){
   var built=drawData.map(function(o,idx){
     var cid='clip'+drawSeq+'_'+idx;
     var cp=document.createElementNS(SVGNS2,'clipPath');cp.setAttribute('id',cid);cp.setAttribute('clipPathUnits','userSpaceOnUse');
-    o.paths.forEach(function(dd){var p=document.createElementNS(SVGNS2,'path');p.setAttribute('d',dd);p.setAttribute('fill','#000');cp.appendChild(p);});
+    (o.clips&&o.clips.length?o.clips:o.paths).forEach(function(dd){var p=document.createElementNS(SVGNS2,'path');p.setAttribute('d',dd);p.setAttribute('fill','#000');cp.appendChild(p);});
     defs.appendChild(cp);
     var im=document.createElementNS(SVGNS2,'image');
     im.setAttributeNS(XN,'href',IMG);im.setAttribute('href',IMG);

@@ -466,22 +466,11 @@ function runDraw(){
     if(token!==drawSeq)return;
     if(oi>=built.length){ pen.style.opacity='0'; fin.classList.add('show'); hots.innerHTML=''; enableDrawTap(); return; }
     var ob=built[oi], o=ob.o, pi=0;
-    // 사물 하나당 총 그리는 시간 고정. 연필은 큰 윤곽(최대 4획, 길이 70%)까지만 그리고
-    // 나머지 잔선은 한 번에 스르륵 — 복잡한 그림도 눈 안 아프게 심플하게
-    var OBJMS=2600, lens=ob.pels.map(function(pe){return pe.getTotalLength()||1;});
-    var totalLen=lens.reduce(function(s,l){return s+l;},0)||1;
-    var penCount=0, acc=0;
-    for(var li=0;li<lens.length;li++){ penCount++; acc+=lens[li]; if(penCount>=4||acc>=totalLen*0.7)break; }
-    var penLen=acc||1;
+    // 한 획씩 순서대로(뭉텅이 금지) — 대신 사물당 총 시간을 고정해 복잡한 그림도 같은 시간에 끝남
+    var OBJMS=3000, lens=ob.pels.map(function(pe){return pe.getTotalLength()||1;});
+    var penLen=lens.reduce(function(s,l){return s+l;},0)||1;
     function drawPath(){
       if(token!==drawSeq)return;
-      if(pi>=penCount&&pi<ob.pels.length){
-        // 잔선 일괄 스르륵
-        for(var k=pi;k<ob.pels.length;k++){ob.pels[k].style.transition='stroke-dashoffset .5s ease';}
-        void svg.getBoundingClientRect();
-        for(var k2=pi;k2<ob.pels.length;k2++){ob.pels[k2].style.strokeDashoffset=0;}
-        pi=ob.pels.length; drawTimers.push(setTimeout(drawPath,520)); return;
-      }
       if(pi>=ob.pels.length){
         ob.ci.style.opacity='1'; say(o.ko);
         if(curLab)curLab.classList.remove('show');
@@ -490,7 +479,7 @@ function runDraw(){
         hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l; try{sparkAt(l);}catch(e){}
         oi++; drawTimers.push(setTimeout(drawObject,550)); return;
       }
-      var pe=ob.pels[pi], len=lens[pi], dur=Math.max(60,OBJMS*len/penLen);
+      var pe=ob.pels[pi], len=lens[pi], dur=Math.max(35,OBJMS*len/penLen);
       pen.style.opacity='1'; var t0=null;
       (function fr(now){ if(token!==drawSeq)return; if(t0==null)t0=now; var p=Math.min(1,(now-t0)/dur);
         pe.style.strokeDashoffset=len*(1-p);

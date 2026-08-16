@@ -200,6 +200,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 
 .note{text-align:center;font-size:0.8rem;color:#98a0b8;margin-top:28px;font-weight:700;line-height:1.6;}
 </style>
+<script src="tts-map.js?v=1"></script>
 </head>
 <body>
 <div class="bg" id="bg"></div>
@@ -337,6 +338,15 @@ function say(t){
   try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){}
   var settled=false;
   function fb(){if(settled)return;settled=true;try{if(ttsA)ttsA.pause();}catch(e){}speakSyn(t);}
+  // 미리 만들어둔 mp3(여자 목소리)가 있으면 그걸로 — 외부 API 불필요, 언제나 재생됨
+  if(window.TTSMAP&&TTSMAP[t]){
+    try{
+      var la=new Audio('audio/tts/'+TTSMAP[t]+'.mp3');ttsA=la;
+      la.addEventListener('error',fb);
+      var lp=la.play();if(lp&&lp.catch)lp.catch(fb);
+      return;
+    }catch(e){}
+  }
   try{
     var a=new Audio('https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ko&q='+encodeURIComponent(t));
     ttsA=a;

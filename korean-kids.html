@@ -212,7 +212,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V12';
+ var CUR='V13';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -682,7 +682,7 @@ function playMelody(m){
   Promise.all(Object.keys(need).map(loadSyl)).then(function(){
     if(mySeq!==singSeq)return;
     startDance(m.beat);
-    var BASE=311, bus=getSingBus();
+    var BASE=210, bus=getSingBus(); /* 여성 실제 음높이 기준 — 아래로 눌러 남자처럼 들리는 것 방지 */
     var t=audioCtx.currentTime+0.15, off=0.15;
     m.lines.forEach(function(line,li){
       (function(so,li2){songTimers.push(setTimeout(function(){if(mySeq===singSeq)highlight(li2);},Math.round(so*1000)));})(off,li);
@@ -691,7 +691,7 @@ function playMelody(m){
         playNote(f,t,dur,0.04);
         var buf=SYLRES[chars[li][ni]];
         if(buf){
-          var rate=f/BASE;
+          var rate=Math.max(0.95,f/BASE);
           var src=audioCtx.createBufferSource();src.buffer=buf;
           src.playbackRate.value=rate;
           // 긴 음(1박 이상)은 비브라토 — 재생속도를 잔잔하게 흔들어 노래하는 떨림

@@ -200,7 +200,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 
 .note{text-align:center;font-size:0.8rem;color:#98a0b8;margin-top:28px;font-weight:700;line-height:1.6;}
 </style>
-<script src="tts-map.js?v=1"></script>
+<script src="tts-map.js?v=2"></script>
 </head>
 <body>
 <div class="bg" id="bg"></div>
@@ -581,25 +581,25 @@ var MELO={
  ]},
  '나비야':{beat:0.5,lines:[
    [['sol',.5],['mi',.5],['mi',1],['fa',.5],['re',.5],['re',1],['do',.5],['re',.5],['mi',.5],['fa',.5],['sol',.5],['sol',.5],['sol',1]],
-   [['sol',.5],['mi',.5],['mi',1],['fa',.5],['re',.5],['re',1],['do',.5],['mi',.5],['sol',.5],['sol',.5],['mi',.5],['mi',.5],['mi',1]],
+   [['sol',.5],['mi',.5],['mi',1],['fa',.5],['re',.5],['re',1],['do',.5],['do',.5],['re',.5],['mi',.5],['fa',.5],['sol',.5],['sol',.5],['sol',1]],
    [['re',.5],['re',.5],['re',.5],['re',.5],['re',.5],['mi',.5],['fa',1],['mi',.5],['mi',.5],['mi',.5],['mi',.5],['mi',.5],['fa',.5],['sol',1]],
    [['sol',.5],['mi',.5],['mi',1],['fa',.5],['re',.5],['re',1],['do',.5],['mi',.5],['sol',.5],['sol',.5],['do',.5],['do',.5],['do',1]]
  ]},
  '머리 어깨 무릎 발':{beat:0.5,lines:[
-   [['sol',.5],['la',.5],['sol',.5],['fa',.5],['mi',.5],['fa',.5],['sol',1]],
-   [['sol',.5],['la',.5],['sol',.5],['fa',.5],['mi',.5],['fa',.5],['sol',1]],
-   [['re',.5],['mi',.5],['fa',1],['mi',.5],['fa',.5],['sol',1]],
-   [['sol',.5],['la',.5],['sol',.5],['fa',.5],['mi',.5],['re',.5],['do',1]]
+   [['sol',.5],['la',.5],['sol',.5],['fa',.5],['mi',.5],['fa',.5],['sol',1],['mi',.5],['fa',.5],['sol',1]],
+   [['sol',.5],['la',.5],['sol',.5],['fa',.5],['mi',.5],['fa',.5],['sol',1],['mi',.5],['fa',.5],['sol',1]],
+   [['re',.5],['mi',.5],['fa',.5],['sol',.5],['mi',1],['re',.5],['mi',.5],['fa',1]],
+   [['sol',.5],['la',.5],['sol',.5],['fa',.5],['mi',.5],['fa',.5],['re',.5],['mi',.5],['do',1]]
  ]}
 };
-function stopSong(){ if(songTimer){clearTimeout(songTimer);songTimer=null;} songTimers.forEach(clearTimeout);songTimers=[];
+function stopSong(){ singSeq++; if(songTimer){clearTimeout(songTimer);songTimer=null;} songTimers.forEach(clearTimeout);songTimers=[];
   songNodes.forEach(function(n){try{n.stop();}catch(e){}});songNodes=[];
   try{if(ttsA){ttsA.pause();ttsA=null;}}catch(e){}
   try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){} }
-function playNote(freq,t,dur){ if(!audioCtx)return;
+function playNote(freq,t,dur,vol){ if(!audioCtx)return;
   var o=audioCtx.createOscillator(),g=audioCtx.createGain();
   o.type='triangle';o.frequency.value=freq;
-  g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.13,t+0.02);
+  g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(vol||0.13,t+0.02);
   g.gain.exponentialRampToValueAtTime(0.0008,t+dur*0.95);
   o.connect(g);g.connect(audioCtx.destination);o.start(t);o.stop(t+dur);songNodes.push(o); }
 function ensureAudio(){
@@ -610,16 +610,47 @@ function ensureAudio(){
   }catch(e){return null;}
   return audioCtx;
 }
+/* 진짜 노래 — 가사 음절 하나하나를 멜로디 음높이에 맞춰(피치 조절) 부름 */
+var SYLBUF={},SYLRES={},singSeq=0;
+function loadSyl(c){
+  if(SYLBUF[c])return SYLBUF[c];
+  var h=window.SYLMAP&&SYLMAP[c];
+  if(!h)return SYLBUF[c]=Promise.resolve(null);
+  SYLBUF[c]=fetch('audio/tts/syl-'+h+'.mp3').then(function(r){return r.arrayBuffer();})
+    .then(function(b){return new Promise(function(res,rej){audioCtx.decodeAudioData(b,res,rej);});})
+    .then(function(buf){SYLRES[c]=buf;return buf;}).catch(function(){return null;});
+  return SYLBUF[c];
+}
 function playMelody(m){
   if(!ensureAudio())return false;
-  var s=SONGS[curSong];
-  var t=audioCtx.currentTime+0.12, off=0.12;
-  m.lines.forEach(function(line,li){
-    (function(so,li2){songTimers.push(setTimeout(function(){highlight(li2);if(s.lines[li2])say(s.lines[li2][0]);},Math.round(so*1000)));})(off,li);
-    line.forEach(function(nb){var dur=nb[1]*m.beat;playNote(NOTE[nb[0]]||440,t,dur);t+=dur;off+=dur;});
-    off+=m.beat*0.2;t+=m.beat*0.2;
+  var s=SONGS[curSong], mySeq=++singSeq;
+  var chars=s.lines.map(function(l){return l[0].replace(/\s/g,'').split('');});
+  var need={};chars.forEach(function(cs){cs.forEach(function(c){need[c]=1;});});
+  Promise.all(Object.keys(need).map(loadSyl)).then(function(){
+    if(mySeq!==singSeq)return;
+    var BASE=311; // 여성 TTS 원래 음높이 부근 — 계이름 대비 재생속도(피치) 비율의 기준
+    var t=audioCtx.currentTime+0.15, off=0.15;
+    m.lines.forEach(function(line,li){
+      (function(so,li2){songTimers.push(setTimeout(function(){if(mySeq===singSeq)highlight(li2);},Math.round(so*1000)));})(off,li);
+      line.forEach(function(nb,ni){
+        var dur=nb[1]*m.beat, f=NOTE[nb[0]]||330;
+        playNote(f,t,dur,0.045);
+        var buf=SYLRES[chars[li][ni]];
+        if(buf){
+          var src=audioCtx.createBufferSource();src.buffer=buf;
+          src.playbackRate.value=f/BASE;
+          var g=audioCtx.createGain();
+          g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(1,t+0.015);
+          g.gain.setValueAtTime(1,t+Math.max(0.02,dur*0.8));g.gain.linearRampToValueAtTime(0.0001,t+dur);
+          src.connect(g);g.connect(audioCtx.destination);
+          src.start(t);src.stop(t+dur+0.05);songNodes.push(src);
+        }
+        t+=dur;off+=dur;
+      });
+      off+=m.beat*0.35;t+=m.beat*0.35;
+    });
+    songTimers.push(setTimeout(function(){if(mySeq!==singSeq)return;var ls=$('songLines').children;for(var k=0;k<ls.length;k++)ls[k].classList.remove('on');},Math.round(off*1000)+400));
   });
-  songTimers.push(setTimeout(function(){var ls=$('songLines').children;for(var k=0;k<ls.length;k++)ls[k].classList.remove('on');},Math.round(off*1000)+400));
   return true;
 }
 function playSongTTS(){

@@ -447,9 +447,9 @@ function runDraw(){
         var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-9,3)+'%';
         l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
         hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l; try{sparkAt(l);}catch(e){}
-        oi++; drawTimers.push(setTimeout(drawObject,420)); return;
+        oi++; drawTimers.push(setTimeout(drawObject,300)); return;
       }
-      var pe=ob.pels[pi], len=pe.getTotalLength()||1, dur=Math.max(90,Math.min(430,len*1.5));
+      var pe=ob.pels[pi], len=pe.getTotalLength()||1, dur=Math.max(70,Math.min(320,len*1.2));
       pen.style.opacity='1'; var t0=null;
       (function fr(now){ if(token!==drawSeq)return; if(t0==null)t0=now; var p=Math.min(1,(now-t0)/dur);
         pe.style.strokeDashoffset=len*(1-p);

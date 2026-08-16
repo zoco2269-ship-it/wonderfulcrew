@@ -212,7 +212,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V14';
+ var CUR='V15';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -432,7 +432,7 @@ var SVGNS2='http://www.w3.org/2000/svg';
 var drawData=null,drawTimers=[],DRAWWIN=3600,drawSeq=0;
 /* 그림 장면 여러 개 — 고르면 그 장면을 그림 */
 var DRAWSCENES={
-  '바닷가':{icon:'🏖️',img:'images/scene-beach2.jpg?v=1',json:'images/scene-beach-lines.json?v=8'},
+  '바닷가':{icon:'🏖️',img:'images/scene-beach2.jpg?v=1',json:'images/scene-beach-lines.json?v=9'},
   '농장':{icon:'🚜',img:'images/scene-farm.jpg?v=2',json:'images/scene-farm-lines.json?v=6'}
 };
 var curDraw='바닷가',drawCache={};

@@ -447,9 +447,9 @@ function runDraw(){
         var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-9,3)+'%';
         l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
         hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l; try{sparkAt(l);}catch(e){}
-        oi++; drawTimers.push(setTimeout(drawObject,300)); return;
+        oi++; drawTimers.push(setTimeout(drawObject,550)); return;
       }
-      var pe=ob.pels[pi], len=pe.getTotalLength()||1, dur=Math.max(70,Math.min(320,len*1.2));
+      var pe=ob.pels[pi], len=pe.getTotalLength()||1, dur=Math.max(220,Math.min(900,len*3));
       pen.style.opacity='1'; var t0=null;
       (function fr(now){ if(token!==drawSeq)return; if(t0==null)t0=now; var p=Math.min(1,(now-t0)/dur);
         pe.style.strokeDashoffset=len*(1-p);
@@ -543,8 +543,16 @@ function playNote(freq,t,dur){ if(!audioCtx)return;
   g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.22,t+0.02);
   g.gain.exponentialRampToValueAtTime(0.0008,t+dur*0.95);
   o.connect(g);g.connect(audioCtx.destination);o.start(t);o.stop(t+dur);songNodes.push(o); }
+function ensureAudio(){
+  try{
+    if(!audioCtx){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;audioCtx=new AC();}
+    if(audioCtx.state==='suspended'){audioCtx.resume();}
+    var b=audioCtx.createBuffer(1,1,22050),s=audioCtx.createBufferSource();s.buffer=b;s.connect(audioCtx.destination);s.start(0);
+  }catch(e){return null;}
+  return audioCtx;
+}
 function playMelody(m){
-  try{if(!audioCtx){var AC=window.AudioContext||window.webkitAudioContext;audioCtx=new AC();}audioCtx.resume();}catch(e){return false;}
+  if(!ensureAudio())return false;
   var t=audioCtx.currentTime+0.12, off=0.12;
   m.lines.forEach(function(line,li){
     (function(so){songTimers.push(setTimeout(function(){highlight(li);},Math.round(so*1000)));})(off);
@@ -563,7 +571,7 @@ function playSongTTS(){
     i++;songTimer=setTimeout(step,wait);
   })();
 }
-function playSong(){ stopSong();
+function playSong(){ stopSong(); ensureAudio();
   var m=MELO[SONGS[curSong].name];
   if(m){ if(!playMelody(m)) playSongTTS(); } else playSongTTS();
 }

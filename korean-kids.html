@@ -503,8 +503,13 @@ function runDraw(){
 }
 function playDraw(){
   drawTimers.forEach(clearTimeout);drawTimers=[];drawSeq++;
-  if(drawCache[curDraw]){drawData=drawCache[curDraw];runDraw();return;}
-  fetch(DRAWSCENES[curDraw].json).then(function(r){return r.json();}).then(function(j){drawCache[curDraw]=j;drawData=j;runDraw();}).catch(function(){});
+  var seq=drawSeq,key=curDraw;
+  if(drawCache[key]){drawData=drawCache[key];runDraw();return;}
+  fetch(DRAWSCENES[key].json).then(function(r){return r.json();}).then(function(j){
+    drawCache[key]=j;
+    if(seq!==drawSeq)return; // 그 사이 다른 장면 선택됨 — 늦게 온 응답은 무시
+    drawData=j;runDraw();
+  }).catch(function(){});
 }
 $('drawBtn2').onclick=playDraw;
 

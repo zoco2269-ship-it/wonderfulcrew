@@ -425,24 +425,35 @@ function runDraw(){
   var svg=$('drawSvg'),color=$('drawColor'),fin=$('drawImg'),pen=$('drawPen'),hots=$('drawHots');
   svg.innerHTML='';color.innerHTML='';hots.innerHTML='';fin.classList.remove('show');pen.style.opacity='0';pen.style.transition='none';
   var vb=(svg.getAttribute('viewBox')||'0 0 1600 893').split(' '),W=+vb[2]||1600,H=+vb[3]||893;
-  var built=drawData.map(function(o){
-    var pels=o.paths.map(function(dd){var pe=document.createElementNS(SVGNS2,'path');pe.setAttribute('d',dd);svg.appendChild(pe);return pe;});
-    var ci=document.createElement('img');ci.src='images/scene-beach.jpg?v=4';var b=o.bb||[0,0,100,100];
-    ci.style.clipPath='inset('+b[1]+'% '+(100-b[2])+'% '+(100-b[3])+'% '+b[0]+'%)';color.appendChild(ci);
-    return {o:o,pels:pels,ci:ci};
+  var XN='http://www.w3.org/1999/xlink', IMG='images/scene-beach.jpg?v=4';
+  // 색은 각 사물의 실제 윤곽(그 사물 path들)으로만 채워짐 → 하나 그리면 그 모양대로 색칠. 배경은 하얀 스케치북.
+  var defs=document.createElementNS(SVGNS2,'defs'),gColor=document.createElementNS(SVGNS2,'g'),gInk=document.createElementNS(SVGNS2,'g');
+  var built=drawData.map(function(o,idx){
+    var cid='clip'+drawSeq+'_'+idx;
+    var cp=document.createElementNS(SVGNS2,'clipPath');cp.setAttribute('id',cid);cp.setAttribute('clipPathUnits','userSpaceOnUse');
+    o.paths.forEach(function(dd){var p=document.createElementNS(SVGNS2,'path');p.setAttribute('d',dd);p.setAttribute('fill','#000');cp.appendChild(p);});
+    defs.appendChild(cp);
+    var im=document.createElementNS(SVGNS2,'image');
+    im.setAttributeNS(XN,'href',IMG);im.setAttribute('href',IMG);
+    im.setAttribute('x',0);im.setAttribute('y',0);im.setAttribute('width',W);im.setAttribute('height',H);
+    im.setAttribute('preserveAspectRatio','xMidYMid slice');im.setAttribute('clip-path','url(#'+cid+')');
+    im.style.opacity='0';im.style.transition='opacity .45s ease';gColor.appendChild(im);
+    var pels=o.paths.map(function(dd){var pe=document.createElementNS(SVGNS2,'path');pe.setAttribute('d',dd);gInk.appendChild(pe);return pe;});
+    return {o:o,pels:pels,ci:im};
   });
+  svg.appendChild(defs);svg.appendChild(gColor);svg.appendChild(gInk);
   built.forEach(function(ob){ob.pels.forEach(function(pe){var len=pe.getTotalLength()||1;pe.style.strokeDasharray=len;pe.style.strokeDashoffset=len;pe.style.transition='none';});});
   void svg.getBoundingClientRect();
   var token=drawSeq, curLab=null, oi=0;
   // 한 획씩 순서대로 — 같은 rAF가 그 획의 stroke와 연필 위치를 동시에 제어 → 연필 끝이 정확히 선을 그림
   function drawObject(){
     if(token!==drawSeq)return;
-    if(oi>=built.length){ pen.style.opacity='0'; fin.classList.add('show'); hots.innerHTML=''; enableDrawTap(); return; }
+    if(oi>=built.length){ pen.style.opacity='0'; hots.innerHTML=''; enableDrawTap(); return; }
     var ob=built[oi], o=ob.o, pi=0;
     function drawPath(){
       if(token!==drawSeq)return;
       if(pi>=ob.pels.length){
-        ob.ci.classList.add('show'); say(o.ko);
+        ob.ci.style.opacity='1'; say(o.ko);
         if(curLab)curLab.classList.remove('show');
         var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-9,3)+'%';
         l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';

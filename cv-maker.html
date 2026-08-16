@@ -281,6 +281,7 @@ const TPL_NAME = {classic:'클래식',twotone:'투톤',header:'헤더형',minima
 /* ============ SAMPLE (승무원 자질 반영) ============ */
 function sampleData(){
   return {
+    photo:'images/photo-after.png',
     name:'Jimin Lee', role:'Cabin Crew', phone:'+82 10-1234-5678',
     email:'jimin.lee@email.com', loc:'Seoul, Republic of Korea', meta:'1999 · Korean',
     about:'A warm and service-minded aspiring cabin crew member, dedicated to offering every passenger a comfortable and safe journey. Through three years of front-line hospitality experience, I have built composure, teamwork and genuine care for diverse guests. I place safety first and strive to be crew that passengers can always trust.',
@@ -396,6 +397,12 @@ function render(){
   const p=el('paper');
   const fn=state.tpl==='classic'?tplClassic:state.tpl==='twotone'?tplTwotone:state.tpl==='header'?tplHeader:state.tpl==='minimal'?tplMinimal:tplTimeline;
   p.innerHTML=fn(C,F);
+  // 본문 칸을 페이지 높이에 맞게 자동 확대/축소 — 하단이 비지 않게, 넘치지도 않게
+  p.querySelectorAll('.fitcol').forEach(col=>{
+    col.style.zoom=1;
+    const H=col.clientHeight, h=col.scrollHeight;
+    if(h>0&&H>0){ col.style.zoom=Math.max(0.75,Math.min(1.38,H/h)); }
+  });
 }
 function contactLine(C){
   const parts=[state.phone,state.email,state.loc,state.meta].filter(Boolean);
@@ -517,11 +524,11 @@ function tplClassic(C,F){
       <div style="font-family:${F.head};font-size:10px;letter-spacing:.08em;margin-bottom:7px;">LANGUAGES</div>
       ${langLines(C,true)}
     </div>
-    <div style="flex:1;padding:20px 17px;color:#222;">
+    <div class="fitcol" style="flex:1;padding:20px 17px;color:#222;">
       <div>${secTitle('EDUCATION',C,F,false)}${entryLeftDate(state.edu,C,false)}</div>
       <div style="margin-top:14px;">${secTitle('WORK EXPERIENCE',C,F,false)}${entryLeftDate(state.exp,C,false)}</div>
       <div style="margin-top:14px;">${secTitle('SKILLS',C,F,false)}${skillText(C,false)}</div>
-      <div style="margin-top:14px;">${secTitle('CERTIFICATIONS',C,F,false)}${certLines(C,false)}</div>
+      <div style="margin-top:14px;padding-bottom:6px;">${secTitle('CERTIFICATIONS',C,F,false)}${certLines(C,false)}</div>
     </div>
   </div>`;
 }
@@ -544,17 +551,17 @@ function tplTwotone(C,F){
         ${langLines(C,true)}
       </div>
     </div>
-    <div style="flex:1;padding:18px 17px;">
+    <div class="fitcol" style="flex:1;padding:18px 17px;">
       <div>${secTitleLine('Education',C,F)}${eduBlock(C,F,false)}</div>
       <div style="margin-top:13px;">${secTitleLine('Work Experience',C,F)}${expBlock(C,F,false)}</div>
       <div style="margin-top:13px;">${secTitleLine('Skills',C,F)}${skillText(C,false)}</div>
-      <div style="margin-top:13px;">${secTitleLine('Certifications',C,F)}${certLines(C,false)}</div>
+      <div style="margin-top:13px;padding-bottom:6px;">${secTitleLine('Certifications',C,F)}${certLines(C,false)}</div>
     </div>
   </div>`;
 }
 /* --- TEMPLATE 2: HEADER --- */
 function tplHeader(C,F){
-  return `<div style="position:absolute;inset:0;color:#222;">
+  return `<div style="position:absolute;inset:0;color:#222;display:flex;flex-direction:column;">
     <div style="background:${C.main};color:#fff;padding:16px 20px;display:flex;gap:14px;align-items:center;">
       ${photoCircle(58,'rgba(255,255,255,.9)')}
       <div>
@@ -563,16 +570,16 @@ function tplHeader(C,F){
         <div style="font-size:7.5px;color:rgba(255,255,255,.8);margin-top:5px;">${contactLine(C).map(esc).join('&nbsp;&nbsp;·&nbsp;&nbsp;')}</div>
       </div>
     </div>
-    <div style="display:flex;gap:16px;padding:16px 20px;">
-      <div style="flex:1.4;">
+    <div style="display:flex;gap:16px;padding:16px 20px;flex:1;">
+      <div style="flex:1.4;display:flex;flex-direction:column;justify-content:space-between;">
         <div>${secTitle('ABOUT ME',C,F,false)}<div style="font-size:8px;color:#555;line-height:1.6;">${esc(state.about)}</div></div>
         <div style="margin-top:12px;">${secTitle('EXPERIENCE',C,F,false)}${expBlock(C,F,false)}</div>
-        <div style="margin-top:12px;">${secTitle('EDUCATION',C,F,false)}${eduBlock(C,F,false)}</div>
+        <div style="margin-top:12px;padding-bottom:6px;">${secTitle('EDUCATION',C,F,false)}${eduBlock(C,F,false)}</div>
       </div>
-      <div style="flex:0.9;">
+      <div style="flex:0.9;display:flex;flex-direction:column;justify-content:space-between;">
         <div>${secTitle('SKILLS',C,F,false)}${skillText(C,false)}</div>
         <div style="margin-top:12px;">${secTitle('LANGUAGES',C,F,false)}${langLines(C,false)}</div>
-        <div style="margin-top:12px;">${secTitle('CERTIFICATIONS',C,F,false)}${certLines(C,false)}</div>
+        <div style="margin-top:12px;padding-bottom:6px;">${secTitle('CERTIFICATIONS',C,F,false)}${certLines(C,false)}</div>
       </div>
     </div>
   </div>`;
@@ -607,7 +614,7 @@ function tplTimeline(C,F){
   const eduT=state.edu.map(x=>`<div style="position:relative;margin-bottom:8px;">${dot}
     <div style="display:flex;justify-content:space-between;"><span style="font-weight:700;font-size:9px;">${esc(x.role)}</span><span style="font-size:7.5px;color:#999;">${esc(x.date)}</span></div>
     <div style="color:${C.main};font-size:8px;">${esc(x.org)}</div></div>`).join('');
-  return `<div style="position:absolute;inset:0;color:#222;padding:22px 24px;">
+  return `<div style="position:absolute;inset:0;color:#222;padding:22px 24px;display:flex;flex-direction:column;">
     <div style="display:flex;gap:14px;align-items:center;border-bottom:1px solid ${C.soft};padding-bottom:12px;">
       ${photoRect(48,60)}
       <div style="flex:1;">
@@ -617,15 +624,15 @@ function tplTimeline(C,F){
       <div style="text-align:right;font-size:7.5px;color:#888;line-height:1.7;">${contactLine(C).map(esc).join('<br>')}</div>
     </div>
     <div style="margin-top:12px;font-size:8px;color:#555;line-height:1.6;">${esc(state.about)}</div>
-    <div style="display:flex;gap:22px;margin-top:14px;">
+    <div style="display:flex;gap:22px;margin-top:14px;flex:1;">
       <div style="flex:1.5;">
-        <div style="border-left:2px solid ${C.soft};padding-left:15px;">${secTitle('EXPERIENCE',C,F,false)}${expT}
+        <div style="border-left:2px solid ${C.soft};padding-left:15px;height:100%;">${secTitle('EXPERIENCE',C,F,false)}${expT}
         <div style="margin-top:10px;">${secTitle('EDUCATION',C,F,false)}${eduT}</div></div>
       </div>
-      <div style="flex:1;">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;">
         <div>${secTitle('SKILLS',C,F,false)}${skillText(C,false)}</div>
         <div style="margin-top:12px;">${secTitle('LANGUAGES',C,F,false)}${langLines(C,false)}</div>
-        <div style="margin-top:12px;">${secTitle('CERTIFICATIONS',C,F,false)}${certLines(C,false)}</div>
+        <div style="margin-top:12px;padding-bottom:6px;">${secTitle('CERTIFICATIONS',C,F,false)}${certLines(C,false)}</div>
       </div>
     </div>
   </div>`;

@@ -411,7 +411,7 @@ var drawData=null,drawTimers=[],DRAWWIN=3600,drawSeq=0;
 /* 그림 장면 여러 개 — 고르면 그 장면을 그림 */
 var DRAWSCENES={
   '바닷가':{icon:'🏖️',img:'images/scene-beach.jpg?v=4',json:'images/scene-beach-lines.json?v=4'},
-  '농장':{icon:'🚜',img:'images/scene-farm.jpg?v=1',json:'images/scene-farm-lines.json?v=1'}
+  '농장':{icon:'🚜',img:'images/scene-farm.jpg?v=2',json:'images/scene-farm-lines.json?v=2'}
 };
 var curDraw='바닷가',drawCache={};
 function renderDrawCats(){var el=$('drawCats');if(!el)return;el.innerHTML='';
@@ -546,7 +546,7 @@ function highlight(i){var ls=$('songLines').children;for(var k=0;k<ls.length;k++
 var songTimers=[],audioCtx=null,songNodes=[];
 var NOTE={do:261.63,re:293.66,mi:329.63,fa:349.23,sol:392.00,la:440.00,ti:493.88,do2:523.25};
 var MELO={
- '작은 별':{beat:0.52,lines:[
+ '작은 별':{beat:0.62,lines:[
    [['do',1],['do',1],['sol',1],['sol',1],['la',1],['la',1],['sol',2]],
    [['fa',1],['fa',1],['mi',1],['mi',1],['re',1],['re',1],['do',2]],
    [['sol',1],['sol',1],['fa',1],['fa',1],['mi',1],['mi',1],['re',2]],
@@ -554,21 +554,35 @@ var MELO={
    [['do',1],['do',1],['sol',1],['sol',1],['la',1],['la',1],['sol',2]],
    [['fa',1],['fa',1],['mi',1],['mi',1],['re',1],['re',1],['do',2]]
  ]},
- '곰 세 마리':{beat:0.44,lines:[
+ '곰 세 마리':{beat:0.56,lines:[
    [['do',.5],['do',.5],['do',.5],['do',.5],['do',.5],['mi',.5],['sol',.5],['sol',.5],['mi',.5],['do',1]],
    [['sol',.5],['sol',.5],['mi',1],['sol',.5],['sol',.5],['mi',1],['do',.5],['do',.5],['do',1]],
    [['sol',.5],['sol',.5],['mi',.5],['do',.5],['sol',.5],['sol',.5],['sol',1]],
    [['sol',.5],['sol',.5],['mi',.5],['do',.5],['sol',.5],['sol',.5],['sol',1]],
    [['sol',.5],['sol',.5],['mi',.5],['do',.5],['sol',.5],['sol',.5],['sol',.5],['la',.5],['sol',1]],
    [['do',.5],['sol',.5],['do',.5],['sol',.5],['mi',.5],['re',.5],['do',1]]
+ ]},
+ '나비야':{beat:0.5,lines:[
+   [['sol',.5],['mi',.5],['mi',1],['fa',.5],['re',.5],['re',1],['do',.5],['re',.5],['mi',.5],['fa',.5],['sol',.5],['sol',.5],['sol',1]],
+   [['sol',.5],['mi',.5],['mi',1],['fa',.5],['re',.5],['re',1],['do',.5],['mi',.5],['sol',.5],['sol',.5],['mi',.5],['mi',.5],['mi',1]],
+   [['re',.5],['re',.5],['re',.5],['re',.5],['re',.5],['mi',.5],['fa',1],['mi',.5],['mi',.5],['mi',.5],['mi',.5],['mi',.5],['fa',.5],['sol',1]],
+   [['sol',.5],['mi',.5],['mi',1],['fa',.5],['re',.5],['re',1],['do',.5],['mi',.5],['sol',.5],['sol',.5],['do',.5],['do',.5],['do',1]]
+ ]},
+ '머리 어깨 무릎 발':{beat:0.5,lines:[
+   [['sol',.5],['la',.5],['sol',.5],['fa',.5],['mi',.5],['fa',.5],['sol',1]],
+   [['sol',.5],['la',.5],['sol',.5],['fa',.5],['mi',.5],['fa',.5],['sol',1]],
+   [['re',.5],['mi',.5],['fa',1],['mi',.5],['fa',.5],['sol',1]],
+   [['sol',.5],['la',.5],['sol',.5],['fa',.5],['mi',.5],['re',.5],['do',1]]
  ]}
 };
 function stopSong(){ if(songTimer){clearTimeout(songTimer);songTimer=null;} songTimers.forEach(clearTimeout);songTimers=[];
-  songNodes.forEach(function(n){try{n.stop();}catch(e){}});songNodes=[]; }
+  songNodes.forEach(function(n){try{n.stop();}catch(e){}});songNodes=[];
+  try{if(ttsA){ttsA.pause();ttsA=null;}}catch(e){}
+  try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){} }
 function playNote(freq,t,dur){ if(!audioCtx)return;
   var o=audioCtx.createOscillator(),g=audioCtx.createGain();
   o.type='triangle';o.frequency.value=freq;
-  g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.22,t+0.02);
+  g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.13,t+0.02);
   g.gain.exponentialRampToValueAtTime(0.0008,t+dur*0.95);
   o.connect(g);g.connect(audioCtx.destination);o.start(t);o.stop(t+dur);songNodes.push(o); }
 function ensureAudio(){
@@ -581,9 +595,10 @@ function ensureAudio(){
 }
 function playMelody(m){
   if(!ensureAudio())return false;
+  var s=SONGS[curSong];
   var t=audioCtx.currentTime+0.12, off=0.12;
   m.lines.forEach(function(line,li){
-    (function(so){songTimers.push(setTimeout(function(){highlight(li);},Math.round(so*1000)));})(off);
+    (function(so,li2){songTimers.push(setTimeout(function(){highlight(li2);if(s.lines[li2])say(s.lines[li2][0]);},Math.round(so*1000)));})(off,li);
     line.forEach(function(nb){var dur=nb[1]*m.beat;playNote(NOTE[nb[0]]||440,t,dur);t+=dur;off+=dur;});
     off+=m.beat*0.2;t+=m.beat*0.2;
   });

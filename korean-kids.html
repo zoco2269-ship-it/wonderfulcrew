@@ -200,7 +200,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 
 .note{text-align:center;font-size:0.8rem;color:#98a0b8;margin-top:28px;font-weight:700;line-height:1.6;}
 </style>
-<script src="tts-map.js?v=2"></script>
+<script src="tts-map.js?v=3"></script>
 </head>
 <body>
 <div class="bg" id="bg"></div>
@@ -326,12 +326,14 @@ function pickVoice(){var vs=speechSynthesis.getVoices();
   koVoice=vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang)&&/google/i.test(v.name);})
     ||vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang)&&/(heami|yuna|sun-?hi|sunhi|nari|seoyeon|female)/i.test(v.name);})
     ||vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang)&&!/(injoon|in-?joon|hyunsu|male)/i.test(v.name);})
-    ||vs.find(function(v){return /ko(-|_)?KR/i.test(v.lang);})||vs.find(function(v){return /^ko/i.test(v.lang);})||null;}
+    ||null;} /* 여성 확실한 목소리 없으면 null — 남자 목소리로 새지 않게 */
 if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
 var ttsA=null;
 /* 자연스러운 구글(여자) 음성 우선 → 실패하면 브라우저 '여자' 음성으로 (무음·남자 방지) */
-function speakSyn(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();}catch(e){}
-  var u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';if(koVoice)u.voice=koVoice;u.rate=0.92;u.pitch=1.12;
+function speakSyn(t){if(!('speechSynthesis' in window))return;
+  if(!koVoice)return; /* 여자 목소리 못 찾으면 침묵 — 남자 목소리 절대 금지 */
+  try{speechSynthesis.cancel();}catch(e){}
+  var u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';u.voice=koVoice;u.rate=0.92;u.pitch=1.12;
   try{speechSynthesis.speak(u);speechSynthesis.resume();}catch(e){}}
 function say(t){
   try{if(ttsA){ttsA.pause();ttsA=null;}}catch(e){}

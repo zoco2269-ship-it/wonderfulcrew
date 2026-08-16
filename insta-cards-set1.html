@@ -7,35 +7,31 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:#222;font-family:'Noto Sans KR',sans-serif;}
+body{background:#666;font-family:'Noto Sans KR',sans-serif;}
 .card{width:1080px;height:1080px;position:relative;overflow:hidden;display:none;
-  background:linear-gradient(160deg,#0e1a38 0%,#152751 55%,#1b3263 100%);color:#fff;padding:96px 88px;}
+  background:linear-gradient(168deg,#fffdf9 0%,#faf4e9 55%,#f4ecdd 100%);color:#1b2a4a;padding:84px 84px;}
 body[data-show="all"] .card{display:block;margin:20px auto;}
 .card.on{display:block;}
-.brand{font-size:30px;letter-spacing:8px;color:#c9a96a;font-weight:700;}
-.brand small{display:block;letter-spacing:2px;color:#8fa3c8;font-weight:500;font-size:22px;margin-top:10px;}
-.kicker{display:inline-block;margin-top:70px;font-size:30px;color:#c9a96a;font-weight:700;letter-spacing:2px;border:2px solid rgba(201,169,106,.55);border-radius:999px;padding:12px 30px;}
-h1{font-family:'Noto Serif KR',serif;font-size:88px;line-height:1.28;font-weight:900;margin-top:42px;letter-spacing:-1px;}
-h1 .gold{color:#e6c98c;}
-h2{font-family:'Noto Serif KR',serif;font-size:64px;line-height:1.32;font-weight:700;margin-top:26px;}
-p.lead{font-size:40px;line-height:1.62;color:#dbe4f5;margin-top:44px;font-weight:500;}
-p.lead strong{color:#fff;font-weight:700;}
-p.lead .gold{color:#e6c98c;font-weight:700;}
-.shot{margin-top:52px;border-radius:26px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.14);background:#fff;}
-.shot img{width:100%;display:block;max-height:470px;object-fit:cover;object-position:center top;}
-#c4 .shot{margin-top:38px;}
-#c4 .shot img{max-height:340px;}
-#c4 .checks{font-size:36px;line-height:1.85;margin-top:38px;}
-.foot{position:absolute;left:88px;right:88px;bottom:64px;display:flex;justify-content:space-between;align-items:center;font-size:26px;color:#8fa3c8;}
+.brand{font-size:28px;letter-spacing:8px;color:#b08d4f;font-weight:700;}
+.brand small{display:block;letter-spacing:2px;color:#8a94ab;font-weight:500;font-size:21px;margin-top:8px;}
+.kicker{display:inline-block;margin-top:44px;font-size:28px;color:#b08d4f;font-weight:700;letter-spacing:2px;border:2px solid rgba(176,141,79,.5);border-radius:999px;padding:10px 28px;background:#fff;}
+h1{font-family:'Noto Serif KR',serif;font-size:74px;line-height:1.3;font-weight:900;margin-top:30px;letter-spacing:-1px;}
+h2{font-family:'Noto Serif KR',serif;font-size:58px;line-height:1.32;font-weight:900;margin-top:6px;}
+.gold{color:#b08d4f;}
+.shot{margin:44px auto 0;border-radius:26px;overflow:hidden;box-shadow:0 22px 55px rgba(27,42,74,.22);border:1px solid rgba(176,141,79,.35);background:#fff;}
+.shot img{width:100%;display:block;}
+.cap{margin-top:34px;text-align:center;font-size:33px;color:#4a5670;font-weight:500;}
+.cap strong{color:#1b2a4a;font-weight:700;}
+.foot{position:absolute;left:84px;right:84px;bottom:56px;display:flex;justify-content:space-between;align-items:center;font-size:25px;color:#9aa3b8;}
 .dots{display:flex;gap:12px;}
-.dots i{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.22);}
-.dots i.on{background:#c9a96a;}
-.swipe{color:#c9a96a;font-weight:700;}
-.checks{margin-top:48px;font-size:41px;line-height:2.02;font-weight:500;color:#e8eefb;}
-.checks b{color:#e6c98c;font-weight:700;}
-.cta-big{margin-top:64px;background:#c9a96a;color:#14213f;border-radius:999px;text-align:center;font-size:44px;font-weight:900;padding:34px 20px;letter-spacing:1px;}
-.url{margin-top:36px;text-align:center;font-size:38px;color:#e6c98c;font-weight:700;letter-spacing:2px;}
-.plane{position:absolute;right:80px;top:88px;font-size:64px;opacity:.9;}
+.dots i{width:14px;height:14px;border-radius:50%;background:#ddd3c0;}
+.dots i.on{background:#b08d4f;}
+.swipe{color:#b08d4f;font-weight:700;}
+.cta-big{margin-top:56px;background:#b08d4f;color:#fff;border-radius:999px;text-align:center;font-size:42px;font-weight:900;padding:32px 20px;letter-spacing:1px;box-shadow:0 14px 34px rgba(176,141,79,.4);}
+.url{margin-top:30px;text-align:center;font-size:36px;color:#b08d4f;font-weight:700;letter-spacing:2px;}
+.plane{position:absolute;right:78px;top:78px;font-size:58px;}
+.strip{display:flex;gap:20px;margin-top:52px;}
+.strip .shot{margin:0;flex:1;}
 </style>
 </head>
 <body>
@@ -46,64 +42,57 @@ p.lead .gold{color:#e6c98c;font-weight:700;}
   <div class="plane">✈️</div>
   <div class="kicker">AI 실시간 이미지 분석</div>
   <h1>무표정인 걸,<br><span class="gold">본인만 모릅니다</span></h1>
-  <p class="lead">면접장에서 제일 많이 봤던 얼굴 —<br><strong>본인은 웃고 있다고 믿는데,<br>실제로는 굳어 있는 얼굴.</strong></p>
-  <div class="foot"><div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="swipe">넘겨보기 →</div></div>
+  <div class="shot" style="width:560px;"><img src="images/blog-photo-practice.png" alt=""></div>
+  <div class="foot"><div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div><div class="swipe">넘겨보기 →</div></div>
 </section>
 
-<!-- 2 문제 -->
+<!-- 2 실시간 분석 -->
 <section class="card" id="c2">
   <div class="brand">WONDERFULCREW</div>
-  <h2>긴장하면<br>입꼬리가 먼저 내려갑니다</h2>
-  <p class="lead">그런데 정작 본인은 그걸 못 느껴요.<br><br>거울은 멈춰 있고,<br>실전은 떨리고,<br>카메라 앞 내 표정은<br><strong>내가 볼 수 없으니까요.</strong><br><br><span class="gold">면접관 자리에서 지원자를 마주 봤던 사람으로서,<br>이게 제일 안타까웠어요.</span></p>
-  <div class="foot"><div class="dots"><i></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div><div class="swipe">→</div></div>
+  <h2 style="margin-top:34px;">카메라만 켜면,<br>AI가 <span class="gold">실시간으로</span> 읽어줍니다</h2>
+  <div class="shot" style="width:660px;"><img src="images/blog-card-good.png" alt=""></div>
+  <div class="cap">활짝 웃는 순간 — <strong>"미소 아주 좋아요!"</strong></div>
+  <div class="foot"><div class="dots"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div><div class="swipe">→</div></div>
 </section>
 
-<!-- 3 기능 소개 -->
+<!-- 3 점수 리포트 -->
 <section class="card" id="c3">
   <div class="brand">WONDERFULCREW</div>
-  <h2>카메라만 켜면,<br>AI가 내 얼굴을 <span style="color:#e6c98c;">실시간으로</span> 읽어줍니다</h2>
-  <div class="shot"><img src="images/blog-card-good.png" alt=""></div>
-  <p class="lead" style="font-size:36px;margin-top:40px;">실제 서비스 화면 — 활짝 웃는 순간, <strong>"미소 아주 좋아요!"</strong></p>
-  <div class="foot"><div class="dots"><i></i><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div><div class="swipe">→</div></div>
+  <h2 style="margin-top:30px;">일곱 가지를 동시에,<br><span class="gold">점수로</span> 짚어드려요</h2>
+  <div class="shot" style="width:540px;"><img src="images/blog-dashboard.png" alt=""></div>
+  <div class="foot"><div class="dots"><i></i><i></i><i class="on"></i><i></i><i></i><i></i></div><div class="swipe">→</div></div>
 </section>
 
-<!-- 4 일곱 가지 -->
+<!-- 4 실시간 코칭 -->
 <section class="card" id="c4">
   <div class="brand">WONDERFULCREW</div>
-  <h2>일곱 가지를 동시에,<br>점수로 짚어드려요</h2>
-  <div class="checks">
-    <b>미소</b> · <b>정면 응시</b> · <b>얼굴 수평</b> · <b>어깨 균형</b><br><b>시선(렌즈)</b> · <b>목소리 톤</b> · <b>조명</b><br>그리고 이 모든 걸 종합한 <b>첫인상 점수</b>까지.
-  </div>
-  <div class="shot"><img src="images/blog-dashboard.png" alt=""></div>
-  <div class="foot"><div class="dots"><i></i><i></i><i></i><i class="on"></i><i></i><i></i><i></i></div><div class="swipe">→</div></div>
+  <h2 style="margin-top:34px;">표정이 풀리는 그 찰나,<br><span class="gold">"입꼬리 조금만 더!"</span></h2>
+  <div class="shot" style="width:660px;"><img src="images/blog-card-coach.png" alt=""></div>
+  <div class="cap">혼자 연습해도, <strong>옆에서 계속 봐주는 느낌.</strong></div>
+  <div class="foot"><div class="dots"><i></i><i></i><i></i><i class="on"></i><i></i><i></i></div><div class="swipe">→</div></div>
 </section>
 
-<!-- 5 실시간 코칭 -->
+<!-- 5 목표 -->
 <section class="card" id="c5">
   <div class="brand">WONDERFULCREW</div>
-  <h2>표정이 풀리는 그 찰나,<br><span style="color:#e6c98c;">"입꼬리 조금만 더!"</span></h2>
-  <div class="shot"><img src="images/blog-card-coach.png" alt=""></div>
-  <p class="lead" style="font-size:36px;margin-top:40px;">무표정이 되는 순간 미소 점수가 뚝 —<br>혼자 연습해도, <strong>옆에서 계속 봐주는 사람이 있는 느낌.</strong></p>
-  <div class="foot"><div class="dots"><i></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i></div><div class="swipe">→</div></div>
+  <h2 style="margin-top:34px;">이렇게 웃는 얼굴,<br><span class="gold">그게 목표예요</span></h2>
+  <div class="shot" style="width:600px;"><img src="images/blog-photo-crew-lounge.png" alt=""></div>
+  <div class="cap">매일 짓는 미소가, <strong>결국 저 얼굴을 만듭니다.</strong></div>
+  <div class="foot"><div class="dots"><i></i><i></i><i></i><i></i><i class="on"></i><i></i></div><div class="swipe">→</div></div>
 </section>
 
-<!-- 6 안심 + 시대 -->
+<!-- 6 CTA -->
 <section class="card" id="c6">
-  <div class="brand">WONDERFULCREW</div>
-  <h2>집에서도, 새벽에도.<br>준비하고 싶을 때 바로.</h2>
-  <p class="lead">예전엔 시간 맞춰 어딘가로 가야 했죠.<br><br>지금은 카메라만 켜면<br><strong>AI가 옆에서 봐줍니다.</strong><br>장소도, 시간도 상관없이.<br><br><span class="gold">카메라 영상은 저장되지 않아요.<br>실전처럼 마음껏 연습하세요.</span></p>
-  <div class="foot"><div class="dots"><i></i><i></i><i></i><i></i><i></i><i class="on"></i><i></i></div><div class="swipe">→</div></div>
-</section>
-
-<!-- 7 CTA -->
-<section class="card" id="c7">
   <div class="brand">WONDERFULCREW<small>승무원 합격을 위한 AI 코칭</small></div>
   <div class="plane">✈️</div>
-  <h1 style="margin-top:120px;">당신의 가장 좋은 얼굴,<br><span class="gold">그 안에 이미 있어요</span></h1>
-  <p class="lead">언제 어디서 시작하든,<br>끝까지 함께 도와드릴게요.</p>
-  <div class="cta-big">지금 바로 무료 체험 — 카메라만 켜면 끝</div>
-  <div class="url">wonderfulcrew.com</div>
-  <div class="foot"><div class="dots"><i></i><i></i><i></i><i></i><i></i><i></i><i class="on"></i></div><div class="swipe">프로필 링크 ↗</div></div>
+  <h1 style="margin-top:36px;font-size:60px;">집에서도, 새벽에도.<br><span class="gold">준비하고 싶을 때 바로.</span></h1>
+  <div class="strip" style="margin-top:38px;width:880px;">
+    <div class="shot"><img src="images/blog-card-good.png" alt=""></div>
+    <div class="shot"><img src="images/blog-card-coach.png" alt=""></div>
+  </div>
+  <div class="cta-big" style="margin-top:42px;font-size:37px;padding:26px 20px;">지금 바로 무료 체험 — 카메라만 켜면 끝</div>
+  <div class="url" style="margin-top:20px;font-size:31px;">wonderfulcrew.com</div>
+  <div class="foot"><div class="dots"><i></i><i></i><i></i><i></i><i></i><i class="on"></i></div><div class="swipe">프로필 링크 ↗</div></div>
 </section>
 
 <script>

@@ -130,6 +130,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .wcard{background:#fff;border-radius:28px;padding:14px 8px 14px;text-align:center;cursor:pointer;
   box-shadow:0 8px 0 rgba(0,0,0,0.09);transition:transform .12s;overflow:hidden;position:relative;}
 .wcard:active{transform:scale(0.96);}
+.emj{width:1em;height:1em;object-fit:contain;display:inline-block;vertical-align:-0.12em;}
 .wcard .emo{font-size:5.2rem;line-height:1;display:inline-block;filter:drop-shadow(0 6px 8px rgba(0,0,0,0.18));}
 .wcard .ko{font-family:'Jua',sans-serif;font-size:1.5rem;color:#E4568E;margin-top:8px;}
 .wcard .pr{font-size:0.86rem;color:#C77FB0;font-weight:800;margin-top:1px;}
@@ -361,11 +362,13 @@ function confetti(){var c=['#FF6FB0','#4FC3F7','#FFD23F','#6FD86F','#B388FF','#F
     p.style.animationDelay=rnd(0,0.4)+'s';document.body.appendChild(p);
     (function(el){setTimeout(function(){el.remove();},3400);})(p);}}
 
+/* 이모지 자리에 이미지도 넣기 (예: 귀여운 나비) */
+function emo(v){return (typeof v==='string'&&v.slice(0,4)==='img:')?'<img class="emj" src="'+v.slice(4)+'" alt="">':v;}
 /* 데이터 */
 var JA=[['ㄱ','기역'],['ㄴ','니은'],['ㄷ','디귿'],['ㄹ','리을'],['ㅁ','미음'],['ㅂ','비읍'],['ㅅ','시옷'],['ㅇ','이응'],['ㅈ','지읒'],['ㅊ','치읓'],['ㅋ','키읔'],['ㅌ','티읕'],['ㅍ','피읖'],['ㅎ','히읗']];
 var MO=[['ㅏ','아'],['ㅑ','야'],['ㅓ','어'],['ㅕ','여'],['ㅗ','오'],['ㅛ','요'],['ㅜ','우'],['ㅠ','유'],['ㅡ','으'],['ㅣ','이']];
 var CATS={
-  '동물':{label:'🐘 동물',items:[['🐘','코끼리','con voi'],['🦁','사자','sư tử'],['🐶','강아지','chó con'],['🐱','고양이','con mèo'],['🐰','토끼','con thỏ'],['🐻','곰','con gấu'],['🐯','호랑이','con hổ'],['🐸','개구리','con ếch'],['🐧','펭귄','chim cánh cụt'],['🐴','말','con ngựa'],['🐷','돼지','con lợn'],['🐮','소','con bò'],['🐔','닭','con gà'],['🐵','원숭이','con khỉ'],['🦊','여우','con cáo'],['🐼','판다','gấu trúc'],['🦒','기린','hươu cao cổ'],['🐢','거북이','con rùa'],['🐝','벌','con ong'],['🦋','나비','con bướm']]},
+  '동물':{label:'🐘 동물',items:[['🐘','코끼리','con voi'],['🦁','사자','sư tử'],['🐶','강아지','chó con'],['🐱','고양이','con mèo'],['🐰','토끼','con thỏ'],['🐻','곰','con gấu'],['🐯','호랑이','con hổ'],['🐸','개구리','con ếch'],['🐧','펭귄','chim cánh cụt'],['🐴','말','con ngựa'],['🐷','돼지','con lợn'],['🐮','소','con bò'],['🐔','닭','con gà'],['🐵','원숭이','con khỉ'],['🦊','여우','con cáo'],['🐼','판다','gấu trúc'],['🦒','기린','hươu cao cổ'],['🐢','거북이','con rùa'],['🐝','벌','con ong'],['img:images/butterfly-cute.png','나비','con bướm']]},
   '과일':{label:'🍎 과일',items:[['🍎','사과','táo'],['🍌','바나나','chuối'],['🍓','딸기','dâu tây'],['🍉','수박','dưa hấu'],['🍇','포도','nho'],['🍊','귤','quýt'],['🍑','복숭아','đào'],['🍒','체리','anh đào'],['🥝','키위','kiwi'],['🍍','파인애플','dứa'],['🥭','망고','xoài'],['🍋','레몬','chanh'],['🥥','코코넛','dừa']]},
   '음식':{label:'🍚 음식',items:[['🍚','밥','cơm'],['🍜','국수','mì'],['🍞','빵','bánh mì'],['🍗','치킨','gà rán'],['🍕','피자','pizza'],['🍔','햄버거','hamburger'],['🍦','아이스크림','kem'],['🍭','사탕','kẹo'],['🥛','우유','sữa'],['🍳','계란','trứng'],['🧀','치즈','phô mai'],['🍪','쿠키','bánh quy']]},
   '탈것':{label:'🚗 탈것',items:[['🚗','자동차','ô tô'],['✈️','비행기','máy bay'],['🚌','버스','xe buýt'],['🚲','자전거','xe đạp'],['🚂','기차','tàu hỏa'],['🚢','배','thuyền'],['🚕','택시','taxi'],['🚓','경찰차','xe cảnh sát'],['🚑','구급차','xe cứu thương'],['🚒','소방차','xe cứu hỏa'],['🛵','오토바이','xe máy'],['🚁','헬리콥터','trực thăng'],['🚀','로켓','tên lửa']]},
@@ -378,7 +381,7 @@ var CATS={
 var SLOTS=[[20,28],[50,25],[80,30],[66,41],[15,53],[45,50],[80,55],[30,73],[58,71],[85,75]];
 var SCENES={
  '바닷가':{icon:'🏖️',bg:'linear-gradient(180deg,#8FD8FF 0%,#BEEBFF 42%,#6FC6E8 42%,#9FDCF0 60%,#FCE7B0 60%,#F4CE7E 100%)',items:[['☀️','해','mặt trời'],['☁️','구름','mây'],['🐚','조개','vỏ sò'],['🐙','문어','bạch tuộc'],['⛵','배','thuyền'],['🌴','야자수','cây dừa'],['⛱️','파라솔','ô dù'],['🏰','모래성','lâu đài cát'],['🦀','게','con cua'],['🐠','물고기','con cá']]},
- '숲속':{icon:'🌲',bg:'linear-gradient(180deg,#AEE0FF 0%,#CFF0FF 40%,#BFE9A8 40%,#96D677 100%)',items:[['☀️','해','mặt trời'],['☁️','구름','mây'],['🌳','나무','cây'],['🦌','사슴','con nai'],['🌸','꽃','hoa'],['🦋','나비','con bướm'],['🍄','버섯','nấm'],['🐰','토끼','con thỏ'],['🐿️','다람쥐','con sóc'],['🐦','새','con chim']]},
+ '숲속':{icon:'🌲',bg:'linear-gradient(180deg,#AEE0FF 0%,#CFF0FF 40%,#BFE9A8 40%,#96D677 100%)',items:[['☀️','해','mặt trời'],['☁️','구름','mây'],['🌳','나무','cây'],['🦌','사슴','con nai'],['🌸','꽃','hoa'],['img:images/butterfly-cute.png','나비','con bướm'],['🍄','버섯','nấm'],['🐰','토끼','con thỏ'],['🐿️','다람쥐','con sóc'],['🐦','새','con chim']]},
  '동물원':{icon:'🦁',bg:'linear-gradient(180deg,#FFE7B0 0%,#FFF0CF 45%,#BFE29A 45%,#A6D982 100%)',items:[['🦁','사자','sư tử'],['🐘','코끼리','con voi'],['🦒','기린','hươu cao cổ'],['🐵','원숭이','con khỉ'],['🦓','얼룩말','ngựa vằn'],['🐼','판다','gấu trúc'],['🐯','호랑이','con hổ'],['🐻','곰','con gấu'],['🐧','펭귄','chim cánh cụt'],['🐊','악어','cá sấu']]},
  '우주':{icon:'🚀',bg:'linear-gradient(180deg,#22224E 0%,#33336E 50%,#43356E 100%)',items:[['🌞','해','mặt trời'],['🌙','달','mặt trăng'],['🌍','지구','trái đất'],['🚀','로켓','tên lửa'],['👨‍🚀','우주인','phi hành gia'],['⭐','별','ngôi sao'],['🪐','토성','sao thổ'],['☄️','혜성','sao chổi'],['🛸','비행접시','đĩa bay'],['🌟','별똥별','sao băng']]},
  '도시':{icon:'🏙️',bg:'linear-gradient(180deg,#BFE3FF 0%,#DDF0FF 55%,#CBD3DC 55%,#B7C0CB 100%)',items:[['🏢','빌딩','tòa nhà'],['🏠','집','ngôi nhà'],['🚗','자동차','ô tô'],['🚌','버스','xe buýt'],['🚦','신호등','đèn giao thông'],['🌳','나무','cây'],['🏫','학교','trường học'],['✈️','비행기','máy bay'],['🌉','다리','cây cầu'],['🚲','자전거','xe đạp']]}
@@ -392,7 +395,7 @@ function playBay(){
   var sc=SCENES[curScene],host=$('bay');host.style.background=sc.bg;host.innerHTML='';
   var dark=(curScene==='우주');
   var els=sc.items.map(function(w,idx){var pos=SLOTS[idx%SLOTS.length];var d=document.createElement('div');d.className='bobj';d.style.left=pos[0]+'%';d.style.top=pos[1]+'%';
-    d.innerHTML='<span class="e">'+w[0]+'</span><span class="blab">'+w[1]+'<b>['+romanize(w[1])+']</b><small>'+w[2]+'</small></span>';
+    d.innerHTML='<span class="e">'+emo(w[0])+'</span><span class="blab">'+w[1]+'<b>['+romanize(w[1])+']</b><small>'+w[2]+'</small></span>';
     d.onclick=function(){d.classList.remove('tap');void d.offsetWidth;d.classList.add('tap');say(w[1]);};
     host.appendChild(d);return d;});
   var i=0;
@@ -624,7 +627,7 @@ function renderFreeCats(){var el=$('freeCats');el.innerHTML='';
     b.onclick=function(){freeCat=k;renderFreeCats();renderFree();};el.appendChild(b);});}
 function renderFree(){renderFreeCats();var el=$('freeGrid');el.innerHTML='';
   CATS[freeCat].items.forEach(function(w,i){var c=document.createElement('div');c.className='wcard a'+(i%4);
-    c.innerHTML='<div class="emo">'+w[0]+'</div><div class="ko">'+w[1]+'</div><div class="pr">['+romanize(w[1])+']</div><div class="vi">'+w[2]+'</div>';
+    c.innerHTML='<div class="emo">'+emo(w[0])+'</div><div class="ko">'+w[1]+'</div><div class="pr">['+romanize(w[1])+']</div><div class="vi">'+w[2]+'</div>';
     c.onclick=function(){c.classList.remove('boing');void c.offsetWidth;c.classList.add('boing');sparkAt(c);say(w[1]);};
     el.appendChild(c);});}
 renderGameModes();
@@ -658,10 +661,10 @@ function renderCats(){var el=$('cats');el.innerHTML='';
     b.onclick=function(){curCat=k;renderCats();renderWords();};el.appendChild(b);});}
 function renderWords(){var el=$('wordgrid');el.innerHTML='';
   CATS[curCat].items.forEach(function(w,i){var c=document.createElement('div');c.className='wcard a'+(i%4);
-    c.innerHTML='<div class="emo">'+w[0]+'</div><div class="ko">'+w[1]+'</div><div class="pr">['+romanize(w[1])+']</div><div class="vi">'+w[2]+'</div>';
+    c.innerHTML='<div class="emo">'+emo(w[0])+'</div><div class="ko">'+w[1]+'</div><div class="pr">['+romanize(w[1])+']</div><div class="vi">'+w[2]+'</div>';
     c.onclick=function(){c.classList.remove('boing');void c.offsetWidth;c.classList.add('boing');sparkAt(c);showReveal(w);};
     el.appendChild(c);});}
-function showReveal(w){$('rEmo').textContent=w[0];$('rKo').textContent=w[1];$('rPr').textContent='['+romanize(w[1])+']';$('rVi').textContent=w[2];
+function showReveal(w){$('rEmo').innerHTML=emo(w[0]);$('rKo').textContent=w[1];$('rPr').textContent='['+romanize(w[1])+']';$('rVi').textContent=w[2];
   var r=$('reveal');r.classList.remove('on');void r.offsetWidth;r.classList.add('on');
   setTimeout(function(){say(w[1]);},1050);}
 $('reveal').onclick=function(e){if(e.target===$('reveal'))$('reveal').classList.remove('on');};
@@ -674,7 +677,7 @@ function allWords(){var a=[];Object.keys(CATS).forEach(function(k){CATS[k].items
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
 function newQuiz(){var pool=shuffle(allWords());answer=pool[0];var opts=shuffle([pool[0],pool[1],pool[2],pool[3]]);
   $('gWord').textContent=answer[1];say(answer[1]);var el=$('gOpts');el.innerHTML='';
-  opts.forEach(function(w){var o=document.createElement('div');o.className='opt';o.innerHTML='<span class="e">'+w[0]+'</span>';
+  opts.forEach(function(w){var o=document.createElement('div');o.className='opt';o.innerHTML='<span class="e">'+emo(w[0])+'</span>';
     o.onclick=function(){pick(o,w);};el.appendChild(o);});}
 function pick(o,w){if(w[1]===answer[1]){o.classList.add('right');score++;$('gScore').textContent='⭐ '+score;
     toast('잘했어요! 🎉','good');confetti();say('잘했어요');setTimeout(newQuiz,2100);}

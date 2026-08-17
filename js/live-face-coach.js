@@ -21,6 +21,7 @@
     var MSG = EN ? {
       title: 'LIVE AI ANALYSIS',
       smile: 'Smile', gaze: 'Eye contact', tilt: 'Posture', voice: 'Voice',
+      loading: 'Preparing analysis...',
       noFace: 'Keep your face in view',
       smileLow: '😊 Smile brighter!',
       gazeOff: '👀 Look at the camera',
@@ -32,6 +33,7 @@
     } : {
       title: 'AI 실시간 분석',
       smile: '미소', gaze: '시선', tilt: '기울기', voice: '목소리',
+      loading: '분석 준비 중...',
       noFace: '얼굴이 화면에 보이게 해주세요',
       smileLow: '😊 입꼬리 더 올려주세요!',
       gazeOff: '👀 시선을 카메라에 두세요',
@@ -200,9 +202,11 @@
       } catch(e) {}
     }
 
+    var loadAttempts = 0;
     function ensureLandmarker(){
       if (landmarker || loadingStarted || loadFailed) return;
       loadingStarted = true;
+      loadAttempts++;
       import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs')
         .then(function(mod){
           return mod.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/wasm')
@@ -221,7 +225,11 @@
             });
         })
         .then(function(lm){ landmarker = lm; })
-        .catch(function(){ loadFailed = true; });
+        .catch(function(){
+          // 일시 네트워크·GPU 실패 대비 자동 재시도 (4초 간격, 최대 5회 후 패널 숨김)
+          if (loadAttempts >= 5) { loadFailed = true; if (box) box.style.display = 'none'; hideBubble(); }
+          else setTimeout(function(){ loadingStarted = false; }, 4000);
+        });
     }
 
     function ensureAudio(){
@@ -269,7 +277,12 @@
 
     function analyze(){
       try {
-        if (!landmarker || !isLive(videoEl) || !box || box.style.display === 'none') return;
+        if (!box || box.style.display === 'none' || !isLive(videoEl)) return;
+        if (!landmarker) {
+          // 모델 로딩 중 표시 — 값 없이 조용히 죽은 것처럼 보이는 상태 방지
+          if (msgEl && !loadFailed) msgEl.textContent = MSG.loading;
+          return;
+        }
         var res = landmarker.detectForVideo(videoEl, performance.now());
         if (!res || !res.faceBlendshapes || !res.faceBlendshapes[0]) {
           if (msgEl) msgEl.textContent = MSG.noFace;

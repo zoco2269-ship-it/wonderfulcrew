@@ -212,7 +212,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V16';
+ var CUR='V17';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -240,7 +240,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
   <div class="sound-hint">🔊 소리를 켜주세요! Bật âm thanh nhé!</div>
 
   <div class="panel on" id="p-bay">
-    <div class="seclabel">장면을 골라요! 그림이 하나씩 천천히 만들어져요 · Chọn cảnh</div>
+    <div class="seclabel">장면을 골라요! · Chọn cảnh</div>
     <div class="cats" id="sceneCats"></div>
     <div class="scene bay" id="bay"></div>
     <div style="text-align:center;"><button class="tab" id="bayBtn" style="background:#2BB7C4;color:#fff;">▶ 다시 보기</button></div>
@@ -491,7 +491,7 @@ function runDraw(){
     box.style.cssText='position:absolute;overflow:hidden;left:'+b[0]+'%;top:'+b[1]+'%;width:'+w+'%;height:'+h+'%;';
     var im=document.createElement('img');
     im.src=IMG;
-    im.style.cssText='position:absolute;width:'+(10000/w)+'%;height:'+(10000/h)+'%;left:'+(-b[0]*100/w)+'%;top:'+(-b[1]*100/h)+'%;max-width:none;';
+    im.style.cssText='position:absolute;width:'+(10000/w)+'%;height:'+(10000/h)+'%;left:'+(-b[0]*100/w)+'%;top:'+(-b[1]*100/h)+'%;max-width:none;opacity:1;transition:none;';
     box.appendChild(im);
     box.style.clipPath='inset(0 0 100% 0)';
     color.appendChild(box);

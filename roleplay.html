@@ -869,7 +869,7 @@ async function submitAnswer(text){
     var res=await fetch('/api/ai',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:sysPrompt,messages:msgs})
+      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:400,system:sysPrompt,messages:msgs})
     });
     var d=await res.json();
     var reply=d.content?.[0]?.text||'감사합니다. 계속 진행하겠습니다.';
@@ -910,7 +910,7 @@ async function endSession(){
     var res=await fetch('/api/ai',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]})
+      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:600,messages:[{role:'user',content:prompt}]})
     });
     var d=await res.json();
     var txt=d.content?.[0]?.text||'';

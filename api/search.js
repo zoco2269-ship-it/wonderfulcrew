@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     const {
       query,
       system,
-      model = 'claude-sonnet-4-20250514',
+      model = 'claude-sonnet-5',
       max_tokens = 1500
     } = req.body || {};
 

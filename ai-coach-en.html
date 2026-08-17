@@ -117,7 +117,7 @@ async function getAIFeedback(){
     var airline=document.getElementById('ai-airline').value;
     var stage=document.getElementById('ai-stage').value;
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:1100,
+      model:'claude-sonnet-5',max_tokens:1100,
       system:'You are WonderfulCrew AI coach with 20 years of Emirates First Class cabin crew coaching experience. Evaluate the candidate answer for the given airline / interview stage.\n\nReturn ONLY a valid JSON object — no markdown, no preamble, no code fences. Use this EXACT schema:\n\n{\n  "overall_score": <0-100 integer>,\n  "level": "Excellent" | "Strong" | "Solid" | "Needs Work",\n  "content": <0-100 integer>,\n  "service_mindset": <0-100 integer>,\n  "english_expression": <0-100 integer>,\n  "structure": <0-100 integer>,\n  "motivation": <0-100 integer>,\n  "strengths": ["specific phrase / approach that worked", "...", "..."],\n  "improvements": ["concrete fix 1", "concrete fix 2"],\n  "phrasing_before": "exact weak line from the candidate answer",\n  "phrasing_after": "rewritten as a top Final-round candidate would say it",\n  "coach_one_line": "single direct sentence to remember"\n}\n\nGround the service_mindset score in the WonderfulCrew philosophy (essence of the uniform, consistent trust, one team, empathy, complaints as gifts, what the interviewer is reading). Quote real candidate phrases in strengths. No generic praise. Reply ONLY the JSON.',
       messages:[{role:'user',content:'Airline: '+airline+'\nInterview stage: '+stage+'\n\nQuestion: '+q+'\n\nCandidate answer:\n'+a}]
     })});

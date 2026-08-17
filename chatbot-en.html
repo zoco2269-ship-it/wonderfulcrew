@@ -565,7 +565,7 @@ async function send(text){
   loading=true;btn.disabled=true;
   addMsg('user',msg);history.push({role:'user',content:msg});showTyping();
   try{
-    const res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:history})});
+    const res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:1000,system:SYS,messages:history})});
     const data=await res.json();
     const reply=data.content?.[0]?.text||'Sorry, please try again.';
     history.push({role:'assistant',content:reply});

@@ -529,7 +529,7 @@ async function callAI(prompt,resultId,noteId){
   var r=document.getElementById(resultId);var n=document.getElementById(noteId);
   r.style.display='block';r.textContent='생성 중...';
   try{
-    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:SYS,messages:[{role:'user',content:prompt}]})});
+    var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:1500,system:SYS,messages:[{role:'user',content:prompt}]})});
     var data=await res.json();
     var text=(data&&data.content&&data.content[0]&&data.content[0].text)||'생성 실패';
     r.textContent=text.replace(/\*\*/g,'');

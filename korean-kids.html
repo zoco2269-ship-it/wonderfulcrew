@@ -212,7 +212,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V17';
+ var CUR='V18';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -506,11 +506,14 @@ function runDraw(){
       if(token!==drawSeq)return;
       if(t0==null)t0=now;
       var p=Math.min(1,(now-t0)/dur);
-      // 위→아래 나타나기 + 연필 좌우 지그재그
-      ob.box.style.clipPath='inset(0 0 '+((1-p)*100)+'% 0)';
-      var zig=p*rows, xr=zig%2<1?(zig%1):(1-zig%1);
-      pen.style.left=(ob.b[0]+xr*ob.w)+'%';
-      pen.style.top=(ob.b[1]+p*ob.h)+'%';
+      // ★ 색칠이 연필 끝을 정확히 따라옴 — 연필이 지나간 데까지만 나타남 (줄 단위 L자 클립)
+      var N=rows, pr=Math.min(p*N,N-0.0001), r=Math.floor(pr), f=pr-r;
+      var rTop=r/N*100, rBot=(r+1)/N*100, ltr=(r%2===0), xw=ltr?f*100:(1-f)*100;
+      if(p>=1){ ob.box.style.clipPath='none'; }
+      else if(ltr){ ob.box.style.clipPath='polygon(0% 0%,100% 0%,100% '+rTop+'%,'+xw+'% '+rTop+'%,'+xw+'% '+rBot+'%,0% '+rBot+'%)'; }
+      else { ob.box.style.clipPath='polygon(0% 0%,100% 0%,100% '+rBot+'%,'+xw+'% '+rBot+'%,'+xw+'% '+rTop+'%,0% '+rTop+'%)'; }
+      pen.style.left=(ob.b[0]+xw/100*ob.w)+'%';
+      pen.style.top=(ob.b[1]+rBot/100*ob.h)+'%';
       if(p<1){requestAnimationFrame(fr);return;}
       say(o.ko);
       if(curLab)curLab.classList.remove('show');
@@ -534,8 +537,8 @@ $('drawBtn2').onclick=playDraw;
 /* 동요 — 노래 한 줄씩 불러주며 반짝(가라오케) + 줄 눌러 다시 듣기 */
 function romanizeLine(s){return s.split(' ').map(function(w){return romanize(w);}).join(' ');}
 var SONGS=[
-  {name:'곰 세 마리',emoji:'🐻',frames:['images/bear-family-a-t.png','images/bear-family-b-t.png'],
-   lineFrames:{2:['images/bear-dad-a-t.png','images/bear-dad-b-t.png'],3:['images/bear-mom-a-t.png','images/bear-mom-b-t.png'],4:['images/bear-baby-a-t.png','images/bear-baby-b-t.png']},
+  {name:'곰 세 마리',emoji:'🐻',frames:['images/bear-family-a-t.png?v=2','images/bear-family-b-t.png?v=2'],
+   lineFrames:{2:['images/bear-dad-a-t.png?v=2','images/bear-dad-b-t.png?v=2'],3:['images/bear-mom-a-t.png?v=2','images/bear-mom-b-t.png?v=2'],4:['images/bear-baby-a-t.png?v=2','images/bear-baby-b-t.png?v=2']},
    bg:'repeating-linear-gradient(180deg,#BFE3FF 0 30px,#7CC3FF 30px 60px)',lines:[
     ['곰 세 마리가 한 집에 있어','Ba chú gấu ở chung một nhà'],
     ['아빠 곰 엄마 곰 아기 곰','Gấu bố, gấu mẹ, gấu con'],
@@ -544,13 +547,13 @@ var SONGS=[
     ['아기 곰은 너무 귀여워','Gấu con thật dễ thương'],
     ['으쓱으쓱 잘한다','Lắc lư, giỏi quá!']
   ]},
-  {name:'나비야',emoji:'🦋',img:'images/butterfly-cute.png',frames:['images/butterfly-cute.png','images/butterfly-cute-b-t.png'],bg:'repeating-linear-gradient(180deg,#FFD8EC 0 30px,#FF9FD0 30px 60px)',lines:[
+  {name:'나비야',emoji:'🦋',img:'images/butterfly-cute.png',frames:['images/butterfly-cute.png','images/butterfly-cute-b-t.png?v=2'],bg:'repeating-linear-gradient(180deg,#FFD8EC 0 30px,#FF9FD0 30px 60px)',lines:[
     ['나비야 나비야 이리 날아 오너라','Bướm ơi bướm ơi, bay lại đây nào'],
     ['노랑 나비 흰 나비 춤을 추며 오너라','Bướm vàng bướm trắng, múa mà bay tới'],
     ['봄바람에 꽃잎도 방긋방긋 웃으며','Gió xuân, cánh hoa cũng mỉm cười'],
     ['참새도 짹짹짹 노래하며 춤춘다','Chim sẻ ríu rít, vừa hát vừa múa']
   ]},
-  {name:'작은 별',emoji:'⭐',frames:['images/star-kid-a-t.png','images/star-kid-b-t.png'],bg:'repeating-linear-gradient(180deg,#D9CCFF 0 30px,#A88BFF 30px 60px)',lines:[
+  {name:'작은 별',emoji:'⭐',frames:['images/star-kid-a-t.png?v=2','images/star-kid-b-t.png?v=2'],bg:'repeating-linear-gradient(180deg,#D9CCFF 0 30px,#A88BFF 30px 60px)',lines:[
     ['반짝반짝 작은 별','Ngôi sao nhỏ lấp lánh'],
     ['아름답게 비치네','Chiếu sáng thật đẹp xinh'],
     ['동쪽 하늘에서도','Ở bầu trời phía đông'],
@@ -558,7 +561,7 @@ var SONGS=[
     ['반짝반짝 작은 별','Ngôi sao nhỏ lấp lánh'],
     ['아름답게 비치네','Chiếu sáng thật đẹp xinh']
   ]},
-  {name:'머리 어깨 무릎 발',emoji:'🧒',frames:['images/kid-a-t.png','images/kid-b-t.png'],bg:'repeating-linear-gradient(180deg,#FFF3A8 0 30px,#B9E86E 30px 60px)',lines:[
+  {name:'머리 어깨 무릎 발',emoji:'🧒',frames:['images/kid-a-t.png?v=2','images/kid-b-t.png?v=2'],bg:'repeating-linear-gradient(180deg,#FFF3A8 0 30px,#B9E86E 30px 60px)',lines:[
     ['머리 어깨 무릎 발 무릎 발','Đầu, vai, đầu gối, chân'],
     ['머리 어깨 무릎 발 무릎 발','Đầu, vai, đầu gối, chân'],
     ['머리 어깨 발 무릎 발','Đầu, vai, chân, đầu gối'],

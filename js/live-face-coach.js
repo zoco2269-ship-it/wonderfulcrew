@@ -146,12 +146,18 @@
         bubble.textContent = good ? MSG.bubbleGood : MSG.bubbleLow;
         bubble.style.background = good ? 'rgba(91,208,138,0.95)' : 'rgba(244,178,62,0.95)';
         bubble.style.color = good ? '#0d3320' : '#3a2402';
-        // 입 오른쪽 옆에 (화면 밖으로 나가면 왼쪽으로)
         var bw = bubble.offsetWidth || 150;
-        var bx = p.x + 26;
-        if (bx + bw > p.rect.left + p.rect.width - 6) bx = p.x - bw - 26;
-        bubble.style.left = Math.round(Math.max(p.rect.left + 6, bx)) + 'px';
-        bubble.style.top = Math.round(p.y - 14) + 'px';
+        if (p.rect.width < 420) {
+          // 작은 화면(스몰톡 등): 얼굴 가리지 않게 영상 바로 아래 중앙에
+          bubble.style.left = Math.round(p.rect.left + (p.rect.width - bw) / 2) + 'px';
+          bubble.style.top = Math.round(p.rect.top + p.rect.height + 6) + 'px';
+        } else {
+          // 큰 화면(영상면접): 입 오른쪽 옆에 (화면 밖으로 나가면 왼쪽으로)
+          var bx = p.x + 26;
+          if (bx + bw > p.rect.left + p.rect.width - 6) bx = p.x - bw - 26;
+          bubble.style.left = Math.round(Math.max(p.rect.left + 6, bx)) + 'px';
+          bubble.style.top = Math.round(p.y - 14) + 'px';
+        }
         bubble.style.display = 'block';
       } catch(e) {}
     }

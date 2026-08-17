@@ -214,7 +214,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V21';
+ var CUR='V22';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -550,7 +550,7 @@ $('drawBtn2').onclick=playDraw;
 /* 동요 — 노래 한 줄씩 불러주며 반짝(가라오케) + 줄 눌러 다시 듣기 */
 function romanizeLine(s){return s.split(' ').map(function(w){return romanize(w);}).join(' ');}
 var SONGS=[
-  {name:'곰 세 마리',emoji:'🐻',frames:['images/bear-family-a-t.png?v=2','images/bear-family-b-t.png?v=2'],
+  {name:'곰 세 마리',emoji:'🐻',audio:'audio/song-bear-family.mp4',frames:['images/bear-family-a-t.png?v=2','images/bear-family-b-t.png?v=2'],
    lineFrames:{2:['images/bear-dad-a-t.png?v=2','images/bear-dad-b-t.png?v=2'],3:['images/bear-mom-a-t.png?v=2','images/bear-mom-b-t.png?v=2'],4:['images/bear-baby-a-t.png?v=2','images/bear-baby-b-t.png?v=2']},
    bg:'repeating-linear-gradient(180deg,#BFE3FF 0 30px,#7CC3FF 30px 60px)',lines:[
     ['곰 세 마리가 한 집에 있어','Ba chú gấu ở chung một nhà'],
@@ -639,7 +639,8 @@ var MELO={
    [['sol',.5],['la',.5],['sol',.5],['fa',.5],['mi',.5],['fa',.5],['re',.5],['mi',.5],['do',1]]
  ]}
 };
-function stopSong(){ singSeq++; stopDance(); if(songTimer){clearTimeout(songTimer);songTimer=null;} songTimers.forEach(clearTimeout);songTimers=[];
+var songAudio=null;
+function stopSong(){ singSeq++; stopDance(); try{if(songAudio){songAudio.pause();songAudio=null;}}catch(e){} if(songTimer){clearTimeout(songTimer);songTimer=null;} songTimers.forEach(clearTimeout);songTimers=[];
   songNodes.forEach(function(n){try{n.stop();}catch(e){}});songNodes=[];
   try{if(ttsA){ttsA.pause();ttsA=null;}}catch(e){}
   try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){} }
@@ -747,6 +748,20 @@ function playSongTTS(){
   })();
 }
 function playSong(){ stopSong(); ensureAudio();
+  var s0=SONGS[curSong];
+  if(s0.audio){
+    var mySeq=++singSeq;
+    songAudio=new Audio(s0.audio);
+    songAudio.play().catch(function(){});
+    startDance(0.55);
+    songAudio.addEventListener('loadedmetadata',function(){
+      if(mySeq!==singSeq)return;
+      var durS=songAudio.duration||60, n=s0.lines.length, seg=(durS-2)/n;
+      for(var i=0;i<n;i++){(function(i2){songTimers.push(setTimeout(function(){if(mySeq!==singSeq)return;highlight(i2);},Math.round((1+i2*seg)*1000)));})(i);}
+    });
+    songAudio.addEventListener('ended',function(){if(mySeq!==singSeq)return;stopDance();var ls=$('songLines').children;for(var k=0;k<ls.length;k++)ls[k].classList.remove('on');});
+    return;
+  }
   var m=MELO[SONGS[curSong].name];
   if(m){ if(!playMelody(m)) playSongTTS(); } else playSongTTS();
 }

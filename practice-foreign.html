@@ -47,12 +47,12 @@ section{padding:60px 5%;}
 .hub-img img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;}
 @media(max-width:900px){.hub-img{margin:-20px -18px 12px;}}
 /* 카드 상단 비주얼 통일 규격 — 모든 카드 동일 높이·동일 위치·꽉 채움 */
-.hub-vis{height:200px;margin:-24px -22px 14px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;}
+.hub-vis{height:200px;margin:-24px -22px 14px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;border-bottom:1.5px solid var(--gold-pale);}
 .hub-vis img.cover{width:100%;height:100%;object-fit:cover;display:block;}
 .hub-vis img.fit{width:100%;height:auto;display:block;}
 @media(max-width:900px){.hub-vis{margin:-20px -18px 12px;}}
 /* 허브(심플 사이트)와 동일한 분석 오버레이 카드 */
-.vis-analysis{position:relative;height:200px;border-radius:0;overflow:hidden;background:#1e2c48;margin:-24px -22px 14px;}
+.vis-analysis{position:relative;height:200px;border-radius:0;overflow:hidden;background:#1e2c48;margin:-24px -22px 14px;border-bottom:1.5px solid var(--gold-pale);}
 @media(max-width:900px){.vis-analysis{margin:-20px -18px 12px;}}
 .va-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 32%;display:block;}
 .va-corner{position:absolute;width:18px;height:18px;border:2px solid rgba(120,222,255,0.85);}
@@ -151,7 +151,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 <div class="hub-grid">
 
   <a class="hub-card" href="resume-guide.html">
-    <div class="hub-vis" style="padding:12px 14px;">
+    <div class="hub-vis" style="padding:12px 14px;background:#F7EFDD;">
       <div style="text-align:center;font-size:0.68rem;color:var(--gold);font-weight:700;line-height:1.5;margin-bottom:9px;">승무원의 기본은 미소!<br>활짝 웃는 사진으로 면접관에게 좋은 첫인상을 남기세요!</div>
       <div style="display:flex;gap:12px;justify-content:center;">
         <div style="height:118px;aspect-ratio:3/4;border:2px solid var(--gold);border-radius:4px;overflow:hidden;"><img src="images/photo-good.png" alt="좋은 예시 - 활짝 웃는 승무원 사진" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
@@ -165,18 +165,9 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </a>
 
   <a class="hub-card" href="smalltalk.html">
-    <div class="vis-analysis">
-      <img class="va-img" src="images/analysis-face.png" alt="CV Drop 스몰톡 실시간 얼굴 분석">
-      <div class="va-corner tl"></div><div class="va-corner tr"></div>
-      <div class="va-corner bl"></div><div class="va-corner br"></div>
-      <div class="va-rec"><i></i> 분석 중</div>
-      <div class="va-bubble">😊 미소 아주 좋아요!</div>
-      <div class="va-metrics">
-        <div class="va-m"><div class="l"><span>미소</span><span>100</span></div><div class="t"><i style="width:100%;background:#4FBE7A"></i></div></div>
-        <div class="va-m"><div class="l"><span>목소리톤</span><span>84</span></div><div class="t"><i style="width:84%;background:#4FBE7A"></i></div></div>
-        <div class="va-m"><div class="l"><span>정면응시</span><span>92</span></div><div class="t"><i style="width:92%;background:#4FBE7A"></i></div></div>
-        <div class="va-m"><div class="l"><span>눈깜빡임</span><span>73</span></div><div class="t"><i style="width:73%;background:linear-gradient(90deg,#E9A23E,#F4C23E)"></i></div></div>
-      </div>
+    <div class="hub-vis" style="flex-direction:row;gap:8px;padding:10px;">
+      <img src="images/blog-card-good.png" alt="웃을 때 - 미소 아주 좋아요 실시간 코칭" style="width:calc(50% - 4px);height:auto;border-radius:8px;display:block;">
+      <img src="images/blog-card-coach.png" alt="무표정일 때 - 입꼬리 조금만 더 실시간 코칭" style="width:calc(50% - 4px);height:auto;border-radius:8px;display:block;">
     </div>
     <div class="hub-num">Step 02</div>
     <div class="hub-title">CV Drop · 스몰톡</div>
@@ -213,7 +204,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </a>
 
   <a class="hub-card" href="word-shooting.html">
-    <div class="hub-vis" style="background:#FDFAF2;padding:12px 14px;text-align:center;">
+    <div class="hub-vis" style="background:#F7EFDD;padding:12px 14px;text-align:center;">
       <div style="font-family:'DM Serif Display',serif;font-size:0.9rem;color:var(--navy);margin-bottom:3px;">Word Shooting · Sentence Shooting</div>
       <div style="font-size:0.64rem;color:var(--text-muted);margin-bottom:8px;">랜덤 키워드가 주어집니다 — 즉석에서 영어로 발표하세요</div>
       <div style="display:flex;gap:6px;justify-content:center;margin-bottom:9px;">
@@ -238,7 +229,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </a>
 
   <a class="hub-card" href="english-test.html">
-    <div class="hub-vis" style="background:#FDFAF2;padding:14px 16px;">
+    <div class="hub-vis" style="background:#F7EFDD;padding:14px 16px;">
       <div style="text-align:center;margin-bottom:10px;">
         <div style="font-family:'Noto Serif KR',serif;font-size:0.95rem;font-weight:700;color:var(--navy);">영어 테스트</div>
         <div style="font-family:'DM Serif Display',serif;font-size:0.8rem;color:var(--gold);">English Test</div>
@@ -269,6 +260,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </a>
 
   <a class="hub-card" href="lecture.html">
+    <div class="hub-vis"><img class="fit" src="images/lecture-customer-questions.png" alt="강의 영상 - 고객 관련 질문들"></div>
     <div class="hub-num">Core</div>
     <div class="hub-title">강의 영상</div>
     <div class="hub-desc">현직 에미레이트 승무원·원더풀크루 코치의 단계별 강의 영상 전편.</div>

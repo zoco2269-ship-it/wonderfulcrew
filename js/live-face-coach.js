@@ -203,27 +203,50 @@
     }
 
     var loadAttempts = 0;
+    // ★ 격리 iframe 안에서 tasks-vision 로딩 — 페이지의 구버전 @mediapipe/face_mesh(전역 Module 오염)와
+    //   같은 전역에서 초기화되면 "Module.arguments has been replaced" abort 로 랜덤 실패 (스몰톡에서 재현·확정).
+    //   iframe 은 별도 전역이라 충돌 원천 차단. landmarker 객체는 부모에서 그대로 호출 가능.
+    var lmFrame = null;
+    function createLandmarkerIsolated(){
+      return new Promise(function(resolve, reject){
+        try {
+          if (lmFrame && lmFrame.parentNode) lmFrame.parentNode.removeChild(lmFrame);
+          lmFrame = document.createElement('iframe');
+          lmFrame.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden;';
+          lmFrame.setAttribute('aria-hidden', 'true');
+          var timer = setTimeout(function(){ reject(new Error('lm-frame timeout')); }, 45000);
+          document.body.appendChild(lmFrame);
+          // src 없는 same-origin iframe 은 append 직후 바로 접근 가능
+          setTimeout(function(){
+            try {
+              var w = lmFrame.contentWindow, d = lmFrame.contentDocument;
+              if (!w || !d || !d.body) { clearTimeout(timer); reject(new Error('lm-frame doc')); return; }
+              w.__lmDone = function(lm){ clearTimeout(timer); resolve(lm); };
+              w.__lmFail = function(e){ clearTimeout(timer); reject(e); };
+              var sc = d.createElement('script');
+              sc.type = 'module';
+              sc.textContent =
+                "import { FaceLandmarker, FilesetResolver } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs';\n" +
+                "(async function(){\n" +
+                "  try {\n" +
+                "    const fs = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/wasm');\n" +
+                "    const opts = gpu => ({ baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task', delegate: gpu ? 'GPU' : undefined }, runningMode: 'VIDEO', numFaces: 1, outputFaceBlendshapes: true });\n" +
+                "    let lm; try { lm = await FaceLandmarker.createFromOptions(fs, opts(true)); } catch(e) { lm = await FaceLandmarker.createFromOptions(fs, opts(false)); }\n" +
+                "    window.__lmDone(lm);\n" +
+                "  } catch(e) { window.__lmFail(e); }\n" +
+                "})();";
+              d.body.appendChild(sc);
+            } catch(e) { clearTimeout(timer); reject(e); }
+          }, 0);
+        } catch(e) { reject(e); }
+      });
+    }
     function ensureLandmarker(){
       if (landmarker || loadingStarted || loadFailed) return;
+      if (!document.body) return;
       loadingStarted = true;
       loadAttempts++;
-      import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs')
-        .then(function(mod){
-          return mod.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/wasm')
-            .then(function(fs){
-              var opts = function(gpu){
-                return {
-                  baseOptions: {
-                    modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',
-                    delegate: gpu ? 'GPU' : undefined
-                  },
-                  runningMode: 'VIDEO', numFaces: 1, outputFaceBlendshapes: true
-                };
-              };
-              return mod.FaceLandmarker.createFromOptions(fs, opts(true))
-                .catch(function(){ return mod.FaceLandmarker.createFromOptions(fs, opts(false)); });
-            });
-        })
+      createLandmarkerIsolated()
         .then(function(lm){ landmarker = lm; })
         .catch(function(){
           // 일시 네트워크·GPU 실패 대비 자동 재시도 (4초 간격, 최대 5회 후 패널 숨김)

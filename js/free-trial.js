@@ -598,6 +598,44 @@ function renderTrialBadge(containerId) {
       })();
     }
   }
+  // ★ 프로필 필수 게이트 (2026-08-17 추가) — 프로필 미입력 무료 사용자는 연습 페이지 사용 불가
+  //   (실사례: 가입만 하고 프로필 페이지를 안 거친 채 URL 직행으로 무료체험 사용)
+  //   유료·구독·어드민은 영향 없음. 로컬 플래그 없으면 서버 phone 컬럼까지 확인 후 판정.
+  function _requireProfileForFree(){
+    try {
+      if (typeof isAdmin === 'function' && isAdmin()) return;
+      if (localStorage.getItem('wc_paid') === 'true') return;
+      var _td = getTrialData();
+      if (_td.subscribed === true) return;
+      if (localStorage.getItem('wc_profile_done') === '1') return;
+      // 비로그인 상태로 연습 페이지 직행 → 로그인부터 (로그인 후 profile-setup 흐름으로 이어짐)
+      if (!localStorage.getItem('wc_user')) { location.replace('login.html'); return; }
+      // 로그인됨 + 로컬 플래그 없음 → 서버에서 프로필(phone) 확인, 없으면 profile-setup 강제
+      (async function(){
+        try {
+          var sb = null;
+          for (var i = 0; i < 80; i++) {
+            sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+            if (sb) break;
+            await new Promise(function(r){ setTimeout(r, 100); });
+          }
+          if (sb) {
+            var sess = await sb.auth.getSession();
+            var authId = sess && sess.data && sess.data.session && sess.data.session.user && sess.data.session.user.id;
+            if (authId) {
+              var pres = await sb.from('users').select('phone').eq('auth_id', authId).maybeSingle();
+              if (pres && pres.data && pres.data.phone) {
+                localStorage.setItem('wc_profile_done', '1');
+                return; // 다른 기기에서 이미 입력한 사용자 — 통과
+              }
+            }
+          }
+        } catch(e) {}
+        location.replace('profile-setup.html');
+      })();
+    } catch(e) {}
+  }
+  _requireProfileForFree();
   // 즉시 실행 — 페이지 진입 순간 카운트 차감
   _doCountNow();
   // server sync 는 별도 백그라운드 (잔재 청소·plan_active 검증)

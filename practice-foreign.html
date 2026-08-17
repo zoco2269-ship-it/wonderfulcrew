@@ -46,6 +46,24 @@ section{padding:60px 5%;}
 .hub-img{margin:-24px -22px 14px;overflow:hidden;}
 .hub-img img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;}
 @media(max-width:900px){.hub-img{margin:-20px -18px 12px;}}
+/* 허브(심플 사이트)와 동일한 분석 오버레이 카드 */
+.vis-analysis{position:relative;height:188px;border-radius:12px;overflow:hidden;background:#1e2c48;margin-bottom:16px;}
+.va-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 32%;display:block;}
+.va-corner{position:absolute;width:18px;height:18px;border:2px solid rgba(120,222,255,0.85);}
+.va-corner.tl{top:13%;left:27%;border-right:none;border-bottom:none;}
+.va-corner.tr{top:13%;right:27%;border-left:none;border-bottom:none;}
+.va-corner.bl{top:72%;bottom:auto;left:27%;border-right:none;border-top:none;}
+.va-corner.br{top:72%;bottom:auto;right:27%;border-left:none;border-top:none;}
+.va-rec{position:absolute;top:10px;left:11px;display:flex;align-items:center;gap:5px;font-family:'Noto Sans KR',sans-serif;font-size:0.56rem;font-weight:700;color:#fff;background:rgba(217,105,79,0.92);padding:2px 8px;border-radius:10px;}
+.va-rec i{width:5px;height:5px;border-radius:50%;background:#fff;animation:vablink 1s infinite;}
+@keyframes vablink{50%{opacity:0.25;}}
+.va-bubble{position:absolute;top:50%;left:58%;background:rgba(244,178,62,0.96);color:#3a2402;font-family:'Noto Sans KR',sans-serif;font-size:0.58rem;font-weight:800;padding:4px 8px;border-radius:10px;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,0.35);}
+.va-bubble::after{content:'';position:absolute;left:-6px;top:50%;transform:translateY(-50%);border:6px solid transparent;border-right-color:rgba(244,178,62,0.96);border-left:none;}
+.va-metrics{position:absolute;left:0;right:0;bottom:0;display:flex;gap:7px;padding:8px 10px 9px;background:linear-gradient(0deg,rgba(8,13,24,0.96),rgba(8,13,24,0));}
+.va-m{flex:1;}
+.va-m .l{font-family:'Noto Sans KR',sans-serif;font-size:0.44rem;color:rgba(255,255,255,0.82);display:flex;justify-content:space-between;gap:2px;white-space:nowrap;margin-bottom:3px;}
+.va-m .t{height:4px;border-radius:3px;background:rgba(255,255,255,0.16);overflow:hidden;}
+.va-m .t>i{display:block;height:100%;border-radius:3px;}
 .hub-title{font-family:"Noto Serif KR","DM Serif Display",serif;font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:8px;line-height:1.3;}
 .hub-desc{font-family:"Noto Sans KR",sans-serif;font-size:0.86rem;color:var(--text-mid);line-height:1.65;flex:1;}
 .hub-arrow{position:absolute;top:22px;right:22px;color:var(--gold);font-size:1.2rem;font-weight:700;}
@@ -134,7 +152,19 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </a>
 
   <a class="hub-card" href="smalltalk.html">
-    <div class="hub-img"><img src="images/small%20talk2.png" alt="CV Drop 스몰톡 연습"></div>
+    <div class="vis-analysis">
+      <img class="va-img" src="images/analysis-face.png" alt="CV Drop 스몰톡 실시간 얼굴 분석">
+      <div class="va-corner tl"></div><div class="va-corner tr"></div>
+      <div class="va-corner bl"></div><div class="va-corner br"></div>
+      <div class="va-rec"><i></i> 분석 중</div>
+      <div class="va-bubble">😊 미소 아주 좋아요!</div>
+      <div class="va-metrics">
+        <div class="va-m"><div class="l"><span>미소</span><span>100</span></div><div class="t"><i style="width:100%;background:#4FBE7A"></i></div></div>
+        <div class="va-m"><div class="l"><span>목소리톤</span><span>84</span></div><div class="t"><i style="width:84%;background:#4FBE7A"></i></div></div>
+        <div class="va-m"><div class="l"><span>정면응시</span><span>92</span></div><div class="t"><i style="width:92%;background:#4FBE7A"></i></div></div>
+        <div class="va-m"><div class="l"><span>눈깜빡임</span><span>73</span></div><div class="t"><i style="width:73%;background:linear-gradient(90deg,#E9A23E,#F4C23E)"></i></div></div>
+      </div>
+    </div>
     <div class="hub-num">Step 02</div>
     <div class="hub-title">CV Drop · 스몰톡</div>
     <div class="hub-desc">첫인사·짧은 대화로 자연스럽게 자기 어필. 실제 오픈데이 시작점입니다.</div>
@@ -142,7 +172,19 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </a>
 
   <a class="hub-card" href="video-practice.html">
-    <div class="hub-img"><img src="images/blog-live-face-video.png" alt="비디오 면접 실시간 AI 분석"></div>
+    <div class="vis-analysis">
+      <img class="va-img" src="images/small%20talk2.png" alt="비디오 면접 실시간 얼굴 분석">
+      <div class="va-corner tl"></div><div class="va-corner tr"></div>
+      <div class="va-corner bl"></div><div class="va-corner br"></div>
+      <div class="va-rec"><i></i> 분석 중</div>
+      <div class="va-bubble">😊 미소 아주 좋아요!</div>
+      <div class="va-metrics">
+        <div class="va-m"><div class="l"><span>미소</span><span>96</span></div><div class="t"><i style="width:96%;background:#4FBE7A"></i></div></div>
+        <div class="va-m"><div class="l"><span>목소리톤</span><span>88</span></div><div class="t"><i style="width:88%;background:#4FBE7A"></i></div></div>
+        <div class="va-m"><div class="l"><span>정면응시</span><span>95</span></div><div class="t"><i style="width:95%;background:#4FBE7A"></i></div></div>
+        <div class="va-m"><div class="l"><span>기울기</span><span>90</span></div><div class="t"><i style="width:90%;background:#4FBE7A"></i></div></div>
+      </div>
+    </div>
     <div class="hub-num">Step 03</div>
     <div class="hub-title">비디오 면접</div>
     <div class="hub-desc">Emirates·Qatar 등 온라인 영상 인터뷰. 자기소개·지원 동기 30~60초 답변 연습.</div>

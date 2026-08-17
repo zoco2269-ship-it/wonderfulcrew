@@ -48,6 +48,12 @@ export default async function handler(req, res) {
       body: JSON.stringify(body)
     });
     const data = await response.json();
+    // 신형 모델은 응답 앞에 thinking 블록이 붙을 수 있음 → 기존 페이지들의 content[0].text 파싱이 깨짐.
+    // 텍스트 블록만 남겨 하위호환 유지 (텍스트가 하나도 없으면 원본 유지).
+    if (data && Array.isArray(data.content)) {
+      const textBlocks = data.content.filter(b => b && b.type === 'text');
+      if (textBlocks.length) data.content = textBlocks;
+    }
     res.status(200).json(data);
   } catch(e) {
     res.status(500).json({ error: e.message });

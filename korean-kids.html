@@ -209,10 +209,11 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .note{text-align:center;font-size:0.8rem;color:#98a0b8;margin-top:28px;font-weight:700;line-height:1.6;}
 </style>
 <script src="tts-map.js?v=3"></script>
+<script src="sing-map.js?v=1"></script>
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V18';
+ var CUR='V19';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -676,17 +677,51 @@ function getSingBus(){
   singBus=inp;return inp;
 }
 function playMelody(m){
-  /* 남자 음절 mp3 사용 전면 중단 — 멜로디 반주 + 원래 여자 목소리(실시간)로만 */
+  /* 진짜 노래: 여성(Heami) 음절 wav를 멜로디 음정에 맞게 피치 조절해 부름.
+     음절 버퍼 로드 실패 시 기존 방식(멜로디+한 줄씩 읽기)으로 자동 폴백.
+     ※ 남자 목소리였던 구 syl-*.mp3 는 사용하지 않음 — syl2-*.wav(여성 검증) 전용. */
   if(!ensureAudio())return false;
   var s=SONGS[curSong], mySeq=++singSeq;
   startDance(m.beat);
-  var t=audioCtx.currentTime+0.12, off=0.12;
-  m.lines.forEach(function(line,li){
-    (function(so,li2){songTimers.push(setTimeout(function(){if(mySeq!==singSeq)return;highlight(li2);if(s.lines[li2])say(s.lines[li2][0]);},Math.round(so*1000)));})(off,li);
-    line.forEach(function(nb){var dur=nb[1]*m.beat;playNote(NOTE[nb[0]]||440,t,dur);t+=dur;off+=dur;});
-    off+=m.beat*0.35;t+=m.beat*0.35;
+  var lyric=s.lines.map(function(l){return l[0].replace(/\s/g,'').split('');});
+  var canSing=!!window.SING && lyric.every(function(chs,i){return m.lines[i]&&chs.length===m.lines[i].length&&chs.every(function(c){return SING[c];});});
+  var bufs={};
+  var loadAll=Promise.resolve();
+  if(canSing){
+    var uniq={};lyric.forEach(function(chs){chs.forEach(function(c){uniq[c]=1;});});
+    loadAll=Promise.all(Object.keys(uniq).map(function(c){
+      return fetch('audio/tts/'+SING[c].f).then(function(r){if(!r.ok)throw 0;return r.arrayBuffer();})
+        .then(function(b){return new Promise(function(res,rej){audioCtx.decodeAudioData(b,res,rej);});})
+        .then(function(buf){bufs[c]=buf;}).catch(function(){});
+    }));
+  }
+  loadAll.then(function(){
+    if(mySeq!==singSeq)return;
+    var sing=canSing&&lyric.every(function(chs){return chs.every(function(c){return bufs[c];});});
+    var t=audioCtx.currentTime+0.15, off=0.15;
+    m.lines.forEach(function(line,li){
+      (function(so,li2){songTimers.push(setTimeout(function(){if(mySeq!==singSeq)return;highlight(li2);if(!sing&&s.lines[li2])say(s.lines[li2][0]);},Math.round(so*1000)));})(off,li);
+      line.forEach(function(nb,ni){
+        var dur=nb[1]*m.beat, freq=NOTE[nb[0]]||440;
+        playNote(freq,t,dur,sing?0.05:0.13);
+        if(sing){
+          var c=lyric[li][ni], buf=bufs[c];
+          if(buf){
+            var src=audioCtx.createBufferSource();src.buffer=buf;
+            var rate=(freq/2)/(SING[c].hz||175);
+            src.playbackRate.value=Math.max(0.55,Math.min(1.7,rate));
+            var g=audioCtx.createGain();g.gain.setValueAtTime(0.95,t);
+            src.connect(g);g.connect(getSingBus());
+            try{src.start(t);src.stop(t+Math.max(dur*1.08,0.2));}catch(e){}
+            songNodes.push(src);
+          }
+        }
+        t+=dur;off+=dur;
+      });
+      off+=m.beat*0.35;t+=m.beat*0.35;
+    });
+    songTimers.push(setTimeout(function(){if(mySeq!==singSeq)return;var ls=$('songLines').children;for(var k=0;k<ls.length;k++)ls[k].classList.remove('on');},Math.round(off*1000)+400));
   });
-  songTimers.push(setTimeout(function(){if(mySeq!==singSeq)return;var ls=$('songLines').children;for(var k=0;k<ls.length;k++)ls[k].classList.remove('on');},Math.round(off*1000)+400));
   return true;
 }
 function playSongTTS(){

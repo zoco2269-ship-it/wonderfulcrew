@@ -210,11 +210,11 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 </style>
 <script src="tts-map.js?v=3"></script>
 <script src="sing-map.js?v=1"></script>
-<script src="drawsp.js?v=1"></script>
+<script src="drawsp.js?v=2"></script>
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V22';
+ var CUR='V23';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}

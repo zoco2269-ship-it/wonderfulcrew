@@ -26,7 +26,9 @@
       gazeOff: '👀 Look at the camera',
       tiltOff: '📐 Keep your head straight',
       voiceLow: '🎙 Speak up a little',
-      good: '✨ Great! Keep it up'
+      good: '✨ Great! Keep it up',
+      bubbleLow: '😊 Lift those corners!',
+      bubbleGood: '😊 Great smile!'
     } : {
       title: 'AI 실시간 분석',
       smile: '미소', gaze: '시선', tilt: '기울기', voice: '목소리',
@@ -35,7 +37,9 @@
       gazeOff: '👀 시선을 카메라에 두세요',
       tiltOff: '📐 고개를 반듯하게',
       voiceLow: '🎙 목소리를 조금 더 크게',
-      good: '✨ 아주 좋아요! 유지하세요'
+      good: '✨ 아주 좋아요! 유지하세요',
+      bubbleLow: '😊 입꼬리 올려주세요!',
+      bubbleGood: '😊 미소 아주 좋아요!'
     };
 
     var videoEl = null, landmarker = null, loadingStarted = false, loadFailed = false;
@@ -103,6 +107,53 @@
       msgEl = document.getElementById('wcfc-msg');
       dotEl = document.getElementById('wcfc-dot');
       if (audioFailed) { var vr = document.getElementById('wcfc-voicerow'); if (vr) vr.style.display = 'none'; }
+    }
+
+    // 입꼬리 옆 말풍선 — 녹화 영상에는 안 남는 화면 전용 레이어
+    var bubble = null;
+    function ensureBubble(){
+      if (bubble) return;
+      bubble = document.createElement('div');
+      bubble.id = 'wc-face-bubble';
+      bubble.style.cssText = 'position:fixed;z-index:9001;display:none;pointer-events:none;' +
+        'font-family:"Noto Sans KR",sans-serif;font-size:0.78rem;font-weight:800;white-space:nowrap;' +
+        'padding:6px 12px;border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,0.3);transition:opacity .2s;';
+      document.body.appendChild(bubble);
+    }
+    function hideBubble(){ try { if (bubble) bubble.style.display = 'none'; } catch(e) {} }
+    // 정규화 좌표(0~1) → 화면 픽셀 (object-fit:cover + scaleX(-1) 미러 반영)
+    function mouthToScreen(nx, ny){
+      try {
+        var r = videoEl.getBoundingClientRect();
+        var vw = videoEl.videoWidth, vh = videoEl.videoHeight;
+        if (!vw || !vh || !r.width) return null;
+        var scale = Math.max(r.width / vw, r.height / vh);
+        var dw = vw * scale, dh = vh * scale;
+        var ox = (dw - r.width) / 2, oy = (dh - r.height) / 2;
+        var px = nx * dw - ox, py = ny * dh - oy;
+        px = r.width - px; // 미러
+        if (px < 0 || px > r.width || py < 0 || py > r.height) return null;
+        return { x: r.left + px, y: r.top + py, rect: r };
+      } catch(e) { return null; }
+    }
+    function updateBubble(lm, smileVal){
+      try {
+        ensureBubble();
+        var good = smileVal >= 60, low = smileVal < 40;
+        if ((!good && !low) || !lm || !lm[13]) { hideBubble(); return; }
+        var p = mouthToScreen(lm[13].x, lm[13].y);
+        if (!p) { hideBubble(); return; }
+        bubble.textContent = good ? MSG.bubbleGood : MSG.bubbleLow;
+        bubble.style.background = good ? 'rgba(91,208,138,0.95)' : 'rgba(244,178,62,0.95)';
+        bubble.style.color = good ? '#0d3320' : '#3a2402';
+        // 입 오른쪽 옆에 (화면 밖으로 나가면 왼쪽으로)
+        var bw = bubble.offsetWidth || 150;
+        var bx = p.x + 26;
+        if (bx + bw > p.rect.left + p.rect.width - 6) bx = p.x - bw - 26;
+        bubble.style.left = Math.round(Math.max(p.rect.left + 6, bx)) + 'px';
+        bubble.style.top = Math.round(p.y - 14) + 'px';
+        bubble.style.display = 'block';
+      } catch(e) {}
     }
 
     // 깜빡이는 점 (전역 1개 타이머)
@@ -217,6 +268,7 @@
         if (!res || !res.faceBlendshapes || !res.faceBlendshapes[0]) {
           if (msgEl) msgEl.textContent = MSG.noFace;
           setBar('smile', 0); setBar('gaze', 0); setBar('tilt', 0);
+          hideBubble();
           return;
         }
         var b = {};
@@ -246,6 +298,7 @@
 
         setBar('smile', ema.smile); setBar('gaze', ema.gaze); setBar('tilt', ema.tilt);
         if (ema.voice != null) setBar('voice', ema.voice);
+        updateBubble(res.faceLandmarks && res.faceLandmarks[0], Math.round(ema.smile));
 
         if (msgEl) {
           var s = Math.round(ema.smile), g = Math.round(ema.gaze), t = Math.round(ema.tilt);
@@ -271,6 +324,7 @@
           if (!analyzeTimer) analyzeTimer = setInterval(analyze, 350);
         } else {
           if (box) box.style.display = 'none';
+          hideBubble();
           if (analyzeTimer) { clearInterval(analyzeTimer); analyzeTimer = null; }
           ema = { smile: null, gaze: null, tilt: null, voice: null };
           if (analyser) stopAudio();

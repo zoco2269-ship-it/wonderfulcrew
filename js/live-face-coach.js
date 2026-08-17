@@ -149,9 +149,14 @@
         bubble.style.background = good ? 'rgba(91,208,138,0.95)' : 'rgba(244,178,62,0.95)';
         bubble.style.color = good ? '#0d3320' : '#3a2402';
         var bw = bubble.offsetWidth || 150, bhh = bubble.offsetHeight || 30;
-        // 모든 화면: 영상 "안쪽" 하단 중앙 (얼굴 아래, 화면 밖으로 안 나감)
         bubble.style.left = Math.round(p.rect.left + (p.rect.width - bw) / 2) + 'px';
-        bubble.style.top = Math.round(p.rect.top + p.rect.height - bhh - 12) + 'px';
+        if (p.rect.width < 420) {
+          // 작은 화면(스몰톡): 영상 바로 아래 — 다크 배경 위라 눈에 잘 띔
+          bubble.style.top = Math.round(p.rect.top + p.rect.height + 6) + 'px';
+        } else {
+          // 큰 화면(비디오면접): 영상 "안쪽" 중간 하단 (얼굴 아래) — 아래 버튼들과 안 겹침
+          bubble.style.top = Math.round(p.rect.top + p.rect.height - bhh - 14) + 'px';
+        }
         bubble.style.display = 'block';
       } catch(e) {}
     }

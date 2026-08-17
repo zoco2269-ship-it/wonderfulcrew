@@ -210,10 +210,11 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 </style>
 <script src="tts-map.js?v=3"></script>
 <script src="sing-map.js?v=1"></script>
+<script src="drawsp.js?v=1"></script>
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V20';
+ var CUR='V21';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -501,20 +502,31 @@ function runDraw(){
   function drawObject(){
     if(token!==drawSeq)return;
     if(oi>=built.length){ pen.style.opacity='0'; fin.classList.add('show'); hots.innerHTML=''; enableDrawTap(); return; }
-    var ob=built[oi], o=ob.o, dur=o.bg?2200:2600, rows=o.bg?3:4, t0=null;
+    var ob=built[oi], o=ob.o, dur=o.bg?2200:2600, t0=null;
+    var sp=o.sp||null, N=sp?sp.length:(o.bg?3:4);
+    var brc=ob.box.getBoundingClientRect(), bw=brc.width||1, bh=brc.height||1;
     pen.style.opacity='1';
     (function fr(now){
       if(token!==drawSeq)return;
       if(t0==null)t0=now;
-      var p=Math.min(1,(now-t0)/dur);
-      // ★ 색칠이 연필 끝을 정확히 따라옴 — 연필이 지나간 데까지만 나타남 (줄 단위 L자 클립)
-      var N=rows, pr=Math.min(p*N,N-0.0001), r=Math.floor(pr), f=pr-r;
-      var rTop=r/N*100, rBot=(r+1)/N*100, ltr=(r%2===0), xw=ltr?f*100:(1-f)*100;
+      var p=Math.max(0,Math.min(1,(now-t0)/dur));
+      // ★ 색칠이 연필 끝을 따라오되, 각 줄에서 사물의 실제 폭만 쓸고 지나감 (윤곽 스팬 기반)
+      var pr=Math.min(p*N,N-0.0001), r=Math.floor(pr), f=pr-r;
+      var s0=(sp&&sp[r])?sp[r][0]:0, s1=(sp&&sp[r])?sp[r][1]:1;
+      var ltr=(r%2===0), xw=ltr?s0+(s1-s0)*f:s1-(s1-s0)*f;
       if(p>=1){ ob.box.style.clipPath='none'; }
-      else if(ltr){ ob.box.style.clipPath='polygon(0% 0%,100% 0%,100% '+rTop+'%,'+xw+'% '+rTop+'%,'+xw+'% '+rBot+'%,0% '+rBot+'%)'; }
-      else { ob.box.style.clipPath='polygon(0% 0%,100% 0%,100% '+rBot+'%,'+xw+'% '+rBot+'%,'+xw+'% '+rTop+'%,0% '+rTop+'%)'; }
-      pen.style.left=(ob.b[0]+xw/100*ob.w)+'%';
-      pen.style.top=(ob.b[1]+rBot/100*ob.h)+'%';
+      else{
+        var rh=bh/N, pth='';
+        for(var i=0;i<r;i++){
+          var ax=(sp?sp[i][0]:0)*bw, bx=(sp?sp[i][1]:1)*bw;
+          pth+='M'+ax.toFixed(1)+' '+(i*rh).toFixed(1)+'H'+bx.toFixed(1)+'V'+((i+1)*rh+0.6).toFixed(1)+'H'+ax.toFixed(1)+'Z';
+        }
+        var ca=(ltr?s0:xw)*bw, cb=(ltr?xw:s1)*bw;
+        pth+='M'+ca.toFixed(1)+' '+(r*rh).toFixed(1)+'H'+cb.toFixed(1)+'V'+((r+1)*rh).toFixed(1)+'H'+ca.toFixed(1)+'Z';
+        ob.box.style.clipPath="path('"+pth+"')";
+      }
+      pen.style.left=(ob.b[0]+xw*ob.w)+'%';
+      pen.style.top=(ob.b[1]+((r+1)/N)*ob.h)+'%';
       if(p<1){requestAnimationFrame(fr);return;}
       say(o.ko);
       if(curLab)curLab.classList.remove('show');
@@ -528,8 +540,8 @@ function runDraw(){
 }
 function playDraw(){
   drawTimers.forEach(clearTimeout);drawTimers=[];drawSeq++;
-  drawData=DRAWSCENES[curDraw].boxes.map(function(o){
-    return {ko:o.ko,vi:o.vi,bg:o.bg,b:o.b,xp:(o.b[0]+o.b[2])/2,yp:(o.b[1]+o.b[3])/2};
+  drawData=DRAWSCENES[curDraw].boxes.map(function(o,oidx){
+    return {ko:o.ko,vi:o.vi,bg:o.bg,b:o.b,sp:(window.DRAWSP&&DRAWSP[curDraw])?DRAWSP[curDraw][oidx]:null,xp:(o.b[0]+o.b[2])/2,yp:(o.b[1]+o.b[3])/2};
   });
   runDraw();
 }

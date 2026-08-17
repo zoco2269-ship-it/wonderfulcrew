@@ -49,6 +49,21 @@ module.exports = async function(req, res) {
       });
     }
 
+    // set_payment_status — 결제 row 1건의 status 수동 정정 (매출 통계 정확화용)
+    // 대상 사용자의 row 만 수정 가능. users/subscriptions 는 건드리지 않음.
+    if (action === 'set_payment_status') {
+      const { paymentId, newStatus } = req.body || {};
+      const ALLOWED = ['completed', 'failed', 'pending', 'refunded', 'cancelled'];
+      if (!paymentId || ALLOWED.indexOf(newStatus) === -1) {
+        return res.status(400).json({ error: 'paymentId + newStatus(' + ALLOWED.join('/') + ') required' });
+      }
+      const owns = allPayments.some(p => p.id === paymentId);
+      if (!owns) return res.status(404).json({ error: 'payment not found for target user', paymentId });
+      const { error: upErr } = await sb.from('payments').update({ status: newStatus }).eq('id', paymentId);
+      if (upErr) return res.status(500).json({ error: upErr.message });
+      return res.json({ ok: true, paymentId, newStatus });
+    }
+
     // deactivate — 환불·구독 취소 처리 (plan_active=false + subscriptions cancelled + payments refunded)
     if (action === 'deactivate') {
       const now = new Date().toISOString();

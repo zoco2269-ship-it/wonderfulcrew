@@ -148,10 +148,10 @@
         bubble.textContent = good ? MSG.bubbleGood : MSG.bubbleLow;
         bubble.style.background = good ? 'rgba(91,208,138,0.95)' : 'rgba(244,178,62,0.95)';
         bubble.style.color = good ? '#0d3320' : '#3a2402';
-        var bw = bubble.offsetWidth || 150;
-        // 모든 화면: 영상 하단 중앙에 (입 옆 배치는 걸리적거린다는 피드백으로 통일)
+        var bw = bubble.offsetWidth || 150, bhh = bubble.offsetHeight || 30;
+        // 모든 화면: 영상 "안쪽" 하단 중앙 (얼굴 아래, 화면 밖으로 안 나감)
         bubble.style.left = Math.round(p.rect.left + (p.rect.width - bw) / 2) + 'px';
-        bubble.style.top = Math.round(p.rect.top + p.rect.height + 6) + 'px';
+        bubble.style.top = Math.round(p.rect.top + p.rect.height - bhh - 12) + 'px';
         bubble.style.display = 'block';
       } catch(e) {}
     }

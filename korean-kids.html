@@ -213,7 +213,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V19';
+ var CUR='V20';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -684,7 +684,7 @@ function playMelody(m){
   var s=SONGS[curSong], mySeq=++singSeq;
   startDance(m.beat);
   var lyric=s.lines.map(function(l){return l[0].replace(/\s/g,'').split('');});
-  var canSing=!!window.SING && lyric.every(function(chs,i){return m.lines[i]&&chs.length===m.lines[i].length&&chs.every(function(c){return SING[c];});});
+  var canSing=false && !!window.SING && lyric.every(function(chs,i){return m.lines[i]&&chs.length===m.lines[i].length&&chs.every(function(c){return SING[c];});});
   var bufs={};
   var loadAll=Promise.resolve();
   if(canSing){

@@ -218,7 +218,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V34';
+ var CUR='V35';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -530,7 +530,7 @@ function runDraw(){
   // 한 획씩 순서대로 — 같은 rAF가 그 획의 stroke와 연필 위치를 동시에 제어 → 연필 끝이 정확히 선을 그림
   function drawObject(){
     if(token!==drawSeq)return;
-    if(oi>=built.length){ pen.style.opacity='0'; hots.innerHTML=''; enableDrawTap(); return; }
+    if(oi>=built.length){ pen.style.opacity='0'; fin.classList.add('show'); hots.innerHTML=''; enableDrawTap(); return; }
     var ob=built[oi], o=ob.o, pi=0;
     // 사물 하나당 총 그리는 시간 고정 — 복잡한 그림(획 많음)도 같은 시간에 끝나게 획별 시간 배분
     var OBJMS=3200, totalLen=ob.pels.reduce(function(s,pe){return s+(pe.getTotalLength()||1);},0)||1;

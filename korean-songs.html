@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Learn Korean with Songs · WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--plum:#7A3E8E;--plum-d:#5A2C6B;--peach:#FF9E6D;--sand:#FBF6FB;--ink:#2A2135;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Poppins','Noto Sans KR',sans-serif;background:var(--sand);color:var(--ink);}
+.hero{background:linear-gradient(135deg,#7A3E8E,#5A2C6B);color:#fff;padding:18px 20px;}
+.hero .top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.logo{font-weight:800;font-size:1.25rem;}
+.logo span{color:#FFC94D;}
+.tag{font-size:0.74rem;opacity:0.85;margin-top:2px;}
+.langs{display:flex;gap:6px;flex-wrap:wrap;}
+.langs button{background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:18px;padding:5px 11px;font-size:0.78rem;cursor:pointer;font-family:inherit;}
+.langs button.on{background:#FFC94D;color:#5A2C6B;font-weight:700;border-color:#FFC94D;}
+.wrap{max-width:760px;margin:0 auto;padding:16px 16px 40px;}
+.songs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:14px 0 18px;}
+.songs button{background:#fff;border:1.5px solid #EAD9F0;color:var(--plum);border-radius:20px;padding:9px 16px;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;}
+.songs button.on{background:var(--plum);color:#fff;border-color:var(--plum);}
+.card{background:#fff;border-radius:20px;box-shadow:0 16px 44px -24px rgba(122,62,142,0.5);overflow:hidden;}
+.songhead{padding:18px 20px 6px;border-bottom:1px solid #F0E8F4;}
+.songhead h2{font-size:1.2rem;color:var(--plum);}
+.songhead .meta{font-size:0.78rem;color:#9a8fa5;margin-top:2px;}
+.playall{margin:12px 20px 4px;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#FF9E6D,#FF7E5A);color:#fff;border:none;border-radius:22px;padding:10px 20px;font-weight:800;font-family:inherit;cursor:pointer;font-size:0.9rem;}
+.lyrics{padding:8px 16px 18px;}
+.line{padding:11px 14px;border-radius:12px;cursor:pointer;transition:background .15s;margin-bottom:6px;}
+.line:hover{background:#FAF3FC;}
+.line.on{background:#F3E6F8;}
+.line .ko{font-weight:700;font-size:1.05rem;color:var(--ink);}
+.line .ro{font-size:0.82rem;color:#9a8fa5;margin-top:2px;}
+.line .tr{font-size:0.86rem;color:#6A5F75;margin-top:2px;}
+.foot{text-align:center;font-size:0.76rem;color:#9a8fa5;margin-top:18px;line-height:1.7;}
+.foot a{color:var(--plum);}
+.note{text-align:center;font-size:0.8rem;color:#9a8fa5;margin:10px 0;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="top">
+    <div>
+      <div class="logo">Learn Korean with <span>Songs</span></div>
+      <div class="tag">Sing along · pronunciation · your language</div>
+    </div>
+    <div class="langs" id="langs"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="songs" id="songList"></div>
+  <div class="card">
+    <div class="songhead"><h2 id="sTitle"></h2><div class="meta" id="sMeta"></div></div>
+    <button class="playall" id="playAll">▶ Play whole song</button>
+    <div class="lyrics" id="lyrics"></div>
+  </div>
+  <div class="note">🔊 Tap any line to hear it. Tap 🔊 "Play whole song" to sing along.</div>
+  <p class="foot">Learn Korean with Songs · WonderfulCrew<br>Traditional Korean songs (public domain) · <a href="korean-plans.html">Go Premium</a></p>
+</div>
+
+<script>
+var LANGS=[
+  {c:'en',f:'🇺🇸',n:'English'},{c:'vi',f:'🇻🇳',n:'Tiếng Việt'},{c:'ja',f:'🇯🇵',n:'日本語'},
+  {c:'zh',f:'🇨🇳',n:'中文'},{c:'id',f:'🇮🇩',n:'Indonesia'},{c:'es',f:'🇪🇸',n:'Español'}
+];
+/* 전통 한국 노래 (저작권 프리 민요/전래) — 각 줄: [한국어, 로마자, {en,vi,ja,zh,id,es}] */
+var SONGS=[
+  {title:'아리랑 (Arirang)', meta:'Korea’s most beloved folk song', lines:[
+    ['아리랑 아리랑 아라리요','arirang arirang arariyo',{en:'Arirang, Arirang, Arariyo',vi:'Arirang, Arirang, Arariyo',ja:'アリラン アリラン アラリヨ',zh:'阿里郎 阿里郎 阿拉里哟',id:'Arirang, Arirang, Arariyo',es:'Arirang, Arirang, Arariyo'}],
+    ['아리랑 고개로 넘어간다','arirang gogaero neomeoganda',{en:'Crossing over Arirang hill',vi:'Vượt qua ngọn đồi Arirang',ja:'アリラン峠を越えていく',zh:'翻越阿里郎山岭',id:'Melewati bukit Arirang',es:'Cruzando la colina Arirang'}],
+    ['나를 버리고 가시는 님은','nareul beorigo gasineun nimeun',{en:'My love who leaves me behind',vi:'Người yêu bỏ tôi mà đi',ja:'私を捨てて行く人は',zh:'抛下我离去的爱人',id:'Kekasih yang meninggalkanku',es:'Mi amor que me abandona'}],
+    ['십리도 못 가서 발병 난다','simnido mot gaseo balbyeong nanda',{en:'Won’t walk ten li before their feet ache',vi:'Chưa đi được mấy dặm chân đã đau',ja:'十里も行けずに足が痛くなる',zh:'走不了十里脚就会疼',id:'Belum jauh berjalan kaki sudah sakit',es:'No andará ni diez li sin que le duelan los pies'}]
+  ]},
+  {title:'반달 (Half Moon)', meta:'A classic Korean children’s song', lines:[
+    ['푸른 하늘 은하수 하얀 쪽배엔','pureun haneul eunhasu hayan jjokbaeen',{en:'On the blue sky’s Milky Way, a little white boat',vi:'Trên dải Ngân Hà trời xanh, chiếc thuyền trắng nhỏ',ja:'青い空の天の川 白い小舟には',zh:'蓝天银河上 白色的小船',id:'Di Bima Sakti langit biru, perahu putih kecil',es:'En la Vía Láctea del cielo azul, un barquito blanco'}],
+    ['계수나무 한 나무 토끼 한 마리','gyesunamu han namu tokki han mari',{en:'One cinnamon tree, one rabbit',vi:'Một cây quế, một chú thỏ',ja:'桂の木一本 うさぎ一匹',zh:'一棵桂树 一只兔子',id:'Satu pohon kayu manis, satu kelinci',es:'Un árbol de canela, un conejo'}],
+    ['돛대도 아니 달고 삿대도 없이','dotdaedo ani dalgo satdaedo eopsi',{en:'With no mast and no oar',vi:'Không cột buồm cũng không mái chèo',ja:'帆柱も立てず 櫂もなく',zh:'不挂桅杆也没有桨',id:'Tanpa tiang layar dan tanpa dayung',es:'Sin mástil y sin remo'}],
+    ['가기도 잘도 간다 서쪽 나라로','gagido jaldo ganda seojjok nararo',{en:'It sails so well, toward the western land',vi:'Vẫn đi thật êm, về phía trời tây',ja:'よくも進むよ 西の国へ',zh:'却行得很好 驶向西方国度',id:'Berlayar dengan baik, menuju negeri barat',es:'Navega muy bien, hacia la tierra del oeste'}]
+  ]},
+  {title:'고향의 봄 (Spring in My Hometown)', meta:'A cherished song of home', lines:[
+    ['나의 살던 고향은 꽃 피는 산골','naui saldeon gohyangeun kkot pineun sangol',{en:'My hometown was a flowering mountain village',vi:'Quê hương tôi là làng núi nở đầy hoa',ja:'私が住んでいた故郷は花咲く山里',zh:'我住过的故乡是开满花的山村',id:'Kampung halamanku desa gunung berbunga',es:'Mi pueblo natal era un valle de flores'}],
+    ['복숭아꽃 살구꽃 아기 진달래','boksunga kkot salgu kkot agi jindallae',{en:'Peach blossoms, apricot blossoms, baby azaleas',vi:'Hoa đào, hoa mơ, hoa đỗ quyên nhỏ',ja:'桃の花 杏の花 小さなツツジ',zh:'桃花 杏花 小杜鹃花',id:'Bunga persik, aprikot, azalea kecil',es:'Flores de durazno, de albaricoque, azaleas'}],
+    ['울긋불긋 꽃대궐 차리인 동네','ulgutbulgut kkotdaegwol charirin dongne',{en:'A village adorned like a palace of flowers',vi:'Ngôi làng rực rỡ như cung điện hoa',ja:'色とりどりの花の御殿の村',zh:'五彩缤纷如花宫殿的村庄',id:'Desa dihias bagai istana bunga',es:'Un pueblo adornado como palacio de flores'}],
+    ['그 속에서 놀던 때가 그립습니다','geu sogeseo nolden ttaega geuripseumnida',{en:'I miss the days I played there',vi:'Tôi nhớ những ngày chơi đùa nơi ấy',ja:'その中で遊んだ頃が懐かしい',zh:'怀念在那里玩耍的时光',id:'Aku rindu masa bermain di sana',es:'Extraño los días en que jugaba allí'}]
+  ]}
+];
+var lang='en', cur=0, playTimer=null, playIdx=0;
+
+function renderLangs(){
+  var el=document.getElementById('langs');el.innerHTML='';
+  LANGS.forEach(function(L){var b=document.createElement('button');b.textContent=L.f+' '+L.n;b.className=(L.c===lang?'on':'');
+    b.onclick=function(){lang=L.c;renderLangs();renderSong();};el.appendChild(b);});
+}
+function renderSongList(){
+  var el=document.getElementById('songList');el.innerHTML='';
+  SONGS.forEach(function(s,i){var b=document.createElement('button');b.textContent=s.title.split(' (')[0];b.className=(i===cur?'on':'');
+    b.onclick=function(){stopPlay();cur=i;renderSongList();renderSong();};el.appendChild(b);});
+}
+function renderSong(){
+  var s=SONGS[cur];
+  document.getElementById('sTitle').textContent=s.title;
+  document.getElementById('sMeta').textContent=s.meta;
+  var ly=document.getElementById('lyrics');ly.innerHTML='';
+  s.lines.forEach(function(ln,i){
+    var d=document.createElement('div');d.className='line';d.dataset.i=i;
+    d.innerHTML='<div class="ko">'+esc(ln[0])+'</div><div class="ro">'+esc(ln[1])+'</div><div class="tr">'+esc((ln[2]&&ln[2][lang])||ln[2].en)+'</div>';
+    d.onclick=function(){highlight(i);speak(ln[0]);};
+    ly.appendChild(d);
+  });
+}
+function highlight(i){var ls=document.getElementById('lyrics').children;for(var k=0;k<ls.length;k++)ls[k].classList.toggle('on',k===i);}
+function esc(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+function speak(t,cb){try{if('speechSynthesis' in window){speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';u.rate=0.86;var vs=speechSynthesis.getVoices();var v=vs.find(function(x){return x.lang==='ko-KR';});if(v)u.voice=v;if(cb)u.onend=cb;speechSynthesis.speak(u);}else if(cb){setTimeout(cb,1200);}}catch(e){if(cb)setTimeout(cb,1200);}}
+function playAll(){
+  stopPlay(); playIdx=0; var s=SONGS[cur];
+  function step(){ if(playIdx>=s.lines.length){ highlight(-1); return; } highlight(playIdx); speak(s.lines[playIdx][0], function(){ playIdx++; playTimer=setTimeout(step,350); }); }
+  step();
+}
+function stopPlay(){ if(playTimer){clearTimeout(playTimer);playTimer=null;} try{speechSynthesis.cancel();}catch(e){} }
+document.getElementById('playAll').onclick=function(){ if(playTimer){stopPlay();this.textContent='▶ Play whole song';} else {playAll();this.textContent='⏸ Stop';var self=this;var chk=setInterval(function(){if(!playTimer){self.textContent='▶ Play whole song';clearInterval(chk);}},500);} };
+renderLangs();renderSongList();renderSong();
+</script>
+</body>
+</html>

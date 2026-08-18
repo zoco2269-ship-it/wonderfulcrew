@@ -36,7 +36,7 @@
     this.lidL=el('div','position:absolute;pointer-events:none;border-radius:50%/70%;background:linear-gradient(180deg,rgba(226,196,170,0.0),rgba(226,196,170,0.92));transform-origin:top;transform:scaleY(0);transition:transform .09s ease;',stage);
     this.lidR=el('div','position:absolute;pointer-events:none;border-radius:50%/70%;background:linear-gradient(180deg,rgba(226,196,170,0.0),rgba(226,196,170,0.92));transform-origin:top;transform:scaleY(0);transition:transform .09s ease;',stage);
     // 입 그림자 오버레이 (말할 때 위아래 스케일)
-    this.mouth=el('div','position:absolute;pointer-events:none;border-radius:50%;background:radial-gradient(ellipse at center,rgba(90,40,40,0.28),rgba(90,40,40,0.0) 70%);transform-origin:center;opacity:0;',stage);
+    this.mouth=el('div','position:absolute;pointer-events:none;opacity:0;',stage);
     // 살짝 어두워지는 비네트(생동감)
     el('div','position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 60px rgba(0,0,0,0.06);',stage);
     this._layout();
@@ -56,7 +56,7 @@
     if(!document.getElementById('la-kf')){
       var st=document.createElement('style'); st.id='la-kf';
       st.textContent='@keyframes laBreath{0%{transform:scale(1) translateY(0) rotate(0deg)}50%{transform:scale(1.016) translateY(-0.4%) rotate(0.25deg)}100%{transform:scale(1) translateY(0) rotate(0deg)}}'+
-        '@keyframes laTalk{0%{transform:scale(1) translateY(0)}50%{transform:scale(1.03) translateY(-0.7%)}100%{transform:scale(1) translateY(0)}}';
+        '@keyframes laTalk{0%{transform:scale(1) translateY(0)}25%{transform:scale(1.012) translateY(-0.3%)}50%{transform:scale(1.005) translateY(0.1%)}75%{transform:scale(1.014) translateY(-0.35%)}100%{transform:scale(1) translateY(0)}}';
       document.head.appendChild(st);
     }
     this.stage.style.animation='laBreath 4s ease-in-out infinite';
@@ -75,15 +75,12 @@
   };
   LiveAvatar.prototype.speak=function(){
     if(this._speaking) return; this._speaking=true;
-    this.stage.style.animation='laTalk 0.62s ease-in-out infinite';
-    this.mouth.style.opacity='1';
-    var self=this, on=false;
-    this._mouthIv=setInterval(function(){ on=!on; self.mouth.style.transform='scaleY('+(on?1.5:0.7)+') scaleX('+(on?0.9:1.05)+')'; }, 130);
+    /* 입 그림자 없이 — 말할 때 화면(전체)만 살짝 움직임 */
+    this.stage.style.animation='laTalk 0.7s ease-in-out infinite';
   };
   LiveAvatar.prototype.stop=function(){
     this._speaking=false;
     this.stage.style.animation='laBreath 4s ease-in-out infinite';
-    this.mouth.style.opacity='0'; this.mouth.style.transform='scaleY(1)';
     if(this._mouthIv){ clearInterval(this._mouthIv); this._mouthIv=null; }
   };
   LiveAvatar.prototype.setImage=function(url){ this.img.src=url; };

@@ -218,7 +218,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V36';
+ var CUR='V37';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -498,7 +498,7 @@ function enableDrawTap(){
   if(!drawData)return;var hots=$('drawHots');
   drawData.forEach(function(o){var h=document.createElement('div');h.className='dhot';h.style.left=o.xp+'%';h.style.top=o.yp+'%';
     h.onclick=function(){h.classList.remove('tap');void h.offsetWidth;h.classList.add('tap');say(o.ko);
-      var l=document.createElement('div');l.className='dlab show';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-10,4)+'%';
+      var l=document.createElement('div');l.className='dlab show';l.style.left=o.xp+'%';l.style.top=(o.yp<24?(o.b[3]+3):Math.max(o.yp-10,4))+'%';
       l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
       hots.appendChild(l);setTimeout(function(){l.classList.remove('show');setTimeout(function(){l.remove();},350);},1800);};
     hots.appendChild(h);});
@@ -540,7 +540,7 @@ function runDraw(){
       if(pi>=ob.pels.length){
         ob.ci.style.opacity='1'; say(o.ko);
         if(curLab)curLab.classList.remove('show');
-        var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-9,3)+'%';
+        var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=(o.yp<24?(o.b[3]+3):Math.max(o.yp-9,3))+'%';
         l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
         hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l; try{sparkAt(l);}catch(e){}
         oi++; drawTimers.push(setTimeout(drawObject,550)); return;

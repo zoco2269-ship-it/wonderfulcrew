@@ -155,12 +155,14 @@ function initRecog(){
     var txt=ev.results[0][0].transcript;
     if(txt&&txt.trim()) ask(txt.trim());
   };
-  r.onerror=function(){ stopListen(); };
+  r.onerror=function(ev){ var M={'not-allowed':'🔴 마이크 권한을 허용해 주세요 (주소창 자물쇠 아이콘)','service-not-allowed':'🔴 마이크 권한 필요','no-speech':'소리가 안 들려요 — 다시 눌러 또렷하게 말해보세요','network':'🔴 네트워크 오류 — 잠시 후 다시','language-not-supported':'이 언어 음성인식은 이 브라우저에서 미지원 (한국어/영어 권장)','aborted':''}; var msg=M[ev.error]; if(msg===undefined)msg='오류: '+ev.error; if(msg)document.getElementById('micLabel').textContent=msg; stopListen(); };
   r.onend=function(){ stopListen(); };
   return r;
 }
 function startListen(){
   try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
+  // 마이크 권한 선요청 (권한 프롬프트 유도)
+  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){ navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){ st.getTracks().forEach(function(t){t.stop();}); }).catch(function(){ document.getElementById('micLabel').textContent='🔴 마이크 권한을 허용해 주세요'; }); }
   recog=initRecog();
   if(!recog){ document.getElementById('micLabel').textContent='⚠ '+(navigator.language||'')+' voice not supported — type instead'; return; }
   try{ recog.lang=langObj().stt; recog.start(); listening=true;

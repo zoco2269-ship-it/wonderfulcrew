@@ -3,46 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Vinpearl AI Concierge · Multilingual Resort Assistant</title>
+<title>Vinpearl AI Concierge · Voice Assistant</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--teal:#0E7C86;--teal-d:#0A5A62;--gold:#C9A84C;--sand:#F6F1E7;--ink:#12333A;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Poppins','Noto Sans KR',sans-serif;background:var(--sand);color:var(--ink);}
-.hero{background:linear-gradient(135deg,#0E7C86,#0A5A62);color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
-.brand .logo{font-family:'Poppins';font-weight:700;font-size:1.25rem;letter-spacing:0.02em;}
+.hero{background:linear-gradient(135deg,#0E7C86,#0A5A62);color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.brand .logo{font-family:'Poppins';font-weight:700;font-size:1.2rem;}
 .brand .logo span{color:#F4D06A;}
 .brand .tag{font-size:0.72rem;opacity:0.85;}
 .langs{display:flex;gap:6px;flex-wrap:wrap;}
-.langs button{background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:20px;padding:6px 12px;font-size:0.8rem;cursor:pointer;font-family:inherit;}
+.langs button{background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:20px;padding:6px 11px;font-size:0.78rem;cursor:pointer;font-family:inherit;}
 .langs button.on{background:#F4D06A;color:#0A5A62;font-weight:700;border-color:#F4D06A;}
-.wrap{max-width:760px;margin:0 auto;padding:18px 16px 30px;}
+.wrap{max-width:720px;margin:0 auto;padding:16px 16px 30px;}
 .card{background:#fff;border-radius:18px;box-shadow:0 14px 40px -22px rgba(14,124,134,0.5);overflow:hidden;}
-.chat{height:min(56vh,460px);overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg,#fbfaf6,#fff);}
-.msg{max-width:82%;padding:11px 15px;border-radius:16px;font-size:0.92rem;line-height:1.6;white-space:pre-wrap;}
+.chat{height:min(46vh,380px);overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:11px;background:linear-gradient(180deg,#fbfaf6,#fff);}
+.msg{max-width:84%;padding:11px 15px;border-radius:16px;font-size:0.92rem;line-height:1.6;white-space:pre-wrap;}
 .msg.bot{background:var(--sand);color:var(--ink);border-bottom-left-radius:4px;align-self:flex-start;}
 .msg.me{background:var(--teal);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;}
-.msg.bot .who{font-size:0.68rem;color:var(--teal);font-weight:700;margin-bottom:3px;}
+.msg.bot .who{font-size:0.68rem;color:var(--teal);font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:5px;}
 .typing{align-self:flex-start;color:#8aa;font-size:0.85rem;padding:6px 15px;}
-.chips{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px 4px;}
-.chips button{background:#fff;border:1.5px solid var(--teal);color:var(--teal);border-radius:18px;padding:7px 14px;font-size:0.8rem;cursor:pointer;font-family:inherit;}
+.voice{padding:16px;text-align:center;border-top:1px solid #eee;background:#fff;}
+.micwrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.mic{width:78px;height:78px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,#0E7C86,#0A5A62);color:#fff;font-size:2rem;box-shadow:0 10px 24px -8px rgba(14,124,134,0.7);transition:transform .15s;}
+.mic:active{transform:scale(0.94);}
+.mic.listening{background:linear-gradient(135deg,#E0533E,#B83A28);animation:pulse 1.1s infinite;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(224,83,62,0.5)}70%{box-shadow:0 0 0 18px rgba(224,83,62,0)}100%{box-shadow:0 0 0 0 rgba(224,83,62,0)}}
+.micLabel{font-size:0.85rem;color:var(--teal-d);font-weight:600;min-height:20px;}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:6px 16px 2px;}
+.chips button{background:#fff;border:1.5px solid var(--teal);color:var(--teal);border-radius:18px;padding:6px 13px;font-size:0.78rem;cursor:pointer;font-family:inherit;}
 .chips button:hover{background:var(--teal);color:#fff;}
-.inbar{display:flex;gap:8px;padding:12px 16px 16px;border-top:1px solid #eee;}
-.inbar input{flex:1;border:1.5px solid #d8d0be;border-radius:24px;padding:12px 16px;font-family:inherit;font-size:0.92rem;outline:none;}
+.inbar{display:flex;gap:8px;padding:10px 16px 14px;}
+.inbar input{flex:1;border:1.5px solid #d8d0be;border-radius:22px;padding:10px 15px;font-family:inherit;font-size:0.9rem;outline:none;}
 .inbar input:focus{border-color:var(--teal);}
-.inbar button{background:linear-gradient(135deg,#0E7C86,#0A5A62);color:#fff;border:none;border-radius:24px;padding:0 22px;font-weight:700;cursor:pointer;font-family:inherit;}
-.foot{text-align:center;font-size:0.74rem;color:#7a8a8c;margin-top:16px;line-height:1.6;}
+.inbar button{background:var(--teal-d);color:#fff;border:none;border-radius:22px;padding:0 18px;font-weight:700;cursor:pointer;font-family:inherit;font-size:0.85rem;}
+.foot{text-align:center;font-size:0.74rem;color:#7a8a8c;margin-top:14px;line-height:1.6;}
 .hero .sub2{width:100%;font-size:0.78rem;opacity:0.9;}
-.spk{background:none;border:none;cursor:pointer;font-size:0.9rem;margin-left:6px;opacity:0.6;}
 </style>
 </head>
 <body>
 <div class="hero">
   <div class="brand">
-    <div>
-      <div class="logo">Vinpearl <span>AI Concierge</span></div>
-      <div class="tag">Nha Trang &middot; Resort &amp; Theme Park</div>
-    </div>
+    <div class="logo">Vinpearl <span>AI Concierge</span></div>
+    <div class="tag">Nha Trang &middot; Resort &amp; Theme Park &middot; Voice Assistant</div>
   </div>
   <div class="langs" id="langs"></div>
   <div class="sub2" id="welcomeSub"></div>
@@ -51,44 +55,53 @@ body{font-family:'Poppins','Noto Sans KR',sans-serif;background:var(--sand);colo
 <div class="wrap">
   <div class="card">
     <div class="chat" id="chat"></div>
+    <div class="voice">
+      <div class="micwrap">
+        <button class="mic" id="mic">🎤</button>
+        <div class="micLabel" id="micLabel"></div>
+      </div>
+    </div>
     <div class="chips" id="chips"></div>
     <div class="inbar">
-      <input id="inp" placeholder="Ask me anything...">
+      <input id="inp" placeholder="Or type here...">
       <button id="send">Send</button>
     </div>
   </div>
-  <p class="foot">Multilingual AI concierge demo &middot; powered by WonderfulCrew AI<br>Low-cost engine (Haiku) &middot; Voice guidance (TTS) supported</p>
+  <p class="foot">Voice-first multilingual AI concierge &middot; powered by WonderfulCrew AI<br>Speak in your language &middot; the assistant listens and answers by voice</p>
 </div>
 
 <script>
 var LANGS=[
-  {c:'ko',f:'🇰🇷',n:'한국어'},
-  {c:'en',f:'🇺🇸',n:'English'},
-  {c:'zh',f:'🇨🇳',n:'中文'},
-  {c:'ja',f:'🇯🇵',n:'日本語'},
-  {c:'ru',f:'🇷🇺',n:'Русский'},
-  {c:'vi',f:'🇻🇳',n:'Tiếng Việt'}
+  {c:'ko',f:'🇰🇷',n:'한국어',stt:'ko-KR'},
+  {c:'en',f:'🇺🇸',n:'English',stt:'en-US'},
+  {c:'zh',f:'🇨🇳',n:'中文',stt:'zh-CN'},
+  {c:'ja',f:'🇯🇵',n:'日本語',stt:'ja-JP'},
+  {c:'ru',f:'🇷🇺',n:'Русский',stt:'ru-RU'},
+  {c:'vi',f:'🇻🇳',n:'Tiếng Việt',stt:'vi-VN'}
 ];
 var UI={
-  ko:{welcome:'안녕하세요! Vinpearl 리조트 AI 컨시어지입니다. 무엇을 도와드릴까요? 😊',ph:'무엇이든 물어보세요...',send:'보내기',sub:'리조트·테마파크 안내를 원하는 언어로 물어보세요',chips:['인기 놀이기구 추천','한식당 어디 있나요?','공항 셔틀 시간','워터파크 입장권']},
-  en:{welcome:'Hello! I am the Vinpearl Resort AI Concierge. How can I help you today? 😊',ph:'Ask me anything...',send:'Send',sub:'Ask about the resort & theme park in your language',chips:['Top rides to try','Where is a Korean restaurant?','Airport shuttle times','Water park tickets']},
-  zh:{welcome:'您好！我是 Vinpearl 度假村 AI 礼宾助手。有什么可以帮您？😊',ph:'请问有什么可以帮您...',send:'发送',sub:'用您的语言询问度假村和主题公园',chips:['热门游乐设施','哪里有韩国餐厅？','机场班车时间','水上乐园门票']},
-  ja:{welcome:'こんにちは！Vinpearlリゾートの AIコンシェルジュです。ご用件をどうぞ 😊',ph:'何でもお聞きください...',send:'送信',sub:'リゾートとテーマパークをお好きな言語で',chips:['人気アトラクション','韓国料理店はどこ？','空港シャトルの時間','ウォーターパーク入場券']},
-  ru:{welcome:'Здравствуйте! Я AI-консьерж курорта Vinpearl. Чем могу помочь? 😊',ph:'Спрашивайте что угодно...',send:'Отправить',sub:'Спрашивайте о курорте на вашем языке',chips:['Лучшие аттракционы','Где корейский ресторан?','Расписание шаттла','Билеты в аквапарк']},
-  vi:{welcome:'Xin chào! Tôi là trợ lý AI của khu nghỉ dưỡng Vinpearl. Tôi có thể giúp gì cho bạn? 😊',ph:'Hỏi bất cứ điều gì...',send:'Gửi',sub:'Hỏi về khu nghỉ dưỡng bằng ngôn ngữ của bạn',chips:['Trò chơi nổi bật','Nhà hàng Hàn Quốc ở đâu?','Giờ xe đưa đón sân bay','Vé công viên nước']}
+  ko:{welcome:'안녕하세요! Vinpearl 리조트 AI 컨시어지입니다. 마이크를 누르고 말씀해 주세요 😊',ph:'또는 여기에 입력...',send:'전송',sub:'마이크로 말하면 음성으로 답해드려요',tapMic:'마이크를 눌러 말하세요',listening:'듣고 있어요...',chips:['인기 놀이기구','한식당 어디?','공항 셔틀 시간','워터파크 입장권']},
+  en:{welcome:'Hello! I am the Vinpearl Resort AI Concierge. Tap the mic and speak 😊',ph:'Or type here...',send:'Send',sub:'Speak into the mic and I answer by voice',tapMic:'Tap the mic to speak',listening:'Listening...',chips:['Top rides','Korean restaurant?','Airport shuttle','Water park tickets']},
+  zh:{welcome:'您好！我是 Vinpearl 度假村 AI 礼宾助手。请按麦克风说话 😊',ph:'或在此输入...',send:'发送',sub:'对着麦克风说话，我会用语音回答',tapMic:'点击麦克风说话',listening:'正在聆听...',chips:['热门游乐设施','韩国餐厅？','机场班车','水上乐园门票']},
+  ja:{welcome:'こんにちは！Vinpearlリゾートの AIコンシェルジュです。マイクを押して話してください 😊',ph:'または入力...',send:'送信',sub:'マイクで話すと音声でお答えします',tapMic:'マイクを押して話す',listening:'聞いています...',chips:['人気アトラクション','韓国料理店は？','空港シャトル','ウォーターパーク券']},
+  ru:{welcome:'Здравствуйте! Я AI-консьерж курорта Vinpearl. Нажмите микрофон и говорите 😊',ph:'Или введите...',send:'Отпр.',sub:'Говорите в микрофон — отвечу голосом',tapMic:'Нажмите микрофон',listening:'Слушаю...',chips:['Аттракционы','Корейский ресторан?','Шаттл','Билеты аквапарк']},
+  vi:{welcome:'Xin chào! Tôi là trợ lý AI Vinpearl. Nhấn micro và nói 😊',ph:'Hoặc nhập ở đây...',send:'Gửi',sub:'Nói vào micro, tôi trả lời bằng giọng nói',tapMic:'Nhấn micro để nói',listening:'Đang nghe...',chips:['Trò chơi nổi bật','Nhà hàng Hàn Quốc?','Xe sân bay','Vé công viên nước']}
 };
 var LNAME={ko:'Korean',en:'English',zh:'Chinese',ja:'Japanese',ru:'Russian',vi:'Vietnamese'};
-var lang='ko', history=[];
+var TTS={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP',ru:'ru-RU',vi:'vi-VN'};
+var lang='ko', history=[], recog=null, listening=false;
 
 function SYS(){
-  return 'You are the official multilingual AI concierge for Vinpearl Nha Trang, a large integrated resort and theme park (VinWonders) in Vietnam operated by VinGroup. '+
-  'You warmly help international guests with: attractions and rides, restaurants (including Korean, Japanese, Chinese, halal), shuttle and transport, tickets and opening hours, hotel services, spa and wellness, and recommendations. '+
-  'ALWAYS reply ONLY in '+LNAME[lang]+'. Keep answers friendly, concise (2-4 sentences), concrete and helpful. If you do not know an exact detail, give a reasonable typical answer and suggest confirming at the front desk or app. Warm hospitality tone with an occasional emoji.';
+  return 'You are the official multilingual AI voice concierge for Vinpearl Nha Trang, a large integrated resort and theme park (VinWonders) in Vietnam by VinGroup. '+
+  'Help international guests with attractions and rides, restaurants (Korean, Japanese, Chinese, halal), shuttle and transport, tickets and hours, hotel services, spa and wellness, recommendations. '+
+  'ALWAYS reply ONLY in '+LNAME[lang]+'. This is a SPOKEN conversation: answer in short, natural, spoken sentences (1-3 sentences), warm and friendly, no bullet points, no markdown. If unsure of an exact detail, give a reasonable typical answer and suggest confirming at the front desk.';
 }
+function langObj(){ for(var i=0;i<LANGS.length;i++) if(LANGS[i].c===lang) return LANGS[i]; return LANGS[0]; }
+
 function renderLangs(){
   var el=document.getElementById('langs');el.innerHTML='';
   LANGS.forEach(function(L){var b=document.createElement('button');b.textContent=L.f+' '+L.n;b.className=(L.c===lang?'on':'');
-    b.onclick=function(){lang=L.c;history=[];renderLangs();resetChat();};el.appendChild(b);});
+    b.onclick=function(){stopListen();lang=L.c;history=[];renderLangs();resetChat();};el.appendChild(b);});
 }
 function resetChat(){
   var u=UI[lang];
@@ -96,19 +109,23 @@ function resetChat(){
   document.getElementById('inp').placeholder=u.ph;
   document.getElementById('send').textContent=u.send;
   document.getElementById('welcomeSub').textContent=u.sub;
-  addMsg('bot',u.welcome);
+  document.getElementById('micLabel').textContent=u.tapMic;
+  addMsg('bot',u.welcome,false);
   var ch=document.getElementById('chips');ch.innerHTML='';
   u.chips.forEach(function(q){var b=document.createElement('button');b.textContent=q;b.onclick=function(){ask(q);};ch.appendChild(b);});
 }
-function addMsg(who,text){
+function addMsg(who,text,autoSpeak){
   var chat=document.getElementById('chat');var d=document.createElement('div');d.className='msg '+who;
-  if(who==='bot'){d.innerHTML='<div class="who">AI Concierge</div>'+escapeHtml(text)+'<button class="spk" title="Listen">🔊</button>';
-    d.querySelector('.spk').onclick=function(){speak(text);};}
+  if(who==='bot'){d.innerHTML='<div class="who">🔊 AI Concierge</div>'+escapeHtml(text);}
   else d.textContent=text;
-  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d;
+  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+  if(who==='bot'&&autoSpeak!==false) speak(text);
+  return d;
 }
 function escapeHtml(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
-function speak(t){try{if('speechSynthesis' in window){speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);var map={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP',ru:'ru-RU',vi:'vi-VN'};u.lang=map[lang]||'en-US';u.rate=0.98;speechSynthesis.speak(u);}}catch(e){}}
+function speak(t){try{if('speechSynthesis' in window){speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang=TTS[lang]||'en-US';u.rate=0.98;
+  var vs=speechSynthesis.getVoices();var v=vs.find(function(x){return x.lang===u.lang;})||vs.find(function(x){return x.lang&&x.lang.indexOf(lang)===0;});if(v)u.voice=v;
+  speechSynthesis.speak(u);}}catch(e){}}
 
 async function ask(q){
   if(!q||!q.trim())return;
@@ -118,17 +135,49 @@ async function ask(q){
   var t=document.createElement('div');t.className='typing';t.textContent='···';chat.appendChild(t);chat.scrollTop=chat.scrollHeight;
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:SYS(),messages:history})});
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,system:SYS(),messages:history})});
     var data=await res.json();
     var txt=(data&&data.content&&data.content[0]&&data.content[0].text)||(data&&data.text)||'';
     t.remove();
-    if(!txt){addMsg('bot','(demo) AI response unavailable. Please try again shortly.');return;}
+    if(!txt){addMsg('bot','(demo) response unavailable, please try again.',false);return;}
     history.push({role:'assistant',content:txt});
-    addMsg('bot',txt);
-  }catch(e){t.remove();addMsg('bot','Network error. Please try again.');}
+    addMsg('bot',txt,true);
+  }catch(e){t.remove();addMsg('bot','Network error. Please try again.',false);}
 }
+
+/* ── 음성인식(STT) ── */
+function initRecog(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){return null;}
+  var r=new SR();
+  r.lang=langObj().stt; r.interimResults=false; r.continuous=false; r.maxAlternatives=1;
+  r.onresult=function(ev){
+    var txt=ev.results[0][0].transcript;
+    if(txt&&txt.trim()) ask(txt.trim());
+  };
+  r.onerror=function(){ stopListen(); };
+  r.onend=function(){ stopListen(); };
+  return r;
+}
+function startListen(){
+  try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
+  recog=initRecog();
+  if(!recog){ document.getElementById('micLabel').textContent='⚠ '+(navigator.language||'')+' voice not supported — type instead'; return; }
+  try{ recog.lang=langObj().stt; recog.start(); listening=true;
+    document.getElementById('mic').classList.add('listening');
+    document.getElementById('micLabel').textContent=UI[lang].listening;
+  }catch(e){ stopListen(); }
+}
+function stopListen(){
+  listening=false;
+  try{ if(recog) recog.stop(); }catch(e){}
+  var m=document.getElementById('mic'); if(m)m.classList.remove('listening');
+  var l=document.getElementById('micLabel'); if(l)l.textContent=UI[lang].tapMic;
+}
+document.getElementById('mic').onclick=function(){ if(listening) stopListen(); else startListen(); };
 document.getElementById('send').onclick=function(){var i=document.getElementById('inp');ask(i.value);i.value='';};
-document.getElementById('inp').addEventListener('keydown',function(e){if(e.key==='Enter'){var i=this;ask(i.value);i.value='';}});
+document.getElementById('inp').addEventListener('keydown',function(e){if(e.key==='Enter'){ask(this.value);this.value='';}});
+if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged=function(){}; }
 renderLangs();resetChat();
 </script>
 </body>

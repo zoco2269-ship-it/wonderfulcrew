@@ -214,7 +214,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V27';
+ var CUR='V28';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -533,60 +533,101 @@ function runDraw(){
     im.src=IMG;
     im.style.cssText='position:absolute;width:'+(10000/w)+'%;height:'+(10000/h)+'%;left:'+(-b[0]*100/w)+'%;top:'+(-b[1]*100/h)+'%;max-width:none;opacity:1;transition:none;';
     box.appendChild(im);
+    if(o.mask){
+      box.style.webkitMaskImage='url('+o.mask+')';box.style.maskImage='url('+o.mask+')';
+      box.style.webkitMaskSize='100% 100%';box.style.maskSize='100% 100%';
+      box.style.webkitMaskRepeat='no-repeat';box.style.maskRepeat='no-repeat';
+    }
     box.style.clipPath='inset(0 0 100% 0)';
     color.appendChild(box);
     return {o:o,box:box,b:b,w:w,h:h};
   });
-  function drawObject(){
-    if(token!==drawSeq)return;
-    if(oi>=built.length){ pen.style.opacity='0'; fin.classList.add('show'); hots.innerHTML=''; enableDrawTap(); return; }
-    var ob=built[oi], o=ob.o, dur=o.bg?2200:2600, t0=null;
-    var sp=o.sp||null, N=sp?sp.length:(o.bg?3:4);
-    function rowSpan(i){ return (sp&&sp[i])?sp[i]:[0,1]; }
-    pen.style.opacity='1';
-    (function fr(now){
+  function addStroke(d,anim){
+    var pe=document.createElementNS(SVGNS2,'path');
+    pe.setAttribute('d',d);
+    svg.appendChild(pe);
+    if(anim){var len=pe.getTotalLength()||1;pe.style.strokeDasharray=len;pe.style.strokeDashoffset=len;}
+    return pe;
+  }
+  function penAlong(pe,dur){
+    var len=pe.getTotalLength()||1,t0=null;
+    (function pf(now){
       if(token!==drawSeq)return;
       if(t0==null)t0=now;
       var p=Math.max(0,Math.min(1,(now-t0)/dur));
-      // ★ 각 줄에서 사물의 실제 폭만 쓸고 지나감 — 퍼센트 폴리곤(픽셀 측정 없음, 줌/해상도 무관)
-      var pr=Math.min(p*N,N-0.0001), r=Math.floor(pr), f=pr-r;
-      var cur=rowSpan(r), s0=cur[0], s1=cur[1];
-      var ltr=(r%2===0), xw=ltr?s0+(s1-s0)*f:s1-(s1-s0)*f;
-      if(p>=1){ ob.box.style.clipPath='none'; }
-      else{
-        // 오른쪽 경계 내려가기 → 왼쪽 경계 올라오기 (직교 폴리곤, 전부 %)
-        var R=[],L=[];
-        for(var i=0;i<=r;i++){
-          var s=(i===r)?[ltr?s0:xw, ltr?xw:s1]:rowSpan(i);
-          var tT=(i*100/N).toFixed(2), tB=((i+1)*100/N).toFixed(2);
-          var a=(s[0]*100).toFixed(2), b=(s[1]*100).toFixed(2);
-          R.push(b+'% '+tT+'%'); R.push(b+'% '+tB+'%');
-          L.unshift(a+'% '+tT+'%'); L.unshift(a+'% '+tB+'%');
-        }
-        ob.box.style.clipPath='polygon('+R.concat(L).join(',')+')';
-      }
-      pen.style.left=(ob.b[0]+xw*ob.w)+'%';
-      pen.style.top=(ob.b[1]+((r+1)/N)*ob.h)+'%';
-      if(p<1){requestAnimationFrame(fr);return;}
-      // ★ 어떤 오류가 나도 다음 사물 진행은 절대 끊기지 않게 (사용자 기기에서 1번 사물 후 멈춤 사고 방어)
-      try{
-        say(o.ko);
-        if(curLab)curLab.classList.remove('show');
-        var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-9,3)+'%';
-        l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
-        hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l; try{sparkAt(l);}catch(e){}
-      }catch(e){ try{if(window.kidsErr)kidsErr('draw-post:'+(e&&e.message));}catch(_){} }
-      oi++; drawTimers.push(setTimeout(drawObject,600));
+      try{var pt=pe.getPointAtLength(len*p);pen.style.left=(pt.x/1600*100)+'%';pen.style.top=(pt.y/893*100)+'%';}catch(e){}
+      if(p<1)requestAnimationFrame(pf);
     })(performance.now());
+  }
+  /* 사물 하나: ① 연필이 윤곽선 스케치 → ② 실루엣 안에 색이 차오름 → ③ 이름 */
+  function drawObject(){
+    if(token!==drawSeq)return;
+    if(oi>=built.length){ pen.style.opacity='0'; fin.classList.add('show'); hots.innerHTML=''; enableDrawTap(); return; }
+    var ob=built[oi], o=ob.o;
+    pen.style.opacity='1';
+    var all=(o.paths||[]).slice().sort(function(a,b){return b.length-a.length;});
+    var MAXS=o.bg?3:5, main=all.slice(0,MAXS), rest=all.slice(MAXS), pi=0;
+    function strokeNext(){
+      if(token!==drawSeq)return;
+      if(pi>=main.length){
+        rest.forEach(function(d){addStroke(d,0);});
+        drawTimers.push(setTimeout(fillColor,140));
+        return;
+      }
+      var el=addStroke(main[pi++],1);
+      var len=el.getTotalLength()||1;
+      var dur=Math.max(280,Math.min(900,len*1.2));
+      el.style.transition='stroke-dashoffset '+dur+'ms linear';
+      penAlong(el,dur);
+      requestAnimationFrame(function(){el.style.strokeDashoffset='0';});
+      drawTimers.push(setTimeout(strokeNext,dur+70));
+    }
+    function fillColor(){
+      if(token!==drawSeq)return;
+      var t0=null, fd=o.bg?1400:650;
+      (function fw(now){
+        if(token!==drawSeq)return;
+        if(t0==null)t0=now;
+        var p=Math.max(0,Math.min(1,(now-t0)/fd));
+        ob.box.style.clipPath='inset(0 0 '+((1-p)*100).toFixed(2)+'% 0)';
+        var zig=p*3, xr=zig%2<1?zig%1:1-zig%1;
+        pen.style.left=(ob.b[0]+xr*ob.w)+'%';
+        pen.style.top=(ob.b[1]+p*ob.h)+'%';
+        if(p<1){requestAnimationFrame(fw);return;}
+        ob.box.style.clipPath='none';
+        try{
+          say(o.ko);
+          if(curLab)curLab.classList.remove('show');
+          var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-9,3)+'%';
+          l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
+          hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l; try{sparkAt(l);}catch(e){}
+        }catch(e){ try{kidsErr('draw-post:'+(e&&e.message));}catch(_){} }
+        oi++; drawTimers.push(setTimeout(drawObject,500));
+      })(performance.now());
+    }
+    strokeNext();
   }
   drawObject();
 }
 function playDraw(){
   drawTimers.forEach(clearTimeout);drawTimers=[];drawSeq++;
-  drawData=DRAWSCENES[curDraw].boxes.map(function(o,oidx){
-    return {ko:o.ko,vi:o.vi,bg:o.bg,b:o.b,sp:(window.DRAWSP&&DRAWSP[curDraw])?DRAWSP[curDraw][oidx]:null,xp:(o.b[0]+o.b[2])/2,yp:(o.b[1]+o.b[3])/2};
-  });
-  runDraw();
+  var mySeq=drawSeq, key=curDraw;
+  var jf=(key==='농장')?'images/scene-farm-lines.json':'images/scene-beach-lines.json';
+  var mkey=(key==='농장')?'farm':'beach';
+  var go=function(objs){
+    if(mySeq!==drawSeq)return;
+    var arr=DRAWSCENES[key].boxes.map(function(o,idx){
+      return {ko:o.ko,vi:o.vi,bg:o.bg,b:o.b,
+        paths:(objs&&objs[idx]&&objs[idx].paths)||[],
+        mask:(!o.bg)?('images/mask-'+mkey+'-'+idx+'.png'):null,
+        xp:(o.b[0]+o.b[2])/2,yp:(o.b[1]+o.b[3])/2};
+    });
+    /* 사물을 하나씩 먼저, 배경(마무리 전체 색칠)은 맨 마지막 */
+    drawData=arr.filter(function(x){return !x.bg;}).concat(arr.filter(function(x){return x.bg;}));
+    runDraw();
+  };
+  if(drawCache[jf]){go(drawCache[jf]);return;}
+  fetch(jf).then(function(r){return r.json();}).then(function(j){drawCache[jf]=j;go(j);}).catch(function(){go(null);});
 }
 $('drawBtn2').onclick=playDraw;
 

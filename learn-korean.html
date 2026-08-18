@@ -87,7 +87,7 @@ function SYS(){
   'When the learner asks how to say something or asks about a situation, teach 2-4 useful Korean expressions. '+
   'Format EACH expression on its own line EXACTLY as: 한국어 문장 | romanization | translation in '+LNAME[lang]+'. '+
   'Use a real space-pipe-space " | " as separator so it can be parsed. After the lines, add one short friendly tip in '+LNAME[lang]+' (no pipes on that line). '+
-  'Keep Korean natural and polite (해요체 by default). Do not use markdown, bullets, or asterisks.';
+  'Keep Korean natural and polite (해요체 by default). NEVER use markdown, asterisks (*), hashes (#), backticks, headers, or horizontal rules. Plain text only.';
 }
 function renderLangs(){
   var el=document.getElementById('langs');el.innerHTML='';
@@ -110,7 +110,7 @@ function addBot(text){
   var c=document.getElementById('chat');var d=document.createElement('div');d.className='msg bot';
   var html='<div class="who">🎓 Tutor</div>';
   text.split('\n').forEach(function(line){
-    line=line.trim(); if(!line) return;
+    line=line.replace(/[*`#]/g,'').replace(/^[-=]{3,}$/,'').trim(); if(!line) return;
     var parts=line.split(' | ');
     if(parts.length>=2){
       var ko=parts[0], ro=parts[1]||'', tr=parts[2]||'';

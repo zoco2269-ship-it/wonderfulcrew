@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Learn Korean Kids — Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Jua&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#FF7EB3;--purple:#7A5AA8;--mint:#3FD0C9;--cream:#FFF7FB;--ink:#2B2340;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Poppins',sans-serif;background:linear-gradient(180deg,#FFF7FB,#F3F0FF);color:var(--ink);min-height:100vh;}
+.wrap{max-width:860px;margin:0 auto;padding:34px 18px 60px;}
+.top{text-align:center;margin-bottom:8px;}
+.mascot{font-size:2.6rem;}
+h1{font-family:'Jua',sans-serif;font-size:2rem;color:var(--purple);margin:4px 0 6px;}
+.sub{color:#6A6480;font-size:0.98rem;line-height:1.7;margin-bottom:26px;}
+.langs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:26px;}
+.langs span{background:#fff;border:2px solid #EEE3F7;border-radius:16px;padding:5px 12px;font-size:0.84rem;font-weight:700;color:var(--purple);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:640px){.grid{grid-template-columns:1fr;}}
+.plan{background:#fff;border-radius:22px;padding:28px 24px;box-shadow:0 16px 40px -22px rgba(122,90,168,0.4);position:relative;display:flex;flex-direction:column;}
+.plan.pro{border:3px solid var(--pink);}
+.badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#FF9EC7,#FF6FA5);color:#fff;font-size:0.74rem;font-weight:800;padding:5px 16px;border-radius:20px;white-space:nowrap;}
+.pname{font-family:'Jua',sans-serif;font-size:1.3rem;color:var(--purple);}
+.price{font-size:2.1rem;font-weight:800;color:var(--ink);margin:6px 0 2px;}
+.price small{font-size:0.9rem;color:#9A93AD;font-weight:600;}
+.plist{list-style:none;margin:16px 0 22px;display:flex;flex-direction:column;gap:9px;}
+.plist li{font-size:0.9rem;color:#4A4460;display:flex;gap:8px;line-height:1.5;}
+.plist li b{color:var(--purple);}
+.cta{margin-top:auto;}
+.free-btn{display:block;text-align:center;background:#F0ECF8;color:var(--purple);border-radius:26px;padding:14px;font-weight:800;text-decoration:none;font-size:0.95rem;}
+#paypal-box{margin-top:8px;min-height:48px;}
+.payhint{font-size:0.76rem;color:#9A93AD;text-align:center;margin-top:8px;line-height:1.5;}
+.thanks{display:none;background:#fff;border-radius:22px;padding:40px 28px;text-align:center;box-shadow:0 16px 40px -22px rgba(122,90,168,0.4);margin-top:20px;}
+.thanks h2{font-family:'Jua',sans-serif;color:var(--purple);font-size:1.5rem;margin-bottom:10px;}
+.foot{text-align:center;font-size:0.78rem;color:#9A93AD;margin-top:28px;line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="mascot">🐣🌈</div>
+    <h1>Learn Korean, the fun way!</h1>
+    <div class="sub">Scenes, drawing, Hangul, songs & games — for kids all over the world.<br>Now in your language.</div>
+  </div>
+  <div class="langs">
+    <span>🇻🇳 Tiếng Việt</span><span>🇺🇸 English</span><span>🇯🇵 日本語</span><span>🇨🇳 中文</span>
+  </div>
+
+  <div class="grid" id="planGrid">
+    <div class="plan">
+      <div class="pname">Free</div>
+      <div class="price">$0</div>
+      <ul class="plist">
+        <li>✅ Scenes · Drawing · Hangul</li>
+        <li>✅ Basic words</li>
+        <li>✅ 4 languages</li>
+      </ul>
+      <div class="cta"><a class="free-btn" href="korean-kids.html">Start free →</a></div>
+    </div>
+    <div class="plan pro">
+      <div class="badge">⭐ BEST for families</div>
+      <div class="pname">Premium</div>
+      <div class="price">$9.99 <small>one-time · lifetime</small></div>
+      <ul class="plist">
+        <li>⭐ <b>Everything in Free</b></li>
+        <li>🎵 All songs (sing along)</li>
+        <li>🎮 All games & quizzes</li>
+        <li>🖼️ Full word library (100+)</li>
+        <li>🌍 All languages, no ads</li>
+        <li>♾️ Lifetime access — pay once</li>
+      </ul>
+      <div class="cta">
+        <div id="paypal-box"></div>
+        <div class="payhint">🔒 Secure checkout by PayPal<br>Pay with PayPal or any card</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="thanks" id="thanks">
+    <div style="font-size:2.4rem;">🎉</div>
+    <h2>Welcome to Premium!</h2>
+    <p style="color:#6A6480;line-height:1.7;">Thank you! All lessons, songs and games are now unlocked.<br>Enjoy learning Korean together 💛</p>
+    <div style="margin-top:18px;"><a class="free-btn" style="display:inline-block;padding:14px 30px;" href="korean-kids.html">Start learning →</a></div>
+  </div>
+
+  <p class="foot">Learn Korean Kids · WonderfulCrew<br>One-time payment, lifetime access · Secure payment via PayPal</p>
+</div>
+
+<script>
+function showThanks(){
+  try{ localStorage.setItem('kidsPremium','true'); }catch(e){}
+  document.getElementById('planGrid').style.display='none';
+  document.getElementById('thanks').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+(function(){
+  fetch('/api/paypal-config').then(function(r){return r.json();}).then(function(cfg){
+    if(!cfg||!cfg.clientId){ document.getElementById('paypal-box').innerHTML='<div style="color:#c0392b;font-size:0.82rem;text-align:center;">Payment temporarily unavailable.</div>'; return; }
+    var s=document.createElement('script');
+    s.src='https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(cfg.clientId)+'&currency=USD&intent=capture';
+    s.onload=function(){
+      if(!window.paypal){ return; }
+      paypal.Buttons({
+        style:{shape:'pill',color:'gold',layout:'vertical',label:'pay',height:46},
+        createOrder:function(){
+          return fetch('/api/paypal-create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:'kids_premium'})})
+            .then(function(r){return r.json();}).then(function(d){ if(d.error) throw new Error(d.error); return d.id; });
+        },
+        onApprove:function(data){
+          return fetch('/api/paypal-capture-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderID:data.orderID})})
+            .then(function(r){return r.json();}).then(function(d){ if(d.error) throw new Error(d.error); showThanks(); });
+        },
+        onError:function(err){ document.getElementById('paypal-box').insertAdjacentHTML('beforeend','<div style="color:#c0392b;font-size:0.8rem;text-align:center;margin-top:6px;">Payment error. Please try again.</div>'); }
+      }).render('#paypal-box');
+    };
+    document.head.appendChild(s);
+  }).catch(function(){ document.getElementById('paypal-box').innerHTML='<div style="color:#c0392b;font-size:0.82rem;text-align:center;">Payment temporarily unavailable.</div>'; });
+})();
+</script>
+</body>
+</html>

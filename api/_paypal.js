@@ -12,7 +12,8 @@ const CURRENCY = 'USD';
 const PLANS = {
   basic:   { amount: '149.00',  interval_unit: 'MONTH', interval_count: 1, name: 'WonderfulCrew Basic — Monthly',  desc: '500 usage / month' },
   elite:   { amount: '219.00',  interval_unit: 'MONTH', interval_count: 1, name: 'WonderfulCrew Elite — Monthly',  desc: '1,200 usage / month + AI Coach' },
-  premium: { amount: '1850.00', name: 'WonderfulCrew Premium Success Package (1 Year)', desc: 'One-time payment · 1 year access' } // one-time
+  premium: { amount: '1850.00', name: 'WonderfulCrew Premium Success Package (1 Year)', desc: 'One-time payment · 1 year access' } // one-time,
+  kids_premium: { amount: '9.99',  name: 'Learn Korean Kids — Premium (Lifetime)', desc: 'All lessons + all languages, one-time' } // one-time
 };
 
 function apiBase() {

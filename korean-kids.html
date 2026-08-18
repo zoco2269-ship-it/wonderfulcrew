@@ -218,7 +218,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V33';
+ var CUR='V34';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -375,7 +375,7 @@ function say(t){
   var h2=window.TTSMAP&&TTSMAP[t];
   if(h2){
     try{
-      var a2=new Audio('audio/tts/'+h2+'.mp3?v=2');
+      var a2=new Audio('audio/tts/'+h2+'.mp3?v=3');
       ttsA=a2;
       var failed2=false;
       a2.addEventListener('error',function(){if(!failed2){failed2=true;if(koVoice)speakSyn(t);}});
@@ -403,7 +403,7 @@ function sayLine(t){
   var h=window.TTSMAP&&TTSMAP[t];
   if(h){
     try{
-      var a=new Audio('audio/tts/'+h+'.mp3?v=2');
+      var a=new Audio('audio/tts/'+h+'.mp3?v=3');
       ttsA=a;
       var done=false;
       a.addEventListener('error',function(){if(!done){done=true;say(t);}});

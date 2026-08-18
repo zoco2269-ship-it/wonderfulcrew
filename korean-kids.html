@@ -214,7 +214,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V24';
+ var CUR='V25';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -521,26 +521,28 @@ function runDraw(){
     if(oi>=built.length){ pen.style.opacity='0'; fin.classList.add('show'); hots.innerHTML=''; enableDrawTap(); return; }
     var ob=built[oi], o=ob.o, dur=o.bg?2200:2600, t0=null;
     var sp=o.sp||null, N=sp?sp.length:(o.bg?3:4);
-    var brc=ob.box.getBoundingClientRect(), bw=brc.width||1, bh=brc.height||1;
+    function rowSpan(i){ return (sp&&sp[i])?sp[i]:[0,1]; }
     pen.style.opacity='1';
     (function fr(now){
       if(token!==drawSeq)return;
       if(t0==null)t0=now;
       var p=Math.max(0,Math.min(1,(now-t0)/dur));
-      // ★ 색칠이 연필 끝을 따라오되, 각 줄에서 사물의 실제 폭만 쓸고 지나감 (윤곽 스팬 기반)
+      // ★ 각 줄에서 사물의 실제 폭만 쓸고 지나감 — 퍼센트 폴리곤(픽셀 측정 없음, 줌/해상도 무관)
       var pr=Math.min(p*N,N-0.0001), r=Math.floor(pr), f=pr-r;
-      var s0=(sp&&sp[r])?sp[r][0]:0, s1=(sp&&sp[r])?sp[r][1]:1;
+      var cur=rowSpan(r), s0=cur[0], s1=cur[1];
       var ltr=(r%2===0), xw=ltr?s0+(s1-s0)*f:s1-(s1-s0)*f;
       if(p>=1){ ob.box.style.clipPath='none'; }
       else{
-        var rh=bh/N, pth='';
-        for(var i=0;i<r;i++){
-          var ax=(sp?sp[i][0]:0)*bw, bx=(sp?sp[i][1]:1)*bw;
-          pth+='M'+ax.toFixed(1)+' '+(i*rh).toFixed(1)+'H'+bx.toFixed(1)+'V'+((i+1)*rh+0.6).toFixed(1)+'H'+ax.toFixed(1)+'Z';
+        // 오른쪽 경계 내려가기 → 왼쪽 경계 올라오기 (직교 폴리곤, 전부 %)
+        var R=[],L=[];
+        for(var i=0;i<=r;i++){
+          var s=(i===r)?[ltr?s0:xw, ltr?xw:s1]:rowSpan(i);
+          var tT=(i*100/N).toFixed(2), tB=((i+1)*100/N).toFixed(2);
+          var a=(s[0]*100).toFixed(2), b=(s[1]*100).toFixed(2);
+          R.push(b+'% '+tT+'%'); R.push(b+'% '+tB+'%');
+          L.unshift(a+'% '+tT+'%'); L.unshift(a+'% '+tB+'%');
         }
-        var ca=(ltr?s0:xw)*bw, cb=(ltr?xw:s1)*bw;
-        pth+='M'+ca.toFixed(1)+' '+(r*rh).toFixed(1)+'H'+cb.toFixed(1)+'V'+((r+1)*rh).toFixed(1)+'H'+ca.toFixed(1)+'Z';
-        ob.box.style.clipPath="path('"+pth+"')";
+        ob.box.style.clipPath='polygon('+R.concat(L).join(',')+')';
       }
       pen.style.left=(ob.b[0]+xw*ob.w)+'%';
       pen.style.top=(ob.b[1]+((r+1)/N)*ob.h)+'%';
@@ -773,9 +775,10 @@ function playSong(){ stopSong(); ensureAudio();
     startDance(0.55);
     songAudio.addEventListener('loadedmetadata',function(){
       if(mySeq!==singSeq)return;
-      // 이 곡은 전체 가사가 2번 반복됨 — 하이라이트도 2바퀴 순환
-      var durS=songAudio.duration||60, n=s0.lines.length, slots=n*2, seg=(durS-5)/slots;
-      for(var i=0;i<slots;i++){(function(i2){songTimers.push(setTimeout(function(){if(mySeq!==singSeq)return;highlight(i2%n);},Math.round((2.5+i2*seg)*1000)));})(i);}
+      // 이 곡은 전주(~8초) 후 전체 가사가 2번 반복됨 — 하이라이트도 2바퀴 순환
+      var durS=songAudio.duration||60, n=s0.lines.length, slots=n*2;
+      var intro=8.0, seg=(durS-intro-4)/slots;
+      for(var i=0;i<slots;i++){(function(i2){songTimers.push(setTimeout(function(){if(mySeq!==singSeq)return;highlight(i2%n);},Math.round((intro+i2*seg)*1000)));})(i);}
     });
     songAudio.addEventListener('ended',function(){if(mySeq!==singSeq)return;stopDance();var ls=$('songLines').children;for(var k=0;k<ls.length;k++)ls[k].classList.remove('on');});
     return;

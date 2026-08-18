@@ -139,7 +139,7 @@ body{height:auto!important;min-height:100vh!important;overflow-y:auto!important;
 <div class="session" id="session">
   <div class="video-area">
     <div class="card-frame" id="card-ai">
-      <div class="avatar-display" style="font-size:3rem;">👩🏻</div>
+      <div class="avatar-display" id="aiAvatar" style="position:absolute;inset:0;font-size:3rem;">👩🏻</div>
       <div class="card-label"><div class="name">Interviewer</div></div>
     </div>
     <div class="card-frame" id="my-card">
@@ -496,7 +496,9 @@ async function stopAnswer(){
       return;
     }
 
-    if(typeof gcSpeak==='function')gcSpeak(txt,'en-GB','female',function(){});
+    try{if(window.__iav)window.__iav.speak();}catch(e){}
+    if(typeof gcSpeak==='function')gcSpeak(txt,'en-GB','female',function(){ try{if(window.__iav)window.__iav.stop();}catch(e){} });
+    else { try{if(window.__iav)setTimeout(function(){window.__iav.stop();},2500);}catch(e){} }
 
     // 계속 진행
     document.getElementById('btn-answer').style.display='inline-flex';
@@ -632,5 +634,15 @@ async function endSession(){
 </section>
 <div style="height:100px;" aria-hidden="true"></div>
 <script src="js/live-face-coach.js?v=8"></script>
+<script src="js/live-avatar.js?v=2"></script>
+<script>
+(function(){
+  var box=document.getElementById('aiAvatar');
+  if(box && window.LiveAvatar){
+    box.textContent=''; box.style.fontSize='0';
+    try{ window.__iav=LiveAvatar.mount(box,'images/woman-interviewer.png'); }catch(e){}
+  }
+})();
+</script>
 </body>
 </html>

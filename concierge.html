@@ -89,7 +89,7 @@ var UI={
 };
 var LNAME={ko:'Korean',en:'English',zh:'Chinese',ja:'Japanese',ru:'Russian',vi:'Vietnamese'};
 var TTS={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP',ru:'ru-RU',vi:'vi-VN'};
-var lang='ko', history=[], recog=null, listening=false;
+var lang='ko', convHist=[], recog=null, listening=false;
 
 function SYS(){
   return 'You are the official multilingual AI voice concierge for Vinpearl Nha Trang, a large integrated resort and theme park (VinWonders) in Vietnam by VinGroup. '+
@@ -101,7 +101,7 @@ function langObj(){ for(var i=0;i<LANGS.length;i++) if(LANGS[i].c===lang) return
 function renderLangs(){
   var el=document.getElementById('langs');el.innerHTML='';
   LANGS.forEach(function(L){var b=document.createElement('button');b.textContent=L.f+' '+L.n;b.className=(L.c===lang?'on':'');
-    b.onclick=function(){stopListen();lang=L.c;history=[];renderLangs();resetChat();};el.appendChild(b);});
+    b.onclick=function(){stopListen();lang=L.c;convHist=[];renderLangs();resetChat();};el.appendChild(b);});
 }
 function resetChat(){
   var u=UI[lang];
@@ -130,17 +130,17 @@ function speak(t){try{if('speechSynthesis' in window){speechSynthesis.cancel();v
 async function ask(q){
   if(!q||!q.trim())return;
   addMsg('me',q);
-  history.push({role:'user',content:q});
+  convHist.push({role:'user',content:q});
   var chat=document.getElementById('chat');
   var t=document.createElement('div');t.className='typing';t.textContent='···';chat.appendChild(t);chat.scrollTop=chat.scrollHeight;
   try{
     var res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,system:SYS(),messages:history})});
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,system:SYS(),messages:convHist})});
     var data=await res.json();
     var txt=(data&&data.content&&data.content[0]&&data.content[0].text)||(data&&data.text)||'';
     t.remove();
     if(!txt){addMsg('bot','(demo) response unavailable, please try again.',false);return;}
-    history.push({role:'assistant',content:txt});
+    convHist.push({role:'assistant',content:txt});
     addMsg('bot',txt,true);
   }catch(e){t.remove();addMsg('bot','Network error. Please try again.',false);}
 }

@@ -218,7 +218,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V37';
+ var CUR='V38';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -568,7 +568,7 @@ $('drawBtn2').onclick=playDraw;
 /* 동요 — 노래 한 줄씩 불러주며 반짝(가라오케) + 줄 눌러 다시 듣기 */
 function romanizeLine(s){return s.split(' ').map(function(w){return romanize(w);}).join(' ');}
 var SONGS=[
-  {name:'곰 세 마리',emoji:'🐻',audio:'audio/song-bear-family.mp4',frames:['images/bear-family-a-t.png?v=2','images/bear-family-b-t.png?v=2'],
+  {name:'곰 세 마리',emoji:'🐻',audio:'audio/song-bear-family.mp4',lineBeats:[4,4,2,2,2,2],intro:5.0,frames:['images/bear-family-a-t.png?v=2','images/bear-family-b-t.png?v=2'],
    lineFrames:{2:['images/bear-dad-a-t.png?v=2','images/bear-dad-b-t.png?v=2'],3:['images/bear-mom-a-t.png?v=2','images/bear-mom-b-t.png?v=2'],4:['images/bear-baby-a-t.png?v=2','images/bear-baby-b-t.png?v=2']},
    bg:'repeating-linear-gradient(180deg,#BFE3FF 0 30px,#7CC3FF 30px 60px)',lines:[
     ['곰 세 마리가 한 집에 있어','Ba chú gấu ở chung một nhà'],
@@ -774,10 +774,19 @@ function playSong(){ stopSong(); ensureAudio();
     startDance(0.55);
     songAudio.addEventListener('loadedmetadata',function(){
       if(mySeq!==singSeq)return;
-      // 이 곡은 전주(~8초) 후 전체 가사가 2번 반복됨 — 하이라이트도 2바퀴 순환
-      var durS=songAudio.duration||60, n=s0.lines.length, slots=n*2;
-      var intro=8.0, seg=(durS-intro-4)/slots;
-      for(var i=0;i<slots;i++){(function(i2){songTimers.push(setTimeout(function(){if(mySeq!==singSeq)return;highlight(i2%n);},Math.round((intro+i2*seg)*1000)));})(i);}
+      // 가사 줄마다 마디 수가 달라 균등배분이 안 맞음 → 줄별 마디 비율로 하이라이트 배치.
+      // 곰 세 마리 1절 마디: 곰세마리가한집에있어(4) 아빠곰엄마곰아기곰(4) 아빠곰은뚱뚱해(2) 엄마곰은날씬해(2) 아기곰은너무귀여워(2) 으쓱으쓱잘한다(2)
+      var durS=songAudio.duration||60, n=s0.lines.length;
+      var beats=(s0.lineBeats&&s0.lineBeats.length===n)?s0.lineBeats:s0.lines.map(function(){return 1;});
+      var totalB=0; beats.forEach(function(b){totalB+=b;});
+      var intro=(s0.intro!=null?s0.intro:5.0), outro=2.0;
+      var singDur=Math.max(1,durS-intro-outro), perVerse=singDur/2;
+      var cum=[],acc=0; for(var k=0;k<n;k++){cum.push(acc);acc+=beats[k];}
+      for(var verse=0;verse<2;verse++){
+        for(var i=0;i<n;i++){
+          (function(li,vt){songTimers.push(setTimeout(function(){if(mySeq!==singSeq)return;highlight(li);},Math.round(vt*1000)));})(i, intro+verse*perVerse+(cum[i]/totalB)*perVerse);
+        }
+      }
     });
     songAudio.addEventListener('ended',function(){if(mySeq!==singSeq)return;stopDance();var ls=$('songLines').children;for(var k=0;k<ls.length;k++)ls[k].classList.remove('on');});
     return;

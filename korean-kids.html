@@ -214,7 +214,7 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V26';
+ var CUR='V27';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -330,6 +330,15 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 
 <script>
 var $=function(id){return document.getElementById(id);};
+/* 진단 비콘 — 사용자 기기에서만 나는 오류를 서버(page_visits)로 수집 */
+function kidsErr(msg){
+  try{
+    fetch('/api/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({userId:'kids-diag',email:'',page:('kids:'+msg).slice(0,180)})}).catch(function(){});
+  }catch(e){}
+}
+window.addEventListener('error',function(e){kidsErr('err:'+(e.message||'')+' L'+(e.lineno||'')+' '+String(e.filename||'').split('/').pop());});
+window.addEventListener('unhandledrejection',function(e){kidsErr('rej:'+String((e.reason&&e.reason.message)||e.reason).slice(0,120));});
 function rnd(a,b){return a+Math.random()*(b-a);}
 
 /* 배경 떠다니는 것들 */
@@ -559,11 +568,14 @@ function runDraw(){
       pen.style.left=(ob.b[0]+xw*ob.w)+'%';
       pen.style.top=(ob.b[1]+((r+1)/N)*ob.h)+'%';
       if(p<1){requestAnimationFrame(fr);return;}
-      say(o.ko);
-      if(curLab)curLab.classList.remove('show');
-      var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-9,3)+'%';
-      l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
-      hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l; try{sparkAt(l);}catch(e){}
+      // ★ 어떤 오류가 나도 다음 사물 진행은 절대 끊기지 않게 (사용자 기기에서 1번 사물 후 멈춤 사고 방어)
+      try{
+        say(o.ko);
+        if(curLab)curLab.classList.remove('show');
+        var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=Math.max(o.yp-9,3)+'%';
+        l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
+        hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l; try{sparkAt(l);}catch(e){}
+      }catch(e){ try{if(window.kidsErr)kidsErr('draw-post:'+(e&&e.message));}catch(_){} }
       oi++; drawTimers.push(setTimeout(drawObject,600));
     })(performance.now());
   }

@@ -36,6 +36,9 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 .tab.on[data-t="draw"]{background:#5AA469;color:#fff;}
 .tab.on[data-t="song"]{background:#F49D3C;color:#fff;}
 .sound-hint{text-align:center;font-size:0.86rem;color:#5B6480;font-weight:800;margin:2px 0 14px;}
+.langbar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:6px 0 4px;}
+.langbar button{background:#fff;border:2px solid #E2D8F0;border-radius:18px;padding:5px 12px;font-family:inherit;font-size:0.82rem;font-weight:700;color:#7A5AA8;cursor:pointer;}
+.langbar button.on{background:#7A5AA8;color:#fff;border-color:#7A5AA8;}
 
 .panel{display:none;} .panel.on{display:block;animation:pop .3s;}
 .seclabel{font-family:'Jua',sans-serif;font-size:1.2rem;color:#7A5AA8;text-align:center;margin:8px 0 14px;}
@@ -215,10 +218,11 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
 <script src="tts-map.js?v=3"></script>
 <script src="sing-map.js?v=1"></script>
 <script src="drawsp.js?v=2"></script>
+<script src="js/kids-i18n.js?v=1"></script>
 <script>
 /* 새 버전 자동 감지 — 캐시된 옛 페이지를 보고 있으면 스스로 새로고침 */
 (function(){try{
- var CUR='V38';
+ var CUR='V39';
  fetch('kids-ver.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){
   v=(v||'').trim();
   if(v&&v!==CUR){var u=new URL(location.href);if(u.searchParams.get('b')!==v){u.searchParams.set('b',v);location.replace(u.toString());}}
@@ -243,7 +247,8 @@ header .sub{font-weight:800;color:#4F84EF;font-size:0.98rem;margin-top:3px;}
     <button class="tab" data-t="song">🎵 동요</button>
     <button class="tab" data-t="game">🎮 놀이</button>
   </div>
-  <div class="sound-hint">🔊 소리를 켜주세요! Bật âm thanh nhé!</div>
+  <div class="langbar" id="langbar"></div>
+  <div class="sound-hint">🔊 소리를 켜주세요! <span id="soundHint">Bật âm thanh nhé!</span></div>
 
   <div class="panel on" id="p-bay">
     <div class="seclabel">장면을 골라요! · Chọn cảnh</div>
@@ -343,6 +348,33 @@ function kidsErr(msg){
 }
 window.addEventListener('error',function(e){kidsErr('err:'+(e.message||'')+' L'+(e.lineno||'')+' '+String(e.filename||'').split('/').pop());});
 window.addEventListener('unhandledrejection',function(e){kidsErr('rej:'+String((e.reason&&e.reason.message)||e.reason).slice(0,120));});
+
+/* ── 다국어 (힌트 언어 선택) — 기본 베트남어, en/ja/zh 지원 ── */
+var curLang = 'vi';
+try{ var _sl=localStorage.getItem('kidsLang'); if(_sl) curLang=_sl; }catch(e){}
+function vT(ko, vi){ try{ if(window.kidsTr){ var t=kidsTr(ko,curLang); if(t) return t; } }catch(e){} return vi; }
+function renderLangBar(){
+  var el=$('langbar'); if(!el||!window.KIDS_LANGS) return; el.innerHTML='';
+  KIDS_LANGS.forEach(function(L){
+    var b=document.createElement('button'); b.textContent=L.flag+' '+L.label; b.className=(L.code===curLang?'on':'');
+    b.onclick=function(){ curLang=L.code; try{localStorage.setItem('kidsLang',L.code);}catch(e){} renderLangBar(); applyLang(); };
+    el.appendChild(b);
+  });
+}
+function applyLang(){
+  // UI 문구
+  try{ if(window.KIDS_UI&&KIDS_UI[curLang]){ var sh=$('soundHint'); if(sh)sh.textContent=KIDS_UI[curLang].sound; } }catch(e){}
+  // 현재 활성 탭 다시 렌더 (낱말·놀이·동요·장면 힌트 언어 반영)
+  try{
+    var on=document.querySelector('.tab.on'); var t=on&&on.dataset.t;
+    if(t==='words'&&typeof renderWords==='function') renderWords();
+    if(t==='game'){ if(gameMode==='free'&&typeof renderFree==='function') renderFree(); else if(typeof newQuiz==='function') newQuiz(); }
+    if(t==='song'&&typeof renderSong==='function') renderSong();
+    if(t==='bay'&&typeof playBay==='function'){ /* 장면은 다음 재생 때 반영 */ }
+  }catch(e){}
+}
+document.addEventListener('DOMContentLoaded',function(){ renderLangBar(); applyLang(); });
+if(document.readyState!=='loading'){ setTimeout(function(){ try{renderLangBar();applyLang();}catch(e){} },0); }
 function rnd(a,b){return a+Math.random()*(b-a);}
 
 /* 배경 떠다니는 것들 */
@@ -463,7 +495,7 @@ function playBay(){
   var sc=SCENES[curScene],host=$('bay');host.style.background=sc.bg;host.innerHTML='';
   var dark=(curScene==='우주');
   var els=sc.items.map(function(w,idx){var pos=SLOTS[idx%SLOTS.length];var d=document.createElement('div');d.className='bobj';d.style.left=pos[0]+'%';d.style.top=pos[1]+'%';
-    d.innerHTML='<span class="e">'+emo(w[0])+'</span><span class="blab">'+w[1]+'<b>['+romanize(w[1])+']</b><small>'+w[2]+'</small></span>';
+    d.innerHTML='<span class="e">'+emo(w[0])+'</span><span class="blab">'+w[1]+'<b>['+romanize(w[1])+']</b><small>'+vT(w[1],w[2])+'</small></span>';
     d.onclick=function(){d.classList.remove('tap');void d.offsetWidth;d.classList.add('tap');say(w[1]);};
     host.appendChild(d);return d;});
   var i=0;
@@ -499,7 +531,7 @@ function enableDrawTap(){
   drawData.forEach(function(o){var h=document.createElement('div');h.className='dhot';h.style.left=o.xp+'%';h.style.top=o.yp+'%';
     h.onclick=function(){h.classList.remove('tap');void h.offsetWidth;h.classList.add('tap');say(o.ko);
       var l=document.createElement('div');l.className='dlab show';l.style.left=o.xp+'%';l.style.top=(o.yp<24?(o.b[3]+3):Math.max(o.yp-10,4))+'%';
-      l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
+      l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+vT(o.ko,o.vi)+'</div>';
       hots.appendChild(l);setTimeout(function(){l.classList.remove('show');setTimeout(function(){l.remove();},350);},1800);};
     hots.appendChild(h);});
 }
@@ -541,7 +573,7 @@ function runDraw(){
         ob.ci.style.opacity='1'; say(o.ko);
         if(curLab)curLab.classList.remove('show');
         var l=document.createElement('div');l.className='dlab';l.style.left=o.xp+'%';l.style.top=(o.yp<24?(o.b[3]+3):Math.max(o.yp-9,3))+'%';
-        l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+o.vi+'</div>';
+        l.innerHTML='<div class="k">'+o.ko+'</div><div class="r">['+romanize(o.ko)+']</div><div class="v">'+vT(o.ko,o.vi)+'</div>';
         hots.appendChild(l);void l.offsetWidth;l.classList.add('show');curLab=l; try{sparkAt(l);}catch(e){}
         oi++; drawTimers.push(setTimeout(drawObject,550)); return;
       }
@@ -614,7 +646,7 @@ function renderSong(){
   else{se.textContent=s.emoji;}
   var host=$('songLines');host.innerHTML='';
   s.lines.forEach(function(ln,i){var d=document.createElement('div');d.className='sline';d.dataset.i=i;
-    d.innerHTML='<div class="ko">'+ln[0]+'</div><div class="ro">['+romanizeLine(ln[0])+']</div><div class="vi">'+ln[1]+'</div>';
+    d.innerHTML='<div class="ko">'+ln[0]+'</div><div class="ro">['+romanizeLine(ln[0])+']</div><div class="vi">'+vT(ln[0],ln[1])+'</div>';
     d.onclick=function(){highlight(i);sayLine(ln[0]);};host.appendChild(d);});
 }
 function setStageFrames(pair){var se=$('songEmoji');var f0=se.querySelector('.f0'),f1=se.querySelector('.f1');
@@ -832,7 +864,7 @@ function renderFreeCats(){var el=$('freeCats');el.innerHTML='';
     b.onclick=function(){freeCat=k;renderFreeCats();renderFree();};el.appendChild(b);});}
 function renderFree(){renderFreeCats();var el=$('freeGrid');el.innerHTML='';
   CATS[freeCat].items.forEach(function(w,i){var c=document.createElement('div');c.className='wcard a'+(i%4);
-    c.innerHTML='<div class="emo">'+emo(w[0])+'</div><div class="ko">'+w[1]+'</div><div class="pr">['+romanize(w[1])+']</div><div class="vi">'+w[2]+'</div>';
+    c.innerHTML='<div class="emo">'+emo(w[0])+'</div><div class="ko">'+w[1]+'</div><div class="pr">['+romanize(w[1])+']</div><div class="vi">'+vT(w[1],w[2])+'</div>';
     c.onclick=function(){c.classList.remove('boing');void c.offsetWidth;c.classList.add('boing');sparkAt(c);say(w[1]);};
     el.appendChild(c);});}
 renderGameModes();
@@ -866,10 +898,10 @@ function renderCats(){var el=$('cats');el.innerHTML='';
     b.onclick=function(){curCat=k;renderCats();renderWords();};el.appendChild(b);});}
 function renderWords(){var el=$('wordgrid');el.innerHTML='';
   CATS[curCat].items.forEach(function(w,i){var c=document.createElement('div');c.className='wcard a'+(i%4);
-    c.innerHTML='<div class="emo">'+emo(w[0])+'</div><div class="ko">'+w[1]+'</div><div class="pr">['+romanize(w[1])+']</div><div class="vi">'+w[2]+'</div>';
+    c.innerHTML='<div class="emo">'+emo(w[0])+'</div><div class="ko">'+w[1]+'</div><div class="pr">['+romanize(w[1])+']</div><div class="vi">'+vT(w[1],w[2])+'</div>';
     c.onclick=function(){c.classList.remove('boing');void c.offsetWidth;c.classList.add('boing');sparkAt(c);showReveal(w);};
     el.appendChild(c);});}
-function showReveal(w){$('rEmo').innerHTML=emo(w[0]);$('rKo').textContent=w[1];$('rPr').textContent='['+romanize(w[1])+']';$('rVi').textContent=w[2];
+function showReveal(w){$('rEmo').innerHTML=emo(w[0]);$('rKo').textContent=w[1];$('rPr').textContent='['+romanize(w[1])+']';$('rVi').textContent=vT(w[1],w[2]);
   var r=$('reveal');r.classList.remove('on');void r.offsetWidth;r.classList.add('on');
   setTimeout(function(){say(w[1]);},1050);}
 $('reveal').onclick=function(e){if(e.target===$('reveal'))$('reveal').classList.remove('on');};

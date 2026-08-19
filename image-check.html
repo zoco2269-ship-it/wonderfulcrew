@@ -130,6 +130,10 @@
   body.mk-embed .ba-hint{margin-bottom:8px!important;font-size:0.72rem!important;}
   body.mk-embed .mk-group{margin-bottom:11px!important;}
   body.mk-embed .mk-sw{width:30px!important;height:30px!important;}
+  /* 메이크업 전용 모드(#makeupCard): 면접사진 예시·진단 숨김 */
+  body.mkmode .ex,body.mkmode .ex-cap,body.mkmode #result,body.mkmode #styleCard,body.mkmode #finishCard,body.mkmode #go,body.mkmode .privacy{display:none!important;}
+  /* 면접사진 모드(기본): 메이크업 섹션 숨김 — 두 기능 분리 */
+  body:not(.mkmode) #makeupCard{display:none!important;}
 </style>
 <link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
@@ -757,11 +761,15 @@ if(fileEl){ fileEl.addEventListener('change', function(e){ var f=e.target.files 
   try{
     var q=new URLSearchParams(location.search);
     if(q.get('embed')==='1'){ document.body.classList.add('mk-embed'); }
-    // 사진을 올리지 않아도 데모 사진으로 메이크업 화면을 바로 보여줌 (내 사진 올리면 교체)
-    var photo=q.get('photo') || 'images/cv-face.png';
-    try{ var r=await fetch(photo); if(r.ok){ var b=await r.blob(); await handle(b);
-      if(q.get('embed')!=='1'){ var mc=document.getElementById('makeupCard'); if(mc) mc.scrollIntoView({behavior:'smooth',block:'start'}); }
-    } }catch(e){}
+    // 메이크업 모드(#makeupCard 또는 임베드): 메이크업만 노출 + 데모 사진 자동
+    var mkMode = location.hash==='#makeupCard' || q.get('embed')==='1';
+    if(mkMode){
+      document.body.classList.add('mkmode');
+      var photo=q.get('photo') || 'images/cv-face.png';
+      try{ var r=await fetch(photo); if(r.ok){ var b=await r.blob(); await handle(b);
+        if(q.get('embed')!=='1'){ var mc=document.getElementById('makeupCard'); if(mc) mc.scrollIntoView({behavior:'smooth',block:'start'}); }
+      } }catch(e){}
+    }
   }catch(e){}
 })();
 </script>

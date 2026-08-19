@@ -60,21 +60,9 @@ section{padding:60px 5%;}
 .wrap{max-width:1000px;margin:0 auto;}
 
 .hub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;}
-.hub-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);border-radius:14px;box-shadow:0 10px 26px rgba(26,35,64,0.13);overflow:hidden;padding:24px 22px;text-decoration:none;color:inherit;transition:all 0.2s;cursor:pointer;position:relative;min-height:170px;}
+.hub-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--gold-pale);border-radius:14px;box-shadow:0 10px 26px rgba(26,35,64,0.13);overflow:hidden;padding:24px 22px;text-decoration:none;color:inherit;transition:all 0.2s;cursor:pointer;position:relative;min-height:170px;}
 .hub-card:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(26,35,64,0.18);}
 .hub-num{font-family:"Cormorant Garamond",serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:8px;font-weight:700;}
-/* 카드별 상큼한 색 구분 */
-.hub-card:nth-child(1){border-left-color:#26C6DA;}.hub-card:nth-child(1) .hub-num{color:#1499aa;}
-.hub-card:nth-child(2){border-left-color:#FF7A9A;}.hub-card:nth-child(2) .hub-num{color:#e85a7d;}
-.hub-card:nth-child(3){border-left-color:#42A5F5;}.hub-card:nth-child(3) .hub-num{color:#1e88e5;}
-.hub-card:nth-child(4){border-left-color:#9575CD;}.hub-card:nth-child(4) .hub-num{color:#7e57c2;}
-.hub-card:nth-child(5){border-left-color:#26A69A;}.hub-card:nth-child(5) .hub-num{color:#00897b;}
-.hub-card:nth-child(6){border-left-color:#FFA726;}.hub-card:nth-child(6) .hub-num{color:#fb8c00;}
-.hub-card:nth-child(7){border-left-color:#EC407A;}.hub-card:nth-child(7) .hub-num{color:#d81b60;}
-.hub-card:nth-child(8){border-left-color:#5C6BC0;}.hub-card:nth-child(8) .hub-num{color:#3f51b5;}
-.hub-card:nth-child(9){border-left-color:#9CCC65;}.hub-card:nth-child(9) .hub-num{color:#7cb342;}
-.hub-card:nth-child(10){border-left-color:#FF7043;}.hub-card:nth-child(10) .hub-num{color:#f4511e;}
-.hub-card:nth-child(11){border-left-color:#00BCD4;}.hub-card:nth-child(11) .hub-num{color:#00acc1;}
 .hub-img{margin:-24px -22px 14px;overflow:hidden;}
 .hub-img img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;}
 @media(max-width:900px){.hub-img{margin:-20px -18px 12px;}}
@@ -83,6 +71,16 @@ section{padding:60px 5%;}
 .hub-vis img.cover{width:100%;height:100%;object-fit:cover;display:block;}
 .hub-vis img.fit{width:100%;height:auto;display:block;}
 @media(max-width:900px){.hub-vis{margin:-20px -18px 12px;}}
+/* 면접사진 비포/애프터 반반 */
+.vis-ba{height:300px;margin:-24px -22px 14px;overflow:hidden;display:flex;position:relative;background:#fff;border-bottom:1.5px solid var(--gold-pale);}
+.vis-ba .mk-half{width:50%;height:100%;overflow:hidden;position:relative;}
+.vis-ba .mk-half img{width:100%;height:100%;object-fit:cover;display:block;}
+.vis-ba .mk-half:nth-child(1) img{object-position:center 20%;}
+.vis-ba .mk-half:nth-child(2) img{object-position:center 28%;}
+.vis-ba .mk-div{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.4);}
+.vis-ba .mk-lab{position:absolute;top:10px;font-size:0.58rem;font-weight:800;letter-spacing:.05em;color:#fff;background:rgba(0,0,0,0.5);padding:2px 8px;border-radius:8px;}
+.vis-ba .mk-lab.b{left:10px;}.vis-ba .mk-lab.a{right:10px;}
+@media(max-width:900px){.vis-ba{margin:-20px -18px 12px;}}
 /* 허브(심플 사이트)와 동일한 분석 오버레이 카드 */
 .vis-analysis{position:relative;height:300px;border-radius:0;overflow:hidden;background:#1e2c48;margin:-24px -22px 14px;border-bottom:1.5px solid var(--gold-pale);}
 @media(max-width:900px){.vis-analysis{margin:-20px -18px 12px;}}
@@ -217,7 +215,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </a>
 
   <a class="hub-card" href="image-check.html#makeupCard">
-    <div class="hub-vis"><img class="fit" src="images/image-1786512263800.png" alt="메이크업 입혀보기"></div>
+    <div class="hub-vis"><img class="cover" src="images/cv-face.png" alt="메이크업 입혀보기" style="object-position:center 12%;"></div>
     <div class="hub-num">Step 02</div>
     <div class="hub-title">메이크업 입히기 · 컬러 찾기</div>
     <div class="hub-desc">내 얼굴에 립스틱·아이섀도·아이라인을 직접 입혀보고 어울리는 컬러를 찾아요. 비포/애프터로 바로 비교.</div>
@@ -225,7 +223,13 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
   </a>
 
   <a class="hub-card" href="image-check.html">
-    <div class="hub-vis"><img class="fit" src="images/photo-good-global.png" alt="면접사진 만들기"></div>
+    <div class="vis-ba">
+      <div class="mk-half"><img src="images/Gemini_Generated_Image_hf75a8hf75a8hf75.png" alt="비포 - 캐주얼 셀카"></div>
+      <div class="mk-half"><img src="images/photo-good-global.png" alt="애프터 - 면접 증명사진"></div>
+      <div class="mk-div"></div>
+      <div class="mk-lab b">BEFORE</div>
+      <div class="mk-lab a">AFTER</div>
+    </div>
     <div class="hub-num">Step 03</div>
     <div class="hub-title">면접사진 만들기</div>
     <div class="hub-desc">캐주얼 셀카 한 장을 단정한 면접 증명사진으로. 메이크업·헤어·재킷 컬러까지 골라 AI가 완성해요.</div>

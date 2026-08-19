@@ -310,6 +310,7 @@ footer b{color:#fff;}
     <input id="sf-name" type="text" placeholder="이름" maxlength="40" required>
     <input id="sf-phone" type="tel" placeholder="전화번호 (010-0000-0000)" maxlength="20">
     <input id="sf-email" type="email" placeholder="이메일" maxlength="80">
+    <input id="sf-airline" type="text" placeholder="원하는 항공사 (직접 입력)" maxlength="60">
     <button type="submit" class="btn">신청하고 오픈채팅방 입장하기 →</button>
   </form>
   <p style="font-size:0.8rem;color:var(--muted);margin-top:12px;">신청 후 자동으로 카카오톡 오픈채팅방으로 이동합니다.</p>
@@ -353,6 +354,7 @@ footer b{color:#fff;}
       name:(document.getElementById('sf-name').value||'').trim(),
       phone:(document.getElementById('sf-phone').value||'').trim(),
       email:(document.getElementById('sf-email').value||'').trim(),
+      airline:(document.getElementById('sf-airline').value||'').trim(),
       
       source:'landing-free-live'
     };

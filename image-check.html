@@ -574,6 +574,23 @@ function paintMakeup(ctx){
     });
     ctx.filter='none';
   }
+  // 눈 안쪽(눈동자·흰자) 보호 — 아이 메이크업이 눈 안까지 번진 것을 원본으로 되돌림
+  if(eyeColor||smoky||eyeliner){
+    var EYE_HOLE_R=[33,7,163,144,145,153,154,155,133,173,157,158,159,160,161,246];
+    var EYE_HOLE_L=[263,249,390,373,374,380,381,382,362,398,384,385,386,387,388,466];
+    [EYE_HOLE_R,EYE_HOLE_L].forEach(function(eye){
+      var cx=0,cy=0; eye.forEach(function(id){cx+=lm[id].x*cw;cy+=lm[id].y*ch;}); cx/=eye.length; cy/=eye.length;
+      ctx.save(); ctx.filter='none'; ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
+      ctx.beginPath();
+      eye.forEach(function(id,i){ var px=lm[id].x*cw, py=lm[id].y*ch;
+        px=cx+(px-cx)*0.82; py=cy+(py-cy)*0.70;  // 안쪽으로 축소: 속눈썹 라인은 보존, 흰자·눈동자만 원본 복원
+        if(i)ctx.lineTo(px,py); else ctx.moveTo(px,py);
+      });
+      ctx.closePath(); ctx.clip();
+      ctx.drawImage(baseImg,0,0,cw,ch);
+      ctx.restore();
+    });
+  }
   // 립스틱 — multiply(입술 결 유지) + 살짝 발색, 가장자리 소프트 블러 → 자연스럽게
   if(lipColor){
     ctx.save(); ctx.filter='blur(1.4px)'; ctx.globalAlpha=0.30+lipInt*0.55; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=lipColor;

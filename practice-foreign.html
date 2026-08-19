@@ -59,10 +59,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 section{padding:60px 5%;}
 .wrap{max-width:1000px;margin:0 auto;}
 
-.hub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-.hub-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);padding:24px 22px;text-decoration:none;color:inherit;transition:all 0.2s;cursor:pointer;position:relative;min-height:170px;}
-.hub-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(201,168,76,0.18);border-left-color:var(--gold-light);}
+.hub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;}
+.hub-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--gold-pale);border-left:4px solid var(--gold);border-radius:14px;box-shadow:0 10px 26px rgba(26,35,64,0.13);overflow:hidden;padding:24px 22px;text-decoration:none;color:inherit;transition:all 0.2s;cursor:pointer;position:relative;min-height:170px;}
+.hub-card:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(26,35,64,0.18);}
 .hub-num{font-family:"Cormorant Garamond",serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:8px;font-weight:700;}
+/* 카드별 상큼한 색 구분 */
+.hub-card:nth-child(1){border-left-color:#26C6DA;}.hub-card:nth-child(1) .hub-num{color:#1499aa;}
+.hub-card:nth-child(2){border-left-color:#FF7A9A;}.hub-card:nth-child(2) .hub-num{color:#e85a7d;}
+.hub-card:nth-child(3){border-left-color:#42A5F5;}.hub-card:nth-child(3) .hub-num{color:#1e88e5;}
+.hub-card:nth-child(4){border-left-color:#9575CD;}.hub-card:nth-child(4) .hub-num{color:#7e57c2;}
+.hub-card:nth-child(5){border-left-color:#26A69A;}.hub-card:nth-child(5) .hub-num{color:#00897b;}
+.hub-card:nth-child(6){border-left-color:#FFA726;}.hub-card:nth-child(6) .hub-num{color:#fb8c00;}
+.hub-card:nth-child(7){border-left-color:#EC407A;}.hub-card:nth-child(7) .hub-num{color:#d81b60;}
+.hub-card:nth-child(8){border-left-color:#5C6BC0;}.hub-card:nth-child(8) .hub-num{color:#3f51b5;}
+.hub-card:nth-child(9){border-left-color:#9CCC65;}.hub-card:nth-child(9) .hub-num{color:#7cb342;}
+.hub-card:nth-child(10){border-left-color:#FF7043;}.hub-card:nth-child(10) .hub-num{color:#f4511e;}
+.hub-card:nth-child(11){border-left-color:#00BCD4;}.hub-card:nth-child(11) .hub-num{color:#00acc1;}
 .hub-img{margin:-24px -22px 14px;overflow:hidden;}
 .hub-img img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;}
 @media(max-width:900px){.hub-img{margin:-20px -18px 12px;}}
@@ -204,12 +216,28 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <div class="hub-arrow">→</div>
   </a>
 
+  <a class="hub-card" href="image-check.html#makeupCard">
+    <div class="hub-vis"><img class="fit" src="images/image-1786512263800.png" alt="메이크업 입혀보기"></div>
+    <div class="hub-num">Step 02</div>
+    <div class="hub-title">메이크업 입히기 · 컬러 찾기</div>
+    <div class="hub-desc">내 얼굴에 립스틱·아이섀도·아이라인을 직접 입혀보고 어울리는 컬러를 찾아요. 비포/애프터로 바로 비교.</div>
+    <div class="hub-arrow">→</div>
+  </a>
+
+  <a class="hub-card" href="image-check.html">
+    <div class="hub-vis"><img class="fit" src="images/photo-good-global.png" alt="면접사진 만들기"></div>
+    <div class="hub-num">Step 03</div>
+    <div class="hub-title">면접사진 만들기</div>
+    <div class="hub-desc">캐주얼 셀카 한 장을 단정한 면접 증명사진으로. 메이크업·헤어·재킷 컬러까지 골라 AI가 완성해요.</div>
+    <div class="hub-arrow">→</div>
+  </a>
+
   <a class="hub-card" href="smalltalk.html">
     <div class="hub-vis" style="gap:6px;padding:8px;">
       <img src="images/card-good-photo.png" alt="웃을 때 - 미소 아주 좋아요 실시간 코칭" style="height:calc(50% - 3px);width:auto;max-width:100%;object-fit:contain;border-radius:8px;display:block;">
       <img src="images/card-coach-photo.png" alt="무표정일 때 - 입꼬리 조금만 더 실시간 코칭" style="height:calc(50% - 3px);width:auto;max-width:100%;object-fit:contain;border-radius:8px;display:block;">
     </div>
-    <div class="hub-num">Step 02</div>
+    <div class="hub-num">Step 04</div>
     <div class="hub-title">CV Drop · 스몰톡</div>
     <div class="hub-desc">첫인사·짧은 대화로 자연스럽게 자기 어필. 실제 오픈데이 시작점입니다.</div>
     <div class="hub-arrow">→</div>
@@ -229,7 +257,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
         <div class="va-m"><div class="l"><span>기울기</span><span>90</span></div><div class="t"><i style="width:90%;background:#4FBE7A"></i></div></div>
       </div>
     </div>
-    <div class="hub-num">Step 03</div>
+    <div class="hub-num">Step 05</div>
     <div class="hub-title">비디오 면접</div>
     <div class="hub-desc">Emirates·Qatar 등 온라인 영상 인터뷰. 자기소개·지원 동기 30~60초 답변 연습.</div>
     <div class="hub-arrow">→</div>
@@ -237,7 +265,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
   <a class="hub-card" href="discussion-hub.html">
     <div class="hub-vis"><img class="fit" src="images/Gemini_Generated_Image_dqt50bdqt50bdqt5.png" alt="그룹 디스커션"></div>
-    <div class="hub-num">Step 04</div>
+    <div class="hub-num">Step 06</div>
     <div class="hub-title">디스커션</div>
     <div class="hub-desc">Emirates 1차·2차, Singapore 디베이트 — 항공사별 디스커션 형식 모두.</div>
     <div class="hub-arrow">→</div>
@@ -254,7 +282,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
       <div style="width:64px;height:64px;margin:0 auto 12px;border-radius:50%;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);background:#fff;">60</div>
       <span style="display:inline-block;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-size:0.82rem;font-weight:700;border-radius:18px;padding:6px 26px;">Start</span>
     </div>
-    <div class="hub-num">Step 05</div>
+    <div class="hub-num">Step 07</div>
     <div class="hub-title">워드슈팅</div>
     <div class="hub-desc">Qatar 워드슈팅 전용 연습. 단어 키워드로 즉석 답변·발화 훈련.</div>
     <div class="hub-arrow">→</div>
@@ -262,7 +290,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
   <a class="hub-card" href="roleplay-practice.html">
     <div class="hub-vis"><img class="fit" src="images/hero-roleplay.jpg" alt="롤플레이 상황 대응"></div>
-    <div class="hub-num">Step 06</div>
+    <div class="hub-num">Step 08</div>
     <div class="hub-title">롤플레이</div>
     <div class="hub-desc">AI 면접관이 기내·호텔·레스토랑·카페·크루즈 상황으로 영어 대화. 엑센트 선택 가능.</div>
     <div class="hub-arrow">→</div>
@@ -285,7 +313,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
         </div>
       </div>
     </div>
-    <div class="hub-num">Step 07</div>
+    <div class="hub-num">Step 09</div>
     <div class="hub-title">영어 테스트</div>
     <div class="hub-desc">어휘·전치사·독해 객관식. 항공사 실전 패턴으로 연습.</div>
     <div class="hub-arrow">→</div>
@@ -293,7 +321,7 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
 
   <a class="hub-card" href="final.html">
     <div class="hub-vis"><img class="fit" src="images/Gemini_Generated_Image_9vrkb49vrkb49vrk.png" alt="파이널 인터뷰" style="transform:scale(1.15);"></div>
-    <div class="hub-num">Step 08</div>
+    <div class="hub-num">Step 10</div>
     <div class="hub-title">파이널 인터뷰</div>
     <div class="hub-desc">1:1 최종 면접. 영어로 본인 경험·동기 심층 질문에 답하기.</div>
     <div class="hub-arrow">→</div>

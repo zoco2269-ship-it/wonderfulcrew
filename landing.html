@@ -88,12 +88,12 @@ nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-con
 .vis-photocard .mk-half:nth-child(2) img{object-position:center 42%;}
 /* 메이크업: 카드 안에서 실제 작동 (좌우 슬라이더 + 색상 클릭) */
 .mk-live{margin-bottom:14px;}
-.mk-stage{position:relative;width:100%;max-width:340px;margin:0 auto;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:#eef1f5;cursor:ew-resize;touch-action:none;}
+.mk-stage{position:relative;width:100%;max-width:330px;margin:0 auto;aspect-ratio:689/895;border-radius:12px;overflow:hidden;background:#eef1f5;cursor:ew-resize;touch-action:none;}
 .mk-stage>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
 .mk-tint{position:absolute;inset:0;clip-path:inset(0 0 0 50%);pointer-events:none;}
-.mk-tint span{position:absolute;mix-blend-mode:multiply;background:#C0392B;border-radius:50%;filter:blur(1.2px);opacity:.6;}
-.mk-lipU{left:43.5%;top:55.4%;width:13%;height:1.8%;}
-.mk-lipL{left:44%;top:56.8%;width:12%;height:2.5%;}
+.mk-tint span{position:absolute;mix-blend-mode:multiply;background:#C0392B;border-radius:60%;filter:blur(1px);opacity:.55;}
+.mk-lipU{left:42.8%;top:51.8%;width:14%;height:1.5%;}
+.mk-lipL{left:44%;top:54.4%;width:11.5%;height:2.1%;}
 .mk-cut{position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(255,255,255,.92);box-shadow:0 0 6px rgba(0,0,0,.35);pointer-events:none;}
 .mk-handle2{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#333;box-shadow:0 2px 6px rgba(0,0,0,.3);cursor:ew-resize;z-index:2;}
 .mk-palette{display:flex;gap:9px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
@@ -102,7 +102,7 @@ nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-con
 .mk-hint{text-align:center;font-family:'Noto Sans KR',sans-serif;font-size:0.8rem;color:var(--gold);font-weight:700;margin-top:9px;}
 /* CV 템플릿 미니 미리보기 */
 .vis-cv{border-radius:12px;overflow:hidden;margin-bottom:16px;display:flex;background:#fff;border:1px solid var(--line);font-family:'Noto Sans KR',sans-serif;}
-.vis-cv .cv-desc{font-size:8px;color:#807a70;line-height:1.35;margin:2px 0 10px;}
+.vis-cv .cv-desc{font-size:9.5px;color:#807a70;line-height:1.4;margin:3px 0 11px;}
 .vis-cv .cv-side{width:33%;background:#A9744F;color:#fff;padding:19px 13px;text-align:center;}
 .vis-cv .cv-photo{width:60px;height:60px;border-radius:50%;border:2px solid rgba(255,255,255,.9);background:rgba(255,255,255,.18) url('images/cv-face.png') center 15%/cover;margin:0 auto 9px;}
 .vis-cv .cv-name{font-size:13px;font-weight:800;letter-spacing:.05em;line-height:1.1;}
@@ -110,9 +110,9 @@ nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-con
 .vis-cv .cv-csec{font-size:8.5px;font-weight:800;letter-spacing:.12em;margin:12px 0 5px;border-top:1px solid rgba(255,255,255,.32);padding-top:9px;text-align:left;}
 .vis-cv .cv-cl{font-size:7.8px;color:rgba(255,255,255,.9);margin-bottom:4px;text-align:left;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .vis-cv .cv-main{flex:1;padding:19px 17px;color:#333;text-align:left;overflow:hidden;}
-.vis-cv .cv-mh{font-size:10px;font-weight:800;letter-spacing:.06em;color:#A9744F;border-bottom:1px solid #eee3d4;padding-bottom:4px;margin:0 0 5px;}
-.vis-cv .cv-mt{font-size:10px;font-weight:700;color:#2f2f2f;line-height:1.15;}
-.vis-cv .cv-ms{font-size:8.5px;color:#8a8a8a;margin:2px 0 12px;line-height:1.2;}
+.vis-cv .cv-mh{font-size:12px;font-weight:800;letter-spacing:.06em;color:#A9744F;border-bottom:1px solid #eee3d4;padding-bottom:5px;margin:0 0 6px;}
+.vis-cv .cv-mt{font-size:12px;font-weight:700;color:#2f2f2f;line-height:1.2;}
+.vis-cv .cv-ms{font-size:10px;color:#8a8a8a;margin:2px 0 12px;line-height:1.25;}
 .vis-cv .cv-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px;}
 .vis-cv .cv-chips span{font-size:7.8px;font-weight:700;color:#7a531f;background:#F3E7C4;border:1px solid #d9b96a;border-radius:6px;padding:3px 8px;line-height:1;}
 /* 실시간 이미지 분석 미니 프레임 */
@@ -194,7 +194,7 @@ footer b{color:#fff;}
   <div class="card">
     <div class="mk-live" id="mkLive">
       <div class="mk-stage" id="mkStage">
-        <img src="images/photo-after-bare.png" alt="메이크업 컬러 시뮬레이션">
+        <img src="images/cv-face.png" alt="메이크업 컬러 시뮬레이션">
         <div class="mk-tint" id="mkTint"><span class="mk-lipU"></span><span class="mk-lipL"></span></div>
         <div class="mk-cut" id="mkCut"></div>
         <div class="mk-handle2" id="mkHandle2">⇔</div>

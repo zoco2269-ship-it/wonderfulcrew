@@ -640,7 +640,7 @@ async function endSession(){
   var box=document.getElementById('aiAvatar');
   if(box && window.LiveAvatar){
     box.textContent=''; box.style.fontSize='0';
-    try{ window.__iav=LiveAvatar.mount(box,'images/woman-interviewer.png'); }catch(e){}
+    try{ window.__iav=LiveAvatar.mount(box,'images/woman-interviewer.png'); if(window.__iav) window.__iav.tune({eyeY:0.40, eyeGap:0.082, eyeW:0.072, eyeH:0.04, mouthY:0.60}); }catch(e){}
   }
 })();
 </script>

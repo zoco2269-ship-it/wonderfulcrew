@@ -98,6 +98,11 @@
   .srec-t{font-size:0.86rem;font-weight:700;color:var(--navy);margin-bottom:5px;}
   .srec div{font-size:0.92rem;color:var(--mid);line-height:1.65;}
   .snote{margin-top:14px;font-size:0.78rem;color:var(--muted);line-height:1.6;}
+  /* 랜딩 iframe 임베드용 — 메이크업 화면만 노출 */
+  body.mk-embed{padding:0!important;background:#fff!important;}
+  body.mk-embed nav,body.mk-embed header,body.mk-embed footer,body.mk-embed .ex,body.mk-embed .ex-cap,body.mk-embed .eyebrow,body.mk-embed h1,body.mk-embed .lead,body.mk-embed .card:not(.makeup){display:none!important;}
+  body.mk-embed .wrap{padding:12px!important;max-width:none!important;margin:0!important;}
+  body.mk-embed .makeup{margin:0!important;border:none!important;box-shadow:none!important;}
 </style>
 <link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
@@ -720,6 +725,16 @@ async function handle(file){
 
 var fileEl=$('file');
 if(fileEl){ fileEl.addEventListener('change', function(e){ var f=e.target.files && e.target.files[0]; if(f) handle(f); }); }
+
+// 랜딩 임베드: ?photo=경로 자동 로드 → 메이크업 화면부터 시작, ?embed=1 → 메이크업 카드만 노출
+(async function(){
+  try{
+    var q=new URLSearchParams(location.search);
+    if(q.get('embed')==='1'){ document.body.classList.add('mk-embed'); }
+    var photo=q.get('photo');
+    if(photo){ var r=await fetch(photo); if(!r.ok) return; var b=await r.blob(); await handle(b); }
+  }catch(e){}
+})();
 </script>
 </body>
 </html>

@@ -90,25 +90,27 @@ nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-con
 .mk-live{margin-bottom:14px;}
 .mk-stage{position:relative;width:100%;max-width:330px;margin:0 auto;aspect-ratio:689/895;border-radius:12px;overflow:hidden;background:#eef1f5;cursor:ew-resize;touch-action:none;}
 .mk-stage>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
-.mk-tint{position:absolute;inset:0;clip-path:inset(0 0 0 50%);pointer-events:none;}
-.mk-tint span{position:absolute;mix-blend-mode:multiply;background:#C0392B;border-radius:60%;filter:blur(1px);opacity:.55;}
-.mk-lipU{left:42.8%;top:51.8%;width:14%;height:1.5%;}
-.mk-lipL{left:44%;top:54.4%;width:11.5%;height:2.1%;}
+.mk-tint{position:absolute;inset:0;width:100%;height:100%;clip-path:inset(0 0 0 50%);pointer-events:none;mix-blend-mode:multiply;}
+.mk-tint .mk-lip{fill:#C0392B;opacity:.5;}
 .mk-cut{position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(255,255,255,.92);box-shadow:0 0 6px rgba(0,0,0,.35);pointer-events:none;}
 .mk-handle2{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#333;box-shadow:0 2px 6px rgba(0,0,0,.3);cursor:ew-resize;z-index:2;}
 .mk-palette{display:flex;gap:9px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
 .mk-palette button{width:30px;height:30px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer;padding:0;}
 .mk-palette button.on{outline:2px solid var(--gold);outline-offset:2px;}
 .mk-hint{text-align:center;font-family:'Noto Sans KR',sans-serif;font-size:0.8rem;color:var(--gold);font-weight:700;margin-top:9px;}
+/* 실제 기능 페이지 라이브 임베드 */
+.f-embed{position:relative;width:100%;border-radius:12px;overflow:hidden;border:1px solid var(--line);margin-bottom:16px;background:#fff;}
+.f-embed iframe{width:100%;height:600px;border:0;display:block;}
+.f-embed-tall iframe{height:640px;}
 /* CV 템플릿 미니 미리보기 */
 .vis-cv{border-radius:12px;overflow:hidden;margin-bottom:16px;display:flex;background:#fff;border:1px solid var(--line);font-family:'Noto Sans KR',sans-serif;}
 .vis-cv .cv-desc{font-size:9.5px;color:#807a70;line-height:1.4;margin:3px 0 11px;}
 .vis-cv .cv-side{width:33%;background:#A9744F;color:#fff;padding:19px 13px;text-align:center;}
 .vis-cv .cv-photo{width:60px;height:60px;border-radius:50%;border:2px solid rgba(255,255,255,.9);background:rgba(255,255,255,.18) url('images/cv-face.png') center 15%/cover;margin:0 auto 9px;}
-.vis-cv .cv-name{font-size:13px;font-weight:800;letter-spacing:.05em;line-height:1.1;}
-.vis-cv .cv-title{font-size:7.8px;letter-spacing:.18em;color:rgba(255,255,255,.85);margin-top:3px;}
-.vis-cv .cv-csec{font-size:8.5px;font-weight:800;letter-spacing:.12em;margin:12px 0 5px;border-top:1px solid rgba(255,255,255,.32);padding-top:9px;text-align:left;}
-.vis-cv .cv-cl{font-size:7.8px;color:rgba(255,255,255,.9);margin-bottom:4px;text-align:left;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vis-cv .cv-name{font-size:15px;font-weight:800;letter-spacing:.05em;line-height:1.1;}
+.vis-cv .cv-title{font-size:9px;letter-spacing:.16em;color:rgba(255,255,255,.85);margin-top:3px;}
+.vis-cv .cv-csec{font-size:10px;font-weight:800;letter-spacing:.1em;margin:13px 0 6px;border-top:1px solid rgba(255,255,255,.32);padding-top:10px;text-align:left;}
+.vis-cv .cv-cl{font-size:9.5px;color:rgba(255,255,255,.92);margin-bottom:5px;text-align:left;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .vis-cv .cv-main{flex:1;padding:19px 17px;color:#333;text-align:left;overflow:hidden;}
 .vis-cv .cv-mh{font-size:12px;font-weight:800;letter-spacing:.06em;color:#A9744F;border-bottom:1px solid #eee3d4;padding-bottom:5px;margin:0 0 6px;}
 .vis-cv .cv-mt{font-size:12px;font-weight:700;color:#2f2f2f;line-height:1.2;}
@@ -192,23 +194,7 @@ footer b{color:#fff;}
   </div>
 
   <div class="card">
-    <div class="mk-live" id="mkLive">
-      <div class="mk-stage" id="mkStage">
-        <img src="images/cv-face.png" alt="메이크업 컬러 시뮬레이션">
-        <div class="mk-tint" id="mkTint"><span class="mk-lipU"></span><span class="mk-lipL"></span></div>
-        <div class="mk-cut" id="mkCut"></div>
-        <div class="mk-handle2" id="mkHandle2">⇔</div>
-        <div class="mk-lab b">원본</div><div class="mk-lab a">메이크업</div>
-      </div>
-      <div class="mk-palette" id="mkPalette">
-        <button data-c="#C0392B" style="background:#C0392B" class="on" aria-label="클래식 레드"></button>
-        <button data-c="#E7568C" style="background:#E7568C" aria-label="핑크"></button>
-        <button data-c="#D35400" style="background:#D35400" aria-label="코랄"></button>
-        <button data-c="#B03A5B" style="background:#B03A5B" aria-label="로즈"></button>
-        <button data-c="#A0522D" style="background:#A0522D" aria-label="누드 브라운"></button>
-      </div>
-      <div class="mk-hint">👆 색을 눌러 입술 색을 바꾸고, 가운데 선을 좌우로 밀어 보세요</div>
-    </div>
+    <div class="f-embed"><iframe src="image-check.html?photo=images/cv-face.png&embed=1#makeupCard" loading="lazy" title="메이크업 입혀보기 — 립스틱·아이섀도 컬러"></iframe></div>
     <h3>메이크업 입히기 · 컬러 찾기</h3>
     <p>내 얼굴에 립스틱·아이섀도·아이라인을 직접 입혀보며 나에게 어울리는 면접 메이크업 컬러를 찾아요. 비포/애프터를 좌우로 밀어 비교하면 변화가 한눈에 보입니다.</p><div class="card-note"><b>이 기능에서는</b>1. 립스틱·아이섀도·아이라인 색을 클릭하면 내 얼굴에 실시간으로 발라지고, 진하기도 슬라이더로 조절합니다.<br>2. 사진 가운데 선을 좌우로 밀면 화장 전(원본)과 화장 후를 곧바로 비교할 수 있어요.<br>3. 배경색까지 흰색·블루로 바꿔 실제 면접 사진 느낌을 미리 확인합니다.<br><span style="color:var(--gold);font-weight:700;">👆 색을 클릭하고, 가운데 선을 좌우로 움직여 보세요</span></div>
   </div>
@@ -260,13 +246,7 @@ footer b{color:#fff;}
   </div>
 
   <div class="card">
-    <div class="vis-block">
-      <div class="vb-title">Word Shooting · Sentence Shooting</div>
-      <div class="vb-sub">랜덤 키워드가 주어지면 즉석에서 영어로 발표하세요</div>
-      <div class="vb-modes"><span class="on">Word</span><span>Sentence</span></div>
-      <div class="vb-timer">60</div>
-      <div class="vb-start">Start</div>
-    </div>
+    <div class="f-embed f-embed-tall"><iframe src="word-shooting.html" loading="lazy" title="워드슈팅 · 문장 슈팅"></iframe></div>
     <h3>워드슈팅 · 문장 슈팅</h3>
     <p>랜덤으로 주어지는 단어나 문장을 받아 60초 안에 즉석에서 영어로 발표해요. Qatar처럼 순발력을 보는 면접에 대비하는 즉흥 스피치 훈련입니다.</p>
     <div class="card-note"><b>이 기능에서는</b>1. Word 모드는 단어 하나, Sentence 모드는 문장 하나가 랜덤으로 주어집니다.<br>2. 60초 타이머가 도는 동안 멈추지 않고 즉석에서 영어로 말해요.<br>3. 실전에서 당황하지 않도록 순발력과 발화량을 함께 키웁니다.</div>

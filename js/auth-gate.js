@@ -1,6 +1,8 @@
 // 페이지 로드 시 로그인 체크 + 프로필 완료(전화번호) 강제 (HARD BLOCK)
 // 로그인된 사용자가 phone 없으면 페이지 자체를 화이트아웃 → 검증 후만 노출
 (function() {
+  // 랜딩 iframe 데모 임베드: ?embed=1이면 프로필 게이트 스킵 (콘텐츠 미리보기용)
+  try{ if(new URLSearchParams(location.search).get('embed')==='1') return; }catch(e){}
   var page = location.pathname.split('/').pop() || '';
   var ADMIN_EMAILS_GATE = ['zoco2269@gmail.com','guswn5164@gmail.com'];
 

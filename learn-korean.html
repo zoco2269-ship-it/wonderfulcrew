@@ -57,6 +57,9 @@ body{font-family:'Poppins','Noto Sans KR',sans-serif;background:var(--sand);colo
 .inbar input{flex:1;border:1.5px solid #d8daf0;border-radius:22px;padding:12px 16px;font-family:inherit;font-size:0.92rem;outline:none;}
 .inbar input:focus{border-color:var(--indigo);}
 .inbar button{background:var(--indigo);color:#fff;border:none;border-radius:22px;padding:0 20px;font-weight:700;cursor:pointer;font-family:inherit;}
+.inbar .mic{background:#fff;border:1.5px solid var(--indigo);color:var(--indigo);padding:0 16px;font-size:1.15rem;}
+.inbar .mic.on{background:var(--rose);color:#fff;border-color:var(--rose);animation:micpulse 1s infinite;}
+@keyframes micpulse{0%,100%{opacity:1;}50%{opacity:.55;}}
 .foot{text-align:center;font-size:0.76rem;color:#9a9fc0;margin-top:16px;line-height:1.7;}
 .foot a{color:var(--indigo);}
 </style>
@@ -77,7 +80,8 @@ body{font-family:'Poppins','Noto Sans KR',sans-serif;background:var(--sand);colo
   <div class="card">
     <div class="chat" id="chat"></div>
     <div class="inbar">
-      <input id="inp" placeholder="Ask anything, e.g. 'How do I order coffee?'">
+      <button id="mic" class="mic" title="Tap and speak">🎤</button>
+      <input id="inp" placeholder="🎤 Tap the mic and speak — or type here">
       <button id="send">Send</button>
     </div>
   </div>
@@ -160,6 +164,8 @@ async function send(q){
     if(!txt){addBot('Sorry, please try again.');return;}
     convHist.push({role:'assistant',content:txt});
     addBot(txt);
+    // 음성 대화: 답변의 첫 한국어 표현을 자동으로 읽어줌
+    try{ var fb=document.querySelector('#chat .msg.bot:last-child .spk'); if(fb){ speak(fb.getAttribute('data-ko')); } }catch(e2){}
   }catch(e){t.remove();addBot('Network error. Please try again.');}
 }
 function askTopic(label){
@@ -168,6 +174,22 @@ function askTopic(label){
 }
 document.getElementById('send').onclick=function(){var i=document.getElementById('inp');send(i.value);i.value='';};
 document.getElementById('inp').addEventListener('keydown',function(e){if(e.key==='Enter'){send(this.value);this.value='';}});
+// 음성 입력 (STT) — 학습자 언어로 말하면 인식해 전송
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+var STTLANG={en:'en-US',vi:'vi-VN',ja:'ja-JP',zh:'zh-CN',id:'id-ID',es:'es-ES'};
+var _rec=null,_listening=false;var _mic=document.getElementById('mic');
+_mic.onclick=function(){
+  if(!SR){ alert('Voice input works best on Chrome or Edge. You can type instead.'); return; }
+  if(_listening){ if(_rec)_rec.stop(); return; }
+  try{
+    _rec=new SR(); _rec.lang=STTLANG[lang]||'en-US'; _rec.interimResults=false; _rec.maxAlternatives=1;
+    _rec.onstart=function(){_listening=true;_mic.classList.add('on');};
+    _rec.onend=function(){_listening=false;_mic.classList.remove('on');};
+    _rec.onerror=function(){_listening=false;_mic.classList.remove('on');};
+    _rec.onresult=function(e){var tr=e.results[0][0].transcript;if(tr){send(tr);}};
+    _rec.start();
+  }catch(err){_listening=false;_mic.classList.remove('on');}
+};
 renderLangs();renderTopics();resetChat();
 </script>
 </body>

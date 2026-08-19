@@ -757,8 +757,11 @@ if(fileEl){ fileEl.addEventListener('change', function(e){ var f=e.target.files 
   try{
     var q=new URLSearchParams(location.search);
     if(q.get('embed')==='1'){ document.body.classList.add('mk-embed'); }
-    var photo=q.get('photo');
-    if(photo){ var r=await fetch(photo); if(!r.ok) return; var b=await r.blob(); await handle(b); }
+    // 사진을 올리지 않아도 데모 사진으로 메이크업 화면을 바로 보여줌 (내 사진 올리면 교체)
+    var photo=q.get('photo') || 'images/cv-face.png';
+    try{ var r=await fetch(photo); if(r.ok){ var b=await r.blob(); await handle(b);
+      if(q.get('embed')!=='1'){ var mc=document.getElementById('makeupCard'); if(mc) mc.scrollIntoView({behavior:'smooth',block:'start'}); }
+    } }catch(e){}
   }catch(e){}
 })();
 </script>

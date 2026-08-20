@@ -106,6 +106,13 @@ hr{border:none;border-top:1px dashed var(--line);margin:30px 0;}
 #post13 .f-embed{position:relative;width:100%;border-radius:12px;overflow:hidden;border:1px solid var(--line);margin:22px 0;background:#fff;}
 #post13 .f-embed iframe{width:100%;height:700px;border:0;display:block;}
 #post13 hr{margin:34px 0;}
+#post13 .review-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0;}
+#post13 .review{background:var(--cream);border:1px solid var(--line);border-radius:16px;padding:20px 18px;text-align:left;}
+#post13 .review .stars{color:var(--gold);font-size:.9rem;letter-spacing:2px;margin-bottom:9px;}
+#post13 .review p{font-family:'Noto Sans KR',sans-serif;font-size:.92rem;color:#333;line-height:1.75;margin:0 0 12px;}
+#post13 .review .who{font-family:'Noto Sans KR',sans-serif;font-size:.84rem;color:var(--navy);font-weight:700;}
+#post13 .review .who span{color:var(--muted);font-weight:400;}
+@media(max-width:600px){#post13 .review-grid{grid-template-columns:1fr;}}
 /* ===== post13 끝 ===== */
 </style>
 </head>
@@ -653,7 +660,7 @@ hr{border:none;border-top:1px dashed var(--line);margin:30px 0;}
 
   <h2>④ 영문 CV 템플릿 메이커 — 몇 분이면 완성돼요</h2>
   <p>승무원 지원에서 가장 미루기 쉬운 게 <strong>영문 이력서(CV)</strong>예요. 원더풀크루에서는 템플릿 모양(클래식·투톤·헤더형·미니멀·타임라인)과 포인트 컬러, 서체를 고르고 WORK EXPERIENCE·EDUCATION·SKILLS를 채우면 오른쪽 미리보기에 실시간으로 완성됩니다. 영어가 막히면 AI가 문장을 다듬어주고, 완성본은 PDF로 바로 내려받아 제출할 수 있어요.</p>
-  <figure><img src="images/blog-cv-maker.png" alt="승무원 CV 메이커 - 왼쪽 내용 입력, 오른쪽 이력서 실시간 완성"><figcaption>실제 화면 — 왼쪽에 이름·경력·학력을 입력하면 오른쪽 이력서에 실시간으로 완성돼요</figcaption></figure>
+  <figure><img src="images/blog-cv-maker.png?v=2" alt="승무원 CV 메이커 - 왼쪽 내용 입력, 오른쪽 이력서 실시간 완성"><figcaption>실제 화면 — 왼쪽에 이름·경력·학력을 입력하면 오른쪽 이력서에 실시간으로 완성돼요</figcaption></figure>
   <div class="card-note"><b>이 기능에서는</b>1. 클래식·투톤 등 템플릿과 포인트 컬러·서체를 고릅니다.<br>2. WORK EXPERIENCE · EDUCATION · SKILLS를 채우면 오른쪽 미리보기에 실시간 반영되고, 영어가 막히면 AI가 문장을 다듬어줘요.<br>3. 완성된 이력서를 PDF로 내려받아 그대로 제출할 수 있어요.</div>
 
   <h2>⑤ 영상 면접 · 스몰톡 — 실제 비디오 면접처럼</h2>
@@ -706,6 +713,20 @@ hr{border:none;border-top:1px dashed var(--line);margin:30px 0;}
   <p>원더풀크루에서는 매 연습의 점수가 자동으로 기록돼 <strong>종합 실력이 분석</strong>돼요. 유창성·자신감·발음·서비스 마인드까지 5개 역량을 레이더 차트와 항목별 점수·등급으로 확인하고, <span class="em">강점과 보완할 부분</span>을 리포트로 받습니다. 무엇을 더 연습해야 할지 코칭 인사이트가 방향을 잡아줘요.</p>
   <div class="vis-shot"><img src="images/shot-progress.png?v=2" alt="내 성장 기록 - 종합 실력 레이더 분석·항목별 점수·강점/보완 리포트"></div>
   <div class="card-note"><b>이 기능에서는</b>1. 종합 점수·등급과 5개 역량 레이더 차트로 내 실력을 한눈에 봅니다.<br>2. 항목별 점수·상태(우수·양호·보통)와 강점·보완 영역을 리포트로 받아요.<br>3. 무엇을 더 연습해야 할지 코칭 인사이트로 방향을 잡습니다.</div>
+
+  <hr>
+  <h2>합격생 이야기</h2>
+  <div class="review-grid">
+    <div class="review"><div class="stars">★★★★★</div><p>“매일 실시간 AI 면접으로 연습하니 실전에서 하나도 안 떨렸어요. 영어 답변이 자연스러워진 게 스스로 느껴질 정도였습니다.”</p><div class="who">이○○ <span>· 카타르항공 합격</span></div></div>
+    <div class="review"><div class="stars">★★★★★</div><p>“면접사진부터 영문 CV까지 한 곳에서 준비했어요. 특히 이미지 분석으로 무표정 습관을 잡고 미소를 교정한 게 결정적이었습니다.”</p><div class="who">박○○ <span>· 에미레이트항공 합격</span></div></div>
+    <div class="review"><div class="stars">★★★★★</div><p>“롤플레이로 까다로운 승객 상황을 계속 연습하니 실제 면접의 돌발 질문에도 당황하지 않았어요. 준비된 사람이 된 느낌이었습니다.”</p><div class="who">김○○ <span>· 싱가포르항공 합격</span></div></div>
+    <div class="review"><div class="stars">★★★★★</div><p>“스몰톡 연습에서 오른쪽에 시선 점수가 실시간으로 떠서, 제가 자꾸 아래를 본다는 걸 알았어요. 그거 고치고 인상이 확 달라졌습니다.”</p><div class="who">정○○ <span>· 대한항공 합격</span></div></div>
+    <div class="review"><div class="stars">★★★★★</div><p>“메이크업 컬러 찾기로 저한테 맞는 립 색을 미리 골라봤어요. 화장이 붕 뜨지 않으니 사진도, 실물도 훨씬 단정해 보였습니다.”</p><div class="who">최○○ <span>· 진에어 합격</span></div></div>
+    <div class="review"><div class="stars">★★★★★</div><p>“워드슈팅으로 순발력을 키우고 디스커션에서 발언 순서를 배웠어요. 그룹 면접에서 제 차례가 왔을 때 자신 있게 말할 수 있었습니다.”</p><div class="who">한○○ <span>· 카타르항공 합격</span></div></div>
+    <div class="review"><div class="stars">★★★★★</div><p>“영상 면접 스몰톡을 반복하니 첫 30초의 긴장이 풀렸어요. 카메라를 보며 웃는 게 자연스러워진 뒤로 인상이 확 달라졌습니다.”</p><div class="who">윤○○ <span>· 에티하드항공 합격</span></div></div>
+    <div class="review"><div class="stars">★★★★★</div><p>“파이널 종합 리포트로 제 약점이 데이터로 보였어요. 실전 직전에 무엇을 보완해야 할지가 분명해져서 마음이 놓였습니다.”</p><div class="who">서○○ <span>· 캐세이퍼시픽 합격</span></div></div>
+    <div class="review"><div class="stars">★★★★★</div><p>“영문 CV를 템플릿으로 하루 만에 완성했어요. 문장이 막힐 때마다 AI가 다듬어줘서 자신 있게 제출할 수 있었습니다.”</p><div class="who">임○○ <span>· 대한항공 합격</span></div></div>
+  </div>
 
   <hr>
   <h2>승무원 준비, 이렇게 검색해서 오셨나요?</h2>

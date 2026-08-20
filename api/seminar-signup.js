@@ -29,9 +29,9 @@ module.exports = async function (req, res) {
   const email = clip(body.email, 120);
   const airline = clip(body.airline, 80);
 
-  // 최소 검증: 이름 + (연락처 또는 이메일)
-  if (!name || (!phone && !email)) {
-    return res.status(400).json({ ok: false, error: 'name and phone/email required' });
+  // 검증: 이름·전화·이메일·항공사 모두 필수
+  if (!name || !phone || !email || !airline) {
+    return res.status(400).json({ ok: false, error: 'all fields required' });
   }
 
   try {

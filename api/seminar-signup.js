@@ -41,8 +41,52 @@ module.exports = async function (req, res) {
       console.warn('[seminar-signup] insert error:', error.message);
       return res.status(500).json({ ok: false, error: 'insert_failed' });
     }
+
+    // 신청 알림(정미님) + 신청자 자동 완료 메일 — Resend (실패해도 신청 자체는 성공 처리)
+    const resendKey = process.env.RESEND_API_KEY;
+    const fromEmail = process.env.FROM_EMAIL || 'noreply@wonderfulcrew.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'zoco2269@gmail.com';
+    if (resendKey) {
+      const esc = (s) => String(s || '').replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+      const send = (to, subject, html) => fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + resendKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from: from_name(fromEmail), to, subject, html })
+      }).then(r => r.ok ? null : r.text().then(t => console.warn('[seminar-signup] resend fail:', t)))
+        .catch(e => console.warn('[seminar-signup] resend err:', e.message));
+
+      const adminHtml =
+        '<div style="font-family:sans-serif;font-size:15px;line-height:1.7;color:#222;">' +
+        '<h2 style="color:#1A2340;">🎬 무료 라이브 신규 신청</h2>' +
+        '<table style="border-collapse:collapse;">' +
+        '<tr><td style="padding:4px 12px 4px 0;color:#888;">이름</td><td><b>' + esc(name) + '</b></td></tr>' +
+        '<tr><td style="padding:4px 12px 4px 0;color:#888;">전화</td><td>' + esc(phone) + '</td></tr>' +
+        '<tr><td style="padding:4px 12px 4px 0;color:#888;">이메일</td><td>' + esc(email) + '</td></tr>' +
+        '<tr><td style="padding:4px 12px 4px 0;color:#888;">관심 항공사</td><td>' + esc(airline) + '</td></tr>' +
+        '</table></div>';
+
+      const userHtml =
+        '<div style="font-family:sans-serif;font-size:15px;line-height:1.8;color:#222;max-width:520px;">' +
+        '<h2 style="color:#1A2340;">신청이 완료되었어요 ✈️</h2>' +
+        '<p><b>' + esc(name) + '</b>님, 원더풀크루 <b>무료 라이브 클래스</b> 신청이 정상 접수되었습니다.</p>' +
+        '<div style="background:#FAF7F0;border:1px solid #EbE3D0;border-radius:12px;padding:16px 18px;margin:16px 0;">' +
+        '📅 <b>9월 20일 (일) 오후 7시</b> · 온라인 무료<br>면접 사진부터 영문 CV, 실전 면접·파이널까지 승무원 준비 전 과정을 함께 봐요.</div>' +
+        '<p>실시간 안내는 카카오톡 오픈채팅방에서 드립니다 — <a href="https://open.kakao.com/o/g4U4VoFi">오픈채팅방 입장하기</a></p>' +
+        '<p style="color:#888;font-size:13px;margin-top:24px;">원더풀크루 · wonderfulcrew.com</p></div>';
+
+      await Promise.allSettled([
+        send(adminEmail, '🎬 무료 라이브 신규 신청 — ' + name, adminHtml),
+        send(email, '[원더풀크루] 무료 라이브 클래스 신청이 완료되었어요', userHtml)
+      ]);
+    }
+
     res.status(200).json({ ok: true });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
   }
 };
+
+// FROM_EMAIL 이 "이름 <메일>" 형태가 아니면 표시 이름을 붙여준다
+function from_name(fromEmail) {
+  return /</.test(fromEmail) ? fromEmail : ('원더풀크루 <' + fromEmail + '>');
+}

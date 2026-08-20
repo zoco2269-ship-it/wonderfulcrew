@@ -42,6 +42,11 @@ nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-con
 .hero h1 em{font-style:normal;color:#0E9E96;}
 .hero p{font-family:'Noto Sans KR',sans-serif;color:var(--muted);font-size:1.05rem;line-height:1.85;max-width:600px;margin:0 auto 24px;}
 .hero-cta{display:inline-flex;align-items:center;gap:9px;padding:14px 32px;border-radius:26px;background:linear-gradient(135deg,var(--gold-l),var(--gold));color:#fff;font-family:'Noto Sans KR',sans-serif;font-size:0.98rem;font-weight:700;}
+.hero-crew{display:flex;justify-content:center;align-items:flex-end;margin:34px auto 6px;}
+.hc-card{width:170px;height:228px;border-radius:16px;overflow:hidden;border:4px solid #fff;box-shadow:0 18px 40px -14px rgba(26,35,64,.5);transform:rotate(var(--r)) translateY(var(--y,0));position:relative;margin:0 -14px;background:#0B1222;}
+.hc-card.hc-mid{width:188px;height:250px;z-index:3;}
+.hc-card img{width:100%;height:100%;object-fit:cover;object-position:center 16%;display:block;}
+@media(max-width:600px){.hc-card{width:112px;height:150px;margin:0 -10px;}.hc-card.hc-mid{width:124px;height:166px;}}
 
 .section-title{text-align:center;padding:46px 22px 4px;}
 .section-title .eyebrow{font-family:'DM Serif Display',serif;letter-spacing:0.24em;font-size:0.7rem;color:var(--gold);text-transform:uppercase;}
@@ -198,6 +203,11 @@ footer b{color:#fff;}
   <p>정해진 시간·장소에 맞춰 다녀야 했던 준비는 이제 그만. <b>어디에 있든, 언제든</b> — 면접사진부터 영문 CV, 실전 면접까지 AI와 하나씩 완성합니다.<br>아래 기능들을 <b>무료 라이브 수업</b>에서 직접 만나보세요. 신청하면 카카오톡 오픈채팅방으로 안내해 드려요.</p>
   <div style="display:inline-block;margin:0 auto 14px;background:#fff;border:1.6px solid var(--gold);color:var(--navy);font-family:'Noto Sans KR',sans-serif;font-weight:800;font-size:0.98rem;padding:9px 20px;border-radius:22px;box-shadow:0 8px 20px -12px rgba(201,168,76,0.6);">📅 9월 20일 (일) 오후 7시 · 온라인 무료 라이브</div><br>
   <a href="#apply" class="hero-cta">무료 라이브 수업 신청하기 →</a>
+  <div class="hero-crew">
+    <div class="hc-card" style="--r:-14deg;--y:22px;"><img src="images/advisor-cathay.jpg" alt="캐세이퍼시픽 승무원"></div>
+    <div class="hc-card hc-mid" style="--r:6deg;--y:-18px;"><img src="images/advisor-emirates.jpg" alt="에미레이트 승무원"></div>
+    <div class="hc-card" style="--r:16deg;--y:12px;"><img src="images/advisor-qatar.jpg" alt="카타르항공 승무원"></div>
+  </div>
 </header>
 
 <div class="section-title">

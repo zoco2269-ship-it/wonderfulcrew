@@ -556,9 +556,9 @@ function paintMakeup(ctx){
       var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
       var d0=Math.abs(pts[0].x/cw-midX), dN=Math.abs(pts[pts.length-1].x/cw-midX);
       if(dN>d0) pts.reverse(); // pts[0]=바깥 눈꼬리, 끝=안쪽 앞머리
-      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var maxW=Math.max(1.0, w*0.032);
-      // 1) 래시라인 — 소프트 블러, 눈꼬리 두껍게 → 앞머리 얇게
-      ctx.save(); ctx.filter='blur(1.3px)'; ctx.strokeStyle='rgba(34,24,22,0.8)'; ctx.lineCap='round'; ctx.lineJoin='round';
+      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var maxW=Math.max(1.0, w*0.037);
+      // 1) 래시라인 — 소프트 블러, 눈꼬리 두껍게 → 앞머리 얇게 (아주 살짝 진하게)
+      ctx.save(); ctx.filter='blur(1.3px)'; ctx.strokeStyle='rgba(30,20,18,0.9)'; ctx.lineCap='round'; ctx.lineJoin='round';
       for(var i=0;i<pts.length-1;i++){
         var t=1-i/(pts.length-1);
         ctx.beginPath(); ctx.lineWidth=maxW*(0.12+0.9*t);
@@ -570,8 +570,8 @@ function paintMakeup(ctx){
       ctx.save(); ctx.filter='blur(2.4px)'; ctx.lineCap='round';
       var N=7;
       for(var k=0;k<N;k++){
-        var f0=k/N, f1=(k+1)/N, a=0.6*(1-f0)*(1-f0);
-        ctx.strokeStyle='rgba(36,26,24,'+a+')'; ctx.lineWidth=maxW*(1.0*(1-f0)+0.15);
+        var f0=k/N, f1=(k+1)/N, a=0.68*(1-f0)*(1-f0);
+        ctx.strokeStyle='rgba(32,22,20,'+a+')'; ctx.lineWidth=maxW*(1.0*(1-f0)+0.15);
         ctx.beginPath();
         ctx.moveTo(o.x+dx*0.55*f0, o.y+dy*0.55*f0);
         ctx.lineTo(o.x+dx*0.55*f1, o.y+dy*0.55*f1); ctx.stroke();

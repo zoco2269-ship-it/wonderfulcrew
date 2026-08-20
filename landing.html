@@ -439,6 +439,8 @@ footer b{color:#fff;}
   var KAKAO_OPENCHAT_URL = "https://open.kakao.com/o/g4U4VoFi";
   var f=document.getElementById('applyForm');
   if(!f) return;
+  // 오픈채팅방 갔다가 뒤로가기로 돌아와도 '신청 완료' 토스트가 남지 않도록 항상 제거
+  window.addEventListener('pageshow', function(){ var tt=document.getElementById('toast'); if(tt) tt.classList.remove('show'); });
   f.addEventListener('submit', function(e){
     e.preventDefault();
     var name=(document.getElementById('sf-name').value||'').trim();
@@ -455,6 +457,7 @@ footer b{color:#fff;}
     var payload={ name:name, phone:phone, email:email, airline:airline, source:'landing-free-live' };
     try{ fetch('/api/seminar-signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){}); }catch(err){}
     var t=document.getElementById('toast'); t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 4000); // 이동 안 돼도 토스트가 남지 않게
     setTimeout(function(){ window.location.href=KAKAO_OPENCHAT_URL; }, 1200);
   });
 })();

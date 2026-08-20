@@ -209,6 +209,7 @@ function requireLogin(msg) {
 }
 
 function requireAuth() {
+  try{ if(new URLSearchParams(location.search).get('embed')==='1') return; }catch(e){}
   if (isLoggedIn()) return;
   var page = location.pathname.split('/').pop() || '';
   // 로그인 없이 볼 수 있는 공개 페이지

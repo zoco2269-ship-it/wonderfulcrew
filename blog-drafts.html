@@ -47,6 +47,66 @@ figure figcaption{font-family:'Noto Sans KR',sans-serif;font-size:0.82rem;color:
 hr{border:none;border-top:1px dashed var(--line);margin:30px 0;}
 .plane{text-align:center;font-size:1.4rem;margin:8px 0;}
 @media(max-width:600px){article{padding:28px 20px 34px;}h1{font-size:1.55rem;}}
+.f-embed{position:relative;width:100%;border-radius:14px;overflow:hidden;border:1px solid var(--line);margin:24px 0 8px;background:#fff;box-shadow:0 10px 26px -16px rgba(0,0,0,0.4);}
+.f-embed iframe{width:100%;height:700px;border:0;display:block;}
+.f-embed-note{font-family:'Noto Sans KR',sans-serif;font-size:0.86rem;color:var(--muted);line-height:1.7;margin:0 0 18px;}
+.f-embed-note b{color:#7a5f1e;}
+@media(max-width:600px){.f-embed iframe{height:1120px;}}
+
+/* ===== post13 랜딩 패리티 ===== */
+:root{--gold-l:#E8C96A;--navy-2:#243056;}
+#post13 .lp-sched{display:inline-block;background:#fff;border:1.6px solid var(--gold);color:var(--navy);font-family:'Noto Sans KR',sans-serif;font-weight:800;font-size:1rem;padding:11px 22px;border-radius:24px;box-shadow:0 8px 20px -12px rgba(201,168,76,.6);}
+#post13 .lp-cta{display:inline-flex;align-items:center;gap:9px;padding:15px 34px;border-radius:28px;background:linear-gradient(135deg,var(--gold-l),var(--gold));color:#fff !important;font-family:'Noto Sans KR',sans-serif;font-size:1.05rem;font-weight:800;text-decoration:none;}
+#post13 .lp-crew{position:relative;width:100%;max-width:560px;height:280px;margin:22px auto 26px;}
+#post13 .lp-crew .hc{position:absolute;border-radius:16px;overflow:hidden;border:5px solid #fff;box-shadow:0 22px 46px -14px rgba(26,35,64,.55);background:#0B1222;}
+#post13 .lp-crew .hc img{width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block;border-radius:0;box-shadow:none;}
+#post13 .lp-crew .hc-a{width:168px;height:224px;left:0;top:40px;transform:rotate(-10deg);}
+#post13 .lp-crew .hc-b{width:182px;height:240px;left:50%;top:2px;transform:translateX(-50%) rotate(7deg);}
+#post13 .lp-crew .hc-c{width:162px;height:216px;right:0;top:28px;transform:rotate(-5deg);}
+@media(max-width:600px){#post13 .lp-crew{height:200px;max-width:360px;}#post13 .lp-crew .hc-a{width:112px;height:150px;top:32px;}#post13 .lp-crew .hc-b{width:122px;height:162px;}#post13 .lp-crew .hc-c{width:108px;height:144px;top:22px;}}
+#post13 .vis-shot{border-radius:12px;overflow:hidden;margin:22px 0;background:#fff;border:1px solid var(--line);}
+#post13 .vis-shot img{width:100%;height:auto;display:block;border-radius:0;box-shadow:none;}
+#post13 .vis-video{border-radius:12px;overflow:hidden;margin:22px 0;background:#fff;border:1px solid var(--line);aspect-ratio:830/298;}
+#post13 .vis-video img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;border-radius:0;box-shadow:none;}
+#post13 .vis-pair{display:flex;gap:12px;margin:22px 0;}
+#post13 .vis-pair figure{flex:1;margin:0;}
+#post13 .vis-pair .lab{display:block;font-family:'Noto Sans KR',sans-serif;font-size:.82rem;font-weight:800;color:#fff;padding:7px 0;border-radius:12px 12px 0 0;text-align:center;}
+#post13 .vis-pair .lab.a{background:var(--navy);}#post13 .vis-pair .lab.b{background:#9A928A;}
+#post13 .vis-pair img{width:100%;height:auto;display:block;border-radius:0 0 12px 12px;box-shadow:none;}
+#post13 .vis-photocard{position:relative;aspect-ratio:11/6;border-radius:12px;overflow:hidden;margin:22px 0;background:#fff;display:flex;border:1px solid var(--line);}
+#post13 .vis-photocard .mk-half{position:relative;width:50%;height:100%;overflow:hidden;}
+#post13 .vis-photocard .mk-half img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 16%;border-radius:0;box-shadow:none;}
+#post13 .vis-photocard .mk-half:nth-child(1) img{transform:scale(.88);transform-origin:center 30%;}
+#post13 .vis-photocard .mk-half:nth-child(2) img{object-position:center 40%;transform:scale(.85);transform-origin:center 46%;}
+#post13 .vis-photocard .mk-lab{position:absolute;top:10px;font-family:'Noto Sans KR',sans-serif;font-size:.72rem;font-weight:800;color:#fff;background:rgba(0,0,0,.55);padding:4px 11px;border-radius:9px;z-index:2;}
+#post13 .vis-photocard .mk-lab.b{left:10px;}#post13 .vis-photocard .mk-lab.a{right:10px;}
+#post13 .card-note{font-family:'Noto Sans KR',sans-serif;font-size:.95rem;color:#5f584c;line-height:1.85;margin:14px 0 8px;padding:16px 18px;background:#FBF6E9;border-radius:12px;}
+#post13 .card-note b{display:block;color:var(--navy);font-weight:800;font-size:.95rem;margin-bottom:6px;}
+#post13 .vis-cv{border-radius:12px;overflow:hidden;margin:22px 0;display:flex;background:#fff;border:1px solid var(--line);font-family:'Noto Sans KR',sans-serif;}
+#post13 .vis-cv .cv-side{width:33%;background:#A9744F;color:#fff;padding:19px 13px;text-align:center;}
+#post13 .vis-cv .cv-photo{width:96px;height:120px;border-radius:8px;border:2px solid rgba(255,255,255,.9);background:rgba(255,255,255,.18) url('images/cv-face.png') center 20%/cover;margin:0 auto 10px;}
+#post13 .vis-cv .cv-name{font-size:15px;font-weight:800;letter-spacing:.05em;line-height:1.1;}
+#post13 .vis-cv .cv-title{font-size:9px;letter-spacing:.16em;color:rgba(255,255,255,.85);margin-top:3px;}
+#post13 .vis-cv .cv-csec{font-size:10px;font-weight:800;letter-spacing:.1em;margin:13px 0 6px;border-top:1px solid rgba(255,255,255,.32);padding-top:10px;text-align:left;}
+#post13 .vis-cv .cv-cl{font-size:9.5px;color:rgba(255,255,255,.92);margin-bottom:5px;text-align:left;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#post13 .vis-cv .cv-main{flex:1;padding:19px 17px;color:#333;text-align:left;overflow:hidden;}
+#post13 .vis-cv .cv-mh{font-size:12px;font-weight:800;letter-spacing:.06em;color:#A9744F;border-bottom:1px solid #eee3d4;padding-bottom:5px;margin:0 0 6px;}
+#post13 .vis-cv .cv-mt{font-size:12px;font-weight:700;color:#2f2f2f;line-height:1.2;}
+#post13 .vis-cv .cv-ms{font-size:10px;color:#8a8a8a;margin:2px 0 12px;line-height:1.25;}
+#post13 .vis-cv .cv-desc{font-size:9.5px;color:#807a70;line-height:1.4;margin:3px 0 11px;}
+#post13 .vis-cv .cv-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px;}
+#post13 .vis-cv .cv-chips span{font-size:7.8px;font-weight:700;color:#7a531f;background:#F3E7C4;border:1px solid #d9b96a;border-radius:6px;padding:3px 8px;line-height:1;}
+#post13 .vis-block{background:#FBF6E9;border-radius:12px;padding:22px 18px;margin:22px 0;text-align:center;}
+#post13 .vb-et-title{font-family:'Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--navy);margin-bottom:14px;}
+#post13 .vb-et-title small{font-size:.85rem;color:var(--gold);}
+#post13 .vb-et-row{display:flex;gap:12px;}
+#post13 .vb-et-box{flex:1;background:#fff;border:1.5px solid var(--gold);border-radius:12px;padding:18px 8px;}
+#post13 .vb-et-box b{display:block;font-family:'Noto Sans KR',sans-serif;font-size:.92rem;color:var(--navy);}
+#post13 .vb-et-box span{display:block;font-family:'Noto Sans KR',sans-serif;font-size:.78rem;color:var(--muted);line-height:1.6;margin-top:8px;}
+#post13 .f-embed{position:relative;width:100%;border-radius:12px;overflow:hidden;border:1px solid var(--line);margin:22px 0;background:#fff;}
+#post13 .f-embed iframe{width:100%;height:700px;border:0;display:block;}
+#post13 hr{margin:34px 0;}
+/* ===== post13 끝 ===== */
 </style>
 </head>
 <body>
@@ -554,95 +614,108 @@ hr{border:none;border-top:1px dashed var(--line);margin:30px 0;}
 <!-- ===== 원고 13 · 무료 라이브 모집 ===== -->
 <article id="post13">
   <span class="tag">원고 13 · 무료 라이브 모집</span>
-  <h1>9월 20일 무료 라이브 클래스<br>승무원 준비 전 과정을 함께해요</h1>
+  <h1>승무원 준비, AI와 함께 완성하세요<br>9월 20일 무료 라이브 클래스</h1>
   <div class="byline">WonderfulCrew · 승무원 합격 코칭 플랫폼</div>
 
-  <div style="text-align:center;background:linear-gradient(135deg,#1A2340,#2A3A66);color:#fff;border-radius:16px;padding:26px 22px;margin:22px 0 28px;font-family:'Noto Sans KR',sans-serif;">
-    <div style="font-size:0.8rem;letter-spacing:.16em;color:#E8C96A;font-weight:800;">FREE LIVE CLASS</div>
-    <div style="font-size:1.5rem;font-weight:800;margin:9px 0;line-height:1.35;">9월 20일 (일) 오후 7시<br>온라인 무료 라이브</div>
-    <div style="font-size:0.98rem;color:#c9d0e2;line-height:1.7;">면접 사진부터 영문 CV, 실전 면접·파이널까지<br>승무원 준비 전 과정을 라이브로 함께 봐요</div>
-    <a href="https://www.wonderfulcrew.com/landing" style="display:inline-block;margin-top:18px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#20264A;font-weight:800;font-size:1.02rem;padding:13px 32px;border-radius:30px;text-decoration:none;">무료 라이브 신청하기 →</a>
+  <div style="text-align:center;margin:22px 0 6px;"><span class="lp-sched">📅 9월 20일 (일) 오후 7시 · 온라인 무료 라이브</span></div>
+  <div style="text-align:center;margin:16px 0 6px;"><a class="lp-cta" href="/apply">🎬 무료 라이브 신청하기 →</a></div>
+
+  <div class="lp-crew">
+    <div class="hc hc-a"><img src="images/advisor-cathay.jpg" alt="캐세이퍼시픽 승무원 어드바이저"></div>
+    <div class="hc hc-b"><img src="images/advisor-emirates.jpg" alt="에미레이트항공 승무원 어드바이저"></div>
+    <div class="hc hc-c"><img src="images/advisor-qatar.jpg" alt="카타르항공 승무원 어드바이저"></div>
   </div>
 
-  <p><strong>승무원 준비</strong>, 어디서부터 어떻게 해야 할지 막막하셨죠? 오는 <strong>9월 20일(일) 오후 7시</strong>, 원더풀크루에서는 <span class="em">면접 사진부터 영문 CV, 실전 면접과 파이널 종합 분석까지</span> 승무원 합격에 필요한 전 과정을 한 번에 보여드리는 <strong>무료 온라인 라이브 클래스</strong>를 엽니다. 정해진 시간·장소에 맞춰 다녀야 했던 준비는 이제 그만 — 어디에 있든, 언제든 AI와 하나씩 완성하는 방법을 직접 만나보세요. 아래는 이번 라이브에서 함께 볼 실제 화면들이에요.</p>
-
-  <div style="display:flex;gap:2%;margin:24px 0 6px;">
-    <img src="images/advisor-cathay.jpg" style="width:32%;border-radius:12px;box-shadow:0 10px 26px -16px rgba(0,0,0,0.4);" alt="캐세이퍼시픽 승무원 어드바이저">
-    <img src="images/advisor-emirates.jpg" style="width:32%;border-radius:12px;box-shadow:0 10px 26px -16px rgba(0,0,0,0.4);" alt="에미레이트항공 승무원 어드바이저">
-    <img src="images/advisor-qatar.jpg" style="width:32%;border-radius:12px;box-shadow:0 10px 26px -16px rgba(0,0,0,0.4);" alt="카타르항공 승무원 어드바이저">
-  </div>
-  <p style="font-family:'Noto Sans KR',sans-serif;font-size:0.82rem;color:var(--muted);text-align:center;margin-bottom:22px;">원더풀크루 출신, 여러 항공사 현직 승무원 어드바이저들이 함께합니다</p>
+  <p><strong>승무원 준비</strong>, 어디서부터 어떻게 시작해야 할지 막막하셨죠? 정해진 시간·장소에 맞춰 학원이나 스터디를 다녀야 했던 준비는 이제 그만. <strong>어디에 있든, 언제든</strong> 면접 사진부터 영문 CV, 실전 영상 면접과 그룹 디스커션, 파이널 종합 분석까지 AI와 하나씩 완성할 수 있어요. 오는 <strong>9월 20일(일) 오후 7시</strong>, 원더풀크루에서는 이 전 과정을 실제 화면으로 보여드리는 <span class="em">무료 온라인 라이브 클래스</span>를 엽니다. 아래는 이번 라이브에서 함께 볼 실제 기능들이에요.</p>
 
   <h2>① 면접 사진 — 일상 셀카 한 장이면 충분해요</h2>
-  <p>지원서에 가장 먼저 들어가는 게 사진이에요. 원더풀크루에서는 평소 찍은 캐주얼 셀카 한 장을 올리면 AI가 단정한 헤어, 자연스러운 면접 메이크업, 항공사 면접용 재킷 컬러와 깔끔한 배경까지 입혀 <span class="em">합격용 증명사진</span>으로 완성해요. 헤어·메이크업·촬영에 수십만 원 들이지 않아도 됩니다.</p>
-  <div class="compare">
-    <figure><span class="lab b">BEFORE · 일상 셀카</span><img src="images/Gemini_Generated_Image_hf75a8hf75a8hf75.png" alt="비포 - 원본 셀카"></figure>
-    <figure><span class="lab a">AFTER · 합격 증명사진</span><img src="images/photo-good-global.png" alt="애프터 - 완성된 승무원 면접 사진"></figure>
+  <p>승무원 지원서에 가장 먼저 들어가는 것이 바로 <strong>면접 사진</strong>이에요. 사진관에서 헤어·메이크업·면접 복장까지 갖추면 수십만 원이 드는데, 원더풀크루에서는 평소 찍은 캐주얼 셀카 한 장이면 충분합니다. AI가 단정한 헤어, 자연스러운 면접 메이크업, 항공사 면접용 재킷 컬러와 깔끔한 배경까지 입혀 <span class="em">합격용 증명사진</span>으로 완성해요.</p>
+  <div class="vis-photocard">
+    <div class="mk-half"><img src="images/Gemini_Generated_Image_hf75a8hf75a8hf75.png" alt="비포 - 일상 셀카"></div>
+    <div class="mk-half"><img src="images/photo-good-global.png" alt="애프터 - 승무원 합격 증명사진"></div>
+    <div class="mk-lab b">BEFORE · 일상 셀카</div>
+    <div class="mk-lab a">AFTER · 합격 증명사진</div>
   </div>
+  <div class="card-note"><b>이 기능에서는</b>1. 평소 찍은 셀카를 올리면 AI가 단정한 헤어·자연스러운 면접 메이크업·항공사 재킷을 자동으로 입혀줍니다.<br>2. 재킷 컬러(네이비·블랙 등)와 배경(흰색·블루)을 골라 여러 버전을 나란히 비교할 수 있어요.<br>3. 마음에 드는 사진을 바로 다운로드 — 사진관 예약도, 수십만 원의 촬영비도 필요 없습니다.</div>
 
   <h2>② 메이크업 컬러 찾기 — 내 얼굴에 직접 발라봐요</h2>
-  <p>립스틱·아이섀도 컬러를 수십 개 사서 버릴 필요 없어요. 원더풀크루에서는 이렇게 평소 얼굴 사진을 올리면, 그 위에 립스틱·아이섀도·아이라인을 직접 입혀보며 나에게 어울리는 면접 메이크업 컬러를 찾아요. 색을 클릭하면 실시간으로 발라지고, 가운데 선을 좌우로 밀면 화장 전과 후가 한눈에 비교됩니다.</p>
-  <figure><img src="images/cv-face.png" alt="메이크업을 입히기 전 원본 얼굴 사진"><figcaption>내 얼굴 사진을 올리면 — 이 원본 위에 색을 입혀봐요</figcaption></figure>
-  <figure><img src="images/shot-makeup.png?v=2" alt="승무원 메이크업 입히기 - BEFORE/AFTER와 립스틱·아이섀도 팔레트 화면"><figcaption>실제 화면 — 색을 누르면 내 얼굴에 발라지고, 가운데 선으로 전/후를 비교해요</figcaption></figure>
+  <p>어울리는 컬러를 찾겠다고 립스틱·아이섀도를 수십 개 사서 서랍에 잠들게 둔 적 있으시죠? 원더풀크루에서는 내 얼굴에 립스틱·아이섀도·아이라인을 직접 입혀보며 나에게 어울리는 <strong>면접 메이크업 컬러</strong>를 미리 찾아요. 색을 클릭하면 실시간으로 발라지고, 가운데 선을 좌우로 밀면 화장 전과 후가 한눈에 비교됩니다.</p>
+  <div class="f-embed"><iframe src="image-check.html?photo=images/cv-face.png&embed=1#makeupCard" loading="lazy" scrolling="no" title="메이크업 입혀보기 — 립스틱·아이섀도 컬러 직접 발라보기"></iframe></div>
+  <div class="card-note"><b>이 기능에서는</b>1. 립스틱·아이섀도·아이라인 색을 클릭하면 내 얼굴에 실시간으로 발라지고, 진하기도 슬라이더로 조절합니다.<br>2. 사진 가운데 선을 좌우로 밀면 화장 전(원본)과 화장 후를 곧바로 비교할 수 있어요.<br>3. 배경색까지 흰색·블루로 바꿔 실제 면접 사진 느낌을 미리 확인합니다.</div>
 
   <h2>③ AI 실시간 이미지 분석 — 무표정인 걸 본인만 몰라요</h2>
-  <p>실전에서 무너지는 건 대개 표정이에요. 원더풀크루에서는 카메라를 켜면 미소·시선·정면 응시·조명을 실시간으로 점수화해 코칭해요. 무표정일 땐 미소 점수가 34점까지 떨어지며 “입꼬리 조금만 더!” 신호가 뜨고, 밝게 웃으면 100점으로 올라갑니다.</p>
-  <div class="compare">
+  <p>실전 면접에서 무너지는 건 대개 표정이에요. 원더풀크루에서는 카메라를 켜면 미소·시선·정면 응시·목소리 톤·눈깜빡임을 각각 점수로 매겨 <strong>실시간으로 코칭</strong>합니다. 무표정일 땐 미소 점수가 34점까지 떨어지며 "입꼬리 조금만 더!" 신호가, 밝게 웃으면 100점으로 올라가요. 답변하는 내내 흐트러지는 순간을 놓치지 않습니다.</p>
+  <div class="vis-pair">
     <figure><span class="lab a">밝은 미소 · 100점</span><img src="images/blog-card-good.png" alt="미소 점수 100 - 밝게 웃을 때"></figure>
     <figure><span class="lab b">무표정 · 34점</span><img src="images/blog-card-coach.png" alt="미소 점수 34 - 무표정일 때"></figure>
   </div>
+  <div class="card-note"><b>이 기능에서는</b>1. 카메라를 켜면 미소·시선·정면 응시·목소리 톤·눈깜빡임을 각각 점수로 매겨 실시간으로 보여줍니다.<br>2. 무표정일 땐 미소 점수가 34점까지 떨어지며 신호가, 밝게 웃으면 100점으로 올라가요.<br>3. 이 점수판과 신호는 화면 위에만 떠서 녹화 영상·저장본에는 전혀 남지 않습니다.</div>
 
-  <h2>④ 영문 CV 템플릿 — 몇 분이면 완성돼요</h2>
-  <p>가장 미루기 쉬운 게 영문 이력서예요. 원더풀크루에서는 먼저 <strong>템플릿 모양(클래식·투톤·헤더형·미니멀·타임라인)과 포인트 컬러, 서체</strong>를 고르고, WORK EXPERIENCE·EDUCATION·SKILLS를 채우면 오른쪽 미리보기에 실시간으로 완성돼요. 영어가 막히면 AI가 문장을 다듬어주고, 완성본은 PDF로 바로 내려받아 제출합니다.</p>
-  <figure><img src="images/blog-cv-templates.png" alt="CV 템플릿 메이커 - 모양·컬러·서체 선택 옵션 팔레트"><figcaption>실제 화면 — 모양·컬러·서체를 먼저 골라요</figcaption></figure>
-  <figure><img src="images/blog-cv-full.png" alt="승무원 영문 CV 완성본 - 경력·학력·스킬·자격증"><figcaption>실제 화면 — 왼쪽에 입력하면 오른쪽 A4에 이대로 완성돼요</figcaption></figure>
+  <h2>④ 영문 CV 템플릿 메이커 — 몇 분이면 완성돼요</h2>
+  <p>승무원 지원에서 가장 미루기 쉬운 게 <strong>영문 이력서(CV)</strong>예요. 원더풀크루에서는 템플릿 모양(클래식·투톤·헤더형·미니멀·타임라인)과 포인트 컬러, 서체를 고르고 WORK EXPERIENCE·EDUCATION·SKILLS를 채우면 오른쪽 미리보기에 실시간으로 완성됩니다. 영어가 막히면 AI가 문장을 다듬어주고, 완성본은 PDF로 바로 내려받아 제출할 수 있어요.</p>
+  <figure><img src="images/blog-cv-maker.png" alt="승무원 CV 메이커 - 왼쪽 내용 입력, 오른쪽 이력서 실시간 완성"><figcaption>실제 화면 — 왼쪽에 이름·경력·학력을 입력하면 오른쪽 이력서에 실시간으로 완성돼요</figcaption></figure>
+  <div class="card-note"><b>이 기능에서는</b>1. 클래식·투톤 등 템플릿과 포인트 컬러·서체를 고릅니다.<br>2. WORK EXPERIENCE · EDUCATION · SKILLS를 채우면 오른쪽 미리보기에 실시간 반영되고, 영어가 막히면 AI가 문장을 다듬어줘요.<br>3. 완성된 이력서를 PDF로 내려받아 그대로 제출할 수 있어요.</div>
 
   <h2>⑤ 영상 면접 · 스몰톡 — 실제 비디오 면접처럼</h2>
-  <p>원더풀크루에서는 실제 비디오 면접처럼 카메라를 켜고 답변을 녹화하며 연습해요. AI 면접관과 첫 30초 스몰톡을 음성으로 주고받고, 답하는 동안 얼굴을 자동 인식해 화면 오른쪽에 <span class="em">미소·시선·목소리·기울기 점수</span>가 실시간 그래프로 떠요.</p>
-  <figure><img src="images/blog-live-face-video.png?v=6" alt="영상 면접 실시간 얼굴 분석 화면"><figcaption>실제 화면 — 답변하는 내내 표정과 목소리가 점수로 보여요</figcaption></figure>
-  <figure><img src="images/shot-video-live.png?v=3" alt="영상 면접 - 여성 면접관·연습생·AI 실시간 분석"><figcaption>실제 화면 — 면접관과 마주 보며 답하는 내내 표정·목소리가 점수로 떠요</figcaption></figure>
+  <p>원더풀크루에서는 실제 비디오 면접처럼 카메라를 켜고 답변을 녹화하며 연습해요. AI 면접관과 첫 30초 <strong>스몰톡</strong>을 음성으로 주고받고, 답하는 동안 얼굴을 자동 인식해 화면 오른쪽에 <span class="em">미소·시선·목소리·기울기 점수</span>가 실시간 그래프로 떠요. 카메라를 보며 웃는 게 자연스러워지면 첫인상이 확 달라집니다.</p>
+  <div class="vis-video"><img src="images/blog-live-face-video.png?v=6" alt="영상 면접 실시간 얼굴 분석 - 미소·시선·목소리 점수"></div>
+  <div class="vis-shot"><img src="images/shot-video-live.png?v=3" alt="영상 면접 - 여성 면접관·연습생·AI 실시간 분석 화면"></div>
+  <div class="card-note"><b>이 기능에서는</b>1. AI 면접관과 첫 30초 스몰톡을 실전처럼 음성으로 주고받습니다.<br>2. 답하는 동안 얼굴을 자동 인식해 미소·시선·목소리·기울기 점수가 실시간 그래프로 떠요.<br>3. 답변은 텍스트로도 기록돼 어떤 표현을 썼는지 다시 확인할 수 있어요.</div>
 
   <h2>⑥ 롤플레이 · 상황 대응 — 돌발 상황을 미리 겪어요</h2>
-  <p>기내 승객 응대와 돌발 상황을 AI 면접관과 실시간으로 연습해요. 원더풀크루에서는 기내·호텔·레스토랑·크루즈 등 응대 상황을 고르고, 영국·미국 등 엑센트를 선택해 실제 외항사 면접 환경처럼 연습합니다.</p>
-  <figure><img src="images/hero-roleplay.jpg" alt="승무원 롤플레이 상황 대응"></figure>
-  <figure><img src="images/shot-roleplay.png" alt="롤플레이 - 면접관·영어 엑센트·배경 선택 화면"><figcaption>실제 화면 — 면접관·영어 엑센트·응대 배경을 골라 시작해요</figcaption></figure>
+  <p>기내 승객 응대와 돌발 상황을 AI 면접관과 실시간으로 연습해요. 원더풀크루에서는 기내·호텔·레스토랑·카페·크루즈 등 응대 상황을 고르고, 영국·미국 등 <strong>엑센트</strong>를 선택해 실제 외항사 면접 환경처럼 연습합니다. 까다로운 승객 상황을 반복하면 실제 면접의 돌발 질문에도 당황하지 않아요.</p>
+  <div class="vis-shot"><img src="images/hero-roleplay.jpg" alt="승무원 롤플레이 상황 대응"></div>
+  <div class="vis-shot"><img src="images/shot-roleplay.png" alt="롤플레이 - 면접관·영어 엑센트·배경 선택 화면"></div>
+  <div class="card-note"><b>이 기능에서는</b>1. 기내·호텔·레스토랑·카페·크루즈 등 응대 상황을 고릅니다.<br>2. AI 면접관이 까다로운 승객이나 돌발 상황을 제시하면 영어로 실시간 응대해요.<br>3. 영국·미국 등 엑센트를 선택해 실제 외항사 면접 환경처럼 연습합니다.</div>
 
   <h2>⑦ 그룹 디스커션 — 항공사마다 규칙이 달라요</h2>
-  <p>실전 그룹 토론을 항공사별·라운드별 시나리오로 연습해요. 원더풀크루에서는 Emirates 1차(발표)·2차(우선순위 토론)부터 Singapore식 디베이트, Qatar식 즉석 발표까지 실제 기출 형식을 그대로 준비합니다.</p>
-  <figure><img src="images/Gemini_Generated_Image_dqt50bdqt50bdqt5.png" alt="승무원 그룹 디스커션"></figure>
-  <figure><img src="images/shot-disc1.png" alt="1차 디스커션 - 발표 주제와 핵심 포인트"><figcaption>실제 화면 — 1차 디스커션: 발표 주제와 핵심 포인트</figcaption></figure>
-  <figure><img src="images/shot-disc2.png" alt="2차 디스커션 - 실전 우선순위 토론 시나리오"><figcaption>실제 화면 — 2차 디스커션: 실전 우선순위 토론 시나리오</figcaption></figure>
-  <figure><img src="images/shot-debate.png" alt="싱가포르항공 디베이트 - 주제와 입장 선택"><figcaption>실제 화면 — 싱가포르식 1:1 디베이트: 주제·입장 선택</figcaption></figure>
-  <figure><img src="images/shot-discussion-live.png?v=8" alt="그룹 디스커션 실전 - 두 지망생이 주제로 토론하는 실시간 화면"><figcaption>실제 화면 — 두 지망생이 실시간으로 토론하고, 발언이 자막으로 기록돼요</figcaption></figure>
+  <p>실전 <strong>그룹 토론</strong>을 항공사별·라운드별 시나리오로 연습해요. 원더풀크루에서는 Emirates 1차(발표)·2차(우선순위 토론)부터 Singapore식 디베이트, Qatar식 즉석 발표까지 실제 기출 형식을 그대로 준비합니다. 발언 순서·논리 전개·매너까지, 그룹 면접에서 평가받는 핵심을 짚어드려요.</p>
+  <div class="vis-shot"><img src="images/Gemini_Generated_Image_dqt50bdqt50bdqt5.png" alt="승무원 그룹 디스커션"></div>
+  <div class="vis-shot"><img src="images/shot-disc1.png" alt="1차 디스커션 - 발표 주제와 핵심 포인트"></div>
+  <div class="vis-shot"><img src="images/shot-disc2.png" alt="2차 디스커션 - 실전 우선순위 토론 시나리오"></div>
+  <div class="vis-shot"><img src="images/shot-debate.png" alt="싱가포르항공 디베이트 - 주제와 입장 선택"></div>
+  <div class="vis-shot"><img src="images/shot-discussion-live.png?v=8" alt="그룹 디스커션 실전 - 두 지망생이 주제로 토론하는 실시간 화면"></div>
+  <div class="card-note"><b>항공사별 디스커션</b>1. Emirates — 1차는 주어진 주제를 정리해 발표, 2차는 실전 기출 상황에서 우선순위를 토론합니다.<br>2. Singapore Airlines — 찬반이 정해지면 AI가 반대 입장에서 맞받아치는 디베이트.<br>3. Qatar — 랜덤 키워드를 받고 즉석에서 1분 영어 발표(워드슈팅).<br>4. 기타 항공사(Etihad·Cathay 등) — 신규 노선·친환경·위기 PR 등 다양한 기출을 종합 토론.</div>
 
   <h2>⑧ 워드슈팅 — 멈추지 않는 순발력</h2>
-  <p>랜덤으로 주어지는 단어나 문장을 받아 60초 안에 즉석에서 영어로 발표해요. 원더풀크루에서는 Qatar처럼 순발력을 보는 면접에 대비하는 즉흥 스피치를, 타이머가 도는 동안 멈추지 않고 말하는 훈련으로 키웁니다.</p>
-  <figure><img src="images/shot-wordshooting-intro.png" alt="워드슈팅 시작 전 - 모드 선택과 60초 타이머"><figcaption>실제 화면 — 시작 전: Word/Sentence 모드와 60초 타이머</figcaption></figure>
-  <figure><img src="images/shot-wordshooting.png" alt="워드슈팅 - 키워드 받고 즉석 영어 발표 화면"><figcaption>실제 화면 — 키워드가 뜨면 60초 안에 바로 말해요</figcaption></figure>
+  <p>랜덤으로 주어지는 단어나 문장을 받아 60초 안에 즉석에서 영어로 발표해요. 원더풀크루에서는 Qatar처럼 순발력을 보는 면접에 대비하는 <strong>즉흥 스피치</strong>를, 타이머가 도는 동안 멈추지 않고 말하는 훈련으로 키웁니다.</p>
+  <div class="vis-shot"><img src="images/shot-wordshooting-intro.png" alt="워드슈팅 시작 전 - 모드 선택과 60초 타이머"></div>
+  <div class="vis-shot"><img src="images/shot-wordshooting.png" alt="워드슈팅 - 키워드 받고 즉석 영어 발표 화면"></div>
+  <div class="card-note"><b>이 기능에서는</b>1. Word 모드는 단어 하나, Sentence 모드는 문장 하나가 랜덤으로 주어집니다.<br>2. 60초 타이머가 도는 동안 멈추지 않고 즉석에서 영어로 말해요.<br>3. 실전에서 당황하지 않도록 순발력과 발화량을 함께 키웁니다.</div>
 
   <h2>⑨ 영어 테스트 — 내 수준을 숫자로</h2>
-  <p>어휘·전치사·독해를 객관식으로 풀며 항공사 실전 영어 패턴을 점검해요. 원더풀크루에서는 어휘 30문항과 독해 지문으로 내 영어 수준을 숫자로 확인하고 약한 부분을 보완합니다.</p>
-  <figure><img src="images/shot-english.png?v=2" alt="영어 테스트 - 실전 어휘 빈칸 채우기 문항 화면"><figcaption>실제 화면 — 항공사 실전 어휘·전치사 빈칸 채우기</figcaption></figure>
+  <p>어휘·전치사·독해를 객관식으로 풀며 항공사 실전 <strong>영어 패턴</strong>을 점검해요. 원더풀크루에서는 어휘 30문항과 독해 지문으로 내 영어 수준을 숫자로 확인하고 약한 부분을 보완합니다.</p>
+  <div class="vis-block">
+    <div class="vb-et-title">영어 테스트<br><small>English Test</small></div>
+    <div class="vb-et-row">
+      <div class="vb-et-box"><b>① 어휘 테스트</b><span>30문항<br>빈칸 채우기</span></div>
+      <div class="vb-et-box"><b>② 독해 테스트</b><span>지문 1개<br>8문항</span></div>
+    </div>
+  </div>
+  <div class="vis-shot"><img src="images/shot-english.png?v=2" alt="영어 테스트 - 실전 어휘 빈칸 채우기 문항 화면"></div>
+  <div class="card-note"><b>이 기능에서는</b>1. 어휘 테스트 — 30문항, 항공사 실전 어휘와 전치사를 빈칸 채우기로 점검합니다.<br>2. 독해 테스트 — 지문 1개에 8문항, 실제 면접 영어 수준으로 독해력을 연습해요.</div>
 
   <h2>⑩ 파이널 · 종합 분석 — 마지막 1:1까지</h2>
-  <p>실전 직전 최종 점검과 종합 실력 분석 리포트, 그리고 1:1 코치 피드백까지. 원더풀크루에서는 그동안의 연습 데이터를 모아 미소·답변·태도를 항목별로 확인하고, 마지막은 코치 피드백으로 실전 준비를 완성합니다.</p>
-  <figure><img src="images/Gemini_Generated_Image_9vrkb49vrkb49vrk.png" alt="파이널 종합 분석"></figure>
-  <figure><img src="images/shot-final.png" alt="파이널 - 면접관·항공사·영어 엑센트 선택 화면"><figcaption>실제 화면 — 항공사·면접관·엑센트를 골라 실전처럼 마무리해요</figcaption></figure>
-  <figure><img src="images/shot-final-live.png?v=16" alt="파이널 실전 - 면접관과 베스트 서비스 질문·실시간 자막"><figcaption>실제 화면 — 실전처럼 질문을 받고, 답변이 자막으로 실시간 기록돼요</figcaption></figure>
+  <p>실전 직전 최종 점검과 <strong>종합 실력 분석 리포트</strong>, 그리고 1:1 코치 피드백까지. 원더풀크루에서는 그동안의 연습 데이터를 모아 미소·답변·태도를 항목별로 확인하고, 마지막은 코치 피드백으로 실전 준비를 완성합니다.</p>
+  <div class="vis-shot"><img src="images/Gemini_Generated_Image_9vrkb49vrkb49vrk.png" alt="파이널 종합 분석"></div>
+  <div class="vis-shot"><img src="images/shot-final.png" alt="파이널 - 면접관·항공사·영어 엑센트 선택 화면"></div>
+  <div class="vis-shot"><img src="images/shot-final-live.png?v=16" alt="파이널 실전 - 면접관과 베스트 서비스 질문·실시간 자막"></div>
+  <div class="card-note"><b>이 기능에서는</b>1. 실전 직전 종합 점검과 그동안의 연습 데이터를 모은 실력 분석 리포트를 받습니다.<br>2. 미소·답변·태도 등 항목별로 부족한 부분을 데이터로 확인해요.<br>3. 마지막은 1:1 코치 피드백으로 실전 준비를 완성합니다.</div>
 
   <h2>⑪ 성장 리포트 — 매일의 연습이 그래프로 쌓여요</h2>
   <p>원더풀크루에서는 매 연습의 점수가 자동으로 기록돼 <strong>종합 실력이 분석</strong>돼요. 유창성·자신감·발음·서비스 마인드까지 5개 역량을 레이더 차트와 항목별 점수·등급으로 확인하고, <span class="em">강점과 보완할 부분</span>을 리포트로 받습니다. 무엇을 더 연습해야 할지 코칭 인사이트가 방향을 잡아줘요.</p>
-  <figure><img src="images/shot-progress.png?v=2" alt="내 성장 기록 - 종합 실력 레이더 분석·항목별 점수·강점/보완 리포트"><figcaption>실제 화면 — 종합 점수·등급, 5개 역량 레이더, 강점·보완 리포트</figcaption></figure>
+  <div class="vis-shot"><img src="images/shot-progress.png?v=2" alt="내 성장 기록 - 종합 실력 레이더 분석·항목별 점수·강점/보완 리포트"></div>
+  <div class="card-note"><b>이 기능에서는</b>1. 종합 점수·등급과 5개 역량 레이더 차트로 내 실력을 한눈에 봅니다.<br>2. 항목별 점수·상태(우수·양호·보통)와 강점·보완 영역을 리포트로 받아요.<br>3. 무엇을 더 연습해야 할지 코칭 인사이트로 방향을 잡습니다.</div>
 
   <hr>
-  <h2>이번 무료 라이브에서 얻어 가는 것</h2>
-  <p>이 모든 과정을 <strong>9월 20일(일) 오후 7시</strong> 무료 온라인 라이브에서 하나씩 직접 보여드려요. <strong>승무원 준비 방법</strong>, 외항사 승무원 되는 법, 승무원 면접 준비, <strong>승무원 면접 사진</strong>, 승무원 영문 CV(이력서), 승무원 영어 면접, 그룹 디스커션·롤플레이 연습까지 — 흩어진 정보를 찾아다니지 않아도 됩니다. 에미레이트·카타르항공·싱가포르항공·캐세이퍼시픽 등 외항사부터 국내 항공사 승무원 면접까지, 한 곳에서 매일 연습하며 준비하는 방법을 확인하세요.</p>
-
-  <div class="trywrap"><a class="trybtn" href="https://www.wonderfulcrew.com/landing">🎬 무료 라이브 클래스 신청하기 →</a></div>
-  <p style="text-align:center;font-family:'Noto Sans KR',sans-serif;font-size:0.92rem;color:var(--muted);margin-top:6px;">9월 20일 (일) 오후 7시 · 온라인 · 무료 · 신청하면 참여 방법을 안내해 드려요</p>
+  <h2>승무원 준비, 이렇게 검색해서 오셨나요?</h2>
+  <p><strong>승무원 준비 방법</strong>, 외항사 승무원 되는 법, 승무원 면접 준비, <strong>승무원 면접 사진</strong>, 승무원 영문 CV(이력서), 승무원 영어 면접, 그룹 디스커션·롤플레이 연습, 워드슈팅, 파이널 종합 분석 — 흩어진 정보를 찾아다니지 않아도 됩니다. 에미레이트·카타르항공·싱가포르항공·캐세이퍼시픽·에티하드 등 외항사부터 대한항공·아시아나 등 국내 항공사 승무원 면접까지, 원더풀크루 한 곳에서 면접사진·메이크업·실시간 이미지 분석·영상 면접·CV·롤플레이·그룹 디스커션·파이널까지 매일 연습하며 준비할 수 있어요.</p>
+  <p>사진 한 장부터 마지막 1:1 면접까지, 흩어져 있던 준비를 한 곳에서 매일 조금씩. 이 모든 과정을 <strong>9월 20일(일) 오후 7시 무료 온라인 라이브</strong>에서 직접 보여드릴게요. 아래 버튼으로 지금 신청하시면 참여 방법을 안내해 드립니다.</p>
+  <div style="text-align:center;margin:26px 0 6px;"><a class="lp-cta" href="/apply">🎬 무료 라이브 클래스 신청하기 →</a></div>
+  <p style="text-align:center;font-family:'Noto Sans KR',sans-serif;font-size:0.9rem;color:var(--muted);margin-top:6px;">9월 20일 (일) 오후 7시 · 온라인 · 무료 · 신청하면 참여 방법을 안내해 드려요</p>
 
   <div class="plane">✈️</div>
-  <div class="cta"><b>원더풀크루</b> · 승무원 합격을 위한 AI 코칭 — <b>wonderfulcrew.com</b><br>무료 라이브 신청과 자세한 안내는 <b style="color:var(--navy);">wonderfulcrew.com/landing</b> 에서 확인하세요.</div>
+  <div class="cta"><b>원더풀크루</b> · 승무원 합격을 위한 AI 코칭 — <b>wonderfulcrew.com</b><br>무료 라이브 신청은 <b style="color:var(--navy);">wonderfulcrew.com/apply</b> 에서 바로 하실 수 있어요.</div>
   <p style="color:#8a94ab;font-size:0.92em;">#승무원무료특강 #승무원무료라이브 #승무원준비 #승무원면접 #승무원면접준비 #승무원사진 #면접사진 #승무원메이크업 #승무원CV #영문이력서 #승무원영어 #승무원롤플레이 #그룹디스커션 #워드슈팅 #승무원파이널 #외항사승무원 #외항사면접 #에미레이트 #카타르항공 #싱가포르항공 #캐세이퍼시픽 #객실승무원 #승무원지망생 #승무원되는법 #승무원취업 #승무원합격 #AI면접코칭 #승무원면접연습 #항공사면접 #원더풀크루</p>
 </article>
 

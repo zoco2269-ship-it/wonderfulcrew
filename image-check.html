@@ -135,6 +135,12 @@
   body.mk-embed .ba-hint{margin-bottom:8px!important;font-size:0.72rem!important;}
   body.mk-embed .mk-group{margin-bottom:11px!important;}
   body.mk-embed .mk-sw:not(.none):not(.pick){width:30px!important;height:30px!important;}
+  /* 모바일: 사진 위(크게)·팔레트 아래 세로 배치 */
+  @media(max-width:600px){
+    body.mk-embed .makeup-grid{grid-template-columns:1fr!important;gap:14px!important;}
+    body.mk-embed .ba-wrap{max-width:none!important;}
+    body.mk-embed .mk-sw:not(.none):not(.pick){width:34px!important;height:34px!important;}
+  }
   /* 메이크업 전용 모드(#makeupCard): 면접사진 예시·진단 숨김 */
   body.mkmode .ex,body.mkmode .ex-cap,body.mkmode #result,body.mkmode #styleCard,body.mkmode #finishCard,body.mkmode #go,body.mkmode .privacy{display:none!important;}
   /* 면접사진 모드(기본): 메이크업 섹션 숨김 — 두 기능 분리 */

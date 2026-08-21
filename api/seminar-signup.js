@@ -44,7 +44,9 @@ module.exports = async function (req, res) {
 
     // 신청 알림(정미님) + 신청자 자동 완료 메일 — Resend (실패해도 신청 자체는 성공 처리)
     const resendKey = process.env.RESEND_API_KEY;
-    const fromEmail = process.env.FROM_EMAIL || 'noreply@wonderfulcrew.com';
+    // 도메인 인증 완료 시 Vercel 환경변수 EMAIL_DOMAIN_VERIFIED=1 로 설정 → 신청자 완료메일까지 자동 활성화
+    const verified = process.env.EMAIL_DOMAIN_VERIFIED === '1';
+    const fromEmail = verified ? (process.env.FROM_EMAIL || 'noreply@wonderfulcrew.com') : 'onboarding@resend.dev';
     const adminEmail = process.env.ADMIN_EMAIL || 'zoco2269@gmail.com';
     if (resendKey) {
       const esc = (s) => String(s || '').replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
@@ -74,10 +76,10 @@ module.exports = async function (req, res) {
         '<p>실시간 안내는 카카오톡 오픈채팅방에서 드립니다 — <a href="https://open.kakao.com/o/g4U4VoFi">오픈채팅방 입장하기</a></p>' +
         '<p style="color:#888;font-size:13px;margin-top:24px;">원더풀크루 · wonderfulcrew.com</p></div>';
 
-      await Promise.allSettled([
-        send(adminEmail, '🎬 무료 라이브 신규 신청 — ' + name, adminHtml),
-        send(email, '[원더풀크루] 무료 라이브 클래스 신청이 완료되었어요', userHtml)
-      ]);
+      const jobs = [ send(adminEmail, '🎬 무료 라이브 신규 신청 — ' + name, adminHtml) ];
+      // 신청자 자동 완료메일은 도메인 인증 후에만(Resend 테스트 발신자는 본인 이메일 외 발송 불가)
+      if (verified) jobs.push(send(email, '[원더풀크루] 무료 라이브 클래스 신청이 완료되었어요', userHtml));
+      await Promise.allSettled(jobs);
     }
 
     res.status(200).json({ ok: true });

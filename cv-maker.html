@@ -542,8 +542,8 @@ function secTitleLine(txt,C,F){
 /* --- TEMPLATE: CLASSIC (캡처 #1 · 카멜 사이드바 + 원형 스킬링) --- */
 function tplClassic(C,F){
   return `<div style="position:absolute;inset:0;display:flex;">
-    <div style="width:35%;background:${C.main};color:#fff;padding:20px 13px;">
-      <div style="text-align:center;margin-bottom:14px;">${photoCircle(84,'rgba(255,255,255,.9)')}</div>
+    <div style="width:35%;background:${C.main};color:#fff;padding:26px 17px;">
+      <div style="text-align:center;margin-bottom:16px;">${photoCircle(96,'rgba(255,255,255,.9)')}</div>
       <div style="font-family:${F.head};font-size:19px;text-align:center;line-height:1.1;letter-spacing:.02em;">${esc(state.name)||'NAME SURNAME'}</div>
       <div style="text-align:center;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-top:5px;">${esc(state.role)||'CABIN CREW'}</div>
       <div style="height:1px;background:rgba(255,255,255,.3);margin:16px 4px;"></div>
@@ -556,9 +556,9 @@ function tplClassic(C,F){
       <div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin-bottom:9px;">LANGUAGES</div>
       ${langLines(C,true)}
     </div>
-    <div style="flex:1;padding:24px 20px;color:#222;display:flex;flex-direction:column;justify-content:space-between;gap:16px;">
-      <div>${secTitle('EDUCATION',C,F,false)}${entryLeftDate(state.edu,C,false)}</div>
+    <div style="flex:1;padding:30px 26px;color:#222;display:flex;flex-direction:column;gap:15px;">
       <div>${secTitle('WORK EXPERIENCE',C,F,false)}${entryLeftDate(state.exp,C,false)}</div>
+      <div>${secTitle('EDUCATION',C,F,false)}${entryLeftDate(state.edu,C,false)}</div>
       <div>${secTitle('SKILLS',C,F,false)}${skillText(C,false)}</div>
       <div>${secTitle('CERTIFICATIONS',C,F,false)}${certLines(C,false)}</div>
     </div>
@@ -570,7 +570,7 @@ function tplTwotone(C,F){
   return `<div style="position:absolute;inset:0;display:flex;color:#222;">
     <div style="width:34%;display:flex;flex-direction:column;">
       <div style="background:${C.main};color:#fff;padding:22px 14px 18px;text-align:center;">
-        <div style="margin-bottom:12px;">${photoCircle(80,'#fff')}</div>
+        <div style="margin-bottom:12px;">${photoCircle(90,'#fff')}</div>
         <div style="font-family:${F.head};font-size:20px;line-height:1.05;">${esc(state.name)||'NAME'}</div>
         <div style="font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-top:5px;">${esc(state.role)||'CABIN CREW'}</div>
       </div>
@@ -583,9 +583,9 @@ function tplTwotone(C,F){
         ${langLines(C,true)}
       </div>
     </div>
-    <div style="flex:1;padding:22px 20px;display:flex;flex-direction:column;justify-content:space-between;gap:16px;">
-      <div>${secTitleLine('Education',C,F)}${eduBlock(C,F,false)}</div>
+    <div style="flex:1;padding:28px 24px;display:flex;flex-direction:column;gap:15px;">
       <div>${secTitleLine('Work Experience',C,F)}${expBlock(C,F,false)}</div>
+      <div>${secTitleLine('Education',C,F)}${eduBlock(C,F,false)}</div>
       <div>${secTitleLine('Skills',C,F)}${skillText(C,false)}</div>
       <div>${secTitleLine('Certifications',C,F)}${certLines(C,false)}</div>
     </div>
@@ -595,20 +595,20 @@ function tplTwotone(C,F){
 function tplHeader(C,F){
   return `<div style="position:absolute;inset:0;color:#222;display:flex;flex-direction:column;">
     <div style="background:${C.main};color:#fff;padding:20px 24px;display:flex;gap:16px;align-items:center;">
-      ${photoCircle(66,'rgba(255,255,255,.9)')}
+      ${photoCircle(76,'rgba(255,255,255,.9)')}
       <div>
         <div style="font-family:${F.head};font-size:24px;line-height:1.1;">${esc(state.name)||'NAME'}</div>
         <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-top:4px;">${esc(state.role)||'CABIN CREW'}</div>
         <div style="font-size:10px;color:rgba(255,255,255,.8);margin-top:6px;">${contactLine(C).map(esc).join('&nbsp;&nbsp;·&nbsp;&nbsp;')}</div>
       </div>
     </div>
-    <div style="display:flex;gap:22px;padding:20px 24px;flex:1;align-items:stretch;">
-      <div style="flex:1.4;display:flex;flex-direction:column;justify-content:space-between;gap:14px;">
+    <div style="display:flex;gap:24px;padding:24px 28px;flex:1;align-items:flex-start;">
+      <div style="flex:1.4;display:flex;flex-direction:column;gap:15px;">
         <div>${secTitle('ABOUT ME',C,F,false)}<div style="font-size:10.5px;color:#555;line-height:1.65;">${esc(state.about)}</div></div>
         <div>${secTitle('EXPERIENCE',C,F,false)}${expBlock(C,F,false)}</div>
         <div>${secTitle('EDUCATION',C,F,false)}${eduBlock(C,F,false)}</div>
       </div>
-      <div style="flex:0.9;display:flex;flex-direction:column;justify-content:space-between;gap:14px;">
+      <div style="flex:0.9;display:flex;flex-direction:column;gap:15px;">
         <div>${secTitle('SKILLS',C,F,false)}${skillText(C,false)}</div>
         <div>${secTitle('LANGUAGES',C,F,false)}${langLines(C,false)}</div>
         <div>${secTitle('CERTIFICATIONS',C,F,false)}${certLines(C,false)}</div>
@@ -618,7 +618,7 @@ function tplHeader(C,F){
 }
 /* --- TEMPLATE 3: MINIMAL --- */
 function tplMinimal(C,F){
-  return `<div style="position:absolute;inset:0;color:#222;padding:30px 32px;display:flex;flex-direction:column;justify-content:space-between;">
+  return `<div style="position:absolute;inset:0;color:#222;padding:32px 34px;display:flex;flex-direction:column;gap:17px;">
     <div style="text-align:center;border-bottom:2px solid ${C.main};padding-bottom:14px;">
       <div style="font-family:${F.head};font-size:29px;color:${C.deep};letter-spacing:.02em;">${esc(state.name)||'NAME'}</div>
       <div style="font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:${C.main};margin-top:5px;">${esc(state.role)||'CABIN CREW'}</div>
@@ -648,7 +648,7 @@ function tplTimeline(C,F){
     <div style="color:${C.main};font-size:10.5px;">${esc(x.org)}</div></div>`).join('');
   return `<div style="position:absolute;inset:0;color:#222;padding:28px 30px;display:flex;flex-direction:column;">
     <div style="display:flex;gap:16px;align-items:center;border-bottom:1px solid ${C.soft};padding-bottom:14px;">
-      ${photoRect(56,72)}
+      ${photoRect(64,84)}
       <div style="flex:1;">
         <div style="font-family:${F.head};font-size:27px;color:${C.deep};line-height:1.05;">${esc(state.name)||'NAME'}</div>
         <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:${C.main};margin-top:4px;">${esc(state.role)||'CABIN CREW'}</div>
@@ -656,14 +656,14 @@ function tplTimeline(C,F){
       <div style="text-align:right;font-size:10px;color:#888;line-height:1.75;">${contactLine(C).map(esc).join('<br>')}</div>
     </div>
     <div style="margin-top:14px;font-size:10.5px;color:#555;line-height:1.65;">${esc(state.about)}</div>
-    <div style="display:flex;gap:26px;margin-top:16px;flex:1;align-items:stretch;">
+    <div style="display:flex;gap:28px;margin-top:16px;flex:1;align-items:flex-start;">
       <div style="flex:1.5;">
-        <div style="border-left:2px solid ${C.soft};padding-left:17px;height:100%;display:flex;flex-direction:column;justify-content:space-between;gap:18px;">
+        <div style="border-left:2px solid ${C.soft};padding-left:18px;display:flex;flex-direction:column;gap:15px;">
           <div>${secTitle('EXPERIENCE',C,F,false)}${expT}</div>
           <div>${secTitle('EDUCATION',C,F,false)}${eduT}</div>
         </div>
       </div>
-      <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:18px;">
+      <div style="flex:1;display:flex;flex-direction:column;gap:15px;">
         <div>${secTitle('SKILLS',C,F,false)}${skillText(C,false)}</div>
         <div>${secTitle('LANGUAGES',C,F,false)}${langLines(C,false)}</div>
         <div>${secTitle('CERTIFICATIONS',C,F,false)}${certLines(C,false)}</div>

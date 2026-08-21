@@ -28,6 +28,7 @@ module.exports = async function (req, res) {
   const phone = clip(body.phone, 40);
   const email = clip(body.email, 120);
   const airline = clip(body.airline, 80);
+  const source = clip(body.source, 40);
 
   // 검증: 이름·전화·이메일·항공사 모두 필수
   if (!name || !phone || !email || !airline) {
@@ -38,7 +39,7 @@ module.exports = async function (req, res) {
     const db = createClient(url, serviceKey);
     let stored = true;
     try {
-      const { error } = await db.from('seminar_signups').insert({ name, phone, email, airline });
+      const { error } = await db.from('seminar_signups').insert({ name, phone, email, airline, source });
       if (error) { stored = false; console.warn('[seminar-signup] insert error:', error.message); }
     } catch (e) { stored = false; console.warn('[seminar-signup] insert threw:', e.message); }
 

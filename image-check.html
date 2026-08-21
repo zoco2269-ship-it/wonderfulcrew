@@ -186,6 +186,7 @@
     <input type="file" id="file" accept="image/*" hidden>
 
     <button class="go" id="go" disabled>이미지 진단받기</button>
+    <div id="diagCount" style="text-align:center;font-size:0.8rem;color:var(--muted);margin-top:8px;"></div>
     <div class="privacy">🔒 사진은 분석에만 쓰이고 저장하지 않아요.</div>
   </div>
 
@@ -230,7 +231,7 @@
   </div>
 
   <div class="card" id="finishCard" style="display:none;border:1.5px solid var(--gold);background:linear-gradient(180deg,#FFFDF6,#fff);">
-    <div class="mk-title">✨ 완성 면접사진 <span class="beta" style="background:var(--navy);color:#fff;">🔒 관리자 전용</span></div>
+    <div class="mk-title">✨ 완성 면접사진 <span class="beta" style="background:var(--gold,#C9A84C);color:#fff;">🔒 멤버십 전용</span></div>
     <p style="font-size:0.92rem;color:var(--mid);line-height:1.7;margin:2px 0 14px;">업로드한 사진을 <b>메이크업 · 헤어 정리(깔끔한 쪽머리, 중앙 가르마 없이) · 피부 보정 · 배경</b>까지 한 번에 완성해 드려요. 몇십만원짜리 스튜디오 촬영을 대체하는 프리미엄 기능입니다.</p>
     <div class="fin-opt"><span class="fin-l">🖼 배경색</span><div class="mk-swatches" id="finBgSw"></div></div>
     <div class="fin-opt"><span class="fin-l">🧥 자켓색</span><div class="mk-swatches" id="finJkSw"></div></div>
@@ -271,12 +272,33 @@
   </div>
 </div>
 
+<div id="wcGate" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(20,24,40,0.55);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;max-width:380px;width:100%;border-radius:18px;padding:32px 26px;text-align:center;box-shadow:0 30px 80px -20px rgba(0,0,0,0.5);font-family:inherit;">
+    <div style="font-size:2rem;">🔒</div>
+    <h3 style="color:var(--navy,#1A2340);font-size:1.25rem;margin:12px 0 8px;font-weight:700;">멤버십 전용 기능</h3>
+    <p id="wcGateMsg" style="color:var(--muted,#8a8a8a);font-size:0.9rem;line-height:1.75;margin-bottom:22px;"></p>
+    <a href="pricing.html" style="display:block;padding:14px;border-radius:26px;background:linear-gradient(135deg,var(--gold-l,#E8C96A),var(--gold,#C9A84C));color:#fff;font-weight:700;font-size:0.92rem;margin-bottom:12px;text-decoration:none;">멤버십 알아보기 →</a>
+    <button onclick="document.getElementById('wcGate').style.display='none'" style="background:none;border:none;color:var(--muted,#8a8a8a);font-size:0.82rem;cursor:pointer;">닫기</button>
+  </div>
+</div>
+
 <footer>© 2026 WonderfulCrew · 이미지 진단은 참고용 조언입니다.</footer>
 
 <script>
 (function(){
   var $=function(id){return document.getElementById(id);};
   var imgData=null, mediaType='image/jpeg', target='domestic';
+
+  // 관리자 우회: ?admin=1 로 접속하면 로컬에 저장돼 이후 계속 무제한 사용
+  try{ if(/[?&]admin=1/.test(location.search)) localStorage.setItem('wc_admin','1'); }catch(e){}
+  function wcIsAdmin(){ try{ return localStorage.getItem('wc_admin')==='1'; }catch(e){ return false; } }
+  function wcGate(msg){ var m=$('wcGateMsg'); if(m) m.textContent=msg||''; var g=$('wcGate'); if(g) g.style.display='flex'; }
+  var _wg=$('wcGate'); if(_wg) _wg.addEventListener('click', function(e){ if(e.target===this) this.style.display='none'; });
+  // 무료 이미지 진단 횟수(10회)
+  var FREE_DIAG=10;
+  function diagUsed(){ try{ return parseInt(localStorage.getItem('wc_diag_used')||'0',10)||0; }catch(e){ return 0; } }
+  function diagInc(){ try{ localStorage.setItem('wc_diag_used', String(diagUsed()+1)); }catch(e){} }
+  function diagRender(){ var el=$('diagCount'); if(!el) return; if(wcIsAdmin()){ el.textContent=''; return; } var left=Math.max(0,FREE_DIAG-diagUsed()); el.innerHTML='무료 진단 <b style="color:var(--navy,#1A2340);">'+left+'</b> / '+FREE_DIAG+'회 남음'; }
 
   $('file').addEventListener('change', function(e){
     var f=e.target.files && e.target.files[0]; if(!f) return;
@@ -322,6 +344,7 @@
   }
   $('go').addEventListener('click', async function(){
     if(!imgData) return;
+    if(!wcIsAdmin() && diagUsed()>=FREE_DIAG){ wcGate('무료 이미지 진단 '+FREE_DIAG+'회를 모두 사용하셨어요. 멤버십에서는 진단·완성사진을 무제한으로 이용하실 수 있어요.'); return; }
     $('go').disabled=true;
     $('result').classList.add('on');
     $('rbody').parentElement.style.display='none';
@@ -337,6 +360,7 @@
       $('rbody').parentElement.style.display='block';
       if(!r.ok||!d.reply) throw new Error((d.error&&(d.error.message||d.error))||'분석에 실패했어요.');
       $('rbody').innerHTML=fmtDiag(d.reply);
+      if(!wcIsAdmin()){ diagInc(); diagRender(); }
     }catch(e){
       if($('spin'))$('spin').remove();
       $('rbody').parentElement.style.display='block';
@@ -367,10 +391,12 @@
     wrap.appendChild(em); wrap.appendChild(inp); el.appendChild(wrap);
   }
   buildFinSw('finBgSw', [['흰색','#FFFFFF'],['연하늘','#DCEAF7'],['하늘','#9CC3E8'],['진파랑','#4A78C0'],['회색','#DDE1E6']], 'bgHex', '#9CC3E8');
-  buildFinSw('finJkSw', [['네이비','#20304F'],['블랙','#181A20'],['차콜','#3A3F4A'],['그레이','#6B7280'],['버건디','#5A2733']], 'jacketHex', '#20304F');
+  buildFinSw('finJkSw', [['네이비','#20304F'],['레드','#B32430'],['블랙','#181A20'],['차콜','#3A3F4A'],['그레이','#6B7280'],['버건디','#5A2733']], 'jacketHex', '#20304F');
+  diagRender();
   var finishBtn=$('finishBtn');
   if(finishBtn) finishBtn.addEventListener('click', async function(){
     if(!imgData){ $('finishStatus').textContent='먼저 사진을 올려주세요.'; return; }
+    if(!wcIsAdmin()){ wcGate('스튜디오급 완성 면접사진(메이크업·헤어·피부·배경까지 한 번에 완성)은 멤버십 전용이에요. 무료 체험에서는 이미지 진단과 메이크업 미리보기를 이용하실 수 있어요.'); return; }
     finishBtn.disabled=true; $('finishResult').style.display='none';
     $('finishStatus').textContent='완성사진을 만드는 중이에요… (20~40초 정도 걸려요)';
     try{

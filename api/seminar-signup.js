@@ -36,11 +36,11 @@ module.exports = async function (req, res) {
 
   try {
     const db = createClient(url, serviceKey);
-    const { error } = await db.from('seminar_signups').insert({ name, phone, email, airline });
-    if (error) {
-      console.warn('[seminar-signup] insert error:', error.message);
-      return res.status(500).json({ ok: false, error: 'insert_failed' });
-    }
+    let stored = true;
+    try {
+      const { error } = await db.from('seminar_signups').insert({ name, phone, email, airline });
+      if (error) { stored = false; console.warn('[seminar-signup] insert error:', error.message); }
+    } catch (e) { stored = false; console.warn('[seminar-signup] insert threw:', e.message); }
 
     // 신청 알림(정미님) + 신청자 자동 완료 메일 — Resend (실패해도 신청 자체는 성공 처리)
     const resendKey = process.env.RESEND_API_KEY;
@@ -82,7 +82,7 @@ module.exports = async function (req, res) {
       await Promise.allSettled(jobs);
     }
 
-    res.status(200).json({ ok: true });
+    res.status(200).json({ ok: true, stored: stored });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
   }

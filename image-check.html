@@ -664,6 +664,16 @@ function render(){
     actx.drawImage(jc,0,0,cw,ch);
   }
   paintMakeup(actx);   // 애프터에만 메이크업
+  // 무료 미리보기: 티 안 나게 우하단 워터마크(관리자 제외)
+  var _adm=false; try{ _adm=localStorage.getItem('wc_admin')==='1'; }catch(e){}
+  if(!_adm){
+    actx.save();
+    actx.globalAlpha=0.15; actx.fillStyle='#ffffff';
+    actx.shadowColor='rgba(0,0,0,0.28)'; actx.shadowBlur=2; actx.textAlign='right';
+    actx.font='600 '+Math.max(11,Math.round(cw*0.028))+'px sans-serif';
+    actx.fillText('WonderfulCrew', cw-Math.round(cw*0.03), ch-Math.round(ch*0.032));
+    actx.restore();
+  }
   applySlider();
 }
 var sliderPct=0.5;
@@ -743,6 +753,13 @@ function mkPick(init, cb){
 (function(){ var l=$('lipInt'); if(l) l.oninput=function(){ lipInt=(+l.value)/100; render(); }; })();
 (function(){ var e=$('eyeInt'); if(e) e.oninput=function(){ eyeInt=(+e.value)/100; render(); }; })();
 (function(){ var s=$('bgSave'); if(s) s.onclick=function(){
+  var admin=false; try{ admin=localStorage.getItem('wc_admin')==='1'; }catch(e){}
+  if(!admin){
+    var g=document.getElementById('wcGate'), m=document.getElementById('wcGateMsg');
+    if(m) m.textContent='메이크업 사진 저장은 멤버십 전용이에요. 입혀보기(비포/애프터 미리보기)는 자유롭게 이용하실 수 있어요.';
+    if(g) g.style.display='flex';
+    return;
+  }
   var ac=$('afterCanvas'); if(!ac) return;
   var a=document.createElement('a'); a.download='wonderfulcrew-photo.png'; a.href=ac.toDataURL('image/png'); a.click(); }; })();
 

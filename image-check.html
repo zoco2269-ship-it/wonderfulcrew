@@ -321,6 +321,8 @@
         $('drop').querySelector('.s').style.display='none';
         $('go').disabled=false;
         if($('finishCard')){ $('finishCard').style.display='block'; $('finishResult').style.display='none'; $('finishStatus').textContent=''; }
+        // 메이크업 전용 모드: 업로드한 내 사진을 바로 메이크업 캔버스로
+        if(document.body.classList.contains('mkmode')){ try{ handle(f); }catch(e){} }
       };
       img.src=reader.result;
     };

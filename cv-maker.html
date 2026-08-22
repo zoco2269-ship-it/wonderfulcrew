@@ -139,6 +139,13 @@ footer{padding:36px 20px;background:var(--navy);color:rgba(255,255,255,0.55);tex
   .preview-wrap{position:static;order:-1;}
   .paper{max-width:440px;margin:0 auto;}
 }
+/* 데스크탑: 왼쪽 입력 / 오른쪽 미리보기 각각 독립 스크롤 */
+@media(min-width:881px){
+  .panel{position:sticky;top:78px;max-height:calc(100vh - 96px);overflow-y:auto;}
+  .preview-wrap{max-height:calc(100vh - 96px);overflow-y:auto;overflow-x:hidden;}
+  .panel::-webkit-scrollbar,.preview-wrap::-webkit-scrollbar{width:8px;}
+  .panel::-webkit-scrollbar-thumb,.preview-wrap::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;}
+}
 
 /* ---------- easy helper / chips (쉬운 작성 도우미) ---------- */
 .ez{border:1px solid var(--line);border-radius:11px;padding:13px;margin:-4px 0 14px;background:#FBF8F1;}
@@ -464,9 +471,10 @@ function renderExp(){
     <div class="grid2"><div class="field"><label>직무/역할</label><input value="${esc(x.role)}" oninput="upd('exp',${i},'role',this.value)"></div>
     <div class="field"><label>기간</label><input value="${esc(x.date)}" oninput="upd('exp',${i},'date',this.value)"></div></div>
     <div class="field"><label>회사/기관</label><input value="${esc(x.org)}" oninput="upd('exp',${i},'org',this.value)"></div>
-    <div class="job-hint">👇 아래에서 고르거나, 위 '직무/역할'을 직접 쓴 뒤 파란 버튼을 누르면 설명이 자동 완성돼요</div>
+    <div class="job-hint">👇 위 '직무/역할'을 직접 쓴 뒤 아래 <b>노란 버튼</b>을 누르면 설명이 자동 완성돼요. 또는 예시를 눌러 채워도 돼요.</div>
+    <button type="button" class="ez-btn" style="width:100%;margin:2px 0 9px;text-align:center;font-size:0.86rem;padding:11px;" onclick="autoExpDesc(${i})">✨ 내 직무로 설명 자동 생성하기</button>
+    <div class="job-hint">💡 예시 직무 — 눌러서 빠르게 채우기</div>
     <div class="job-chips chips">${Object.keys(JOB_PRESETS).map(j=>`<span class="chip" onclick="fillJob(${i},'${j}')">${j}</span>`).join('')}</div>
-    <button type="button" class="ez-btn" style="margin:0 0 9px;" onclick="autoExpDesc(${i})">✨ 내 직무로 설명 자동 생성</button>
     <div class="field"><label>설명 (자유롭게 수정 가능 · 승무원 자질 중심)</label><textarea oninput="upd('exp',${i},'desc',this.value)">${esc(x.desc)}</textarea></div>`,'delExp')).join('');
 }
 function renderEdu(){
@@ -590,6 +598,12 @@ const JOB_PRESETS = {
     'Collaborated with members from diverse backgrounds',
     'Learned quickly and adapted to new tasks and environments',
     'Completed assigned duties reliably and on time'
+  ],
+  '관광·가이드·안내':[
+    'Guided and assisted travelers of diverse nationalities with warmth and care',
+    'Explained information clearly and answered questions with patience',
+    'Kept groups safe and stayed calm while handling unexpected situations',
+    'Coordinated schedules and worked closely as part of a team'
   ]
 };
 function fillJob(i,job){ const arr=JOB_PRESETS[job]||[]; if(!state.exp[i])return; state.exp[i].desc=arr.join('\n'); renderExp(); render(); }
@@ -604,7 +618,8 @@ function matchPreset(roleText){
     {k:['승무','cabin','crew','기내','항공','airline','flight','지상','ground','공항','airport','스튜어','인턴승무'],p:'항공·기내'},
     {k:['면세','duty','백화점','department','명품','luxury','vip','부티크'],p:'면세·백화점'},
     {k:['병원','hospital','간호','nurse','케어','care','요양','clinic','약국','pharmac','치과','dental','의료','medical','물리치료'],p:'병원·케어'},
-    {k:['인턴','intern','대외','동아리','서포터','supporter','봉사','volunteer','아르바이트','part','파트','알바','서포','club','학생회','조교','ta'],p:'인턴·대외활동'}
+    {k:['인턴','intern','대외','동아리','서포터','supporter','봉사','volunteer','아르바이트','part','파트','알바','서포','club','학생회','조교','ta'],p:'인턴·대외활동'},
+    {k:['투어','tour','가이드','guide','관광','여행','travel','인솔','안내원','통역','interpret','리조트','resort','테마파크','놀이공원','park'],p:'관광·가이드·안내'}
   ];
   for(const m of map){ if(m.k.some(w=>s.includes(w))) return JOB_PRESETS[m.p]; }
   return null;
@@ -672,7 +687,7 @@ function renderOverseas(){
     <div class="grid2"><div class="field"><label>활동 (예: Exchange Student)</label><input value="${esc(x.role)}" oninput="upd('overseas',${i},'role',this.value)"></div>
     <div class="field"><label>기간</label><input value="${esc(x.date)}" oninput="upd('overseas',${i},'date',this.value)"></div></div>
     <div class="field"><label>국가·기관</label><input value="${esc(x.org)}" oninput="upd('overseas',${i},'org',this.value)" placeholder="Sydney, Australia"></div>
-    <button type="button" class="ez-btn" style="margin:0 0 9px;" onclick="autoOseaDesc(${i})">✨ 이 활동으로 설명 자동 생성</button>
+    <button type="button" class="ez-btn" style="width:100%;margin:2px 0 9px;text-align:center;font-size:0.86rem;padding:11px;" onclick="autoOseaDesc(${i})">✨ 이 활동으로 설명 자동 생성하기</button>
     <div class="field"><label>설명 (자유롭게 수정 가능)</label><textarea oninput="upd('overseas',${i},'desc',this.value)">${esc(x.desc)}</textarea></div>`,'delOverseas')).join('');
 }
 function delOverseas(i){ state.overseas.splice(i,1); renderOverseas(); render(); }

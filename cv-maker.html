@@ -458,9 +458,10 @@ function renderExp(){
     <div class="grid2"><div class="field"><label>직무/역할</label><input value="${esc(x.role)}" oninput="upd('exp',${i},'role',this.value)"></div>
     <div class="field"><label>기간</label><input value="${esc(x.date)}" oninput="upd('exp',${i},'date',this.value)"></div></div>
     <div class="field"><label>회사/기관</label><input value="${esc(x.org)}" oninput="upd('exp',${i},'org',this.value)"></div>
-    <div class="job-hint">👇 직무 유형을 누르면 설명이 자동 완성돼요 (고른 뒤 자유롭게 수정 가능)</div>
+    <div class="job-hint">👇 아래에서 고르거나, 위 '직무/역할'을 직접 쓴 뒤 파란 버튼을 누르면 설명이 자동 완성돼요</div>
     <div class="job-chips chips">${Object.keys(JOB_PRESETS).map(j=>`<span class="chip" onclick="fillJob(${i},'${j}')">${j}</span>`).join('')}</div>
-    <div class="field"><label>설명 (승무원 자질 중심)</label><textarea oninput="upd('exp',${i},'desc',this.value)">${esc(x.desc)}</textarea></div>`,'delExp')).join('');
+    <button type="button" class="ez-btn" style="margin:0 0 9px;" onclick="autoExpDesc(${i})">✨ 내 직무로 설명 자동 생성</button>
+    <div class="field"><label>설명 (자유롭게 수정 가능 · 승무원 자질 중심)</label><textarea oninput="upd('exp',${i},'desc',this.value)">${esc(x.desc)}</textarea></div>`,'delExp')).join('');
 }
 function renderEdu(){
   el('eduList').innerHTML = state.edu.map((x,i)=>repeatBox(i,`
@@ -586,6 +587,48 @@ const JOB_PRESETS = {
   ]
 };
 function fillJob(i,job){ const arr=JOB_PRESETS[job]||[]; if(!state.exp[i])return; state.exp[i].desc=arr.join('\n'); renderExp(); render(); }
+/* 내가 직접 쓴 직무명 → 키워드로 가까운 설명 매칭, 없으면 범용 생성 */
+function matchPreset(roleText){
+  const s=(roleText||'').toLowerCase();
+  const map=[
+    {k:['호텔','hotel','프론트','front','컨시어지','concierge','리셉','recep','벨','bell'],p:'호텔·프론트'},
+    {k:['카페','cafe','커피','coffee','바리스타','barista','레스토랑','restaurant','식당','서빙','serv','waiter','waitress','홀','베이커','baker','주방','kitchen','제과','디저트'],p:'카페·레스토랑'},
+    {k:['판매','sales','매장','store','리테일','retail','샵','shop','캐셔','cashier','의류','fashion','뷰티','beauty','화장품','cosmetic','편의점'],p:'판매·리테일'},
+    {k:['상담','cs','콜센터','call','고객','customer','응대','contact','헬프','help','안내데스크'],p:'고객상담·CS'},
+    {k:['승무','cabin','crew','기내','항공','airline','flight','지상','ground','공항','airport','스튜어','인턴승무'],p:'항공·기내'},
+    {k:['면세','duty','백화점','department','명품','luxury','vip','부티크'],p:'면세·백화점'},
+    {k:['병원','hospital','간호','nurse','케어','care','요양','clinic','약국','pharmac','치과','dental','의료','medical','물리치료'],p:'병원·케어'},
+    {k:['인턴','intern','대외','동아리','서포터','supporter','봉사','volunteer','아르바이트','part','파트','알바','서포','club','학생회','조교','ta'],p:'인턴·대외활동'}
+  ];
+  for(const m of map){ if(m.k.some(w=>s.includes(w))) return JOB_PRESETS[m.p]; }
+  return null;
+}
+function genericDesc(){
+  return [
+    'Carried out my duties with a responsible and professional attitude',
+    'Communicated warmly with customers and colleagues from diverse backgrounds',
+    'Stayed calm and composed while handling requests and unexpected situations',
+    'Worked closely as part of a team and always put service and safety first'
+  ];
+}
+function autoExpDesc(i){
+  if(!state.exp[i])return;
+  const arr=matchPreset(state.exp[i].role||'')||genericDesc();
+  state.exp[i].desc=arr.join('\n'); renderExp(); render();
+}
+function genericOseaDesc(){
+  return [
+    'Gained valuable international experience abroad',
+    'Adapted quickly to a new culture and unfamiliar environment',
+    'Communicated confidently with people from diverse backgrounds',
+    'Grew in independence, flexibility and a global mindset'
+  ];
+}
+function autoOseaDesc(i){
+  if(!state.overseas[i])return;
+  const arr=matchPreset(state.overseas[i].role||'')||genericOseaDesc();
+  state.overseas[i].desc=arr.join('\n'); renderOverseas(); render();
+}
 
 /* --- 역량(Skills) 프리셋 --- */
 const SKILL_PRESETS=['Customer Service Excellence','Teamwork & Collaboration','Safety Awareness & Composure','Professional Grooming','Cross-cultural Communication','Positive Attitude','Problem Solving','Adaptability & Flexibility','Attention to Detail','Strong Work Ethic'];
@@ -616,7 +659,8 @@ function renderOverseas(){
     <div class="grid2"><div class="field"><label>활동 (예: Exchange Student)</label><input value="${esc(x.role)}" oninput="upd('overseas',${i},'role',this.value)"></div>
     <div class="field"><label>기간</label><input value="${esc(x.date)}" oninput="upd('overseas',${i},'date',this.value)"></div></div>
     <div class="field"><label>국가·기관</label><input value="${esc(x.org)}" oninput="upd('overseas',${i},'org',this.value)" placeholder="Sydney, Australia"></div>
-    <div class="field"><label>설명 (선택)</label><textarea oninput="upd('overseas',${i},'desc',this.value)"></textarea></div>`,'delOverseas')).join('');
+    <button type="button" class="ez-btn" style="margin:0 0 9px;" onclick="autoOseaDesc(${i})">✨ 이 활동으로 설명 자동 생성</button>
+    <div class="field"><label>설명 (자유롭게 수정 가능)</label><textarea oninput="upd('overseas',${i},'desc',this.value)">${esc(x.desc)}</textarea></div>`,'delOverseas')).join('');
 }
 function delOverseas(i){ state.overseas.splice(i,1); renderOverseas(); render(); }
 

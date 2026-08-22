@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cabin Crew CV Maker · Airline English Resume from Templates — WonderfulCrew</title>
+<link rel="canonical" href="https://www.wonderfulcrew.com/cv-maker">
+<meta name="keywords" content="cabin crew CV, cabin crew English resume, airline CV template, cabin crew resume, cabin crew cover letter">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.wonderfulcrew.com/cv-maker">
+<meta property="og:title" content="Cabin Crew CV Maker | Airline English Resume from Templates — WonderfulCrew">
+<meta property="og:description" content="Pick a template shape and color, fill it in, and your cabin-crew English CV builds in real time. Airline-tailored sections, samples and PDF download.">
+<meta property="og:image" content="https://www.wonderfulcrew.com/images/logo.png">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="WonderfulCrew">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cabin Crew CV Maker — WonderfulCrew">
+<meta name="twitter:description" content="A cabin-crew English resume built from templates — airline-tailored sections and PDF download.">
+<meta name="twitter:image" content="https://www.wonderfulcrew.com/images/logo.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Cabin Crew CV Maker","description":"Pick a template shape and color, fill it in, and your cabin-crew English CV builds in real time. Airline-tailored sections, samples and PDF download.","url":"https://www.wonderfulcrew.com/cv-maker","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko-KR","publisher":{"@type":"Organization","name":"WonderfulCrew","url":"https://www.wonderfulcrew.com","logo":{"@type":"ImageObject","url":"https://www.wonderfulcrew.com/images/logo.png"}}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"WonderfulCrew","item":"https://www.wonderfulcrew.com/"},{"@type":"ListItem","position":2,"name":"CV Template Maker","item":"https://www.wonderfulcrew.com/cv-maker"}]}
+</script>
+<meta name="description" content="A CV builder made for cabin-crew applicants. Choose a template shape and color and build your airline English resume in real time. WonderfulCrew.">
+<link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@500;600;700&family=Montserrat:wght@500;600;700&family=Oswald:wght@500;600&family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-l:#E8C96A;--navy:#1A2340;--navy-2:#243056;--cream:#FAF7F0;--ink:#161616;--line:#EbE3D0;--muted:#6A6255;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+button{font-family:inherit;cursor:pointer;}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:rgba(250,247,240,0.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+.logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--navy);}
+.logo span{color:var(--gold);}
+.top-actions{display:flex;gap:8px;}
+.btn{padding:9px 18px;border-radius:22px;font-size:0.82rem;font-weight:700;border:1px solid var(--gold);color:var(--gold);background:#fff;letter-spacing:0.02em;}
+.btn.primary{background:linear-gradient(135deg,var(--gold-l),var(--gold));color:#fff;border-color:transparent;}
+
+/* ---------- intro ---------- */
+.intro{text-align:center;padding:34px 20px 6px;}
+.intro .eyebrow{font-family:'DM Serif Display',serif;letter-spacing:0.26em;font-size:0.7rem;color:var(--gold);text-transform:uppercase;}
+.intro h1{font-family:'DM Serif Display',serif;font-size:1.85rem;color:var(--navy);margin:8px 0 6px;font-weight:400;}
+.intro p{color:var(--muted);font-size:0.92rem;line-height:1.7;max-width:560px;margin:0 auto;}
+
+/* ---------- picker ---------- */
+.picker{max-width:1180px;margin:22px auto 0;padding:0 20px;}
+.picker-row{display:flex;flex-wrap:wrap;gap:26px;align-items:flex-start;justify-content:center;padding:18px 22px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px -20px rgba(26,35,64,0.4);}
+.picker-block{flex:1;min-width:260px;}
+.picker-label{font-family:'DM Serif Display',serif;font-size:0.72rem;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;}
+.tpl-list{display:flex;gap:10px;flex-wrap:wrap;}
+.tpl-chip{width:74px;cursor:pointer;text-align:center;}
+.tpl-thumb{width:74px;height:96px;border-radius:8px;border:2px solid var(--line);overflow:hidden;background:#fff;transition:.18s;position:relative;}
+.tpl-chip.active .tpl-thumb{border-color:var(--navy);box-shadow:0 6px 16px -6px rgba(26,35,64,0.55);}
+.tpl-chip span{display:block;font-size:0.64rem;color:var(--muted);margin-top:5px;font-family:'Noto Sans KR',sans-serif;}
+.tpl-chip.active span{color:var(--navy);font-weight:700;}
+/* mini thumbnail internals */
+.mini{position:absolute;inset:0;}
+.mini .side{position:absolute;top:0;bottom:0;left:0;width:36%;}
+.mini .band{position:absolute;top:0;left:0;right:0;height:30%;}
+.mini .dot{position:absolute;border-radius:2px;background:rgba(255,255,255,0.8);}
+.mini .ln{position:absolute;height:3px;border-radius:2px;background:#d9d2c2;}
+
+.swatches{display:flex;gap:9px;flex-wrap:wrap;}
+.sw{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);transition:.15s;}
+.sw.active{box-shadow:0 0 0 2px var(--navy);transform:scale(1.08);}
+.font-list{display:flex;gap:8px;flex-wrap:wrap;}
+.font-btn{padding:7px 14px;border-radius:18px;border:1px solid var(--line);background:#fff;font-size:0.78rem;color:var(--muted);}
+.font-btn.active{border-color:var(--navy);color:var(--navy);font-weight:700;}
+.sw.custom{display:flex;align-items:center;justify-content:center;font-size:0.8rem;background:conic-gradient(from 0deg,#e5484d,#e8a13c,#e6d84c,#5cbf6a,#4c8de8,#9a6ce0,#e5484d);color:#fff;}
+.custom-color{display:inline-flex;align-items:center;gap:7px;margin-top:11px;padding:6px 11px;border:1px dashed var(--gold);border-radius:20px;background:#fff;font-size:0.74rem;color:var(--muted);font-family:'Noto Sans KR',sans-serif;cursor:pointer;font-weight:600;}
+.custom-color input[type=color]{width:24px;height:24px;padding:0;border:none;border-radius:50%;background:none;cursor:pointer;}
+.custom-color input[type=color]::-webkit-color-swatch-wrapper{padding:0;}
+.custom-color input[type=color]::-webkit-color-swatch{border:1px solid var(--line);border-radius:50%;}
+
+/* ---------- workspace ---------- */
+.workspace{max-width:1180px;margin:20px auto 60px;padding:0 20px;display:grid;grid-template-columns:0.9fr 1.1fr;gap:22px;align-items:start;}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;}
+.panel h2{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--navy);margin-bottom:4px;}
+.panel .hint{font-size:0.76rem;color:var(--muted);margin-bottom:14px;font-family:'Noto Sans KR',sans-serif;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:0.74rem;color:var(--muted);margin-bottom:4px;font-family:'Noto Sans KR',sans-serif;font-weight:500;letter-spacing:0.02em;}
+.field input,.field textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:0.86rem;font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:#FCFAF4;}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--gold);background:#fff;}
+.field textarea{resize:vertical;min-height:64px;line-height:1.6;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.acc{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:#FBF8F1;font-family:'Noto Sans KR',sans-serif;font-size:0.82rem;font-weight:700;color:var(--navy);cursor:pointer;}
+.acc-head .chev{transition:.2s;color:var(--gold);}
+.acc.open .chev{transform:rotate(90deg);}
+.acc-body{display:none;padding:14px;}
+.acc.open .acc-body{display:block;}
+.repeat-item{border:1px dashed var(--line);border-radius:10px;padding:12px;margin-bottom:10px;position:relative;}
+.repeat-item .del{position:absolute;top:8px;right:8px;background:none;border:none;color:#c26;font-size:0.9rem;}
+.add-btn{width:100%;padding:9px;border:1px dashed var(--gold);border-radius:9px;background:rgba(201,168,76,0.07);color:var(--gold);font-size:0.8rem;font-weight:700;}
+.ai-fill{width:100%;margin-bottom:14px;padding:12px 14px;border:none;border-radius:11px;background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;font-size:0.84rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;line-height:1.45;cursor:pointer;text-align:left;display:flex;gap:8px;align-items:center;}
+.ai-fill b{color:var(--gold-l);}
+.ai-fill:hover{background:linear-gradient(135deg,var(--navy-2),var(--navy));}
+.ai-fill:disabled{opacity:0.6;cursor:default;}
+.ai-note{font-size:0.72rem;color:var(--muted);margin:-8px 0 14px;font-family:'Noto Sans KR',sans-serif;line-height:1.5;}
+.photo-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.photo-prev{width:56px;height:70px;border-radius:8px;background:#F1ECE0;border:1px dashed var(--line);object-fit:cover;}
+.photo-btn{font-size:0.76rem;color:var(--gold);border:1px solid var(--gold);border-radius:8px;padding:7px 12px;background:#fff;}
+
+/* ---------- preview ---------- */
+.preview-wrap{position:sticky;top:78px;}
+.paper{background:#fff;width:100%;aspect-ratio:1/1.414;box-shadow:0 18px 50px -18px rgba(26,35,64,0.45);border-radius:6px;overflow:hidden;font-family:'Noto Sans KR',sans-serif;color:#222;position:relative;}
+/* generic cv text */
+.cv-h{font-family:'DM Serif Display',serif;}
+.cv-name{letter-spacing:0.02em;line-height:1.1;}
+.cv-sec-title{font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+.cv-role{font-weight:700;}
+.cv-date{color:#8a8a8a;}
+.cv-desc{color:#555;line-height:1.5;}
+.skillbar{background:#e7e2d6;border-radius:5px;overflow:hidden;height:6px;}
+.skillbar>i{display:block;height:100%;}
+
+/* proof / upsell */
+.upsell{max-width:1180px;margin:0 auto 60px;padding:0 20px;}
+.upsell-in{background:var(--navy);border-radius:18px;padding:36px 30px;text-align:center;color:#fff;}
+.upsell-in .eyebrow{font-family:'DM Serif Display',serif;letter-spacing:0.2em;font-size:0.7rem;color:var(--gold-l);text-transform:uppercase;}
+.upsell-in h3{font-family:'DM Serif Display',serif;font-size:1.5rem;margin:10px 0 8px;font-weight:400;}
+.upsell-in p{color:rgba(255,255,255,0.78);font-size:0.92rem;line-height:1.7;max-width:560px;margin:0 auto 20px;font-family:'Noto Sans KR',sans-serif;}
+.upsell-cta{display:inline-flex;gap:8px;padding:13px 30px;border-radius:26px;background:linear-gradient(135deg,var(--gold-l),var(--gold));color:#fff;font-weight:700;font-size:0.95rem;}
+.pkg{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:26px;}
+.pkg-card{background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.3);border-radius:12px;padding:16px 18px;width:160px;font-family:'Noto Sans KR',sans-serif;}
+.pkg-card .ic{font-size:1.4rem;}
+.pkg-card b{display:block;font-size:0.86rem;margin:8px 0 4px;}
+.pkg-card small{color:rgba(255,255,255,0.6);font-size:0.72rem;line-height:1.4;display:block;}
+
+footer{padding:36px 20px;background:var(--navy);color:rgba(255,255,255,0.55);text-align:center;font-size:0.78rem;}
+
+@media(max-width:880px){
+  .workspace{grid-template-columns:1fr;}
+  .preview-wrap{position:static;order:-1;}
+  .paper{max-width:440px;margin:0 auto;}
+}
+/* 데스크탑: 왼쪽 입력 / 오른쪽 미리보기 각각 독립 스크롤 */
+@media(min-width:881px){
+  .panel{position:sticky;top:78px;max-height:calc(100vh - 96px);overflow-y:auto;}
+  .preview-wrap{max-height:calc(100vh - 96px);overflow-y:auto;overflow-x:hidden;}
+  .panel::-webkit-scrollbar,.preview-wrap::-webkit-scrollbar{width:8px;}
+  .panel::-webkit-scrollbar-thumb,.preview-wrap::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;}
+}
+
+/* ---------- easy helper / chips (쉬운 작성 도우미) ---------- */
+.ez{border:1px solid var(--line);border-radius:11px;padding:13px;margin:-4px 0 14px;background:#FBF8F1;}
+.ez-h{font-family:'Noto Sans KR',sans-serif;font-size:0.8rem;font-weight:700;color:var(--navy);margin-bottom:4px;display:flex;align-items:center;gap:6px;line-height:1.4;}
+.ez-sub{font-size:0.72rem;color:var(--muted);margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;line-height:1.55;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{padding:6px 12px;border-radius:16px;border:1px solid var(--line);background:#fff;font-size:0.76rem;color:var(--muted);font-family:'Noto Sans KR',sans-serif;transition:.15s;user-select:none;cursor:pointer;}
+.chip:hover{border-color:var(--gold);}
+.chip.on{border-color:var(--gold);background:rgba(201,168,76,0.14);color:var(--navy);font-weight:700;}
+.ez-btn{margin-top:11px;padding:9px 16px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold-l),var(--gold));color:#fff;font-size:0.79rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;}
+.ez-out{margin-top:11px;display:flex;flex-direction:column;gap:8px;}
+.ez-card{border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:#fff;font-size:0.8rem;line-height:1.55;color:#333;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:.15s;}
+.ez-card:hover{border-color:var(--gold);box-shadow:0 4px 14px -8px rgba(26,35,64,0.4);}
+.ez-card .pick{display:block;font-size:0.68rem;color:var(--gold);font-weight:700;margin-top:5px;}
+.inc-toggle{display:flex;align-items:center;gap:5px;font-size:0.7rem;color:var(--muted);font-weight:600;font-family:'Noto Sans KR',sans-serif;cursor:pointer;}
+.inc-toggle input{cursor:pointer;}
+.job-chips{margin:2px 0 9px;}
+.job-chips .chip{font-size:0.72rem;padding:5px 10px;}
+.job-hint{font-size:0.68rem;color:var(--gold);font-weight:700;margin-bottom:5px;font-family:'Noto Sans KR',sans-serif;}
+
+/* ---------- print ---------- */
+@media print{
+  body *{visibility:hidden;}
+  #paper,#paper *{visibility:visible;}
+  #paper{position:absolute;left:0;top:0;width:210mm;height:297mm;box-shadow:none;border-radius:0;aspect-ratio:auto;}
+  @page{size:A4;margin:0;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="logo">Wonderful<span>Crew</span></a>
+  <div class="top-actions">
+    <button class="btn" onclick="resetSample()">Fill with sample</button>
+    <button class="btn primary" onclick="payGate('pdf')">PDF · Save 🔒</button>
+  </div>
+</div>
+
+<div class="intro">
+  <div class="eyebrow">Cabin Crew CV Maker</div>
+  <h1>Build your cabin-crew CV from a template</h1>
+  <p>Pick a shape and color, fill in your details, and watch it build in real time. A cabin-crew-focused resume for airline applications in minutes.</p>
+</div>
+
+<!-- ===== PICKER ===== -->
+<div class="picker">
+  <div class="picker-row">
+    <div class="picker-block">
+      <div class="picker-label">Template</div>
+      <div class="tpl-list" id="tplList"></div>
+    </div>
+    <div class="picker-block" style="max-width:290px;">
+      <div class="picker-label">Color</div>
+      <div class="swatches" id="swatches"></div>
+      <label class="custom-color" title="Pick any color you like">
+        <input type="color" id="customColor" value="#7A6CB0">
+        <span>🎨 Pick my own color</span>
+      </label>
+      <div class="picker-label" style="margin-top:16px;">Font</div>
+      <div class="font-list" id="fontList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== WORKSPACE ===== -->
+<div class="workspace">
+  <!-- FORM -->
+  <div class="panel">
+    <h2>Enter your details</h2>
+    <div class="hint">Everything you type appears instantly in the preview on the right.</div>
+    <button class="ai-fill" onclick="payGate('ai')">✨ <span><b>Auto-fill 🔒</b> — just enter company, role and dates and we write your intro, experience and skills</span></button>
+    <div class="ai-note">This is the part applicants struggle with most. Just enter <b>company, role and dates</b> in Experience/Education below and tap it. <b style="color:var(--gold);">Members only</b></div>
+
+    <div class="photo-row">
+      <img id="photoPrev" class="photo-prev" alt="">
+      <div>
+        <button class="photo-btn" onclick="document.getElementById('photoInput').click()">Upload interview photo</button>
+        <input type="file" id="photoInput" accept="image/*" hidden>
+        <div style="font-size:0.68rem;color:var(--muted);margin-top:6px;">3:4 ID photo recommended · winning photos via the photo package</div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="field"><label>Name (English)</label><input id="f_name" placeholder="Jimin Lee"></div>
+      <div class="field"><label>Position</label><input id="f_role" placeholder="Cabin Crew"></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>Phone</label><input id="f_phone" placeholder="+82 10-1234-5678"></div>
+      <div class="field"><label>Email</label><input id="f_email" placeholder="jimin@email.com"></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>Location</label><input id="f_loc" placeholder="Seoul, Korea"></div>
+      <div class="field"><label>Birth year / Nationality</label><input id="f_meta" placeholder="1999 · Korean"></div>
+    </div>
+    <div class="field"><label>Motivation · About you</label><textarea id="f_about"></textarea></div>
+    <div class="ez">
+      <div class="ez-h">✏️ Stuck on your intro? — just pick the words that describe you</div>
+      <div class="ez-sub">Tap the strengths that fit you, then tap <b>Build sentences</b> to get three English intros. Pick the one you like and it fills the box above. (Keep it or edit freely.)</div>
+      <div class="chips" id="aboutChips"></div>
+      <button class="ez-btn" onclick="buildAbout()">✨ Build sentences</button>
+      <div class="ez-out" id="aboutOut"></div>
+    </div>
+
+    <!-- Experience -->
+    <div class="acc open" data-acc>
+      <div class="acc-head"><span>Experience</span><span class="chev">›</span></div>
+      <div class="acc-body">
+        <div id="expList"></div>
+        <button class="add-btn" onclick="addExp()">+ Add experience</button>
+      </div>
+    </div>
+    <!-- Education -->
+    <div class="acc" data-acc>
+      <div class="acc-head"><span>Education</span><span class="chev">›</span></div>
+      <div class="acc-body">
+        <div id="eduList"></div>
+        <button class="add-btn" onclick="addEdu()">+ Add education</button>
+      </div>
+    </div>
+    <!-- Overseas (optional) -->
+    <div class="acc" data-acc>
+      <div class="acc-head"><span>Overseas Experience <small style="font-weight:400;color:var(--muted);">(optional)</small></span>
+        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_overseas" onchange="toggleInc('overseas',this.checked)"> Show on CV</label>
+      </div>
+      <div class="acc-body">
+        <div class="ez-sub" style="margin-bottom:8px;">Freely add exchange programs, language study, working holidays, volunteering, travel and more. Tap an example below to add it quickly. <b>If you have none, just leave it blank</b> — it will not appear on your CV.</div>
+        <div id="overseasList"></div>
+        <button class="add-btn" onclick="addOverseas()">+ Add my own overseas experience</button>
+        <div class="job-hint" style="margin-top:10px;">💡 Examples — tap to add quickly</div>
+        <div class="job-chips chips" id="oseaPresetRow"></div>
+      </div>
+    </div>
+    <!-- Skills -->
+    <div class="acc" data-acc>
+      <div class="acc-head"><span>Skills</span>
+        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_skills" checked onchange="toggleInc('skills',this.checked)"> Show on CV</label>
+      </div>
+      <div class="acc-body">
+        <div class="ez-sub" style="margin-bottom:8px;">Freely add any skills you want. Tap an example below to fill them in quickly.</div>
+        <div id="skillList"></div>
+        <button class="add-btn" onclick="addSkill()">+ Add my own skill</button>
+        <div class="job-hint" style="margin-top:10px;">💡 Examples — tap to add (only what you want)</div>
+        <div class="job-chips chips" id="skillPresetRow"></div>
+      </div>
+    </div>
+    <!-- Languages -->
+    <div class="acc" data-acc>
+      <div class="acc-head"><span>Languages</span>
+        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_langs" checked onchange="toggleInc('langs',this.checked)"> Show on CV</label>
+      </div>
+      <div class="acc-body">
+        <div class="ez-sub" style="margin-bottom:8px;">Add the languages you speak and your level. Tap an example below to add quickly.</div>
+        <div id="langList"></div>
+        <button class="add-btn" onclick="addLang()">+ Add my own language</button>
+        <div class="job-hint" style="margin-top:10px;">💡 Example languages — tap to add quickly</div>
+        <div class="job-chips chips" id="langPresetRow"></div>
+      </div>
+    </div>
+    <!-- Certs -->
+    <div class="acc" data-acc>
+      <div class="acc-head"><span>Certifications</span>
+        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_certs" checked onchange="toggleInc('certs',this.checked)"> Show on CV</label>
+      </div>
+      <div class="acc-body">
+        <div class="ez-sub" style="margin-bottom:8px;">Add your certificates, courses and licenses — <b>one per line</b>. Tap an example below to add quickly.</div>
+        <div class="field"><textarea id="f_certs" style="min-height:88px;" placeholder="e.g. First Aid & CPR Certified"></textarea></div>
+        <div class="job-hint">💡 Example certifications — tap to add quickly</div>
+        <div class="job-chips chips" id="certPresetRow"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-wrap">
+    <div class="paper" id="paper"></div>
+    <div style="text-align:center;font-size:0.72rem;color:var(--muted);margin-top:10px;font-family:'Noto Sans KR',sans-serif;">A4 preview · identical to the printed / PDF version</div>
+  </div>
+</div>
+
+<!-- ===== UPSELL ===== -->
+<div class="upsell">
+  <div class="upsell-in">
+    <div class="eyebrow">All-in-One Package</div>
+    <h3>Your CV is just the start. Everything to get hired, in one place.</h3>
+    <p>From documents to photos to interviews, WonderfulCrew supports every step of your cabin-crew journey. The CV Maker is included in the monthly membership.</p>
+    <div class="pkg">
+      <div class="pkg-card"><div class="ic">📄</div><b>CV Maker</b><small>Build an English resume with cabin-crew templates</small></div>
+      <div class="pkg-card"><div class="ic">📸</div><b>Finished interview photo</b><small>A polished image — makeup, hair and outfit</small></div>
+      <div class="pkg-card"><div class="ic">🎙️</div><b>Live speaking</b><small>English interview & roleplay practice</small></div>
+      <div class="pkg-card"><div class="ic">🧑‍🏫</div><b>Coach feedback</b><small>The final polish, from a professional coach</small></div>
+    </div>
+    <div style="margin-top:26px;"><a class="upsell-cta" href="pricing.html">See membership →</a></div>
+  </div>
+</div>
+
+<footer>© WonderfulCrew · The essence of cabin-crew success</footer>
+
+<!-- ===== 멤버십 전용 게이트 ===== -->
+<div id="payGate" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(20,24,40,0.55);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;max-width:370px;width:100%;border-radius:18px;padding:32px 28px;text-align:center;box-shadow:0 30px 80px -20px rgba(0,0,0,0.5);font-family:'Noto Sans KR',sans-serif;">
+    <div style="font-size:2rem;">🔒</div>
+    <h3 style="font-family:'DM Serif Display',serif;color:var(--navy);font-size:1.3rem;margin:12px 0 8px;font-weight:400;">Members-only feature</h3>
+    <p id="payGateMsg" style="color:var(--muted);font-size:0.88rem;line-height:1.75;margin-bottom:22px;"></p>
+    <a href="pricing.html" style="display:block;padding:14px;border-radius:26px;background:linear-gradient(135deg,var(--gold-l),var(--gold));color:#fff;font-weight:700;font-size:0.92rem;margin-bottom:12px;">See membership →</a>
+    <button onclick="document.getElementById('payGate').style.display='none'" style="background:none;border:none;color:var(--muted);font-size:0.82rem;">Close</button>
+  </div>
+</div>
+
+<script>
+/* ============ STATE ============ */
+const state = {
+  tpl:'classic', color:'camel', font:'serif',
+  name:'', role:'', phone:'', email:'', loc:'', meta:'', about:'', photo:'',
+  exp:[], edu:[], overseas:[], skills:[], langs:[], certs:'',
+  inc:{overseas:false, skills:true, langs:true, certs:true},
+  custom:null   // {main,deep,soft,text} when 직접 고른 색
+};
+
+const COLORS = {
+  camel:{name:'Camel',   main:'#A9744F', deep:'#8A5A38', soft:'#EFE3D6', text:'#3a2b1f'},
+  navy: {name:'Navy', main:'#1A2340', deep:'#111834', soft:'#E4E7F0', text:'#1a2340'},
+  rose: {name:'Rose',   main:'#B4677A', deep:'#96475B', soft:'#F3E1E6', text:'#4a2530'},
+  sage: {name:'Sage', main:'#5C7A63', deep:'#425A48', soft:'#E1EAE1', text:'#26382b'},
+  slate:{name:'Charcoal',   main:'#3E4A55', deep:'#2A333B', soft:'#E5E8EB', text:'#232a30'},
+  gold: {name:'Gold',   main:'#B79447', deep:'#8F7130', soft:'#F3EAD3', text:'#3d3116'},
+  wine: {name:'Wine',   main:'#7E3B4A', deep:'#5E2836', soft:'#F0E0E4', text:'#3f1f28'},
+  teal: {name:'Teal',     main:'#2F7C7A', deep:'#1F5A58', soft:'#DDEDEC', text:'#193c3b'},
+  plum: {name:'Plum',   main:'#6B5B95', deep:'#4E4172', soft:'#E8E3F1', text:'#312a4d'},
+  black:{name:'Black',   main:'#2B2B2B', deep:'#141414', soft:'#E6E6E6', text:'#1a1a1a'}
+};
+const FONTS = {
+  serif: {name:'Classic', head:"'DM Serif Display',serif",   body:"'Noto Sans KR',sans-serif"},
+  sans:  {name:'Modern',   head:"'Noto Sans KR',sans-serif",  body:"'Noto Sans KR',sans-serif"},
+  elegant:{name:'Elegant',  head:"'Playfair Display',serif",   body:"'Noto Sans KR',sans-serif"},
+  clean: {name:'Clean',   head:"'Montserrat',sans-serif",    body:"'Noto Sans KR',sans-serif"},
+  book:  {name:'Serif',   head:"'Noto Serif KR',serif",      body:"'Noto Serif KR',serif"},
+  strong:{name:'Impact', head:"'Oswald',sans-serif",        body:"'Noto Sans KR',sans-serif"}
+};
+const TEMPLATES = ['classic','twotone','header','minimal','timeline'];
+const TPL_NAME = {classic:'Classic',twotone:'Two-tone',header:'Header',minimal:'Minimal',timeline:'Timeline'};
+
+/* ============ SAMPLE (승무원 자질 반영) ============ */
+function sampleData(){
+  return {
+    photo:'images/photo-after.png',
+    name:'Jimin Lee', role:'Cabin Crew', phone:'+82 10-1234-5678',
+    email:'jimin.lee@email.com', loc:'Seoul, Republic of Korea', meta:'1999 · Korean',
+    about:'A warm and service-minded aspiring cabin crew member, dedicated to offering every passenger a comfortable and safe journey. Through three years of front-line hospitality experience, I have built composure, teamwork and genuine care for diverse guests. I place safety first and strive to be crew that passengers can always trust.',
+    exp:[
+      {role:'Front Desk Agent', org:'The Grand Hotel Seoul', date:'2022 – 2024',
+       desc:'Welcomed international guests and resolved complaints with composure\nMaintained top 5% guest-satisfaction scores\nReceived Employee Excellence Award for calm crisis handling'},
+      {role:'In-flight Catering Crew', org:'Sky Catering', date:'2021 – 2022',
+       desc:'Followed airline in-flight service standards\nAchieved 100% on-time service through teamwork\nStrictly observed hygiene and safety regulations'}
+    ],
+    edu:[
+      {role:'B.A. in Airline Service', org:'Korea Aviation University', date:'2018 – 2022',
+       desc:'Majored in in-flight service, safety and aviation English\nAwarded at the campus service-etiquette competition'}
+    ],
+    skills:[
+      {name:'Customer Service Excellence'},
+      {name:'Teamwork & Collaboration'},
+      {name:'Safety Awareness & Composure'},
+      {name:'Professional Grooming'},
+      {name:'Cross-cultural Communication'}
+    ],
+    langs:[
+      {name:'Korean', lvl:'Native'},
+      {name:'English', lvl:'Fluent (TOEIC 900)'},
+      {name:'Japanese', lvl:'Conversational'}
+    ],
+    certs:'First Aid & CPR Certified\nAirline Service Etiquette Certificate\nTOEIC Speaking Lv.7\nIncheon Airport Service Academy'
+  };
+}
+
+/* ============ RENDER FORM ============ */
+function el(id){return document.getElementById(id);}
+
+function bindTop(){
+  // templates
+  el('tplList').innerHTML = TEMPLATES.map(t=>`
+    <div class="tpl-chip ${t===state.tpl?'active':''}" data-tpl="${t}">
+      <div class="tpl-thumb">${miniThumb(t)}</div><span>${TPL_NAME[t]}</span>
+    </div>`).join('');
+  el('tplList').querySelectorAll('.tpl-chip').forEach(c=>c.onclick=()=>{state.tpl=c.dataset.tpl;bindTop();render();});
+  // colors
+  el('swatches').innerHTML = Object.keys(COLORS).map(k=>`
+    <div class="sw ${k===state.color?'active':''}" data-c="${k}" title="${COLORS[k].name}" style="background:${COLORS[k].main}"></div>`).join('');
+  el('swatches').querySelectorAll('.sw').forEach(s=>s.onclick=()=>{state.color=s.dataset.c;state.custom=null;bindTop();render();});
+  // fonts
+  el('fontList').innerHTML = Object.keys(FONTS).map(k=>`
+    <button class="font-btn ${k===state.font?'active':''}" data-f="${k}">${FONTS[k].name}</button>`).join('');
+  el('fontList').querySelectorAll('.font-btn').forEach(b=>b.onclick=()=>{state.font=b.dataset.f;bindTop();render();});
+}
+/* ---- 커스텀 컬러 (직접 고르기) ---- */
+function hexToRgb(h){h=String(h).replace('#','');return {r:parseInt(h.substr(0,2),16),g:parseInt(h.substr(2,2),16),b:parseInt(h.substr(4,2),16)};}
+function toHex(n){n=Math.max(0,Math.min(255,Math.round(n)));return n.toString(16).padStart(2,'0');}
+function darken(hex,f){const c=hexToRgb(hex);return '#'+toHex(c.r*f)+toHex(c.g*f)+toHex(c.b*f);}
+function lighten(hex,f){const c=hexToRgb(hex);return '#'+toHex(c.r+(255-c.r)*f)+toHex(c.g+(255-c.g)*f)+toHex(c.b+(255-c.b)*f);}
+function derivePalette(hex){return {name:'Custom',main:hex,deep:darken(hex,0.72),soft:lighten(hex,0.84),text:darken(hex,0.5)};}
+function activeColor(){return (state.color==='custom'&&state.custom)?state.custom:(COLORS[state.color]||COLORS.camel);}
+
+function miniThumb(t){
+  const c='#A9744F', d='#7d5236';
+  if(t==='classic') return `<div class="mini"><div class="side" style="background:${c}"></div><div class="dot" style="width:18px;height:24px;left:9px;top:7px"></div><div class="ln" style="left:44%;right:8%;top:12px"></div><div class="ln" style="left:44%;right:22%;top:22px"></div><div class="ln" style="left:44%;right:10%;top:36px"></div><span style="position:absolute;left:46%;top:52px;width:8px;height:8px;border-radius:50%;border:2px solid ${c}"></span><span style="position:absolute;left:60%;top:52px;width:8px;height:8px;border-radius:50%;border:2px solid ${c}"></span><span style="position:absolute;left:74%;top:52px;width:8px;height:8px;border-radius:50%;border:2px solid ${c}"></span></div>`;
+  if(t==='twotone') return `<div class="mini"><div style="position:absolute;left:0;top:0;bottom:50%;width:36%;background:${c}"></div><div style="position:absolute;left:0;top:50%;bottom:0;width:36%;background:${d}"></div><div class="dot" style="width:16px;height:21px;left:10px;top:6px"></div><div class="ln" style="left:44%;right:8%;top:12px"></div><div class="ln" style="left:44%;right:20%;top:24px"></div><div class="ln" style="left:44%;right:12%;top:40px"></div><div class="ln" style="left:44%;right:26%;top:52px"></div></div>`;
+  if(t==='header') return `<div class="mini"><div class="band" style="background:${c}"></div><div class="dot" style="width:13px;height:17px;left:8px;top:6px"></div><div class="ln" style="left:34px;right:10px;top:9px;background:rgba(255,255,255,.85)"></div><div class="ln" style="left:8px;right:8px;top:40px"></div><div class="ln" style="left:8px;right:24px;top:50px"></div><div class="ln" style="left:8px;right:14px;top:64px"></div></div>`;
+  if(t==='minimal') return `<div class="mini" style="background:#fff"><div class="ln" style="left:20%;right:20%;top:14px;height:5px;background:${c}"></div><div class="ln" style="left:30%;right:30%;top:24px"></div><div class="ln" style="left:10%;right:10%;top:44px"></div><div class="ln" style="left:10%;right:24%;top:54px"></div><div class="ln" style="left:10%;right:16%;top:70px"></div></div>`;
+  return `<div class="mini" style="background:#fff"><div class="ln" style="left:8px;top:10px;width:40px;height:5px;background:${c}"></div><div class="dot" style="width:8px;height:8px;left:10px;top:30px;background:${c}"></div><div class="dot" style="width:8px;height:8px;left:10px;top:54px;background:${c}"></div><div class="ln" style="left:26px;right:8px;top:31px"></div><div class="ln" style="left:26px;right:20px;top:55px"></div><div class="ln" style="left:11px;top:24px;bottom:10px;width:2px;height:auto;background:${c}"></div></div>`;
+}
+
+/* repeatable renderers */
+function addExp(v){state.exp.push(v||{role:'',org:'',date:'',desc:''});renderExp();render();}
+function addEdu(v){state.edu.push(v||{role:'',org:'',date:'',desc:''});renderEdu();render();}
+function addSkill(v){state.skills.push(v||{name:''});renderSkill();render();}
+function addLang(v){state.langs.push(v||{name:'',lvl:''});renderLang();render();}
+
+function repeatBox(idx,inner,delFn){
+  return `<div class="repeat-item"><button class="del" onclick="${delFn}(${idx})">✕</button>${inner}</div>`;
+}
+function renderExp(){
+  el('expList').innerHTML = state.exp.map((x,i)=>repeatBox(i,`
+    <div class="grid2"><div class="field"><label>Role</label><input value="${esc(x.role)}" oninput="upd('exp',${i},'role',this.value)"></div>
+    <div class="field"><label>Dates</label><input value="${esc(x.date)}" oninput="upd('exp',${i},'date',this.value)"></div></div>
+    <div class="field"><label>Company</label><input value="${esc(x.org)}" oninput="upd('exp',${i},'org',this.value)"></div>
+    <div class="job-hint">👇 Type your <b>Role</b> above, then tap the <b>yellow button</b> below to auto-write the description. Or tap an example to fill it.</div>
+    <button type="button" class="ez-btn" style="width:100%;margin:2px 0 9px;text-align:center;font-size:0.86rem;padding:11px;" onclick="autoExpDesc(${i})">✨ Auto-write from my role</button>
+    <div class="job-hint">💡 Example roles — tap to fill quickly</div>
+    <div class="job-chips chips">${Object.keys(JOB_PRESETS).map(j=>`<span class="chip" onclick="fillJob(${i},'${j}')">${j}</span>`).join('')}</div>
+    <div class="field"><label>Description (edit freely · focus on cabin-crew qualities)</label><textarea oninput="upd('exp',${i},'desc',this.value)">${esc(x.desc)}</textarea></div>`,'delExp')).join('');
+}
+function renderEdu(){
+  el('eduList').innerHTML = state.edu.map((x,i)=>repeatBox(i,`
+    <div class="grid2"><div class="field"><label>Major / Program</label><input value="${esc(x.role)}" oninput="upd('edu',${i},'role',this.value)"></div>
+    <div class="field"><label>Dates</label><input value="${esc(x.date)}" oninput="upd('edu',${i},'date',this.value)"></div></div>
+    <div class="field"><label>School</label><input value="${esc(x.org)}" oninput="upd('edu',${i},'org',this.value)"></div>
+    <div class="field"><label>Description</label><textarea oninput="upd('edu',${i},'desc',this.value)">${esc(x.desc)}</textarea></div>`,'delEdu')).join('');
+}
+function renderSkill(){
+  el('skillList').innerHTML = state.skills.map((x,i)=>repeatBox(i,`
+    <div class="field"><label>Skill</label><input value="${esc(x.name)}" oninput="upd('skills',${i},'name',this.value)"></div>`,'delSkill')).join('');
+}
+function renderLang(){
+  el('langList').innerHTML = state.langs.map((x,i)=>repeatBox(i,`
+    <div class="grid2"><div class="field"><label>Language</label><input value="${esc(x.name)}" oninput="upd('langs',${i},'name',this.value)"></div>
+    <div class="field"><label>Level</label><input value="${esc(x.lvl)}" oninput="upd('langs',${i},'lvl',this.value)"></div></div>`,'delLang')).join('');
+}
+function delExp(i){state.exp.splice(i,1);renderExp();render();}
+function delEdu(i){state.edu.splice(i,1);renderEdu();render();}
+function delSkill(i){state.skills.splice(i,1);renderSkill();render();}
+function delLang(i){state.langs.splice(i,1);renderLang();render();}
+function upd(arr,i,k,v){state[arr][i][k]=v;render();}
+
+/* simple inputs */
+['name','role','phone','email','loc','meta','about','certs'].forEach(k=>{
+  document.addEventListener('input',e=>{ if(e.target.id==='f_'+k){state[k]=e.target.value;render();}});
+});
+el('photoInput').addEventListener('change',e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const r=new FileReader(); r.onload=ev=>{state.photo=ev.target.result;el('photoPrev').src=state.photo;render();}; r.readAsDataURL(file);
+});
+
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+/* ============ 쉬운 작성 도우미 (프리셋 · 자동완성) ============ */
+
+/* --- 자기소개(About) : 강점 단어 → 영문 문장 --- */
+const ABOUT_TRAITS = [
+  {ko:'Bright smile & positivity',   en:'a bright smile and positive energy'},
+  {ko:'Service mindset',     en:'a genuine service mindset'},
+  {ko:'Teamwork',           en:'strong teamwork'},
+  {ko:'Safety first',         en:'a safety-first attitude'},
+  {ko:'Responsibility & diligence',       en:'responsibility and diligence'},
+  {ko:'Attentive care',       en:'attentive care for others'},
+  {ko:'Calm under pressure',   en:'composure in unexpected situations'},
+  {ko:'Cross-cultural communication',       en:'an open, cross-cultural attitude'},
+  {ko:'Foreign-language skills',       en:'confident communication in foreign languages'},
+  {ko:'Well-groomed image',     en:'a professional and well-groomed image'},
+  {ko:'Stamina & health',         en:'stamina and reliability'},
+  {ko:'Eagerness to learn',     en:'a willingness to learn and grow'}
+];
+let aboutSel = new Set();
+let aboutCands = [];
+function renderAboutChips(){
+  el('aboutChips').innerHTML = ABOUT_TRAITS.map((t,i)=>`<span class="chip ${aboutSel.has(i)?'on':''}" data-i="${i}">${t.ko}</span>`).join('');
+  el('aboutChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{const i=+c.dataset.i; aboutSel.has(i)?aboutSel.delete(i):aboutSel.add(i); renderAboutChips();});
+}
+function joinEn(a){ if(a.length===1)return a[0]; if(a.length===2)return a[0]+' and '+a[1]; return a.slice(0,-1).join(', ')+', and '+a[a.length-1]; }
+function buildAbout(){
+  const sel=[...aboutSel];
+  if(!sel.length){ alert('Please pick at least one or two strengths that describe you first.'); return; }
+  const t=joinEn(sel.map(i=>ABOUT_TRAITS[i].en));
+  const role=(state.role&&state.role.trim())||'Cabin Crew';
+  const roleNoun = /cabin crew/i.test(role) ? 'cabin crew member' : role;
+  aboutCands=[
+    `A warm and service-minded aspiring ${roleNoun}, I bring ${t}. I am committed to making every passenger feel comfortable, safe and genuinely cared for throughout their journey.`,
+    `As an aspiring ${roleNoun}, I combine ${t}. I have learned to stay calm under pressure and always put people first, and I would be proud to represent the airline with professionalism and heart.`,
+    `Passionate about creating memorable travel experiences, I offer ${t}. I believe outstanding service begins with sincerity, and I am eager to grow as reliable crew that passengers can always trust.`
+  ];
+  el('aboutOut').innerHTML = aboutCands.map((c,i)=>`<div class="ez-card" data-i="${i}">${esc(c)}<span class="pick">Use this sentence ↑</span></div>`).join('');
+  el('aboutOut').querySelectorAll('.ez-card').forEach(card=>card.onclick=()=>{ state.about=aboutCands[+card.dataset.i]; el('f_about').value=state.about; render(); });
+}
+
+/* --- 경력 Description : 직무 유형 → 승무원 자질 중심 bullet 자동완성 --- */
+const JOB_PRESETS = {
+  'Hotel · Front Desk':[
+    'Welcomed international guests and handled requests with a warm, professional manner',
+    'Resolved complaints calmly and turned difficult moments into positive experiences',
+    'Maintained high guest-satisfaction scores through attentive, personalized service',
+    'Coordinated closely with team members to keep daily operations smooth'
+  ],
+  'Cafe · Restaurant':[
+    'Served guests courteously in a fast-paced environment while keeping a friendly smile',
+    'Anticipated customer needs and offered attentive, detail-oriented service',
+    'Worked as part of a close team to deliver fast and accurate service',
+    'Followed strict hygiene and safety standards at all times'
+  ],
+  'Sales · Retail':[
+    'Assisted diverse customers and recommended products with a helpful attitude',
+    'Reached sales targets through sincere, customer-first communication',
+    'Handled payments and inquiries accurately and responsibly',
+    'Kept a neat, well-organized space and a professional appearance'
+  ],
+  'Customer Service':[
+    'Responded to customer inquiries with patience, empathy and clear communication',
+    'Resolved complaints calmly and followed up to ensure satisfaction',
+    'Kept composure and professionalism even with demanding customers',
+    'Recorded and managed customer information accurately'
+  ],
+  'Airline · Cabin':[
+    'Delivered in-flight service in line with airline standards and safety procedures',
+    'Cared for passengers of all ages and cultures with warmth and attentiveness',
+    'Put safety first and responded calmly to onboard situations',
+    'Collaborated with fellow crew to ensure a comfortable flight'
+  ],
+  'Duty-free · Dept. Store':[
+    'Provided premium service to domestic and international customers',
+    'Communicated with foreign customers in English and other languages',
+    'Presented products professionally and kept an elegant appearance',
+    'Supported the team in reaching store service and sales goals'
+  ],
+  'Hospital · Care':[
+    'Cared for patients and visitors with compassion and a calm manner',
+    'Communicated clearly and kindly with people in stressful situations',
+    'Kept strict hygiene, safety and confidentiality standards',
+    'Worked reliably as part of a multidisciplinary team'
+  ],
+  'Internship · Activities':[
+    'Supported the team with a proactive and responsible attitude',
+    'Collaborated with members from diverse backgrounds',
+    'Learned quickly and adapted to new tasks and environments',
+    'Completed assigned duties reliably and on time'
+  ],
+  'Tourism · Guide':[
+    'Guided and assisted travelers of diverse nationalities with warmth and care',
+    'Explained information clearly and answered questions with patience',
+    'Kept groups safe and stayed calm while handling unexpected situations',
+    'Coordinated schedules and worked closely as part of a team'
+  ]
+};
+function fillJob(i,job){ const arr=JOB_PRESETS[job]||[]; if(!state.exp[i])return; state.exp[i].desc=arr.join('\n'); renderExp(); render(); }
+/* 매칭용 확장 사전 (칩에는 안 나오지만 직무 매칭에 사용) */
+const MORE_PRESETS={
+  'Education · Instructor':[
+    'Taught and guided learners with patience and clear communication',
+    'Adapted explanations to each person’s level and needs',
+    'Managed groups calmly and kept a positive atmosphere',
+    'Prepared thoroughly and carried out responsibilities reliably'
+  ],
+  'Office · Admin':[
+    'Handled administrative tasks accurately and responsibly',
+    'Communicated smoothly with colleagues and visitors',
+    'Managed schedules and documents with attention to detail',
+    'Stayed organized and composed under a busy workload'
+  ],
+  'Bank · Finance':[
+    'Served customers professionally and earned their trust',
+    'Handled transactions accurately and responsibly',
+    'Explained information clearly and with patience',
+    'Kept confidentiality and a neat, professional image'
+  ],
+  'Beauty':[
+    'Provided personalized service and made every client feel cared for',
+    'Listened attentively to understand each client’s needs',
+    'Maintained strict hygiene and a professional appearance',
+    'Built warm, lasting relationships with clients'
+  ],
+  'Fitness · Sports':[
+    'Motivated and guided members with energy and encouragement',
+    'Communicated clearly and adapted to each member’s needs',
+    'Put safety first and prevented injuries with care',
+    'Kept a positive, approachable and professional attitude'
+  ],
+  'Childcare':[
+    'Cared for children with warmth, patience and attentiveness',
+    'Kept a safe environment and responded calmly to every situation',
+    'Communicated kindly with children and their families',
+    'Worked responsibly and reliably as part of a team'
+  ],
+  'Food · Kitchen':[
+    'Prepared and served with speed, accuracy and consistency',
+    'Kept strict hygiene and food-safety standards at all times',
+    'Stayed calm and focused during busy rush hours',
+    'Cooperated closely with the team to keep service smooth'
+  ]
+};
+const ALL_PRESETS=Object.assign({},JOB_PRESETS,MORE_PRESETS);
+
+/* 내가 직접 쓴 직무명 → 키워드로 가까운 Description 매칭, 없으면 범용 생성 */
+function matchPreset(roleText){
+  const s=(roleText||'').toLowerCase();
+  const map=[
+    {k:['호텔','hotel','프론트','front','컨시어지','concierge','리셉','recep','벨','bell'],p:'Hotel · Front Desk'},
+    {k:['카페','cafe','커피','coffee','바리스타','barista','레스토랑','restaurant','식당','서빙','serv','waiter','waitress','홀'],p:'Cafe · Restaurant'},
+    {k:['판매','sales','매장','store','리테일','retail','샵','shop','캐셔','cashier','의류','fashion','편의점','마트','mart'],p:'Sales · Retail'},
+    {k:['상담','cs','콜센터','call','고객','customer','응대','contact','헬프','help','안내데스크','리셉션'],p:'Customer Service'},
+    {k:['승무','cabin','crew','기내','항공','airline','flight','지상','ground','공항','airport','스튜어'],p:'Airline · Cabin'},
+    {k:['면세','duty','백화점','department','명품','luxury','vip','부티크'],p:'Duty-free · Dept. Store'},
+    {k:['병원','hospital','간호','nurse','케어','care','요양','clinic','약국','pharmac','치과','dental','의료','medical','물리치료','방사선','임상'],p:'Hospital · Care'},
+    {k:['인턴','intern','대외','동아리','서포터','supporter','봉사','volunteer','아르바이트','part','파트','알바','서포','club','학생회','조교','ta'],p:'Internship · Activities'},
+    {k:['투어','tour','가이드','guide','관광','여행','travel','인솔','안내원','통역','interpret','리조트','resort','테마파크','놀이공원','park'],p:'Tourism · Guide'},
+    {k:['교사','선생','강사','teacher','instructor','튜터','tutor','과외','학원','교육','educat','유치원','보조교사','lecturer'],p:'Education · Instructor'},
+    {k:['사무','행정','admin','office','회계','account','비서','secretary','총무','경리','문서','데이터','접수','원무'],p:'Office · Admin'},
+    {k:['은행','금융','bank','금고','teller','보험','insurance','증권','securit','대출','창구'],p:'Bank · Finance'},
+    {k:['미용','헤어','hair','네일','nail','스파','spa','에스테틱','estheti','피부','메이크업','makeup','salon','살롱'],p:'Beauty'},
+    {k:['트레이너','trainer','요가','yoga','필라테스','pilates','코치','coach','헬스','gym','피트니스','fitness','스포츠','수영','lifeguard','안전요원'],p:'Fitness · Sports'},
+    {k:['어린이','아동','보육','키즈','kids','유아','child','daycare','돌봄','베이비','baby'],p:'Childcare'},
+    {k:['주방','kitchen','조리','cook','셰프','chef','제과','제빵','baker','베이커','디저트','pastry','바텐','bartend'],p:'Food · Kitchen'}
+  ];
+  for(const m of map){ if(m.k.some(w=>s.includes(w))) return ALL_PRESETS[m.p]; }
+  return null;
+}
+/* 매칭 실패 시 : 직무 글자에 따라 서로 다른 세트 선택 (같은 직무=항상 같음) */
+const GENERIC_SETS=[
+  ['Carried out my duties with a responsible and professional attitude','Communicated warmly with customers and colleagues from diverse backgrounds','Stayed calm and composed while handling requests and unexpected situations','Worked closely as part of a team and always put service and safety first'],
+  ['Approached every task with sincerity, energy and attention to detail','Built friendly relationships with a wide range of people','Handled busy situations calmly and flexibly','Valued teamwork and supported colleagues whenever needed'],
+  ['Served people with warmth, patience and a genuine smile','Adapted quickly to new tasks and changing environments','Kept a positive attitude even under pressure','Took responsibility and followed each task through to the end'],
+  ['Delivered reliable, customer-focused service every day','Listened carefully and responded to each person’s needs','Stayed composed and solved problems thoughtfully','Collaborated openly and respected every team member'],
+  ['Worked diligently with a strong sense of responsibility','Connected easily with people of different backgrounds','Remained calm and professional in demanding moments','Prioritized safety, detail and teamwork in all tasks']
+];
+function hashStr(s){ let h=0; for(const ch of String(s||'')) h=(h*31+ch.codePointAt(0))>>>0; return h; }
+function isEnglish(s){ return /[a-zA-Z]/.test(s)&&!/[가-힣]/.test(s); }
+function genericDesc(role){ return GENERIC_SETS[hashStr(role)%GENERIC_SETS.length].slice(); }
+/* 영문 직무명이면 첫 줄에 직무명을 넣어 직무별로 더 뚜렷하게 */
+function withRole(arr,role){
+  const r=(role||'').trim();
+  if(r && isEnglish(r)) return ['Worked as a '+r+' with a responsible, service-minded attitude'].concat(arr.slice(1));
+  return arr;
+}
+function autoExpDesc(i){
+  if(!state.exp[i])return;
+  const role=state.exp[i].role||'';
+  const base=matchPreset(role)||genericDesc(role);
+  state.exp[i].desc=withRole(base,role).join('\n'); renderExp(); render();
+}
+const OSEA_SETS=[
+  ['Gained valuable international experience abroad','Adapted quickly to a new culture and unfamiliar environment','Communicated confidently with people from diverse backgrounds','Grew in independence, flexibility and a global mindset'],
+  ['Broadened my perspective through life overseas','Learned to solve problems on my own in a new environment','Built friendships across cultures and languages','Developed confidence, openness and resilience'],
+  ['Immersed myself in a different culture and way of life','Improved my language skills through daily communication','Handled unfamiliar situations calmly and independently','Gained a genuine global mindset and adaptability']
+];
+function autoOseaDesc(i){
+  if(!state.overseas[i])return;
+  const role=state.overseas[i].role||'';
+  const base=matchPreset(role)||OSEA_SETS[hashStr(role)%OSEA_SETS.length].slice();
+  state.overseas[i].desc=withRole(base,role).join('\n'); renderOverseas(); render();
+}
+
+/* --- 역량(Skills) 프리셋 --- */
+const SKILL_PRESETS=['Customer Service Excellence','Teamwork & Collaboration','Safety Awareness & Composure','Professional Grooming','Cross-cultural Communication','Positive Attitude','Problem Solving','Adaptability & Flexibility','Attention to Detail','Strong Work Ethic'];
+function renderSkillPresets(){
+  el('skillPresetRow').innerHTML = SKILL_PRESETS.map(s=>`<span class="chip" data-s="${esc(s)}">+ ${esc(s)}</span>`).join('');
+  el('skillPresetRow').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ addSkill({name:c.dataset.s}); });
+}
+/* --- 자격(Certs) 프리셋 --- */
+const CERT_PRESETS=['First Aid & CPR Certified','Airline Service Etiquette Certificate','TOEIC Speaking Lv.7','SMAT Service Management Certificate','Barista Certificate','Driver’s License'];
+function renderCertPresets(){
+  el('certPresetRow').innerHTML = CERT_PRESETS.map(s=>`<span class="chip" data-s="${esc(s)}">+ ${esc(s)}</span>`).join('');
+  el('certPresetRow').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ const cur=(state.certs||'').split('\n').map(x=>x.trim()).filter(Boolean); if(cur.includes(c.dataset.s))return; cur.push(c.dataset.s); state.certs=cur.join('\n'); el('f_certs').value=state.certs; render(); });
+}
+
+/* --- Language(Languages) 예시 --- */
+const LANG_PRESETS=[['Korean','Native'],['English','Fluent'],['Japanese','Conversational'],['Chinese','Conversational'],['Spanish','Basic'],['Vietnamese','Native'],['French','Basic'],['Arabic','Basic']];
+function renderLangPresets(){
+  el('langPresetRow').innerHTML = LANG_PRESETS.map((l,i)=>`<span class="chip" data-i="${i}">+ ${esc(l[0])}</span>`).join('');
+  el('langPresetRow').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ const l=LANG_PRESETS[+c.dataset.i]; addLang({name:l[0],lvl:l[1]}); });
+}
+
+/* --- 해외 경험(Overseas) : 선택 항목 --- */
+const OSEA_PRESETS=['Exchange Student','Language Study Abroad','Working Holiday','Overseas Volunteer','International Travel'];
+function renderOseaPresets(){
+  el('oseaPresetRow').innerHTML = OSEA_PRESETS.map(s=>`<span class="chip" data-s="${esc(s)}">+ ${esc(s)}</span>`).join('');
+  el('oseaPresetRow').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ addOverseas({role:c.dataset.s,org:'',date:'',desc:''}); });
+}
+function addOverseas(v){
+  state.overseas.push(v||{role:'',org:'',date:'',desc:''});
+  if(!state.inc.overseas){ state.inc.overseas=true; const cb=el('inc_overseas'); if(cb)cb.checked=true; }
+  renderOverseas(); render();
+}
+function renderOverseas(){
+  el('overseasList').innerHTML = state.overseas.map((x,i)=>repeatBox(i,`
+    <div class="grid2"><div class="field"><label>Activity (e.g. Exchange Student)</label><input value="${esc(x.role)}" oninput="upd('overseas',${i},'role',this.value)"></div>
+    <div class="field"><label>Dates</label><input value="${esc(x.date)}" oninput="upd('overseas',${i},'date',this.value)"></div></div>
+    <div class="field"><label>Country · Institution</label><input value="${esc(x.org)}" oninput="upd('overseas',${i},'org',this.value)" placeholder="Sydney, Australia"></div>
+    <button type="button" class="ez-btn" style="width:100%;margin:2px 0 9px;text-align:center;font-size:0.86rem;padding:11px;" onclick="autoOseaDesc(${i})">✨ Auto-write from this activity</button>
+    <div class="field"><label>Description (edit freely)</label><textarea oninput="upd('overseas',${i},'desc',this.value)">${esc(x.desc)}</textarea></div>`,'delOverseas')).join('');
+}
+function delOverseas(i){ state.overseas.splice(i,1); renderOverseas(); render(); }
+
+/* --- 섹션 포함 여부 토글 --- */
+function toggleInc(k,v){ state.inc[k]=v; render(); }
+
+/* --- 섹션 렌더 게이트 (포함 체크 반영) --- */
+function skillsHtml(C,light){ return state.inc.skills?skillText(C,light):''; }
+function langsHtml(C,light){ return state.inc.langs?langLines(C,light):''; }
+function certsHtml(C,light){ return state.inc.certs?certLines(C,light):''; }
+function oseaHtml(C,light){ return state.inc.overseas?overseasBlock(C,light):''; }
+/* 제목+내용을 묶되, 내용이 비면 통째로 숨김(=선택 안 하면 이력서에 안 나옴) */
+function blockSec(title,content,C,F,light){ return (content&&String(content).trim())?`<div>${secTitle(title,C,F,light)}${content}</div>`:''; }
+function blockSecLine(title,content,C,F){ return (content&&String(content).trim())?`<div>${secTitleLine(title,C,F)}${content}</div>`:''; }
+function overseasBlock(C,light){
+  const dc=light?'rgba(255,255,255,.6)':'#8a8a8a', rc=light?'#fff':'#222', col=light?'rgba(255,255,255,.8)':'#555';
+  return state.overseas.map(x=>`
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;gap:8px;">
+        <span style="font-weight:700;color:${rc};font-size:12px;">${esc(x.role)}</span>
+        <span style="color:${dc};font-size:10px;white-space:nowrap;">${esc(x.date)}</span>
+      </div>
+      <div style="color:${light?'rgba(255,255,255,.75)':C.main};font-size:10.5px;margin:2px 0;">${esc(x.org)}</div>
+      ${bullets(x.desc,col)}
+    </div>`).join('');
+}
+
+/* accordion */
+document.querySelectorAll('[data-acc] .acc-head').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
+
+/* ============ RENDER PREVIEW ============ */
+function render(){
+  const C=activeColor(), F=FONTS[state.font]||FONTS.serif;
+  const p=el('paper');
+  const fn=state.tpl==='classic'?tplClassic:state.tpl==='twotone'?tplTwotone:state.tpl==='header'?tplHeader:state.tpl==='minimal'?tplMinimal:tplTimeline;
+  // A4 인쇄 여백처럼 용지 상하좌우에 흰 여백 — 디자인 전체를 안쪽으로
+  p.innerHTML='<div style="position:absolute;top:0;left:0;right:0;bottom:0;padding:52px 40px;"><div class="cvwrap" style="position:relative;width:100%;height:100%;overflow:hidden;border-radius:3px;">'+fn(C,F)+'</div></div>';
+  // 용지 한 장에 맞게 디자인 전체를 자동 축소/확대 — 잘리지도, 하단이 비지도 않게
+  const wrap=p.querySelector('.cvwrap'), root=wrap&&wrap.firstElementChild;
+  if(root){
+    root.style.transform='none'; root.style.width='100%'; root.style.height='auto';
+    const avail=wrap.clientHeight, need=root.scrollHeight;
+    if(need>0&&avail>0){
+      let s=Math.max(0.5,Math.min(1.5,avail/need));
+      root.style.transformOrigin='top left';
+      root.style.width=(100/s)+'%';
+      root.style.height=(100/s)+'%';
+      root.style.transform='scale('+s+')';
+    }
+  }
+}
+function contactLine(C){
+  const parts=[state.phone,state.email,state.loc,state.meta].filter(Boolean);
+  return parts;
+}
+function certList(){return (state.certs||'').split('\n').map(s=>s.trim()).filter(Boolean);}
+
+/* --- shared blocks --- */
+// Description을 개조식(대시 bullet)으로 — 줄바꿈 또는 마침표 기준 분리
+function bullets(text, col){
+  var arr=String(text||'').split('\n').join('. ').split(/\.\s+/).map(function(s){return s.trim().replace(/[.\s]+$/,'');}).filter(Boolean);
+  return arr.map(function(l){ return '<div style="display:flex;gap:6px;font-size:10px;line-height:1.42;color:'+col+';margin:0 0 1px;"><span style="opacity:.8;flex-shrink:0;">–</span><span>'+esc(l)+'</span></div>'; }).join('');
+}
+function expBlock(C,F,light){
+  const col=light?'rgba(255,255,255,.85)':'#555', dc=light?'rgba(255,255,255,.6)':'#8a8a8a', rc=light?'#fff':'#222';
+  return state.exp.map(x=>`
+    <div style="margin-bottom:13px;">
+      <div style="display:flex;justify-content:space-between;gap:8px;">
+        <span class="cv-role" style="color:${rc};font-size:12px;">${esc(x.role)}</span>
+        <span class="cv-date" style="color:${dc};font-size:10px;white-space:nowrap;">${esc(x.date)}</span>
+      </div>
+      <div style="color:${light?'rgba(255,255,255,.75)':C.main};font-size:10.5px;font-weight:600;margin:2px 0 3px;">${esc(x.org)}</div>
+      ${bullets(x.desc,col)}
+    </div>`).join('');
+}
+function eduBlock(C,F,light){
+  const dc=light?'rgba(255,255,255,.6)':'#8a8a8a', rc=light?'#fff':'#222', col=light?'rgba(255,255,255,.8)':'#555';
+  return state.edu.map(x=>`
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;gap:8px;">
+        <span style="font-weight:700;color:${rc};font-size:12px;">${esc(x.role)}</span>
+        <span style="color:${dc};font-size:10px;white-space:nowrap;">${esc(x.date)}</span>
+      </div>
+      <div style="color:${light?'rgba(255,255,255,.75)':C.main};font-size:10.5px;margin:2px 0;">${esc(x.org)}</div>
+      ${bullets(x.desc,col)}
+    </div>`).join('');
+}
+function skillBars(C,light){
+  const lab=light?'#fff':'#333';
+  return state.skills.map(s=>`
+    <div style="margin-bottom:6px;">
+      <div style="font-size:7.5px;color:${lab};margin-bottom:2px;">${esc(s.name)}</div>
+      <div class="skillbar" style="background:${light?'rgba(255,255,255,.25)':'#e7e2d6'}"><i style="width:${s.lvl}%;background:${light?'#fff':C.main}"></i></div>
+    </div>`).join('');
+}
+function langLines(C,light){
+  const lab=light?'#fff':'#333', sub=light?'rgba(255,255,255,.7)':'#777';
+  return state.langs.map(l=>`<div style="display:flex;justify-content:space-between;font-size:10.5px;margin-bottom:5px;"><span style="color:${lab};font-weight:600;">${esc(l.name)}</span><span style="color:${sub};">${esc(l.lvl)}</span></div>`).join('');
+}
+function certLines(C,light){
+  const lab=light?'rgba(255,255,255,.85)':'#444';
+  return certList().map(c=>`<div style="font-size:10px;color:${lab};margin-bottom:4px;">• ${esc(c)}</div>`).join('');
+}
+function secTitle(txt,C,F,light){
+  return `<div class="cv-sec-title" style="font-family:${F.head};color:${light?'#fff':C.deep};font-size:13px;margin:0 0 8px;border-bottom:1px solid ${light?'rgba(255,255,255,.3)':C.soft};padding-bottom:4px;">${txt}</div>`;
+}
+function photoCircle(size,border){
+  // 면접 증명사진 비율(3:4) 사각형 — 동그라미 대신
+  const h=Math.round(size*1.3);
+  if(state.photo) return `<img src="${state.photo}" style="width:${size}px;height:${h}px;border-radius:6px;object-fit:cover;object-position:center 18%;border:2px solid ${border};">`;
+  return `<div style="width:${size}px;height:${h}px;border-radius:6px;border:2px solid ${border};background:rgba(255,255,255,.2);"></div>`;
+}
+function photoRect(w,h){
+  if(state.photo) return `<img src="${state.photo}" style="width:${w}px;height:${h}px;object-fit:cover;border-radius:4px;">`;
+  return `<div style="width:${w}px;height:${h}px;border-radius:4px;background:#eee;border:1px dashed #ccc;"></div>`;
+}
+
+/* --- helpers for capture-style templates --- */
+function contactRows(light){
+  const c=light?'rgba(255,255,255,.9)':'#444';
+  const rows=[['📞',state.phone],['✉️',state.email],['📍',state.loc],['🗓',state.meta]].filter(r=>r[1]);
+  return rows.map(r=>`<div style="display:flex;gap:6px;align-items:flex-start;font-size:10px;color:${c};margin-bottom:6px;line-height:1.45;"><span style="font-size:10px;flex-shrink:0;">${r[0]}</span><span style="word-break:break-all;">${esc(r[1])}</span></div>`).join('');
+}
+function entryLeftDate(items,C,light){
+  return items.map(x=>`<div style="display:flex;gap:11px;margin-bottom:9px;">
+    <div style="width:62px;flex-shrink:0;font-size:9.5px;color:${light?'rgba(255,255,255,.7)':'#9a9a9a'};font-weight:700;line-height:1.4;">${esc(x.date)}</div>
+    <div style="flex:1;border-left:1px solid ${light?'rgba(255,255,255,.25)':C.soft};padding-left:11px;">
+      <div style="font-size:11.5px;font-weight:700;color:${light?'#fff':'#222'};">${esc(x.role)}</div>
+      <div style="font-size:10px;color:${light?'rgba(255,255,255,.8)':C.main};margin:2px 0;font-weight:600;">${esc(x.org)}</div>
+      ${bullets(x.desc, light?'rgba(255,255,255,.7)':'#666')}
+    </div></div>`).join('');
+}
+function skillDonuts(C,light){
+  const bg=light?'rgba(255,255,255,.28)':C.soft, fg=light?'#fff':C.main, tx=light?'#fff':C.deep;
+  return `<div style="display:flex;flex-wrap:wrap;gap:6px;">`+
+   state.skills.slice(0,6).map(s=>{
+     const r=13, circ=(2*Math.PI*r).toFixed(1), off=(2*Math.PI*r*(1-(s.lvl||0)/100)).toFixed(1);
+     return `<div style="text-align:center;width:46px;">
+       <svg width="42" height="42" viewBox="0 0 34 34">
+         <circle cx="17" cy="17" r="${r}" fill="none" stroke="${bg}" stroke-width="3"/>
+         <circle cx="17" cy="17" r="${r}" fill="none" stroke="${fg}" stroke-width="3" stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${off}" transform="rotate(-90 17 17)"/>
+         <text x="17" y="19.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="${tx}">${s.lvl||0}%</text>
+       </svg>
+       <div style="font-size:6.3px;color:${tx};line-height:1.2;margin-top:1px;">${esc(s.name)}</div>
+     </div>`;
+   }).join('')+`</div>`;
+}
+function skillText(C,light){
+  // 그래프·퍼센트 없이, 스킬명을 둥근 칩(카드) 안에 텍스트로만 보여줌
+  const bg=light?'rgba(255,255,255,.16)':C.soft, bd=light?'rgba(255,255,255,.45)':C.main, tx=light?'#fff':C.deep;
+  return `<div style="display:flex;flex-wrap:wrap;gap:5px;">`+
+    state.skills.map(s=>`<span style="display:inline-block;padding:5px 12px;border-radius:13px;background:${bg};border:1px solid ${bd};color:${tx};font-size:9.5px;font-weight:600;line-height:1.4;">${esc(s.name)}</span>`).join('')+`</div>`;
+}
+function secTitleLine(txt,C,F){
+  return `<div style="display:flex;align-items:center;gap:8px;margin:0 0 9px;">
+    <span style="font-family:${F.head};color:${C.deep};font-size:14px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;">${txt}</span>
+    <span style="flex:1;height:2px;background:${C.soft};"></span>
+    <span style="width:9px;height:9px;border-radius:50%;background:${C.main};flex-shrink:0;"></span>
+  </div>`;
+}
+
+/* --- TEMPLATE: CLASSIC (캡처 #1 · 카멜 사이드바 + 원형 스킬링) --- */
+function tplClassic(C,F){
+  return `<div style="position:relative;display:flex;min-height:100%;">
+    <div style="width:35%;background:${C.main};color:#fff;padding:26px 17px 24px;">
+      <div style="text-align:center;margin-bottom:16px;">${photoCircle(96,'rgba(255,255,255,.9)')}</div>
+      <div style="font-family:${F.head};font-size:19px;text-align:center;line-height:1.1;letter-spacing:.02em;">${esc(state.name)||'NAME SURNAME'}</div>
+      <div style="text-align:center;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-top:5px;">${esc(state.role)||'CABIN CREW'}</div>
+      <div style="height:1px;background:rgba(255,255,255,.3);margin:16px 4px;"></div>
+      <div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin-bottom:9px;">CONTACT</div>
+      ${contactRows(true)}
+      <div style="height:1px;background:rgba(255,255,255,.3);margin:16px 4px;"></div>
+      <div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin-bottom:9px;">ABOUT ME</div>
+      <div style="font-size:9.5px;color:rgba(255,255,255,.85);line-height:1.6;">${esc(state.about)}</div>
+      ${state.inc.langs?`<div style="height:1px;background:rgba(255,255,255,.3);margin:16px 4px;"></div>
+      <div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin-bottom:9px;">LANGUAGES</div>
+      ${langLines(C,true)}`:''}
+    </div>
+    <div style="flex:1;padding:26px 24px;color:#222;display:flex;flex-direction:column;gap:12px;">
+      ${blockSec('WORK EXPERIENCE',entryLeftDate(state.exp,C,false),C,F,false)}
+      ${blockSec('EDUCATION',entryLeftDate(state.edu,C,false),C,F,false)}
+      ${blockSec('OVERSEAS EXPERIENCE',state.inc.overseas?entryLeftDate(state.overseas,C,false):'',C,F,false)}
+      ${blockSec('SKILLS',skillsHtml(C,false),C,F,false)}
+      ${blockSec('CERTIFICATIONS',certsHtml(C,false),C,F,false)}
+    </div>
+  </div>`;
+}
+
+/* --- TEMPLATE: TWOTONE (캡처 #2 · 위아래 투톤 사이드바 + 라인 섹션헤더) --- */
+function tplTwotone(C,F){
+  return `<div style="position:relative;display:flex;color:#222;min-height:100%;">
+    <div style="width:34%;display:flex;flex-direction:column;">
+      <div style="background:${C.main};color:#fff;padding:24px 14px 18px;text-align:center;">
+        <div style="margin-bottom:12px;">${photoCircle(90,'#fff')}</div>
+        <div style="font-family:${F.head};font-size:20px;line-height:1.05;">${esc(state.name)||'NAME'}</div>
+        <div style="font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-top:5px;">${esc(state.role)||'CABIN CREW'}</div>
+      </div>
+      <div style="background:${C.deep};color:#fff;padding:18px 14px;flex:1;">
+        <div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin-bottom:9px;">ABOUT ME</div>
+        <div style="font-size:9.5px;color:rgba(255,255,255,.85);line-height:1.6;">${esc(state.about)}</div>
+        <div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin:16px 0 9px;">CONTACT</div>
+        ${contactRows(true)}
+        ${state.inc.langs?`<div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin:16px 0 9px;">LANGUAGES</div>${langLines(C,true)}`:''}
+      </div>
+    </div>
+    <div style="flex:1;padding:24px 22px;display:flex;flex-direction:column;gap:15px;">
+      ${blockSecLine('Work Experience',expBlock(C,F,false),C,F)}
+      ${blockSecLine('Education',eduBlock(C,F,false),C,F)}
+      ${blockSecLine('Overseas Experience',oseaHtml(C,false),C,F)}
+      ${blockSecLine('Skills',skillsHtml(C,false),C,F)}
+      ${blockSecLine('Certifications',certsHtml(C,false),C,F)}
+    </div>
+  </div>`;
+}
+/* --- TEMPLATE 2: HEADER --- */
+function tplHeader(C,F){
+  return `<div style="position:relative;color:#222;display:flex;flex-direction:column;padding-top:30px;min-height:100%;">
+    <div style="background:${C.main};color:#fff;padding:20px 24px;display:flex;gap:16px;align-items:center;">
+      ${photoCircle(76,'rgba(255,255,255,.9)')}
+      <div>
+        <div style="font-family:${F.head};font-size:24px;line-height:1.1;">${esc(state.name)||'NAME'}</div>
+        <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-top:4px;">${esc(state.role)||'CABIN CREW'}</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.8);margin-top:6px;">${contactLine(C).map(esc).join('&nbsp;&nbsp;·&nbsp;&nbsp;')}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:24px;padding:24px 28px;flex:1;align-items:flex-start;">
+      <div style="flex:1.4;display:flex;flex-direction:column;gap:15px;">
+        ${blockSec('ABOUT ME',state.about?`<div style="font-size:10.5px;color:#555;line-height:1.65;">${esc(state.about)}</div>`:'',C,F,false)}
+        ${blockSec('EXPERIENCE',expBlock(C,F,false),C,F,false)}
+        ${blockSec('EDUCATION',eduBlock(C,F,false),C,F,false)}
+        ${blockSec('OVERSEAS',oseaHtml(C,false),C,F,false)}
+      </div>
+      <div style="flex:0.9;display:flex;flex-direction:column;gap:15px;">
+        ${blockSec('SKILLS',skillsHtml(C,false),C,F,false)}
+        ${blockSec('LANGUAGES',langsHtml(C,false),C,F,false)}
+        ${blockSec('CERTIFICATIONS',certsHtml(C,false),C,F,false)}
+      </div>
+    </div>
+  </div>`;
+}
+/* --- TEMPLATE 3: MINIMAL --- */
+function tplMinimal(C,F){
+  return `<div style="position:relative;color:#222;padding:26px 30px;display:flex;flex-direction:column;gap:17px;min-height:100%;">
+    <div style="text-align:center;border-bottom:2px solid ${C.main};padding-bottom:14px;">
+      <div style="font-family:${F.head};font-size:29px;color:${C.deep};letter-spacing:.02em;">${esc(state.name)||'NAME'}</div>
+      <div style="font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:${C.main};margin-top:5px;">${esc(state.role)||'CABIN CREW'}</div>
+      <div style="font-size:10px;color:#888;margin-top:7px;">${contactLine(C).map(esc).join('&nbsp;&nbsp;|&nbsp;&nbsp;')}</div>
+    </div>
+    <div style="font-size:10.5px;color:#555;line-height:1.75;text-align:center;font-style:italic;">${esc(state.about)}</div>
+    ${blockSec('EXPERIENCE',expBlock(C,F,false),C,F,false)}
+    ${blockSec('OVERSEAS EXPERIENCE',oseaHtml(C,false),C,F,false)}
+    <div style="display:flex;gap:24px;">
+      <div style="flex:1;">${blockSec('EDUCATION',eduBlock(C,F,false),C,F,false)}</div>
+      <div style="flex:1;">${blockSec('SKILLS',skillsHtml(C,false),C,F,false)}</div>
+    </div>
+    <div style="display:flex;gap:24px;">
+      <div style="flex:1;">${blockSec('LANGUAGES',langsHtml(C,false),C,F,false)}</div>
+      <div style="flex:1;">${blockSec('CERTIFICATIONS',certsHtml(C,false),C,F,false)}</div>
+    </div>
+  </div>`;
+}
+/* --- TEMPLATE 4: TIMELINE --- */
+function tplTimeline(C,F){
+  const dot=`<span style="position:absolute;left:-17px;top:3px;width:9px;height:9px;border-radius:50%;background:${C.main};"></span>`;
+  const expT=state.exp.map(x=>`<div style="position:relative;padding-left:0;margin-bottom:13px;">${dot}
+    <div style="display:flex;justify-content:space-between;"><span style="font-weight:700;font-size:12px;">${esc(x.role)}</span><span style="font-size:10px;color:#999;">${esc(x.date)}</span></div>
+    <div style="color:${C.main};font-size:10.5px;font-weight:600;">${esc(x.org)}</div>
+    ${bullets(x.desc,'#555')}</div>`).join('');
+  const eduT=state.edu.map(x=>`<div style="position:relative;margin-bottom:12px;">${dot}
+    <div style="display:flex;justify-content:space-between;"><span style="font-weight:700;font-size:12px;">${esc(x.role)}</span><span style="font-size:10px;color:#999;">${esc(x.date)}</span></div>
+    <div style="color:${C.main};font-size:10.5px;">${esc(x.org)}</div></div>`).join('');
+  return `<div style="position:relative;color:#222;padding:26px 30px;display:flex;flex-direction:column;min-height:100%;">
+    <div style="display:flex;gap:16px;align-items:center;border-bottom:1px solid ${C.soft};padding-bottom:14px;">
+      ${photoRect(64,84)}
+      <div style="flex:1;">
+        <div style="font-family:${F.head};font-size:27px;color:${C.deep};line-height:1.05;">${esc(state.name)||'NAME'}</div>
+        <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:${C.main};margin-top:4px;">${esc(state.role)||'CABIN CREW'}</div>
+      </div>
+      <div style="text-align:right;font-size:10px;color:#888;line-height:1.75;">${contactLine(C).map(esc).join('<br>')}</div>
+    </div>
+    <div style="margin-top:14px;font-size:10.5px;color:#555;line-height:1.65;">${esc(state.about)}</div>
+    <div style="display:flex;gap:28px;margin-top:16px;flex:1;align-items:flex-start;">
+      <div style="flex:1.5;">
+        <div style="border-left:2px solid ${C.soft};padding-left:18px;display:flex;flex-direction:column;gap:15px;">
+          ${blockSec('EXPERIENCE',expT,C,F,false)}
+          ${blockSec('EDUCATION',eduT,C,F,false)}
+          ${blockSec('OVERSEAS',oseaHtml(C,false),C,F,false)}
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:15px;">
+        ${blockSec('SKILLS',skillsHtml(C,false),C,F,false)}
+        ${blockSec('LANGUAGES',langsHtml(C,false),C,F,false)}
+        ${blockSec('CERTIFICATIONS',certsHtml(C,false),C,F,false)}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============ INIT ============ */
+function loadIntoForm(){
+  el('f_name').value=state.name; el('f_role').value=state.role; el('f_phone').value=state.phone;
+  el('f_email').value=state.email; el('f_loc').value=state.loc; el('f_meta').value=state.meta;
+  el('f_about').value=state.about; el('f_certs').value=state.certs;
+  if(state.photo) el('photoPrev').src=state.photo;
+  renderExp();renderEdu();renderOverseas();renderSkill();renderLang();
+  ['overseas','skills','langs','certs'].forEach(k=>{ const cb=el('inc_'+k); if(cb)cb.checked=!!state.inc[k]; });
+}
+function resetSample(){
+  const s=sampleData();
+  Object.assign(state,s);
+  loadIntoForm();render();
+}
+
+async function aiAutofill(btn){
+  const exp=state.exp.map(x=>({org:x.org||'',role:x.role||'',date:x.date||''}));
+  const edu=state.edu.map(x=>({org:x.org||'',role:x.role||'',date:x.date||''}));
+  const hasFacts = exp.some(e=>e.org||e.role) || edu.some(e=>e.org||e.role);
+  if(!hasFacts){ alert('Please enter a company, role and dates in Experience or Education first.'); return; }
+  const payload={ name:state.name||'', targetRole:state.role||'Cabin Crew', experiences:exp, education:edu };
+  const label = btn ? btn.innerHTML : '';
+  if(btn){ btn.disabled=true; btn.innerHTML='✨ <span>Generating… one moment</span>'; }
+  try{
+    const r=await fetch('/api/ai',{ method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ prompt_key:'cv_autofill_en', max_tokens:900,
+        messages:[{ role:'user', content:JSON.stringify(payload) }] }) });
+    const data=await r.json();
+    const txt = (data && data.content && data.content[0] && data.content[0].text) || '';
+    const m = txt.match(/\{[\s\S]*\}/);
+    if(!m) throw new Error('Could not read the generated result');
+    const out = JSON.parse(m[0]);
+    if(out.about) state.about=out.about;
+    if(Array.isArray(out.experiences)) out.experiences.forEach((e,i)=>{ if(state.exp[i]&&e&&e.desc) state.exp[i].desc=e.desc; });
+    if(Array.isArray(out.education)) out.education.forEach((e,i)=>{ if(state.edu[i]&&e&&e.desc) state.edu[i].desc=e.desc; });
+    if(Array.isArray(out.skills)&&out.skills.length) state.skills=out.skills.map(s=>({name:String(s)}));
+    loadIntoForm(); render();
+  }catch(err){
+    alert('Auto-fill failed. Please try again in a moment.\n('+(err.message||err)+')');
+  }finally{
+    if(btn){ btn.disabled=false; btn.innerHTML=label; }
+  }
+}
+/* ============ 멤버십 게이트 ============ */
+function payGate(kind){
+  var msg = kind==='pdf'
+    ? 'Saving / printing to PDF is for WonderfulCrew members only. Templates, colors and the preview are free to explore.'
+    : 'Auto-fill — which writes your intro, experience and key skills in English from just a company and role — is for members only.';
+  document.getElementById('payGateMsg').textContent = msg;
+  document.getElementById('payGate').style.display = 'flex';
+}
+document.getElementById('payGate').addEventListener('click',function(e){ if(e.target===this) this.style.display='none'; });
+
+/* 커스텀 컬러: 직접 고른 색을 팔레트로 반영 */
+el('customColor').addEventListener('input',e=>{ state.custom=derivePalette(e.target.value); state.color='custom'; bindTop(); render(); });
+
+bindTop();
+renderAboutChips();
+renderSkillPresets();
+renderLangPresets();
+renderCertPresets();
+renderOseaPresets();
+resetSample();   // start with cabin-crew sample so templates look real
+</script>
+</body>
+</html>

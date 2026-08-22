@@ -262,46 +262,52 @@ footer{padding:36px 20px;background:var(--navy);color:rgba(255,255,255,0.55);tex
     <!-- Overseas (선택) -->
     <div class="acc" data-acc>
       <div class="acc-head"><span>해외 경험 · Overseas <small style="font-weight:400;color:var(--muted);">(선택)</small></span>
-        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_overseas" onchange="toggleInc('overseas',this.checked)"> 이력서에 포함</label>
+        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_overseas" onchange="toggleInc('overseas',this.checked)"> 이력서에 표시</label>
       </div>
       <div class="acc-body">
-        <div class="ez-sub" style="margin-bottom:8px;">교환학생·어학연수·워킹홀리데이·해외봉사·여행 등. <b>해외 경험이 없으면 비워두세요</b> — 이력서에 나오지 않아요.</div>
-        <div class="job-chips chips" id="oseaPresetRow"></div>
+        <div class="ez-sub" style="margin-bottom:8px;">교환학생·어학연수·워킹홀리데이·해외봉사·여행 등을 <b>직접 자유롭게</b> 입력하세요. 아래 예시를 눌러 빠르게 추가할 수도 있어요. <b>해외 경험이 없으면 비워두면 됩니다</b> — 이력서에 나오지 않아요.</div>
         <div id="overseasList"></div>
-        <button class="add-btn" onclick="addOverseas()">+ 해외 경험 추가</button>
+        <button class="add-btn" onclick="addOverseas()">+ 내 해외 경험 직접 추가</button>
+        <div class="job-hint" style="margin-top:10px;">💡 예시 — 눌러서 빠르게 추가</div>
+        <div class="job-chips chips" id="oseaPresetRow"></div>
       </div>
     </div>
     <!-- Skills -->
     <div class="acc" data-acc>
       <div class="acc-head"><span>승무원 역량 · Skills</span>
-        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_skills" checked onchange="toggleInc('skills',this.checked)"> 포함</label>
+        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_skills" checked onchange="toggleInc('skills',this.checked)"> 이력서에 표시</label>
       </div>
       <div class="acc-body">
-        <div class="job-hint">👇 자주 쓰는 승무원 역량 — 눌러서 바로 추가</div>
-        <div class="job-chips chips" id="skillPresetRow"></div>
+        <div class="ez-sub" style="margin-bottom:8px;">원하는 역량을 <b>직접 자유롭게</b> 입력하세요. 아래 예시를 누르면 빠르게 채울 수도 있어요.</div>
         <div id="skillList"></div>
-        <button class="add-btn" onclick="addSkill()">+ 역량 직접 추가</button>
+        <button class="add-btn" onclick="addSkill()">+ 내 역량 직접 추가</button>
+        <div class="job-hint" style="margin-top:10px;">💡 예시 — 눌러서 빠르게 추가 (원하는 것만)</div>
+        <div class="job-chips chips" id="skillPresetRow"></div>
       </div>
     </div>
     <!-- Languages -->
     <div class="acc" data-acc>
       <div class="acc-head"><span>언어 · Languages</span>
-        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_langs" checked onchange="toggleInc('langs',this.checked)"> 포함</label>
+        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_langs" checked onchange="toggleInc('langs',this.checked)"> 이력서에 표시</label>
       </div>
       <div class="acc-body">
+        <div class="ez-sub" style="margin-bottom:8px;">할 수 있는 언어와 수준을 <b>직접 입력</b>하세요. 아래 예시를 눌러 빠르게 추가할 수도 있어요.</div>
         <div id="langList"></div>
-        <button class="add-btn" onclick="addLang()">+ 언어 추가</button>
+        <button class="add-btn" onclick="addLang()">+ 내 언어 직접 추가</button>
+        <div class="job-hint" style="margin-top:10px;">💡 예시 언어 — 눌러서 빠르게 추가</div>
+        <div class="job-chips chips" id="langPresetRow"></div>
       </div>
     </div>
     <!-- Certs -->
     <div class="acc" data-acc>
       <div class="acc-head"><span>자격 · Certifications</span>
-        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_certs" checked onchange="toggleInc('certs',this.checked)"> 포함</label>
+        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_certs" checked onchange="toggleInc('certs',this.checked)"> 이력서에 표시</label>
       </div>
       <div class="acc-body">
-        <div class="job-hint">👇 자주 쓰는 자격 — 눌러서 바로 추가</div>
+        <div class="ez-sub" style="margin-bottom:8px;">가진 자격·수료·면허를 <b>한 줄에 하나씩 자유롭게</b> 입력하세요. 아래 예시를 눌러 빠르게 추가할 수도 있어요.</div>
+        <div class="field"><textarea id="f_certs" style="min-height:88px;" placeholder="예: First Aid & CPR Certified"></textarea></div>
+        <div class="job-hint">💡 예시 자격 — 눌러서 빠르게 추가</div>
         <div class="job-chips chips" id="certPresetRow"></div>
-        <div class="field"><label>한 줄에 하나씩 입력</label><textarea id="f_certs" style="min-height:88px;"></textarea></div>
       </div>
     </div>
   </div>
@@ -641,6 +647,13 @@ const CERT_PRESETS=['First Aid & CPR Certified','Airline Service Etiquette Certi
 function renderCertPresets(){
   el('certPresetRow').innerHTML = CERT_PRESETS.map(s=>`<span class="chip" data-s="${esc(s)}">+ ${esc(s)}</span>`).join('');
   el('certPresetRow').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ const cur=(state.certs||'').split('\n').map(x=>x.trim()).filter(Boolean); if(cur.includes(c.dataset.s))return; cur.push(c.dataset.s); state.certs=cur.join('\n'); el('f_certs').value=state.certs; render(); });
+}
+
+/* --- 언어(Languages) 예시 --- */
+const LANG_PRESETS=[['Korean','Native'],['English','Fluent'],['Japanese','Conversational'],['Chinese','Conversational'],['Spanish','Basic'],['Vietnamese','Native'],['French','Basic'],['Arabic','Basic']];
+function renderLangPresets(){
+  el('langPresetRow').innerHTML = LANG_PRESETS.map((l,i)=>`<span class="chip" data-i="${i}">+ ${esc(l[0])}</span>`).join('');
+  el('langPresetRow').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ const l=LANG_PRESETS[+c.dataset.i]; addLang({name:l[0],lvl:l[1]}); });
 }
 
 /* --- 해외 경험(Overseas) : 선택 항목 --- */
@@ -1011,6 +1024,7 @@ el('customColor').addEventListener('input',e=>{ state.custom=derivePalette(e.tar
 bindTop();
 renderAboutChips();
 renderSkillPresets();
+renderLangPresets();
 renderCertPresets();
 renderOseaPresets();
 resetSample();   // start with cabin-crew sample so templates look real

@@ -2,6 +2,7 @@
 // 이노페이 가맹점 admin 에서 webhook URL 등록:
 //   https://www.wonderfulcrew.com/api/innopay-webhook
 const { createClient } = require('@supabase/supabase-js');
+const { sendPaymentNotification } = require('./_notify-payment.js');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
@@ -76,6 +77,12 @@ module.exports = async function handler(req, res) {
       moid: moid,
       status: newStatus
     });
+    if (newStatus === 'completed') {
+      await sendPaymentNotification({
+        sb, payer: {}, userId: 'anonymous_webhook_' + moid,
+        plan: 'basic', amount: amt, method: payMethod || 'innopay', moid, tid,
+      });
+    }
     return res.status(200).json({ result: 'created', status: newStatus });
   }
 
@@ -114,6 +121,16 @@ module.exports = async function handler(req, res) {
         }).eq('user_id', userId);
       } catch(e) { console.warn('[Webhook] deactivate error:', e.message); }
     }
+  }
+
+  // 관리자(정미) 결제 알림 이메일 — completed 전환 시에만, moid dedup 으로 중복 방지
+  if (newStatus === 'completed') {
+    await sendPaymentNotification({
+      sb, payer: {}, userId: payment.user_id,
+      plan: payment.plan || 'basic',
+      amount: parseInt(amt, 10) || payment.amount || 0,
+      method: payment.method || payMethod || 'innopay', moid, tid: tid || payment.tid,
+    });
   }
 
   res.status(200).json({ result: 'updated', moid, status: newStatus });

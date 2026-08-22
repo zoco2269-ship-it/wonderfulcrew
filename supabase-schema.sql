@@ -81,8 +81,12 @@ CREATE TABLE IF NOT EXISTS public.payments (
   tid TEXT,
   moid TEXT,
   status TEXT DEFAULT 'completed',
+  admin_notified BOOLEAN DEFAULT false,  -- 결제 완료 관리자 알림 메일 발송 여부(중복 발송 방지)
   created_at TIMESTAMPTZ DEFAULT now()
 );
+
+-- 기존 운영 테이블에 결제 알림 dedup 컬럼 추가 (한 번만 실행)
+ALTER TABLE public.payments ADD COLUMN IF NOT EXISTS admin_notified BOOLEAN DEFAULT false;
 
 ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can read own payments" ON public.payments FOR SELECT USING (true);

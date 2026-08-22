@@ -1,6 +1,7 @@
 // 결제 완료 시 Supabase에 기록 + 구독 상태 활성화
 // success.html에서 결제 직후 호출
 const { createClient } = require('@supabase/supabase-js');
+const { sendPaymentNotification } = require('./_notify-payment.js');
 
 module.exports = async function(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -72,6 +73,12 @@ module.exports = async function(req, res) {
         }, { onConflict: 'auth_id' });
       } catch(e) {}
     }
+
+    // 관리자(정미) 결제 알림 이메일 — 신규 결제건에서만(중복 방지는 helper 내부 moid dedup)
+    await sendPaymentNotification({
+      sb, payer: { name, email }, userId,
+      plan, amount, method: 'innopay', moid, tid,
+    });
 
     res.json({ ok: true, paymentId: payment?.id, expiresAt: expiresAt.toISOString() });
   } catch (e) {

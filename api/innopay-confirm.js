@@ -2,6 +2,7 @@
 // 결제창에서 인증 완료 후 호출됨 → 서버에서 최종 승인 요청 + payments/users 자동 INSERT
 const crypto = require('crypto');
 const { createClient } = require('@supabase/supabase-js');
+const { sendPaymentNotification } = require('./_notify-payment.js');
 
 module.exports = async function handler(req, res) {
   // 이노페이는 POST로 인증 결과를 전달함
@@ -79,6 +80,11 @@ module.exports = async function handler(req, res) {
                 }, { onConflict: 'user_id' });
               } catch(e) { console.warn('[innopay-confirm] users/subs:', e.message); }
             }
+            // 관리자(정미) 결제 알림 이메일 — moid dedup 으로 중복 방지
+            await sendPaymentNotification({
+              sb, payer: {}, userId: userId || pending.user_id,
+              plan, amount, method: 'innopay', moid, tid: tid || '',
+            });
           }
         }
       } catch(e) { console.warn('[innopay-confirm] server save:', e.message); }

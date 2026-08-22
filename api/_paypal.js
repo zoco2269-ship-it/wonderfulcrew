@@ -1,6 +1,7 @@
 // Shared PayPal helpers + plan config (server-side helper, NOT an endpoint — underscore prefix is ignored by Vercel routing).
 // Used by api/paypal-*.js. Reuses the same Supabase tables as save-payment.js.
 const { createClient } = require('@supabase/supabase-js');
+const { sendPaymentNotification } = require('./_notify-payment.js');
 
 // =========================================================================
 //  USD PRICES — PLACEHOLDERS. Adjust the amounts here in ONE place.
@@ -91,6 +92,12 @@ async function recordPayment({ userId, email, name, plan, tid, moid, amount }) {
       }, { onConflict: 'auth_id' });
     } catch (e) {}
   }
+
+  // 관리자(정미) 결제 알림 이메일 — 신규 결제건에서만(중복 방지는 helper 내부 moid dedup)
+  await sendPaymentNotification({
+    sb: db, payer: { name, email }, userId,
+    plan: plan || 'basic', amount, method: 'paypal', moid, tid,
+  });
 
   return { paymentId: payment && payment.id, expiresAt: expiresAt.toISOString() };
 }

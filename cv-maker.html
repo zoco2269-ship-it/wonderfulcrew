@@ -181,6 +181,7 @@ footer{padding:36px 20px;background:var(--navy);color:rgba(255,255,255,0.55);tex
   <a href="index.html" class="logo">Wonderful<span>Crew</span></a>
   <div class="top-actions">
     <button class="btn" onclick="resetSample()">샘플 채우기</button>
+    <button class="btn" onclick="downloadWord()">Word · 편집용 ⬇</button>
     <button class="btn primary" onclick="payGate('pdf')">PDF · 저장 🔒</button>
   </div>
 </div>
@@ -1092,6 +1093,64 @@ async function aiAutofill(btn){
     if(btn){ btn.disabled=false; btn.innerHTML=label; }
   }
 }
+/* ============ Word(.doc) 다운로드 — 받아서 직접 편집 (워드·한글에서 열림) ============ */
+function wBullets(text){
+  const arr=String(text||'').split('\n').join('. ').split(/\.\s+/).map(function(s){return s.trim().replace(/[.\s]+$/,'');}).filter(Boolean);
+  if(!arr.length) return '';
+  return '<ul style="margin:2pt 0 6pt 16pt;padding:0;">'+arr.map(function(l){return '<li style="margin:0 0 2pt;">'+esc(l)+'</li>';}).join('')+'</ul>';
+}
+function buildWordHtml(){
+  const C=activeColor();
+  const head=C.deep, accent=C.main;
+  const contact=[state.phone,state.email,state.loc,state.meta].filter(Boolean).map(esc).join('&nbsp;&nbsp;|&nbsp;&nbsp;');
+  function sec(title){ return '<h2 style="font-size:12pt;color:'+head+';border-bottom:1.5pt solid '+accent+';padding-bottom:2pt;margin:14pt 0 6pt;text-transform:uppercase;letter-spacing:.5pt;">'+title+'</h2>'; }
+  function entries(list){
+    return (list||[]).map(function(x){
+      return '<div style="margin:0 0 8pt;">'
+        +'<div><b style="font-size:11pt;">'+esc(x.role||'')+'</b>'
+        +(x.date?'<span style="color:#888;float:right;">'+esc(x.date)+'</span>':'')+'</div>'
+        +(x.org?'<div style="color:'+accent+';font-size:10.5pt;margin:1pt 0;">'+esc(x.org)+'</div>':'')
+        +wBullets(x.desc)+'</div>';
+    }).join('');
+  }
+  let body='';
+  // header
+  body+='<table style="width:100%;border-collapse:collapse;"><tr>';
+  body+='<td style="vertical-align:top;">'
+      +'<div style="font-size:22pt;font-weight:bold;color:'+head+';">'+(esc(state.name)||'NAME')+'</div>'
+      +'<div style="font-size:11pt;color:'+accent+';letter-spacing:1pt;text-transform:uppercase;margin:2pt 0 4pt;">'+(esc(state.role)||'CABIN CREW')+'</div>'
+      +'<div style="font-size:9.5pt;color:#555;">'+contact+'</div>'
+      +'</td>';
+  if(state.photo) body+='<td style="width:110px;vertical-align:top;text-align:right;"><img src="'+state.photo+'" style="width:96px;height:125px;"/></td>';
+  body+='</tr></table>';
+  if(state.about) body+=sec('About Me')+'<div style="font-size:10.5pt;color:#444;line-height:1.5;">'+esc(state.about)+'</div>';
+  if(state.exp&&state.exp.length) body+=sec('Work Experience')+entries(state.exp);
+  if(state.inc.overseas&&state.overseas&&state.overseas.length) body+=sec('Overseas Experience')+entries(state.overseas);
+  if(state.edu&&state.edu.length) body+=sec('Education')+entries(state.edu);
+  if(state.inc.skills&&state.skills&&state.skills.length) body+=sec('Skills')+'<div style="font-size:10.5pt;">'+state.skills.map(function(s){return esc(s.name);}).filter(Boolean).join(' &nbsp;•&nbsp; ')+'</div>';
+  if(state.inc.langs&&state.langs&&state.langs.length) body+=sec('Languages')+'<div style="font-size:10.5pt;">'+state.langs.map(function(l){return '<b>'+esc(l.name)+'</b>'+(l.lvl?' — '+esc(l.lvl):'');}).join('&nbsp;&nbsp;|&nbsp;&nbsp;')+'</div>';
+  const certs=(state.certs||'').split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  if(state.inc.certs&&certs.length) body+=sec('Certifications')+'<ul style="margin:2pt 0 0 16pt;padding:0;font-size:10.5pt;">'+certs.map(function(c){return '<li style="margin:0 0 2pt;">'+esc(c)+'</li>';}).join('')+'</ul>';
+
+  return "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>"
+    +'<head><meta charset="utf-8"><title>CV</title>'
+    +'<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]-->'
+    +'<style>@page{size:A4;margin:1.6cm;} body{font-family:\'Malgun Gothic\',\'Calibri\',sans-serif;color:#222;font-size:11pt;line-height:1.45;} h2{font-family:inherit;} ul{list-style:disc;} </style></head>'
+    +'<body>'+body+'</body></html>';
+}
+function downloadWord(){
+  try{
+    const html=buildWordHtml();
+    const blob=new Blob(['﻿'+html],{type:'application/msword'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const nm=(state.name||'CV').replace(/[^\w가-힣 -]/g,'').trim()||'CV';
+    a.href=url; a.download=nm+'_CV.doc';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(url);},1500);
+  }catch(e){ alert('다운로드에 실패했어요. 잠시 후 다시 시도해주세요.\n('+(e.message||e)+')'); }
+}
+
 /* ============ 멤버십 게이트 ============ */
 function payGate(kind){
   var msg = kind==='pdf'

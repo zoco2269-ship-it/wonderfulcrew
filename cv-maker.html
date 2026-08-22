@@ -25,7 +25,7 @@
 </script>
 <meta name="description" content="승무원 지원자 특화 CV 빌더. 템플릿 모양·컬러를 고르고 실시간으로 완성하는 항공사 영문 이력서. 원더풀크루.">
 <link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@500;600;700&family=Montserrat:wght@500;600;700&family=Oswald:wght@500;600&family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold-l:#E8C96A;--navy:#1A2340;--navy-2:#243056;--cream:#FAF7F0;--ink:#161616;--line:#EbE3D0;--muted:#6A6255;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -71,6 +71,11 @@ button{font-family:inherit;cursor:pointer;}
 .font-list{display:flex;gap:8px;flex-wrap:wrap;}
 .font-btn{padding:7px 14px;border-radius:18px;border:1px solid var(--line);background:#fff;font-size:0.78rem;color:var(--muted);}
 .font-btn.active{border-color:var(--navy);color:var(--navy);font-weight:700;}
+.sw.custom{display:flex;align-items:center;justify-content:center;font-size:0.8rem;background:conic-gradient(from 0deg,#e5484d,#e8a13c,#e6d84c,#5cbf6a,#4c8de8,#9a6ce0,#e5484d);color:#fff;}
+.custom-color{display:inline-flex;align-items:center;gap:7px;margin-top:11px;padding:6px 11px;border:1px dashed var(--gold);border-radius:20px;background:#fff;font-size:0.74rem;color:var(--muted);font-family:'Noto Sans KR',sans-serif;cursor:pointer;font-weight:600;}
+.custom-color input[type=color]{width:24px;height:24px;padding:0;border:none;border-radius:50%;background:none;cursor:pointer;}
+.custom-color input[type=color]::-webkit-color-swatch-wrapper{padding:0;}
+.custom-color input[type=color]::-webkit-color-swatch{border:1px solid var(--line);border-radius:50%;}
 
 /* ---------- workspace ---------- */
 .workspace{max-width:1180px;margin:20px auto 60px;padding:0 20px;display:grid;grid-template-columns:0.9fr 1.1fr;gap:22px;align-items:start;}
@@ -135,6 +140,25 @@ footer{padding:36px 20px;background:var(--navy);color:rgba(255,255,255,0.55);tex
   .paper{max-width:440px;margin:0 auto;}
 }
 
+/* ---------- easy helper / chips (쉬운 작성 도우미) ---------- */
+.ez{border:1px solid var(--line);border-radius:11px;padding:13px;margin:-4px 0 14px;background:#FBF8F1;}
+.ez-h{font-family:'Noto Sans KR',sans-serif;font-size:0.8rem;font-weight:700;color:var(--navy);margin-bottom:4px;display:flex;align-items:center;gap:6px;line-height:1.4;}
+.ez-sub{font-size:0.72rem;color:var(--muted);margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;line-height:1.55;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{padding:6px 12px;border-radius:16px;border:1px solid var(--line);background:#fff;font-size:0.76rem;color:var(--muted);font-family:'Noto Sans KR',sans-serif;transition:.15s;user-select:none;cursor:pointer;}
+.chip:hover{border-color:var(--gold);}
+.chip.on{border-color:var(--gold);background:rgba(201,168,76,0.14);color:var(--navy);font-weight:700;}
+.ez-btn{margin-top:11px;padding:9px 16px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold-l),var(--gold));color:#fff;font-size:0.79rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;}
+.ez-out{margin-top:11px;display:flex;flex-direction:column;gap:8px;}
+.ez-card{border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:#fff;font-size:0.8rem;line-height:1.55;color:#333;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:.15s;}
+.ez-card:hover{border-color:var(--gold);box-shadow:0 4px 14px -8px rgba(26,35,64,0.4);}
+.ez-card .pick{display:block;font-size:0.68rem;color:var(--gold);font-weight:700;margin-top:5px;}
+.inc-toggle{display:flex;align-items:center;gap:5px;font-size:0.7rem;color:var(--muted);font-weight:600;font-family:'Noto Sans KR',sans-serif;cursor:pointer;}
+.inc-toggle input{cursor:pointer;}
+.job-chips{margin:2px 0 9px;}
+.job-chips .chip{font-size:0.72rem;padding:5px 10px;}
+.job-hint{font-size:0.68rem;color:var(--gold);font-weight:700;margin-bottom:5px;font-family:'Noto Sans KR',sans-serif;}
+
 /* ---------- print ---------- */
 @media print{
   body *{visibility:hidden;}
@@ -167,9 +191,13 @@ footer{padding:36px 20px;background:var(--navy);color:rgba(255,255,255,0.55);tex
       <div class="picker-label">Template · 모양</div>
       <div class="tpl-list" id="tplList"></div>
     </div>
-    <div class="picker-block" style="max-width:260px;">
+    <div class="picker-block" style="max-width:290px;">
       <div class="picker-label">Color · 컬러</div>
       <div class="swatches" id="swatches"></div>
+      <label class="custom-color" title="원하는 색을 직접 고르세요">
+        <input type="color" id="customColor" value="#7A6CB0">
+        <span>🎨 내 색 직접 고르기</span>
+      </label>
       <div class="picker-label" style="margin-top:16px;">Font · 서체</div>
       <div class="font-list" id="fontList"></div>
     </div>
@@ -207,6 +235,13 @@ footer{padding:36px 20px;background:var(--navy);color:rgba(255,255,255,0.55);tex
       <div class="field"><label>생년 / 국적</label><input id="f_meta" placeholder="1999 · Korean"></div>
     </div>
     <div class="field"><label>지원 동기 · 자기소개 (About)</label><textarea id="f_about"></textarea></div>
+    <div class="ez">
+      <div class="ez-h">✏️ 자기소개가 어렵다면 — 나를 표현하는 단어만 고르세요</div>
+      <div class="ez-sub">해당하는 강점을 누르고 <b>문장 완성</b>을 누르면 영문 자기소개 3가지가 만들어져요. 마음에 드는 걸 고르면 위 칸에 채워집니다. (그대로 두거나 자유롭게 고쳐도 돼요)</div>
+      <div class="chips" id="aboutChips"></div>
+      <button class="ez-btn" onclick="buildAbout()">✨ 문장 완성하기</button>
+      <div class="ez-out" id="aboutOut"></div>
+    </div>
 
     <!-- Experience -->
     <div class="acc open" data-acc>
@@ -224,17 +259,35 @@ footer{padding:36px 20px;background:var(--navy);color:rgba(255,255,255,0.55);tex
         <button class="add-btn" onclick="addEdu()">+ 학력 추가</button>
       </div>
     </div>
+    <!-- Overseas (선택) -->
+    <div class="acc" data-acc>
+      <div class="acc-head"><span>해외 경험 · Overseas <small style="font-weight:400;color:var(--muted);">(선택)</small></span>
+        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_overseas" onchange="toggleInc('overseas',this.checked)"> 이력서에 포함</label>
+      </div>
+      <div class="acc-body">
+        <div class="ez-sub" style="margin-bottom:8px;">교환학생·어학연수·워킹홀리데이·해외봉사·여행 등. <b>해외 경험이 없으면 비워두세요</b> — 이력서에 나오지 않아요.</div>
+        <div class="job-chips chips" id="oseaPresetRow"></div>
+        <div id="overseasList"></div>
+        <button class="add-btn" onclick="addOverseas()">+ 해외 경험 추가</button>
+      </div>
+    </div>
     <!-- Skills -->
     <div class="acc" data-acc>
-      <div class="acc-head"><span>승무원 역량 · Skills</span><span class="chev">›</span></div>
+      <div class="acc-head"><span>승무원 역량 · Skills</span>
+        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_skills" checked onchange="toggleInc('skills',this.checked)"> 포함</label>
+      </div>
       <div class="acc-body">
+        <div class="job-hint">👇 자주 쓰는 승무원 역량 — 눌러서 바로 추가</div>
+        <div class="job-chips chips" id="skillPresetRow"></div>
         <div id="skillList"></div>
-        <button class="add-btn" onclick="addSkill()">+ 역량 추가</button>
+        <button class="add-btn" onclick="addSkill()">+ 역량 직접 추가</button>
       </div>
     </div>
     <!-- Languages -->
     <div class="acc" data-acc>
-      <div class="acc-head"><span>언어 · Languages</span><span class="chev">›</span></div>
+      <div class="acc-head"><span>언어 · Languages</span>
+        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_langs" checked onchange="toggleInc('langs',this.checked)"> 포함</label>
+      </div>
       <div class="acc-body">
         <div id="langList"></div>
         <button class="add-btn" onclick="addLang()">+ 언어 추가</button>
@@ -242,8 +295,12 @@ footer{padding:36px 20px;background:var(--navy);color:rgba(255,255,255,0.55);tex
     </div>
     <!-- Certs -->
     <div class="acc" data-acc>
-      <div class="acc-head"><span>자격 · Certifications</span><span class="chev">›</span></div>
+      <div class="acc-head"><span>자격 · Certifications</span>
+        <label class="inc-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="inc_certs" checked onchange="toggleInc('certs',this.checked)"> 포함</label>
+      </div>
       <div class="acc-body">
+        <div class="job-hint">👇 자주 쓰는 자격 — 눌러서 바로 추가</div>
+        <div class="job-chips chips" id="certPresetRow"></div>
         <div class="field"><label>한 줄에 하나씩 입력</label><textarea id="f_certs" style="min-height:88px;"></textarea></div>
       </div>
     </div>
@@ -290,7 +347,9 @@ footer{padding:36px 20px;background:var(--navy);color:rgba(255,255,255,0.55);tex
 const state = {
   tpl:'classic', color:'camel', font:'serif',
   name:'', role:'', phone:'', email:'', loc:'', meta:'', about:'', photo:'',
-  exp:[], edu:[], skills:[], langs:[], certs:''
+  exp:[], edu:[], overseas:[], skills:[], langs:[], certs:'',
+  inc:{overseas:false, skills:true, langs:true, certs:true},
+  custom:null   // {main,deep,soft,text} when 직접 고른 색
 };
 
 const COLORS = {
@@ -299,11 +358,19 @@ const COLORS = {
   rose: {name:'로즈',   main:'#B4677A', deep:'#96475B', soft:'#F3E1E6', text:'#4a2530'},
   sage: {name:'세이지', main:'#5C7A63', deep:'#425A48', soft:'#E1EAE1', text:'#26382b'},
   slate:{name:'차콜',   main:'#3E4A55', deep:'#2A333B', soft:'#E5E8EB', text:'#232a30'},
-  gold: {name:'골드',   main:'#B79447', deep:'#8F7130', soft:'#F3EAD3', text:'#3d3116'}
+  gold: {name:'골드',   main:'#B79447', deep:'#8F7130', soft:'#F3EAD3', text:'#3d3116'},
+  wine: {name:'와인',   main:'#7E3B4A', deep:'#5E2836', soft:'#F0E0E4', text:'#3f1f28'},
+  teal: {name:'틸',     main:'#2F7C7A', deep:'#1F5A58', soft:'#DDEDEC', text:'#193c3b'},
+  plum: {name:'플럼',   main:'#6B5B95', deep:'#4E4172', soft:'#E8E3F1', text:'#312a4d'},
+  black:{name:'블랙',   main:'#2B2B2B', deep:'#141414', soft:'#E6E6E6', text:'#1a1a1a'}
 };
 const FONTS = {
-  serif:{name:'클래식', head:"'DM Serif Display',serif", body:"'Noto Sans KR',sans-serif"},
-  sans: {name:'모던',   head:"'Noto Sans KR',sans-serif", body:"'Noto Sans KR',sans-serif"}
+  serif: {name:'클래식', head:"'DM Serif Display',serif",   body:"'Noto Sans KR',sans-serif"},
+  sans:  {name:'모던',   head:"'Noto Sans KR',sans-serif",  body:"'Noto Sans KR',sans-serif"},
+  elegant:{name:'우아',  head:"'Playfair Display',serif",   body:"'Noto Sans KR',sans-serif"},
+  clean: {name:'심플',   head:"'Montserrat',sans-serif",    body:"'Noto Sans KR',sans-serif"},
+  book:  {name:'명조',   head:"'Noto Serif KR',serif",      body:"'Noto Serif KR',serif"},
+  strong:{name:'임팩트', head:"'Oswald',sans-serif",        body:"'Noto Sans KR',sans-serif"}
 };
 const TEMPLATES = ['classic','twotone','header','minimal','timeline'];
 const TPL_NAME = {classic:'클래식',twotone:'투톤',header:'헤더형',minimal:'미니멀',timeline:'타임라인'};
@@ -354,12 +421,20 @@ function bindTop(){
   // colors
   el('swatches').innerHTML = Object.keys(COLORS).map(k=>`
     <div class="sw ${k===state.color?'active':''}" data-c="${k}" title="${COLORS[k].name}" style="background:${COLORS[k].main}"></div>`).join('');
-  el('swatches').querySelectorAll('.sw').forEach(s=>s.onclick=()=>{state.color=s.dataset.c;bindTop();render();});
+  el('swatches').querySelectorAll('.sw').forEach(s=>s.onclick=()=>{state.color=s.dataset.c;state.custom=null;bindTop();render();});
   // fonts
   el('fontList').innerHTML = Object.keys(FONTS).map(k=>`
     <button class="font-btn ${k===state.font?'active':''}" data-f="${k}">${FONTS[k].name}</button>`).join('');
   el('fontList').querySelectorAll('.font-btn').forEach(b=>b.onclick=()=>{state.font=b.dataset.f;bindTop();render();});
 }
+/* ---- 커스텀 컬러 (직접 고르기) ---- */
+function hexToRgb(h){h=String(h).replace('#','');return {r:parseInt(h.substr(0,2),16),g:parseInt(h.substr(2,2),16),b:parseInt(h.substr(4,2),16)};}
+function toHex(n){n=Math.max(0,Math.min(255,Math.round(n)));return n.toString(16).padStart(2,'0');}
+function darken(hex,f){const c=hexToRgb(hex);return '#'+toHex(c.r*f)+toHex(c.g*f)+toHex(c.b*f);}
+function lighten(hex,f){const c=hexToRgb(hex);return '#'+toHex(c.r+(255-c.r)*f)+toHex(c.g+(255-c.g)*f)+toHex(c.b+(255-c.b)*f);}
+function derivePalette(hex){return {name:'커스텀',main:hex,deep:darken(hex,0.72),soft:lighten(hex,0.84),text:darken(hex,0.5)};}
+function activeColor(){return (state.color==='custom'&&state.custom)?state.custom:(COLORS[state.color]||COLORS.camel);}
+
 function miniThumb(t){
   const c='#A9744F', d='#7d5236';
   if(t==='classic') return `<div class="mini"><div class="side" style="background:${c}"></div><div class="dot" style="width:18px;height:24px;left:9px;top:7px"></div><div class="ln" style="left:44%;right:8%;top:12px"></div><div class="ln" style="left:44%;right:22%;top:22px"></div><div class="ln" style="left:44%;right:10%;top:36px"></div><span style="position:absolute;left:46%;top:52px;width:8px;height:8px;border-radius:50%;border:2px solid ${c}"></span><span style="position:absolute;left:60%;top:52px;width:8px;height:8px;border-radius:50%;border:2px solid ${c}"></span><span style="position:absolute;left:74%;top:52px;width:8px;height:8px;border-radius:50%;border:2px solid ${c}"></span></div>`;
@@ -383,6 +458,8 @@ function renderExp(){
     <div class="grid2"><div class="field"><label>직무/역할</label><input value="${esc(x.role)}" oninput="upd('exp',${i},'role',this.value)"></div>
     <div class="field"><label>기간</label><input value="${esc(x.date)}" oninput="upd('exp',${i},'date',this.value)"></div></div>
     <div class="field"><label>회사/기관</label><input value="${esc(x.org)}" oninput="upd('exp',${i},'org',this.value)"></div>
+    <div class="job-hint">👇 직무 유형을 누르면 설명이 자동 완성돼요 (고른 뒤 자유롭게 수정 가능)</div>
+    <div class="job-chips chips">${Object.keys(JOB_PRESETS).map(j=>`<span class="chip" onclick="fillJob(${i},'${j}')">${j}</span>`).join('')}</div>
     <div class="field"><label>설명 (승무원 자질 중심)</label><textarea oninput="upd('exp',${i},'desc',this.value)">${esc(x.desc)}</textarea></div>`,'delExp')).join('');
 }
 function renderEdu(){
@@ -418,12 +495,161 @@ el('photoInput').addEventListener('change',e=>{
 
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
+/* ============ 쉬운 작성 도우미 (프리셋 · 자동완성) ============ */
+
+/* --- 자기소개(About) : 강점 단어 → 영문 문장 --- */
+const ABOUT_TRAITS = [
+  {ko:'밝은 미소·긍정',   en:'a bright smile and positive energy'},
+  {ko:'서비스 마인드',     en:'a genuine service mindset'},
+  {ko:'팀워크',           en:'strong teamwork'},
+  {ko:'안전 우선',         en:'a safety-first attitude'},
+  {ko:'책임감·성실',       en:'responsibility and diligence'},
+  {ko:'세심한 배려',       en:'attentive care for others'},
+  {ko:'침착한 위기대응',   en:'composure in unexpected situations'},
+  {ko:'다문화 소통',       en:'an open, cross-cultural attitude'},
+  {ko:'외국어 소통',       en:'confident communication in foreign languages'},
+  {ko:'단정한 이미지',     en:'a professional and well-groomed image'},
+  {ko:'체력·건강',         en:'stamina and reliability'},
+  {ko:'배우려는 자세',     en:'a willingness to learn and grow'}
+];
+let aboutSel = new Set();
+let aboutCands = [];
+function renderAboutChips(){
+  el('aboutChips').innerHTML = ABOUT_TRAITS.map((t,i)=>`<span class="chip ${aboutSel.has(i)?'on':''}" data-i="${i}">${t.ko}</span>`).join('');
+  el('aboutChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{const i=+c.dataset.i; aboutSel.has(i)?aboutSel.delete(i):aboutSel.add(i); renderAboutChips();});
+}
+function joinEn(a){ if(a.length===1)return a[0]; if(a.length===2)return a[0]+' and '+a[1]; return a.slice(0,-1).join(', ')+', and '+a[a.length-1]; }
+function buildAbout(){
+  const sel=[...aboutSel];
+  if(!sel.length){ alert('먼저 나를 표현하는 강점을 한두 개 이상 골라주세요.'); return; }
+  const t=joinEn(sel.map(i=>ABOUT_TRAITS[i].en));
+  const role=(state.role&&state.role.trim())||'Cabin Crew';
+  const roleNoun = /cabin crew/i.test(role) ? 'cabin crew member' : role;
+  aboutCands=[
+    `A warm and service-minded aspiring ${roleNoun}, I bring ${t}. I am committed to making every passenger feel comfortable, safe and genuinely cared for throughout their journey.`,
+    `As an aspiring ${roleNoun}, I combine ${t}. I have learned to stay calm under pressure and always put people first, and I would be proud to represent the airline with professionalism and heart.`,
+    `Passionate about creating memorable travel experiences, I offer ${t}. I believe outstanding service begins with sincerity, and I am eager to grow as reliable crew that passengers can always trust.`
+  ];
+  el('aboutOut').innerHTML = aboutCands.map((c,i)=>`<div class="ez-card" data-i="${i}">${esc(c)}<span class="pick">이 문장 사용하기 ↑</span></div>`).join('');
+  el('aboutOut').querySelectorAll('.ez-card').forEach(card=>card.onclick=()=>{ state.about=aboutCands[+card.dataset.i]; el('f_about').value=state.about; render(); });
+}
+
+/* --- 경력 설명 : 직무 유형 → 승무원 자질 중심 bullet 자동완성 --- */
+const JOB_PRESETS = {
+  '호텔·프론트':[
+    'Welcomed international guests and handled requests with a warm, professional manner',
+    'Resolved complaints calmly and turned difficult moments into positive experiences',
+    'Maintained high guest-satisfaction scores through attentive, personalized service',
+    'Coordinated closely with team members to keep daily operations smooth'
+  ],
+  '카페·레스토랑':[
+    'Served guests courteously in a fast-paced environment while keeping a friendly smile',
+    'Anticipated customer needs and offered attentive, detail-oriented service',
+    'Worked as part of a close team to deliver fast and accurate service',
+    'Followed strict hygiene and safety standards at all times'
+  ],
+  '판매·리테일':[
+    'Assisted diverse customers and recommended products with a helpful attitude',
+    'Reached sales targets through sincere, customer-first communication',
+    'Handled payments and inquiries accurately and responsibly',
+    'Kept a neat, well-organized space and a professional appearance'
+  ],
+  '고객상담·CS':[
+    'Responded to customer inquiries with patience, empathy and clear communication',
+    'Resolved complaints calmly and followed up to ensure satisfaction',
+    'Kept composure and professionalism even with demanding customers',
+    'Recorded and managed customer information accurately'
+  ],
+  '항공·기내':[
+    'Delivered in-flight service in line with airline standards and safety procedures',
+    'Cared for passengers of all ages and cultures with warmth and attentiveness',
+    'Put safety first and responded calmly to onboard situations',
+    'Collaborated with fellow crew to ensure a comfortable flight'
+  ],
+  '면세·백화점':[
+    'Provided premium service to domestic and international customers',
+    'Communicated with foreign customers in English and other languages',
+    'Presented products professionally and kept an elegant appearance',
+    'Supported the team in reaching store service and sales goals'
+  ],
+  '병원·케어':[
+    'Cared for patients and visitors with compassion and a calm manner',
+    'Communicated clearly and kindly with people in stressful situations',
+    'Kept strict hygiene, safety and confidentiality standards',
+    'Worked reliably as part of a multidisciplinary team'
+  ],
+  '인턴·대외활동':[
+    'Supported the team with a proactive and responsible attitude',
+    'Collaborated with members from diverse backgrounds',
+    'Learned quickly and adapted to new tasks and environments',
+    'Completed assigned duties reliably and on time'
+  ]
+};
+function fillJob(i,job){ const arr=JOB_PRESETS[job]||[]; if(!state.exp[i])return; state.exp[i].desc=arr.join('\n'); renderExp(); render(); }
+
+/* --- 역량(Skills) 프리셋 --- */
+const SKILL_PRESETS=['Customer Service Excellence','Teamwork & Collaboration','Safety Awareness & Composure','Professional Grooming','Cross-cultural Communication','Positive Attitude','Problem Solving','Adaptability & Flexibility','Attention to Detail','Strong Work Ethic'];
+function renderSkillPresets(){
+  el('skillPresetRow').innerHTML = SKILL_PRESETS.map(s=>`<span class="chip" data-s="${esc(s)}">+ ${esc(s)}</span>`).join('');
+  el('skillPresetRow').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ addSkill({name:c.dataset.s}); });
+}
+/* --- 자격(Certs) 프리셋 --- */
+const CERT_PRESETS=['First Aid & CPR Certified','Airline Service Etiquette Certificate','TOEIC Speaking Lv.7','SMAT Service Management Certificate','Barista Certificate','Driver’s License'];
+function renderCertPresets(){
+  el('certPresetRow').innerHTML = CERT_PRESETS.map(s=>`<span class="chip" data-s="${esc(s)}">+ ${esc(s)}</span>`).join('');
+  el('certPresetRow').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ const cur=(state.certs||'').split('\n').map(x=>x.trim()).filter(Boolean); if(cur.includes(c.dataset.s))return; cur.push(c.dataset.s); state.certs=cur.join('\n'); el('f_certs').value=state.certs; render(); });
+}
+
+/* --- 해외 경험(Overseas) : 선택 항목 --- */
+const OSEA_PRESETS=['Exchange Student','Language Study Abroad','Working Holiday','Overseas Volunteer','International Travel'];
+function renderOseaPresets(){
+  el('oseaPresetRow').innerHTML = OSEA_PRESETS.map(s=>`<span class="chip" data-s="${esc(s)}">+ ${esc(s)}</span>`).join('');
+  el('oseaPresetRow').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ addOverseas({role:c.dataset.s,org:'',date:'',desc:''}); });
+}
+function addOverseas(v){
+  state.overseas.push(v||{role:'',org:'',date:'',desc:''});
+  if(!state.inc.overseas){ state.inc.overseas=true; const cb=el('inc_overseas'); if(cb)cb.checked=true; }
+  renderOverseas(); render();
+}
+function renderOverseas(){
+  el('overseasList').innerHTML = state.overseas.map((x,i)=>repeatBox(i,`
+    <div class="grid2"><div class="field"><label>활동 (예: Exchange Student)</label><input value="${esc(x.role)}" oninput="upd('overseas',${i},'role',this.value)"></div>
+    <div class="field"><label>기간</label><input value="${esc(x.date)}" oninput="upd('overseas',${i},'date',this.value)"></div></div>
+    <div class="field"><label>국가·기관</label><input value="${esc(x.org)}" oninput="upd('overseas',${i},'org',this.value)" placeholder="Sydney, Australia"></div>
+    <div class="field"><label>설명 (선택)</label><textarea oninput="upd('overseas',${i},'desc',this.value)"></textarea></div>`,'delOverseas')).join('');
+}
+function delOverseas(i){ state.overseas.splice(i,1); renderOverseas(); render(); }
+
+/* --- 섹션 포함 여부 토글 --- */
+function toggleInc(k,v){ state.inc[k]=v; render(); }
+
+/* --- 섹션 렌더 게이트 (포함 체크 반영) --- */
+function skillsHtml(C,light){ return state.inc.skills?skillText(C,light):''; }
+function langsHtml(C,light){ return state.inc.langs?langLines(C,light):''; }
+function certsHtml(C,light){ return state.inc.certs?certLines(C,light):''; }
+function oseaHtml(C,light){ return state.inc.overseas?overseasBlock(C,light):''; }
+/* 제목+내용을 묶되, 내용이 비면 통째로 숨김(=선택 안 하면 이력서에 안 나옴) */
+function blockSec(title,content,C,F,light){ return (content&&String(content).trim())?`<div>${secTitle(title,C,F,light)}${content}</div>`:''; }
+function blockSecLine(title,content,C,F){ return (content&&String(content).trim())?`<div>${secTitleLine(title,C,F)}${content}</div>`:''; }
+function overseasBlock(C,light){
+  const dc=light?'rgba(255,255,255,.6)':'#8a8a8a', rc=light?'#fff':'#222', col=light?'rgba(255,255,255,.8)':'#555';
+  return state.overseas.map(x=>`
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;gap:8px;">
+        <span style="font-weight:700;color:${rc};font-size:12px;">${esc(x.role)}</span>
+        <span style="color:${dc};font-size:10px;white-space:nowrap;">${esc(x.date)}</span>
+      </div>
+      <div style="color:${light?'rgba(255,255,255,.75)':C.main};font-size:10.5px;margin:2px 0;">${esc(x.org)}</div>
+      ${bullets(x.desc,col)}
+    </div>`).join('');
+}
+
 /* accordion */
 document.querySelectorAll('[data-acc] .acc-head').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
 
 /* ============ RENDER PREVIEW ============ */
 function render(){
-  const C=COLORS[state.color], F=FONTS[state.font];
+  const C=activeColor(), F=FONTS[state.font]||FONTS.serif;
   const p=el('paper');
   const fn=state.tpl==='classic'?tplClassic:state.tpl==='twotone'?tplTwotone:state.tpl==='header'?tplHeader:state.tpl==='minimal'?tplMinimal:tplTimeline;
   // A4 인쇄 여백처럼 용지 상하좌우에 흰 여백 — 디자인 전체를 안쪽으로
@@ -558,15 +784,16 @@ function tplClassic(C,F){
       <div style="height:1px;background:rgba(255,255,255,.3);margin:16px 4px;"></div>
       <div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin-bottom:9px;">ABOUT ME</div>
       <div style="font-size:9.5px;color:rgba(255,255,255,.85);line-height:1.6;">${esc(state.about)}</div>
-      <div style="height:1px;background:rgba(255,255,255,.3);margin:16px 4px;"></div>
+      ${state.inc.langs?`<div style="height:1px;background:rgba(255,255,255,.3);margin:16px 4px;"></div>
       <div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin-bottom:9px;">LANGUAGES</div>
-      ${langLines(C,true)}
+      ${langLines(C,true)}`:''}
     </div>
     <div style="flex:1;padding:26px 24px;color:#222;display:flex;flex-direction:column;gap:12px;">
-      <div>${secTitle('WORK EXPERIENCE',C,F,false)}${entryLeftDate(state.exp,C,false)}</div>
-      <div>${secTitle('EDUCATION',C,F,false)}${entryLeftDate(state.edu,C,false)}</div>
-      <div>${secTitle('SKILLS',C,F,false)}${skillText(C,false)}</div>
-      <div>${secTitle('CERTIFICATIONS',C,F,false)}${certLines(C,false)}</div>
+      ${blockSec('WORK EXPERIENCE',entryLeftDate(state.exp,C,false),C,F,false)}
+      ${blockSec('EDUCATION',entryLeftDate(state.edu,C,false),C,F,false)}
+      ${blockSec('OVERSEAS EXPERIENCE',state.inc.overseas?entryLeftDate(state.overseas,C,false):'',C,F,false)}
+      ${blockSec('SKILLS',skillsHtml(C,false),C,F,false)}
+      ${blockSec('CERTIFICATIONS',certsHtml(C,false),C,F,false)}
     </div>
   </div>`;
 }
@@ -585,15 +812,15 @@ function tplTwotone(C,F){
         <div style="font-size:9.5px;color:rgba(255,255,255,.85);line-height:1.6;">${esc(state.about)}</div>
         <div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin:16px 0 9px;">CONTACT</div>
         ${contactRows(true)}
-        <div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin:16px 0 9px;">LANGUAGES</div>
-        ${langLines(C,true)}
+        ${state.inc.langs?`<div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin:16px 0 9px;">LANGUAGES</div>${langLines(C,true)}`:''}
       </div>
     </div>
     <div style="flex:1;padding:24px 22px;display:flex;flex-direction:column;gap:15px;">
-      <div>${secTitleLine('Work Experience',C,F)}${expBlock(C,F,false)}</div>
-      <div>${secTitleLine('Education',C,F)}${eduBlock(C,F,false)}</div>
-      <div>${secTitleLine('Skills',C,F)}${skillText(C,false)}</div>
-      <div>${secTitleLine('Certifications',C,F)}${certLines(C,false)}</div>
+      ${blockSecLine('Work Experience',expBlock(C,F,false),C,F)}
+      ${blockSecLine('Education',eduBlock(C,F,false),C,F)}
+      ${blockSecLine('Overseas Experience',oseaHtml(C,false),C,F)}
+      ${blockSecLine('Skills',skillsHtml(C,false),C,F)}
+      ${blockSecLine('Certifications',certsHtml(C,false),C,F)}
     </div>
   </div>`;
 }
@@ -610,14 +837,15 @@ function tplHeader(C,F){
     </div>
     <div style="display:flex;gap:24px;padding:24px 28px;flex:1;align-items:flex-start;">
       <div style="flex:1.4;display:flex;flex-direction:column;gap:15px;">
-        <div>${secTitle('ABOUT ME',C,F,false)}<div style="font-size:10.5px;color:#555;line-height:1.65;">${esc(state.about)}</div></div>
-        <div>${secTitle('EXPERIENCE',C,F,false)}${expBlock(C,F,false)}</div>
-        <div>${secTitle('EDUCATION',C,F,false)}${eduBlock(C,F,false)}</div>
+        ${blockSec('ABOUT ME',state.about?`<div style="font-size:10.5px;color:#555;line-height:1.65;">${esc(state.about)}</div>`:'',C,F,false)}
+        ${blockSec('EXPERIENCE',expBlock(C,F,false),C,F,false)}
+        ${blockSec('EDUCATION',eduBlock(C,F,false),C,F,false)}
+        ${blockSec('OVERSEAS',oseaHtml(C,false),C,F,false)}
       </div>
       <div style="flex:0.9;display:flex;flex-direction:column;gap:15px;">
-        <div>${secTitle('SKILLS',C,F,false)}${skillText(C,false)}</div>
-        <div>${secTitle('LANGUAGES',C,F,false)}${langLines(C,false)}</div>
-        <div>${secTitle('CERTIFICATIONS',C,F,false)}${certLines(C,false)}</div>
+        ${blockSec('SKILLS',skillsHtml(C,false),C,F,false)}
+        ${blockSec('LANGUAGES',langsHtml(C,false),C,F,false)}
+        ${blockSec('CERTIFICATIONS',certsHtml(C,false),C,F,false)}
       </div>
     </div>
   </div>`;
@@ -631,14 +859,15 @@ function tplMinimal(C,F){
       <div style="font-size:10px;color:#888;margin-top:7px;">${contactLine(C).map(esc).join('&nbsp;&nbsp;|&nbsp;&nbsp;')}</div>
     </div>
     <div style="font-size:10.5px;color:#555;line-height:1.75;text-align:center;font-style:italic;">${esc(state.about)}</div>
-    <div>${secTitle('EXPERIENCE',C,F,false)}${expBlock(C,F,false)}</div>
+    ${blockSec('EXPERIENCE',expBlock(C,F,false),C,F,false)}
+    ${blockSec('OVERSEAS EXPERIENCE',oseaHtml(C,false),C,F,false)}
     <div style="display:flex;gap:24px;">
-      <div style="flex:1;">${secTitle('EDUCATION',C,F,false)}${eduBlock(C,F,false)}</div>
-      <div style="flex:1;">${secTitle('SKILLS',C,F,false)}${skillText(C,false)}</div>
+      <div style="flex:1;">${blockSec('EDUCATION',eduBlock(C,F,false),C,F,false)}</div>
+      <div style="flex:1;">${blockSec('SKILLS',skillsHtml(C,false),C,F,false)}</div>
     </div>
     <div style="display:flex;gap:24px;">
-      <div style="flex:1;">${secTitle('LANGUAGES',C,F,false)}${langLines(C,false)}</div>
-      <div style="flex:1;">${secTitle('CERTIFICATIONS',C,F,false)}${certLines(C,false)}</div>
+      <div style="flex:1;">${blockSec('LANGUAGES',langsHtml(C,false),C,F,false)}</div>
+      <div style="flex:1;">${blockSec('CERTIFICATIONS',certsHtml(C,false),C,F,false)}</div>
     </div>
   </div>`;
 }
@@ -665,14 +894,15 @@ function tplTimeline(C,F){
     <div style="display:flex;gap:28px;margin-top:16px;flex:1;align-items:flex-start;">
       <div style="flex:1.5;">
         <div style="border-left:2px solid ${C.soft};padding-left:18px;display:flex;flex-direction:column;gap:15px;">
-          <div>${secTitle('EXPERIENCE',C,F,false)}${expT}</div>
-          <div>${secTitle('EDUCATION',C,F,false)}${eduT}</div>
+          ${blockSec('EXPERIENCE',expT,C,F,false)}
+          ${blockSec('EDUCATION',eduT,C,F,false)}
+          ${blockSec('OVERSEAS',oseaHtml(C,false),C,F,false)}
         </div>
       </div>
       <div style="flex:1;display:flex;flex-direction:column;gap:15px;">
-        <div>${secTitle('SKILLS',C,F,false)}${skillText(C,false)}</div>
-        <div>${secTitle('LANGUAGES',C,F,false)}${langLines(C,false)}</div>
-        <div>${secTitle('CERTIFICATIONS',C,F,false)}${certLines(C,false)}</div>
+        ${blockSec('SKILLS',skillsHtml(C,false),C,F,false)}
+        ${blockSec('LANGUAGES',langsHtml(C,false),C,F,false)}
+        ${blockSec('CERTIFICATIONS',certsHtml(C,false),C,F,false)}
       </div>
     </div>
   </div>`;
@@ -684,7 +914,8 @@ function loadIntoForm(){
   el('f_email').value=state.email; el('f_loc').value=state.loc; el('f_meta').value=state.meta;
   el('f_about').value=state.about; el('f_certs').value=state.certs;
   if(state.photo) el('photoPrev').src=state.photo;
-  renderExp();renderEdu();renderSkill();renderLang();
+  renderExp();renderEdu();renderOverseas();renderSkill();renderLang();
+  ['overseas','skills','langs','certs'].forEach(k=>{ const cb=el('inc_'+k); if(cb)cb.checked=!!state.inc[k]; });
 }
 function resetSample(){
   const s=sampleData();
@@ -730,7 +961,14 @@ function payGate(kind){
 }
 document.getElementById('payGate').addEventListener('click',function(e){ if(e.target===this) this.style.display='none'; });
 
+/* 커스텀 컬러: 직접 고른 색을 팔레트로 반영 */
+el('customColor').addEventListener('input',e=>{ state.custom=derivePalette(e.target.value); state.color='custom'; bindTop(); render(); });
+
 bindTop();
+renderAboutChips();
+renderSkillPresets();
+renderCertPresets();
+renderOseaPresets();
 resetSample();   // start with cabin-crew sample so templates look real
 </script>
 </body>

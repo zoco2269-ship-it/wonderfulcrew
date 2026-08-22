@@ -178,7 +178,7 @@
   <p class="ex-cap">Here is how we assess it — a <b>bright smile showing your teeth</b> beats a neutral face for a cabin-crew photo.</p>
 
   <div class="card">
-    <div style="background:var(--cream,#F1F8FE);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:16px;">
+    <div id="uploadTip" style="background:var(--cream,#F1F8FE);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:16px;">
       <div style="font-weight:800;color:var(--navy);font-size:0.95rem;margin-bottom:6px;">📸 One front-facing selfie is all it takes</div>
       <div style="font-size:0.88rem;color:var(--mid);line-height:1.7;">
         <b>Face to shoulders</b> · <b>bright front light</b> · in front of a <b>clean wall</b>
@@ -880,6 +880,10 @@ if(fileEl){ fileEl.addEventListener('change', function(e){ var f=e.target.files 
     var mkMode = location.hash==='#makeupCard' || q.get('embed')==='1';
     if(mkMode){
       document.body.classList.add('mkmode');
+      try{ var _ut=document.getElementById('uploadTip'); if(_ut){ _ut.innerHTML=
+        '<div style="font-weight:800;color:var(--navy);font-size:0.95rem;margin-bottom:6px;">💄 One front-facing selfie is all it takes</div>'+
+        '<div style="font-size:0.88rem;color:var(--mid);line-height:1.7;">Try <b>lipstick, eyeshadow and eyeliner</b> on your own face</div>'+
+        '<div style="font-size:0.82rem;color:var(--muted);margin-top:6px;">💡 Compare your best shades instantly with <b>before/after</b></div>'; } }catch(e){}
       var photo=q.get('photo') || 'images/cv-face.png';
       try{ var r=await fetch(photo); if(r.ok){ var b=await r.blob(); await handle(b);
         if(q.get('embed')!=='1'){ var mc=document.getElementById('makeupCard'); if(mc) mc.scrollIntoView({behavior:'smooth',block:'start'}); }

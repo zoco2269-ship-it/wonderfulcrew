@@ -53,6 +53,11 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
 .transcript.visible{display:block;}
 .tip-box{margin-top:24px;padding:16px 20px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:14px;text-align:left;font-size:0.84rem;color:rgba(255,255,255,0.6);line-height:1.7;}
 .tip-box b{color:var(--gold);}
+.cam-wrap{display:none;justify-content:center;margin:0 auto 18px;}
+.cam-wrap.on{display:flex;}
+.cam-frame{width:280px;max-width:72vw;aspect-ratio:4/3;border-radius:14px;overflow:hidden;position:relative;background:#000;border:2px solid rgba(201,168,76,0.25);}
+.cam-frame video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block;}
+.cam-frame .cam-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.35);font-size:0.82rem;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js?v=6"></script>
@@ -92,6 +97,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px
     <button class="btn btn-gold" id="btn-start" onclick="startRound()">Start</button>
     <button class="btn btn-red" id="btn-stop" style="display:none;" onclick="stopRound()">Stop</button>
     <button class="btn btn-outline" id="btn-next" style="display:none;" onclick="nextKeyword()">Next →</button>
+  </div>
+
+  <div class="cam-wrap" id="cam-wrap">
+    <div class="cam-frame">
+      <video id="cam-video" autoplay muted playsinline></video>
+      <div class="cam-ph" id="cam-ph">카메라 준비 중…</div>
+    </div>
   </div>
 
   <div class="transcript" id="transcript"></div>
@@ -187,7 +199,25 @@ function pickRandom(){
   return pool[Math.floor(Math.random()*pool.length)];
 }
 
+// ★ 카메라 ON — 실시간 얼굴/목소리 분석 그래프(live-face-coach.js)가 옆에 자동으로 뜬다
+var shootingStream=null;
+async function startShootingCam(){
+  if(shootingStream)return;
+  document.getElementById('cam-wrap').classList.add('on');
+  var opts=[{video:{facingMode:{exact:'user'}},audio:false},{video:{facingMode:'user'},audio:false},{video:true,audio:false}];
+  for(var i=0;i<opts.length;i++){
+    try{
+      shootingStream=await navigator.mediaDevices.getUserMedia(opts[i]);
+      var v=document.getElementById('cam-video');
+      v.srcObject=shootingStream;v.style.display='block';
+      document.getElementById('cam-ph').style.display='none';
+      return;
+    }catch(e){if(i===opts.length-1)document.getElementById('cam-ph').textContent='카메라 연결 실패';}
+  }
+}
+
 function startRound(){
+  startShootingCam();
   document.getElementById('btn-start').style.display='none';
   document.getElementById('btn-stop').style.display='inline-flex';
   document.getElementById('btn-next').style.display='inline-flex';
@@ -320,6 +350,7 @@ function toggleExample(){
   };
 })();
 </script>
+<script src="js/live-face-coach.js?v=8"></script>
 <section class="seo-tips" style="background:#fff;padding:40px 5%;border-top:1px solid #F5E9C8;">
   <details style="max-width:900px;margin:0 auto;background:#FAF7F0;border:1px solid #F5E9C8;border-radius:14px;padding:22px 28px;">
     <summary style="cursor:pointer;font-family:'DM Serif Display',serif;font-size:1.2rem;color:#1A2340;font-weight:600;list-style:none;display:flex;align-items:center;gap:10px;"><span style="color:#C9A84C;">✨</span> 원더풀크루가 드리는 카타르 워드슈팅 합격 팁 <span style="font-size:0.7em;color:#5A5048;font-weight:400;margin-left:auto;">▼ 펼쳐서 읽기</span></summary>

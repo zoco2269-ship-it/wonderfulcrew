@@ -12,13 +12,13 @@
 <meta property="og:url" content="https://www.wonderfulcrew.com/image-check">
 <meta property="og:title" content="승무원 면접 사진·메이크업 시뮬레이션 | 이미지 스타일리스트 - 원더풀크루">
 <meta property="og:description" content="평소 셀카 한 장으로 승무원 면접 사진 완성. 메이크업 가상 체험, 배경·자켓 교체, 첫인상 진단을 브라우저에서 무료로.">
-<meta property="og:image" content="https://www.wonderfulcrew.com/images/shot-makeup.png"><meta property="og:image:width" content="1500"><meta property="og:image:height" content="1250">
+<meta property="og:image" content="https://www.wonderfulcrew.com/images/og-image-check.png?v=1"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:site_name" content="원더풀크루">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="승무원 면접 사진·메이크업 시뮬레이션 - 원더풀크루">
 <meta name="twitter:description" content="셀카 한 장으로 승무원 면접 사진 완성 — 메이크업·배경·자켓, 무료 체험.">
-<meta name="twitter:image" content="https://www.wonderfulcrew.com/images/shot-makeup.png">
+<meta name="twitter:image" content="https://www.wonderfulcrew.com/images/og-image-check.png?v=1">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"승무원 면접 사진·메이크업 시뮬레이션","description":"평소 셀카 한 장으로 승무원 면접 사진 완성. 메이크업(립스틱·아이섀도·아이라인) 가상 체험, 증명사진 배경·자켓 교체, 첫인상 진단.","url":"https://www.wonderfulcrew.com/image-check","applicationCategory":"LifestyleApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"inLanguage":"ko-KR","publisher":{"@type":"Organization","name":"원더풀크루","url":"https://www.wonderfulcrew.com","logo":{"@type":"ImageObject","url":"https://www.wonderfulcrew.com/images/logo.png"}}}
 </script>
@@ -110,6 +110,14 @@
   .fin-opt .fin-l{font-size:0.82rem;font-weight:700;color:var(--navy);width:74px;flex-shrink:0;}
   .fin-opt button{font-family:inherit;font-size:0.78rem;font-weight:600;padding:6px 12px;border-radius:14px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;}
   .fin-opt button.on{border-color:var(--gold);background:rgba(201,168,76,0.14);color:var(--navy);}
+  /* 자켓·블라우스 그림 선택 타일 */
+  .fin-opt-img{align-items:flex-start;}
+  .fin-opt-img .fin-l{margin-top:10px;}
+  .opt-tiles{display:flex;gap:8px;flex-wrap:wrap;}
+  .fin-opt-img button{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:5px;width:62px;padding:9px 4px 7px;border-radius:13px;color:var(--muted);}
+  .fin-opt-img button svg{width:34px;height:34px;color:var(--mid);transition:color .15s;}
+  .fin-opt-img button.on svg{color:var(--gold);}
+  .fin-opt-img button .opt-t{font-size:0.72rem;line-height:1.2;}
   /* 스타일 추천 카드 */
   .sline{display:flex;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);font-size:0.95rem;}
   .sline b{color:var(--gold);min-width:56px;font-size:0.82rem;}
@@ -117,6 +125,10 @@
   .srec{margin-top:14px;}
   .srec-t{font-size:0.86rem;font-weight:700;color:var(--navy);margin-bottom:5px;}
   .srec div{font-size:0.92rem;color:var(--mid);line-height:1.65;}
+  .srec .rec-icons{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+  .srec .rec-chip{display:flex;flex-direction:column;align-items:center;gap:4px;width:60px;}
+  .srec .rec-chip svg{width:38px;height:38px;color:var(--gold);}
+  .srec .rec-chip span{font-size:0.7rem;color:var(--mid);line-height:1.2;text-align:center;}
   .snote{margin-top:14px;font-size:0.78rem;color:var(--muted);line-height:1.6;}
   /* 랜딩 iframe 임베드용 — 메이크업 화면만 노출 */
   body.mk-embed{padding:0!important;background:#fff!important;}
@@ -235,16 +247,37 @@
     <p style="font-size:0.92rem;color:var(--mid);line-height:1.7;margin:2px 0 14px;">업로드한 사진을 <b>메이크업 · 헤어 정리(깔끔한 쪽머리, 중앙 가르마 없이) · 피부 보정 · 배경</b>까지 한 번에 완성해 드려요. 몇십만원짜리 스튜디오 촬영을 대체하는 프리미엄 기능입니다.</p>
     <div class="fin-opt"><span class="fin-l">🖼 배경색</span><div class="mk-swatches" id="finBgSw"></div></div>
     <div class="fin-opt"><span class="fin-l">🧥 자켓색</span><div class="mk-swatches" id="finJkSw"></div></div>
-    <div class="fin-opt"><span class="fin-l">🧥 자켓형태</span>
-      <button data-k="jacketStyle" data-v="single" class="on">싱글</button>
-      <button data-k="jacketStyle" data-v="collarless">노카라</button>
-      <button data-k="jacketStyle" data-v="double">더블</button>
+    <div class="fin-opt fin-opt-img"><span class="fin-l">🧥 자켓형태</span>
+      <div class="opt-tiles">
+        <button data-k="jacketStyle" data-v="single" class="on">
+          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 8 L11 13 L7 40"/><path d="M22 8 L33 13 L37 40"/><path d="M22 8 L16 24"/><path d="M22 8 L28 24"/><circle cx="22" cy="27" r="1.5" fill="currentColor" stroke="none"/><circle cx="22" cy="34" r="1.5" fill="currentColor" stroke="none"/></svg>
+          <span class="opt-t">싱글</span>
+        </button>
+        <button data-k="jacketStyle" data-v="collarless">
+          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 9 L11 13 L7 40"/><path d="M22 9 L33 13 L37 40"/><path d="M15 11 Q22 20 29 11"/><path d="M22 20 L22 38"/></svg>
+          <span class="opt-t">노카라</span>
+        </button>
+        <button data-k="jacketStyle" data-v="double">
+          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 8 L11 13 L7 40"/><path d="M22 8 L33 13 L37 40"/><path d="M22 8 L15 26"/><path d="M22 8 L29 26"/><path d="M15 26 L29 34"/><circle cx="17" cy="28" r="1.4" fill="currentColor" stroke="none"/><circle cx="17" cy="35" r="1.4" fill="currentColor" stroke="none"/><circle cx="27" cy="28" r="1.4" fill="currentColor" stroke="none"/><circle cx="27" cy="35" r="1.4" fill="currentColor" stroke="none"/></svg>
+          <span class="opt-t">더블</span>
+        </button>
+      </div>
     </div>
-    <div class="fin-opt"><span class="fin-l">👚 블라우스</span>
-      <button data-k="neckline" data-v="round" class="on">카라 없음</button>
-      <button data-k="neckline" data-v="shirt">카라 셔츠</button>
-      <button data-k="neckline" data-v="highneck">목까지</button>
-      <button data-k="neckline" data-v="innertop">이너탑</button>
+    <div class="fin-opt fin-opt-img"><span class="fin-l">👚 블라우스</span>
+      <div class="opt-tiles">
+        <button data-k="neckline" data-v="round" class="on">
+          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 9 L10 14 L8 40"/><path d="M22 9 L34 14 L36 40"/><path d="M14 12 Q22 22 30 12"/></svg>
+          <span class="opt-t">카라 없음</span>
+        </button>
+        <button data-k="neckline" data-v="shirt">
+          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10 L10 14 L8 40"/><path d="M22 10 L34 14 L36 40"/><path d="M17 11 L22 20 L15 18 Z"/><path d="M27 11 L22 20 L29 18 Z"/><path d="M22 20 L22 34"/></svg>
+          <span class="opt-t">카라 셔츠</span>
+        </button>
+        <button data-k="neckline" data-v="innertop">
+          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 9 L10 14 L8 40"/><path d="M22 9 L34 14 L36 40"/><path d="M15 12 L22 26 L29 12"/></svg>
+          <span class="opt-t">이너탑</span>
+        </button>
+      </div>
     </div>
     <button class="go" id="finishBtn" style="margin-top:14px;">✨ 완성사진 만들기</button>
     <div id="finishStatus" style="font-size:0.84rem;color:var(--muted);margin-top:10px;line-height:1.6;"></div>
@@ -787,6 +820,33 @@ var REC={
   square:{b:'부드러운 라운드넥·살짝 오픈한 셔츠 카라로 각을 완화하세요.', j:'소프트 숄더·라운드 라펠 자켓이 인상을 부드럽게 해요.'},
   heart:{b:'보트넥·스퀘어넥으로 하관을 보완하고, 지나치게 넓은 카라는 피하세요.', j:'아래로 볼륨이 오는 A라인·노치드 라펠 자켓이 균형을 잡아줘요.'}
 };
+// 추천 유형별 그림(라인아트) — 텍스트와 함께 시각적으로 보여줌
+var ICON={
+  round:'<path d="M22 9 L10 14 L8 40"/><path d="M22 9 L34 14 L36 40"/><path d="M14 12 Q22 22 30 12"/>',
+  vneck:'<path d="M22 9 L10 14 L8 40"/><path d="M22 9 L34 14 L36 40"/><path d="M15 12 L22 26 L29 12"/>',
+  shirt:'<path d="M22 10 L10 14 L8 40"/><path d="M22 10 L34 14 L36 40"/><path d="M17 11 L22 20 L15 18 Z"/><path d="M27 11 L22 20 L29 18 Z"/><path d="M22 20 L22 34"/>',
+  boat:'<path d="M22 9 L10 14 L8 40"/><path d="M22 9 L34 14 L36 40"/><path d="M12 15 Q22 21 32 15"/>',
+  square:'<path d="M22 9 L10 14 L8 40"/><path d="M22 9 L34 14 L36 40"/><path d="M15 12 L15 23 L29 23 L29 12"/>',
+  notched:'<path d="M22 8 L11 13 L7 40"/><path d="M22 8 L33 13 L37 40"/><path d="M22 8 L16 24"/><path d="M22 8 L28 24"/><circle cx="22" cy="27" r="1.5" fill="currentColor" stroke="none"/><circle cx="22" cy="34" r="1.5" fill="currentColor" stroke="none"/>',
+  single:'<path d="M22 8 L12 13 L9 40"/><path d="M22 8 L32 13 L35 40"/><path d="M22 8 L18 26"/><path d="M22 8 L26 26"/><circle cx="22" cy="29" r="1.5" fill="currentColor" stroke="none"/><circle cx="22" cy="36" r="1.5" fill="currentColor" stroke="none"/>',
+  wide:'<path d="M22 8 L11 13 L7 40"/><path d="M22 8 L33 13 L37 40"/><path d="M22 8 L14 22"/><path d="M22 8 L30 22"/><path d="M14 22 L19 26"/><path d="M30 22 L25 26"/>',
+  aline:'<path d="M22 8 L13 13 L4 40"/><path d="M22 8 L31 13 L40 40"/><path d="M22 8 L17 24"/><path d="M22 8 L27 24"/><circle cx="22" cy="27" r="1.5" fill="currentColor" stroke="none"/>',
+  soft:'<path d="M22 9 Q11 12 8 40"/><path d="M22 9 Q33 12 36 40"/><path d="M22 9 Q17 18 19 25"/><path d="M22 9 Q27 18 25 25"/>'
+};
+var ICON_LABEL={round:'라운드넥',vneck:'V넥',shirt:'셔츠 카라',boat:'보트넥',square:'스퀘어넥',notched:'노치드 라펠',single:'싱글 버튼',wide:'넓은 라펠',aline:'A라인',soft:'소프트 라펠'};
+var REC_ICONS={
+  oval:{b:['shirt','vneck','round'], j:['notched']},
+  round:{b:['vneck','shirt'], j:['single']},
+  long:{b:['round','boat','shirt'], j:['wide']},
+  square:{b:['round','shirt'], j:['soft']},
+  heart:{b:['boat','square'], j:['aline','notched']}
+};
+function recChips(keys){
+  if(!keys||!keys.length) return '';
+  return '<div class="rec-icons">'+keys.map(function(k){
+    return '<span class="rec-chip"><svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICON[k]||'')+'</svg><span>'+(ICON_LABEL[k]||'')+'</span></span>';
+  }).join('')+'</div>';
+}
 function bs(name){ if(!blend) return 0; for(var i=0;i<blend.length;i++){ if(blend[i].categoryName===name) return blend[i].score; } return 0; }
 function smileText(){
   var smile=(bs('mouthSmileLeft')+bs('mouthSmileRight'))/2;
@@ -799,8 +859,9 @@ function fillStyleCard(){
   var s=faceShapeOf(); var r=REC[s.key]||REC.oval;
   $('faceShape').textContent=s.label;
   $('smileStatus').textContent=smileText();
-  $('blouseRec').textContent=r.b;
-  $('jacketRec').textContent=r.j;
+  var ri=REC_ICONS[s.key]||REC_ICONS.oval;
+  $('blouseRec').innerHTML='<div>'+r.b+'</div>'+recChips(ri.b);
+  $('jacketRec').innerHTML='<div>'+r.j+'</div>'+recChips(ri.j);
   $('styleCard').style.display='block';
 }
 

@@ -5,7 +5,7 @@
  */
 
 var FREE_TRIAL_KEY = 'wc_free_trial';
-var FREE_TRIAL_MAX = 10;
+var FREE_TRIAL_MAX = 5;
 var _trialSynced = false;
 
 // ─── i18n: 페이지 lang 자동 감지 + 메시지 헬퍼 ───
@@ -468,12 +468,12 @@ function renderTrialBadge(containerId) {
     g.style.cssText = 'position:fixed;inset:0;background:rgba(10,15,30,0.88);z-index:99999;display:flex;align-items:center;justify-content:center;pointer-events:auto;';
     var _lg = _wcIsEn() ? {
       title: 'Subscriber-Only Content',
-      desc: 'You have used all 10 free trials.<br>Subscribe to a plan to unlock instantly.',
+      desc: 'You have used all 5 free trials.<br>Subscribe to a plan to unlock instantly.',
       cta: 'View Plans →',
       home: 'Back to Home'
     } : {
       title: '유료 회원 전용 콘텐츠',
-      desc: '무료체험 10회를 모두 사용하셨습니다.<br>요금제를 결제하시면 바로 이용 가능합니다.',
+      desc: '무료체험 5회를 모두 사용하셨습니다.<br>요금제를 결제하시면 바로 이용 가능합니다.',
       cta: '요금제 보러가기 →',
       home: '홈으로 돌아가기'
     };

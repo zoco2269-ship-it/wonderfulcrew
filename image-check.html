@@ -317,6 +317,9 @@
 
 <footer>© 2026 WonderfulCrew · 이미지 진단은 참고용 조언입니다.</footer>
 
+<!-- 플랫폼 공용 로그인·무료체험(5회) 시스템 -->
+<script src="js/supabase-client.js?v=6"></script>
+<script src="js/free-trial.js?v=17"></script>
 <script>
 (function(){
   var $=function(id){return document.getElementById(id);};
@@ -324,14 +327,29 @@
 
   // 관리자 우회: ?admin=1 로 접속하면 로컬에 저장돼 이후 계속 무제한 사용
   try{ if(/[?&]admin=1/.test(location.search)) localStorage.setItem('wc_admin','1'); }catch(e){}
-  function wcIsAdmin(){ try{ return localStorage.getItem('wc_admin')==='1'; }catch(e){ return false; } }
+  function wcIsAdmin(){ try{ if(localStorage.getItem('wc_admin')==='1') return true; }catch(e){} try{ return (typeof isAdmin==='function') && isAdmin(); }catch(e){ return false; } }
   function wcGate(msg){ var m=$('wcGateMsg'); if(m) m.textContent=msg||''; var g=$('wcGate'); if(g) g.style.display='flex'; }
   var _wg=$('wcGate'); if(_wg) _wg.addEventListener('click', function(e){ if(e.target===this) this.style.display='none'; });
-  // 무료 이미지 진단 횟수(10회)
-  var FREE_DIAG=10;
-  function diagUsed(){ try{ return parseInt(localStorage.getItem('wc_diag_used')||'0',10)||0; }catch(e){ return 0; } }
-  function diagInc(){ try{ localStorage.setItem('wc_diag_used', String(diagUsed()+1)); }catch(e){} }
-  function diagRender(){ var el=$('diagCount'); if(!el) return; if(wcIsAdmin()){ el.textContent=''; return; } var left=Math.max(0,FREE_DIAG-diagUsed()); el.innerHTML='무료 진단 <b style="color:var(--navy,#1A2340);">'+left+'</b> / '+FREE_DIAG+'회 남음'; }
+
+  // ★ 실행 게이트: 로그인 필수 + 플랫폼 공용 무료체험(5회) 차감
+  //   - 미로그인: login.html 으로 (돌아올 주소 포함)
+  //   - 로그인: useFreeTrialOrCheck() 로 공용 카운트 1 차감 (소진 시 구독 팝업)
+  //   - ?embed=1 데모 임베드는 게이트 없이 통과
+  function wcIsLoggedIn(){ try{ var u=JSON.parse(localStorage.getItem('wc_user')||'null'); return !!(u&&u.id); }catch(e){ return false; } }
+  function wcTryGate(){
+    if(wcIsAdmin()) return true;
+    try{ if(new URLSearchParams(location.search).get('embed')==='1') return true; }catch(e){}
+    if(!wcIsLoggedIn()){
+      var back='image-check'+(location.hash||'');
+      try{ location.href='login.html?redirect='+encodeURIComponent(back); }catch(e){ location.href='login.html'; }
+      return false;
+    }
+    if(typeof useFreeTrialOrCheck==='function') return useFreeTrialOrCheck();
+    return true;
+  }
+
+  // 무료 진단 배지 — 플랫폼 공용 무료체험 카운트 표시
+  function diagRender(){ var el=$('diagCount'); if(!el) return; if(wcIsAdmin()){ el.textContent=''; return; } if(typeof renderTrialBadge==='function'){ renderTrialBadge('diagCount'); } }
 
   $('file').addEventListener('change', function(e){
     var f=e.target.files && e.target.files[0]; if(!f) return;
@@ -354,8 +372,7 @@
         $('drop').querySelector('.s').style.display='none';
         $('go').disabled=false;
         if($('finishCard')){ $('finishCard').style.display='block'; $('finishResult').style.display='none'; $('finishStatus').textContent=''; }
-        // 메이크업 전용 모드: 업로드한 내 사진을 바로 메이크업 캔버스로
-        if(document.body.classList.contains('mkmode')){ try{ handle(f); }catch(e){} }
+        // 메이크업 업로드는 아래 fileEl change 리스너에서 게이트 후 handle() 실행 (중복 방지)
       };
       img.src=reader.result;
     };
@@ -379,7 +396,7 @@
   }
   $('go').addEventListener('click', async function(){
     if(!imgData) return;
-    if(!wcIsAdmin() && diagUsed()>=FREE_DIAG){ wcGate('무료 이미지 진단 '+FREE_DIAG+'회를 모두 사용하셨어요. 멤버십에서는 진단·완성사진을 무제한으로 이용하실 수 있어요.'); return; }
+    if(!wcTryGate()) return;
     $('go').disabled=true;
     $('result').classList.add('on');
     $('rbody').parentElement.style.display='none';
@@ -395,7 +412,7 @@
       $('rbody').parentElement.style.display='block';
       if(!r.ok||!d.reply) throw new Error((d.error&&(d.error.message||d.error))||'분석에 실패했어요.');
       $('rbody').innerHTML=fmtDiag(d.reply);
-      if(!wcIsAdmin()){ diagInc(); diagRender(); }
+      diagRender();
     }catch(e){
       if($('spin'))$('spin').remove();
       $('rbody').parentElement.style.display='block';
@@ -453,6 +470,8 @@
     $('go').disabled=true; $('result').classList.remove('on'); $('rbody').textContent='';
     window.scrollTo({top:0,behavior:'smooth'});
   });
+  // 다른 스크립트 블록(메이크업 module)에서도 게이트 재사용
+  try{ window.wcTryGate=wcTryGate; }catch(e){}
 })();
 </script>
 
@@ -865,7 +884,12 @@ function fillStyleCard(){
   $('styleCard').style.display='block';
 }
 
-async function handle(file){
+async function handle(file, isDemo){
+  // 데모 자동로드(isDemo)는 게이트 없이 통과. 메이크업 모드의 실제 사용자 업로드만 로그인+무료체험 차감
+  // (진단 모드 업로드는 무차감 — 진단 실행 버튼에서만 차감)
+  if(!isDemo && document.body.classList.contains('mkmode')){
+    try{ if(typeof window.wcTryGate==='function' && !window.wcTryGate()) return; }catch(e){}
+  }
   $('makeupCard').style.display='block'; try{document.body.classList.add('mk-wide');}catch(e){} $('mkStatus').textContent='사진 분석 중…';
   if(location.hash==='#makeupCard'){ try{ $('makeupCard').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} }
   lipColor=null; eyeColor=null;
@@ -913,7 +937,7 @@ if(fileEl){ fileEl.addEventListener('change', function(e){ var f=e.target.files 
         '<div style="font-size:0.88rem;color:var(--mid);line-height:1.7;"><b>립스틱·아이섀도·아이라인</b>을 내 얼굴에 직접 입혀봐요</div>'+
         '<div style="font-size:0.82rem;color:var(--muted);margin-top:6px;">💡 어울리는 컬러를 <b>비포/애프터</b>로 바로 비교하세요</div>'; } }catch(e){}
       var photo=q.get('photo') || 'images/cv-face.png';
-      try{ var r=await fetch(photo); if(r.ok){ var b=await r.blob(); await handle(b);
+      try{ var r=await fetch(photo); if(r.ok){ var b=await r.blob(); await handle(b, true);
         if(q.get('embed')!=='1'){ var mc=document.getElementById('makeupCard'); if(mc) mc.scrollIntoView({behavior:'smooth',block:'start'}); }
       } }catch(e){}
     }

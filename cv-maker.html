@@ -607,48 +607,110 @@ const JOB_PRESETS = {
   ]
 };
 function fillJob(i,job){ const arr=JOB_PRESETS[job]||[]; if(!state.exp[i])return; state.exp[i].desc=arr.join('\n'); renderExp(); render(); }
+/* 매칭용 확장 사전 (칩에는 안 나오지만 직무 매칭에 사용) */
+const MORE_PRESETS={
+  '교육·강사':[
+    'Taught and guided learners with patience and clear communication',
+    'Adapted explanations to each person’s level and needs',
+    'Managed groups calmly and kept a positive atmosphere',
+    'Prepared thoroughly and carried out responsibilities reliably'
+  ],
+  '사무·행정':[
+    'Handled administrative tasks accurately and responsibly',
+    'Communicated smoothly with colleagues and visitors',
+    'Managed schedules and documents with attention to detail',
+    'Stayed organized and composed under a busy workload'
+  ],
+  '은행·금융':[
+    'Served customers professionally and earned their trust',
+    'Handled transactions accurately and responsibly',
+    'Explained information clearly and with patience',
+    'Kept confidentiality and a neat, professional image'
+  ],
+  '미용·뷰티':[
+    'Provided personalized service and made every client feel cared for',
+    'Listened attentively to understand each client’s needs',
+    'Maintained strict hygiene and a professional appearance',
+    'Built warm, lasting relationships with clients'
+  ],
+  '피트니스·스포츠':[
+    'Motivated and guided members with energy and encouragement',
+    'Communicated clearly and adapted to each member’s needs',
+    'Put safety first and prevented injuries with care',
+    'Kept a positive, approachable and professional attitude'
+  ],
+  '어린이·보육':[
+    'Cared for children with warmth, patience and attentiveness',
+    'Kept a safe environment and responded calmly to every situation',
+    'Communicated kindly with children and their families',
+    'Worked responsibly and reliably as part of a team'
+  ],
+  '요식·주방':[
+    'Prepared and served with speed, accuracy and consistency',
+    'Kept strict hygiene and food-safety standards at all times',
+    'Stayed calm and focused during busy rush hours',
+    'Cooperated closely with the team to keep service smooth'
+  ]
+};
+const ALL_PRESETS=Object.assign({},JOB_PRESETS,MORE_PRESETS);
+
 /* 내가 직접 쓴 직무명 → 키워드로 가까운 설명 매칭, 없으면 범용 생성 */
 function matchPreset(roleText){
   const s=(roleText||'').toLowerCase();
   const map=[
     {k:['호텔','hotel','프론트','front','컨시어지','concierge','리셉','recep','벨','bell'],p:'호텔·프론트'},
-    {k:['카페','cafe','커피','coffee','바리스타','barista','레스토랑','restaurant','식당','서빙','serv','waiter','waitress','홀','베이커','baker','주방','kitchen','제과','디저트'],p:'카페·레스토랑'},
-    {k:['판매','sales','매장','store','리테일','retail','샵','shop','캐셔','cashier','의류','fashion','뷰티','beauty','화장품','cosmetic','편의점'],p:'판매·리테일'},
-    {k:['상담','cs','콜센터','call','고객','customer','응대','contact','헬프','help','안내데스크'],p:'고객상담·CS'},
-    {k:['승무','cabin','crew','기내','항공','airline','flight','지상','ground','공항','airport','스튜어','인턴승무'],p:'항공·기내'},
+    {k:['카페','cafe','커피','coffee','바리스타','barista','레스토랑','restaurant','식당','서빙','serv','waiter','waitress','홀'],p:'카페·레스토랑'},
+    {k:['판매','sales','매장','store','리테일','retail','샵','shop','캐셔','cashier','의류','fashion','편의점','마트','mart'],p:'판매·리테일'},
+    {k:['상담','cs','콜센터','call','고객','customer','응대','contact','헬프','help','안내데스크','리셉션'],p:'고객상담·CS'},
+    {k:['승무','cabin','crew','기내','항공','airline','flight','지상','ground','공항','airport','스튜어'],p:'항공·기내'},
     {k:['면세','duty','백화점','department','명품','luxury','vip','부티크'],p:'면세·백화점'},
-    {k:['병원','hospital','간호','nurse','케어','care','요양','clinic','약국','pharmac','치과','dental','의료','medical','물리치료'],p:'병원·케어'},
+    {k:['병원','hospital','간호','nurse','케어','care','요양','clinic','약국','pharmac','치과','dental','의료','medical','물리치료','방사선','임상'],p:'병원·케어'},
     {k:['인턴','intern','대외','동아리','서포터','supporter','봉사','volunteer','아르바이트','part','파트','알바','서포','club','학생회','조교','ta'],p:'인턴·대외활동'},
-    {k:['투어','tour','가이드','guide','관광','여행','travel','인솔','안내원','통역','interpret','리조트','resort','테마파크','놀이공원','park'],p:'관광·가이드·안내'}
+    {k:['투어','tour','가이드','guide','관광','여행','travel','인솔','안내원','통역','interpret','리조트','resort','테마파크','놀이공원','park'],p:'관광·가이드·안내'},
+    {k:['교사','선생','강사','teacher','instructor','튜터','tutor','과외','학원','교육','educat','유치원','보조교사','lecturer'],p:'교육·강사'},
+    {k:['사무','행정','admin','office','회계','account','비서','secretary','총무','경리','문서','데이터','접수','원무'],p:'사무·행정'},
+    {k:['은행','금융','bank','금고','teller','보험','insurance','증권','securit','대출','창구'],p:'은행·금융'},
+    {k:['미용','헤어','hair','네일','nail','스파','spa','에스테틱','estheti','피부','메이크업','makeup','salon','살롱'],p:'미용·뷰티'},
+    {k:['트레이너','trainer','요가','yoga','필라테스','pilates','코치','coach','헬스','gym','피트니스','fitness','스포츠','수영','lifeguard','안전요원'],p:'피트니스·스포츠'},
+    {k:['어린이','아동','보육','키즈','kids','유아','child','daycare','돌봄','베이비','baby'],p:'어린이·보육'},
+    {k:['주방','kitchen','조리','cook','셰프','chef','제과','제빵','baker','베이커','디저트','pastry','바텐','bartend'],p:'요식·주방'}
   ];
-  for(const m of map){ if(m.k.some(w=>s.includes(w))) return JOB_PRESETS[m.p]; }
+  for(const m of map){ if(m.k.some(w=>s.includes(w))) return ALL_PRESETS[m.p]; }
   return null;
 }
-function genericDesc(){
-  return [
-    'Carried out my duties with a responsible and professional attitude',
-    'Communicated warmly with customers and colleagues from diverse backgrounds',
-    'Stayed calm and composed while handling requests and unexpected situations',
-    'Worked closely as part of a team and always put service and safety first'
-  ];
+/* 매칭 실패 시 : 직무 글자에 따라 서로 다른 세트 선택 (같은 직무=항상 같음) */
+const GENERIC_SETS=[
+  ['Carried out my duties with a responsible and professional attitude','Communicated warmly with customers and colleagues from diverse backgrounds','Stayed calm and composed while handling requests and unexpected situations','Worked closely as part of a team and always put service and safety first'],
+  ['Approached every task with sincerity, energy and attention to detail','Built friendly relationships with a wide range of people','Handled busy situations calmly and flexibly','Valued teamwork and supported colleagues whenever needed'],
+  ['Served people with warmth, patience and a genuine smile','Adapted quickly to new tasks and changing environments','Kept a positive attitude even under pressure','Took responsibility and followed each task through to the end'],
+  ['Delivered reliable, customer-focused service every day','Listened carefully and responded to each person’s needs','Stayed composed and solved problems thoughtfully','Collaborated openly and respected every team member'],
+  ['Worked diligently with a strong sense of responsibility','Connected easily with people of different backgrounds','Remained calm and professional in demanding moments','Prioritized safety, detail and teamwork in all tasks']
+];
+function hashStr(s){ let h=0; for(const ch of String(s||'')) h=(h*31+ch.codePointAt(0))>>>0; return h; }
+function isEnglish(s){ return /[a-zA-Z]/.test(s)&&!/[가-힣]/.test(s); }
+function genericDesc(role){ return GENERIC_SETS[hashStr(role)%GENERIC_SETS.length].slice(); }
+/* 영문 직무명이면 첫 줄에 직무명을 넣어 직무별로 더 뚜렷하게 */
+function withRole(arr,role){
+  const r=(role||'').trim();
+  if(r && isEnglish(r)) return ['Worked as a '+r+' with a responsible, service-minded attitude'].concat(arr.slice(1));
+  return arr;
 }
 function autoExpDesc(i){
   if(!state.exp[i])return;
-  const arr=matchPreset(state.exp[i].role||'')||genericDesc();
-  state.exp[i].desc=arr.join('\n'); renderExp(); render();
+  const role=state.exp[i].role||'';
+  const base=matchPreset(role)||genericDesc(role);
+  state.exp[i].desc=withRole(base,role).join('\n'); renderExp(); render();
 }
-function genericOseaDesc(){
-  return [
-    'Gained valuable international experience abroad',
-    'Adapted quickly to a new culture and unfamiliar environment',
-    'Communicated confidently with people from diverse backgrounds',
-    'Grew in independence, flexibility and a global mindset'
-  ];
-}
+const OSEA_SETS=[
+  ['Gained valuable international experience abroad','Adapted quickly to a new culture and unfamiliar environment','Communicated confidently with people from diverse backgrounds','Grew in independence, flexibility and a global mindset'],
+  ['Broadened my perspective through life overseas','Learned to solve problems on my own in a new environment','Built friendships across cultures and languages','Developed confidence, openness and resilience'],
+  ['Immersed myself in a different culture and way of life','Improved my language skills through daily communication','Handled unfamiliar situations calmly and independently','Gained a genuine global mindset and adaptability']
+];
 function autoOseaDesc(i){
   if(!state.overseas[i])return;
-  const arr=matchPreset(state.overseas[i].role||'')||genericOseaDesc();
-  state.overseas[i].desc=arr.join('\n'); renderOverseas(); render();
+  const role=state.overseas[i].role||'';
+  const base=matchPreset(role)||OSEA_SETS[hashStr(role)%OSEA_SETS.length].slice();
+  state.overseas[i].desc=withRole(base,role).join('\n'); renderOverseas(); render();
 }
 
 /* --- 역량(Skills) 프리셋 --- */
@@ -725,13 +787,20 @@ function render(){
   const p=el('paper');
   const fn=state.tpl==='classic'?tplClassic:state.tpl==='twotone'?tplTwotone:state.tpl==='header'?tplHeader:state.tpl==='minimal'?tplMinimal:tplTimeline;
   // A4 인쇄 여백처럼 용지 상하좌우에 흰 여백 — 디자인 전체를 안쪽으로
-  p.innerHTML='<div style="position:absolute;top:0;left:0;right:0;bottom:0;padding:52px 40px;"><div style="position:relative;width:100%;height:100%;overflow:hidden;border-radius:3px;">'+fn(C,F)+'</div></div>';
-  // 본문 칸을 페이지 높이에 맞게 자동 확대/축소 — 하단이 비지 않게, 넘치지도 않게
-  p.querySelectorAll('.fitcol').forEach(col=>{
-    col.style.zoom=1;
-    const H=col.clientHeight, h=col.scrollHeight;
-    if(h>0&&H>0){ col.style.zoom=Math.max(0.75,Math.min(2.0,H/h)); }
-  });
+  p.innerHTML='<div style="position:absolute;top:0;left:0;right:0;bottom:0;padding:52px 40px;"><div class="cvwrap" style="position:relative;width:100%;height:100%;overflow:hidden;border-radius:3px;">'+fn(C,F)+'</div></div>';
+  // 용지 한 장에 맞게 디자인 전체를 자동 축소/확대 — 잘리지도, 하단이 비지도 않게
+  const wrap=p.querySelector('.cvwrap'), root=wrap&&wrap.firstElementChild;
+  if(root){
+    root.style.transform='none'; root.style.width='100%'; root.style.height='auto';
+    const avail=wrap.clientHeight, need=root.scrollHeight;
+    if(need>0&&avail>0){
+      let s=Math.max(0.5,Math.min(1.5,avail/need));
+      root.style.transformOrigin='top left';
+      root.style.width=(100/s)+'%';
+      root.style.height=(100/s)+'%';
+      root.style.transform='scale('+s+')';
+    }
+  }
 }
 function contactLine(C){
   const parts=[state.phone,state.email,state.loc,state.meta].filter(Boolean);
@@ -845,7 +914,7 @@ function secTitleLine(txt,C,F){
 
 /* --- TEMPLATE: CLASSIC (캡처 #1 · 카멜 사이드바 + 원형 스킬링) --- */
 function tplClassic(C,F){
-  return `<div style="position:absolute;inset:0;display:flex;">
+  return `<div style="position:relative;display:flex;min-height:100%;">
     <div style="width:35%;background:${C.main};color:#fff;padding:26px 17px 24px;">
       <div style="text-align:center;margin-bottom:16px;">${photoCircle(96,'rgba(255,255,255,.9)')}</div>
       <div style="font-family:${F.head};font-size:19px;text-align:center;line-height:1.1;letter-spacing:.02em;">${esc(state.name)||'NAME SURNAME'}</div>
@@ -872,7 +941,7 @@ function tplClassic(C,F){
 
 /* --- TEMPLATE: TWOTONE (캡처 #2 · 위아래 투톤 사이드바 + 라인 섹션헤더) --- */
 function tplTwotone(C,F){
-  return `<div style="position:absolute;inset:0;display:flex;color:#222;">
+  return `<div style="position:relative;display:flex;color:#222;min-height:100%;">
     <div style="width:34%;display:flex;flex-direction:column;">
       <div style="background:${C.main};color:#fff;padding:24px 14px 18px;text-align:center;">
         <div style="margin-bottom:12px;">${photoCircle(90,'#fff')}</div>
@@ -898,7 +967,7 @@ function tplTwotone(C,F){
 }
 /* --- TEMPLATE 2: HEADER --- */
 function tplHeader(C,F){
-  return `<div style="position:absolute;inset:0;color:#222;display:flex;flex-direction:column;padding-top:30px;">
+  return `<div style="position:relative;color:#222;display:flex;flex-direction:column;padding-top:30px;min-height:100%;">
     <div style="background:${C.main};color:#fff;padding:20px 24px;display:flex;gap:16px;align-items:center;">
       ${photoCircle(76,'rgba(255,255,255,.9)')}
       <div>
@@ -924,7 +993,7 @@ function tplHeader(C,F){
 }
 /* --- TEMPLATE 3: MINIMAL --- */
 function tplMinimal(C,F){
-  return `<div style="position:absolute;inset:0;color:#222;padding:26px 30px;display:flex;flex-direction:column;gap:17px;">
+  return `<div style="position:relative;color:#222;padding:26px 30px;display:flex;flex-direction:column;gap:17px;min-height:100%;">
     <div style="text-align:center;border-bottom:2px solid ${C.main};padding-bottom:14px;">
       <div style="font-family:${F.head};font-size:29px;color:${C.deep};letter-spacing:.02em;">${esc(state.name)||'NAME'}</div>
       <div style="font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:${C.main};margin-top:5px;">${esc(state.role)||'CABIN CREW'}</div>
@@ -953,7 +1022,7 @@ function tplTimeline(C,F){
   const eduT=state.edu.map(x=>`<div style="position:relative;margin-bottom:12px;">${dot}
     <div style="display:flex;justify-content:space-between;"><span style="font-weight:700;font-size:12px;">${esc(x.role)}</span><span style="font-size:10px;color:#999;">${esc(x.date)}</span></div>
     <div style="color:${C.main};font-size:10.5px;">${esc(x.org)}</div></div>`).join('');
-  return `<div style="position:absolute;inset:0;color:#222;padding:26px 30px;display:flex;flex-direction:column;">
+  return `<div style="position:relative;color:#222;padding:26px 30px;display:flex;flex-direction:column;min-height:100%;">
     <div style="display:flex;gap:16px;align-items:center;border-bottom:1px solid ${C.soft};padding-bottom:14px;">
       ${photoRect(64,84)}
       <div style="flex:1;">

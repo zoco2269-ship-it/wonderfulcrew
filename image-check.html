@@ -182,7 +182,7 @@
   <p class="ex-cap">이렇게 진단해드려요 — 무표정보다 <b>치아가 보이는 밝은 미소</b>가 승무원 사진의 핵심이에요.</p>
 
   <div class="card">
-    <div style="background:var(--cream,#F1F8FE);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:16px;">
+    <div id="uploadTip" style="background:var(--cream,#F1F8FE);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:16px;">
       <div style="font-weight:800;color:var(--navy);font-size:0.95rem;margin-bottom:6px;">📸 정면 셀카 한 장이면 끝</div>
       <div style="font-size:0.88rem;color:var(--mid);line-height:1.7;">
         <b>얼굴~어깨</b>까지 · <b>밝은 정면 조명</b> · <b>깔끔한 벽</b> 앞
@@ -908,6 +908,10 @@ if(fileEl){ fileEl.addEventListener('change', function(e){ var f=e.target.files 
     var mkMode = location.hash==='#makeupCard' || q.get('embed')==='1';
     if(mkMode){
       document.body.classList.add('mkmode');
+      try{ var _ut=document.getElementById('uploadTip'); if(_ut){ _ut.innerHTML=
+        '<div style="font-weight:800;color:var(--navy);font-size:0.95rem;margin-bottom:6px;">💄 정면 셀카 한 장이면 끝</div>'+
+        '<div style="font-size:0.88rem;color:var(--mid);line-height:1.7;"><b>립스틱·아이섀도·아이라인</b>을 내 얼굴에 직접 입혀봐요</div>'+
+        '<div style="font-size:0.82rem;color:var(--muted);margin-top:6px;">💡 어울리는 컬러를 <b>비포/애프터</b>로 바로 비교하세요</div>'; } }catch(e){}
       var photo=q.get('photo') || 'images/cv-face.png';
       try{ var r=await fetch(photo); if(r.ok){ var b=await r.blob(); await handle(b);
         if(q.get('embed')!=='1'){ var mc=document.getElementById('makeupCard'); if(mc) mc.scrollIntoView({behavior:'smooth',block:'start'}); }

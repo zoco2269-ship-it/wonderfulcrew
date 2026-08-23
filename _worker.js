@@ -61,7 +61,6 @@ const ROUTES = {
   "/api/email-campaign-cron": () => import("./api/email-campaign-cron.js"),
   // 무료 라이브 완주자 전자책
   "/api/ebook-unlock": () => import("./api/ebook-unlock.js"),
-  "/api/ebook-admin": () => import("./api/ebook-admin.js"),
 };
 
 // Cloudflare Cron Triggers (scheduled 핸들러) — 버셀 vercel.json 의 crons 를 그대로 옮긴 것.

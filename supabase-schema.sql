@@ -164,29 +164,3 @@ CREATE TABLE IF NOT EXISTS public.pending_deposits (
 
 ALTER TABLE public.pending_deposits ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Service can manage pending_deposits" ON public.pending_deposits FOR ALL USING (auth.role() = 'service_role');
-
--- 9. ebook_config 무료 라이브 완주자 전자책 설정 (항상 id=1 한 행만 사용)
-CREATE TABLE IF NOT EXISTS public.ebook_config (
-  id INTEGER PRIMARY KEY DEFAULT 1,
-  code TEXT,
-  file_url TEXT,
-  title TEXT DEFAULT '합격 비법 전자책',
-  active BOOLEAN DEFAULT true,
-  updated_at TIMESTAMPTZ DEFAULT now()
-);
-
-ALTER TABLE public.ebook_config ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Service can manage ebook_config" ON public.ebook_config FOR ALL USING (auth.role() = 'service_role');
-
--- 10. ebook_unlocks 전자책 발급 로그
-CREATE TABLE IF NOT EXISTS public.ebook_unlocks (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT,
-  phone TEXT,
-  email TEXT,
-  code_used TEXT,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
-ALTER TABLE public.ebook_unlocks ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Service can manage ebook_unlocks" ON public.ebook_unlocks FOR ALL USING (auth.role() = 'service_role');

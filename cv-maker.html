@@ -208,6 +208,8 @@ footer{padding:36px 20px;background:var(--navy);color:rgba(255,255,255,0.55);tex
       </label>
       <div class="picker-label" style="margin-top:16px;">Font · 서체</div>
       <div class="font-list" id="fontList"></div>
+      <div class="picker-label" style="margin-top:16px;">Text Size · 글자 크기</div>
+      <div class="font-list" id="sizeList"></div>
     </div>
   </div>
 </div>
@@ -359,7 +361,7 @@ footer{padding:36px 20px;background:var(--navy);color:rgba(255,255,255,0.55);tex
 <script>
 /* ============ STATE ============ */
 const state = {
-  tpl:'classic', color:'teal', font:'serif',
+  tpl:'classic', color:'teal', font:'serif', pad:'medium',
   name:'', role:'', phone:'', email:'', loc:'', meta:'', about:'', photo:'',
   exp:[], edu:[], overseas:[], skills:[], langs:[], certs:'',
   inc:{overseas:false, skills:true, langs:true, certs:true},
@@ -385,6 +387,12 @@ const FONTS = {
   clean: {name:'심플',   head:"'Montserrat',sans-serif",    body:"'Noto Sans KR',sans-serif"},
   book:  {name:'명조',   head:"'Noto Serif KR',serif",      body:"'Noto Serif KR',serif"},
   strong:{name:'임팩트', head:"'Oswald',sans-serif",        body:"'Noto Sans KR',sans-serif"}
+};
+// 글자 크기 — 용지 여백을 조절해 자동맞춤 스케일이 자연히 커지거나 작아지게 함 (항상 1장 안에 맞춤)
+const PAD = {
+  small: {name:'작게',  v:'62px 48px'},
+  medium:{name:'보통',  v:'52px 40px'},
+  large: {name:'크게',  v:'38px 30px'}
 };
 const TEMPLATES = ['classic','twotone','header','minimal','timeline'];
 const TPL_NAME = {classic:'클래식',twotone:'투톤',header:'헤더형',minimal:'미니멀',timeline:'타임라인'};
@@ -440,6 +448,10 @@ function bindTop(){
   el('fontList').innerHTML = Object.keys(FONTS).map(k=>`
     <button class="font-btn ${k===state.font?'active':''}" data-f="${k}">${FONTS[k].name}</button>`).join('');
   el('fontList').querySelectorAll('.font-btn').forEach(b=>b.onclick=()=>{state.font=b.dataset.f;bindTop();render();});
+  // text size (여백 밀도로 글자 크기 체감 조절)
+  el('sizeList').innerHTML = Object.keys(PAD).map(k=>`
+    <button class="font-btn ${k===state.pad?'active':''}" data-p="${k}">${PAD[k].name}</button>`).join('');
+  el('sizeList').querySelectorAll('.font-btn').forEach(b=>b.onclick=()=>{state.pad=b.dataset.p;bindTop();render();});
 }
 /* ---- 커스텀 컬러 (직접 고르기) ---- */
 function hexToRgb(h){h=String(h).replace('#','');return {r:parseInt(h.substr(0,2),16),g:parseInt(h.substr(2,2),16),b:parseInt(h.substr(4,2),16)};}
@@ -788,14 +800,18 @@ function render(){
   const p=el('paper');
   const fn=state.tpl==='classic'?tplClassic:state.tpl==='twotone'?tplTwotone:state.tpl==='header'?tplHeader:state.tpl==='minimal'?tplMinimal:tplTimeline;
   // A4 인쇄 여백처럼 용지 상하좌우에 흰 여백 — 디자인 전체를 안쪽으로
-  p.innerHTML='<div style="position:absolute;top:0;left:0;right:0;bottom:0;padding:52px 40px;"><div class="cvwrap" style="position:relative;width:100%;height:100%;overflow:hidden;border-radius:3px;">'+fn(C,F)+'</div></div>';
+  // 여백을 좁히면(글자 크기 '크게') 자동맞춤 스케일이 커져 글자가 더 크게, 넓히면('작게') 더 작게 보임 — 항상 1장 안에 맞춤
+  const padV=(PAD[state.pad]||PAD.medium).v;
+  p.innerHTML='<div style="position:absolute;top:0;left:0;right:0;bottom:0;padding:'+padV+';"><div class="cvwrap" style="position:relative;width:100%;height:100%;overflow:hidden;border-radius:3px;">'+fn(C,F)+'</div></div>';
   // 용지 한 장에 맞게 디자인 전체를 자동 축소/확대 — 잘리지도, 하단이 비지도 않게
   const wrap=p.querySelector('.cvwrap'), root=wrap&&wrap.firstElementChild;
   if(root){
     root.style.transform='none'; root.style.width='100%'; root.style.height='auto';
     const avail=wrap.clientHeight, need=root.scrollHeight;
     if(need>0&&avail>0){
-      let s=Math.max(0.5,Math.min(1.5,avail/need));
+      // 하한을 너무 높게 잡으면(과거 0.5) 내용이 아주 많을 때 실제 필요 배율보다 커서
+      // 하단이 잘려 보이는 문제가 있었음 — 잘리는 것보다 작게라도 전부 보이는 게 우선이라 하한을 낮춤
+      let s=Math.max(0.32,Math.min(1.5,avail/need));
       root.style.transformOrigin='top left';
       root.style.width=(100/s)+'%';
       root.style.height=(100/s)+'%';
@@ -930,7 +946,7 @@ function tplClassic(C,F){
       <div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin-bottom:9px;">LANGUAGES</div>
       ${langLines(C,true)}`:''}
     </div>
-    <div style="flex:1;padding:26px 24px;color:#222;display:flex;flex-direction:column;gap:12px;">
+    <div style="flex:1;padding:26px 24px;color:#222;display:flex;flex-direction:column;gap:17px;">
       ${blockSec('WORK EXPERIENCE',entryLeftDate(state.exp,C,false),C,F,false)}
       ${blockSec('EDUCATION',entryLeftDate(state.edu,C,false),C,F,false)}
       ${blockSec('OVERSEAS EXPERIENCE',state.inc.overseas?entryLeftDate(state.overseas,C,false):'',C,F,false)}
@@ -957,7 +973,7 @@ function tplTwotone(C,F){
         ${state.inc.langs?`<div style="font-family:${F.head};font-size:12.5px;letter-spacing:.08em;margin:16px 0 9px;">LANGUAGES</div>${langLines(C,true)}`:''}
       </div>
     </div>
-    <div style="flex:1;padding:24px 22px;display:flex;flex-direction:column;gap:15px;">
+    <div style="flex:1;padding:24px 22px;display:flex;flex-direction:column;gap:18px;">
       ${blockSecLine('Work Experience',expBlock(C,F,false),C,F)}
       ${blockSecLine('Education',eduBlock(C,F,false),C,F)}
       ${blockSecLine('Overseas Experience',oseaHtml(C,false),C,F)}
@@ -984,7 +1000,7 @@ function tplHeader(C,F){
         ${blockSec('EDUCATION',eduBlock(C,F,false),C,F,false)}
         ${blockSec('OVERSEAS',oseaHtml(C,false),C,F,false)}
       </div>
-      <div style="flex:0.9;display:flex;flex-direction:column;gap:15px;">
+      <div style="flex:0.9;display:flex;flex-direction:column;gap:18px;">
         ${blockSec('SKILLS',skillsHtml(C,false),C,F,false)}
         ${blockSec('LANGUAGES',langsHtml(C,false),C,F,false)}
         ${blockSec('CERTIFICATIONS',certsHtml(C,false),C,F,false)}
@@ -1041,7 +1057,7 @@ function tplTimeline(C,F){
           ${blockSec('OVERSEAS',oseaHtml(C,false),C,F,false)}
         </div>
       </div>
-      <div style="flex:1;display:flex;flex-direction:column;gap:15px;">
+      <div style="flex:1;display:flex;flex-direction:column;gap:18px;">
         ${blockSec('SKILLS',skillsHtml(C,false),C,F,false)}
         ${blockSec('LANGUAGES',langsHtml(C,false),C,F,false)}
         ${blockSec('CERTIFICATIONS',certsHtml(C,false),C,F,false)}

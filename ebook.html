@@ -38,7 +38,7 @@ footer{margin-top:24px;text-align:center;font-size:0.72rem;color:rgba(255,255,25
   <form id="f">
     <input id="name" type="text" placeholder="이름" required maxlength="80">
     <input id="phone" type="tel" placeholder="휴대폰 번호" required maxlength="40">
-    <input id="email" type="email" placeholder="이메일 (전자책이 이 주소로 발송돼요)" required maxlength="120">
+    <input id="email" type="email" placeholder="이메일" required maxlength="120">
     <input id="code" type="text" placeholder="라이브에서 알려드린 코드" required maxlength="40" autocomplete="off">
     <button id="submitBtn" type="submit">전자책 받기</button>
   </form>
@@ -80,7 +80,7 @@ document.getElementById('f').addEventListener('submit', async function(e){
     }
 
     msg.className = 'msg ok';
-    msg.innerHTML = '완주 축하드려요! <b>' + data.title + '</b>이 이메일로도 발송됐어요.' +
+    msg.innerHTML = '완주 축하드려요! <b>' + data.title + '</b>을 바로 받아가세요.' +
       '<a class="dl-btn" href="' + data.downloadUrl + '" target="_blank" rel="noopener">지금 바로 다운로드</a>';
     msg.style.display = 'block';
     btn.style.display = 'none';

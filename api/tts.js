@@ -1,3 +1,23 @@
+// 동일 문장(고정 멘트) 반복 요청 시 구글 API 재호출을 막는 메모리 캐시.
+// 서버리스 인스턴스가 살아있는 동안(warm)만 유지되지만, 롤플레이/디스커션/파이널 질문처럼
+// 정해진 문장 풀을 여러 사용자가 반복해서 듣는 구조에서는 중복 호출을 크게 줄여준다.
+const _ttsCache = new Map();
+const TTS_CACHE_MAX = 500;
+
+function _ttsCacheGet(key) {
+  const hit = _ttsCache.get(key);
+  if (hit) { _ttsCache.delete(key); _ttsCache.set(key, hit); } // LRU touch
+  return hit;
+}
+
+function _ttsCacheSet(key, value) {
+  if (_ttsCache.size >= TTS_CACHE_MAX) {
+    const oldest = _ttsCache.keys().next().value;
+    _ttsCache.delete(oldest);
+  }
+  _ttsCache.set(key, value);
+}
+
 module.exports = async function(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -29,6 +49,11 @@ module.exports = async function(req, res) {
   const voiceConfig = voiceMap[selectedLang] || voiceMap['en-GB'];
   const voiceName = selectedGender === 'male' ? voiceConfig.male : voiceConfig.female;
   const langCode = voiceConfig.lang || selectedLang;
+  const trimmedText = text.substring(0, 1000);
+  const cacheKey = trimmedText + '|' + langCode + '|' + voiceName;
+
+  const cached = _ttsCacheGet(cacheKey);
+  if (cached) return res.json({ audioContent: cached });
 
   try {
     const response = await fetch(
@@ -37,7 +62,7 @@ module.exports = async function(req, res) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          input: { text: text.substring(0, 1000) },
+          input: { text: trimmedText },
           voice: {
             languageCode: langCode,
             name: voiceName
@@ -58,6 +83,7 @@ module.exports = async function(req, res) {
     }
 
     const data = await response.json();
+    if (data.audioContent) _ttsCacheSet(cacheKey, data.audioContent);
     res.json({ audioContent: data.audioContent });
   } catch(e) {
     res.status(500).json({ error: e.message });

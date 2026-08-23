@@ -74,6 +74,7 @@ module.exports = async function (req, res) {
         '<p><b>' + esc(name) + '</b>님, 원더풀크루 <b>무료 라이브 클래스</b> 신청이 정상 접수되었습니다.</p>' +
         '<div style="background:#FAF7F0;border:1px solid #EbE3D0;border-radius:12px;padding:16px 18px;margin:16px 0;">' +
         '📅 <b>9월 20일 (일) 오후 7시</b> · 온라인 무료<br>면접 사진부터 영문 CV, 실전 면접·파이널까지 승무원 준비 전 과정을 함께 봐요.</div>' +
+        '<p>📘 <b>라이브를 끝까지 보신 분께만</b> 원더풀크루 <b>합격 비법 전자책</b>을 드려요. 라이브 마지막에 공개하는 코드로 그 자리에서 바로 받아가실 수 있으니, 끝까지 함께해 주세요!</p>' +
         '<p>실시간 안내는 카카오톡 오픈채팅방에서 드립니다 — <a href="https://open.kakao.com/o/g4U4VoFi">오픈채팅방 입장하기</a></p>' +
         '<p style="color:#888;font-size:13px;margin-top:24px;">원더풀크루 · wonderfulcrew.com</p></div>';
 

@@ -52,9 +52,9 @@ button{font-family:inherit;cursor:pointer;}
 .picker-row{display:flex;flex-wrap:wrap;gap:26px;align-items:flex-start;justify-content:center;padding:18px 22px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px -20px rgba(26,35,64,0.4);}
 .picker-block{flex:1;min-width:260px;}
 .picker-label{font-family:'DM Serif Display',serif;font-size:0.72rem;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;}
-.tpl-list{display:flex;gap:10px;flex-wrap:wrap;}
-.tpl-chip{width:74px;cursor:pointer;text-align:center;}
-.tpl-thumb{width:74px;height:96px;border-radius:8px;border:2px solid var(--line);overflow:hidden;background:#fff;transition:.18s;position:relative;}
+.tpl-list{display:flex;gap:14px;flex-wrap:wrap;}
+.tpl-chip{width:104px;cursor:pointer;text-align:center;}
+.tpl-thumb{width:104px;height:136px;border-radius:10px;border:2px solid var(--line);overflow:hidden;background:#fff;transition:.18s;position:relative;}
 .tpl-chip.active .tpl-thumb{border-color:var(--navy);box-shadow:0 6px 16px -6px rgba(26,35,64,0.55);}
 .tpl-chip span{display:block;font-size:0.64rem;color:var(--muted);margin-top:5px;font-family:'Noto Sans KR',sans-serif;}
 .tpl-chip.active span{color:var(--navy);font-weight:700;}
@@ -358,7 +358,7 @@ footer{padding:36px 20px;background:var(--navy);color:rgba(255,255,255,0.55);tex
 <script>
 /* ============ STATE ============ */
 const state = {
-  tpl:'classic', color:'camel', font:'serif',
+  tpl:'classic', color:'teal', font:'serif',
   name:'', role:'', phone:'', email:'', loc:'', meta:'', about:'', photo:'',
   exp:[], edu:[], overseas:[], skills:[], langs:[], certs:'',
   inc:{overseas:false, skills:true, langs:true, certs:true},

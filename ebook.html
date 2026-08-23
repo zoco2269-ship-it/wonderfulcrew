@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>합격 비법 전자책 받기 · WonderfulCrew</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C96A;--gold-pale:#F5E9C8;--cream:#FAF7F0;--navy:#1A2340;--text-dark:#1A1A1A;--text-mid:#4A4438;--text-muted:#5A5048;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{overflow-x:hidden;}
+body{font-family:'Noto Serif KR',serif;background:var(--navy);color:var(--text-dark);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.card{background:var(--cream);border-radius:20px;max-width:440px;width:100%;padding:40px 32px;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
+.label{font-family:'DM Serif Display',serif;font-size:0.76rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;text-align:center;}
+h1{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);text-align:center;margin-bottom:8px;font-weight:400;}
+.sub{font-size:0.86rem;color:var(--text-muted);text-align:center;line-height:1.7;margin-bottom:28px;}
+.sub b{color:var(--navy);}
+form{display:flex;flex-direction:column;gap:12px;}
+input{width:100%;padding:13px 16px;border:1px solid var(--gold-pale);border-radius:10px;font-family:inherit;font-size:0.92rem;background:#fff;color:var(--text-dark);}
+input:focus{outline:none;border-color:var(--gold);}
+input#code{letter-spacing:0.15em;text-transform:uppercase;font-weight:600;}
+button{margin-top:6px;padding:14px;border:none;border-radius:24px;background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;font-family:inherit;font-size:0.94rem;font-weight:700;cursor:pointer;}
+button:disabled{opacity:0.6;cursor:not-allowed;}
+.msg{margin-top:16px;padding:14px 16px;border-radius:10px;font-size:0.86rem;line-height:1.7;text-align:center;display:none;}
+.msg.err{background:#FDECEC;color:#B3261E;display:block;}
+.msg.ok{background:#EAF6EC;color:#1E7A34;display:block;}
+.dl-btn{display:block;margin-top:12px;padding:14px;border-radius:24px;background:var(--navy);color:#fff;text-align:center;text-decoration:none;font-weight:700;font-size:0.92rem;}
+footer{margin-top:24px;text-align:center;font-size:0.72rem;color:rgba(255,255,255,0.4);}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="label">Live Bonus</div>
+  <h1>합격 비법 전자책</h1>
+  <p class="sub">라이브를 <b>끝까지 시청</b>하신 분들께만 드리는 선물이에요.<br>대표님이 라이브 마지막에 알려주신 코드를 입력해주세요.</p>
+
+  <form id="f">
+    <input id="name" type="text" placeholder="이름" required maxlength="80">
+    <input id="phone" type="tel" placeholder="휴대폰 번호" required maxlength="40">
+    <input id="email" type="email" placeholder="이메일 (전자책이 이 주소로 발송돼요)" required maxlength="120">
+    <input id="code" type="text" placeholder="라이브에서 알려드린 코드" required maxlength="40" autocomplete="off">
+    <button id="submitBtn" type="submit">전자책 받기</button>
+  </form>
+
+  <div id="msg" class="msg"></div>
+</div>
+<footer>© 2026 WonderfulCrew</footer>
+
+<script>
+document.getElementById('f').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var btn = document.getElementById('submitBtn');
+  var msg = document.getElementById('msg');
+  msg.className = 'msg'; msg.style.display = 'none'; msg.innerHTML = '';
+  btn.disabled = true; btn.textContent = '확인 중...';
+
+  var payload = {
+    name: document.getElementById('name').value,
+    phone: document.getElementById('phone').value,
+    email: document.getElementById('email').value,
+    code: document.getElementById('code').value
+  };
+
+  try {
+    var res = await fetch('/api/ebook-unlock', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    var data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      var text = '코드가 맞지 않아요. 라이브에서 안내드린 코드를 다시 확인해주세요.';
+      if (data.error === 'not_open') text = '지금은 열려있는 전자책이 없어요. 라이브 종료 후 다시 시도해주세요.';
+      else if (data.error === 'file_not_ready') text = '전자책 준비 중이에요. 잠시 후 다시 시도해주세요.';
+      msg.className = 'msg err'; msg.textContent = text; msg.style.display = 'block';
+      btn.disabled = false; btn.textContent = '전자책 받기';
+      return;
+    }
+
+    msg.className = 'msg ok';
+    msg.innerHTML = '완주 축하드려요! <b>' + data.title + '</b>이 이메일로도 발송됐어요.' +
+      '<a class="dl-btn" href="' + data.downloadUrl + '" target="_blank" rel="noopener">지금 바로 다운로드</a>';
+    msg.style.display = 'block';
+    btn.style.display = 'none';
+  } catch (err) {
+    msg.className = 'msg err';
+    msg.textContent = '오류가 발생했어요. 잠시 후 다시 시도해주세요.';
+    msg.style.display = 'block';
+    btn.disabled = false; btn.textContent = '전자책 받기';
+  }
+});
+</script>
+</body>
+</html>

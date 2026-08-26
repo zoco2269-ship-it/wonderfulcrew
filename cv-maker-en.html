@@ -806,7 +806,7 @@ function render(){
     root.style.transform='none'; root.style.width='100%'; root.style.height='auto';
     const avail=wrap.clientHeight, need=root.scrollHeight;
     if(need>0&&avail>0){
-      let s=Math.max(0.32,Math.min(1.5,avail/need));
+      let s=Math.max(0.32,Math.min(2.2,avail/need));
       root.style.transformOrigin='top left';
       root.style.width=(100/s)+'%';
       root.style.height=(100/s)+'%';

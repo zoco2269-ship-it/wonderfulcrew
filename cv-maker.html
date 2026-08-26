@@ -811,7 +811,7 @@ function render(){
     if(need>0&&avail>0){
       // 하한을 너무 높게 잡으면(과거 0.5) 내용이 아주 많을 때 실제 필요 배율보다 커서
       // 하단이 잘려 보이는 문제가 있었음 — 잘리는 것보다 작게라도 전부 보이는 게 우선이라 하한을 낮춤
-      let s=Math.max(0.32,Math.min(1.5,avail/need));
+      let s=Math.max(0.32,Math.min(2.2,avail/need));
       root.style.transformOrigin='top left';
       root.style.width=(100/s)+'%';
       root.style.height=(100/s)+'%';

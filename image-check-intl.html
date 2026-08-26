@@ -88,6 +88,14 @@
   .fin-opt .fin-l{font-size:0.82rem;font-weight:700;color:var(--navy);width:74px;flex-shrink:0;}
   .fin-opt button{font-family:inherit;font-size:0.78rem;font-weight:600;padding:6px 12px;border-radius:14px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;}
   .fin-opt button.on{border-color:var(--gold);background:rgba(201,168,76,0.14);color:var(--navy);}
+  /* 자켓·블라우스 그림 선택 타일 */
+  .fin-opt-img{align-items:flex-start;}
+  .fin-opt-img .fin-l{margin-top:10px;}
+  .opt-tiles{display:flex;gap:8px;flex-wrap:wrap;}
+  .fin-opt-img button{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:5px;width:62px;padding:9px 4px 7px;border-radius:13px;color:var(--muted);}
+  .fin-opt-img button svg{width:34px;height:34px;color:var(--mid);transition:color .15s;}
+  .fin-opt-img button.on svg{color:var(--gold);}
+  .fin-opt-img button .opt-t{font-size:0.72rem;line-height:1.2;}
   /* 스타일 추천 카드 */
   .sline{display:flex;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);font-size:0.95rem;}
   .sline b{color:var(--gold);min-width:56px;font-size:0.82rem;}
@@ -184,16 +192,37 @@
     <p style="font-size:0.92rem;color:var(--mid);line-height:1.7;margin:2px 0 14px;">업로드한 사진을 AI가 <b>메이크업 · 헤어 정리(깔끔한 쪽머리, 중앙 가르마 없이) · 피부 보정 · 배경</b>까지 한 번에 완성해 드려요. 몇십만원짜리 스튜디오 촬영을 대체하는 프리미엄 기능입니다.</p>
     <div class="fin-opt"><span class="fin-l">🖼 배경색</span><div class="mk-swatches" id="finBgSw"></div></div>
     <div class="fin-opt"><span class="fin-l">🧥 자켓색</span><div class="mk-swatches" id="finJkSw"></div></div>
-    <div class="fin-opt"><span class="fin-l">🧥 자켓형태</span>
-      <button data-k="jacketStyle" data-v="single" class="on">싱글</button>
-      <button data-k="jacketStyle" data-v="collarless">노카라</button>
-      <button data-k="jacketStyle" data-v="double">더블</button>
+    <div class="fin-opt fin-opt-img"><span class="fin-l">🧥 자켓형태</span>
+      <div class="opt-tiles">
+        <button data-k="jacketStyle" data-v="single" class="on">
+          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 8 L11 13 L7 40"/><path d="M22 8 L33 13 L37 40"/><path d="M22 8 L16 24"/><path d="M22 8 L28 24"/><circle cx="22" cy="27" r="1.5" fill="currentColor" stroke="none"/><circle cx="22" cy="34" r="1.5" fill="currentColor" stroke="none"/></svg>
+          <span class="opt-t">싱글</span>
+        </button>
+        <button data-k="jacketStyle" data-v="collarless">
+          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 9 L11 13 L7 40"/><path d="M22 9 L33 13 L37 40"/><path d="M15 11 Q22 20 29 11"/><path d="M22 20 L22 38"/></svg>
+          <span class="opt-t">노카라</span>
+        </button>
+        <button data-k="jacketStyle" data-v="double">
+          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 8 L11 13 L7 40"/><path d="M22 8 L33 13 L37 40"/><path d="M22 8 L15 26"/><path d="M22 8 L29 26"/><path d="M15 26 L29 34"/><circle cx="17" cy="28" r="1.4" fill="currentColor" stroke="none"/><circle cx="17" cy="35" r="1.4" fill="currentColor" stroke="none"/><circle cx="27" cy="28" r="1.4" fill="currentColor" stroke="none"/><circle cx="27" cy="35" r="1.4" fill="currentColor" stroke="none"/></svg>
+          <span class="opt-t">더블</span>
+        </button>
+      </div>
     </div>
-    <div class="fin-opt"><span class="fin-l">👚 블라우스</span>
-      <button data-k="neckline" data-v="round" class="on">카라 없음</button>
-      <button data-k="neckline" data-v="shirt">카라 셔츠</button>
-      <button data-k="neckline" data-v="highneck">목까지</button>
-      <button data-k="neckline" data-v="innertop">이너탑</button>
+    <div class="fin-opt fin-opt-img"><span class="fin-l">👚 블라우스</span>
+      <div class="opt-tiles">
+        <button data-k="neckline" data-v="round" class="on">
+          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 9 L10 14 L8 40"/><path d="M22 9 L34 14 L36 40"/><path d="M14 12 Q22 22 30 12"/></svg>
+          <span class="opt-t">카라 없음</span>
+        </button>
+        <button data-k="neckline" data-v="shirt">
+          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10 L10 14 L8 40"/><path d="M22 10 L34 14 L36 40"/><path d="M17 11 L22 20 L15 18 Z"/><path d="M27 11 L22 20 L29 18 Z"/><path d="M22 20 L22 34"/></svg>
+          <span class="opt-t">카라 셔츠</span>
+        </button>
+        <button data-k="neckline" data-v="innertop">
+          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 9 L10 14 L8 40"/><path d="M22 9 L34 14 L36 40"/><path d="M15 12 L22 26 L29 12"/></svg>
+          <span class="opt-t">이너탑</span>
+        </button>
+      </div>
     </div>
     <button class="go" id="finishBtn" style="margin-top:14px;">✨ AI로 완성사진 만들기</button>
     <div id="finishStatus" style="font-size:0.84rem;color:var(--muted);margin-top:10px;line-height:1.6;"></div>

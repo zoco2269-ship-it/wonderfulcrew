@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>try{if(location.hash==='#makeupCard'||new URLSearchParams(location.search).get('embed')==='1'){document.documentElement.classList.add('mkpre');}}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Interview Image Stylist · WonderfulCrew</title>
@@ -150,7 +151,8 @@
     body.mk-embed .mk-sw:not(.none):not(.pick){width:34px!important;height:34px!important;}
   }
   /* 메이크업 전용 모드(#makeupCard): 면접사진 예시·진단 숨김 */
-  body.mkmode .ex,body.mkmode .ex-cap,body.mkmode #result,body.mkmode #styleCard,body.mkmode #finishCard,body.mkmode #go,body.mkmode .privacy{display:none!important;}
+  body.mkmode .ex,body.mkmode .ex-cap,body.mkmode #result,body.mkmode #styleCard,body.mkmode #finishCard,body.mkmode #go,body.mkmode .privacy,
+  html.mkpre .ex,html.mkpre .ex-cap,html.mkpre #result,html.mkpre #styleCard,html.mkpre #finishCard,html.mkpre #go,html.mkpre .privacy{display:none!important;}
   /* 면접사진 모드(기본): 메이크업 섹션 숨김 — 두 기능 분리 */
   body:not(.mkmode) #makeupCard{display:none!important;}
 </style>

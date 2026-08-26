@@ -111,13 +111,17 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
     <div class="brand-logo">Wonderful<span>Crew</span></div>
     <h1>English Test<br><span style="color:var(--brand-primary);">Cabin Crew Edition</span></h1>
     <div class="info-box" style="text-align:center;padding-top:8px;">
-      <div class="test-mode-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch;">
+      <div class="test-mode-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:stretch;">
         <button onclick="startTest('vocab')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:12px;padding:36px 14px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;white-space:nowrap;">
           <div style="font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--navy);font-weight:700;margin-bottom:10px;">① Vocabulary Test</div>
           <div style="font-size:0.88rem;color:var(--text-muted);line-height:1.5;">30 questions<br>Fill in the blanks</div>
         </button>
+        <button onclick="startTest('grammar')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:12px;padding:36px 14px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;white-space:nowrap;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--navy);font-weight:700;margin-bottom:10px;">② Grammar Test</div>
+          <div style="font-size:0.88rem;color:var(--text-muted);line-height:1.5;">20 questions<br>Multiple choice</div>
+        </button>
         <button onclick="startTest('reading')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:12px;padding:36px 14px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;white-space:nowrap;">
-          <div style="font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--navy);font-weight:700;margin-bottom:10px;">② Reading Test</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--navy);font-weight:700;margin-bottom:10px;">③ Reading Test</div>
           <div style="font-size:0.88rem;color:var(--text-muted);line-height:1.5;">1 passage<br>8 questions</div>
         </button>
       </div>
@@ -217,6 +221,30 @@ var READING_QUESTIONS=[
   {q:"What does the passage suggest about the intelligence of dolphins?",opt:["They are less intelligent than previously thought","They have the same level of awareness as only people and great apes","They cannot learn without strict training","They only use tools in captivity"],correct:1,explain:"Final paragraph: self-awareness, 'a quality previously only seen in people and great apes'."}
 ];
 
+// 20 grammar questions — Qatar Airways style grammar multiple choice
+var GRAMMAR_QUESTIONS=[
+  {q:"By the time the aircraft lands, the crew _____ the cabin twice.",opt:["will check","will have checked","checked","are checking"],correct:1,explain:"Future perfect = will have + p.p. (completed by a future point)."},
+  {q:"Each passenger _____ required to fasten their seatbelt during takeoff.",opt:["are","is","were","have been"],correct:1,explain:"Each + singular verb → is."},
+  {q:"If the weather _____ bad, the flight would be delayed.",opt:["is","was","were","will be"],correct:2,explain:"Past subjunctive (present unreal) → if + subject + were."},
+  {q:"The safety demonstration _____ before every flight.",opt:["gives","is given","is giving","has give"],correct:1,explain:"A repeated action done to the subject → passive present, is given."},
+  {q:"She has worked as a flight attendant _____ five years.",opt:["since","for","during","from"],correct:1,explain:"For + a period of time; since + a point in time."},
+  {q:"Passengers are not allowed to use their phones _____ the aircraft is taxiing.",opt:["during","while","for","despite"],correct:1,explain:"Before a clause (subject+verb), use the conjunction while, not during."},
+  {q:"_____ you fasten your seatbelt, we cannot begin the safety check.",opt:["Unless","Until","Although","Because"],correct:1,explain:"'Not until you do it' → until."},
+  {q:"The captain, along with the crew, _____ responsible for passenger safety.",opt:["are","is","were","have been"],correct:1,explain:"'along with the crew' is a parenthetical; the verb agrees with 'The captain' → is."},
+  {q:"This is the gate _____ the delayed flight will depart.",opt:["which","where","who","whose"],correct:1,explain:"Relative adverb for a place → where."},
+  {q:"I would rather you _____ that comment during the briefing.",opt:["don't make","didn't make","won't make","not made"],correct:1,explain:"would rather + subject + past tense (subjunctive) → didn't make."},
+  {q:"The number of passengers on this route _____ increased significantly this year.",opt:["have","has","were","are"],correct:1,explain:"'The number of' takes a singular verb → has."},
+  {q:"Neither the pilot nor the co-pilots _____ aware of the delay.",opt:["was","is","were","has been"],correct:2,explain:"With neither...nor, the verb agrees with the nearer subject (co-pilots, plural) → were."},
+  {q:"The passenger insisted that he _____ moved to another seat immediately.",opt:["is","was","be","being"],correct:2,explain:"After 'insist that', use the subjunctive (base form) → be moved."},
+  {q:"This bag is too heavy _____ carried onto the aircraft.",opt:["to be","being","to being","for being"],correct:0,explain:"too ~ to + infinitive, passive meaning → to be carried."},
+  {q:"_____ the storm, all flights were grounded for the day.",opt:["Because","Due to","Even though","As if"],correct:1,explain:"Before a noun phrase, use due to (because introduces a clause)."},
+  {q:"The crew member _____ badge was missing had to report to security.",opt:["who","which","whose","that"],correct:2,explain:"Possessive relative pronoun whose + noun."},
+  {q:"By next month, she _____ for this airline for ten years.",opt:["will work","will have worked","has worked","worked"],correct:1,explain:"An action continuing up to a specific future point → future perfect."},
+  {q:"The announcement was made _____ clearly that no one could misunderstand it.",opt:["so","such","too","very"],correct:0,explain:"so + adjective/adverb + that ~ construction."},
+  {q:"Had the crew known about the storm earlier, they _____ the route.",opt:["would change","would have changed","changed","will change"],correct:1,explain:"Past perfect subjunctive: Had + p.p. ~, subject + would have + p.p."},
+  {q:"It is essential that every crew member _____ the emergency procedures.",opt:["knows","know","knowing","known"],correct:1,explain:"After 'essential that', use the base form → know."},
+];
+
 var current=0;var answers=[];var started=false;var activeSet=QUESTIONS;var activeMode='vocab';
 
 function startTest(mode){
@@ -227,7 +255,7 @@ function startTest(mode){
     document.getElementById('screen-passage').style.display='block';
     return;
   }
-  activeSet=QUESTIONS;
+  activeSet=(activeMode==='grammar')?GRAMMAR_QUESTIONS:QUESTIONS;
   answers=new Array(activeSet.length).fill(null);
   current=0;
   if(!started){started=true;try{if(typeof useFreeTrialOrCheck==='function')useFreeTrialOrCheck();}catch(e){}}
@@ -314,7 +342,8 @@ function showResult(){
     rl.appendChild(ri);
   });
   if(typeof savePracticeRecord==='function'){
-    savePracticeRecord({stage:'English Test',airline:'Emirates',question:'30-question multiple choice',answer:correctCount+'/30',score:pct,feedback:title+' — '+grade});
+    var modeLabel=(activeMode==='grammar')?'Grammar Test':(activeMode==='reading')?'Reading Test':'Vocabulary Test';
+    savePracticeRecord({stage:'English Test',airline:'Emirates',question:modeLabel+' '+activeSet.length+'-question multiple choice',answer:correctCount+'/'+activeSet.length,score:pct,feedback:title+' — '+grade});
   }
   window.scrollTo({top:0,behavior:'smooth'});
 }

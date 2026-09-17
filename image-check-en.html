@@ -224,6 +224,7 @@
           <div class="mk-label">👁 Eyeshadow</div>
           <div class="mk-swatches" id="eyeSwatches"></div>
           <div class="mk-slider"><span>Light</span><input type="range" id="eyeInt" min="0" max="100" value="33"><span>Deep</span></div>
+          <div class="mk-slider"><span>Narrow</span><input type="range" id="eyeSpread" min="0" max="100" value="50"><span>Wide</span></div>
           <div class="mk-label" style="margin-top:14px;">✒️ Eyeliner <span class="mk-int"><button id="linerOff" class="on">None</button><button id="linerOn">On</button></span></div>
           <div class="mk-slider"><span>Light</span><input type="range" id="linerInt" min="0" max="100" value="33"><span>Deep</span></div>
           <div class="mk-label" style="margin-top:14px;">🌫 Smoky <span class="mk-int"><button id="smokyOff" class="on">None</button><button id="smokyOn">On</button></span></div>
@@ -327,7 +328,7 @@
 
   // 관리자 우회: ?admin=1 로 접속하면 로컬에 저장돼 이후 계속 무제한 사용
   try{ if(/[?&]admin=1/.test(location.search)) localStorage.setItem('wc_admin','1'); }catch(e){}
-  function wcIsAdmin(){ try{ return localStorage.getItem('wc_admin')==='1'; }catch(e){ return false; } }
+  function wcIsAdmin(){ try{ if(localStorage.getItem('wc_admin')==='1') return true; }catch(e){} try{ return (typeof isAdmin==='function') && isAdmin(); }catch(e){ return false; } }
   function wcGate(msg){ var m=$('wcGateMsg'); if(m) m.textContent=msg||''; var g=$('wcGate'); if(g) g.style.display='flex'; }
   var _wg=$('wcGate'); if(_wg) _wg.addEventListener('click', function(e){ if(e.target===this) this.style.display='none'; });
   // You have used all 횟수(10회)
@@ -474,7 +475,7 @@ var $=function(id){return document.getElementById(id);};
 var landmarker=null, lm=null, blend=null, baseImg=null, cw=0, ch=0, lipColor=null, eyeColor=null, eyeStrong=true, eyeliner=false, smoky=false;
 var segmenter=null, personCanvas=null, bgColor=null;
 var segMC=null, clothesCanvas=null, jacketColor=null;
-var lipInt=0.6, eyeInt=0.6, linerInt=0.6, smokyInt=0.6;
+var lipInt=0.6, eyeInt=0.6, linerInt=0.6, smokyInt=0.6, eyeSpread=0.5;
 function hx(hex,a){ hex=hex.replace('#',''); var r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16); return 'rgba('+r+','+g+','+b+','+a+')'; }
 
 async function ensure(){
@@ -569,7 +570,7 @@ function paintMakeup(ctx){
       var d0=Math.abs(pts[0].x/cw-midXe), dN=Math.abs(pts[pts.length-1].x/cw-midXe);
       if(dN>d0) pts.reverse(); // pts[0]=바깥 눈꼬리
       var w=Math.abs(pts[0].x-pts[pts.length-1].x);
-      var baseD=Math.max(8, w*(0.28+eyeInt*0.12));  // 범위 좁게
+      var baseD=Math.max(8, w*(0.22+eyeSpread*0.32));  // 범위 좁게~넓게(슬라이더로 조절)
       var oc=document.createElement('canvas'); oc.width=cw; oc.height=ch; var octx=oc.getContext('2d');
       octx.save(); octx.filter='blur(4px)';
       function blob(cx,cy,r,a){
@@ -791,10 +792,11 @@ function mkPick(init, cb){
     on.onclick=function(){ smoky=true; on.classList.add('on'); off.classList.remove('on'); render(); }; } })();
 (function(){ var l=$('lipInt'); if(l) l.oninput=function(){ lipInt=(+l.value)/100; render(); }; })();
 (function(){ var e=$('eyeInt'); if(e) e.oninput=function(){ eyeInt=(+e.value)/100; render(); }; })();
+(function(){ var e=$('eyeSpread'); if(e) e.oninput=function(){ eyeSpread=(+e.value)/100; render(); }; })();
 (function(){ var l=$('linerInt'); if(l) l.oninput=function(){ linerInt=(+l.value)/100; render(); }; })();
 (function(){ var s=$('smokyInt'); if(s) s.oninput=function(){ smokyInt=(+s.value)/100; render(); }; })();
 (function(){ var s=$('bgSave'); if(s) s.onclick=function(){
-  var admin=false; try{ admin=localStorage.getItem('wc_admin')==='1'; }catch(e){}
+  var admin=false; try{ admin=wcIsAdmin(); }catch(e){}
   if(!admin){
     var g=document.getElementById('wcGate'), m=document.getElementById('wcGateMsg');
     if(m) m.textContent='Saving the makeup photo is members only. The before/after preview is free to use.';

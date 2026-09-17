@@ -2,8 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/live", "destination": "/landing.html" },
-    { "source": "/", "destination": "/practice-foreign.html" }
+    { "source": "/live", "destination": "/landing.html" }
   ],
   "redirects": [
     {
@@ -16,6 +15,11 @@
       ],
       "destination": "https://www.wonderfulcrew.com/$1",
       "permanent": true
+    },
+    {
+      "source": "/",
+      "destination": "/practice-foreign",
+      "permanent": false
     }
   ],
   "headers": [

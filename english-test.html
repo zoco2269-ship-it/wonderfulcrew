@@ -118,13 +118,17 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
     <div class="brand-logo">Wonderful<span>Crew</span></div>
     <h1>영어 테스트<br><span style="color:var(--brand-primary);">English Test</span></h1>
     <div class="info-box" style="text-align:center;padding-top:8px;">
-      <div class="test-mode-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch;">
+      <div class="test-mode-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:stretch;">
         <button onclick="startTest('vocab')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:12px;padding:36px 14px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;white-space:nowrap;">
           <div style="font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--navy);font-weight:700;margin-bottom:10px;">① 어휘 테스트</div>
           <div style="font-size:0.88rem;color:var(--text-muted);line-height:1.5;">30문항<br>빈칸 채우기</div>
         </button>
+        <button onclick="startTest('grammar')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:12px;padding:36px 14px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;white-space:nowrap;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--navy);font-weight:700;margin-bottom:10px;">② 그래머 테스트</div>
+          <div style="font-size:0.88rem;color:var(--text-muted);line-height:1.5;">20문항<br>문법 객관식</div>
+        </button>
         <button onclick="startTest('reading')" style="background:#fff;border:2px solid var(--brand-primary);border-radius:12px;padding:36px 14px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;white-space:nowrap;">
-          <div style="font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--navy);font-weight:700;margin-bottom:10px;">② 독해 테스트</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--navy);font-weight:700;margin-bottom:10px;">③ 독해 테스트</div>
           <div style="font-size:0.88rem;color:var(--text-muted);line-height:1.5;">지문 1개<br>8문항</div>
         </button>
       </div>
@@ -227,6 +231,30 @@ var READING_QUESTIONS=[
   {q:"What does the passage suggest about the intelligence of dolphins?",opt:["They are less intelligent than previously thought","They have the same level of awareness as only people and great apes","They cannot learn without strict training","They only use tools in captivity"],correct:1,explain:"마지막 단락: self-awareness, 'a quality previously only seen in people and great apes'."}
 ];
 
+// 그래머 20문항 — 카타르항공 스타일 문법 객관식
+var GRAMMAR_QUESTIONS=[
+  {q:"By the time the aircraft lands, the crew _____ the cabin twice.",opt:["will check","will have checked","checked","are checking"],correct:1,explain:"미래완료 = will have + p.p. (착륙 시점까지 완료될 일)."},
+  {q:"Each passenger _____ required to fasten their seatbelt during takeoff.",opt:["are","is","were","have been"],correct:1,explain:"Each + 단수 취급 → is."},
+  {q:"If the weather _____ bad, the flight would be delayed.",opt:["is","was","were","will be"],correct:2,explain:"가정법 과거(현재 사실 반대) → if + 주어 + were."},
+  {q:"The safety demonstration _____ before every flight.",opt:["gives","is given","is giving","has give"],correct:1,explain:"매번 시행되는 일 → 수동태 현재 is given."},
+  {q:"She has worked as a flight attendant _____ five years.",opt:["since","for","during","from"],correct:1,explain:"기간(숫자) 앞에는 for, 시점 앞에는 since."},
+  {q:"Passengers are not allowed to use their phones _____ the aircraft is taxiing.",opt:["during","while","for","despite"],correct:1,explain:"절(주어+동사) 앞에는 접속사 while, during은 명사 앞."},
+  {q:"_____ you fasten your seatbelt, we cannot begin the safety check.",opt:["Unless","Until","Although","Because"],correct:1,explain:"~할 때까지 (안 하면 안 된다) → until."},
+  {q:"The captain, along with the crew, _____ responsible for passenger safety.",opt:["are","is","were","have been"],correct:1,explain:"along with은 무시하고 주어(The captain)에 수일치 → is."},
+  {q:"This is the gate _____ the delayed flight will depart.",opt:["which","where","who","whose"],correct:1,explain:"장소를 나타내는 관계부사 → where."},
+  {q:"I would rather you _____ that comment during the briefing.",opt:["don't make","didn't make","won't make","not made"],correct:1,explain:"would rather + 주어 + 과거형(가정법) → didn't make."},
+  {q:"The number of passengers on this route _____ increased significantly this year.",opt:["have","has","were","are"],correct:1,explain:"'The number of' → 단수 취급, has."},
+  {q:"Neither the pilot nor the co-pilots _____ aware of the delay.",opt:["was","is","were","has been"],correct:2,explain:"neither A nor B는 B(co-pilots, 복수)에 수일치 → were."},
+  {q:"The passenger insisted that he _____ moved to another seat immediately.",opt:["is","was","be","being"],correct:2,explain:"insist that 뒤 that절은 동사원형(가정법 현재) → be moved."},
+  {q:"This bag is too heavy _____ carried onto the aircraft.",opt:["to be","being","to being","for being"],correct:0,explain:"too ~ to부정사 구문, 수동 의미 → to be carried."},
+  {q:"_____ the storm, all flights were grounded for the day.",opt:["Because","Due to","Even though","As if"],correct:1,explain:"명사구 앞에는 due to (because는 절 앞)."},
+  {q:"The crew member _____ badge was missing had to report to security.",opt:["who","which","whose","that"],correct:2,explain:"소유격 관계대명사 whose + 명사."},
+  {q:"By next month, she _____ for this airline for ten years.",opt:["will work","will have worked","has worked","worked"],correct:1,explain:"미래의 특정 시점까지 계속되는 일 → 미래완료."},
+  {q:"The announcement was made _____ clearly that no one could misunderstand it.",opt:["so","such","too","very"],correct:0,explain:"so + 형용사/부사 + that ~ 구문."},
+  {q:"Had the crew known about the storm earlier, they _____ the route.",opt:["would change","would have changed","changed","will change"],correct:1,explain:"가정법 과거완료: Had + p.p. ~, 주어 + would have p.p."},
+  {q:"It is essential that every crew member _____ the emergency procedures.",opt:["knows","know","knowing","known"],correct:1,explain:"essential that 뒤 that절 동사원형 → know."},
+];
+
 var current=0;var answers=[];var started=false;var activeSet=QUESTIONS;var activeMode='vocab';
 
 function startTest(mode){
@@ -237,7 +265,7 @@ function startTest(mode){
     document.getElementById('screen-passage').style.display='block';
     return;
   }
-  activeSet=QUESTIONS;
+  activeSet=(activeMode==='grammar')?GRAMMAR_QUESTIONS:QUESTIONS;
   answers=new Array(activeSet.length).fill(null);
   current=0;
   if(!started){started=true;try{if(typeof useFreeTrialOrCheck==='function')useFreeTrialOrCheck();}catch(e){}}
@@ -330,7 +358,8 @@ function showResult(){
   });
   // Supabase 기록
   if(typeof savePracticeRecord==='function'){
-    savePracticeRecord({stage:'English Test',airline:'Emirates',question:'30문항 객관식',answer:correctCount+'/30',score:pct,feedback:title+' — '+grade});
+    var modeLabel=(activeMode==='grammar')?'그래머 테스트':(activeMode==='reading')?'독해 테스트':'어휘 테스트';
+    savePracticeRecord({stage:'English Test',airline:'Emirates',question:modeLabel+' '+activeSet.length+'문항 객관식',answer:correctCount+'/'+activeSet.length,score:pct,feedback:title+' — '+grade});
   }
   window.scrollTo({top:0,behavior:'smooth'});
 }

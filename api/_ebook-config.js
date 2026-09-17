@@ -4,5 +4,5 @@ module.exports = {
   active: true,
   code: 'WCLIVE0920',
   fileUrl: '/ebook-content.html',
-  title: '합격 비법 노트',
+  title: '승무원 면접 가이드',
 };

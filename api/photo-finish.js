@@ -11,7 +11,7 @@ function buildPrompt(o) {
   const bg = `a clean, evenly-lit solid studio background of the color ${hex(o.bgHex, '#9CC3E8')}`;
   const jkStyleMap = {
     single: 'a well-fitted single-breasted tailored blazer with notch lapels',
-    collarless: 'a well-fitted collarless round-neck tailored jacket (no lapels)',
+    collarless: 'a fitted single-layer collarless blazer with structured shoulders and absolutely NO lapels, NO notch, and NO folded collar of any kind — the jacket front is one smooth continuous curved edge running from the shoulder seam down to a soft, wide round-scoop opening at the chest (like a modern Korean airline no-collar uniform jacket), exposing the top worn underneath in a clean oval shape; the edge is simply finished fabric, not a separate collar piece',
     double: 'a well-fitted double-breasted tailored blazer'
   };
   const jkStyle = jkStyleMap[o.jacketStyle] || jkStyleMap.single;

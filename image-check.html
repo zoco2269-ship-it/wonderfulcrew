@@ -20,7 +20,7 @@
 <meta name="twitter:description" content="셀카 한 장으로 승무원 면접 사진 완성 — 메이크업·배경·자켓, 무료 체험.">
 <meta name="twitter:image" content="https://www.wonderfulcrew.com/images/og-image-check.png?v=1">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"승무원 면접 사진·메이크업 시뮬레이션","description":"평소 셀카 한 장으로 승무원 면접 사진 완성. 메이크업(립스틱·아이섀도·아이라인) 가상 체험, 증명사진 배경·자켓 교체, 첫인상 진단.","url":"https://www.wonderfulcrew.com/image-check","applicationCategory":"LifestyleApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"inLanguage":"ko-KR","publisher":{"@type":"Organization","name":"원더풀크루","url":"https://www.wonderfulcrew.com","logo":{"@type":"ImageObject","url":"https://www.wonderfulcrew.com/images/logo.png"}}}
+{"@context":"https://schema.org","@type":"WebApplication","name":"승무원 면접 사진·메이크업 시뮬레이션","description":"평소 셀카 한 장으로 승무원 면접 사진 완성. 메이크업(립스틱·아이섀도·아이라인) 가상 체험, 증명사진 배경·자켓 교체, 첫인상 진단.","url":"https://www.wonderfulcrew.com/image-check","applicationCategory":"LifestyleApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"inLanguage":"ko-KR","publisher":{"@type":"Organization","name":"원더풀크루","url":"https://www.wonderfulcrew.com","logo":{"@type":"ImageObject","url":"https://www.wonderfulcrew.com/images/og-share.png?v=1"}}}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"원더풀크루","item":"https://www.wonderfulcrew.com/"},{"@type":"ListItem","position":2,"name":"면접 사진·메이크업","item":"https://www.wonderfulcrew.com/image-check"}]}
@@ -164,8 +164,8 @@
 <body>
 
 <nav>
-  <a href="home-v2.html" class="logo">Wonderful<span>Crew</span></a>
-  <a href="home-v2.html" class="back">← 홈</a>
+  <a href="/" class="logo">Wonderful<span>Crew</span></a>
+  <a href="/" class="back">← 홈</a>
 </nav>
 
 <div class="wrap">
@@ -226,8 +226,11 @@
           <div class="mk-label">👁 아이섀도</div>
           <div class="mk-swatches" id="eyeSwatches"></div>
           <div class="mk-slider"><span>연하게</span><input type="range" id="eyeInt" min="0" max="100" value="33"><span>진하게</span></div>
+          <div class="mk-slider"><span>좁은 범위</span><input type="range" id="eyeSpread" min="0" max="100" value="50"><span>넓은 범위</span></div>
           <div class="mk-label" style="margin-top:14px;">✒️ 아이라인 <span class="mk-int"><button id="linerOff" class="on">없음</button><button id="linerOn">있게</button></span></div>
+          <div class="mk-slider"><span>연하게</span><input type="range" id="linerInt" min="0" max="100" value="33"><span>진하게</span></div>
           <div class="mk-label" style="margin-top:14px;">🌫 스모키 <span class="mk-int"><button id="smokyOff" class="on">없음</button><button id="smokyOn">있게</button></span></div>
+          <div class="mk-slider"><span>연하게</span><input type="range" id="smokyInt" min="0" max="100" value="33"><span>진하게</span></div>
         </div>
         <div class="mk-group">
           <div class="mk-label">🖼 배경 바꾸기 <span class="beta">무료</span></div>
@@ -315,7 +318,6 @@
   </div>
 </div>
 
-<footer>© 2026 WonderfulCrew · 이미지 진단은 참고용 조언입니다.</footer>
 
 <!-- 플랫폼 공용 로그인·무료체험(5회) 시스템 -->
 <script src="js/supabase-client.js?v=6"></script>
@@ -490,7 +492,7 @@ var $=function(id){return document.getElementById(id);};
 var landmarker=null, lm=null, blend=null, baseImg=null, cw=0, ch=0, lipColor=null, eyeColor=null, eyeStrong=true, eyeliner=false, smoky=false;
 var segmenter=null, personCanvas=null, bgColor=null;
 var segMC=null, clothesCanvas=null, jacketColor=null;
-var lipInt=0.6, eyeInt=0.6;
+var lipInt=0.6, eyeInt=0.6, linerInt=0.6, smokyInt=0.6, eyeSpread=0.5;
 function hx(hex,a){ hex=hex.replace('#',''); var r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16); return 'rgba('+r+','+g+','+b+','+a+')'; }
 
 async function ensure(){
@@ -533,10 +535,11 @@ async function computePerson(){
   var mk2=document.createElement('canvas'); mk2.width=mw; mk2.height=mh; var m2=mk2.getContext('2d');
   m2.drawImage(mk,0,0); m2.globalCompositeOperation='destination-in';
   [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,1]].forEach(function(o){ m2.drawImage(mk,o[0],o[1]); });
-  // 디스플레이 해상도로 확대 + 약한 블러(AA만)
+  // 디스플레이 해상도로 확대 + 블러로 경계 자연스럽게(저해상 마스크를 크게 확대할수록 계단 무늬가 커지므로 확대 비율에 맞춰 블러도 키움)
   var pc=document.createElement('canvas'); pc.width=cw; pc.height=ch; var pctx=pc.getContext('2d');
   pctx.drawImage(baseImg,0,0,cw,ch);
-  pctx.globalCompositeOperation='destination-in'; pctx.filter='blur(2.2px)';  // 경계 더 부드럽게(덜 어색)
+  var featherPx=Math.min(10, Math.max(3, (cw/mw)*1.1));
+  pctx.globalCompositeOperation='destination-in'; pctx.filter='blur('+featherPx+'px)';  // 경계 더 부드럽게(덜 어색)
   pctx.drawImage(mk2,0,0,cw,ch); pctx.filter='none';
   personCanvas=pc;
   if(mask.close)mask.close(); if(res.close)res.close();
@@ -584,7 +587,7 @@ function paintMakeup(ctx){
       var d0=Math.abs(pts[0].x/cw-midXe), dN=Math.abs(pts[pts.length-1].x/cw-midXe);
       if(dN>d0) pts.reverse(); // pts[0]=바깥 눈꼬리
       var w=Math.abs(pts[0].x-pts[pts.length-1].x);
-      var baseD=Math.max(8, w*(0.28+eyeInt*0.12));  // 범위 좁게
+      var baseD=Math.max(8, w*(0.22+eyeSpread*0.32));  // 범위 좁게~넓게(슬라이더로 조절)
       var oc=document.createElement('canvas'); oc.width=cw; oc.height=ch; var octx=oc.getContext('2d');
       octx.save(); octx.filter='blur(4px)';
       function blob(cx,cy,r,a){
@@ -610,7 +613,7 @@ function paintMakeup(ctx){
   }
   // 스모키 — 속눈썹 라인에 짙게 깔고, 눈꼬리(뒷라인)까지 진하게 빼고, 거기서부터 은은하게 번짐.
   if(smoky){
-    var sc='#241F28', midXs=(lm[234].x+lm[454].x)/2;
+    var sc='#241F28', midXs=(lm[234].x+lm[454].x)/2, sInt=0.4+smokyInt*1.2;
     [EYE_L,EYE_R].forEach(function(eye){
       var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
       var d0=Math.abs(pts[0].x/cw-midXs), dN=Math.abs(pts[pts.length-1].x/cw-midXs);
@@ -621,15 +624,15 @@ function paintMakeup(ctx){
       var yb=Math.max.apply(null,pts.map(function(p){return p.y;}));
       var yt=Math.min.apply(null,pts.map(function(p){return p.y;}))-up;
       var g=ctx.createLinearGradient(0,yb,0,yt);
-      g.addColorStop(0, hx(sc,0.70)); g.addColorStop(0.5, hx(sc,0.28)); g.addColorStop(1, hx(sc,0));
+      g.addColorStop(0, hx(sc,Math.min(1,0.70*sInt))); g.addColorStop(0.5, hx(sc,Math.min(1,0.28*sInt))); g.addColorStop(1, hx(sc,0));
       ctx.save(); ctx.filter='blur(7px)'; ctx.globalCompositeOperation='multiply'; ctx.fillStyle=g;
       ctx.beginPath();
       pts.forEach(function(p,i){ if(i)ctx.lineTo(p.x,p.y); else ctx.moveTo(p.x,p.y); });
       for(var i=pts.length-1;i>=0;i--){ ctx.lineTo(pts[i].x, pts[i].y-up); }
       ctx.closePath(); ctx.fill(); ctx.restore();
       // (2) 짙은 스모키 라이너 — 눈꼬리(바깥) 두껍게 → 앞머리 얇게, 뒷라인까지 길게, 살짝 번지게
-      var maxW=Math.max(1.6, w*0.058);
-      ctx.save(); ctx.filter='blur(1.6px)'; ctx.strokeStyle=hx(sc,0.92); ctx.lineCap='round'; ctx.lineJoin='round';
+      var maxW=Math.max(1.6, w*0.058*sInt);
+      ctx.save(); ctx.filter='blur(1.6px)'; ctx.strokeStyle=hx(sc,Math.min(1,0.92*sInt)); ctx.lineCap='round'; ctx.lineJoin='round';
       for(var i=0;i<pts.length-1;i++){
         var t=1-i/(pts.length-1); // 바깥 1 → 앞머리 0
         ctx.beginPath(); ctx.lineWidth=maxW*(0.2+0.8*t);
@@ -645,14 +648,14 @@ function paintMakeup(ctx){
   }
   // 아이라인 — 래시라인은 소프트하게, 눈꼬리는 여러 겹으로 번지며 사라져 경계가 안 보이게
   if(eyeliner){
-    var midX=(lm[234].x+lm[454].x)/2;
+    var midX=(lm[234].x+lm[454].x)/2, lInt=0.4+linerInt*1.2;
     [EYE_L,EYE_R].forEach(function(eye){
       var pts=eye.map(function(id){return {x:lm[id].x*cw,y:lm[id].y*ch};});
       var d0=Math.abs(pts[0].x/cw-midX), dN=Math.abs(pts[pts.length-1].x/cw-midX);
       if(dN>d0) pts.reverse(); // pts[0]=바깥 눈꼬리, 끝=안쪽 앞머리
-      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var maxW=Math.max(1.0, w*0.037);
+      var w=Math.abs(pts[0].x-pts[pts.length-1].x); var maxW=Math.max(1.0, w*0.037*lInt);
       // 1) 래시라인 — 소프트 블러, 눈꼬리 두껍게 → 앞머리 얇게 (아주 살짝 진하게)
-      ctx.save(); ctx.filter='blur(1.3px)'; ctx.strokeStyle='rgba(30,20,18,0.9)'; ctx.lineCap='round'; ctx.lineJoin='round';
+      ctx.save(); ctx.filter='blur(1.3px)'; ctx.strokeStyle='rgba(30,20,18,'+Math.min(1,0.9*lInt)+')'; ctx.lineCap='round'; ctx.lineJoin='round';
       for(var i=0;i<pts.length-1;i++){
         var t=1-i/(pts.length-1);
         ctx.beginPath(); ctx.lineWidth=maxW*(0.12+0.9*t);
@@ -664,7 +667,7 @@ function paintMakeup(ctx){
       ctx.save(); ctx.filter='blur(2.4px)'; ctx.lineCap='round';
       var N=7;
       for(var k=0;k<N;k++){
-        var f0=k/N, f1=(k+1)/N, a=0.68*(1-f0)*(1-f0);
+        var f0=k/N, f1=(k+1)/N, a=Math.min(1,0.68*lInt)*(1-f0)*(1-f0);
         ctx.strokeStyle='rgba(32,22,20,'+a+')'; ctx.lineWidth=maxW*(1.0*(1-f0)+0.15);
         ctx.beginPath();
         ctx.moveTo(o.x+dx*0.55*f0, o.y+dy*0.55*f0);
@@ -806,8 +809,11 @@ function mkPick(init, cb){
     on.onclick=function(){ smoky=true; on.classList.add('on'); off.classList.remove('on'); render(); }; } })();
 (function(){ var l=$('lipInt'); if(l) l.oninput=function(){ lipInt=(+l.value)/100; render(); }; })();
 (function(){ var e=$('eyeInt'); if(e) e.oninput=function(){ eyeInt=(+e.value)/100; render(); }; })();
+(function(){ var e=$('eyeSpread'); if(e) e.oninput=function(){ eyeSpread=(+e.value)/100; render(); }; })();
+(function(){ var l=$('linerInt'); if(l) l.oninput=function(){ linerInt=(+l.value)/100; render(); }; })();
+(function(){ var s=$('smokyInt'); if(s) s.oninput=function(){ smokyInt=(+s.value)/100; render(); }; })();
 (function(){ var s=$('bgSave'); if(s) s.onclick=function(){
-  var admin=false; try{ admin=localStorage.getItem('wc_admin')==='1'; }catch(e){}
+  var admin=false; try{ admin=wcIsAdmin(); }catch(e){}
   if(!admin){
     var g=document.getElementById('wcGate'), m=document.getElementById('wcGateMsg');
     if(m) m.textContent='메이크업 사진 저장은 멤버십 전용이에요. 입혀보기(비포/애프터 미리보기)는 자유롭게 이용하실 수 있어요.';

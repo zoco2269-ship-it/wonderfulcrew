@@ -33,7 +33,7 @@
   "name":"원더풀크루",
   "alternateName":"WonderfulCrew",
   "url":"https://www.wonderfulcrew.com",
-  "logo":"https://www.wonderfulcrew.com/images/logo.png",
+  "logo":"https://www.wonderfulcrew.com/images/og-share.png?v=1",
   "description":"항공사 승무원 면접 전문 코칭 플랫폼. 7년차 에미레이트 일등석 출신 대표가 직접 코칭합니다. 22개국 1,000명+ 합격생 배출, 30,000건+ 코칭 케이스, 10,000건+ 실전 면접 데이터.",
   "address":{"@type":"PostalAddress","addressCountry":"KR"},
   "contactPoint":{"@type":"ContactPoint","contactType":"customer service","areaServed":"KR","availableLanguage":["Korean","English"]}
@@ -1382,6 +1382,7 @@ if(sideBtns&&heroSection){
 </div>
 <script>
 (function(){
+  if(new Date() >= new Date(2026,8,21,0,0,0)) return; // 9/21부터 노출 중단
   try{ if(sessionStorage.getItem('wcLivePopSeen')) return; }catch(e){}
   var pop=document.getElementById('wcLivePop'); if(!pop) return;
   function closePop(){ pop.style.display='none'; try{sessionStorage.setItem('wcLivePopSeen','1');}catch(e){} }

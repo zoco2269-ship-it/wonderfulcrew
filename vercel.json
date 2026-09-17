@@ -2,7 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/live", "destination": "/landing.html" }
+    { "source": "/live", "destination": "/landing.html" },
+    { "source": "/", "destination": "/practice-foreign.html" }
   ],
   "redirects": [
     {

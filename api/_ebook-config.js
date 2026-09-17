@@ -3,6 +3,6 @@
 module.exports = {
   active: true,
   code: 'WCLIVE0920',
-  fileUrl: '/ebooks/wonderfulcrew-ebook.pdf',
+  fileUrl: '/ebook-content.html',
   title: '합격 비법 노트',
 };

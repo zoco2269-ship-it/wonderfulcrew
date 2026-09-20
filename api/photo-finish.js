@@ -15,7 +15,7 @@ function buildPrompt(o) {
     single: 'a well-fitted single-breasted tailored blazer with notch lapels',
     collarless: 'a fitted single-layer collarless blazer with structured shoulders and absolutely NO lapels, NO notch, and NO folded collar of any kind — the jacket front is one smooth continuous curved edge running from the shoulder seam down to a soft, wide round-scoop opening at the chest (like a modern Korean airline no-collar uniform jacket), exposing the top worn underneath in a clean oval shape; the edge is simply finished fabric, not a separate collar piece',
     double: 'a well-fitted double-breasted tailored blazer',
-    vnotch: 'a fitted single-layer collarless cabin-crew uniform jacket with structured shoulders. It has ABSOLUTELY NO collar, NO lapels, NO notch-lapel, NO folded or standing collar of any kind — the front edges are plain, smooth, finished fabric that run straight from the shoulder down and open into a clean V-shaped neckline (deep V like an airline uniform jacket), showing a smooth white blouse underneath. Think of a plain collarless V-neck airline uniform jacket, not a blazer'
+    vnotch: 'a tailored woven-twill cabin-crew uniform jacket copied EXACTLY from the second reference image (garment reference). Neckline: NO collar, NO lapels, NO notch lapels, NO cardigan-like V. The neck opening is a soft shallow rounded scoop that starts at the base of the neck at the shoulder line and curves down into a short vertical center opening at the upper chest — the two front panels are crisp and structured with a clean vertical edge, sit close to the neck, and show a lot of bare collarbone skin above them; only a small narrow panel of plain white round-neck blouse is visible in the center of the chest. The jacket must look crisp and tailored like an airline uniform jacket — NOT a knit, NOT a cardigan, NOT a wide plunging V-neck sweater'
   };
   const jkStyle = jkStyleMap[o.jacketStyle] || jkStyleMap.single;
   const jk = `${jkStyle} in the color ${hex(o.jacketHex, '#20304F')}`;
@@ -28,7 +28,7 @@ function buildPrompt(o) {
   const fabricNote = ' The inner garment must be a crisp, smooth WOVEN cotton/satin uniform-style blouse — NOT a knit, NOT a sweater, NOT a ribbed or stretchy jersey top, NOT a casual t-shirt.';
   let neck = neckMap[o.neckline] || neckMap.shirt;
   // V노치 유니폼 자켓은 카라 없는 자켓이므로 안쪽 블라우스도 카라 없이(카라 셔츠와 충돌 방지)
-  if (o.jacketStyle === 'vnotch') neck = 'a smooth white woven blouse with a plain round neckline sitting neatly inside the V of the jacket — NO shirt collar, NO collar points, NO lapels anywhere';
+  if (o.jacketStyle === 'vnotch') neck = 'a small plain white woven round-neck blouse, only a narrow center panel of it visible between the jacket fronts exactly like in the reference image — NO shirt collar, NO collar points, NO lapels anywhere';
   // 사용자가 미리보기에서 고른 메이크업을 그대로 반영
   const validHex = (v) => (/^#[0-9a-fA-F]{6}$/.test(v || '') ? v : null);
   const strength = (v) => (v > 0.66 ? 'bold' : (v > 0.33 ? 'medium' : 'soft'));
@@ -60,7 +60,20 @@ Apply ALL of the following, keeping everything natural and professional:
 
 CRITICAL: Preserve the person's FACIAL IDENTITY — same face shape, eyes, nose and overall likeness, so it is unmistakably the same person. Do NOT turn them into a different person, and do NOT change ethnicity, age, or facial proportions. But DO transform the expression, posture, framing, hair, wardrobe and background exactly as instructed above — the identity stays, everything else becomes polished and formal.
 
+${o.jacketStyle === 'vnotch' ? `IMAGE INPUTS: the FIRST image is the applicant photo to edit (keep THIS person's face). The SECOND image is a GARMENT REFERENCE ONLY — copy just the jacket cut and neckline shape from it (the jacket COLOR must follow the color specified above, not the reference color); do NOT copy its face, hair, skin, pose or background, and do not blend its person into the result.
+` : ''}
 Output ONLY the edited photo image.`;
+}
+
+let _refCache = null;
+async function loadJacketRef() {
+  if (_refCache) return _refCache;
+  try {
+    const r = await fetch('https://www.wonderfulcrew.com/images/5-1.png');
+    if (!r.ok) return null;
+    _refCache = Buffer.from(await r.arrayBuffer()).toString('base64');
+    return _refCache;
+  } catch (e) { return null; }
 }
 
 module.exports = async function handler(req, res) {
@@ -92,17 +105,19 @@ module.exports = async function handler(req, res) {
     makeup: (body.makeup && typeof body.makeup === 'object') ? body.makeup : null
   };
 
+  // 순서 중요: 1번=지원자 사진, 2번=자켓 형태 참고 이미지(V노치일 때만)
+  const inputParts = [{ text: buildPrompt(opts) }, { inline_data: { mime_type: mediaType, data: image } }];
+  if (opts.jacketStyle === 'vnotch') {
+    const ref = await loadJacketRef();
+    if (ref) inputParts.push({ inline_data: { mime_type: 'image/png', data: ref } });
+  }
+
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
       body: JSON.stringify({
-        contents: [{
-          parts: [
-            { text: buildPrompt(opts) },
-            { inline_data: { mime_type: mediaType, data: image } }
-          ]
-        }],
+        contents: [{ parts: inputParts }],
         generationConfig: { responseModalities: ['IMAGE'] }
       })
     });

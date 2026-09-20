@@ -60,7 +60,7 @@ Apply ALL of the following, keeping everything natural and professional:
 
 CRITICAL: Preserve the person's FACIAL IDENTITY — same face shape, eyes, nose and overall likeness, so it is unmistakably the same person. Do NOT turn them into a different person, and do NOT change ethnicity, age, or facial proportions. But DO transform the expression, posture, framing, hair, wardrobe and background exactly as instructed above — the identity stays, everything else becomes polished and formal.
 
-${o.jacketStyle === 'vnotch' ? `IMAGE INPUTS: the FIRST image is the applicant photo to edit (keep THIS person's face). The SECOND image is a GARMENT REFERENCE ONLY — copy just the jacket cut and neckline shape from it (the jacket COLOR must follow the color specified above, not the reference color); do NOT copy its face, hair, skin, pose or background, and do not blend its person into the result.
+${o.jacketStyle === 'vnotch' ? `IMAGE INPUTS: the FIRST image is the applicant photo to edit (keep THIS person's face). The SECOND image is a cropped GARMENT SHAPE REFERENCE ONLY (a jacket neckline close-up, no face). Copy ONLY the outline/cut of the jacket neckline and front panels from it. Do NOT copy its color (use the color specified above), do NOT copy its lighting, shading, shadows, skin or fabric texture, and it must have NO influence at all on the applicant's face, hair, skin tone or expression — the face must remain 100% the applicant from the FIRST image. The jacket must be evenly and brightly lit, a clean flat color with NO dark shadows, NO darkened edges, NO gradient shading and NO dirty dark patches anywhere on it.
 ` : ''}
 Output ONLY the edited photo image.`;
 }
@@ -69,7 +69,7 @@ let _refCache = null;
 async function loadJacketRef() {
   if (_refCache) return _refCache;
   try {
-    const r = await fetch('https://www.wonderfulcrew.com/images/5-1.png');
+    const r = await fetch('https://www.wonderfulcrew.com/images/jacket-ref.png');
     if (!r.ok) return null;
     _refCache = Buffer.from(await r.arrayBuffer()).toString('base64');
     return _refCache;

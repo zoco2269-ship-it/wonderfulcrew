@@ -13,15 +13,15 @@
 <meta property="og:url" content="https://www.wonderfulcrew.com/video-practice-domestic-en">
 <meta property="og:title" content="Video Interview Practice (Korean) | Korean Air, Asiana, Jeju Air 1st-stage Self-recording — WonderfulCrew">
 <meta property="og:description" content="Korean Air, Asiana, Jeju Air, Jin Air, T'way, Air Premia and other Korean domestic airline video-interview practice for foreign applicants. Interview is conducted in Korean.">
-<meta property="og:image" content="https://www.wonderfulcrew.com/images/logo.png">
+<meta property="og:image" content="https://www.wonderfulcrew.com/images/og-share.png?v=1">
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="WonderfulCrew">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Video Interview Practice (Korean) | Korean Air, Asiana, Jeju Air 1st-stage Self-recording — WonderfulCrew">
 <meta name="twitter:description" content="Korean Air, Asiana, Jeju Air, Jin Air, T'way, Air Premia and other Korean domestic airline video-interview practice for foreign applicants. Interview is conducted in Korean.">
-<meta name="twitter:image" content="https://www.wonderfulcrew.com/images/logo.png">
+<meta name="twitter:image" content="https://www.wonderfulcrew.com/images/og-share.png?v=1">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":"Video Interview Practice","description":"Korean Air, Asiana, Jeju Air, Jin Air, T'way, Air Premia and other Korean domestic airline video-interview practice for foreign applicants. Interview is conducted in Korean.","url":"https://www.wonderfulcrew.com/video-practice-domestic-en","inLanguage":"en-US","publisher":{"@type":"Organization","name":"WonderfulCrew","url":"https://www.wonderfulcrew.com","logo":{"@type":"ImageObject","url":"https://www.wonderfulcrew.com/images/logo.png"}},"author":{"@type":"Organization","name":"WonderfulCrew"}}
+{"@context":"https://schema.org","@type":"Article","headline":"Video Interview Practice","description":"Korean Air, Asiana, Jeju Air, Jin Air, T'way, Air Premia and other Korean domestic airline video-interview practice for foreign applicants. Interview is conducted in Korean.","url":"https://www.wonderfulcrew.com/video-practice-domestic-en","inLanguage":"en-US","publisher":{"@type":"Organization","name":"WonderfulCrew","url":"https://www.wonderfulcrew.com","logo":{"@type":"ImageObject","url":"https://www.wonderfulcrew.com/images/og-share.png?v=1"}},"author":{"@type":"Organization","name":"WonderfulCrew"}}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
@@ -161,6 +161,12 @@ footer{padding:50px 5%;background:var(--navy);color:rgba(255,255,255,0.6);text-a
     <option value="domestic">Korean Airlines Common</option>
     <option value="emirates">Emirates</option>
     <option value="singapore">Singapore Airlines</option>
+    <option value="qatar">Qatar Airways</option>
+    <option value="riyadh">Riyadh Air</option>
+    <option value="etihad">Etihad Airways</option>
+    <option value="cathay">Cathay Pacific</option>
+    <option value="flydubai">flydubai</option>
+    <option value="airasia">AirAsia</option>
   </select>
   <script>
   // ?mode=domestic 으로 진입 시 국내 항공사 공통을 드롭다운 첫 옵션으로 + 기본 선택
@@ -340,6 +346,104 @@ var SINGAPORE_VIDEO_QS=[
   "How would you adapt to living in Singapore?",
   "Why do you think you are the right fit for this position?"
 ];
+var AIRLINE_VIDEO_QS={
+  qatar:[
+    "Please introduce yourself.",
+    "Why do you want to become a cabin crew member?",
+    "Why Qatar Airways?",
+    "What do you know about Qatar Airways?",
+    "What does good customer service mean to you?",
+    "Tell me about a time you provided excellent service.",
+    "How would you handle a difficult passenger?",
+    "How would your friends and colleagues describe you?",
+    "What qualities make you a good fit for this role?",
+    "How do you handle stress and pressure?",
+    "What do you expect from living in Doha?",
+    "How would you adapt to a new culture and to working with colleagues from around the world?",
+    "What challenges do you expect as a Qatar Airways cabin crew member?",
+    "What do you do in your spare time?"
+  ],
+  riyadh:[
+    "Please introduce yourself.",
+    "Why do you want to become a cabin crew member?",
+    "Why Riyadh Air?",
+    "What do you know about Riyadh Air?",
+    "What does good customer service mean to you?",
+    "Tell me about a time you provided excellent service.",
+    "How would you handle a difficult passenger?",
+    "How would your friends and colleagues describe you?",
+    "What qualities make you a good fit for this role?",
+    "How do you handle stress and pressure?",
+    "What do you expect from living in Riyadh?",
+    "How would you adapt to a new culture and to working with colleagues from around the world?",
+    "What challenges do you expect as a Riyadh Air cabin crew member?",
+    "What do you do in your spare time?"
+  ],
+  etihad:[
+    "Please introduce yourself.",
+    "Why do you want to become a cabin crew member?",
+    "Why Etihad Airways?",
+    "What do you know about Etihad Airways?",
+    "What does good customer service mean to you?",
+    "Tell me about a time you provided excellent service.",
+    "How would you handle a difficult passenger?",
+    "How would your friends and colleagues describe you?",
+    "What qualities make you a good fit for this role?",
+    "How do you handle stress and pressure?",
+    "What do you expect from living in Abu Dhabi?",
+    "How would you adapt to a new culture and to working with colleagues from around the world?",
+    "What challenges do you expect as a Etihad Airways cabin crew member?",
+    "What do you do in your spare time?"
+  ],
+  cathay:[
+    "Please introduce yourself.",
+    "Why do you want to become a cabin crew member?",
+    "Why Cathay Pacific?",
+    "What do you know about Cathay Pacific?",
+    "What does good customer service mean to you?",
+    "Tell me about a time you provided excellent service.",
+    "How would you handle a difficult passenger?",
+    "How would your friends and colleagues describe you?",
+    "What qualities make you a good fit for this role?",
+    "How do you handle stress and pressure?",
+    "What do you expect from living in Hong Kong?",
+    "How would you adapt to a new culture and to working with colleagues from around the world?",
+    "What challenges do you expect as a Cathay Pacific cabin crew member?",
+    "What do you do in your spare time?"
+  ],
+  flydubai:[
+    "Please introduce yourself.",
+    "Why do you want to become a cabin crew member?",
+    "Why flydubai?",
+    "What do you know about flydubai?",
+    "What does good customer service mean to you?",
+    "Tell me about a time you provided excellent service.",
+    "How would you handle a difficult passenger?",
+    "How would your friends and colleagues describe you?",
+    "What qualities make you a good fit for this role?",
+    "How do you handle stress and pressure?",
+    "What do you expect from living in Dubai?",
+    "How would you adapt to a new culture and to working with colleagues from around the world?",
+    "What challenges do you expect as a flydubai cabin crew member?",
+    "What do you do in your spare time?"
+  ],
+  airasia:[
+    "Please introduce yourself.",
+    "Why do you want to become a cabin crew member?",
+    "Why AirAsia?",
+    "What do you know about AirAsia?",
+    "What does good customer service mean to you?",
+    "Tell me about a time you provided excellent service.",
+    "How would you handle a difficult passenger?",
+    "How would your friends and colleagues describe you?",
+    "What qualities make you a good fit for this role?",
+    "How do you handle stress and pressure?",
+    "What do you expect from living in Kuala Lumpur?",
+    "How would you adapt to a new culture and to working with colleagues from around the world?",
+    "What challenges do you expect as a AirAsia cabin crew member?",
+    "What do you do in your spare time?"
+  ]
+};
 var DOMESTIC_VIDEO_QS=[
   "자기소개를 1분 안에 해주세요.",
   "우리 항공사에 지원하신 동기는 무엇인가요?",
@@ -378,6 +482,9 @@ function buildPool(mode){
   if(mode==='emirates'){
     return EMIRATES_VIDEO_QS.map(function(q){return {q:q,hint:'SMILE · CONFIDENCE · BE YOURSELF · 30–60 sec'};});
   }
+  if(AIRLINE_VIDEO_QS[mode]){
+    return AIRLINE_VIDEO_QS[mode].map(function(q){return {q:q,hint:'Natural smile · Clear voice · Be yourself · 30–60 sec'};});
+  }
   if(mode==='singapore'){
     return SINGAPORE_VIDEO_QS.map(function(q){return {q:q,hint:'Natural smile · Clear voice · Be yourself · 30–60 sec'};});
   }
@@ -388,7 +495,7 @@ function buildPool(mode){
   return flattenPool(QUESTIONS_EN,EXTRA_EN,ROLEPLAY_QS,'Roleplay — Include apology, solution, alternative, and service recovery.');
 }
 // URL ?mode= 으로 들어오면 그 모드 풀로 시작 (practice-domestic → mode=domestic)
-var _initMode=(function(){try{var m=new URLSearchParams(location.search).get('mode');return (m==='domestic'||m==='emirates'||m==='singapore')?m:'general';}catch(e){return 'general';}})();
+var _initMode=(function(){try{var m=new URLSearchParams(location.search).get('mode');return (m==='domestic'||m==='emirates'||m==='singapore'||AIRLINE_VIDEO_QS[m])?m:'general';}catch(e){return 'general';}})();
 if(_initMode==='domestic'){window._vpLangOverride='ko-KR';lang='ko';}
 var POOL=buildPool(_initMode);
 window.onVpModeChange=function(){

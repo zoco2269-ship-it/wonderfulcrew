@@ -24,6 +24,7 @@ h1{font-family:'DM Serif Display','Noto Serif KR',serif;font-size:1.7rem;color:v
 .orig{font-size:0.9rem;color:#9a917f;text-decoration:line-through;}
 .now{font-size:2rem;color:var(--navy);font-weight:700;line-height:1.3;}
 .now small{font-size:.95rem;font-weight:400;}
+.until{font-size:.82rem;color:#8a6d1f;margin-top:8px;letter-spacing:.02em;}
 .off{display:inline-block;font-size:.8rem;color:#fff;background:var(--navy);padding:3px 10px;border-radius:12px;margin-left:8px;vertical-align:middle;}
 .benefits{text-align:left;font-size:0.86rem;color:#4A4438;line-height:1.9;margin-bottom:24px;padding-left:4px;}
 .benefits li{list-style:none;}
@@ -63,6 +64,7 @@ input:focus{outline:none;border-color:var(--gold);}
   <div class="price-box">
     <div class="orig">2,500,000원</div>
     <div class="now">1,990,000<small>원</small><span class="off">20% OFF</span></div>
+    <div class="until">라이브 특별가 · 9월 22일(화) 23:59까지</div>
   </div>
 
   <ul class="benefits">
@@ -99,7 +101,15 @@ input:focus{outline:none;border-color:var(--gold);}
 </div>
 
 <script>
+// 특별가 종료 시각 (KST) — 서버(api/innopay-prepare.js)와 동일하게 유지
+var PL_DEADLINE=Date.parse('2026-09-22T23:59:59+09:00');
+if(Date.now()>PL_DEADLINE){
+  document.querySelector('.until').textContent='라이브 특별가 기간이 종료되었습니다';
+  document.querySelectorAll('input,.btn-card').forEach(function(el){el.disabled=true;});
+}
+
 function plPay(method){
+  if(Date.now()>PL_DEADLINE){alert('라이브 특별가 기간이 종료되었습니다.');return;}
   var name=document.getElementById('pl-name').value.trim();
   var tel=document.getElementById('pl-tel').value.replace(/[^0-9]/g,'');
   var email=document.getElementById('pl-email').value.trim();

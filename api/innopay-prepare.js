@@ -33,6 +33,11 @@ module.exports = async function handler(req, res) {
       premium_live: { name: 'WonderfulCrew Premium (1년) 라이브 특별가 20% 할인', amount: 1990000 },
     };
 
+    // 라이브 특별가는 기간 한정 — 2026-09-22 23:59:59 (KST) 이후에는 결제 준비 자체를 거절
+    if (plan === 'premium_live' && Date.now() > Date.parse('2026-09-22T23:59:59+09:00')) {
+      return res.status(400).json({ error: isEn ? 'This special offer has ended.' : '라이브 특별가 기간이 종료되었습니다.' });
+    }
+
     const selected = plans[plan] || plans.basic;
     const timestamp = Date.now().toString();
     // 이노페이 moid 는 영숫자만 허용 — 특수문자 X. WC + timestamp 단순 형식.
@@ -46,7 +51,7 @@ module.exports = async function handler(req, res) {
       if (sbUrl && sbKey) {
         const { createClient } = require('@supabase/supabase-js');
         const sb = createClient(sbUrl, sbKey);
-        await sb.from('payments').insert({
+        const row = {
           user_id: userId || ('anonymous_' + (buyerEmail || moid)),
           // premium_live 는 할인가 결제 — 플랜은 premium 으로 기록(1년 활성화 로직 재사용), 금액만 199만원
           plan: plan === 'premium_live' ? 'premium' : (plan || 'basic'),
@@ -55,7 +60,16 @@ module.exports = async function handler(req, res) {
           tid: '',
           moid: moid,
           status: 'pending'
-        });
+        };
+        // 라이브 특별가 결제는 이름·연락처도 우리 DB 에 보관 (payments.buyer_name / buyer_tel 컬럼)
+        if (plan === 'premium_live') { row.buyer_name = buyerName || ''; row.buyer_tel = buyerTel || ''; }
+        let ins = await sb.from('payments').insert(row);
+        // 컬럼이 아직 없으면 기존 방식(이름·연락처 제외)으로 재시도 — 결제 자체는 절대 막지 않는다
+        if (ins.error && plan === 'premium_live') {
+          delete row.buyer_name; delete row.buyer_tel;
+          ins = await sb.from('payments').insert(row);
+        }
+        if (ins.error) console.warn('[prepare] pending insert:', ins.error.message);
       }
     } catch(e) { console.warn('[prepare] pending insert:', e.message); }
 

@@ -8,11 +8,12 @@ function buildPrompt(o) {
     ? 'Styling should suit an international airline cabin-crew interview.'
     : 'Styling should suit a Korean domestic airline cabin-crew interview.';
   const hex = (v, d) => (/^#[0-9a-fA-F]{6}$/.test(v || '') ? v : d);
-  const bg = `a clean, evenly-lit solid studio background of the color ${hex(o.bgHex, '#9CC3E8')}`;
+  const bg = `a perfectly flat, clean, evenly-lit solid studio background in the exact color ${hex(o.bgHex, '#9CC3E8')} — render this color true, bright and clean as a pure paint swatch of that exact hex; it must NOT look grayish, muddy, dull or desaturated, with NO gray tint, NO gradient, NO vignette, NO shadow and NO texture behind the person`;
   const jkStyleMap = {
     single: 'a well-fitted single-breasted tailored blazer with notch lapels',
     collarless: 'a fitted single-layer collarless blazer with structured shoulders and absolutely NO lapels, NO notch, and NO folded collar of any kind — the jacket front is one smooth continuous curved edge running from the shoulder seam down to a soft, wide round-scoop opening at the chest (like a modern Korean airline no-collar uniform jacket), exposing the top worn underneath in a clean oval shape; the edge is simply finished fabric, not a separate collar piece',
-    double: 'a well-fitted double-breasted tailored blazer'
+    double: 'a well-fitted double-breasted tailored blazer',
+    vnotch: 'a fitted single-layer collarless airline-uniform style jacket with structured shoulders and NO lapels and NO folded collar — the jacket front opens in a clean, crisp V-shaped notch neckline (like an airline cabin-crew uniform jacket) revealing a smooth white blouse underneath; the edge is simply finished fabric, not a separate collar piece'
   };
   const jkStyle = jkStyleMap[o.jacketStyle] || jkStyleMap.single;
   const jk = `${jkStyle} in the color ${hex(o.jacketHex, '#20304F')}`;
@@ -20,8 +21,9 @@ function buildPrompt(o) {
     shirt: 'a white dress shirt with a clearly visible pointed collar (a proper collared shirt), worn under the jacket',
     round: 'a collarless white blouse with a plain smooth ROUND neckline — absolutely NO collar of any kind, a clean rounded neckline',
     highneck: 'a white blouse buttoned all the way up to a high, closed neckline covering the neck — modest high-neck style, no open collar',
-    innertop: 'a simple elegant ivory round-neck inner top (a clean fine-knit/blouse top with a smooth round neckline, no collar)'
+    innertop: 'a simple elegant ivory round-neck inner top (a crisp woven blouse-style top with a smooth round neckline, no collar)'
   };
+  const fabricNote = ' The inner garment must be a crisp, smooth WOVEN cotton/satin uniform-style blouse — NOT a knit, NOT a sweater, NOT a ribbed or stretchy jersey top, NOT a casual t-shirt.';
   const neck = neckMap[o.neckline] || neckMap.round;
   // 사용자가 미리보기에서 고른 메이크업을 그대로 반영
   const validHex = (v) => (/^#[0-9a-fA-F]{6}$/.test(v || '') ? v : null);
@@ -47,8 +49,8 @@ The source may be a casual snapshot (home lighting, casual clothes, relaxed pose
 Apply ALL of the following, keeping everything natural and professional:
 - Expression (MANDATORY, MOST IMPORTANT — do this extremely well): This is a formal ID photo, so REPLACE the source expression with a composed, refined interview smile — regardless of what the original shows. Even if the source photo is a casual snapshot with a big open-mouthed laugh, squinted eyes, or an awkward expression, do NOT copy it; instead give her a calm, elegant, gentle smile where the corners of the mouth lift up softly and only the UPPER row of teeth is naturally visible — a poised, pretty, welcoming flight-attendant smile, exactly like a real professional interview headshot (not a laugh). The eyes should be open, bright and relaxed (not squinting). The smile must look 100% photorealistic and natural: relaxed lips, evenly-lit clean upper teeth of normal size and shape, a gentle Duchenne smile that lightly engages the eyes. The mouth and lips must look PRETTY and refined: well-shaped symmetric lips, corners lifted evenly, a graceful elegant camera-ready smile like a polished professional model headshot. STRICTLY AVOID an unnatural or unflattering result — no forced or stiff grin, no overly wide or gummy smile, no lower teeth showing, no clenched/crooked/oversized/fake-looking teeth, no awkward or tacky (촌스러운) mouth shape, nothing creepy or uncanny. It should look like the SAME person simply caught in a beautiful, elegant natural smile. A closed-lip or expressionless mouth is NOT acceptable.
 - Makeup: natural but defined interview makeup — clean groomed brows, subtle neutral eyeshadow with a soft outer accent, natural eyeliner, even smooth skin (remove blemishes/oil shine but keep natural skin texture), healthy natural blush, and a natural rosy-to-coral lip. Clean and bright, not heavy.
-- Hair: ALL hair smoothly slicked back into a small low bun at the nape, with a SOFT NATURAL VOLUME at the crown/top (not plastered flat — a gentle rounded lift on top). CRITICAL for this front view: every strand must be kept BEHIND the ears and BEHIND the shoulders — NO hair may fall forward onto the neck, jaw, cheeks or shoulders, and NO bun, knot, ponytail or tied-hair lump may be visible anywhere in the frame. Both sides of the neck and face must be completely clean and clear of hair. No center part; no flyaways; forehead, ears and jawline fully visible.
-- Wardrobe (follow EXACTLY as described): ${jk}, and worn underneath it: ${neck}. Render this exact collar/neckline style clearly and make it the visible neckline in the photo.
+- Hair: ALL hair smoothly slicked back into a small low bun at the nape, with a SOFT NATURAL VOLUME at the crown/top (not plastered flat — a gentle rounded lift on top). ABSOLUTELY CRITICAL for this front view: the bun sits directly BEHIND the head and is COMPLETELY HIDDEN by the head and neck — the camera must NOT see the bun, knot, ponytail, hair clip or any tied-hair lump at all. The outline of the head must end cleanly at the ears/jaw, and on BOTH sides of the neck, between the neck and the shoulders, there must be ONLY clean bare skin and the background — NO hair bulge, NO hair bump, NO hair mass, NO bun edge poking out to the left or right of the neck or below the ears. Every strand is kept BEHIND the ears and BEHIND the shoulders — NO hair may fall forward onto the neck, jaw, cheeks or shoulders. No center part; no flyaways; forehead, ears and jawline fully visible.
+- Wardrobe (follow EXACTLY as described): ${jk}, and worn underneath it: ${neck}.${fabricNote} Render this exact collar/neckline style clearly and make it the visible neckline in the photo.
 - Background: replace with ${bg} — match this background color exactly.
 - Posture: straighten the shoulders and head slightly.
 
@@ -81,8 +83,8 @@ module.exports = async function handler(req, res) {
     target: body.target === 'international' ? 'international' : 'domestic',
     bgHex: body.bgHex,
     jacketHex: body.jacketHex,
-    jacketStyle: ['single', 'collarless', 'double'].indexOf(body.jacketStyle) > -1 ? body.jacketStyle : 'single',
-    neckline: ['shirt', 'round', 'highneck', 'innertop'].indexOf(body.neckline) > -1 ? body.neckline : 'round',
+    jacketStyle: ['single', 'collarless', 'double', 'vnotch'].indexOf(body.jacketStyle) > -1 ? body.jacketStyle : 'single',
+    neckline: ['shirt', 'round', 'highneck', 'innertop'].indexOf(body.neckline) > -1 ? body.neckline : 'shirt',
     makeup: (body.makeup && typeof body.makeup === 'object') ? body.makeup : null
   };
 

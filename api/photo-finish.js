@@ -8,12 +8,14 @@ function buildPrompt(o) {
     ? 'Styling should suit an international airline cabin-crew interview.'
     : 'Styling should suit a Korean domestic airline cabin-crew interview.';
   const hex = (v, d) => (/^#[0-9a-fA-F]{6}$/.test(v || '') ? v : d);
-  const bg = `a perfectly flat, clean, evenly-lit solid studio background in the exact color ${hex(o.bgHex, '#9CC3E8')} — render this color true, bright and clean as a pure paint swatch of that exact hex; it must NOT look grayish, muddy, dull or desaturated, with NO gray tint, NO gradient, NO vignette, NO shadow and NO texture behind the person`;
+  const bgHexV = hex(o.bgHex, '#9CC3E8');
+  const bgTone = (() => { const r = parseInt(bgHexV.substr(1, 2), 16), g = parseInt(bgHexV.substr(3, 2), 16), b = parseInt(bgHexV.substr(5, 2), 16); return (b > r + 12 && b >= g) ? ' (a fresh, clean, clearly BLUE sky-blue tone with a visible blue cast — definitely not gray or white)' : ''; })();
+  const bg = `a perfectly flat, clean, evenly-lit solid studio background in the exact color ${bgHexV}${bgTone} — render this color true, bright and clean as a pure paint swatch of that exact hex; it must NOT look grayish, muddy, dull or desaturated, with NO gray tint, NO gradient, NO vignette, NO shadow and NO texture behind the person`;
   const jkStyleMap = {
     single: 'a well-fitted single-breasted tailored blazer with notch lapels',
     collarless: 'a fitted single-layer collarless blazer with structured shoulders and absolutely NO lapels, NO notch, and NO folded collar of any kind — the jacket front is one smooth continuous curved edge running from the shoulder seam down to a soft, wide round-scoop opening at the chest (like a modern Korean airline no-collar uniform jacket), exposing the top worn underneath in a clean oval shape; the edge is simply finished fabric, not a separate collar piece',
     double: 'a well-fitted double-breasted tailored blazer',
-    vnotch: 'a fitted single-layer collarless airline-uniform style jacket with structured shoulders and NO lapels and NO folded collar — the jacket front opens in a clean, crisp V-shaped notch neckline (like an airline cabin-crew uniform jacket) revealing a smooth white blouse underneath; the edge is simply finished fabric, not a separate collar piece'
+    vnotch: 'a fitted single-layer collarless cabin-crew uniform jacket with structured shoulders. It has ABSOLUTELY NO collar, NO lapels, NO notch-lapel, NO folded or standing collar of any kind — the front edges are plain, smooth, finished fabric that run straight from the shoulder down and open into a clean V-shaped neckline (deep V like an airline uniform jacket), showing a smooth white blouse underneath. Think of a plain collarless V-neck airline uniform jacket, not a blazer'
   };
   const jkStyle = jkStyleMap[o.jacketStyle] || jkStyleMap.single;
   const jk = `${jkStyle} in the color ${hex(o.jacketHex, '#20304F')}`;
@@ -24,7 +26,9 @@ function buildPrompt(o) {
     innertop: 'a simple elegant ivory round-neck inner top (a crisp woven blouse-style top with a smooth round neckline, no collar)'
   };
   const fabricNote = ' The inner garment must be a crisp, smooth WOVEN cotton/satin uniform-style blouse — NOT a knit, NOT a sweater, NOT a ribbed or stretchy jersey top, NOT a casual t-shirt.';
-  const neck = neckMap[o.neckline] || neckMap.round;
+  let neck = neckMap[o.neckline] || neckMap.shirt;
+  // V노치 유니폼 자켓은 카라 없는 자켓이므로 안쪽 블라우스도 카라 없이(카라 셔츠와 충돌 방지)
+  if (o.jacketStyle === 'vnotch') neck = 'a smooth white woven blouse with a plain round neckline sitting neatly inside the V of the jacket — NO shirt collar, NO collar points, NO lapels anywhere';
   // 사용자가 미리보기에서 고른 메이크업을 그대로 반영
   const validHex = (v) => (/^#[0-9a-fA-F]{6}$/.test(v || '') ? v : null);
   const strength = (v) => (v > 0.66 ? 'bold' : (v > 0.33 ? 'medium' : 'soft'));

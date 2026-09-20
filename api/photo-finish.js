@@ -53,7 +53,7 @@ The source may be a casual snapshot (home lighting, casual clothes, relaxed pose
 Apply ALL of the following, keeping everything natural and professional:
 - Expression (MANDATORY, MOST IMPORTANT — do this extremely well): This is a formal ID photo, so REPLACE the source expression with a composed, refined interview smile — regardless of what the original shows. Even if the source photo is a casual snapshot with a big open-mouthed laugh, squinted eyes, or an awkward expression, do NOT copy it; instead give her a calm, elegant, gentle smile where the corners of the mouth lift up softly and only the UPPER row of teeth is naturally visible — a poised, pretty, welcoming flight-attendant smile, exactly like a real professional interview headshot (not a laugh). The eyes should be open, bright and relaxed (not squinting). The smile must look 100% photorealistic and natural: relaxed lips, evenly-lit clean upper teeth of normal size and shape, a gentle Duchenne smile that lightly engages the eyes. The mouth and lips must look PRETTY and refined: well-shaped symmetric lips, corners lifted evenly, a graceful elegant camera-ready smile like a polished professional model headshot. STRICTLY AVOID an unnatural or unflattering result — no forced or stiff grin, no overly wide or gummy smile, no lower teeth showing, no clenched/crooked/oversized/fake-looking teeth, no awkward or tacky (촌스러운) mouth shape, nothing creepy or uncanny. It should look like the SAME person simply caught in a beautiful, elegant natural smile. A closed-lip or expressionless mouth is NOT acceptable.
 - Makeup: natural but defined interview makeup — clean groomed brows, subtle neutral eyeshadow with a soft outer accent, natural eyeliner, even smooth skin (remove blemishes/oil shine but keep natural skin texture), healthy natural blush, and a natural rosy-to-coral lip. Clean and bright, not heavy.
-- Hair: ALL hair smoothly slicked back into a small low bun at the nape, with a SOFT NATURAL VOLUME at the crown/top (not plastered flat — a gentle rounded lift on top). ABSOLUTELY CRITICAL for this front view: the bun sits directly BEHIND the head and is COMPLETELY HIDDEN by the head and neck — the camera must NOT see the bun, knot, ponytail, hair clip or any tied-hair lump at all. The outline of the head must end cleanly at the ears/jaw, and on BOTH sides of the neck, between the neck and the shoulders, there must be ONLY clean bare skin and the background — NO hair bulge, NO hair bump, NO hair mass, NO bun edge poking out to the left or right of the neck or below the ears. Every strand is kept BEHIND the ears and BEHIND the shoulders — NO hair may fall forward onto the neck, jaw, cheeks or shoulders. No center part; no flyaways; forehead, ears and jawline fully visible.
+- Hair (ABSOLUTELY CRITICAL): the hair is swept smoothly back off the face and secured at the back of the head, where it is COMPLETELY HIDDEN from the camera. In this front view there must be NO bun, NO knot, NO ponytail, NO hair clip, NO hair tie and NO hair lump visible anywhere — not on top of the head, not behind or beside the head, not beside the neck, not on the shoulders. What the camera sees is only a clean, smooth, swept-back hairline with a SOFT NATURAL VOLUME at the crown (a gentle rounded lift, not plastered flat), and a head outline that ends cleanly at the ears and jaw. On BOTH sides of the neck, between the neck and the shoulders, there must be ONLY bare skin and the plain background — no hair bulge, no hair bump, no hair mass. Every strand stays BEHIND the ears and BEHIND the shoulders; no hair falls forward onto the neck, jaw, cheeks or shoulders. No center part; no flyaways; forehead, ears and jawline fully visible.
 - Wardrobe (follow EXACTLY as described): ${jk}, and worn underneath it: ${neck}.${fabricNote} Render this exact collar/neckline style clearly and make it the visible neckline in the photo.
 - Background: replace with ${bg} — match this background color exactly.
 - Posture: straighten the shoulders and head slightly.
@@ -62,7 +62,7 @@ CRITICAL: Preserve the person's FACIAL IDENTITY — same face shape, eyes, nose 
 
 ${o.jacketStyle === 'vnotch' ? `IMAGE INPUTS: the FIRST image is the applicant photo to edit (keep THIS person's face). The SECOND image is a cropped GARMENT SHAPE REFERENCE ONLY (a jacket neckline close-up, no face). Copy ONLY the outline/cut of the jacket neckline and front panels from it. Do NOT copy its color (use the color specified above), do NOT copy its lighting, shading, shadows, skin or fabric texture, and it must have NO influence at all on the applicant's face, hair, skin tone or expression — the face must remain 100% the applicant from the FIRST image. The jacket must be evenly and brightly lit, a clean flat color with NO dark shadows, NO darkened edges, NO gradient shading and NO dirty dark patches anywhere on it.
 ` : ''}
-Output ONLY the edited photo image.`;
+Output exactly ONE single portrait photo containing exactly ONE person (the applicant) — never a collage, never two people, never a side-by-side or duplicated image. Output ONLY the edited photo image.`;
 }
 
 let _refCache = null;
@@ -113,14 +113,20 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
+    // 참고 이미지가 가로로 길어서 결과가 2인 가로 콜라주로 나온 적이 있어, V노치일 땐 출력 비율을 세로 3:4로 고정
+    const call = (cfg) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-      body: JSON.stringify({
-        contents: [{ parts: inputParts }],
-        generationConfig: { responseModalities: ['IMAGE'] }
-      })
+      body: JSON.stringify({ contents: [{ parts: inputParts }], generationConfig: cfg })
     });
+    const baseCfg = { responseModalities: ['IMAGE'] };
+    let r;
+    if (opts.jacketStyle === 'vnotch') {
+      r = await call({ ...baseCfg, imageConfig: { aspectRatio: '3:4' } });
+      if (!r.ok) r = await call(baseCfg);
+    } else {
+      r = await call(baseCfg);
+    }
     const d = await r.json();
     if (!r.ok) return res.status(500).json({ error: 'AI 편집 실패', detail: d.error || d });
 

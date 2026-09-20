@@ -32,6 +32,14 @@ input{width:100%;padding:13px 14px;margin-bottom:10px;border:1px solid #ddd3bd;f
 input:focus{outline:none;border-color:var(--gold);}
 .btn{display:block;width:100%;padding:16px;border:0;border-radius:30px;font-family:inherit;font-size:1rem;font-weight:600;cursor:pointer;margin-top:8px;}
 .btn-card{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}
+.hero-crew{position:relative;width:100%;height:240px;margin:0 auto 22px;}
+.hc-card{position:absolute;border-radius:14px;overflow:hidden;border:4px solid #fff;box-shadow:0 18px 38px -14px rgba(26,35,64,.55);background:#0B1222;}
+.hc-card img{width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block;}
+.hc-a{width:136px;height:182px;left:0;top:36px;transform:rotate(-10deg);}
+.hc-b{width:148px;height:196px;left:50%;top:4px;transform:translateX(-50%) rotate(7deg);}
+.hc-c{width:132px;height:176px;right:0;top:26px;transform:rotate(-5deg);}
+@media(max-width:480px){.card{padding:32px 22px;}.hero-crew{height:190px;}
+  .hc-a{width:104px;height:139px;top:28px;}.hc-b{width:114px;height:152px;}.hc-c{width:100px;height:134px;top:20px;}}
 .bank-box{margin-top:22px;padding:18px 16px;background:var(--cream);border:1px solid rgba(201,168,76,0.4);}
 .bank-title{font-size:.8rem;color:#6b6456;margin-bottom:8px;}
 .bank-num{font-size:1.15rem;font-weight:700;color:var(--navy);letter-spacing:.02em;}
@@ -43,6 +51,11 @@ input:focus{outline:none;border-color:var(--gold);}
 </head>
 <body>
 <div class="card">
+  <div class="hero-crew">
+    <div class="hc-card hc-a"><img src="images/advisor-cathay.jpg" alt="캐세이퍼시픽 승무원"></div>
+    <div class="hc-card hc-b"><img src="images/advisor-emirates.jpg" alt="에미레이트 승무원"></div>
+    <div class="hc-card hc-c"><img src="images/advisor-qatar.jpg" alt="카타르항공 승무원"></div>
+  </div>
   <div class="tag">LIVE SPECIAL</div>
   <h1>원더풀크루 프리미엄</h1>
   <p class="sub">합격 완성 올패키지 · 1년 이용</p>

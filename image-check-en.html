@@ -256,7 +256,7 @@
         </button>
         <button data-k="jacketStyle" data-v="vnotch">
           <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 9 L11 13 L7 40"/><path d="M22 9 L33 13 L37 40"/><path d="M15 11 L22 24 L29 11"/><path d="M22 24 L22 38"/></svg>
-          <span class="opt-t">V-notch (uniform)</span>
+          <span class="opt-t">No collar</span>
         </button>
       </div>
     </div>
@@ -422,7 +422,7 @@
     wrap.appendChild(em); wrap.appendChild(inp); el.appendChild(wrap);
   }
   buildFinSw('finBgSw', [['White','#FFFFFF'],['Light Sky','#BFE3F7'],['Sky','#9CC3E8'],['Deep Blue','#4A78C0'],['Grey','#DDE1E6']], 'bgHex', '#9CC3E8');
-  buildFinSw('finJkSw', [['Navy','#20304F'],['Red','#CC2A24'],['Black','#181A20'],['Charcoal','#3A3F4A'],['Grey','#6B7280'],['Burgundy','#5A2733']], 'jacketHex', '#20304F');
+  buildFinSw('finJkSw', [['Navy','#20304F'],['Red','#CC2A24'],['White','#FFFFFF'],['Black','#181A20'],['Charcoal','#3A3F4A'],['Grey','#6B7280'],['Burgundy','#5A2733']], 'jacketHex', '#20304F');
   diagRender();
   var finishBtn=$('finishBtn');
   if(finishBtn) finishBtn.addEventListener('click', async function(){

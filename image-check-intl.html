@@ -200,7 +200,7 @@
         </button>
         <button data-k="jacketStyle" data-v="vnotch">
           <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 9 L11 13 L7 40"/><path d="M22 9 L33 13 L37 40"/><path d="M15 11 L22 24 L29 11"/><path d="M22 24 L22 38"/></svg>
-          <span class="opt-t">V노치 (유니폼)</span>
+          <span class="opt-t">노카라</span>
         </button>
       </div>
     </div>
@@ -330,7 +330,7 @@
     wrap.appendChild(em); wrap.appendChild(inp); el.appendChild(wrap);
   }
   buildFinSw('finBgSw', [['흰색','#FFFFFF'],['연하늘','#BFE3F7'],['하늘','#9CC3E8'],['진파랑','#4A78C0'],['회색','#DDE1E6']], 'bgHex', '#9CC3E8');
-  buildFinSw('finJkSw', [['네이비','#20304F'],['레드','#CC2A24'],['블랙','#181A20'],['차콜','#3A3F4A'],['그레이','#6B7280'],['버건디','#5A2733']], 'jacketHex', '#20304F');
+  buildFinSw('finJkSw', [['네이비','#20304F'],['레드','#CC2A24'],['흰색','#FFFFFF'],['블랙','#181A20'],['차콜','#3A3F4A'],['그레이','#6B7280'],['버건디','#5A2733']], 'jacketHex', '#20304F');
   var finishBtn=$('finishBtn');
   if(finishBtn) finishBtn.addEventListener('click', async function(){
     if(!imgData){ $('finishStatus').textContent='먼저 사진을 올려주세요.'; return; }

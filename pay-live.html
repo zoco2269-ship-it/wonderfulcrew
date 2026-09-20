@@ -32,7 +32,12 @@ input{width:100%;padding:13px 14px;margin-bottom:10px;border:1px solid #ddd3bd;f
 input:focus{outline:none;border-color:var(--gold);}
 .btn{display:block;width:100%;padding:16px;border:0;border-radius:30px;font-family:inherit;font-size:1rem;font-weight:600;cursor:pointer;margin-top:8px;}
 .btn-card{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}
-.btn-bank{background:#fff;color:var(--navy);border:1px solid var(--navy);}
+.bank-box{margin-top:22px;padding:18px 16px;background:var(--cream);border:1px solid rgba(201,168,76,0.4);}
+.bank-title{font-size:.8rem;color:#6b6456;margin-bottom:8px;}
+.bank-num{font-size:1.15rem;font-weight:700;color:var(--navy);letter-spacing:.02em;}
+.bank-holder{font-size:.86rem;color:#4A4438;margin-top:4px;}
+.bank-amt{font-size:.95rem;font-weight:600;color:var(--navy);margin-top:10px;}
+.bank-desc{font-size:.76rem;color:#9a917f;margin-top:10px;line-height:1.7;}
 .note{font-size:.76rem;color:#9a917f;margin-top:18px;line-height:1.7;}
 </style>
 </head>
@@ -53,28 +58,33 @@ input:focus{outline:none;border-color:var(--gold);}
     <li>라이브 수강권</li>
     <li>1:1 코치 피드백</li>
     <li>AI 코칭 무제한</li>
+    <li>합격생 자료</li>
+    <li>합격생 이력서</li>
+    <li>합격 영상</li>
+    <li>합격 면접 답변</li>
+    <li>합격생 비밀노트</li>
+    <li>기출 정리 · 실전 모의면접</li>
+    <li>프리미엄 단톡방</li>
   </ul>
 
-  <input id="pl-name" type="text" placeholder="이름" autocomplete="name">
-  <input id="pl-tel" type="tel" placeholder="연락처 (숫자만)" autocomplete="tel">
-  <input id="pl-email" type="email" placeholder="이메일 (회원가입에 쓰신 메일)" autocomplete="email">
+  <input id="pl-name" type="text" placeholder="이름" autocomplete="off">
+  <input id="pl-tel" type="tel" placeholder="연락처 (숫자만)" autocomplete="off">
+  <input id="pl-email" type="email" placeholder="이메일" autocomplete="off">
 
   <button class="btn btn-card" onclick="plPay('CARD')">카드로 결제하기</button>
-  <button class="btn btn-bank" onclick="plPay('VBANK')">가상계좌(무통장입금)로 결제하기</button>
 
-  <p class="note">결제 완료 후 안내 메시지가 발송되며, 서비스가 바로 활성화됩니다.<br>결제 관련 문의는 공식 이메일로 남겨주세요.</p>
+  <div class="bank-box">
+    <div class="bank-title">계좌이체로 결제하실 경우</div>
+    <div class="bank-num">국민은행 032901-04-373391</div>
+    <div class="bank-holder">예금주 : 주식회사 원더풀크루</div>
+    <div class="bank-amt">입금액 1,990,000원</div>
+    <div class="bank-desc">입금자명은 본인 실명으로 입금해주세요.<br>입금 확인 후 서비스가 활성화됩니다.</div>
+  </div>
+
+  <p class="note">결제 관련 문의는 공식 이메일로 남겨주세요.<br>wonderfulcrew1@gmail.com</p>
 </div>
 
 <script>
-(function(){
-  // 로그인된 회원이면 정보 미리 채움
-  try{
-    var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
-    if(u.name) document.getElementById('pl-name').value=u.name;
-    if(u.email) document.getElementById('pl-email').value=u.email;
-  }catch(e){}
-})();
-
 function plPay(method){
   var name=document.getElementById('pl-name').value.trim();
   var tel=document.getElementById('pl-tel').value.replace(/[^0-9]/g,'');

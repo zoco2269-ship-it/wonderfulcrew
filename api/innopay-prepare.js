@@ -25,10 +25,12 @@ module.exports = async function handler(req, res) {
       basic:   { name: 'WonderfulCrew Basic (Monthly, 30 days)', amount: 199000 },
       elite:   { name: 'WonderfulCrew Elite (Monthly, 30 days)', amount: 299000 },
       premium: { name: 'WonderfulCrew Premium (1 year)',          amount: 2500000 },
+      premium_live: { name: 'WonderfulCrew Premium (1 year, Live Special 20% OFF)', amount: 1990000 },
     } : {
       basic:   { name: 'WonderfulCrew Basic (월정액 30일)',  amount: 199000 },
       elite:   { name: 'WonderfulCrew Elite (월정액 30일)',  amount: 299000 },
       premium: { name: 'WonderfulCrew Premium (1년)',         amount: 2500000 },
+      premium_live: { name: 'WonderfulCrew Premium (1년) 라이브 특별가 20% 할인', amount: 1990000 },
     };
 
     const selected = plans[plan] || plans.basic;
@@ -46,7 +48,8 @@ module.exports = async function handler(req, res) {
         const sb = createClient(sbUrl, sbKey);
         await sb.from('payments').insert({
           user_id: userId || ('anonymous_' + (buyerEmail || moid)),
-          plan: plan || 'basic',
+          // premium_live 는 할인가 결제 — 플랜은 premium 으로 기록(1년 활성화 로직 재사용), 금액만 199만원
+          plan: plan === 'premium_live' ? 'premium' : (plan || 'basic'),
           amount: selected.amount,
           method: 'innopay',
           tid: '',

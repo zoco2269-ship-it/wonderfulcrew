@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>라이브 특별가 결제 | 원더풀크루</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://pg.innopay.co.kr/ipay/js/innopay-2.0.js"></script>
+<script>ih=850;</script>
+<script src="js/innopay.js"></script>
+<style>
+:root{--gold:#C9A84C;--cream:#FAF7F0;--navy:#1A2340;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{overflow-x:hidden;max-width:100vw;-webkit-text-size-adjust:100%;}
+body{font-family:'Noto Serif KR',serif;background:var(--cream);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.card{background:#fff;padding:44px 36px;max-width:520px;width:100%;text-align:center;border:1px solid rgba(201,168,76,0.3);box-shadow:0 8px 40px rgba(0,0,0,0.06);}
+.tag{display:inline-block;font-size:0.74rem;letter-spacing:.14em;color:var(--gold);border:1px solid var(--gold);padding:5px 14px;border-radius:20px;margin-bottom:18px;}
+h1{font-family:'DM Serif Display','Noto Serif KR',serif;font-size:1.7rem;color:var(--navy);margin-bottom:6px;font-weight:400;}
+.sub{font-size:0.88rem;color:#6b6456;margin-bottom:22px;}
+.price-box{background:var(--cream);border-left:4px solid var(--gold);padding:18px 20px;margin:0 0 24px;text-align:left;}
+.orig{font-size:0.9rem;color:#9a917f;text-decoration:line-through;}
+.now{font-size:2rem;color:var(--navy);font-weight:700;line-height:1.3;}
+.now small{font-size:.95rem;font-weight:400;}
+.off{display:inline-block;font-size:.8rem;color:#fff;background:var(--navy);padding:3px 10px;border-radius:12px;margin-left:8px;vertical-align:middle;}
+.benefits{text-align:left;font-size:0.86rem;color:#4A4438;line-height:1.9;margin-bottom:24px;padding-left:4px;}
+.benefits li{list-style:none;}
+.benefits li::before{content:"✓ ";color:var(--gold);font-weight:700;}
+input{width:100%;padding:13px 14px;margin-bottom:10px;border:1px solid #ddd3bd;font-family:inherit;font-size:.92rem;background:#fff;}
+input:focus{outline:none;border-color:var(--gold);}
+.btn{display:block;width:100%;padding:16px;border:0;border-radius:30px;font-family:inherit;font-size:1rem;font-weight:600;cursor:pointer;margin-top:8px;}
+.btn-card{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#fff;}
+.btn-bank{background:#fff;color:var(--navy);border:1px solid var(--navy);}
+.note{font-size:.76rem;color:#9a917f;margin-top:18px;line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="tag">LIVE SPECIAL</div>
+  <h1>원더풀크루 프리미엄</h1>
+  <p class="sub">합격 완성 올패키지 · 1년 이용</p>
+
+  <div class="price-box">
+    <div class="orig">2,500,000원</div>
+    <div class="now">1,990,000<small>원</small><span class="off">20% OFF</span></div>
+  </div>
+
+  <ul class="benefits">
+    <li>플랫폼 무제한 이용</li>
+    <li>강의 영상 무제한</li>
+    <li>라이브 수강권</li>
+    <li>1:1 코치 피드백</li>
+    <li>AI 코칭 무제한</li>
+  </ul>
+
+  <input id="pl-name" type="text" placeholder="이름" autocomplete="name">
+  <input id="pl-tel" type="tel" placeholder="연락처 (숫자만)" autocomplete="tel">
+  <input id="pl-email" type="email" placeholder="이메일 (회원가입에 쓰신 메일)" autocomplete="email">
+
+  <button class="btn btn-card" onclick="plPay('CARD')">카드로 결제하기</button>
+  <button class="btn btn-bank" onclick="plPay('VBANK')">가상계좌(무통장입금)로 결제하기</button>
+
+  <p class="note">결제 완료 후 안내 메시지가 발송되며, 서비스가 바로 활성화됩니다.<br>결제 관련 문의는 공식 이메일로 남겨주세요.</p>
+</div>
+
+<script>
+(function(){
+  // 로그인된 회원이면 정보 미리 채움
+  try{
+    var u=JSON.parse(localStorage.getItem('wc_user')||'{}');
+    if(u.name) document.getElementById('pl-name').value=u.name;
+    if(u.email) document.getElementById('pl-email').value=u.email;
+  }catch(e){}
+})();
+
+function plPay(method){
+  var name=document.getElementById('pl-name').value.trim();
+  var tel=document.getElementById('pl-tel').value.replace(/[^0-9]/g,'');
+  var email=document.getElementById('pl-email').value.trim();
+  if(!name){alert('이름을 입력해주세요.');return;}
+  if(tel.length<10){alert('연락처를 정확히 입력해주세요.');return;}
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){alert('이메일을 정확히 입력해주세요.');return;}
+  payWithInnopay('premium_live',{buyerName:name,buyerTel:tel,buyerEmail:email},method);
+}
+</script>
+</body>
+</html>

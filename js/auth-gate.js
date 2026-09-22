@@ -13,6 +13,7 @@
   // 공개 페이지 (미로그인 통과, 단 로그인 사용자는 phone 검증)
   var publicPages = [
     'index.html','index-en.html','','about.html','about-en.html',
+    'practice-foreign.html','practice-foreign-en.html',
     'plans.html','plans-en.html','pricing.html','pricing-en.html','contact.html',
     'deposit-request.html',
     'lecture.html','lecture-en.html',

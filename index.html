@@ -1397,20 +1397,24 @@ if(sideBtns&&heroSection){
   <div style="position:relative;max-width:430px;width:100%;background:#FBF4E2;border-radius:22px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.35);">
     <button id="wcAwardClose" aria-label="닫기" style="position:absolute;top:12px;right:12px;z-index:2;width:38px;height:38px;border:none;border-radius:50%;background:rgba(0,0,0,.4);color:#fff;font-size:22px;line-height:1;cursor:pointer;">&times;</button>
     <img src="/images/award-edtech-korea-2026.png" alt="2026 에듀테크 코리아 어워드 제11회 에듀테크 비즈니스모델 공모전 우수상 수상" style="width:100%;display:block;">
-    <div style="padding:20px 22px 24px;font-family:'Malgun Gothic','Noto Sans KR',sans-serif;">
-      <div style="color:#C9A84C;font-weight:900;font-size:26px;letter-spacing:.02em;font-family:'Noto Sans KR',sans-serif;">🏆 수상 소식</div>
-      <div style="color:#1A2340;font-weight:800;font-size:19px;margin-top:6px;line-height:1.4;">2026 에듀테크 코리아 어워드<br>우수상 수상</div>
+    <div style="padding:20px 22px 24px;font-family:'Noto Serif KR',serif;">
+      <div style="color:#C9A84C;font-weight:700;font-size:26px;letter-spacing:.01em;font-family:'Noto Serif KR',serif;">🏆 수상 소식</div>
+      <div style="color:#1A2340;font-weight:700;font-size:19px;margin-top:6px;line-height:1.4;">2026 에듀테크 코리아 어워드<br>우수상 수상</div>
       <div style="color:#5A6480;font-size:14px;margin-top:10px;line-height:1.6;">승무원/글로벌 서비스직 취업 준비의 최선두에서 AI와 함께한 원더풀크루가 우수상을 수상했습니다.</div>
+      <div style="text-align:right;margin-top:14px;"><a href="#" id="wcAwardHideToday" style="color:#8a94ab;font-size:12.5px;text-decoration:underline;">오늘 하루 보지 않기</a></div>
     </div>
   </div>
 </div>
 <script>
 (function(){
-  try{ if(sessionStorage.getItem('wcAwardPopSeen')) return; }catch(e){}
+  var TODAY_KEY='wcAwardPopHideDate';
+  try{ if(localStorage.getItem(TODAY_KEY)===new Date().toDateString()) return; }catch(e){}
   var pop=document.getElementById('wcAwardPop'); if(!pop) return;
-  function closePop(){ pop.style.display='none'; try{sessionStorage.setItem('wcAwardPopSeen','1');}catch(e){} }
+  function closePop(){ pop.style.display='none'; }
+  function hideToday(e){ e.preventDefault(); try{localStorage.setItem(TODAY_KEY,new Date().toDateString());}catch(err){} closePop(); }
   setTimeout(function(){ pop.style.display='flex'; }, 700);
   document.getElementById('wcAwardClose').addEventListener('click',closePop);
+  document.getElementById('wcAwardHideToday').addEventListener('click',hideToday);
   pop.addEventListener('click',function(e){ if(e.target===pop) closePop(); });
 })();
 </script>

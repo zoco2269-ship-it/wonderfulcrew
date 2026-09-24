@@ -335,15 +335,7 @@
   "crons": [
     {
       "path": "/api/reconcile-subscriptions",
-      "schedule": "0 * * * *"
-    },
-    {
-      "path": "/api/generate-sns-content?count=10",
-      "schedule": "0 4 * * *"
-    },
-    {
-      "path": "/api/sns-publish",
-      "schedule": "0 */2 * * *"
+      "schedule": "0 18 * * *"
     },
     {
       "path": "/api/marketing-push-cron",

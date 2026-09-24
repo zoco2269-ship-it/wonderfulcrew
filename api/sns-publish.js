@@ -1,9 +1,11 @@
-// SNS 자동 발행 — Vercel cron 매시간 1개씩
-// sns_content_queue 에서 status='pending' 1개 fetch → 채널별 발행 → status='posted'
+// SNS 자동 발행 — Vercel cron 하루 1회, 큐에 쌓인 것 여러 건 한번에 발행
+// sns_content_queue 에서 status='pending' 여러 개 fetch → 각각 채널별 발행 → status='posted'
 // 환경변수로 채널 토큰 관리. 토큰 없는 채널은 자동 skip.
 const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
 const OAuth = require('oauth-1.0a');
+
+const BATCH_SIZE = 6;
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -21,19 +23,27 @@ module.exports = async function handler(req, res) {
   if (!isAuthed) return res.status(403).json({ error: 'unauthorized' });
 
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-  const channels = [];
-  const results = { posted: [], skipped: [], errors: [] };
 
-  // 큐에서 가장 오래된 pending 1개 fetch
+  // 큐에서 가장 오래된 pending 여러 개 fetch
   const { data: queue, error: qerr } = await sb.from('sns_content_queue')
     .select('id, text, title_short, hashtags, persona, lang, topic, status')
     .eq('status', 'pending')
     .order('created_at', { ascending: true })
-    .limit(1);
+    .limit(BATCH_SIZE);
   if (qerr || !queue || !queue.length) {
     return res.json({ ok: true, message: 'no pending content', queue_empty: true });
   }
-  const item = queue[0];
+
+  const itemResults = [];
+  for (const item of queue) {
+    itemResults.push(await publishOne(sb, item));
+  }
+
+  return res.json({ ok: true, count: itemResults.length, items: itemResults });
+};
+
+async function publishOne(sb, item) {
+  const results = { posted: [], skipped: [], errors: [] };
 
   // 발행 대상 텍스트 (해시태그 포함)
   const fullText = `${item.text}\n\n${item.hashtags || ''}`.trim();
@@ -168,12 +178,11 @@ module.exports = async function handler(req, res) {
     results.errors.push({ channel: 'db_update', error: e.message });
   }
 
-  return res.json({
-    ok: true,
+  return {
     item_id: item.id,
     topic: item.topic,
     persona: item.persona,
     final_status: finalStatus,
     results: results,
-  });
-};
+  };
+}

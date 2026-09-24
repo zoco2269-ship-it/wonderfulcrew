@@ -22,7 +22,7 @@ const TEMPLATES = {
 <div style="max-width:600px;margin:0 auto;background:#fff;padding:48px 40px;border-radius:12px;border-left:4px solid #C9A84C;">
   <h1 style="font-family:'DM Serif Display',serif;color:#1A2340;font-size:1.6rem;margin-bottom:20px;">${name || '안녕하세요'}님, 환영합니다 ✈️</h1>
   <p style="line-height:1.8;font-size:0.95rem;color:#4A4438;">
-    7년차 에미레이트 일등석 출신 코치가 직접 만든 외항사 승무원 면접 시스템에 가입해주셔서 감사합니다.<br><br>
+    베테랑 면접 코치진이 직접 만든 외항사 승무원 면접 시스템에 가입해주셔서 감사합니다.<br><br>
     지금 바로 <b>무료 모의면접 10회</b>를 시작하실 수 있어요.
   </p>
   <div style="margin:32px 0;text-align:center;">

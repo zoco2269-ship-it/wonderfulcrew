@@ -301,34 +301,7 @@
     }
   ],
   "functions": {
-    "api/ai.js": {
-      "maxDuration": 30
-    },
-    "api/analyze-growth.js": {
-      "maxDuration": 60
-    },
-    "api/did-lipsync.js": {
-      "maxDuration": 60
-    },
-    "api/stt.js": {
-      "maxDuration": 30
-    },
-    "api/reconcile-subscriptions.js": {
-      "maxDuration": 60
-    },
-    "api/generate-sns-content.js": {
-      "maxDuration": 60
-    },
-    "api/sns-publish.js": {
-      "maxDuration": 60
-    },
-    "api/marketing-push-cron.js": {
-      "maxDuration": 60
-    },
-    "api/seo-ping.js": {
-      "maxDuration": 30
-    },
-    "api/email-campaign-cron.js": {
+    "api/[...slug].js": {
       "maxDuration": 60
     }
   },

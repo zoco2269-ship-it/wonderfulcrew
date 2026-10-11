@@ -10,7 +10,10 @@
   var cfgPromise = null, sdkPromise = null;
 
   function getConfig() {
-    if (!cfgPromise) cfgPromise = fetch('/api/paypal-config').then(function (r) { return r.json(); });
+    if (!cfgPromise) cfgPromise = fetch('/api/paypal-config').then(function (r) {
+      if (!r.ok) throw new Error('Payment service unavailable. Please contact us at wonderfulcrew1@gmail.com');
+      return r.json();
+    });
     return cfgPromise;
   }
   function getUser() {

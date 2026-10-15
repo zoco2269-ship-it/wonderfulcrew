@@ -66,12 +66,9 @@ module.exports = async function(req, res) {
     });
   }
 
-  const factory = ROUTES[key];
-  if (!factory) return res.status(404).json({ error: 'not found', path: key });
+  const handler = ROUTES[key];
+  if (!handler) return res.status(404).json({ error: 'not found', path: key });
 
-  const mod = factory();
-  if (!mod) return res.status(500).json({ error: 'handler load failed', path: key });
-
-  const fn = typeof mod === 'function' ? mod : (mod.default || mod);
+  const fn = typeof handler === 'function' ? handler : (handler.default || handler);
   return fn(req, res);
 };

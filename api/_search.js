@@ -1,6 +1,6 @@
 // /api/search — grants.html 전용 Claude 프록시
 // 클라이언트는 { query, system?, model?, max_tokens? } 만 보냄. API 키는 서버 환경변수에서만 읽음.
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');

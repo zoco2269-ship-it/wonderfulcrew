@@ -56,8 +56,10 @@ const ROUTES = {
 };
 
 module.exports = async function(req, res) {
-  const slug = req.query.slug;
-  const key = Array.isArray(slug) ? slug[0] : (slug || '');
+  // req.query.slug 대신 URL에서 직접 파싱 (Vercel 라우팅 파라미터 불일치 방지)
+  const parts = (req.url || '').split('?')[0].split('/').filter(Boolean);
+  // parts: ['api', 'supabase-config'] or ['supabase-config']
+  const key = parts[parts.length - 1] || '';
 
   // supabase-config는 외부 의존성 없이 직접 처리
   if (key === 'supabase-config') {

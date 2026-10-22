@@ -187,6 +187,8 @@ document.addEventListener('DOMContentLoaded',function(){
 </div>
 
 <script>
+// 비메오 → 유튜브 전환: 유튜브에 "일부공개(Unlisted)"로 올린 뒤, 해당 강의 항목에
+// yt:'유튜브영상ID' 만 추가하면 그 강의는 자동으로 유튜브 임베드로 재생됨 (url 은 그대로 둬도 됨).
 var LECTURES=[
   {ch:'1강',title:'오픈데이, 스몰톡',subs:[
     {num:'1-1',title:'오픈데이, 어쎄스먼트, 비디오면접',url:'https://vimeo.com/user230127533/1-1',desc:'항공사 면접 시작!! 외국 항공사 승무원 면접 과정의 주요 단계인 오픈데이, 애세스먼트, 비디오면접의 차이점과 특징을 설명합니다. 면접 준비에 필요한 팁과 정보를 함께 제공합니다.'},
@@ -245,6 +247,7 @@ LECTURES.forEach(function(ch){
     var card=document.createElement('div');
     card.className='lec-card sub-link';
     card.setAttribute('data-url',s.url);
+    card.setAttribute('data-yt',s.yt||'');
     card.style.cursor='pointer';
     var thumbHtml=s.thumb?
       '<div class="lec-thumb" style="background:none;"><img src="'+s.thumb+'" alt="'+s.title+' 강의 영상 - 원더풀크루" style="width:100%;height:100%;object-fit:cover;"><div class="play" style="position:absolute;width:28px;height:28px;font-size:0.7rem;background:rgba(201,168,76,0.7);opacity:0;transition:opacity 0.2s;">▶</div></div>':
@@ -279,11 +282,16 @@ LECTURES.forEach(function(ch){
   overlay.addEventListener('click',function(e){if(e.target===overlay)closeModal();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&overlay.style.display==='flex')closeModal();});
 
-  window.openLectureModal=function(vimeoUrl,title){
+  window.openLectureModal=function(vimeoUrl,title,ytId){
     overlay.style.display='flex';
     document.getElementById('wc-vmtitle').textContent=title||'';
     var frameBox=document.getElementById('wc-vmframe');
     frameBox.innerHTML='불러오는 중…';
+    // 유튜브 영상ID 가 있으면 (비메오→유튜브 전환된 강의) 바로 유튜브 임베드로 재생 — 비메오 API 호출 없음
+    if(ytId){
+      frameBox.innerHTML='<iframe src="https://www.youtube.com/embed/'+ytId+'?autoplay=1&rel=0&modestbranding=1" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="display:block;"></iframe>';
+      return;
+    }
     // Vimeo oEmbed 로 vanity URL → numeric video ID 추출 → player.vimeo.com iframe
     fetch('https://vimeo.com/api/oembed.json?url='+encodeURIComponent(vimeoUrl)+'&autoplay=1')
       .then(function(r){return r.json();})
@@ -425,7 +433,7 @@ document.addEventListener('click',function(e){
     }catch(e){}
   }
   if(paid){
-    openLectureModal(card.getAttribute('data-url'), card.getAttribute('data-title')||'');
+    openLectureModal(card.getAttribute('data-url'), card.getAttribute('data-title')||'', card.getAttribute('data-yt')||'');
   } else {
     document.getElementById('premium-modal').style.display='flex';
   }
